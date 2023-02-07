@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { PersonaUrls, MacRegListUrlsInfo, DpskUrls }                                from '@acx-ui/rc/utils'
+import { PersonaUrls, MacRegListUrlsInfo, DpskUrls, CommonUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
 import { fireEvent, within, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -38,6 +38,10 @@ describe('Persona Group Table', () => {
       rest.get(
         DpskUrls.getDpsk.url,
         (req, res, ctx) => res(ctx.json(mockDpskPool))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json( { data: [] }))
       )
     )
     params = {

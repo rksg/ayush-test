@@ -7,16 +7,27 @@ import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation,
-  useLazyGetDpskQuery
+  useLazyGetDpskQuery,
+  useLazyVenuesListQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaGroupDrawer }                                                               from '../PersonaGroupDrawer'
+import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  VenueLink
+} from '../LinkHelper'
+import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 
 
 
-function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<string, string>) {
+function useColumns (
+  macRegistrationPools: Map<string, string>,
+  dpskPools: Map<string, string>,
+  venuesMap: Map<string, string>
+) {
   const { $t } = useIntl()
 
   const columns: TableProps<PersonaGroup>['columns'] = [
@@ -37,6 +48,17 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
       sorter: false
+    },
+    {
+      key: 'propertyId',
+      title: $t({ defaultMessage: 'Venue' }),
+      dataIndex: 'propertyId',
+      render: (_, row) =>
+        <VenueLink
+          // FIXME: After the property id does not present in UUID format, I will remove .replace()
+          name={venuesMap.get(row?.propertyId?.replaceAll('-', '') ?? '')}
+          venueId={row?.propertyId}
+        />
     },
     {
       key: 'dpskPoolId',
@@ -80,20 +102,23 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       dataIndex: 'personaCount',
       align: 'center'
     }
-    // {
-    //   key: 'propertyId',
-    //   title: $t({ defaultMessage: 'Property' }),
-    //   dataIndex: 'propertyId',
-    //   sorter: true,
-    //   filterable: true
-    // }
   ]
 
   return columns
 }
 
+const defaultVenueListPayload = {
+  fields: [
+    'id',
+    'name'
+  ],
+  filters: { id: [] }
+}
+
 export function PersonaGroupTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
@@ -102,6 +127,7 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
 
+  const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [
@@ -118,11 +144,17 @@ export function PersonaGroupTable () {
   useEffect(() => {
     if (tableQuery.isLoading) return
 
+    const venueIds: string[] = []
     const macPools = new Map()
     const dpskPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId } = personaGroup
+      const { macRegistrationPoolId, dpskPoolId, propertyId } = personaGroup
+
+      if (propertyId) {
+        // FIXME: After the property id does not present in UUID format, I will remove .replace()
+        venueIds.push(propertyId.replaceAll('-', ''))
+      }
 
       if (macRegistrationPoolId) {
         getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
@@ -142,6 +174,16 @@ export function PersonaGroupTable () {
           })
       }
     })
+
+    if (venueIds.length !== 0) {
+      const payload = { ...defaultVenueListPayload, filters: { id: venueIds } }
+      getVenues({ params: { tenantId }, payload })
+        .then(result => {
+          if (result?.data?.data) {
+            setVenueMap(new Map(result.data.data.map(v => [v.id, v.name])))
+          }
+        })
+    }
 
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
@@ -208,7 +250,7 @@ export function PersonaGroupTable () {
       ]}
     >
       <Table
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap)}
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

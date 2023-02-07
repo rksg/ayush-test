@@ -97,7 +97,7 @@ function PersonaGroupDetails () {
     }
 
     if (propertyId) {
-      // TODO: After the property id does not present in UUID format, I will remove .replace()
+      // FIXME: After the property id does not present in UUID format, I will remove .replace()
       const venueId = propertyId.replaceAll('-', '')
       let name: string | undefined
       getVenue({ params: { venueId, tenantId } })
