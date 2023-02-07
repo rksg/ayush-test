@@ -937,5 +937,7 @@ export const {
   useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
-  useGetDhcpLeasesQuery
+  useGetDhcpLeasesQuery,
+  useGetCliTemplatesQuery,
+  useGetProfilesQuery
 } = switchApi
