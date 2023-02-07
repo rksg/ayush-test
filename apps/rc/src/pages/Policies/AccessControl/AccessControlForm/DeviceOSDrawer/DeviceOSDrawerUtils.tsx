@@ -1,30 +1,7 @@
-import React from 'react'
-
-import { Select } from 'antd'
-
 import { DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
 
-import { DeviceOSRule } from './index'
-
-
-export const renderDetailsColumn = (row: DeviceOSRule) => {
-  const linkArray = []
-  if (row.details.upLink >= 0) {
-    linkArray.push(`UpLink - ${row.details.upLink} Mbps`)
-  }
-  if (row.details.downLink >= 0) {
-    linkArray.push(`DownLink - ${row.details.downLink} Mbps`)
-  }
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {row.details.vlan && <span>VLAN: {row.details.vlan}</span>}
-    <span style={{ whiteSpace: 'nowrap' }}>
-      {linkArray.length ? 'Rate Limit: ' : ''} {linkArray.join(' | ')}
-    </span>
-  </div>
-}
-
 export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
-  let OsVendorArray = ['Please select...']
+  let OsVendorArray = []
   switch (deviceType) {
     case DeviceTypeEnum.Laptop:
       // eslint-disable-next-line max-len
@@ -66,9 +43,5 @@ export const getOsVendorOptions = (deviceType: DeviceTypeEnum) => {
 }
 
 export const getDeviceTypeOptions = () => {
-  return ['Select...', ...Object.keys(DeviceTypeEnum)]
+  return [...Object.keys(DeviceTypeEnum)]
 }
-
-export const deviceTypeOptionList = getDeviceTypeOptions().map((option) =>
-  <Select.Option key={option}>{option}</Select.Option>
-)

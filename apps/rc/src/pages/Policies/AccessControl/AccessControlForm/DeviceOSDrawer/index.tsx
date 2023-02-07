@@ -20,7 +20,6 @@ import {
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
-import { renderDetailsColumn }                 from './DeviceOSDrawerUtils'
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
 const { Option } = Select
@@ -47,6 +46,29 @@ const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
 
 export interface DeviceOSDrawerProps {
   inputName?: string[]
+}
+
+export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
+  const { $t } = useIntl()
+  const { row } = props
+
+  const linkArray = []
+  if (row.details.upLink >= 0) {
+    linkArray.push($t({ defaultMessage: 'Uplink - {upLink} Mbps' }, {
+      upLink: row.details.upLink
+    }))
+  }
+  if (row.details.downLink >= 0) {
+    linkArray.push($t({ defaultMessage: 'DownLink - {downLink} Mbps' }, {
+      downLink: row.details.downLink
+    }))
+  }
+  return <div style={{ display: 'flex', flexDirection: 'column' }}>
+    {row.details.vlan && <span>VLAN: {row.details.vlan}</span>}
+    <span style={{ whiteSpace: 'nowrap' }}>
+      {linkArray.length ? $t({ defaultMessage: 'Rate Limit: ' }) : ''} {linkArray.join(' | ')}
+    </span>
+  </div>
 }
 
 const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
@@ -156,7 +178,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       dataIndex: 'details',
       key: 'details',
       render: (data, row) => {
-        return renderDetailsColumn(row)
+        return <GenDetailsColumn row={row} />
       }
     }
   ]
@@ -190,11 +212,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const handleRuleDrawerClose = () => {
     setDeviceOSDrawerVisible(false)
     setRuleDrawerEditMode(false)
-    // setDeviceType('' as DeviceTypeEnum)
-    // setToClient(false)
-    // setToClientValue(0)
-    // setFromClient(false)
-    // setFromClientValue(0)
     setDeviceOSRule({} as DeviceOSRule)
   }
 
@@ -364,7 +381,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
     <Form.Item
       name='deviceOSRule'
-      label={$t({ defaultMessage: 'Rules' }) + ` (${deviceOSRuleList.length})`}
+      label={$t({ defaultMessage: 'Rules ({number})' }, {
+        number: deviceOSRuleList.length
+      })}
     />
     <Table
       columns={basicColumns}

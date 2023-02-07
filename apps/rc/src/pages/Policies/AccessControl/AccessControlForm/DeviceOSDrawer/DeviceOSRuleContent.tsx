@@ -6,7 +6,9 @@ import { useIntl }                                                            fr
 import { ContentSwitcher, ContentSwitcherProps }      from '@acx-ui/components'
 import { AccessStatus, DeviceTypeEnum, OsVendorEnum } from '@acx-ui/rc/utils'
 
-import { deviceTypeOptionList, getOsVendorOptions } from './DeviceOSDrawerUtils'
+import { deviceTypeLabelMapping, osVenderLabelMapping } from '../../../contentsMap'
+
+import { getDeviceTypeOptions, getOsVendorOptions } from './DeviceOSDrawerUtils'
 
 interface DeviceOSRuleContentProps {
   drawerForm: FormInstance,
@@ -43,7 +45,9 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
   const [osVendor, setOsVendor] = useState(
     $t({ defaultMessage: 'Please select...' }) as OsVendorEnum
   )
-  const [osVendorOptionList, setOsVendorOptionList] = useState([] as JSX.Element[])
+  const [osVendorOptionList, setOsVendorOptionList] = useState([] as {
+    value: string, label: string
+  }[])
   const [fromClient, setFromClient] = useState(
     ruleDrawerEditMode ? drawerForm.getFieldValue('fromClient') : false
   )
@@ -57,13 +61,13 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
     ruleDrawerEditMode ? drawerForm.getFieldValue('toClientValue') : 0
   )
 
-
   useEffect(() => {
-    setOsVendorOptionList(
-      getOsVendorOptions(deviceType).map(option =>
-        <Select.Option key={option}>{option}</Select.Option>
-      )
-    )
+    setOsVendorOptionList([
+      { value: 'Please select...', label: $t({ defaultMessage: 'Please select...' }) },
+      ...getOsVendorOptions(deviceType).map(option => ({
+        value: option, label: $t(osVenderLabelMapping[option as OsVendorEnum])
+      }))
+    ] as { value: string, label: string }[])
   }, [deviceType])
 
   const EmptyElement = (props: { access: AccessStatus }) => {
@@ -187,7 +191,12 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       children={<Select
         style={{ width: '100%' }}
         onChange={handleDeviceTypeChange}
-        children={deviceTypeOptionList}
+        options={[
+          { value: 'Select...', label: $t({ defaultMessage: 'Select...' }) },
+          ...getDeviceTypeOptions().map(option => ({
+            value: option, label: $t(deviceTypeLabelMapping[option as DeviceTypeEnum])
+          }))
+        ]}
       />}
     />
     <DrawerFormItem
@@ -207,7 +216,7 @@ const DeviceOSRuleContent = (props: DeviceOSRuleContentProps) => {
       children={<Select
         style={{ width: '100%' }}
         onChange={handleOsVendorChange}
-        children={osVendorOptionList}
+        options={osVendorOptionList}
       />}
     />
     <DrawerFormItem

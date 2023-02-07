@@ -153,17 +153,29 @@ jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
 
   // @ts-ignore
-  const Select = ({ children, onChange, ...otherProps }) =>
-    <select
+  const Select = ({ children, onChange, options, ...otherProps }) => {
+    if (options) {
+      return <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {options.map((option: { value: string }) =>
+          <option value={option.value}>{option.value}</option>)}
+      </select>
+    }
+
+    return <select
       role='combobox'
       onChange={e => onChange(e.target.value)}
       {...otherProps}>
       {children}
     </select>
+  }
 
   // @ts-ignore
-  Select.Option = ({ children, ...otherProps }) =>
-    <option role='option' {...otherProps}>{children}</option>
+  Select.Option = ({ children, options, ...otherProps }) => {
+    return <option role='option' {...otherProps}>{children}</option>
+  }
 
   return { ...antd, Select }
 })
