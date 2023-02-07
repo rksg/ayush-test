@@ -28,8 +28,8 @@ import {
   RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters }                         from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getFilters }                                        from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { useApActions } from '../useApActions'
 
@@ -114,6 +114,7 @@ export function ApTable (props: ApTableProps) {
   const releaseTag = useIsSplitOn(Features.DEVICES)
 
   const tableData = tableQuery.data?.data ?? []
+  const linkToEditAp = useTenantLink('/devices/wifi/')
 
   const columns = React.useMemo(() => {
     const extraParams = tableQuery.data?.extra ?? {
@@ -303,7 +304,7 @@ export function ApTable (props: ApTableProps) {
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
+      navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/details`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

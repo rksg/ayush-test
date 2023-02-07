@@ -365,9 +365,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.devicePolicyId = null
   }
 
-  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
-    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
-  }
+
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
     advancedCustomization.userUplinkRateLimiting = 0
@@ -386,6 +384,19 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
   }
 
   return saveData
+}
+
+export function transferVenuesToSave (data: NetworkSaveData, originalData: NetworkSaveData) {
+  const venues = data.venues?.map(item=>
+    ({
+      ...item,
+      vlanPoolId: originalData.wlan?.advancedCustomization?.vlanPool?.id
+    }))
+
+  return {
+    ...originalData,
+    venues
+  }
 }
 
 function cleanClientIsolationAllowlistId (venues: NetworkVenue[]): NetworkVenue[] {

@@ -213,15 +213,13 @@ describe('RadioTab', () => {
     await section.findByRole('radio', { name: /Custom Settings/i })
   })
 
-  it.skip('should render Wi-Fi Radio 2.4G Settings correctly', async () => {
+  it.skip('should render Wi-Fi Radio 24G Settings correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider>
       <VenueEditContext.Provider value={{
         editContextData: {},
         setEditContextData: jest.fn(),
         editRadioContextData: {
-
-
           apiApModels: externalAntennaApModels,
           apModels: externalAntennaApModels,
           radioData: radioCustomizationData as VenueRadioCustomization
@@ -252,7 +250,7 @@ describe('RadioTab', () => {
 
     const bandwidthSelect = await tab.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
-    await userEvent.click((await tab.findAllByTitle('40 MHz'))[0])
+    await userEvent.click((await screen.findByRole('option', { name: '20 MHz' })))
 
     const transmitSelect = await tab.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
@@ -300,7 +298,7 @@ describe('RadioTab', () => {
 
     const bandwidthSelect5g = await tab5g.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect5g)
-    await userEvent.click((await tab5g.findAllByTitle('160 MHz'))[0])
+    await userEvent.click((await screen.findByRole('option', { name: '20 MHz' })))
 
     const transmitSelect5g = await tab5g.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect5g)

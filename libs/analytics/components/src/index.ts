@@ -1,5 +1,6 @@
 export * from './DescriptionSection'
 export { AnalyticsTabs } from './AnalyticsTabs'
+export { ClientHealth } from './ClientTroubleshooting/ClientHealth'
 export { ClientTroubleshooting } from './ClientTroubleshooting'
 export { ConnectedClientsOverTime } from './ConnectedClientsOverTime'
 export { Header } from './Header'
