@@ -14,6 +14,7 @@ import {
   UsersThreeOutlined,
   UsersThreeSolid
 } from '@acx-ui/icons'
+import { AccountType } from '@acx-ui/utils'
 
 const MspSubscriptionOutlined =
   styled(MspSubscriptionOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
@@ -21,11 +22,12 @@ const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSol
 
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
-  const isVar = tenantType === 'VAR'
-  // const isMsp = tenantType === 'MSP'
-  const isNonVarMSP = tenantType === 'MSP_NON_VAR'
+  const isVar = tenantType === AccountType.VAR
+  const isMsp = tenantType === 'MSP'
+  const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
-  const isIntegrator = tenantType === 'MSP_INTEGRATOR' || tenantType === 'MSP_INSTALLER'
+  const isIntegrator =
+  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const config: LayoutProps['menuConfig'] = [
     {

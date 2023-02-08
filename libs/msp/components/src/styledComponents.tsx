@@ -1,7 +1,7 @@
 import { Space }       from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { EnvelopClosedSolid } from '@acx-ui/icons'
+import { ArrowExpand, EnvelopClosedSolid } from '@acx-ui/icons'
 
 export const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
   width: 16px;
@@ -62,4 +62,9 @@ export const FieldLabeServiceDate = styled.div<{ width: string }>`
   display: grid;
   grid-template-columns: 150px 150px 150px;
   align-items: baseline;
+`
+export const ArrowExpandIcon = styled(ArrowExpand)`
+cursor: pointer;
+margin-left: 2px;
+margin-right: 12px;
 `

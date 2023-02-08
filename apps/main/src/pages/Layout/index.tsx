@@ -16,16 +16,19 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner }                from '@acx-ui/rc/components'
-import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet }         from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                   from '@acx-ui/utils'
-
+import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
+import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
+import { notAvailableMsg }                           from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
+import * as UI           from './styledComponents'
 
 function Layout () {
+  const { data: userProfile } = useUserProfileContext()
+  const companyName = userProfile?.companyName
+
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -42,7 +45,7 @@ function Layout () {
       }
 
       rightHeaderContent={<>
-        {isDelegationMode() && <MspEcDropdownList/>}
+        {isDelegationMode() ? <MspEcDropdownList/> : <UI.CompanyName>{companyName}</UI.CompanyName>}
         <SearchBar />
         <LayoutUI.Divider />
         <AlarmsButton/>

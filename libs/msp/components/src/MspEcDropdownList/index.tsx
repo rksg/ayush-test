@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { ArrowExpand }                                            from '@acx-ui/icons'
 import { useUserProfileContext }                                  from '@acx-ui/rc/components'
 import {
   useMspCustomerListDropdownQuery,
@@ -15,6 +14,7 @@ import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/u
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
 import { AccountType }                                        from '@acx-ui/utils'
 
+import * as UI from '../styledComponents'
 
 export function MspEcDropdownList () {
   const { $t } = useIntl()
@@ -284,8 +284,8 @@ export function MspEcDropdownList () {
     <>
       <div onClick={()=>setVisible(true)}>
         <label>{customerName}</label>
-        <LayoutUI.Icon style={{ marginLeft: '2px', marginRight: '12px' }}
-          children={<ArrowExpand/>}
+        <LayoutUI.Icon
+          children={<UI.ArrowExpandIcon/>}
         />
       </div>
       <Drawer

@@ -18,12 +18,12 @@ import {
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
+import { useUserProfileContext }   from '@acx-ui/rc/components'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
-  useGetUserProfileQuery,
   useSupportMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -33,7 +33,7 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -97,12 +97,11 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+  const { data: userProfile } = useUserProfileContext()
 
   const mspPayload = {
     searchString: '',

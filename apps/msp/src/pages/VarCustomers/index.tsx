@@ -9,8 +9,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
-  useGetUserProfileQuery,
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,7 +21,7 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -70,9 +70,8 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: { tenantId } })
+  const { data: userProfile } = useUserProfileContext()
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {

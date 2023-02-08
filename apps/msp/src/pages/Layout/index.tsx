@@ -30,6 +30,7 @@ import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
+import * as UI           from './styledComponents'
 
 function Layout () {
   const { $t } = useIntl()
@@ -38,6 +39,7 @@ function Layout () {
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
+  const companyName = userProfile?.companyName
 
   useEffect(() => {
     if (data && userProfile) {
@@ -78,6 +80,7 @@ function Layout () {
         }</Dropdown>
       }
       rightHeaderContent={<>
+        <UI.CompanyName>{companyName}</UI.CompanyName>
         <LayoutUI.Divider />
         <AlarmsButton/>
         <ActivityButton/>
