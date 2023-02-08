@@ -16,7 +16,9 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   SyslogUrls,
+  SyslogContextType,
   SyslogPolicyType,
+  VenueSyslogPolicyType,
   VenueRoguePolicyType,
   VLANPoolPolicyType, VlanPoolUrls, VLANPoolVenues,
   TableResult,
@@ -760,7 +762,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.addRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
