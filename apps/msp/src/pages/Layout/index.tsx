@@ -2,6 +2,7 @@
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI,
@@ -9,13 +10,17 @@ import {
 } from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand,
-  AccountCircleSolid,
-  NotificationSolid,
-  QuestionMarkCircleSolid
+  ArrowExpand
 } from '@acx-ui/icons'
-import { CloudMessageBanner } from '@acx-ui/rc/components'
-import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
+import {
+  ActivityButton,
+  AlarmsButton,
+  HelpButton,
+  UserButton
+} from '@acx-ui/main/components'
+import {  CloudMessageBanner } from '@acx-ui/rc/components'
+import { Outlet, TenantLink }  from '@acx-ui/react-router-dom'
+import { notAvailableMsg }     from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 
@@ -50,9 +55,14 @@ function Layout () {
       }
       rightHeaderContent={<>
         <LayoutUI.Divider />
-        <LayoutUI.ButtonSolid icon={<NotificationSolid />} />
-        <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-        <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+        <AlarmsButton/>
+        <ActivityButton/>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <HelpButton/>
+        </Tooltip>
+        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
+          <UserButton/>
+        </Tooltip>
       </>}
     />
   )

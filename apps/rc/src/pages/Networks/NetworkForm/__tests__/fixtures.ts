@@ -1037,7 +1037,7 @@ export const dpskListResponse = {
       name: 'DPSK Service 3',
       passphraseLength: 24,
       passphraseFormat: 'KEYBOARD_FRIENDLY',
-      expirationType: 'NUMBERS_ONLY',
+      expirationType: 'HOURS_AFTER_TIME',
       expirationOffset: 2
     }
   ],
