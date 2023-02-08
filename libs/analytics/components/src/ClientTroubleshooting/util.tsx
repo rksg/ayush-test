@@ -623,14 +623,15 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
                 .formatter as keyof typeof formats
           )(
             (obj as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels].value
-          )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
+          )}${index + 1 !== Object.keys(connectionQualityLabels).length ? ' / ' : ''}`
       )
       : null
     if ((obj as unknown as LabelledQuality)?.all) {
-      const allEmpty = tooltipSuffixText && tooltipSuffixText
-        .filter(val => val.match('^-/|-$'))
+      const validValuesLen = tooltipSuffixText && tooltipSuffixText
+        .filter(val => !val.match('^- /|-$'))
+        .length
 
-      return tooltipSuffixText && !(allEmpty?.length === 4)
+      return validValuesLen && validValuesLen !== 0
         ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText.join('')}`
         : ''
     }
