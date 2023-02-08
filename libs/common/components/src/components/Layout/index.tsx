@@ -13,7 +13,8 @@ import {
 }                          from '@acx-ui/react-router-dom'
 import { notAvailableMsg } from '@acx-ui/utils'
 
-import { Tooltip } from '../Tooltip'
+import { FetchBot } from '../FetchBot'
+import { Tooltip }  from '../Tooltip'
 
 import * as UI from './styledComponents'
 
@@ -125,6 +126,7 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
+      <FetchBot/>
       <UI.Content>{content}</UI.Content>
     </ProLayout>
   </UI.Wrapper>
