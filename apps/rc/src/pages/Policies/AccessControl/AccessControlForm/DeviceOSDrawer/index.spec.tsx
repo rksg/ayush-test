@@ -242,7 +242,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -333,7 +333,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(screen.getByRole('cell', {
+    await userEvent.click(await screen.findByRole('cell', {
       name: /smartphone/i
     }))
 
@@ -391,7 +391,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -442,7 +442,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -491,7 +491,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -540,7 +540,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -589,7 +589,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -638,7 +638,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
@@ -687,7 +687,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
