@@ -247,7 +247,40 @@ describe('Recipient form dialog display correct toast message when request faile
     expect(await screen.findByText('An error occurred: The email address and mobile phone number you entered are already defined for another recipient. Please use unique address and number.')).toBeVisible()
   })
 
-  it('should display correctly message when request failed other non TNT-10100error code', async () => {
+  it('should display correctly message when request failed with duplicated not found TNT-10100 error', async () => {
+    mockedIsDuplicated = jest.fn().mockReturnValue(false)
+    dialogProps.isDuplicated = mockedIsDuplicated
+
+    render(
+      <Provider>
+        <RecipientDialog
+          {...dialogProps}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Add New Recipient')
+    const nameInputElem = await screen.findByRole('textbox', { name: 'Name' })
+    await userEvent.type(nameInputElem, 'testUser')
+
+    const emailInputElem = await screen.findByPlaceholderText('Email')
+    await userEvent.type(emailInputElem, 'test_user@gmail.com')
+
+    const mobileInputElem = await screen.findByPlaceholderText(exampleMobile)
+    await userEvent.type(mobileInputElem, '+886912345678')
+
+    const saveBtn = await screen.findByRole('button', { name: 'Save' })
+    await userEvent.click(saveBtn)
+
+    await waitFor(() => {
+      expect(mockedIsDuplicated).toBeCalledTimes(2)
+    })
+
+    expect(await screen.findByText('An error occurred: Duplicate notification endpoint')).toBeVisible()
+  })
+
+  it('should display correctly message when request failed other non TNT-10100 error code', async () => {
     mockServer.use(
       rest.post(
         AdministrationUrlsInfo.addRecipient.url,

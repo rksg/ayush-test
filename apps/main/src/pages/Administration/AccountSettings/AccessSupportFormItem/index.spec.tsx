@@ -152,8 +152,8 @@ describe('Access Support Form Item', () => {
     expect(formItem).toBeDisabled()
     fireEvent.mouseOver(formItem)
 
-    await waitFor(() => {
-      expect(screen.getByRole('tooltip')).toBeInTheDocument()
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument()
     })
     await waitFor(() => {
       expect(screen.getByRole('tooltip').textContent).toBe('You are not allowed to change this')

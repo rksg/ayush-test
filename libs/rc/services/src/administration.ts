@@ -195,8 +195,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'addNotificationRecipient',
-            'UpdateNotificationRecipient'
+            'AddNotificationRecipient',
+            'UpdateNotificationRecipient',
+            'DeleteNotificationRecipient'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
               { type: 'Administration', id: 'NOTIFICATION_LIST' }
@@ -222,7 +223,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
     }),
     deleteNotificationRecipients: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

@@ -45,6 +45,8 @@ export const NotificationsTable = () => {
 
 
   const handleClickAddRecipient = () => {
+    setEditMode(false)
+    setEditData({} as NotificationRecipientUIModel)
     setShowDialog(true)
   }
 
@@ -110,7 +112,7 @@ export const NotificationsTable = () => {
         // show edit dialog
         setEditMode(true)
         setEditData(selectedRows[0])
-        handleClickAddRecipient()
+        setShowDialog(true)
       }
     },
     {

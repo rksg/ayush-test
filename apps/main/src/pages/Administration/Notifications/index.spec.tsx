@@ -17,20 +17,23 @@ import { RecipientDialogProps } from './RecipientDialog'
 import NotificationList from './index'
 
 
+const mockedRecipientDialog = jest.fn().mockImplementation((props: RecipientDialogProps) => {
+  const { isDuplicated } = props
+  const isEmailDuplicate = isDuplicated('EMAIL', 'test_user@gmail.com')
+  const isPhoneDuplicate = isDuplicated('SMS', '+886987654321')
+  const isUnknownTypeDuplicate = isDuplicated('Others', 'test_data')
+
+  return (<div data-testid='rc-RecipientDialog' title='RecipientDialog'>
+    <div data-testid='rc-RecipientDialog-email-check'>{''+isEmailDuplicate}</div>
+    <div data-testid='rc-RecipientDialog-mobile-check'>{''+isPhoneDuplicate}</div>
+    <div data-testid='rc-RecipientDialog-others-check'>{''+isUnknownTypeDuplicate}</div>
+  </div>)
+})
 jest.mock('./RecipientDialog', () => ({
   ...jest.requireActual('./RecipientDialog'),
   __esModule: true,
   default: (props: RecipientDialogProps) => {
-    const { isDuplicated } = props
-    const isEmailDuplicate = isDuplicated('EMAIL', 'test_user@gmail.com')
-    const isPhoneDuplicate = isDuplicated('SMS', '+886987654321')
-    const isUnknownTypeDuplicate = isDuplicated('Others', 'test_data')
-
-    return (<div data-testid='rc-RecipientDialog' title='RecipientDialog'>
-      <div data-testid='rc-RecipientDialog-email-check'>{''+isEmailDuplicate}</div>
-      <div data-testid='rc-RecipientDialog-mobile-check'>{''+isPhoneDuplicate}</div>
-      <div data-testid='rc-RecipientDialog-others-check'>{''+isUnknownTypeDuplicate}</div>
-    </div>)
+    return mockedRecipientDialog(props)
   }
 }))
 describe('Notification List', () => {
@@ -68,7 +71,7 @@ describe('Notification List', () => {
     expect(row.length).toBe(3)
   })
 
-  it('should go edit page', async () => {
+  it('should trigger edit button', async () => {
     render(
       <Provider>
         <NotificationList />
@@ -78,6 +81,17 @@ describe('Notification List', () => {
     const row = await screen.findByRole('row', { name: /testUser 1/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
+  })
+
+  it('should trigger add button', async () => {
+    render(
+      <Provider>
+        <NotificationList />
+      </Provider>, {
+        route: { params }
+      })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add Recipient' }))
   })
 
   it('edit button will remove when select above 1 row', async () => {
