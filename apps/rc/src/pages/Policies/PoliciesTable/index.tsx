@@ -106,7 +106,8 @@ export default function PoliciesTable () {
     [PolicyType.ACCESS_CONTROL]: [],
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],
-    [PolicyType.VLAN_POOL]: []
+    [PolicyType.VLAN_POOL]: [],
+    [PolicyType.ADAPTIVE_POLICY]: []
   }
 
   const tableQuery = useTableQuery({

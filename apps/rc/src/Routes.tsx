@@ -33,6 +33,7 @@ import NetworkDetails              from './pages/Networks/NetworkDetails/Network
 import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/NetworksTable'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AdaptivePolicyForm          from './pages/Policies/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
@@ -372,6 +373,16 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
         element={<ClientIsolationForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+        element={<AdaptivePolicyForm/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.EDIT })}
+        element={<AdaptivePolicyForm editMode={true}/>}
       />
     </Route>
   )

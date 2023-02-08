@@ -4,6 +4,8 @@ export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
+export * from './rulesManagement'
+export * from './radiusAttributeGroup'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
@@ -12,7 +14,8 @@ export enum PolicyType {
   SYSLOG = 'Syslog',
   AAA = 'AAA',
   CLIENT_ISOLATION = 'Client Isolation',
-  MAC_REGISTRATION_LIST = 'MAC Registration List'
+  MAC_REGISTRATION_LIST = 'MAC Registration List',
+  ADAPTIVE_POLICY = 'Adaptive Policy'
 }
 
 export enum PolicyTechnology {

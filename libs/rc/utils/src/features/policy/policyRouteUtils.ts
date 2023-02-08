@@ -39,7 +39,8 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
   [PolicyType.VLAN_POOL]: 'vlanPool',
-  [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList'
+  [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList',
+  [PolicyType.ADAPTIVE_POLICY]: 'adaptivePolicy'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

@@ -19,7 +19,9 @@ import {
   SyslogUrls,
   SyslogPolicyType,
   VenueRoguePolicyType,
-  VLANPoolPolicyType, VlanPoolUrls, VLANPoolDetailInstances,
+  VLANPoolPolicyType,
+  VlanPoolUrls,
+  VLANPoolDetailInstances,
   TableResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -32,16 +34,25 @@ import {
   AvcApp,
   VlanPool,
   WifiUrlsInfo,
-  AccessControlUrls, L3AclPolicy, AvcCat,
-  ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, RequestFormData
+  AccessControlUrls,
+  L3AclPolicy,
+  AvcCat,
+  ClientIsolationSaveData,
+  ClientIsolationUrls,
+  createNewTableHttpRequest,
+  TableChangePayload,
+  RequestFormData,
+  RadiusAttributeGroupUrlsInfo,
+  RadiusAttributeGroup,
+  RadiusAttribute, RadiusAttributeVendor
 } from '@acx-ui/rc/utils'
 
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
+  // eslint-disable-next-line max-len
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'RadiusAttributeGroup', 'RadiusAttribute'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -523,6 +534,109 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createNewTableHttpRequest({
+          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
+        return transferToTableResult<RadiusAttributeGroup>(result)
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributes,
+          params
+        )
+        return {
+          ...groupReq
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttribute>) {
+        return transferToTableResult<RadiusAttribute>(result)
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttributeVendors, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    radiusAttributeListWithQuery: build.query<TableResult<RadiusAttribute>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributesWithQuery, params, RKS_NEW_UI)
+        return {
+          ...groupReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
+    }),
+    radiusAttribute: build.query<RadiusAttribute, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          RadiusAttributeGroupUrlsInfo.getAttribute, params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    deleteRadiusAttributeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.deleteAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    addRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.createAttributeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    updateRadiusAttributeGroup: build.mutation<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.updateAttributeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
+    }),
+    getRadiusAttributeGroup: build.query<RadiusAttributeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroup, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
     })
   })
 })
@@ -571,5 +685,16 @@ export const {
   useUpdateClientIsolationMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
-  useGetSyslogPolicyListQuery
+  useGetSyslogPolicyListQuery,
+  useRadiusAttributeGroupListQuery,
+  useGetRadiusAttributeGroupQuery,
+  useRadiusAttributeListQuery,
+  useRadiusAttributeVendorListQuery,
+  useRadiusAttributeListWithQueryQuery,
+  useLazyRadiusAttributeListWithQueryQuery,
+  useRadiusAttributeQuery,
+  useDeleteRadiusAttributeGroupMutation,
+  useLazyRadiusAttributeGroupListQuery,
+  useUpdateRadiusAttributeGroupMutation,
+  useAddRadiusAttributeGroupMutation
 } = policyApi
