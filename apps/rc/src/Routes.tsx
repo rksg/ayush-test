@@ -83,6 +83,7 @@ import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
+import AccessControlSet from './pages/Policies/AccessControl/AccessControlTable/AccessControlSet';
 
 export default function RcRoutes () {
   const routes = rootRoutes(
