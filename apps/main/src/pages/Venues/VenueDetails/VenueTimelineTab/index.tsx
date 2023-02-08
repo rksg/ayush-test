@@ -7,6 +7,7 @@ import { Tabs }         from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
+  eventDefaultSearch,
   eventDefaultSorter,
   useEventTableFilter
 } from '@acx-ui/rc/components'
@@ -14,7 +15,6 @@ import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
-  RequestPayload,
   TimelineTypes,
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
@@ -30,13 +30,14 @@ const Events = () => {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTime, toTime, venueId])
-  const tableQuery = usePollingTableQuery<Event, RequestPayload<unknown>, unknown>({
+  const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
       filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime }
     },
     sorter: eventDefaultSorter,
+    search: eventDefaultSearch,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
   return <EventTable tableQuery={tableQuery}/>
