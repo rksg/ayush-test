@@ -252,7 +252,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(screen.getByText(/rule1/i))
+    await userEvent.click(await screen.findByText(/rule1/i))
 
     await userEvent.click(screen.getByRole('button', {
       name: /edit/i
@@ -325,7 +325,7 @@ describe('DeviceOSDrawer Component', () => {
 
     await screen.findByText(/add rule/i)
 
-    await userEvent.type(screen.getByRole('textbox', {
+    await userEvent.type(await screen.findByRole('textbox', {
       name: /rule name/i
     }), 'rule1')
 
