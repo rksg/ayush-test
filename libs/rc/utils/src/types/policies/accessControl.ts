@@ -19,6 +19,24 @@ export interface appPolicyInfoType {
   tenantId: string
 }
 
+export interface devicePolicyInfoType {
+  id: string,
+  rules: DeviceRule[],
+  name: string,
+  defaultAccess: string,
+  tenantId: string
+}
+
+export interface DeviceRule {
+  action: AccessStatus,
+  deviceType: string,
+  name: string,
+  osVendor: string,
+  vlan?: number
+  uploadRateLimit?: number,
+  downloadRateLimit?: number
+}
+
 export interface L3Rule {
   id: string
   access: 'ALLOW' | 'BLOCK',

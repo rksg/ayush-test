@@ -1,12 +1,14 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
+  PolicyTechnology,
+  PolicyType,
+  RogueRuleType,
+  Layer3ProtocolType,
+  OsVendorEnum,
+  DeviceTypeEnum,
   ApplicationAclType,
   ApplicationRuleType,
-  Layer3ProtocolType,
-  PolicyTechnology,
-  RogueRuleType,
-  PolicyType
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
@@ -64,6 +66,62 @@ export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescr
   [Layer3ProtocolType.AH]: defineMessage({ defaultMessage: 'AH' }),
   [Layer3ProtocolType.SCTP]: defineMessage({ defaultMessage: 'SCTP' })
 }
+
+export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {
+  [OsVendorEnum.All]: defineMessage({ defaultMessage: 'All' }),
+  [OsVendorEnum.Windows]: defineMessage({ defaultMessage: 'Windows' }),
+  [OsVendorEnum.MacOs]: defineMessage({ defaultMessage: 'MacOs' }),
+  [OsVendorEnum.ChromeOs]: defineMessage({ defaultMessage: 'ChromeOs' }),
+  [OsVendorEnum.Linux]: defineMessage({ defaultMessage: 'Linux' }),
+  [OsVendorEnum.Ubuntu]: defineMessage({ defaultMessage: 'Ubuntu' }),
+  [OsVendorEnum.Ios]: defineMessage({ defaultMessage: 'Ios' }),
+  [OsVendorEnum.Android]: defineMessage({ defaultMessage: 'Android' }),
+  [OsVendorEnum.BlackBerry]: defineMessage({ defaultMessage: 'BlackBerry' }),
+  [OsVendorEnum.AmazonKindle]: defineMessage({ defaultMessage: 'AmazonKindle' }),
+  [OsVendorEnum.CiscoIpPhone]: defineMessage({ defaultMessage: 'CiscoIpPhone' }),
+  [OsVendorEnum.AvayaIpPhone]: defineMessage({ defaultMessage: 'AvayaIpPhone' }),
+  [OsVendorEnum.LinksysPapVoip]: defineMessage({ defaultMessage: 'LinksysPapVoip' }),
+  [OsVendorEnum.NortelIpPhone]: defineMessage({ defaultMessage: 'NortelIpPhone' }),
+  [OsVendorEnum.Xbox360]: defineMessage({ defaultMessage: 'Xbox360' }),
+  [OsVendorEnum.PlayStation2]: defineMessage({ defaultMessage: 'PlayStation2' }),
+  [OsVendorEnum.GameCube]: defineMessage({ defaultMessage: 'GameCube' }),
+  [OsVendorEnum.Wii]: defineMessage({ defaultMessage: 'Wii' }),
+  [OsVendorEnum.PlayStation3]: defineMessage({ defaultMessage: 'PlayStation3' }),
+  [OsVendorEnum.Xbox]: defineMessage({ defaultMessage: 'Xbox' }),
+  [OsVendorEnum.Nintendo]: defineMessage({ defaultMessage: 'Nintendo' }),
+  [OsVendorEnum.HpPrinter]: defineMessage({ defaultMessage: 'HpPrinter' }),
+  [OsVendorEnum.CanonPrinter]: defineMessage({ defaultMessage: 'CanonPrinter' }),
+  [OsVendorEnum.XeroxPrinter]: defineMessage({ defaultMessage: 'XeroxPrinter' }),
+  [OsVendorEnum.DellPrinter]: defineMessage({ defaultMessage: 'DellPrinter' }),
+  [OsVendorEnum.BrotherPrinter]: defineMessage({ defaultMessage: 'BrotherPrinter' }),
+  [OsVendorEnum.EpsonPrinter]: defineMessage({ defaultMessage: 'EpsonPrinter' }),
+  [OsVendorEnum.NestCamera]: defineMessage({ defaultMessage: 'NestCamera' }),
+  [OsVendorEnum.NestThermostat]: defineMessage({ defaultMessage: 'NestThermostat' }),
+  [OsVendorEnum.WemoSmartSwitch]: defineMessage({ defaultMessage: 'WemoSmartSwitch' }),
+  [OsVendorEnum.WifiSmartPlug]: defineMessage({ defaultMessage: 'WifiSmartPlug' }),
+  [OsVendorEnum.SonyPlayer]: defineMessage({ defaultMessage: 'SonyPlayer' }),
+  [OsVendorEnum.PanasonicG20Tv]: defineMessage({ defaultMessage: 'PanasonicG20Tv' }),
+  [OsVendorEnum.SamsungSmartTv]: defineMessage({ defaultMessage: 'SamsungSmartTv' }),
+  [OsVendorEnum.AppleTv]: defineMessage({ defaultMessage: 'AppleTv' }),
+  [OsVendorEnum.LibratoneSpeakers]: defineMessage({ defaultMessage: 'LibratoneSpeakers' }),
+  [OsVendorEnum.BoseSpeakers]: defineMessage({ defaultMessage: 'BoseSpeakers' }),
+  [OsVendorEnum.SonosSpeakers]: defineMessage({ defaultMessage: 'SonosSpeakers' }),
+  [OsVendorEnum.RokuStreamingStick]: defineMessage({ defaultMessage: 'RokuStreamingStick' }),
+  [OsVendorEnum.TelnetCpe]: defineMessage({ defaultMessage: 'TelnetCpe' })
+}
+
+export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> = {
+  [DeviceTypeEnum.Laptop]: defineMessage({ defaultMessage: 'Laptop' }),
+  [DeviceTypeEnum.Smartphone]: defineMessage({ defaultMessage: 'Smartphone' }),
+  [DeviceTypeEnum.Tablet]: defineMessage({ defaultMessage: 'Tablet' }),
+  [DeviceTypeEnum.Voip]: defineMessage({ defaultMessage: 'Voip' }),
+  [DeviceTypeEnum.Gaming]: defineMessage({ defaultMessage: 'Gaming' }),
+  [DeviceTypeEnum.Printer]: defineMessage({ defaultMessage: 'Printer' }),
+  [DeviceTypeEnum.IotDevice]: defineMessage({ defaultMessage: 'IotDevice' }),
+  [DeviceTypeEnum.HomeAvEquipment]: defineMessage({ defaultMessage: 'HomeAvEquipment' }),
+  [DeviceTypeEnum.WdsDevice]: defineMessage({ defaultMessage: 'WdsDevice' })
+}
+
 
 export const AppAclLabelMapping: Record<ApplicationAclType, MessageDescriptor> = {
   [ApplicationAclType.DENY]: defineMessage({ defaultMessage: 'Block Applications' }),
