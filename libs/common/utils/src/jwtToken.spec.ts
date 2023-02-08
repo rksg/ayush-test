@@ -12,9 +12,10 @@ describe('jwtToken', () => {
     sessionStorage.setItem('jwt', '')
     sessionStorage.getItem('jwt')
     const token = {
-      acx_account_tier: 'Gold',
+      acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
       tenantType: 'REC',
+      isBetaFlag: false,
       tenantId: undefined
     }
     expect(getJwtTokenPayload()).toEqual(token)
@@ -31,9 +32,10 @@ describe('jwtToken', () => {
     })
     sessionStorage.setItem('jwt', '' )
     const token = {
-      acx_account_tier: 'Gold',
+      acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
       tenantType: 'REC',
+      isBetaFlag: false,
       tenantId: getTenantId()
     }
     expect(getJwtTokenPayload()).toEqual(token)
