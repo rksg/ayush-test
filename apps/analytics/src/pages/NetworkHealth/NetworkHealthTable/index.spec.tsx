@@ -34,6 +34,13 @@ const fakeUserProfile = {
   lastName: 'LastName 1093'
 }
 
+const fakeUserProfile2 = {
+  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+  externalId: '0032h00000LUqUKAA2',
+  firstName: 'FisrtName 1093',
+  lastName: 'LastName 1093'
+}
+
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getJwtTokenPayload: () => ({ tenantId: fakeUserProfile.tenantId })
@@ -74,6 +81,26 @@ const networkHealthTests = [
         createdAt: '2023-02-06T21:00:00.000Z',
         summary: {
           apsTestedCount: 15,
+          apsSuccessCount: 0,
+          apsPendingCount: 1
+        }
+      }]
+    }
+  },
+  {
+    id: '3d51e2f0-6a1f-4641-94a4-9feb3803edfh',
+    name: 'testCase 3',
+    type: 'on-demand',
+    apsCount: 0,
+    userId: '0032h00000LUqUKAA1',
+    clientType: 'virtual-client',
+    schedule: null,
+    tests: {
+      items: [{
+        id: 2,
+        createdAt: '2023-02-06T21:00:00.000Z',
+        summary: {
+          apsTestedCount: 0,
           apsSuccessCount: 0,
           apsPendingCount: 0
         }
@@ -126,7 +153,6 @@ describe('Network Health Table', () => {
     { name: 'Last Result', count: 1 }
   ]
 
-
   it('should render column header', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
       data: { allServiceGuardSpecs: networkHealthTests }
@@ -165,6 +191,24 @@ describe('Network Health Table', () => {
     fireEvent.click(await screen.findByRole('button', { name: /run now/i }))
   })
 
+  it('should disable run now button', async () => {
+    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+      data: { allServiceGuardSpecs: networkHealthTests }
+    })
+
+    render(<Provider><NetworkHealthTable/></Provider>, {
+      route: {
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile.tenantId }
+      }
+    })
+
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[2])
+    const runNowButton = await screen.findByRole('button', { name: /run now/i })
+    expect(runNowButton).toBeDisabled()
+  })
+
   it('should click edit', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile)))
@@ -192,6 +236,33 @@ describe('Network Health Table', () => {
       `/t/${fakeUserProfile.tenantId}/serviceValidation/networkHealth/` +
       `${networkHealthTests[0].id}/edit`
     )
+  })
+
+  it('should disable edit button', async () => {
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile2)))
+    )
+    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+      data: { allServiceGuardSpecs: networkHealthTests }
+    })
+    render(<Provider>
+      <UserProfileProvider>
+        <NetworkHealthTable/>
+      </UserProfileProvider>
+    </Provider>, {
+      route: {
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile2.tenantId }
+      }
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[0])
+    const editButton = await screen.findByRole('button', { name: 'Edit' })
+    expect(editButton).toBeDisabled()
   })
 
   it('should delete test properly', async () => {

@@ -8,7 +8,7 @@ import { noDataSymbol, sortProp, defaultSort }        from '@acx-ui/analytics/ut
 import { Loader, TableProps, Table, showActionModal } from '@acx-ui/components'
 import { useUserProfileContext }                      from '@acx-ui/rc/components'
 import { TenantLink, useTenantLink }                  from '@acx-ui/react-router-dom'
-import { convertDateTimeToSqlFormat, formatter }      from '@acx-ui/utils'
+import { formatter }                                  from '@acx-ui/utils'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
 
@@ -21,7 +21,7 @@ const networkHealthMapping = {
 
 export const getLastRun = (result: string) => {
   if (result) {
-    return convertDateTimeToSqlFormat(result)
+    return formatter('dateTimeFormatWithSeconds')(result)
   } else {
     return noDataSymbol
   }
@@ -50,14 +50,14 @@ export function NetworkHealthTable () {
   const navigate = useNavigate()
   const navigateToList = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
-
   const [deleteMutation] = useNetworkHealthDeleteMutation()
+
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       onClick: () => {},
       disabled: (selectedRow) => (
-        selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount !== 0
+        selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount === 0
       ) ? false : true
     },
     {
@@ -69,7 +69,7 @@ export function NetworkHealthTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
-      onClick: () => {},
+      onClick: /* istanbul ignore next */ () => {},
       disabled: true
     },
     {
