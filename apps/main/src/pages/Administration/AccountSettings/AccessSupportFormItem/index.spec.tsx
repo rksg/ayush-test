@@ -152,9 +152,12 @@ describe('Access Support Form Item', () => {
     expect(formItem).toBeDisabled()
     fireEvent.mouseOver(formItem)
 
-    expect(
-      await screen.findByText('You are not allowed to change this')
-    ).toBeValid()
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('You are not allowed to change this')
+    })
   })
 
   it('should render correctly when it is Msp Delegate EC', async () => {

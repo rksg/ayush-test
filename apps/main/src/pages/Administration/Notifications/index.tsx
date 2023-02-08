@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Badge, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Row, Col, Badge, Typography } from 'antd'
+import { useIntl }                     from 'react-intl'
 
 import {
   Loader,
@@ -18,6 +18,7 @@ import { NotificationRecipientUIModel, NotificationEndpointType } from '@acx-ui/
 import { useParams }                                              from '@acx-ui/react-router-dom'
 
 import RecipientDialog from './RecipientDialog'
+import * as UI         from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -47,7 +48,7 @@ export const NotificationsTable = () => {
     setShowDialog(true)
   }
 
-  const isDuplicated = (type: NotificationEndpointType, value: string): boolean => {
+  const isDuplicated = (type: string, value: string): boolean => {
     if (notificationList.data === undefined) return false
     let hasDuplicated = false
 
@@ -177,16 +178,21 @@ export const NotificationsTable = () => {
 
 const Notifications = () => {
   const { $t } = useIntl()
-  // ant-typography mark
-  return <>
-    <Typography.Text mark>
-      {
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
-      }
-    </Typography.Text>
+
+  return <UI.Wrapper>
+    <Row>
+      <Col span={24} className='description'>
+        <Typography>
+          {
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
+          }
+        </Typography>
+      </Col>
+    </Row>
+    <UI.Spacer />
     <NotificationsTable />
-  </>
+  </UI.Wrapper>
 }
 
 export default Notifications

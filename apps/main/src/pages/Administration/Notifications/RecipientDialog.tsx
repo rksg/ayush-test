@@ -11,6 +11,7 @@ import { PhoneNumberUtil } from 'google-libphonenumber'
 import _                   from 'lodash'
 import { FieldData }       from 'rc-field-form/lib/interface'
 import { useIntl }         from 'react-intl'
+import styled              from 'styled-components/macro'
 
 import { Modal, showToast }    from '@acx-ui/components'
 import {
@@ -27,16 +28,19 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-interface RecipientDialogProps {
+import { dialogStyles } from './styledComponents'
+
+export interface RecipientDialogProps {
+  className?: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   editMode: boolean;
   editData: NotificationRecipientUIModel;
-  isDuplicated: (type: NotificationEndpointType, value: string) => boolean;
+  isDuplicated: (type: string, value: string) => boolean;
 }
 
 interface RecipientSaveModel {
-  id?: string;  // // editMode used
+  id?: string;    // editMode used
   description: string;
   endpoints: {
     id?: string;  // editMode used
@@ -50,7 +54,14 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const { visible, setVisible, editMode, editData, isDuplicated } = props
+  const {
+    className,
+    visible,
+    setVisible,
+    editMode,
+    editData,
+    isDuplicated
+  } = props
   const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
   const examplePhoneNumber = PhoneNumberUtil.getInstance().getExampleNumber('US')
@@ -73,9 +84,9 @@ const RecipientDialog = (props: RecipientDialogProps) => {
 
       // need endpoint "id", it will tell API do endpint update
       // without it API will try to create new endpoint
-      dataToSave.endpoints = data.endpoints ? data.endpoints.map((point) =>
+      dataToSave.endpoints = data.endpoints.map((point) =>
         _.pick(point, ['id', 'active', 'destination', 'type'])
-      ) : []
+      )
 
       let endpoint = dataToSave.endpoints.find(e => e.type === NotificationEndpointType.email)
       if (endpoint) {
@@ -135,7 +146,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   }
 
   const checkOptionFieldsEntered = ():boolean => {
-    return mobileInputVal !== '' || emailInputVal !== ''
+    return mobileInputVal || emailInputVal
   }
 
   const handleInputChange = (changedFields: FieldData[]) => {
@@ -167,7 +178,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
         await updateRecipient({
           params: {
             tenantId: params.tenantId,
-            recipientId: allData.id
+            recipientId: editData.id
           },
           payload
         }).unwrap()
@@ -221,21 +232,18 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   }, [form, editData, visible])
 
   const isLoading = addState.isLoading || updateState.isLoading
-  const disableSave = !isChanged || !checkOptionFieldsEntered() || !isValid
+  const disableSave = !(isChanged && checkOptionFieldsEntered() && isValid)
 
   return (
     <Modal
+      className={className}
       visible={visible}
       title={
         editMode
           ? $t({ defaultMessage: 'Edit Recipient' })
           : $t({ defaultMessage: 'Add New Recipient' })
       }
-      okText={
-        editMode
-          ? $t({ defaultMessage: 'OK' })
-          : $t({ defaultMessage: 'Save' })
-      }
+      okText={$t({ defaultMessage: 'Save' })}
       keyboard={false}
       onOk={() => form.submit()}
       onCancel={handleClose}
@@ -244,7 +252,6 @@ const RecipientDialog = (props: RecipientDialogProps) => {
       <Form
         form={form}
         layout='vertical'
-        validateTrigger='onBlur'
         onFinish={handleSubmit}
         onFieldsChange={handleInputChange}
       >
@@ -260,9 +267,9 @@ const RecipientDialog = (props: RecipientDialogProps) => {
         </Form.Item>
 
         <Form.Item
+          required
           label={$t({ defaultMessage: 'You must define at least one of the following:' })}
-          rules={[{ required: true }]}
-          children={<span></span>}
+          className='email_mobile_help'
         />
 
         <Form.Item
@@ -276,6 +283,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                   { validator: (_, value) => emailRegExp(value) }
                 ]}
                 noStyle
+                initialValue=''
               >
                 <Input
                   placeholder={$t({ defaultMessage: 'Email' })}
@@ -287,6 +295,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 noStyle
                 name='emailEnabled'
                 valuePropName='checked'
+                initialValue={false}
               >
                 <Switch />
               </Form.Item>
@@ -305,7 +314,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                   { validator: (_, value) => phoneRegExp(value) }
                 ]}
                 noStyle
-                validateFirst
+                initialValue=''
               >
                 <Input
                   // eslint-disable-next-line max-len
@@ -318,6 +327,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
                 noStyle
                 name='mobileEnabled'
                 valuePropName='checked'
+                initialValue={false}
               >
                 <Switch />
               </Form.Item>
@@ -329,4 +339,4 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   )
 }
 
-export default RecipientDialog
+export default styled(RecipientDialog)`${dialogStyles}`

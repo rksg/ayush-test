@@ -55,7 +55,7 @@ export enum NotificationEndpointType {
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
-  endpoints?: NotificationEndpoint[];
+  endpoints: NotificationEndpoint[];
   email: string;
   emailEnabled: boolean;
   mobile: string;
