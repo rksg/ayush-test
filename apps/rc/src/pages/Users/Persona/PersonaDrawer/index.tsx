@@ -43,8 +43,8 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       showToast({
         type: 'success',
         content: $t(
-          { defaultMessage: 'Persona {name} was {operation}' },
-          { name: contextData.name, operation: isEdit ? 'updated' : 'added' }
+          { defaultMessage: 'Persona {name} was {isEdit, select, true {updated} other {added}}' },
+          { name: contextData.name, isEdit }
         )
       })
 

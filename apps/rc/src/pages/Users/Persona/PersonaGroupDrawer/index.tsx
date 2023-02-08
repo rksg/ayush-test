@@ -34,9 +34,10 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
       showToast({
         type: 'success',
-        content: $t(
-          { defaultMessage: 'Persona Group {name} was {operation}' },
-          { name: contextData.name, operation: isEdit ? 'updated' : 'added' }
+        content: $t({
+          defaultMessage: 'Persona Group {name} was {isEdit, select, true {updated} other {added}}'
+        },
+        { name: contextData.name, isEdit }
         )
       })
 
