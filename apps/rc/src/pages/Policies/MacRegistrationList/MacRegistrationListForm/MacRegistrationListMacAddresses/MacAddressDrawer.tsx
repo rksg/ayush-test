@@ -107,8 +107,9 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       showToast({
         type: 'success',
         content: intl.$t(
-          { defaultMessage: 'MAC Address {name} was {operation}' },
-          { name: data.macAddress, operation: isEdit ? 'updated' : 'added' }
+          // eslint-disable-next-line max-len
+          { defaultMessage: 'MAC Address {name} was {isEdit, select, true {updated} other {added}}' },
+          { name: data.macAddress, isEdit }
         )
       })
       onClose()

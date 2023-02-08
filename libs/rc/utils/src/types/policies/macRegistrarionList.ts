@@ -9,7 +9,7 @@ export interface MacRegistrationPool {
   expirationEnabled?: boolean
   name: string
   registrationCount: number
-  policyId?: string
+  policySetId?: string
   expirationType?: ExpirationType
   expirationOffset?: number
   expirationDate?: string
@@ -19,7 +19,7 @@ export interface MacRegistrationPool {
 export interface MacRegistrationPoolFormFields {
   name: string
   autoCleanup: boolean
-  policyId: string
+  policySetId: string
   listExpiration: number
   expireDate: Moment
   expireAfter: number

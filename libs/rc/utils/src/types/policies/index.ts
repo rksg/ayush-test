@@ -4,6 +4,7 @@ export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
+export * from './rulesManagement'
 
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',

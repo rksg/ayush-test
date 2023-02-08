@@ -45,8 +45,8 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferDataToExpirationFormFields(data),
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       })
     }
   }, [data, editMode])
@@ -57,10 +57,10 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       }
-      await addMacRegList({ payload: saveData })
+      await addMacRegList({ payload: saveData }).unwrap()
 
       showToast({
         type: 'success',
@@ -85,13 +85,13 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         name: data.name,
         ...transferExpirationFormFieldsToData(data.expiration),
         autoCleanup: data.autoCleanup,
-        defaultAccess: data.defaultAccess
-        // policyId
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       }
       await updateMacRegList({
         params: { policyId },
         payload: saveData
-      })
+      }).unwrap()
 
       showToast({
         type: 'success',

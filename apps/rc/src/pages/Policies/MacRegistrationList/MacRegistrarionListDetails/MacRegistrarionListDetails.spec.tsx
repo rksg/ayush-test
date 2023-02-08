@@ -1,10 +1,16 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, MacRegListUrlsInfo }                    from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, MacRegListUrlsInfo, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }       from '@acx-ui/test-utils'
 
 import MacRegistrationListDetails from './MacRegistrarionListDetails'
+
+const policySet = {
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'testPolicySet1',
+  description: 'for test'
+}
 
 const macRegList = {
   id: '373377b0cb6e46ea8982b1c80aabe1fa',
@@ -13,7 +19,8 @@ const macRegList = {
   enabled: true,
   expirationEnabled: false,
   name: 'Registration pool',
-  defaultAccess: 'ACCEPT'
+  defaultAccess: 'ACCEPT',
+  policySetId: policySet.id
 }
 
 const networkList = {
@@ -61,6 +68,10 @@ describe('MacRegistrationListDetails', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(networkList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        (req, res, ctx) => res(ctx.json(policySet))
       )
     )
   })

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,7 +10,11 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
-import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
+import {
+  useDeleteMacRegListMutation,
+  useLazyGetAdaptivePolicySetQuery,
+  useMacRegListsQuery
+} from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -24,7 +30,7 @@ import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-rout
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
 
-function useColumns () {
+function useColumns (policySets: Map<string, string>) {
   const { $t } = useIntl()
   const columns: TableProps<MacRegistrationPool>['columns'] = [
     {
@@ -36,7 +42,6 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.MAC_REGISTRATION_LIST,
@@ -65,7 +70,9 @@ function useColumns () {
       title: $t({ defaultMessage: 'Access Policy Set' }),
       key: 'policySet',
       dataIndex: 'policySet',
-      align: 'center'
+      render: function (data, row) {
+        return row.policySetId ? policySets.get(row.policySetId) : ''
+      }
     },
     {
       title: $t({ defaultMessage: 'MAC Addresses' }),
@@ -73,7 +80,16 @@ function useColumns () {
       dataIndex: 'registrationCount',
       align: 'center',
       render: function (data, row) {
-        return row.registrationCount ?? 0
+        return (
+          <TenantLink
+            to={getPolicyDetailsLink({
+              type: PolicyType.MAC_REGISTRATION_LIST,
+              oper: PolicyOperation.DETAIL,
+              policyId: row.id!,
+              activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS
+            })}
+          >{row.registrationCount ?? 0}</TenantLink>
+        )
       }
     }
   ]
@@ -84,80 +100,82 @@ export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+  const [policySetMap, setPolicySetMap] = useState(new Map())
 
-  const MacRegistrationListsTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useMacRegListsQuery,
-      defaultPayload: {}
-    })
+  const tableQuery = useTableQuery({
+    useQuery: useMacRegListsQuery,
+    defaultPayload: {}
+  })
 
-    const [
-      deleteMacRegList,
-      { isLoading: isDeleteMacRegListUpdating }
-    ] = useDeleteMacRegListMutation()
+  const [
+    deleteMacRegList,
+    { isLoading: isDeleteMacRegListUpdating }
+  ] = useDeleteMacRegListMutation()
 
-    const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.MAC_REGISTRATION_LIST,
-            oper: PolicyOperation.EDIT,
-            policyId: selectedRows[0].id!
+  const [getAdaptivePolicySet] = useLazyGetAdaptivePolicySetQuery()
+
+  useEffect(() => {
+    if (tableQuery.isLoading)
+      return
+    const policySets = new Map()
+    tableQuery.data?.data.forEach(macPools => {
+      const { policySetId } = macPools
+      if (policySetId) {
+        getAdaptivePolicySet({ params: { policyId: policySetId } })
+          .then(result => {
+            if (result.data) {
+              policySets.set(policySetId, result.data.name)
+            }
           })
-        })
       }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'List' }),
-            entityValue: name,
-            confirmationText: 'Delete'
-          },
-          onOk: () => {
-            deleteMacRegList({ params: { policyId: id } })
-              .unwrap()
-              .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
-                })
-                clearSelection()
-              }).catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
-              })
-          }
-        })
-      }
-    }]
+    })
+    setPolicySetMap(policySets)
+  }, [tableQuery.data])
 
-    return (
-      <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeleteMacRegListUpdating }
-      ]}>
-        <Table
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={rowActions}
-          rowSelection={{ type: 'radio' }}
-        />
-      </Loader>
-    )
-  }
+  const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
+          type: PolicyType.MAC_REGISTRATION_LIST,
+          oper: PolicyOperation.EDIT,
+          policyId: selectedRows[0].id!
+        })
+      })
+    }
+  },
+  {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: ([{ name, id }], clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'List' }),
+          entityValue: name,
+          confirmationText: 'Delete'
+        },
+        onOk: () => {
+          deleteMacRegList({ params: { policyId: id } })
+            .unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
+        }
+      })
+    }
+  }]
 
   return (
     <>
@@ -178,7 +196,20 @@ export default function MacRegistrationListsTable () {
           </TenantLink>
         ]}
       />
-      <MacRegistrationListsTable />
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteMacRegListUpdating }
+      ]}>
+        <Table
+          columns={useColumns(policySetMap)}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowActions={rowActions}
+          rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
     </>
   )
 }
