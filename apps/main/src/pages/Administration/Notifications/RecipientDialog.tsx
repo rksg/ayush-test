@@ -245,6 +245,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
       }
       okText={$t({ defaultMessage: 'Save' })}
       keyboard={false}
+      maskClosable={false}
       onOk={() => form.submit()}
       onCancel={handleClose}
       okButtonProps={{ disabled: disableSave || isLoading }}
