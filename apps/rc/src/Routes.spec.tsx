@@ -560,6 +560,16 @@ describe('RcRoutes: Policies', () => {
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'VLAN Pools' })).toBeVisible()
   })
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit access control policy/i)).toBeVisible()
+  })
+
 })
 
 describe('RcRoutes: User', () => {

@@ -33,6 +33,7 @@ import NetworkDetails              from './pages/Networks/NetworkDetails/Network
 import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/NetworksTable'
 import AAATable                    from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlTable          from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
@@ -83,7 +84,6 @@ import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
 import SwitchClientList         from './pages/Users/Switch/ClientList'
 import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
 import WifiClientList           from './pages/Users/Wifi/ClientList'
-import AccessControlSet from './pages/Policies/AccessControl/AccessControlTable/AccessControlSet';
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -380,7 +380,17 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm edit={false}/>}
+        element={<AccessControlForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={<AccessControlForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}

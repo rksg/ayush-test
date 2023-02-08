@@ -5,6 +5,8 @@ import {
   PolicyType,
   RogueRuleType,
   Layer3ProtocolType,
+  ApplicationAclType,
+  ApplicationRuleType,
   OsVendorEnum,
   DeviceTypeEnum
 } from '@acx-ui/rc/utils'
@@ -23,18 +25,15 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
+  [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA description (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
+  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control description (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
+  [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation description (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
-  // eslint-disable-next-line max-len
-  [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
-  // eslint-disable-next-line max-len
-  [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
-  // eslint-disable-next-line max-len
-  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
+  [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection description (TBD)' }),
+  [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog description (TBD)' }),
+  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pool description (TBD)' }),
   [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration (TBD)' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy (TBD)' }),
   [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' }),
@@ -130,4 +129,19 @@ export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> =
   [DeviceTypeEnum.HomeAvEquipment]: defineMessage({ defaultMessage: 'HomeAvEquipment' }),
   [DeviceTypeEnum.WdsDevice]: defineMessage({ defaultMessage: 'WdsDevice' })
 }
+
+
+export const AppAclLabelMapping: Record<ApplicationAclType, MessageDescriptor> = {
+  [ApplicationAclType.DENY]: defineMessage({ defaultMessage: 'Block Applications' }),
+  [ApplicationAclType.RATE_LIMIT]: defineMessage({ defaultMessage: 'Rate Limit' }),
+  [ApplicationAclType.QOS]: defineMessage({ defaultMessage: 'QoS' })
+}
+
+export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor> = {
+  [ApplicationRuleType.SIGNATURE]: defineMessage({ defaultMessage: 'System defined' }),
+  [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
+}
+
+
+
 
