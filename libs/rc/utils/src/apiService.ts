@@ -5,6 +5,7 @@ import { getJwtToken, getTenantId } from '@acx-ui/utils'
 export interface ApiInfo {
   url: string;
   method: string;
+  newApi?: boolean
 }
 
 export const TenantIdFromJwt = () => {
@@ -61,10 +62,13 @@ export const createHttpRequest = (
   }
   const headers = { ...defaultHeaders, ...customHeaders }
   const url = generatePath(`${apiInfo.url}`, paramValues)
+  const isLocalHost = window.location.hostname === 'localhost'
+  const newSubdomain = window.location.origin.replace('//', '//api.')
   return {
     headers,
     method: apiInfo.method,
-    url: `${window.location.origin}${url}`
+    url: apiInfo.newApi && !isLocalHost ? `${newSubdomain}${url}` :
+      `${window.location.origin}${url}`
   }
 }
 
