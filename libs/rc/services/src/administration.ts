@@ -15,13 +15,16 @@ import {
   NotificationRecipientUIModel,
   NotificationRecipientResponse,
   NotificationEndpointType,
-  NotificationEndpoint
+  NotificationEndpoint,
+  ClientConfig,
+  RadiusClientConfigUrlsInfo,
+  RadiusServerSetting
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['Administration'],
+  tagTypes: ['Administration', 'RadiusClientConfig'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -245,6 +248,34 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    // TODO: backend is not support activity message now, and will add if function be completed.
+    UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.updateRadiusClient)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusClientConfig', id: 'DETAIL' }]
+    }),
+    getRadiusClientConfig: build.query<ClientConfig, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.getRadiusClient)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'RadiusClientConfig', id: 'DETAIL' }]
+    }),
+    getRadiusServerSetting: build.query<RadiusServerSetting, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.getRadiusServerSetting)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -263,5 +294,8 @@ export const {
   useAddRecipientMutation,
   useUpdateRecipientMutation,
   useDeleteNotificationRecipientsMutation,
-  useDeleteNotificationRecipientMutation
+  useDeleteNotificationRecipientMutation,
+  useGetRadiusClientConfigQuery,
+  useUpdateRadiusClientConfigMutation,
+  useGetRadiusServerSettingQuery
 } = administrationApi
