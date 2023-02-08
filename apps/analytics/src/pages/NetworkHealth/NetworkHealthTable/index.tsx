@@ -48,7 +48,7 @@ export function NetworkHealthTable () {
   const { $t } = intl
   const queryResults = useNetworkHealthQuery({})
   const navigate = useNavigate()
-  const networkHealthLink = useTenantLink('/serviceValidation/networkHealth/')
+  const navigateToList = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
 
   const [deleteMutation] = useNetworkHealthDeleteMutation()
@@ -61,7 +61,7 @@ export function NetworkHealthTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
-        navigate(`${networkHealthLink.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+        navigate(`${navigateToList.pathname}/${selectedRows[0].id}/edit`)
       },
       disabled: (selectedRow) => selectedRow[0]?.userId === userProfile?.externalId ? false : true
     },
@@ -95,12 +95,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) =>
-        <TenantLink
-          to={`/serviceValidation/networkHealth/${row.id}/tests/${row?.tests.items[0].id}`}
-        >
-          {value}
-        </TenantLink>
+      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink>, // TODO: handle link
     },
     {
       key: 'clientType',
