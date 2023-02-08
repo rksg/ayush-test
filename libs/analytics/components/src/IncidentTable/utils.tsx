@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import {
   Incident,
   IncidentSeverities,
@@ -31,14 +33,14 @@ export interface IncidentTableDescriptionProps {
   onClickDesc : CallableFunction
 }
 
-export const ShortIncidentDescription = (props: IncidentTableDescriptionProps) => {
+export const ShortIncidentDescription = (
+  props: IncidentTableDescriptionProps & { highlightFn: (val: string) => ReactNode }
+) => {
   const { incident, onClickDesc } = props
   const shortDesc = shortDescription(incident)
   return (
-    <UI.DescriptionSpan
-      onClick={() => onClickDesc(incident)}
-    >
-      {shortDesc}
+    <UI.DescriptionSpan onClick={() => onClickDesc(incident)}>
+      {props.highlightFn(shortDesc)}
     </UI.DescriptionSpan>
   )
 }
