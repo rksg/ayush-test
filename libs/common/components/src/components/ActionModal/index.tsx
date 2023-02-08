@@ -16,7 +16,7 @@ import * as UI from './styledComponents'
 const { Panel } = Collapse
 const { TextArea } = Input
 
-export type ModalType = 'info' | 'error' | 'confirm' | 'warning'
+type ModalType = 'info' | 'error' | 'confirm' | 'warning'
 
 type DeleteContent = {
   action: 'DELETE',
