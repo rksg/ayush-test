@@ -108,109 +108,6 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                           </div>
                         </div>
                         <div
-                          class="ant-pro-table-alert"
-                        >
-                          <div
-                            class="ant-alert ant-alert-info ant-alert-no-icon"
-                            data-show="true"
-                            role="alert"
-                          >
-                            <div
-                              class="ant-alert-content"
-                            >
-                              <div
-                                class="ant-alert-message"
-                              >
-                                <div
-                                  class="ant-pro-table-alert-info"
-                                >
-                                  <div
-                                    class="ant-pro-table-alert-info-content"
-                                  >
-                                    <div
-                                      class="ant-space ant-space-horizontal ant-space-align-center"
-                                    >
-                                      <div
-                                        class="ant-space-item"
-                                        style="margin-right: 32px;"
-                                      >
-                                        <div
-                                          class="ant-space ant-space-horizontal ant-space-align-center"
-                                        >
-                                          <div
-                                            class="ant-space-item"
-                                            style="margin-right: 6px;"
-                                          >
-                                            <span>
-                                              1 selected
-                                            </span>
-                                          </div>
-                                          <div
-                                            class="ant-space-item"
-                                          >
-                                            <button
-                                              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 dRUGlG"
-                                              data-id="table-clear-btn"
-                                              title="Clear selection"
-                                              type="button"
-                                            >
-                                              <svg
-                                                data-testid="CancelCircle"
-                                              />
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div
-                                        class="ant-space-item"
-                                      >
-                                        <div
-                                          class="ant-space ant-space-horizontal ant-space-align-center"
-                                        >
-                                          <div
-                                            class="ant-space-item"
-                                            style="margin-right: 0px;"
-                                          >
-                                            <button
-                                              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                                              type="button"
-                                            >
-                                              <span>
-                                                Edit
-                                              </span>
-                                            </button>
-                                          </div>
-                                          <span
-                                            class="ant-space-item-split"
-                                            style="margin-right: 0px;"
-                                          >
-                                            <div
-                                              class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1abm7iv-13 fsVtFP"
-                                              role="separator"
-                                            />
-                                          </span>
-                                          <div
-                                            class="ant-space-item"
-                                          >
-                                            <button
-                                              class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                                              type="button"
-                                            >
-                                              <span>
-                                                Delete
-                                              </span>
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
                           class="ant-table-wrapper"
                         >
                           <div
@@ -259,10 +156,10 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                               class="ant-table-selection"
                                             >
                                               <label
-                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
+                                                class="ant-checkbox-wrapper"
                                               >
                                                 <span
-                                                  class="ant-checkbox ant-checkbox-checked"
+                                                  class="ant-checkbox"
                                                 >
                                                   <input
                                                     class="ant-checkbox-input"
@@ -420,17 +317,17 @@ exports[`AAAServers should render RADIUS list correctly and edit row data 1`] = 
                                           </td>
                                         </tr>
                                         <tr
-                                          class="ant-table-row ant-table-row-level-0 ant-table-row-selected"
+                                          class="ant-table-row ant-table-row-level-0"
                                           data-row-key="40aa7da509ee48bb97e423d5f5d41ec0"
                                         >
                                           <td
                                             class="ant-table-cell ant-table-selection-column ant-table-cell-row-hover"
                                           >
                                             <label
-                                              class="ant-checkbox-wrapper ant-checkbox-wrapper-checked"
+                                              class="ant-checkbox-wrapper"
                                             >
                                               <span
-                                                class="ant-checkbox ant-checkbox-checked"
+                                                class="ant-checkbox"
                                               >
                                                 <input
                                                   class="ant-checkbox-input"

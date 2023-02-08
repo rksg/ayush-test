@@ -176,7 +176,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   }
 
   const onSumbit = async (data: VeForm) => {
-    const params = { switchId, tenantId }
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -185,7 +184,6 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           id: ''
         }
         await addVePort({
-          params,
           payload
         }).unwrap()
       } else {
@@ -204,6 +202,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           delete payload.ipSubnetMask
         }
 
+        const params = { vePortId: data.id }
         await updateVePort({
           params,
           payload

@@ -13,7 +13,7 @@ import { AAASettings } from './AAASettings'
 
 
 export function SwitchAAATab () {
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
@@ -75,7 +75,7 @@ export function SwitchAAATab () {
     }
 
     await updateAAASettingMutation({
-      params: { tenantId, venueId },
+      params: { venueId, aaaSettingId: values.aaaSettingId },
       payload: _.pickBy(payload, v => v !== undefined)
     }).unwrap()
       .catch((error) => {

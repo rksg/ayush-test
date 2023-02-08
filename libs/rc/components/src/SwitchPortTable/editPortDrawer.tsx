@@ -201,15 +201,15 @@ export function EditPortDrawer ({
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, switchId } })
+  const { data: aclUnion } = useGetAclUnionQuery({ params: { switchId } })
   const { data: switchesDefaultVlan }
-    = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches })
+    = useGetDefaultVlanQuery({ payload: { isDefault: true, switchIds: switches } })
 
   const getVlans = async () => {
     return switches.length > 1
       // eslint-disable-next-line max-len
-      ? await getSwitchesVlan({ params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
-      : await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
+      ? await getSwitchesVlan({ payload: { switchIds: switches } }, true).unwrap()
+      : await getSwitchVlan({ params: { switchId } }, true).unwrap()
   }
 
   const getMultiplePortsSetting = async () => {
@@ -220,14 +220,12 @@ export function EditPortDrawer ({
         .map(p => p.portIdentifier)
     }))
 
-    return await getPortsSetting({
-      params: { tenantId }, payload: portsSettingPayload
-    }, true).unwrap()
+    return await getPortsSetting({ payload: portsSettingPayload }, true).unwrap()
   }
 
   const getVeRouted = async (isVenueLevel: boolean, venueId?: string) => {
     const veRouteQueryParams = {
-      params: { tenantId, switchId, venueId },
+      params: { switchId, venueId },
       payload: {
         fields: ['id', 'portNumber', 'portType'],
         sortField: 'name',
@@ -244,7 +242,7 @@ export function EditPortDrawer ({
   const getEachSwitchVlans = async () => {
     const switchVlans = switches?.map(async (switchId) => {
       return await getSwitchVlans({
-        params: { tenantId, serialNumber: switchId }
+        params: { switchId }
       }, true).unwrap()
     })
     return Promise.all(switchVlans)
@@ -263,11 +261,11 @@ export function EditPortDrawer ({
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
       const vlansByVenue = await getVlansByVenue({
-        params: { tenantId, venueId: vid }
+        params: { venueId: vid }
       }, true).unwrap()
 
       const switchProfile = await getSwitchConfigurationProfileByVenue({
-        params: { tenantId, venueId: vid }
+        params: { venueId: vid }
       }, true).unwrap()
 
       const veRouted = await getVeRouted(isVenueLevel, vid)
@@ -313,16 +311,21 @@ export function EditPortDrawer ({
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+      params: { switchId },
+      payload: selectedPorts?.[0]?.portIdentifier
     }, true).unwrap()
 
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')
-    const params = {
-      tenantId, venueId: vid,
-      model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
+    const payload = {
+      model: selectedPorts?.[0]?.switchModel,
+      port: `1/${requestPort}`
     }
-    const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
-    const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
+    const taggedVlansByVenue = await getTaggedVlansByVenue({
+      params: { venueId: vid }, payload
+    }, true).unwrap()
+    const untaggedVlansByVenue = await getUntaggedVlansByVenue({
+      params: { venueId: vid }, payload
+    }, true).unwrap()
 
     const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
     const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
@@ -540,7 +543,7 @@ export function EditPortDrawer ({
         }
       })
 
-      await savePortsSetting({ params: { tenantId }, payload }).unwrap()
+      await savePortsSetting({ payload }).unwrap()
       store.dispatch(
         switchApi.util.invalidateTags([
           { type: 'SwitchPort', id: 'LIST' },
@@ -679,7 +682,7 @@ export function EditPortDrawer ({
       width: 450,
       title: $t({ defaultMessage: 'Modify Uplink Port?' }),
       content: $t({
-        defaultMessage: `Modifying the uplink port may result in connectivity issues. 
+        defaultMessage: `Modifying the uplink port may result in connectivity issues.
       Are you sure you want to apply these changes?` }),
       okText: $t({ defaultMessage: 'Apply Changes' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),

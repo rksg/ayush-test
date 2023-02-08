@@ -196,10 +196,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getDefaultVlan,
-          params
+          SwitchUrlsInfo.getDefaultVlan
         )
         return {
           ...req,
@@ -541,8 +540,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     deleteSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes, params)
+      query: ({ payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes)
         return {
           ...req,
           body: payload

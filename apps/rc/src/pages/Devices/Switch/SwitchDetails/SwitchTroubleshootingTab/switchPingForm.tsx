@@ -73,9 +73,10 @@ export function SwitchPingForm () {
     setIsLoading(true)
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('targetHost')
+        targetHost: pingForm.getFieldValue('targetHost'),
+        debugType: 'ping'
       }
-      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }
