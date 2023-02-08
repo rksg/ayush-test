@@ -1,12 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader } from '@acx-ui/components'
+import { PageHeader }         from '@acx-ui/components'
+import { SwitchClientsTable } from '@acx-ui/rc/components'
 
 export default function ClientList () {
   const { $t } = useIntl()
 
   return <>
     <PageHeader title={$t({ defaultMessage: 'Switch' })} />
-    {/* TODO: Switch Client list */}
+    <SwitchClientsTable />
   </>
 }

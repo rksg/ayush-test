@@ -83,7 +83,7 @@ export function EmbeddedReport (props: ReportProps) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
-        mountPoint: document.getElementById('acx-report')!,
+        mountPoint: document.getElementById(`acx-report-${embedDashboardName}`)!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: {
           hideChartControls: true,
@@ -94,9 +94,12 @@ export function EmbeddedReport (props: ReportProps) {
       embeddedObj.then( async embObj =>{
         timer = setInterval(async () => {
           const { height } = await embObj.getScrollSize()
-          const iframeElement = document.querySelector('iframe')
-          if(iframeElement){
-            iframeElement.setAttribute('style', `height: ${height}px !important`)
+          if (height > 0) {
+            const iframeElement = document.querySelector(
+              `div[id="acx-report-${embedDashboardName}"] > iframe`)
+            if(iframeElement){
+              iframeElement.setAttribute('style', `height: ${height}px !important`)
+            }
           }
         }, 1000)
       })
@@ -109,7 +112,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   return (
     <Loader>
-      <div id='acx-report' />
+      <div id={`acx-report-${embedDashboardName}`} className='acx-report' />
     </Loader>
   )
 }
