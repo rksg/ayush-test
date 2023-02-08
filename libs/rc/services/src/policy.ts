@@ -758,6 +758,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.addRoguePolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    syslogPolicy: build.query<SyslogContextType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params)
@@ -845,5 +893,10 @@ export const {
   useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
+  useAddSyslogPolicyMutation,
+  useDelSyslogPolicyMutation,
+  useUpdateSyslogPolicyMutation,
+  useSyslogPolicyQuery,
+  useVenueSyslogPolicyQuery,
   useGetSyslogPolicyListQuery
 } = policyApi
