@@ -27,3 +27,6 @@ data:
       - configmap: configmap-acx-ui
         key: manage.licenses
         name: MANAGE_LICENSES
+      - configmap: configmap-acx-ui
+        key: fetchbot.js.url
+        name: FETCHBOT_JS_URL
