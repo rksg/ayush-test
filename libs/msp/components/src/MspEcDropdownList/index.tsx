@@ -283,9 +283,9 @@ export function MspEcDropdownList () {
   return (
     <>
       <div onClick={()=>setVisible(true)}>
-        <label>{customerName}</label>
+        <label >{customerName}</label>
         <LayoutUI.Icon
-          children={<UI.ArrowExpandIcon/>}
+          children={<UI.CaretDownIcon/>}
         />
       </div>
       <Drawer

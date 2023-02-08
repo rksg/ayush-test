@@ -45,9 +45,9 @@ function Layout () {
       }
 
       rightHeaderContent={<>
-        {isDelegationMode() ? <MspEcDropdownList/> : <UI.CompanyName>{companyName}</UI.CompanyName>}
         <SearchBar />
         <LayoutUI.Divider />
+        {isDelegationMode() ? <MspEcDropdownList/> : <UI.CompanyName>{companyName}</UI.CompanyName>}
         <AlarmsButton/>
         <ActivityButton/>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
