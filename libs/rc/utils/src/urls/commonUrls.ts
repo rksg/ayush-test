@@ -113,7 +113,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteVenue: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    newApi: true
   },
   deleteVenues: {
     method: 'delete',
