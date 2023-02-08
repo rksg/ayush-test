@@ -62,7 +62,7 @@ const Ports = () => {
         .map((key) =>
           <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key}>
             <Loader states={[{
-              isLoading: (isPortDataLoading && isPortStatusLoading),
+              isLoading: (isPortDataLoading || isPortStatusLoading),
               isFetching: false }]}>
               {tabs[key as keyof typeof tabs].content}
             </Loader>
