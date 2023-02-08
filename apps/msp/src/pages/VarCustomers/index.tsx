@@ -81,10 +81,10 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
