@@ -30,9 +30,6 @@ export function NetworkHealthForm () {
   const { $t } = useIntl()
   const navigateToList = useNavigateToPath('/serviceValidation/networkHealth')
   const breadcrumb = [{
-    text: $t({ defaultMessage: 'Service Validation' }),
-    link: '/serviceValidation'
-  }, {
     text: $t({ defaultMessage: 'Network Health' }),
     link: '/serviceValidation/networkHealth'
   }]

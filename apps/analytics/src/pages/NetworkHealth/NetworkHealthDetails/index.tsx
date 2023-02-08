@@ -43,9 +43,6 @@ function NetworkHealthDetails () {
       <PageHeader
         title={$t({ defaultMessage: 'Test' })}
         breadcrumb={[{
-          text: $t({ defaultMessage: 'Service Validation' }),
-          link: '/serviceValidation'
-        }, {
           text: $t({ defaultMessage: 'Network Health' }),
           link: '/serviceValidation/networkHealth'
         }]}
