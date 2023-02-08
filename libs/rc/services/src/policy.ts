@@ -24,7 +24,7 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   CommonResult,
-  devicePolicyInfoType, DevicePolicy, AvcCat, L2AclPolicy, L3AclPolicy,
+  devicePolicyInfoType, DevicePolicy, L2AclPolicy, L3AclPolicy,
   NewTableResult,
   transferToTableResult,
   l3AclPolicyInfoType,
@@ -32,7 +32,7 @@ import {
   AvcApp,
   VlanPool,
   WifiUrlsInfo,
-  AccessControlUrls, L3AclPolicy, AvcCategory,
+  AccessControlUrls, AvcCategory,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   appPolicyInfoType, ApplicationPolicy

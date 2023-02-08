@@ -8,7 +8,7 @@ import {
   OsVendorEnum,
   DeviceTypeEnum,
   ApplicationAclType,
-  ApplicationRuleType,
+  ApplicationRuleType
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
