@@ -28,8 +28,8 @@ export function EmbeddedReport (props: ReportProps) {
   /**
   * Hostname - Backend service where superset is running.
   * For developement,
-  * Use https://devalto.ruckuswireless.com', for devalto.
-  * Use https://local.alto.mlisa.io', for minikube.
+  * Use https://devalto.ruckuswireless.com, for devalto.
+  * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
     ? 'https://devalto.ruckuswireless.com' // Dev
@@ -71,6 +71,7 @@ export function EmbeddedReport (props: ReportProps) {
   useEffect(()=> {
     let timer: ReturnType<typeof setInterval>
     let embeddedObj :Promise<EmbeddedDashboard>
+    const jwtToken = getJwtToken()
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
@@ -79,7 +80,7 @@ export function EmbeddedReport (props: ReportProps) {
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: { hideChartControls: true, hideTitle: true },
         // debug: true,
-        authToken: getJwtToken() ?? undefined
+        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
       })
       embeddedObj.then(async embObj =>{
         timer = setInterval(async () => {
