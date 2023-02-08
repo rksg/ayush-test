@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 
 import { Row, Col }                   from 'antd'
+import { connect }                    from 'echarts'
+import EChartsReact                   from 'echarts-for-react'
 import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
@@ -108,6 +110,15 @@ export function TimeLine (props: TimeLineProps) {
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
       { br: '\n', apMac, apModel, apFirmware })
 
+  const connectChart = (ref: EChartsReact | null) => {
+    if (ref && ref.getEchartsInstance) {
+      const instance = ref.getEchartsInstance()
+      const name = 'timeseriesGroupChart'
+      instance.group = name
+      connect(name)
+    }
+  }
+
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -213,6 +224,8 @@ export function TimeLine (props: TimeLineProps) {
                 }
                 hasXaxisLabel={config?.hasXaxisLabel}
                 tooltipFormatter={useLabelFormatter}
+                connectChart={connectChart}
+                ref={connectChart}
                 // caputuring scatterplot dot click to open popover
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 // onDotClick={(params) => {}}`
