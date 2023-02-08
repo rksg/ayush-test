@@ -14,25 +14,18 @@ export function fixedEncodeURIComponent (str: string) {
   )
 }
 
-export function useEncodedParameter<ValueType> (name: string, isString? : boolean) {
+export function useEncodedParameter<ValueType> (name: string) {
   const [search, setSearch] = useSearchParams()
   return useMemo(() => ({
     read: () => {
       try {
-        return isString
-          ? decodeURIComponent(search.get(name) as string)
-          : JSON.parse(decodeURIComponent(search.get(name) as string))
+        return JSON.parse(decodeURIComponent(search.get(name) as string))
       } catch {
         return null // if parameter not present or obsolete
       }
     },
     write: (value: ValueType) => {
-      search.set(
-        name,
-        isString
-          ? fixedEncodeURIComponent(value as unknown as string)
-          : fixedEncodeURIComponent(JSON.stringify(value))
-      )
+      search.set(name, fixedEncodeURIComponent(JSON.stringify(value)))
       setSearch(search, { replace: true })
     }
   }), [name, search, setSearch])

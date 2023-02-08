@@ -1,11 +1,12 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import moment      from 'moment'
 
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand, ClockOutlined }         from '@acx-ui/icons'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { ArrowExpand }                                     from '@acx-ui/icons'
+import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter }                 from '@acx-ui/utils'
+
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
 

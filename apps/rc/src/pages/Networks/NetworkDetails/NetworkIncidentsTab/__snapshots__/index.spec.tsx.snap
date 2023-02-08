@@ -5,7 +5,7 @@ exports[`NetworkIncidentsTab should render network incidents tab successfully 1`
   <form
     class="ant-form ant-form-horizontal"
   >
-    Incidents
+    <div />
   </form>
 </DocumentFragment>
 `;
