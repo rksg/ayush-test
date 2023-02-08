@@ -7,11 +7,16 @@ import {
 import { CustomerServiceFilled } from '@ant-design/icons'
 import { Button }                from 'antd'
 
+
 import { get } from '@acx-ui/config'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
 
 
 declare global {
   interface Window {
+    generateToken: (callback:CallableFunction) => void
     tdiConfig: unknown,
     tdi: {
       chat: () => void
@@ -32,6 +37,7 @@ function initializeChat () {
 export function FetchBot () {
   const [isLoading,setIsLoading] = useState(true)
   const [isDisabled,setIsDisabled] = useState(true)
+  const params = useParams()
   useEffect(() => {
     // configure TDI
     window.tdiConfig = {
@@ -64,6 +70,40 @@ export function FetchBot () {
     }
   }, [])
   useEffect(() => {
+    window.generateToken = function (callback){
+      const userUrl = createHttpRequest (
+        CommonUrlsInfo.getUserProfile,
+        { ...params }
+      )
+      fetch(userUrl.url).then((res)=>{
+        res.json().then((userInfo)=>{
+          const { externalId: swuId } = userInfo
+          const authUrl = createHttpRequest (
+            CommonUrlsInfo.fetchBotAuth,
+            { ...params }
+          )
+          fetch(authUrl.url,{
+            method: authUrl.method.toUpperCase(),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ swuId })
+          }).then(async (res)=>{
+            const { idToken } = await res.json()
+            callback(idToken,null,{
+              contactId: swuId
+            })
+          }).catch((error)=>{
+            console.error(error)
+            callback('',error.message,{})
+          })
+
+        })
+      })
+    }
+
+
+
     // eslint-disable-next-line no-console
     console.log('Adding Script...')
 
@@ -95,7 +135,9 @@ export function FetchBot () {
         right: '30px',
         bottom: '30px',
         zIndex: 999999,
-        border: 'none'
+        border: 'none',
+        height: '55px',
+        width: '55px'
       }
     } />
   )

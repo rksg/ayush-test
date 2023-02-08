@@ -334,5 +334,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  fetchBotAuth: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/chatbot/idtoken'
   }
 }
