@@ -17,8 +17,8 @@ import { AclDetail } from './aclDetail'
 
 export function SwitchOverviewACLs () {
   const { $t } = useIntl()
-  const { switchId } = useParams()
-  const { data, isLoading } = useGetSwitchAclsQuery({ params: { switchId } })
+  const { tenantId, switchId } = useParams()
+  const { data, isLoading } = useGetSwitchAclsQuery({ params: { tenantId, switchId } })
   const [currentRow, setCurrentRow] = useState({} as Acl)
   const [drawerVisible, setDrawerVisible] = useState(false)
 

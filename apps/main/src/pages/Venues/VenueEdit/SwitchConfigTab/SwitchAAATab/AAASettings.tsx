@@ -148,7 +148,7 @@ export function AAASettings () {
     }
   })
 
-  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { venueId } })
+  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)
   const [ availableCommandAuthOrder, setAvailableCommandAuthOrder] = useState(defaultAvailableCommandAuthOrder)

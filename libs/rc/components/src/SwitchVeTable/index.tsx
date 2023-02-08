@@ -16,6 +16,7 @@ import {
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 
@@ -26,6 +27,8 @@ export function SwitchVeTable ( { isVenueLevel } : {
 }
 ) {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+
 
   const defaultPayload = {
     fields: [
@@ -164,7 +167,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteVePorts({ payload: _.map(rows, 'id') })
+            deleteVePorts({ params: { tenantId }, payload: _.map(rows, 'id') })
               .then(clearSelection)
           }
         })

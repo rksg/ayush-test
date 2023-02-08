@@ -42,7 +42,7 @@ export function AAAServers () {
     [AAAServerTypeEnum.LOCAL_USER]: { ...defaultPayload, serverType: AAAServerTypeEnum.LOCAL_USER }
   }
 
-  const { data: aaaSetting } = useGetAaaSettingQuery({ params: { venueId } })
+  const { data: aaaSetting } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
 
   const radiusTableQuery = useTableQuery({
     useQuery: useVenueSwitchAAAServerListQuery,

@@ -49,7 +49,7 @@ export function SwitchMacAddressForm () {
     pageSize: 10000
   }
   const vlanList = useGetVlanListBySwitchLevelQuery({
-    params: { switchId },
+    params: { tenantId, switchId },
     payload: vlanPayload
   })
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
@@ -153,14 +153,12 @@ export function SwitchMacAddressForm () {
     try {
       const macAddressTableType = form.getFieldValue('refineOption')
       let payload = {
-        macAddressTableType: TroubleshootingMacAddressOptionsEnum.NONE,
-        debugType: 'mac-address-table'
+        macAddressTableType: TroubleshootingMacAddressOptionsEnum.NONE
       } as {
         macAddressTableType: TroubleshootingMacAddressOptionsEnum,
         portIdentify?: string,
         vlanId?: string,
-        macAddress?: string,
-        debugType?: string
+        macAddress?: string
       }
 
       switch(macAddressTableType) {
@@ -193,7 +191,7 @@ export function SwitchMacAddressForm () {
           break
       }
 
-      const result = await runMutation({ params: { switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }
