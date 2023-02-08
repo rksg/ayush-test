@@ -87,7 +87,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
       sorter: true,
-      filterable: true,
+      // filterable: true, // TODO: change to search or provide static list
       key: 'deviceType',
       render: function (data, row) {
         return transformDeviceTypeString(row, intl)
@@ -97,7 +97,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Device Model' }),
       dataIndex: 'model',
       sorter: true,
-      filterable: true,
+      // filterable: true, // TODO: change to search or provide static list
       key: 'model'
     },
     {
@@ -110,7 +110,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Customer Name' }),
       dataIndex: 'customerName',
       sorter: true,
-      filterable: true,
+      // filterable: true, // TODO: change to search or provide static list
       key: 'customerName'
     },
     {
@@ -126,7 +126,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: "Customer'sVenue" }),
       dataIndex: 'venueName',
       sorter: true,
-      filterable: true,
+      // filterable: true, // TODO: change to search or provide static list
       key: 'venueName'
     },
     {

@@ -91,7 +91,7 @@ export function VenueRogueAps () {
         key: 'category',
         title: intl.$t({ defaultMessage: 'Category' }),
         dataIndex: 'category',
-        filterable: true,
+        // filterable: true, // TODO: change to search or provide static list
         sorter: true,
         align: 'left',
         render: (data, row) => {
@@ -145,7 +145,7 @@ export function VenueRogueAps () {
         key: 'closestAp_apName',
         title: intl.$t({ defaultMessage: 'Closest Ap' }),
         dataIndex: 'closestAp_apName',
-        filterable: true,
+        // filterable: true, // TODO: change to search or provide static list
         sorter: true,
         align: 'left'
       },

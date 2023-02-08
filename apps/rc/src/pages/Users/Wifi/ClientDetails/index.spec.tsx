@@ -100,6 +100,32 @@ describe('ClientDetails', () => {
     })
   })
 
+  it('should render correctly with featureToggle off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getAllByRole('tab')).toHaveLength(4)
+
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+
+    fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/users/wifi/clients/${params.clientId}/details/reports`,
+      hash: '',
+      search: ''
+    })
+  })
+
   it('should navigate to troubleshooting tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',

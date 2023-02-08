@@ -20,6 +20,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 describe('VenueClientsTab', () => {
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true) // Features.DEVICES

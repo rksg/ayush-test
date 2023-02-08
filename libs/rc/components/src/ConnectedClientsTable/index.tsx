@@ -149,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       render: (data, row) =>
         (
-          <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{data}</TenantLink>
         )
     },
     {
@@ -335,7 +335,7 @@ export const defaultClientPayload = {
 
 export const ConnectedClientsTable = (props: {
   showAllColumns?: boolean,
-  searchString: string,
+  searchString?: string,
   setConnectedClientCount?: (connectClientCount: number) => void,
   tableQuery?: TableQuery<ClientList, RequestPayload<unknown>, unknown>
 }) => {
@@ -343,14 +343,13 @@ export const ConnectedClientsTable = (props: {
   const params = useParams()
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
-  defaultClientPayload.searchString = searchString
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
-    defaultPayload: defaultClientPayload,
+    defaultPayload: { ...defaultClientPayload, searchString },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
@@ -359,7 +358,14 @@ export const ConnectedClientsTable = (props: {
     if (tableQuery.data?.data && setConnectedClientCount) {
       setConnectedClientCount(tableQuery.data?.totalCount)
     }
-  }, [])
+  }, [tableQuery.data?.data, tableQuery.data?.totalCount])
+
+  useEffect(() => {
+    if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
+      tableQuery.setPayload({
+        ...(tableQuery.payload as typeof defaultClientPayload), searchString })
+    }
+  }, [searchString])
 
   return (
     <UI.ClientTableDiv>

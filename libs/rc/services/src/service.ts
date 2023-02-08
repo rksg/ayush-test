@@ -22,7 +22,6 @@ import {
   LeaseUnit,
   DHCPDetailInstances,
   WifiCallingUrls,
-  WifiUrlsInfo,
   WifiCallingFormContextType,
   WifiCallingSetting,
   DpskSaveData,
@@ -48,13 +47,13 @@ import {
   NetworkSegmentationGroup,
   WebAuthTemplate,
   AccessSwitch,
-  DistributionSwitch
+  DistributionSwitch,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
   DevicePolicy,
   ApplicationPolicy,
-  VlanPool,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 
@@ -156,17 +155,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         )
         return {
           ...accessControlProfileListReq
-        }
-      }
-    }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
         }
       }
     }),
@@ -581,8 +569,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
+          'Content-Type': undefined
         })
         return {
           ...req,
@@ -590,6 +577,31 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.exportPassphrases, {
+          ...params,
+          timezone: payload?.timezone ?? 'UTC',
+          dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+        })
+
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'DPSK_Passphrase.csv'
+            downloadFile(response, fileName)
+          },
+          headers: {
+            'Content-Type': 'text/csv',
+            'Accept': 'text/csv'
+          }
+        }
+      }
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
@@ -738,7 +750,6 @@ export const {
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
   useDhcpVenueInstancesQuery,
-  useVlanPoolListQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
@@ -768,6 +779,7 @@ export const {
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
+  useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
