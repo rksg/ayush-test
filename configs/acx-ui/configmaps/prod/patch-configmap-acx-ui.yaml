@@ -8,3 +8,4 @@ data:
   captive.portal.domain.name: "ruckus.cloud"
   change.password: "https://support.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://support.ruckuswireless.com/cloud_subscriptions"
+  fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-prd-latest.min.js"
