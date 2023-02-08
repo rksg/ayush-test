@@ -12,9 +12,10 @@ describe('jwtToken', () => {
     sessionStorage.setItem('jwt', '')
     sessionStorage.getItem('jwt')
     const token = {
-      acx_account_tier: 'Gold',
+      acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
-      acx_account_type: 'REC',
+      tenantType: 'REC',
+      isBetaFlag: false,
       tenantId: undefined
     }
     expect(getJwtTokenPayload()).toEqual(token)
@@ -31,9 +32,10 @@ describe('jwtToken', () => {
     })
     sessionStorage.setItem('jwt', '' )
     const token = {
-      acx_account_tier: 'Gold',
+      acx_account_tier: 'Platinum',
       acx_account_vertical: 'Default',
-      acx_account_type: 'REC',
+      tenantType: 'REC',
+      isBetaFlag: false,
       tenantId: getTenantId()
     }
     expect(getJwtTokenPayload()).toEqual(token)
@@ -44,7 +46,7 @@ describe('jwtToken', () => {
     const token = {
       acx_account_regions: ['EU', 'AS', 'NA'],
       acx_account_tier: 'Gold',
-      acx_account_type: 'REC',
+      tenantType: 'REC',
       acx_account_vertical: 'Default'
     }
     const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
@@ -56,7 +58,7 @@ describe('jwtToken', () => {
     const token = {
       acx_account_regions: ['EU', 'AS', 'NA'],
       acx_account_tier: 'Gold',
-      acx_account_type: 'REC',
+      tenantType: 'REC',
       acx_account_vertical: 'Default'
     }
     const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
