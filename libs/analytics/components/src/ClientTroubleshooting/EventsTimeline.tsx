@@ -104,14 +104,10 @@ export function TimeLine (props: TimeLineProps) {
 
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
-  const roamingTooltipCallback =
-  (apMac: string, apModel: string, apFirmware: string, noData: boolean) =>
-    noData
-      ? $t({ defaultMessage: 'No Data' })
-      : $t(
-        { defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
-        { br: '\n', apMac, apModel, apFirmware }
-      )
+  const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
+    $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
+      { br: '\n', apMac, apModel, apFirmware })
+
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
@@ -147,16 +143,19 @@ export function TimeLine (props: TimeLineProps) {
                     <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
                       {config.value === TYPES.ROAMING
                         ? <UI.RoamingTimelineSubContent>
-                          <Tooltip
-                            placement='top'
-                            title={roamingTooltipCallback(
-                              (subtitle as { apMac: string }).apMac,
-                              (subtitle as { apModel: string }).apModel,
-                              (subtitle as { apFirmware: string }).apFirmware,
-                              (subtitle as { noData: boolean }).noData)}
-                          >
-                            {subtitle.title as string}
-                          </Tooltip>
+                          {
+                            ((subtitle as { noData: boolean }).noData)
+                              ? null
+                              : <Tooltip
+                                placement='top'
+                                title={roamingTooltipCallback(
+                                  (subtitle as { apMac: string }).apMac,
+                                  (subtitle as { apModel: string }).apModel,
+                                  (subtitle as { apFirmware: string }).apFirmware)}
+                              >
+                                {subtitle.title as string}
+                              </Tooltip>
+                          }
                         </UI.RoamingTimelineSubContent>
                         : <UI.TimelineSubContent>
                           {($t(subtitle.title as MessageDescriptor))}
