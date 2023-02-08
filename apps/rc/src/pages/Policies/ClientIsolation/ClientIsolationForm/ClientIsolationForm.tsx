@@ -16,7 +16,9 @@ import {
   useUpdateClientIsolationMutation
 } from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation,
   ClientIsolationSaveData
 } from '@acx-ui/rc/utils'
 import {
@@ -34,7 +36,9 @@ interface ClientIsolationFormProps {
 export default function ClientIsolationForm (props: ClientIsolationFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath(true))
+  // eslint-disable-next-line max-len
+  const tablePath = getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { editMode = false } = props
 
@@ -69,10 +73,13 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Client Isolation Allowlist Policy' })}
+        title={editMode
+          ? $t({ defaultMessage: 'Edit Client Isolation Pofile' })
+          : $t({ defaultMessage: 'Add Client Isolation Pofile' })
+        }
         breadcrumb={[
           // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+          { text: $t({ defaultMessage: 'Client Isolation' }), link: tablePath }
         ]}
       />
       <StepsForm<ClientIsolationSaveData>

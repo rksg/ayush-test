@@ -41,7 +41,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   }
   return (
     <GridRow>
-      <GridCol col={{ span: 10 }}>
+      <GridCol col={{ span: 8 }}>
         <StepsForm.Title>{$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item
           name='name'

@@ -53,7 +53,7 @@ describe('MyServices', () => {
     )
   )
 
-  it('should render my services', async () => {
+  it('should render My Services', async () => {
     render(
       <Provider>
         <MyServices />

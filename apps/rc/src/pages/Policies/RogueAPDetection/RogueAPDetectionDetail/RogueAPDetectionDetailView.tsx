@@ -9,9 +9,15 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { getPolicyListRoutePath, PolicyType, RogueApConstant, RogueAPDetailContextType } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation }                                         from '@acx-ui/rc/utils'
-import { TenantLink }                                                                    from '@acx-ui/react-router-dom'
+import {
+  PolicyType,
+  RogueApConstant,
+  RogueAPDetailContextType,
+  getPolicyRoutePath,
+  PolicyOperation,
+  getPolicyDetailsLink
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
@@ -24,13 +30,15 @@ const RogueAPDetectionDetailView = () => {
   const params = useParams()
   const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
+  // eslint-disable-next-line max-len
+  const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
 
   return (
     <RogueAPDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
         extra={policyName !== RogueApConstant.DefaultProfile ? [
           <TenantLink to={getPolicyDetailsLink({

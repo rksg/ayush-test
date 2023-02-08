@@ -5,10 +5,10 @@ import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components
 import { useGetVLANPoolPolicyDetailQuery }              from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
-  getPolicyListRoutePath,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  getPolicyRoutePath
 }   from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -19,12 +19,14 @@ export default function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const queryResults = useGetVLANPoolPolicyDetailQuery({ params })
+  const tablePath = getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
+
   return (
     <>
       <PageHeader
         title={queryResults.data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
         extra={[
           <TenantLink to={getPolicyDetailsLink({
