@@ -3,10 +3,14 @@ import { useLayoutEffect } from 'react'
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsForm }                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsForm }                                                                             from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
+
+export interface EdgePortWithStatus extends EdgePort {
+  statusIp: string
+}
 
 interface ConfigFormProps {
   index: number
@@ -24,6 +28,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const portType = useWatch([`port_${index}`, 'portType'])
   const enabled = useWatch([`port_${index}`, 'enabled'])
   const ipMode = useWatch([`port_${index}`, 'ipMode'])
+  const statusIp = useWatch([`port_${index}`, 'statusIp'])
 
   useLayoutEffect(() => {
     form.validateFields()
@@ -142,7 +147,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: '', mac: mac }
+            { ip: statusIp ?? 'N/A', mac: mac }
           )
         }
       </UI.IpAndMac>
