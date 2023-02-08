@@ -17,6 +17,25 @@
     />
     <title>RUCKUS Cloud</title>
   </head>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+  <script type="text/javascript">
+    // create the generate token function for user identity generation
+    window.generateToken = function (callback) {
+        console.log('Generating token....');
+        $.post('http://localhost:5001/idtoken', {})
+            .done(function (response) {
+                console.log('Token:', {
+                    ...response
+                });
+                callback(response.id_token, null, {
+                    contactId: response.contact_id
+                });
+            })
+            .fail(function (error) {
+                callback('', 'unable to generate token', {});
+            });
+    }
+</script>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
