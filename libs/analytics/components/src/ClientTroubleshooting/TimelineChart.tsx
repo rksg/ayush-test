@@ -1,4 +1,4 @@
-import React, {
+import {
   Dispatch,
   RefObject,
   SetStateAction,
@@ -6,9 +6,7 @@ import React, {
   useEffect,
   useRef,
   useState,
-  useMemo,
-  useImperativeHandle,
-  RefCallback
+  useMemo
 } from 'react'
 
 
@@ -65,7 +63,6 @@ type OnDatazoomEvent = {
 }
 
 export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
-  ref: RefCallback<ReactECharts>;
   data: (Event | LabelledQuality | IncidentDetails | RoamingTimeSeriesData)[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   selectedData?: number;
@@ -75,7 +72,6 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
   index?: React.Attributes['key'];
-  connectChart?: (instance: ReactECharts | null) => void;
 }
 
 export const getSeriesData = (
@@ -270,7 +266,6 @@ export function TimelineChart ({
   hasXaxisLabel,
   showResetZoom,
   index,
-  connectChart,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -288,7 +283,6 @@ export function TimelineChart ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
-  useImperativeHandle(connectChart, () => eChartsRef.current!, [])
 
   const mappedData = useMemo(() => mapping
     .slice()
@@ -305,22 +299,17 @@ export function TimelineChart ({
           itemStyle: {
             color: getSeriesItemColor
           },
-          connectNulls: true,
-          coordinateSystem: 'cartesian2d',
-          datasetId: ''.concat(series, '-', key)
+          connectNulls: true
         } as SeriesOption)
         : {
           type: 'custom',
           name: series,
-          animation: false,
           renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
           itemStyle: {
             color: getBarColor as unknown as string
           },
           data: getSeriesData(data, key, series),
-          connectNulls: true,
-          coordinateSystem: 'cartesian2d',
-          datasetId: ''.concat(series, '-', key)
+          connectNulls: true
         }
     ) as SeriesOption[], [data, mapping])
 
@@ -467,11 +456,8 @@ export function TimelineChart ({
     if (eChartsRef && eChartsRef.current) {
       const instance = eChartsRef.current.getEchartsInstance()
       instance.setOption(option)
-      if (connectChart) {
-        connectChart(eChartsRef.current)
-      }
     }
-  }, [option, connectChart])
+  }, [option])
 
   return (
     <>
@@ -489,7 +475,7 @@ export function TimelineChart ({
         ref={eChartsRef}
         option={option}
         key={index}
-        onChartReady={connectChart}
+        onChartReady={eChartsRef as unknown as (instance: unknown) => void}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton
