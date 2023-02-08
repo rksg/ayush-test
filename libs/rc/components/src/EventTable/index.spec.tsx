@@ -42,13 +42,18 @@ describe('EventTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('should render activity list', async () => {
+  it('should render event list', async () => {
     render(
       <Provider>
         <EventTable tableQuery={tableQuery} />
       </Provider>,
       { route: { params } }
     )
+
+    await screen.findByPlaceholderText('Search Source, Description')
+    expect(await screen.findAllByText('Severity')).toHaveLength(2)
+    expect(await screen.findAllByText('Event Type')).toHaveLength(2)
+    expect(await screen.findAllByText('Product')).toHaveLength(2)
 
     const tbody = within(await findTBody())
     const rows = await tbody.findAllByRole('row')
@@ -63,7 +68,48 @@ describe('EventTable', () => {
     expected.forEach((expected, index) => expect(rows[index].textContent).toContain(expected))
   })
 
-  it('should open/close activity drawer', async () => {
+  it('should render based on filterables/searchables is empty', async () => {
+    render(
+      <Provider>
+        <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByText('Severity')
+    await screen.findByText('Event Type')
+    await screen.findByText('Product')
+  })
+
+  it('should render based on filterables/searchables is false', async () => {
+    render(
+      <Provider>
+        <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByText('Severity')
+    await screen.findByText('Event Type')
+    await screen.findByText('Product')
+  })
+
+  it('should render based on filterables/searchables is array', async () => {
+    render(
+      <Provider>
+        <EventTable
+          tableQuery={tableQuery}
+          searchables={['message', 'entity_type']}
+          filterables={['severity', 'entity_type', 'product']}
+        />
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByPlaceholderText('Search Source, Description')
+    expect(await screen.findAllByText('Severity')).toHaveLength(2)
+    expect(await screen.findAllByText('Event Type')).toHaveLength(2)
+    expect(await screen.findAllByText('Product')).toHaveLength(2)
+  })
+
+  it('should open/close event drawer', async () => {
     render(
       <Provider>
         <EventTable tableQuery={tableQuery} />

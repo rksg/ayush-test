@@ -97,7 +97,7 @@ export function AlarmWidget () {
     },
     pagination: {
       pageSize: 5,
-      current: 1,
+      page: 1,
       total: 0
     }
   })
