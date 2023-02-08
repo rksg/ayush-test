@@ -56,7 +56,7 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        deleteSwitchStaticRoutes({ params, payload: selectedRows.map(item => item.id) })
+        deleteSwitchStaticRoutes({ payload: selectedRows.map(item => item.id) })
         clearSelection()
       }
     }

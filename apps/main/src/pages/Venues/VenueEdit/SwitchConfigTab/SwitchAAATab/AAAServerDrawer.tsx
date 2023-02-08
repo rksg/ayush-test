@@ -67,7 +67,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     onClose()
   }
 
-  const onSumbit = async (data:RadiusServer | TacacsServer | LocalUser) => {
+  const onSubmit = async (data:RadiusServer | TacacsServer | LocalUser) => {
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -105,7 +105,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     }
   }
 
-  const radiusForm = <Form layout='vertical'form={form} onFinish={onSumbit}>
+  const radiusForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Name' })}
@@ -157,7 +157,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     />
   </Form>
 
-  const tacacsForm = <Form layout='vertical'form={form} onFinish={onSumbit}>
+  const tacacsForm = <Form layout='vertical'form={form} onFinish={onSubmit}>
     <Form.Item
       name='name'
       label={$t({ defaultMessage: 'Name' })}
@@ -213,7 +213,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
     </Form.Item>
   </Form>
 
-  const localUserForm = <Form layout='vertical' form={form} onFinish={onSumbit}>
+  const localUserForm = <Form layout='vertical' form={form} onFinish={onSubmit}>
     <Form.Item
       name='username'
       label={$t({ defaultMessage: 'Username' })}

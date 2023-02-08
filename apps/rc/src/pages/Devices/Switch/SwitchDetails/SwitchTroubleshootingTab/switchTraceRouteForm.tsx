@@ -85,9 +85,10 @@ export function SwitchTraceRouteForm () {
     try {
       const payload = {
         maxTtl: form.getFieldValue('maxTtl'),
-        targetHost: form.getFieldValue('targetHost')
+        targetHost: form.getFieldValue('targetHost'),
+        debugType: 'trace-route'
       }
-      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }

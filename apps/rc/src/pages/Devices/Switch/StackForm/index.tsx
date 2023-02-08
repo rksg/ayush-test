@@ -89,7 +89,7 @@ export function StackForm () {
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const { data: switchData, isLoading: isSwitchDataLoading } =
-    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
+    useGetSwitchQuery({ params: { switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const [getStackMemberList] = useLazyGetStackMemberListQuery()
@@ -311,7 +311,7 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId } , payload }).unwrap()
+      await updateSwitch({ params: { switchId } , payload }).unwrap()
 
       dataFetchedRef.current = false
 
@@ -471,7 +471,7 @@ export function StackForm () {
 
   const getApGroupOptions = async (venueId: string) => {
     const list = venueId
-      ? (await getVlansByVenue({ params: { tenantId, venueId } }, true)).data
+      ? (await getVlansByVenue({ params: { venueId } }, true)).data
       : []
 
     return (

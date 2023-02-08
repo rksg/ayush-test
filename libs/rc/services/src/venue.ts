@@ -398,8 +398,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+      query: ({ payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles)
         return {
           ...req,
           body: payload
