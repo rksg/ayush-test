@@ -23,7 +23,6 @@ const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSol
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
   const isVar = tenantType === AccountType.VAR
-  const isMsp = tenantType === 'MSP'
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
   const isIntegrator =
