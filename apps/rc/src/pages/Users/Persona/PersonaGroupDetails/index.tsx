@@ -186,7 +186,7 @@ function PersonaGroupDetails () {
             <BasePersonaTable
               colProps={{
                 name: { searchable: true },
-                groupId: { show: false }
+                groupId: { show: false, filterable: false }
               }}/>
           </div>
         </GridCol>

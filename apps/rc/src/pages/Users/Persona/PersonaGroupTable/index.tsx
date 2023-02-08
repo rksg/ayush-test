@@ -9,9 +9,12 @@ import {
   useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation,
   useLazyGetDpskQuery,
-  useLazyVenuesListQuery
+  useLazyVenuesListQuery,
+  useGetDpskListQuery,
+  useMacRegListsQuery,
+  useGetNetworkSegmentationGroupListQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 
 import {
   DpskPoolLink,
@@ -30,6 +33,10 @@ function useColumns (
   venuesMap: Map<string, string>
 ) {
   const { $t } = useIntl()
+
+  const { data: dpskPool } = useGetDpskListQuery({})
+  const { data: macList } = useMacRegListsQuery({})
+  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery({})
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -66,7 +73,8 @@ function useColumns (
       title: $t({ defaultMessage: 'DPSK Pool' }),
       dataIndex: 'dpskPoolId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: dpskPool?.data.map(pool => ({ key: pool.id!!, value: pool.name })) ?? [],
       render: (_, row) =>
         <DpskPoolLink
           name={dpskPools.get(row.dpskPoolId ?? '')}
@@ -78,7 +86,8 @@ function useColumns (
       title: $t({ defaultMessage: 'Mac Registration List' }),
       dataIndex: 'macRegistrationPoolId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: macList?.data.map(mac => ({ key: mac.id!!, value: mac.name })) ?? [],
       render: (_, row) =>
         <MacRegistrationPoolLink
           name={macRegistrationPools.get(row.macRegistrationPoolId ?? '')}
@@ -90,7 +99,8 @@ function useColumns (
       title: $t({ defaultMessage: 'Network Segmentation' }),
       dataIndex: 'nsgId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
           nsgId={row.nsgId}
@@ -243,6 +253,20 @@ export function PersonaGroupTable () {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...tableQuery.payload,
+      keyword: customSearch?.searchString ?? '',
+      dpskPoolId: Array.isArray(customFilters?.dpskPoolId)
+        ? customFilters?.dpskPoolId[0] : undefined,
+      macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
+        ? customFilters?.macRegistrationPoolId[0] : undefined,
+      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined
+    }
+
+    tableQuery.setPayload(payload)
+  }
+
   return (
     <Loader
       states={[
@@ -251,10 +275,12 @@ export function PersonaGroupTable () {
       ]}
     >
       <Table
+        enableApiFilter
         columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
         rowKey='id'
         actions={actions}
         rowActions={rowActions}

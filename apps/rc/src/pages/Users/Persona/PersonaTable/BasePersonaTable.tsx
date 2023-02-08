@@ -9,7 +9,7 @@ import {
   useGetPersonaGroupListQuery,
   useDeletePersonasMutation
 } from '@acx-ui/rc/services'
-import {  Persona, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 
 import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                        from '../PersonaDrawer'
@@ -75,6 +75,8 @@ function useColumns (props: PersonaTableColProps) {
         const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
         return <PersonaGroupLink personaGroupId={row.groupId} name={name} />
       },
+      filterMultiple: false,
+      filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
       ...props.groupId
     },
     {
@@ -136,7 +138,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    defaultPayload: personaGroupId ? { groupId: personaGroupId } : { }
+    defaultPayload: {
+      keyword: '',
+      groupId: personaGroupId
+    }
   })
 
   const actions: TableProps<PersonaGroup>['actions'] = [
@@ -197,6 +202,24 @@ export function BasePersonaTable (props: PersonaTableProps) {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...personaListQuery.payload,
+      keyword: customSearch?.searchString ?? '',
+      propertyId: Array.isArray(customFilters?.propertyId)
+        ? customFilters?.propertyId[0]
+        : undefined
+    }
+
+    // Do not support group filter while user in the PersonaDetail page
+    personaGroupId
+      ? Object.assign(payload, { groupId: personaGroupId })
+      : Object.assign(payload, { groupId: Array.isArray(customFilters.group)
+        ? customFilters.group[0] : undefined })
+
+    personaListQuery.setPayload(payload)
+  }
+
   return (
     <Loader
       states={[
@@ -205,6 +228,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       ]}
     >
       <Table
+        enableApiFilter
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}
@@ -213,6 +237,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
+        onFilterChange={handleFilterChange}
       />
 
       <PersonaDrawer
