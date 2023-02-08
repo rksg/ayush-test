@@ -56,7 +56,9 @@ export function NetworkHealthTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       onClick: () => {},
-      disabled: (selectedRow) => (selectedRow[0]?.apsCount > 0) ? false : true // TODO: handle for apsPendingCount
+      disabled: (selectedRow) => (
+        selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount !== 0
+      ) ? false : true
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
@@ -95,7 +97,7 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink>, // TODO: handle link
+      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink> // TODO: handle link
     },
     {
       key: 'clientType',
