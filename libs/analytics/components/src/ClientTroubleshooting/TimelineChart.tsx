@@ -308,7 +308,7 @@ export function TimelineChart ({
           },
           connectNulls: true
         } as SeriesOption)
-        : {
+        : ({
           type: 'custom',
           name: series,
           renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
@@ -317,7 +317,7 @@ export function TimelineChart ({
           },
           data: getSeriesData(data, key, series),
           connectNulls: true
-        }
+        })
     ) as SeriesOption[], [data, mapping])
 
   const hasData = useMemo(() => {
@@ -453,7 +453,8 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60
+        minValueSpan: 60,
+        filterMode: 'none'
       }
     ],
     series: mappedData
@@ -483,7 +484,6 @@ export function TimelineChart ({
         ref={eChartsRef}
         option={option}
         key={index}
-        onChartReady={eChartsRef as unknown as (instance: unknown) => void}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton
