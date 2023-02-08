@@ -48,22 +48,20 @@ export function NetworkHealthTable () {
   const { $t } = intl
   const queryResults = useNetworkHealthQuery({})
   const navigate = useNavigate()
-  const linkToEditTest = useTenantLink('/serviceValidation/networkHealth/')
+  const networkHealthLink = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
 
   const [deleteMutation] = useNetworkHealthDeleteMutation()
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
-      onClick: () => {
-        navigate(useTenantLink('/serviceValidation/networkHealth/'), { replace: false })
-      },
+      onClick: () => {},
       disabled: (selectedRow) => (selectedRow[0]?.apsCount > 0) ? false : true // TODO: handle for apsPendingCount
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
-        navigate(`${linkToEditTest.pathname}/${selectedRows[0].id}/edit`, { replace: false })
+        navigate(`${networkHealthLink.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
       disabled: (selectedRow) => selectedRow[0]?.userId === userProfile?.externalId ? false : true
     },

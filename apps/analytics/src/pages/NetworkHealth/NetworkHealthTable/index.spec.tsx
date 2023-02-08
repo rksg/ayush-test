@@ -88,22 +88,28 @@ describe('Network Health Table', () => {
   })
 
   it('should render loader', () => {
-    mockGraphqlQuery(networkhealthURL, 'IncidentTableWidget', {
+    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
       data: { allServiceGuardSpecs: [] }
     })
-    render(<Router><Provider><NetworkHealthTable/></Provider></Router>)
+    render(<Router>
+      <Provider>
+        <NetworkHealthTable/>
+      </Provider>
+    </Router>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
 
   it('should render table with valid input', async () => {
-    mockGraphqlQuery(networkhealthURL, 'IncidentTableWidget', {
+    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
       data: { allServiceGuardSpecs: networkHealthTests }
     })
 
-    render(<Provider><NetworkHealthTable/></Provider>, {
+    render(<Provider>
+      <NetworkHealthTable/>
+    </Provider>, {
       route: {
-        path: '/t/tenantId/serviceValidation/networkHealth',
-        wrapRoutes: false
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile.tenantId }
       }
     })
 
@@ -128,8 +134,8 @@ describe('Network Health Table', () => {
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
-        path: '/t/tenantId/serviceValidation/networkHealth',
-        wrapRoutes: false
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile.tenantId }
       }
     })
 
@@ -149,20 +155,17 @@ describe('Network Health Table', () => {
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
-        path: '/t/tenantId/serviceValidation/networkHealth',
-        wrapRoutes: false
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile.tenantId }
       }
     })
 
-    const radio = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    const radio = await screen.findAllByRole('radio')
     fireEvent.click(radio[0])
-    screen.logTestingPlaygroundURL()
-
     fireEvent.click(await screen.findByRole('button', { name: /run now/i }))
-    // screen.logTestingPlaygroundURL()
   })
 
-  it.only('should click edit', async () => {
+  it('should click edit', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile)))
     )
@@ -198,14 +201,13 @@ describe('Network Health Table', () => {
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
-        path: '/t/tenantId/serviceValidation/networkHealth',
-        wrapRoutes: false
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: { tenantId: fakeUserProfile.tenantId }
       }
     })
-    const radio = await screen.findAllByRole('radio', { hidden: true, checked: false })
+    const radio = await screen.findAllByRole('radio')
     fireEvent.click(radio[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-    // screen.logTestingPlaygroundURL()
     fireEvent.click(await screen.findByRole('button', { name: 'Delete test' }))
   })
 
