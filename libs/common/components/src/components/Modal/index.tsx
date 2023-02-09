@@ -7,12 +7,19 @@ import { Button, ButtonProps } from '../Button'
 
 import * as UI from './styledComponents'
 
+export enum ModalType {
+  Default = 'default',
+  ModalStepsForm = 'modalStepsForm'
+}
+
 interface ModalProps extends AntModalProps {
+  type?: ModalType,
   title: string
   subTitle?: string
 }
 
 export function Modal ({
+  type = ModalType.Default,
   footer,
   onCancel,
   cancelText,
@@ -36,6 +43,10 @@ export function Modal ({
   return (
     <UI.Modal
       {...props}
+      {...((type === ModalType.ModalStepsForm) && {
+        closable: false,
+        width: props.width || '95%'
+      })}
       onCancel={onCancel}
       closeIcon={<CloseSymbol />}
       title={props.subTitle ? TitleWithSubtitle(props.title, props.subTitle) : props.title}

@@ -70,7 +70,7 @@ const VLANPoolInstance = () => {
           'advancedCustomization',
           'vlanPool',
           'vlanMembers'
-        ], data.vlanMembers.split(','))
+        ], (data.vlanMembers as string).split(','))
       }}/>
 
     </div>
