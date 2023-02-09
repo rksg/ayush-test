@@ -1,6 +1,8 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { FetchBot, Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -21,6 +23,7 @@ import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 
 function Layout () {
+  const [supportStatus,setSupportStatus] = useState('')
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -35,8 +38,9 @@ function Layout () {
         <LayoutUI.Divider />
         <AlarmsButton/>
         <ActivityButton/>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <HelpButton/>
+          <HelpButton supportStatus={supportStatus}/>
         </Tooltip>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <UserButton/>

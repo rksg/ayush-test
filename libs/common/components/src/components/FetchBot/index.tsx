@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   useEffect,
   useState
@@ -16,7 +15,7 @@ import { useParams }                         from '@acx-ui/react-router-dom'
 
 declare global {
   interface Window {
-    generateToken: (callback:CallableFunction) => void
+    generateToken?: (callback:CallableFunction) => void
     tdiConfig: unknown,
     tdi: {
       chat: () => void
@@ -34,42 +33,62 @@ function initializeChat () {
     console.log('Chat not yet ready..')
   }
 }
-export function FetchBot () {
+
+export interface FetchBotProps{
+  statusCallback?: (status:string)=>void
+  showFloatingButton?:boolean
+}
+export function FetchBot (props:FetchBotProps) {
+  const { statusCallback, showFloatingButton=true } = props
   const [isLoading,setIsLoading] = useState(true)
   const [isDisabled,setIsDisabled] = useState(true)
   const params = useParams()
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('Add TDI Config')
     // configure TDI
     window.tdiConfig = {
     // disable the display of the "Chat now" button to allow your application to implement its own logic
       displayButton: false,
       events: {
         start: function () {
+          // eslint-disable-next-line no-console
           console.log('Chatbot Starting')
+          statusCallback && statusCallback('start')
           setIsLoading(true)
         },
         ready: function () {
+          // eslint-disable-next-line no-console
           console.log('Chatbot Ready')
+          statusCallback && statusCallback('ready')
           setIsLoading(false)
           setIsDisabled(false)
         },
         disabled: function () {
+          // eslint-disable-next-line no-console
           console.log('Chatbot Disabled')
+          statusCallback && statusCallback('disabled')
           setIsDisabled(true)
         },
         chatting: function () {
-          setIsDisabled(false)
+          // eslint-disable-next-line no-console
           console.log('Chatbot Chatting')
+          statusCallback && statusCallback('chatting')
+          setIsDisabled(false)
         },
         error: function (event: { data: { error: unknown; }; }) {
-          setIsDisabled(true)
           // eslint-disable-next-line no-console
           console.error(event.data.error)
+          statusCallback && statusCallback('chatting')
+          setIsDisabled(true)
         }
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  useEffect(() => {
+  useEffect(()=>{
+    // eslint-disable-next-line no-console
+    console.log('Attaching generateToken method to window')
     window.generateToken = function (callback){
       const userUrl = createHttpRequest (
         CommonUrlsInfo.getUserProfile,
@@ -94,6 +113,7 @@ export function FetchBot () {
               contactId: swuId
             })
           }).catch((error)=>{
+            // eslint-disable-next-line no-console
             console.error(error)
             callback('',error.message,{})
           })
@@ -101,9 +121,14 @@ export function FetchBot () {
         })
       })
     }
+    return ()=>{
+      // eslint-disable-next-line no-console
+      console.log('Detaching generateToken method')
+      window.generateToken = undefined
+    }
+  },[])
 
-
-
+  useEffect(() => {
     // eslint-disable-next-line no-console
     console.log('Adding Script...')
 
@@ -115,6 +140,7 @@ export function FetchBot () {
     document.body.appendChild(script)
 
     return () => {
+      // eslint-disable-next-line no-console
       console.log('Removing the script')
       document.body.removeChild(script)
     }
@@ -130,6 +156,7 @@ export function FetchBot () {
     onClick={()=>{initializeChat()}}
     style={
       {
+        display: showFloatingButton ? 'block' : 'none',
         backgroundColor: '#ea7600',
         position: 'fixed',
         right: '30px',
