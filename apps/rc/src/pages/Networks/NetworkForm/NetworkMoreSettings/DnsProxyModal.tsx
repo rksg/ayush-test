@@ -5,6 +5,7 @@ import {
   Input,
   List
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -23,7 +24,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { DnsProxyContext } from './ServicesForm'
-import _ from 'lodash'
 
 interface DnsProxyListData {
   cloneList: DnsProxyRule[] | [],
