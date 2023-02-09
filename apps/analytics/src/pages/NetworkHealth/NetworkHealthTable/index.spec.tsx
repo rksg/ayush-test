@@ -2,12 +2,12 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { networkhealthURL }                    from '@acx-ui/analytics/services'
-import { noDataSymbol }                        from '@acx-ui/analytics/utils'
-import { UserProfileProvider }                 from '@acx-ui/rc/components'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
-import { BrowserRouter as Router, TenantLink } from '@acx-ui/react-router-dom'
-import { Provider, store }                     from '@acx-ui/store'
+import { networkhealthURL }        from '@acx-ui/analytics/services'
+import { noDataSymbol }            from '@acx-ui/analytics/utils'
+import { UserProfileProvider }     from '@acx-ui/rc/components'
+import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { Provider, store }         from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render, screen,
@@ -304,7 +304,7 @@ describe('Network Health Table', () => {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
-          tenantId: fakeUserProfile.tenantId 
+          tenantId: fakeUserProfile.tenantId
         }
       }
     })

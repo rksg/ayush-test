@@ -97,7 +97,11 @@ export function NetworkHealthTable () {
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
       render: (value, row) =>
-        <TenantLink to={`/serviceValidation/networkHealth/${row.tests.items[0]?.id}`}>{value}</TenantLink>
+        <TenantLink to={
+          `/serviceValidation/networkHealth/${row.tests.items[0]?.id}`
+        }>
+          {value}
+        </TenantLink>
     },
     {
       key: 'clientType',
