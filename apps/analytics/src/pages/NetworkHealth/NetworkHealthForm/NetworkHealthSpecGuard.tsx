@@ -19,7 +19,7 @@ export function showAlertAndNavigateAway (
 
   showToast({
     type: 'error',
-    content: $t(errorMsgMapping.MAIN_SPEC_NOT_FOUND)
+    content: $t(errorMsgMapping.SPEC_NOT_FOUND)
   })
   navigateToList()
 }

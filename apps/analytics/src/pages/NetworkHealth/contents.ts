@@ -91,8 +91,7 @@ export const apsSelectionTooltip = defineMessage({
 
 export const errorMsgMapping = {
   RUN_TEST_NO_APS: defineMessage({ defaultMessage: 'There are no APs to run the test' }),
-  SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Test does not exist' }),
-  MAIN_SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health spec not exist' }),
+  SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
   INTERNAL_SERVER_ERROR: defineMessage({ defaultMessage: 'Internal Server Error' }),
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
