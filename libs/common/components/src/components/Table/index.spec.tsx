@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event'
 
 import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
 
+import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
+
 import { Table, TableProps } from '.'
 
 jest.mock('react-resizable', () => ({
@@ -597,83 +599,6 @@ describe('Table component', () => {
   })
 
   describe('search & filter', () => {
-    const filteredColumns = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        filterable: true,
-        searchable: true
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        filterable: true
-      },
-      {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        searchable: true
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-        searchable: true
-      }
-    ]
-
-    const filteredData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        description: 'John Doe living at sample address',
-        address: 'sample address',
-        children: [
-          {
-            key: '1.1',
-            name: 'Fred Mayers',
-            age: 27,
-            description: 'Fred Mayers is a good guy',
-            address: 'Fred lives alone'
-          }
-        ]
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        description: 'Jane Doe living at new address',
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Jordan Doe',
-        age: 33,
-        description: '',
-        address: 'another address',
-        children: [
-          {
-            key: '3.1',
-            name: 'Dawn Soh',
-            age: 22,
-            description: 'Dawn just graduated college',
-            address: 'none, had moved out of the dorm'
-          },
-          {
-            key: '3.2',
-            name: 'Edna Wee',
-            age: 22,
-            description: 'Edna loves to run',
-            address: 'living abroad in America'
-          }
-        ]
-      }
-    ]
-
     it('search input with terms', async () => {
       render(<Table
         columns={filteredColumns}
@@ -681,20 +606,22 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
       const validSearchTerm = 'John Doe'
-      const input = await screen.findByPlaceholderText('Search Name, Description, Address')
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: validSearchTerm } })
+      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
 
-      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(2)
-
-      const childSearchTerm = 'edna'
-      fireEvent.change(input, { target: { value: childSearchTerm } })
-      expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
+      fireEvent.change(input, { target: { value: 'edna' } })
+      expect(await screen.findAllByText('Jane')).toHaveLength(1)
+      expect(await screen.findAllByText('Jordan')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(3)
-      fireEvent.click(buttons[1])
+      expect(buttons).toHaveLength(4)
+      fireEvent.click(buttons[2])
+      fireEvent.click(buttons[3])
+      expect(await screen.findAllByText('Edna')).toHaveLength(3)
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
     })
 
     it('filtering inputs & searching', async () => {
@@ -710,7 +637,7 @@ describe('Table component', () => {
       const body = within(tbody)
       const before =
         (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
-      expect(before).toHaveLength(3)
+      expect(before).toHaveLength(4)
 
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters).toHaveLength(2)
@@ -729,6 +656,89 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+
+    it('should highlight when search', async () => {
+      const { asFragment } = render(<Table columns={filteredColumns} dataSource={filteredData} />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelectorAll('mark')).toHaveLength(1)
+    })
+
+    it('should highlight with custom render', async () => {
+      const renderFn = jest.fn()
+      const columns = [ ...filteredColumns.slice(0,3), {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        searchable: true,
+        render: renderFn
+      }]
+      render(<Table columns={columns} dataSource={filteredData} />)
+      expect(renderFn).toBeCalled()
+    })
+
+    it('should highlight with custom highlighter', async () => {
+      const customHighlighter = jest.fn(() => 'highlighted')
+      const renderFn = jest.fn((_, row , __, highlightFn) =>
+        highlightFn(row.address, customHighlighter)
+      )
+      const columns = [ ...filteredColumns.slice(0,3), {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        searchable: true,
+        render: renderFn
+      }]
+      render(<Table columns={columns} dataSource={filteredData} />)
+      const validSearchTerm = 'sample address'
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: validSearchTerm } })
+
+      await screen.findByText('highlighted')
+      expect(customHighlighter).toBeCalled()
+    })
+
+    it('should call debounced/onFilterChange when filter/search updated', async () => {
+      const onFilterChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        onFilterChange={onFilterChange}
+      />)
+
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'J' } })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).not.toBeCalled()
+
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).toBeCalledTimes(1)
+
+      fireEvent.change(input, { target: { value: '' } })
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      const nameFilter = filters[0]
+      fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).toBeCalledTimes(2)
+    })
+
+    it('should not do local filter/search when enableApiFilter', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        enableApiFilter={true}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(await screen.findAllByText('Jordan')).toHaveLength(1)
     })
   })
 
