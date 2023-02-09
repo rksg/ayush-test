@@ -29,7 +29,7 @@ export const getLastRun = (result: string) => {
 
 export const getAPsUnderTest = (result: number) => {
   if (result) {
-    return <TenantLink to={'/serviceValidation/networkHealth'}>{result}</TenantLink> // TODO: handle link
+    return result
   } else {
     return noDataSymbol
   }
@@ -119,7 +119,7 @@ export function NetworkHealthTable () {
       key: 'apsCount',
       title: $t(defineMessage({ defaultMessage: 'APs' })),
       dataIndex: 'apsCount',
-      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink>, // TODO: handle link
+      render: (value) => value,
       sorter: { compare: sortProp('apsCount', defaultSort) }
     },
     {

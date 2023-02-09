@@ -285,7 +285,7 @@ describe('Network Health Table', () => {
   it('should return getLastRun results correctly', () => {
     const time = '2023-02-06T08:16:51.316Z'
     const result = getLastRun(time)
-    expect(result).toEqual('2023-02-06 08:16:51')
+    expect(result).toEqual('Feb 06 2023 08:16:51')
   })
   it('should return noDataSymbol for getLastRun', () => {
     const time = ''
