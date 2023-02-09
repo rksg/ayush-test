@@ -311,7 +311,7 @@ describe('Cli Template Form - Edit', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
   })
 
-  // it('should disable add Variable button when the variable count reaches 200', async () => {
+  // it('should disable the add variable button when the variable count reaches 200', async () => {
   //   mockServer.use(
   //     rest.get(SwitchUrlsInfo.getCliTemplate.url,
   //       (_, res, ctx) => res(ctx.json({

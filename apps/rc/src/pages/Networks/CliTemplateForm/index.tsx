@@ -77,7 +77,7 @@ export default function CliTemplateForm () {
           )
         }
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      navigate(linkToNetworks, { replace: true })  // TODO: change route
     } catch (error) {
       const errorRes = error as catchErrorResponse
       const message

@@ -101,7 +101,7 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
         readOnlyCodeMirror.setValue(value)
         setTimeout(function () {
           readOnlyCodeMirror.refresh()
-          readOnlyCodeMirror.focus();
+          readOnlyCodeMirror.focus()
         }, 100)
       }
     },
