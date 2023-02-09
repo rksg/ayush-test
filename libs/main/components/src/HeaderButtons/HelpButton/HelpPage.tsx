@@ -20,7 +20,7 @@ export const MAPPING_URL = isDev
 // for local test, use '/docs/ruckusone/userguide/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
 export const DOCS_URL = isDev
-  ? '/docs/alto/latest/'
+  ? '/docs/ruckusone/userguide/'
   : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
