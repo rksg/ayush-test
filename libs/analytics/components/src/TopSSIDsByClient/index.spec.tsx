@@ -10,12 +10,6 @@ import { api }                     from './services'
 
 import { TopSSIDsByClient } from './index'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 type ColumnElements = Array<HTMLElement|SVGSVGElement>
 
 const extractRows = (doc: DocumentFragment) => {
