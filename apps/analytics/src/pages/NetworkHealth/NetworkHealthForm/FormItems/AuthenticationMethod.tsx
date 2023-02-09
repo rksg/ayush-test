@@ -16,7 +16,7 @@ import {
 } from '../../authMethods'
 import * as contents     from '../../contents'
 import {
-  AuthenticationMethod as EeAuthenticationMethod,
+  AuthenticationMethod as AuthenticationMethodEnum,
   NetworkHealthFormDto
 } from '../../types'
 
@@ -79,7 +79,7 @@ AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary ()
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<EeAuthenticationMethod>
+    children={<StepsFormNew.FieldSummary<AuthenticationMethodEnum>
       convert={(code) => $t(authMethodsByCode[code!].title)}
     />}
   />
