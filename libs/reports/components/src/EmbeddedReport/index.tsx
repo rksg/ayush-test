@@ -80,7 +80,7 @@ export function EmbeddedReport (props: ReportProps) {
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
         dashboardUiConfig: { hideChartControls: true, hideTitle: true },
         // debug: true,
-        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
+        // authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
       })
       embeddedObj.then(async embObj =>{
         timer = setInterval(async () => {

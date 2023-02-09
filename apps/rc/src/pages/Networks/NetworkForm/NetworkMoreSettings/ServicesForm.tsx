@@ -52,7 +52,6 @@ export function ServicesForm () {
   const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
   const providerData = useExternalProvidersQuery({ params })
 
-
   useEffect(() => {
     if (data && providerData.data) {
       const isProviderHasAccountingService = function () {
@@ -87,6 +86,9 @@ export function ServicesForm () {
   }, [data])
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
+  const setEnableDnsProxy = (enable: boolean) => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'dnsProxyEnabled'], enable)
+  }
 
   const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
@@ -117,7 +119,8 @@ export function ServicesForm () {
             valuePropName='checked'
             initialValue={false}
           >
-            <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+            <DnsProxyContext.Provider
+              value={{ dnsProxyList, setDnsProxyList, setEnableDnsProxy }}>
               {enableDnsProxy && <DnsProxyModal />}
             </DnsProxyContext.Provider>
           </Form.Item>
