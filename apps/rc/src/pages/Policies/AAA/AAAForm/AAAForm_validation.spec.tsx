@@ -132,10 +132,10 @@ describe('AAAForm', () => {
   async function fillInAuthIpSettings () {
     const inputProfile = await screen.findByLabelText(/Profile Name/)
     fireEvent.change(inputProfile, { target: { value: 'create aaaa' } })
-    const ipTextbox = await screen.findByLabelText('Server Address')
+    const ipTextbox = await screen.findByLabelText('IP Address')
     fireEvent.change(ipTextbox, { target: { value: '1.1.1.1' } })
 
-    const portTextbox = await screen.findByLabelText('Port')
+    const portTextbox = await screen.findByLabelText('Authentication Port')
     fireEvent.change(portTextbox, { target: { value: '10' } })
 
     const secretTextbox = await screen.findByLabelText('Shared Secret')
@@ -149,11 +149,11 @@ describe('AAAForm', () => {
     fireEvent.change(inputProfile, { target: { value: 'create aaaa' } })
     await userEvent.click(await screen.findByRole('radio', { name: /Accounting/ }))
 
-    const ipTextbox = await screen.findAllByLabelText('Server Address')
+    const ipTextbox = await screen.findAllByLabelText('IP Address')
     fireEvent.change(ipTextbox[0], { target: { value: '1.1.1.1' } })
 
 
-    const portTextbox = await screen.findAllByLabelText('Port')
+    const portTextbox = await screen.findAllByLabelText('Authentication Port')
     fireEvent.change(portTextbox[0], { target: { value: '10' } })
 
 

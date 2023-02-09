@@ -69,9 +69,9 @@ describe('AAAForm', () => {
 
     //step 1 setting form
     await userEvent.click(await screen.findByText('Add Secondary Server'))
-    await userEvent.type((await screen.findAllByLabelText('Server Address'))[0],
+    await userEvent.type((await screen.findAllByLabelText('IP Address'))[0],
       '2.3.3.4')
-    fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
+    fireEvent.change((await screen.findAllByLabelText('IP Address'))[0],
       { target: { value: '2.3.3.4' } })
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
       'test1234')
@@ -81,7 +81,7 @@ describe('AAAForm', () => {
     fireEvent.change(inputProfile, { target: { value: 'test1' } })
     fireEvent.blur(inputProfile)
     fireEvent.change(inputProfile, { target: { value: 'create aaa test' } })
-    await userEvent.type((await screen.findAllByLabelText('Server Address'))[1],
+    await userEvent.type((await screen.findAllByLabelText('IP Address'))[1],
       '2.3.3.4')
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
@@ -95,12 +95,12 @@ async function editAAA (){
   render(<Provider><AAAForm edit={true} networkView={false}/></Provider>, {
     route: { params }
   })
-  fireEvent.change((await screen.findAllByLabelText('Server Address'))[0],
+  fireEvent.change((await screen.findAllByLabelText('IP Address'))[0],
     { target: { value: '2.3.3.4' } })
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
     'test1234')
-  const port2 = (await screen.findAllByRole('spinbutton', { name: 'Port' }))[1]
-  fireEvent.change((await screen.findAllByLabelText('Server Address'))[1],
+  const port2 = (await screen.findAllByRole('spinbutton', { name: 'Authentication Port' }))[1]
+  fireEvent.change((await screen.findAllByLabelText('IP Address'))[1],
     { target: { value: '2.3.3.4' } })
   await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
     'test1234')

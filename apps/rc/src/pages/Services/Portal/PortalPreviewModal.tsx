@@ -1,5 +1,7 @@
 
 
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
@@ -12,7 +14,28 @@ import * as UI    from './styledComponents'
 export default function PortalPreviewModal (props:{
   demoValue?: Demo,
   portalLang: { [key:string]:string },
+  fromPortalList?: boolean,
+  portalId?: string,
+  id?: string
 }) {
+  useEffect(()=>{
+    if(props.portalLang.accept&&props.fromPortalList&&props.portalId===props.id){
+      const content = <Provider><PortalDemo value={demoValue}
+        isPreview={true}
+        viewPortalLang={props.portalLang}
+      /></Provider>
+      showActionModal({
+        type: 'confirm',
+        content: content,
+        okCancel: false,
+        closable: true,
+        width: '100%',
+        okButtonProps: { style: { display: 'none' } },
+        bodyStyle: { padding: 0 },
+        className: UI.modalClassName
+      })
+    }
+  }, [props.portalLang])
   const { $t } = useIntl()
   const { demoValue } = props
   const getContent = <Provider><PortalDemo value={demoValue}
@@ -20,7 +43,7 @@ export default function PortalPreviewModal (props:{
     viewPortalLang={props.portalLang}
   /></Provider>
   const openModal= ()=>{
-    showActionModal({
+    !props.fromPortalList&&showActionModal({
       type: 'confirm',
       content: getContent,
       okCancel: false,
@@ -34,7 +57,7 @@ export default function PortalPreviewModal (props:{
   return (
     <UI.Button onClick={()=>openModal()} type='default' size='small'>
       <UI.ModalStyle />
-      {$t({ defaultMessage: 'Preview' })}
+      {props.fromPortalList?<UI.EyeOpenPreview/>:$t({ defaultMessage: 'Preview' })}
     </UI.Button>
   )
 }

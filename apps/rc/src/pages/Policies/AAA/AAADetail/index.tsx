@@ -22,7 +22,7 @@ export default function AAAPolicyDetail () {
         ]}
         extra={[
           <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.ROGUE_AP_DETECTION,
+            type: PolicyType.AAA,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
           })}

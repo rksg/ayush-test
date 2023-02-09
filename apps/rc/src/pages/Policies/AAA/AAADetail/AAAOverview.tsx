@@ -22,7 +22,7 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
         </GridCol>
         <GridCol col={{ span: 6 }}>
           <Card.Title>
-            {$t({ defaultMessage: 'Primary Server Address' })}
+            {$t({ defaultMessage: 'Primary IP Address' })}
           </Card.Title>
           <Typography.Text>{aaaProfile.primary?.ip}</Typography.Text>
         </GridCol>
@@ -32,18 +32,19 @@ export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
           </Card.Title>
           <Typography.Text>{aaaProfile.primary?.port}</Typography.Text>
         </GridCol>
-        <GridCol col={{ span: 6 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Secondary Server Address' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.secondary?.ip}</Typography.Text>
-        </GridCol>
-        <GridCol col={{ span: 4 }}>
-          <Card.Title>
-            {$t({ defaultMessage: 'Secondary Port' })}
-          </Card.Title>
-          <Typography.Text>{aaaProfile.secondary?.port}</Typography.Text>
-        </GridCol>
+        {aaaProfile.secondary && <>
+          <GridCol col={{ span: 6 }}>
+            <Card.Title>
+              {$t({ defaultMessage: 'Secondary IP Address' })}
+            </Card.Title>
+            <Typography.Text>{aaaProfile.secondary?.ip}</Typography.Text>
+          </GridCol>
+          <GridCol col={{ span: 4 }}>
+            <Card.Title>
+              {$t({ defaultMessage: 'Secondary Port' })}
+            </Card.Title>
+            <Typography.Text>{aaaProfile.secondary?.port}</Typography.Text>
+          </GridCol></>}
       </GridRow>
     </Card>
   )
