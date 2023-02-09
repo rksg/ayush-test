@@ -1,5 +1,6 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Provider }         from '@acx-ui/store'
+import { render, screen }   from '@acx-ui/test-utils'
 
 import AnalyticsRoutes from './Routes'
 
@@ -44,6 +45,7 @@ test('should redirect analytics to analytics/incidents', async () => {
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should redirect service validation to serviceValidation/networkHealth', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation',
@@ -62,6 +64,7 @@ test('should navigate to analytics/incidents', async () => {
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to serviceValidation/networkHealth', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/networkHealth',
@@ -72,6 +75,7 @@ test('should navigate to serviceValidation/networkHealth', async () => {
 })
 
 test('should navigate to Netework Health add page', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/networkHealth/add',
@@ -82,6 +86,7 @@ test('should navigate to Netework Health add page', async () => {
 })
 
 test('should navigate to Netework Health edit page', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(<Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/networkHealth/specId/edit',
@@ -146,6 +151,7 @@ test('should navigate to analytics/incidents/tab/overview', async () => {
   expect(screen.getByTestId('incidentsListPage')).toBeVisible()
 })
 test('should navigate to serviceValidation/networkHealth/tab/overview', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/overview',
@@ -155,6 +161,7 @@ test('should navigate to serviceValidation/networkHealth/tab/overview', async ()
   expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
 })
 test('should navigate to serviceValidation/networkHealth/tab/details', async () => {
+  jest.mocked(useIsTierAllowed).mockReturnValue(true)
   render(< Provider><AnalyticsRoutes /></Provider>, {
     route: {
       path: '/t/tenantId/serviceValidation/networkHealth/1/tests/1/tab/details',
@@ -162,4 +169,22 @@ test('should navigate to serviceValidation/networkHealth/tab/details', async () 
     }
   })
   expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
+})
+
+describe('if tier no access', () => {
+  // eslint-disable-next-line no-console
+  afterAll(() => jest.mocked(console.warn).mockRestore())
+
+  it('service validation renders nothing', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    const { container } = render(<AnalyticsRoutes />, {
+      route: {
+        path: '/t/tenantId/serviceValidation',
+        wrapRoutes: false
+      },
+      wrapper: Provider
+    })
+    expect(container).toBeEmptyDOMElement()
+  })
 })
