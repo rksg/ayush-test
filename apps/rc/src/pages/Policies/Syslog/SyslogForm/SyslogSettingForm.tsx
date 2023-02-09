@@ -148,7 +148,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     </Select>
   )
 
-  const handleFacility = (facility: string) => {
+  const handleFacility = (facility: FacilityEnum) => {
     dispatch({
       type: SyslogActionTypes.FACILITY,
       payload: {
@@ -173,7 +173,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     </Select>
   )
 
-  const handleFlowLevel = (flowLevel: string) => {
+  const handleFlowLevel = (flowLevel: FlowLevelEnum) => {
     dispatch({
       type: SyslogActionTypes.FLOWLEVEL,
       payload: {

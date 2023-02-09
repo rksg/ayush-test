@@ -652,7 +652,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
         const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
-
         return {
           ...req,
           body: {

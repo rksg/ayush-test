@@ -11,6 +11,10 @@ import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-
 import {
   catchErrorResponse,
   getPolicyListRoutePath,
+  FacilityEnum,
+  FlowLevelEnum,
+  PriorityEnum,
+  ProtocolEnum,
   SyslogVenue,
   SyslogContextType
 } from '@acx-ui/rc/utils'
@@ -36,13 +40,13 @@ const SyslogForm = (props: SyslogFormProps) => {
   const policyName = ''
   const server = ''
   const port = ''
-  const protocol = 'UDP'
+  const protocol = ProtocolEnum.UDP
   const secondaryServer = ''
   const secondaryPort = ''
-  const secondaryProtocol = 'TCP'
-  const facility = ''
-  const priority = ''
-  const flowLevel = ''
+  const secondaryProtocol = ProtocolEnum.TCP
+  const facility = FacilityEnum.KEEP_ORIGINAL
+  const priority = PriorityEnum.INFO
+  const flowLevel = FlowLevelEnum.CLIENT_FLOW
   const venues:SyslogVenue[] = []
 
   const formRef = useRef<StepsFormInstance<SyslogContextType>>()
@@ -67,7 +71,19 @@ const SyslogForm = (props: SyslogFormProps) => {
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
     return {
       id: edit ? params.policyId : '',
-      name: state.policyName
+      name: state.policyName,
+      primary: {
+        server: state.server,
+        port: state.port,
+        protocol: state.protocol
+      },
+      secondary: {
+        server: state.secondaryServer,
+        port: state.secondaryPort,
+        protocol: state.secondaryProtocol
+      },
+      facility: state.facility,
+      flowLevel: state.flowLevel
     }
   }
 
@@ -101,7 +117,7 @@ const SyslogForm = (props: SyslogFormProps) => {
     <SyslogContext.Provider value={{ state, dispatch }}>
       <PageHeader
         title={edit
-          ? $t({ defaultMessage: 'Edit Syslog Policy' })
+          ? $t({ defaultMessage: 'Edit Syslog Server' })
           : $t({ defaultMessage: 'Add Syslog Server' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }

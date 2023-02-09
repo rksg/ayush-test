@@ -84,13 +84,15 @@ const SyslogVenueTable = () => {
       align: 'center',
       render: (data, row) => {
         if (row.rogueDetection?.enabled) {
-          return <div style={{ textAlign: 'center' }}>
-            <div>ON</div>
+          return <div>
+            <div>
+              {$t({ defaultMessage: 'ON' })}
+            </div>
             <div>({row.rogueDetection.policyName})</div>
           </div>
         }
-        return <div style={{ textAlign: 'center' }}>
-          OFF
+        return <div>
+          {$t({ defaultMessage: 'OFF' })}
         </div>
       }
     },
@@ -140,7 +142,8 @@ const SyslogVenueTable = () => {
         showToast({
           type: 'info',
           duration: 10,
-          content: 'The max-number of venues in a rogue ap policy profile is 64.'
+          content: $t({ defaultMessage:
+            'The max-number of venues in a rogue ap policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

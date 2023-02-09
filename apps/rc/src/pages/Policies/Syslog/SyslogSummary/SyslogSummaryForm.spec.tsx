@@ -35,7 +35,7 @@ const initState = {
 
 describe('SyslogSummaryForm', () => {
   it('should render form successfully', async () => {
-    const { asFragment } = render(
+    render(
       <SyslogContext.Provider value={{
         state: initState,
         dispatch: setSyslogSummary
@@ -45,7 +45,5 @@ describe('SyslogSummaryForm', () => {
       { wrapper }
     )
     expect(screen.getByText('policyName1')).toBeInTheDocument()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 })

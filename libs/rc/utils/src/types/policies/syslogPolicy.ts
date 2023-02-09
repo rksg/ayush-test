@@ -28,9 +28,9 @@ export interface SyslogContextType {
   secondaryServer: string,
   secondaryPort: string,
   secondaryProtocol: string,
-  facility: string,
-  priority: string,
-  flowLevel: string,
+  facility: FacilityEnum,
+  priority: PriorityEnum,
+  flowLevel: FlowLevelEnum,
   venues: SyslogVenue[]
 }
 
@@ -117,17 +117,17 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.FACILITY,
   payload: {
-    facility: string
+    facility: FacilityEnum
   }
 } | {
   type: SyslogActionTypes.PRIORITY,
   payload: {
-    priority: string
+    priority: PriorityEnum
   }
 } | {
   type: SyslogActionTypes.FLOWLEVEL,
   payload: {
-    flowLevel: string
+    flowLevel: FlowLevelEnum
   }
 } | {
   type: SyslogActionTypes.UPDATE_STATE,
@@ -136,16 +136,10 @@ export type SyslogActionPayload = {
   }
 } | {
   type: SyslogActionTypes.ADD_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 } | {
   type: SyslogActionTypes.REMOVE_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 }
 
 export enum SyslogConstant {
