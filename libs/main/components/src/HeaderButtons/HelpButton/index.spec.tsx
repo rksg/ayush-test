@@ -37,9 +37,9 @@ describe('HelpPage Component', () => {
     mockServer.use(
       rest.get(MAPPING_URL, (_, res, ctx) =>
         res(ctx.json({
-          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          't/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          't/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          't/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
       rest.get(DOCS_URL+':docID', (_, res, ctx) =>
