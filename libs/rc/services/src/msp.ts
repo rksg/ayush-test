@@ -14,6 +14,8 @@ import {
   MspEc, EcDeviceInventory,
   MspEcData,
   MspEcDelegatedAdmins,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
   SupportDelegation,
   VarCustomer,
   MspProfile,
@@ -38,7 +40,18 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateMspEc',
+            'UpdateMspEc'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
