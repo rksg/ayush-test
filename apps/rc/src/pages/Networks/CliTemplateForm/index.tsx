@@ -18,7 +18,7 @@ import {
   useUpdateCliTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  catchErrorResponse,
+  CatchErrorResponse,
   CliConfiguration
 } from '@acx-ui/rc/utils'
 import {
@@ -79,7 +79,7 @@ export default function CliTemplateForm () {
       }).unwrap()
       navigate(linkToNetworks, { replace: true })  // TODO: change route
     } catch (error) {
-      const errorRes = error as catchErrorResponse
+      const errorRes = error as CatchErrorResponse
       const message
         = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
       showToast({
@@ -102,7 +102,7 @@ export default function CliTemplateForm () {
       }).unwrap()
       navigate(linkToNetworks, { replace: true }) // TODO: change route
     } catch (error) {
-      const errorRes = error as catchErrorResponse
+      const errorRes = error as CatchErrorResponse
       const message
         = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
       showToast({

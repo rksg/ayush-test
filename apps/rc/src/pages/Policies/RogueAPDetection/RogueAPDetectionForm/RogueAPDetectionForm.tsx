@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
-  catchErrorResponse,
+  CatchErrorResponse,
   getPolicyListRoutePath,
   RogueAPDetectionContextType,
   RogueAPRule,
@@ -78,7 +78,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       }
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
-      const errorResponse = error as catchErrorResponse
+      const errorResponse = error as CatchErrorResponse
       showToast({
         type: 'error',
         content: (<div>

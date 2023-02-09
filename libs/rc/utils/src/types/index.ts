@@ -407,14 +407,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse { ////
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number
