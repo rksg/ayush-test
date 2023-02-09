@@ -28,6 +28,7 @@ const sample = {
   topNSwitchesByErrors: [{
     name: 'CIOT-ISOLATION-MLISA',
     mac: 'D4:C1:9E:20:5F:25',
+    serial: 'EZE3341M005',
     inErr: 1,
     outErr: 1
   }]
