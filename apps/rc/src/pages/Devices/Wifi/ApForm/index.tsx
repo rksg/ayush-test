@@ -225,7 +225,7 @@ export function ApForm () {
           value: item.id
         }))
         .sort((a, b) => (a.label > b.label) ? 1 : -1)
-      result.push(...list)
+      result.push(list)
     }
     return result
   }
