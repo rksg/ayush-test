@@ -71,6 +71,22 @@ describe('AddEdgeDhcp', () => {
 
     await screen.findByText('FQDN Name or IP Address')
   })
+
+  it('cancel and go back to my service', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddDhcp />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/dhcp/create' }
+      })
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/services`,
+      hash: '',
+      search: ''
+    })
+  })
 })
 
 describe('AddEdgeDhcp api fail', () => {
