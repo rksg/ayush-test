@@ -23,8 +23,7 @@ describe('Network Health', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Service Validation')).toBeVisible()
-
+    expect(await screen.findByText('Network Health')).toBeVisible()
   })
 
   it('should change to details tab correctly', async () => {
