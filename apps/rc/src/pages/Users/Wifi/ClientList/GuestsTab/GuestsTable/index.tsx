@@ -299,7 +299,7 @@ export default function GuestsTable () {
           title={$t({ defaultMessage: 'Import from file' })}
           maxSize={CsvSize['5MB']}
           maxEntries={250}
-          temlateLink='assets/templates/guests_import_template.csv'
+          templateLink='assets/templates/guests_import_template.csv'
           visible={importVisible}
           isLoading={importResult.isLoading}
           importError={importResult.error as FetchBaseQueryError}
