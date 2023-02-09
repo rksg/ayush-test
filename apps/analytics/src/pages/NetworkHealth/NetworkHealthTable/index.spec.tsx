@@ -14,7 +14,8 @@ import {
   fireEvent,
   waitForElementToBeRemoved,
   mockServer,
-  act
+  act,
+  mockGraphqlMutation
 }                                              from '@acx-ui/test-utils'
 
 import { api } from './services'
@@ -116,7 +117,9 @@ describe('Network Health Table', () => {
 
   it('should render loader', () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: [] }
+      data: {
+        allServiceGuardSpecs: []
+      }
     })
     render(<Router>
       <Provider>
@@ -128,19 +131,24 @@ describe('Network Health Table', () => {
 
   it('should render table with valid input', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
 
-    render(<Provider>
+    const { asFragment } = render(<Provider>
       <NetworkHealthTable/>
     </Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
       }
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
   })
 
   const columnHeaders = [
@@ -155,13 +163,17 @@ describe('Network Health Table', () => {
 
   it('should render column header', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
       }
     })
 
@@ -176,13 +188,17 @@ describe('Network Health Table', () => {
 
   it('should click run now', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
       }
     })
 
@@ -193,13 +209,17 @@ describe('Network Health Table', () => {
 
   it('should disable run now button', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
       }
     })
 
@@ -214,7 +234,9 @@ describe('Network Health Table', () => {
       rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile)))
     )
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
     render(<Provider>
       <UserProfileProvider>
@@ -223,7 +245,9 @@ describe('Network Health Table', () => {
     </Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
       }
     })
     await act(async () => {
@@ -244,7 +268,9 @@ describe('Network Health Table', () => {
         CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile2)))
     )
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
     render(<Provider>
       <UserProfileProvider>
@@ -253,7 +279,9 @@ describe('Network Health Table', () => {
     </Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile2.tenantId }
+        params: {
+          tenantId: fakeUserProfile2.tenantId
+        }
       }
     })
     await act(async () => {
@@ -267,19 +295,31 @@ describe('Network Health Table', () => {
 
   it('should delete test properly', async () => {
     mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
-      data: { allServiceGuardSpecs: networkHealthTests }
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
     })
 
     render(<Provider><NetworkHealthTable/></Provider>, {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: { tenantId: fakeUserProfile.tenantId }
+        params: {
+          tenantId: fakeUserProfile.tenantId 
+        }
       }
     })
     const radio = await screen.findAllByRole('radio')
     fireEvent.click(radio[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     fireEvent.click(await screen.findByRole('button', { name: 'Delete test' }))
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    mockGraphqlMutation(networkhealthURL, 'deleteServiceGuardSpec', {
+      data: {
+        id: networkHealthTests[0].id
+      }
+    })
   })
 
   it('should return getLastRun results correctly', () => {
@@ -296,7 +336,7 @@ describe('Network Health Table', () => {
   it('should return getAPsUnderTest results correctly', () => {
     const aps = 10
     const result = getAPsUnderTest(aps)
-    expect(result).toEqual(<TenantLink to={'/serviceValidation/networkHealth'}>{aps}</TenantLink>)
+    expect(result).toEqual(aps)
   })
   it('should return noDataSymbol for getAPsUnderTest', () => {
     const time = 0

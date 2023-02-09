@@ -74,7 +74,7 @@ export function NetworkHealthTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
-      onClick: ([{ name, id }]) => {
+      onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -82,9 +82,8 @@ export function NetworkHealthTable () {
             entityName: $t(defineMessage({ defaultMessage: 'test' })),
             entityValue: name
           },
-          onOk: async () => {
-            await deleteMutation({ params: { id } })
-          }
+          onOk: () => deleteMutation({ params: { id } })
+            .then(clearSelection)
         })
       }
     }
@@ -97,7 +96,8 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value) => <TenantLink to={'/serviceValidation/networkHealth'}>{value}</TenantLink> // TODO: handle link
+      render: (value, row) =>
+        <TenantLink to={`/serviceValidation/networkHealth/${row.tests.items[0]?.id}`}>{value}</TenantLink>
     },
     {
       key: 'clientType',
