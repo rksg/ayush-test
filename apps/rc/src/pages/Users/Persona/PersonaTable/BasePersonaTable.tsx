@@ -178,7 +178,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
             const ids = selectedItems.map(({ id }) => id)
             const names = selectedItems.map(({ name }) => name).join(', ')
 
-            deletePersonas({ payload: { ids } })
+            deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
                 showToast({
