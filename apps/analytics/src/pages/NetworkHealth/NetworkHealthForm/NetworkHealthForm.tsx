@@ -64,6 +64,7 @@ export function NetworkHealthForm () {
       editMode={editMode}
       initialValues={specToDto(spec.data) ?? initialValues}
       onFinish={async (values) => { await submit(values).unwrap() }}
+      onCancel={navigateToList}
     >
       <StepsFormNew.StepForm
         title={$t(contents.steps.settings)}
