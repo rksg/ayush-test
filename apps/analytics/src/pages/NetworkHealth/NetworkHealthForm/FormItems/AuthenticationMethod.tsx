@@ -48,7 +48,7 @@ export function AuthenticationMethod () {
 
   const mainLabel = <>
     {$t(label)}
-    <Tooltip.Info
+    <Tooltip.Question
       title={<FormattedMessage
         {...contents.unsupportedAuthMethods[clientType]}
         values={contents.formatValues}

@@ -47,13 +47,13 @@ export function NetworkHealthForm () {
       showToast({
         type: 'success',
         content: response.originalArgs?.id
-          ? $t({ defaultMessage: 'Network Health spec updated' })
-          : $t({ defaultMessage: 'Network Health spec created' })
+          ? $t(contents.messageMapping.TEST_UPDATED)
+          : $t(contents.messageMapping.TEST_CREATED)
       })
       navigateToList()
     } else {
-      const key = response.data.userErrors[0].message as keyof typeof contents.errorMsgMapping
-      const errorMessage = $t(contents.errorMsgMapping[key])
+      const key = response.data.userErrors[0].message as keyof typeof contents.messageMapping
+      const errorMessage = $t(contents.messageMapping[key])
       showToast({ type: 'error', content: errorMessage })
     }
   }, [$t, navigateToList, response])
@@ -66,15 +66,15 @@ export function NetworkHealthForm () {
       onFinish={async (values) => { await submit(values).unwrap() }}
     >
       <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'Settings' })}
+        title={$t(contents.steps.settings)}
         children={<NetworkHealthFormSettings />}
       />
       <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'APs Selection' })}
+        title={$t(contents.steps.apsSelection)}
         children={<NetworkHealthFormAPsSelection />}
       />
       {!editMode ? <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'Summary' })}
+        title={$t(contents.steps.summary)}
         children={<NetworkHealthFormSummary />}
       /> : null}
     </StepsFormNew>

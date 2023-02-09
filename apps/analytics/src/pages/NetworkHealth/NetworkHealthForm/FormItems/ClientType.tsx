@@ -35,7 +35,7 @@ export function ClientType () {
   return <Form.Item
     label={<>
       {$t(label)}
-      <Tooltip.Info title={tooltip} />
+      <Tooltip.Question title={tooltip} />
     </>}
     children={
       <Form.Item

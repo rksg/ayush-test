@@ -12,7 +12,7 @@ export function SpeedTest () {
     name={name}
     label={<>
       {$t(label)}
-      <Tooltip.Info title={$t({ defaultMessage: 'Using speedtest.net servers' })} />
+      <Tooltip.Question title={$t({ defaultMessage: 'Using speedtest.net servers' })} />
     </>}
     valuePropName='checked'
     children={<Checkbox children={$t({ defaultMessage: 'Enable' })} />}
