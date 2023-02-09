@@ -6,7 +6,7 @@ import { DateRange }        from '@acx-ui/utils'
 
 import { api } from './services'
 
-describe('trafficByVolumeWidgetApi', () => {
+describe('useResourceUtilizationQuery', () => {
   const props: AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -29,30 +29,29 @@ describe('trafficByVolumeWidgetApi', () => {
               '2022-04-07T10:00:00.000Z',
               '2022-04-07T10:15:00.000Z'
             ],
-            totalTraffic_all: [1, 2, 3, 4, 5],
-            totalTraffic_6: [6, 7, 8, 9, 10],
-            totalTraffic_5: [11, 12, 13, 14, 15],
-            traffic_24: [16, 17, 18, 19, 20]
+            cpuPercent: [1, 2, 3, 4, 5],
+            memoryPercent: [6, 7, 8, 9, 10],
+            poePercent: [11, 12, 13, 14, 15]
           }
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchResourceUtilizationMetrics', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.resourceUtilization.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.timeSeries)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TrafficByVolumeWidget', {
+    mockGraphqlQuery(dataApiURL, 'SwitchResourceUtilizationMetrics', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.trafficByVolume.initiate(props)
+      api.endpoints.resourceUtilization.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

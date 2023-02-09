@@ -1,22 +1,56 @@
-export const topSwitchModelsResponse = {
+export const topPortsResponse = {
   network: {
     hierarchyNode: {
-      topNSwitchModels: [{
-        name: 'ICX7150-C12P',
-        count: 13
-      }, {
-        name: 'Unknown',
-        count: 8
-      }, {
-        name: 'ICX7150-24P',
-        count: 5
-      }, {
-        name: 'ICX7250-48P',
-        count: 5
-      }, {
-        name: 'ICX7650-48ZP',
-        count: 4
-      }]
+      topNPorts: [
+        {
+          name: 'GigabitEthernet1/1/1',
+          metricValue: 0,
+          timeSeries: {
+            time: [
+              '2023-02-09T06:00:00.000Z',
+              '2023-02-09T06:15:00.000Z',
+              '2023-02-09T06:30:00.000Z'
+            ],
+            metricValue: [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          name: 'GigabitEthernet1/1/2',
+          metricValue: 0,
+          timeSeries: {
+            time: [
+              '2023-02-09T06:00:00.000Z',
+              '2023-02-09T06:15:00.000Z',
+              '2023-02-09T06:30:00.000Z'
+            ],
+            metricValue: [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          name: 'GigabitEthernet1/1/3',
+          metricValue: 0,
+          timeSeries: {
+            time: [
+              '2023-02-09T06:00:00.000Z',
+              '2023-02-09T06:15:00.000Z',
+              '2023-02-09T06:30:00.000Z'
+            ],
+            metricValue: [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ]
     }
   }
 }

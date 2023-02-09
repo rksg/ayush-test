@@ -3,40 +3,41 @@ import { AnalyticsFilter }  from '@acx-ui/analytics/utils'
 import { store }            from '@acx-ui/store'
 import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
-import { topSwitchModelsResponse } from './__tests__/fixtures'
-import { api }                     from './services'
+import { topPortsResponse } from './__tests__/fixtures'
+import { api }              from './services'
 
-describe('TopSwitchModelsByCountApi', () => {
+describe('useTopPortsQuery', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     path: [{ type: 'network', name: 'Network' }],
-    filter: {}
-  } as AnalyticsFilter
+    filter: {
+    }
+  } as AnalyticsFilter & { by: 'traffic' | 'error' }
 
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
 
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
-      data: topSwitchModelsResponse
+    mockGraphqlQuery(dataApiURL, 'TopNPorts', {
+      data: topPortsResponse
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.topSwitchModels.initiate(props)
+      api.endpoints.topPorts.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(
-      topSwitchModelsResponse.network.hierarchyNode.topNSwitchModels
+      topPortsResponse.network.hierarchyNode.topNPorts
     )
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'topSwitchModels', {
+    mockGraphqlQuery(dataApiURL, 'TopNPorts', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.topSwitchModels.initiate(props)
+      api.endpoints.topPorts.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

@@ -23,6 +23,17 @@ function getTopPortsDonutChartData (data: Ports[]): DonutChartData[] {
   return chartData
 }
 
+function getTopPortsLineChartData (data: Ports[]) {
+  let seriesMapping: { key: string, name:string }[] = []
+  const tmpData: { [key:string]: number[] | string[] } = {}
+  tmpData['time'] = data[0].timeSeries.time
+  data.forEach(item=> {
+    tmpData[item.name] = item.timeSeries.metricValue
+    seriesMapping.push({ key: item.name, name: item.name })
+  })
+  return getSeriesData(tmpData, seriesMapping)
+}
+
 export { TopPortsWidget as TopPorts }
 
 function TopPortsWidget ({ filters, type }: {
@@ -36,17 +47,6 @@ function TopPortsWidget ({ filters, type }: {
     })
   })
   const isDataAvailable = queryResults.data && queryResults.data.length > 0
-
-  const handleLineData = (data: Ports[]) => {
-    let seriesMapping: { key: string, name:string }[] = []
-    const tmpData: { [key:string]: number[] | string[] } = {}
-    tmpData['time'] = data[0].timeSeries.time
-    data.forEach(item=> {
-      tmpData[item.name] = item.timeSeries.metricValue
-      seriesMapping.push({ key: item.name, name: item.name })
-    })
-    return getSeriesData(tmpData, seriesMapping)
-  }
 
   return (
     <Loader states={[queryResults]}>
@@ -74,7 +74,7 @@ function TopPortsWidget ({ filters, type }: {
                 />
                 : <MultiLineTimeSeriesChart
                   style={{ width, height }}
-                  data={handleLineData(queryResults.data!)}
+                  data={getTopPortsLineChartData(queryResults.data!)}
                   dataFormatter={formatter('bytesFormat')}
                   legendFormatter={() => ''}
                 />
