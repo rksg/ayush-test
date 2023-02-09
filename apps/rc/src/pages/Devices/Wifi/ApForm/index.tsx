@@ -173,6 +173,7 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
+      navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as catchErrorResponse)
     }

@@ -132,20 +132,20 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
                 APSystem?.gateway || '--'
               }
             />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Primary DNS' })}
-              children={
-                APSystem?.primaryDnsServer || '--'
-              }
-            />
-            <Descriptions.Item
-              label={$t({ defaultMessage: 'Secondary DNS' })}
-              children={
-                APSystem?.secondaryDnsServer || '--'
-              }
-            />
           </>
         )}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Primary DNS' })}
+          children={
+            APSystem?.primaryDnsServer || '--'
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Secondary DNS' })}
+          children={
+            APSystem?.secondaryDnsServer || '--'
+          }
+        />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Ext. IP Address' })}
           children={
