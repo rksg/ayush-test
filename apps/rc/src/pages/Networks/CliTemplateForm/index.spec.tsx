@@ -136,6 +136,7 @@ describe('Cli Template Form - Add', () => {
     await screen.findByRole('heading', { level: 3, name: 'Switches' })
     await userEvent.click(await screen.findByText('My-Venue'))
 
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     const row1 = await screen.findByRole('row', { name: /7150stack/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
