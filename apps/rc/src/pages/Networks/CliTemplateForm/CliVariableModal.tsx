@@ -20,6 +20,8 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 import { VariableType } from './CliStepConfiguration'
 import * as UI          from './styledComponents'
 
+import { tooltip } from './'
+
 interface variableFormData {
   name: string
   type: string
@@ -40,21 +42,19 @@ export function CliVariableModal (props: {
   setVariableList: (data: CliTemplateVariable[]) => void
 }) {
   const { $t } = getIntl()
-  const { data, editMode, modalvisible, setModalvisible, variableList, setVariableList } = props
   const [form] = Form.useForm()
-
   const [selectType, setSelectType] = useState('')
+  const { data, editMode, modalvisible, setModalvisible, variableList, setVariableList } = props
 
   const formContent = <Form
     form={form}
     layout='vertical'
     validateTrigger='onBlur'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFieldsChange={(changedFields: any) => {
       const changedField = changedFields?.[0]?.name?.[0]
       if (changedField === 'startIp' || changedField === 'mask') {
-        const startIp = form.getFieldValue('startIp')
-        const endIp = form.getFieldValue('endIp')
-        const mask = form.getFieldValue('mask')
+        const { startIp, endIp, mask } = form.getFieldsValue()
         startIp && endIp && mask && form.validateFields(['endIp'])
       }
     }}
@@ -76,10 +76,10 @@ export function CliVariableModal (props: {
             } }
           ]}
           validateFirst
-          children={<Input maxLength={20} disabled={editMode} />}
+          children={<Input data-testid='variable-name' maxLength={20} disabled={editMode} />}
         />
         <Tooltip
-          title={$t({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' })}
+          title={$t(tooltip.variableName)}
           placement='bottom'
         >
           <UI.QuestionMarkIcon />
@@ -96,6 +96,7 @@ export function CliVariableModal (props: {
           rules={[{ required: true }]}
         >
           <Select
+            data-testid='variable-type'
             value={selectType}
             options={[
               { label: $t({ defaultMessage: 'Select...' }), value: '' },
@@ -122,7 +123,7 @@ export function CliVariableModal (props: {
             { validator: (_, value) => cliIpAddressRegExp(value) }
           ]}
           validateFirst
-          children={<Input />}
+          children={<Input data-testid='start-ip' />}
         />
       </UI.FormItemLayout>}
     />
@@ -146,7 +147,7 @@ export function CliVariableModal (props: {
             }
           ]}
           validateFirst
-          children={<Input />}
+          children={<Input data-testid='end-ip' />}
         />
       </UI.FormItemLayout>}
     />
@@ -161,7 +162,7 @@ export function CliVariableModal (props: {
             { validator: (_, value) => subnetMaskPrefixRegExp(value) }
           ]}
           validateFirst
-          children={<Input />}
+          children={<Input data-testid='mask' />}
         />
       </UI.FormItemLayout>}
     /></>}
@@ -181,7 +182,7 @@ export function CliVariableModal (props: {
             {
               validator: (_, value) => {
                 const endVal = form.getFieldValue('endVal')
-                if (endVal && (Number(endVal) < Number(value))) {
+                if (endVal && (Number(endVal) <= Number(value))) {
                   return Promise.reject($t(validationMessages.startRangeInvalid))
                 }
                 endVal && form.setFields([{ name: ['endVal'], errors: [] }])
@@ -190,10 +191,13 @@ export function CliVariableModal (props: {
             }
           ]}
           validateFirst
-          children={<Input placeholder={$t({ defaultMessage: 'Between 0-65535' })} />}
+          children={<Input
+            data-testid='start-value'
+            placeholder={$t({ defaultMessage: 'Between 0-65535' })}
+          />}
         />
         <Tooltip
-          title={$t({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' })}
+          title={$t(tooltip.rangeStartValue)}
           placement='bottom'
         >
           <UI.QuestionMarkIcon />
@@ -215,7 +219,7 @@ export function CliVariableModal (props: {
             {
               validator: (_, value) => {
                 const startVal = form.getFieldValue('startVal')
-                if (startVal && (Number(value) < Number(startVal))) {
+                if (startVal && (Number(value) <= Number(startVal))) {
                   return Promise.reject($t(validationMessages.endRangeInvalid))
                 }
                 startVal && form.setFields([{ name: ['startVal'], errors: [] }])
@@ -224,10 +228,13 @@ export function CliVariableModal (props: {
             }
           ]}
           validateFirst
-          children={<Input placeholder={$t({ defaultMessage: 'Between 0-65535' })} />}
+          children={<Input
+            data-testid='end-value'
+            placeholder={$t({ defaultMessage: 'Between 0-65535' })}
+          />}
         />
         <Tooltip
-          title={$t({ defaultMessage: 'You may enter numbers between 0 and 65535. End value must be higher than start value' })}
+          title={$t(tooltip.rangeEndValue)}
           placement='bottom'
         >
           <UI.QuestionMarkIcon />
@@ -246,11 +253,11 @@ export function CliVariableModal (props: {
             { validator: (_, value) => specialCharactersRegExp(value) }
           ]}
           validateFirst
-          children={<Input maxLength={20} />}
+          children={<Input data-testid='string' maxLength={20} />}
         />
 
         <Tooltip
-          title={$t({ defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed' })}
+          title={$t(tooltip.stringValue)}
           placement='bottom'
         >
           <UI.QuestionMarkIcon />
@@ -261,11 +268,11 @@ export function CliVariableModal (props: {
 
   const transformToRawData = (data: variableFormData) => {
     const separator = getSeparator(data.type)
-    const fieldsMap = { //////////////
+    const fieldsMap: Record<string, string[]> = {
       [VariableType.ADDRESS]: ['startIp', 'endIp', 'mask'],
       [VariableType.RANGE]: ['startVal', 'endVal'],
       [VariableType.STRING]: ['string']
-    } as any
+    }
 
     const values = Object.entries(data)
       .filter(item => fieldsMap[data.type].includes(item[0]))
@@ -370,14 +377,15 @@ function getSeparator (type: string) {
     : (t === VariableType.ADDRESS ? '_' : '*')
 }
 
-function getNetworkBitmap (ipArr: any, netmaskArr: any) {
+function getNetworkBitmap (ipArr: string, netmaskArr: string) {
   let network = []
   for (let i = 0; i < ipArr.length; i++) {
-    network[i] = parseInt(ipArr[i]) & parseInt(netmaskArr[i])
+    network[i] = parseInt(ipArr[i], 2) & parseInt(netmaskArr[i], 2)
   }
   return network.join('')
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ipv4ToBitmap (ipv4: any) {
   const ipv4List = ipv4.split('.')
   let bitmap = ''
@@ -391,22 +399,7 @@ function validateSubnetmaskOverlap (form: FormInstance) {
   const networkAddress = form.getFieldValue('startIp')
   const networkAddress2 = form.getFieldValue('endIp')
   const subnetmask = form.getFieldValue('mask')
-
-  // const addressRegexp = new RegExp(IP_ADDRESS_PATTERN);
-  // const subnetmaskRegexp = new RegExp(SUBNETMASK);
-
-  // if (!addressRegexp.test(networkAddress.value) || !addressRegexp.test(networkAddress2.value)) {
-  //   return false
-  // }
-
-  // if (!subnetmaskRegexp.test(subnetmask.value)) {
-  //   return false;
-  // }
-
-  if (!(networkAddress && networkAddress2 && subnetmask /////
-    && !form.getFieldError('startIP').length
-    && !form.getFieldError('endIP').length
-    && !form.getFieldError('mask').length)) {
+  if (!(networkAddress && networkAddress2 && subnetmask)) {
     return false
   }
 

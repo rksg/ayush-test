@@ -538,7 +538,7 @@ export interface CliTemplateVariable {
 
 export interface CliTemplateVenueSwitches {
   id: string
-  venueId: string
+  venueId?: string
   switches: string[]
 }
 

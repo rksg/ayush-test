@@ -12,7 +12,6 @@ import 'codemirror/addon/mode/overlay'
 
 import * as UI from './styledComponents'
 
-
 interface CodeMirrorData {
   clis: string
   configOptions?: CodeMirror.EditorConfiguration
@@ -32,9 +31,7 @@ interface CodeMirrorWidgetProps {
   }
   containerId?: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange?: any ///
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onKeyup?: any
+  onChange?: any
 }
 
 CodeMirror.defineMode('cliMode', function () {
@@ -53,7 +50,7 @@ CodeMirror.defineMode('cliMode', function () {
 })
 
 export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
-  const { type, data, size, containerId, onChange, onKeyup } = props
+  const { type, data, size, containerId, onChange } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
   const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
@@ -63,7 +60,6 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
     let div = document.createElement('div')
     div.innerHTML = code
     return div.innerText || div.textContent
-    // return div.innerText.replace(/↵/g, '\n') || div.textContent.replace(/↵/g, '');
   }
 
   const initSingleView = (data: CodeMirrorData) => {
@@ -81,7 +77,6 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
         }
       )
       onChange && tmpReadOnlyCodeMirror.on('change', onChange)
-      onKeyup && tmpReadOnlyCodeMirror.on('keyup', onKeyup)
       setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
     }
   }
@@ -98,10 +93,6 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
         readOnlyCodeMirror.setOption('styleActiveLine', false)
       }
     },
-    initCursor () {
-      readOnlyCodeMirror.focus()
-      readOnlyCodeMirror.setCursor(readOnlyCodeMirror.lineCount(), 0)
-    },
     getInstance () {
       return readOnlyCodeMirror
     },
@@ -110,39 +101,14 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
         readOnlyCodeMirror.setValue(value)
         setTimeout(function () {
           readOnlyCodeMirror.refresh()
-          // readOnlyCodeMirror.focus();
+          readOnlyCodeMirror.focus();
         }, 100)
       }
     },
     changeFontSize (size: string) {
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.getWrapperElement().style.fontSize = size + 'px'
-        // readOnlyCodeMirror.refresh()
       }
-    },
-    appendContent (type: string, content: string) {
-      let replacement = ''
-      const cursor = readOnlyCodeMirror.getCursor()
-      const lastWord = readOnlyCodeMirror.getRange({
-        line: cursor.line, ch: 0
-      }, cursor)
-
-      const hasDollarSign = lastWord.slice(-2) === '${'
-      const fromPosition = type === 'variableMenu'
-        ? { line: cursor.line, ch: cursor.ch - (hasDollarSign ? 2 : 1) }
-        : cursor
-
-      if (type === 'example' || type === 'file') {
-        replacement = content
-      } else { //var
-        const needSpace = needSpaceBeforeVariable(type, lastWord)
-        replacement = (needSpace ? htmlDecode('&nbsp;') : '') + '${' + content + '}'
-      }
-
-      readOnlyCodeMirror.replaceRange(replacement, fromPosition, cursor)
-      setTimeout(() => {
-        readOnlyCodeMirror.focus()
-      }, 100)
     }
   }))
 
@@ -203,14 +169,3 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
     </UI.Container>
   )
 })
-
-function needSpaceBeforeVariable (type: string, lastWord: string) {
-  const hasDollarSign = lastWord.slice(-2) === '${'
-
-  if(type === 'variableMenu') {
-    const subStringCount = hasDollarSign ? 2 : 1
-    lastWord = lastWord.substr(0, (lastWord.length - subStringCount))
-  }
-
-  return !!lastWord.match(/.*\${[^{}]*}$/)
-}

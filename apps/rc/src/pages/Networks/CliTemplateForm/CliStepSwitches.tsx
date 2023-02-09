@@ -1,32 +1,16 @@
 import { useContext, useState, useEffect } from 'react'
 
 import { Col, Collapse, Form, Input, Row, Space, Typography } from 'antd'
-import _                                                      from 'lodash'
 import { useIntl, FormattedMessage }                          from 'react-intl'
 
 import { cssStr, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
 import { PlusSquareOutlined, MinusSquareOutlined }      from '@acx-ui/icons'
-import { useLazyGetSwitchListQuery }                    from '@acx-ui/rc/services'
-import { useGetVenuesQuery }                            from '@acx-ui/rc/services'
-import { CliTemplateVenueSwitches }                     from '@acx-ui/rc/utils'
+import { useGetVenuesQuery, useLazyGetSwitchListQuery } from '@acx-ui/rc/services'
+import { CliTemplateVenueSwitches, SwitchViewModel }    from '@acx-ui/rc/utils'
 import { useParams }                                    from '@acx-ui/react-router-dom'
-
 
 import CliTemplateFormContext from './CliTemplateFormContext'
 import * as UI                from './styledComponents'
-
-interface Switch {
-  name: string
-  model: string
-  uptime: string
-}
-
-interface VenueSwitch {
-  id: string
-  switches?: string[]
-}
-
-type SelectedSwitches = Record<string, React.Key[]>[]
 
 export function CliStepSwitches () {
   const { $t } = useIntl()
@@ -41,10 +25,10 @@ export function CliStepSwitches () {
     }
   })
 
-  const [venueSwitches, setVenueSwitches] = useState([] as VenueSwitch[])
-  const [selectedSwitches, setSelectedSwitches] = useState([] as any)
+  const [venueSwitches, setVenueSwitches] = useState([] as CliTemplateVenueSwitches[])
+  const [selectedSwitches, setSelectedSwitches] = useState([] as Map<React.Key, React.Key[]>[])
   const [getSwitchList] = useLazyGetSwitchListQuery()
-  const { editMode, data } = useContext(CliTemplateFormContext)
+  const { editMode, data, applySwitches, setApplySwitches } = useContext(CliTemplateFormContext)
 
   const getSwitchListPayload = (venueId: string) => ({
     fields: [
@@ -55,7 +39,7 @@ export function CliStepSwitches () {
     pageSize: 9999,
     filters: {
       venueId: [venueId],
-      // deviceStatus: ['ONLINE'], //
+      deviceStatus: ['ONLINE'],
       syncedSwitchConfig: [true],
       configReady: [true]
     }
@@ -63,27 +47,25 @@ export function CliStepSwitches () {
 
   useEffect(() => {
     if (editMode && data) {
-      console.log(data)
-      const selected = data.venueSwitches?.reduce((result: any, v: any) => ({
+      const selected = data.venueSwitches?.reduce((result, v) => ({
         ...result,
-        [v.venueId]: v.switches
+        [v.venueId as string]: v.switches
       }), {})
 
-      setSelectedSwitches(selected)
+      setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
       form?.setFieldValue('venueSwitches', selected)
     }
   }, [data])
 
   useEffect(() => {
     if (venues?.data) {
-      setVenueSwitches(venues?.data
-        .filter((v) => v.switches)
-        .map((v) => ({ id: v.id }))
-      )
+      const switches = venues?.data.filter((v) => v.switches)
+        .map((v) => ({ id: v.id })) as CliTemplateVenueSwitches[]
+      setVenueSwitches(switches)
     }
   }, [venues])
 
-  const columns: TableProps<Switch>['columns'] = [
+  const columns: TableProps<SwitchViewModel>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Switch' }),
@@ -113,7 +95,8 @@ export function CliStepSwitches () {
       }}>
         {<FormattedMessage
           defaultMessage={`
-          - Select the venues or specific switches that will have this configuration applied onto them<br></br>
+          - Select the venues or specific switches that will have this
+          configuration applied onto them<br></br>
           - Only operational switches are displayed here`}
           values={{
             br: () => <br />
@@ -145,7 +128,7 @@ export function CliStepSwitches () {
                 : v
             })
 
-            setVenueSwitches(switches as VenueSwitch[])
+            setVenueSwitches(switches as CliTemplateVenueSwitches[])
           }
         }}
       >
@@ -175,14 +158,23 @@ export function CliStepSwitches () {
                   rowSelection={{
                     type: 'checkbox',
                     ...(selectedSwitches?.hasOwnProperty(v?.id)
-                      && { selectedRowKeys: selectedSwitches?.[v?.id] ?? [] }
+                      && { selectedRowKeys: (
+                        (selectedSwitches)?.[v?.id as unknown as number] ?? []
+                        ) as unknown as React.Key[]
+                      }
                     ),
-                    onChange: (keys: React.Key[]) => {
-                      setSelectedSwitches({ ...selectedSwitches, [v.id]: keys })
-                      form?.setFieldValue('venueSwitches', {
-                        ...selectedSwitches,
-                        [v.id]: keys
-                      })
+                    onChange: (keys: React.Key[], rows) => {
+                      const venueSwitch = { ...selectedSwitches, [v.id as React.Key]: keys }
+                      const applySwitch = {
+                        ...applySwitches,
+                        [v.id]: rows.map((s) => ({
+                          id: s.id, name: s.switchName, venueName: v?.name
+                        }))
+                      }
+
+                      setApplySwitches?.(applySwitch)
+                      setSelectedSwitches(venueSwitch)
+                      form?.setFieldValue('venueSwitches', venueSwitch)
                     }
                   }}
                   tableAlertRender={false}
@@ -198,6 +190,8 @@ export function CliStepSwitches () {
   </Row>
 }
 
-function getVenueSwitches (venueId: string, venueSwitches: any) {
-  return venueSwitches.filter((venue: any) => venue.id === venueId)?.[0]?.switches ?? null
+function getVenueSwitches (venueId: string, venueSwitches: CliTemplateVenueSwitches[]) {
+  return (
+    venueSwitches.filter((venue) => venue.id === venueId)?.[0]?.switches ?? null
+  ) as unknown as SwitchViewModel[]
 }

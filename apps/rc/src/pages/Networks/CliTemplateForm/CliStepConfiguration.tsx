@@ -29,6 +29,8 @@ import CliTemplateFormContext from './CliTemplateFormContext'
 import { CliVariableModal }   from './CliVariableModal'
 import * as UI                from './styledComponents'
 
+import { tooltip } from './'
+
 export enum VariableType {
   ADDRESS = 'ADDRESS',
   RANGE = 'RANGE',
@@ -37,9 +39,8 @@ export enum VariableType {
 
 interface codeMirrorElement {
   current: {
-    changeFontSize: Function,
-    appendContent: Function,
-    getInstance: Function
+    getInstance: Function,
+    changeFontSize: Function
   }
 }
 
@@ -76,6 +77,13 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
+const cliTemplatesPayload = {
+  fields: ['name', 'id', 'venueSwitches'],
+  pageSize: 9999,
+  sortField: 'name',
+  sortOrder: 'DESC'
+}
+
 export function CliStepConfiguration (props: {
   configType?: 'Profile' | 'Template'
 }) {
@@ -84,55 +92,46 @@ export function CliStepConfiguration (props: {
   const { configType } = props
   const form = Form.useFormInstance()
   const isTemplate = configType === 'Template'
+  const cliDefaultString = isTemplate ? '' : 'manager registrar'
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
-  const [variableList, setVariableList] = useState([] as CliTemplateVariable[])
+  const [variableList, setVariableList] = useState([] as unknown as CliTemplateVariable[])
   const [variableFilterType, setVariableFilterType] = useState('')
   const [variableModalvisible, setVariableModalvisible] = useState(false)
   const [variableModalEditMode, setVariableModalEditMode] = useState(false)
-  const [selectedEditVariable, setSelectedEditVariable] = useState({} as any)
+  const [selectedEditVariable, setSelectedEditVariable] = useState({} as CliTemplateVariable)
 
-  const { editMode, data } = useContext(CliTemplateFormContext)
+  const { editMode, data, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
-  const { data: cliTemplates } = useGetCliTemplatesQuery({ params, payload: {
-    fields: ['name', 'id', 'venueSwitches'],
-    pageSize: 9999,
-    sortField: 'name',
-    sortOrder: 'DESC'
-  } })
+  const { data: cliTemplates } = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
-    changeFontSize: Function,
-    appendContent: Function
+    changeFontSize: Function
   })
+  const codeMirrorInstance = codeMirrorEl?.current?.getInstance()
   const existingTemplateNameList = cliTemplates?.data?.filter(
     t => !editMode || t.id !== params?.templateId
-    ).map(t => t.name) ?? []
+  ).map(t => t.name) ?? []
 
   useEffect(() => {
     if (editMode && data) {
-      const cm = codeMirrorEl?.current?.getInstance()
       form?.setFieldsValue(data)
-      cm?.setValue(data?.cli)
-      // cm?.focus()
-      // cm?.setCursor(cm?.lineCount(), 0)
-      setVariableList(data?.variables)
+      codeMirrorInstance?.setValue(data?.cli)
+      setVariableList(data?.variables as CliTemplateVariable[])
     }
   }, [data])
 
   useEffect(() => {
-    const cliChecked = checkCliValidate(codeMirrorEl, variableList)
-    form?.setFieldsValue({
-      variables: variableList,
-      cliValid: cliChecked
-    })
+    const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+    setCliValidation(validation)
+    form?.setFieldsValue({ variables: variableList })
   }, [variableList])
 
   useEffect(() => {
-    const cliChecked = checkCliValidate(codeMirrorEl, variableList)
-    form?.setFieldValue('cliValid', cliChecked)
+    const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
+    setCliValidation(validation)
   }, [cli])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -142,7 +141,7 @@ export function CliStepConfiguration (props: {
         setVariableModalEditMode(true)
         break
       case 'delete':
-        setVariableList(variableList.filter(v => v.name !== selectedEditVariable.name))
+        setVariableList(variableList?.filter(v => v.name !== selectedEditVariable.name))
         break
     }
   }
@@ -171,8 +170,9 @@ export function CliStepConfiguration (props: {
             { required: true },
             { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) },
-            // eslint-disable-next-line max-len
-            { validator: (_, value) => checkObjectNotExists(existingTemplateNameList, value, $t({ defaultMessage: 'Template' })) }
+            { validator: (_, value) => checkObjectNotExists(
+              existingTemplateNameList, value, $t({ defaultMessage: 'Template' })
+            ) }
           ]}
           initialValue=''
           validateFirst
@@ -216,11 +216,6 @@ export function CliStepConfiguration (props: {
         />
         <Form.Item
           hidden={true}
-          name='cliValid'
-          children={<Input />}
-        />
-        <Form.Item
-          hidden={true}
           name='variables'
           initialValue={variableList}
           children={<Input />}
@@ -233,8 +228,7 @@ export function CliStepConfiguration (props: {
           <Space style={{ display: 'flex', fontWeight: 600 }}>
             {$t({ defaultMessage: 'CLI commands' })}
             <Tooltip
-              // eslint-disable-next-line max-len
-              title={$t({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' })}
+              title={$t(tooltip.cliCommands)}
               placement='bottom'
             >
               <UI.QuestionMarkIcon />
@@ -262,7 +256,8 @@ export function CliStepConfiguration (props: {
           </Space>
         </Space>
         <UI.CodeMirrorContainer>
-          <CodeMirrorWidget // TODO: variables menu
+          <CodeMirrorWidget
+            // TODO: variables menu
             ref={codeMirrorEl}
             type='cli'
             size={{
@@ -270,7 +265,7 @@ export function CliStepConfiguration (props: {
               width: '100%'
             }}
             data={{
-              clis: '',
+              clis: cliDefaultString,
               configOptions: {
                 readOnly: false
               }
@@ -279,10 +274,6 @@ export function CliStepConfiguration (props: {
               setCli(cm.getValue())
               form?.setFieldValue('cli', cm.getValue())
             }}
-            // onKeyup={(cm: any) => { ///
-            //   setCli(cm.getValue())
-            //   formRef?.current?.setFieldValue('cli', cm.getValue())
-            // }}
           />
         </UI.CodeMirrorContainer>
       </Col>
@@ -298,30 +289,31 @@ export function CliStepConfiguration (props: {
               }
               placement='bottom'
             >
-              <UI.QuestionMarkIcon />
+              <span data-testid='tooltip-example'>
+                <UI.QuestionMarkIcon />
+              </span>
             </Tooltip>
           </Space>}
           key='examples'>
-            <CliTemplateExampleList configExamples={configExamples} codeMirrorEl={codeMirrorEl} />
+            <CliTemplateExampleList
+              configExamples={configExamples}
+              codeMirrorInstance={codeMirrorInstance}
+            />
           </Tabs.TabPane>
 
           <Tabs.TabPane tab={$t({ defaultMessage: 'Variables' })} key='variables'>
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip
-                title={variableList.length >= 200
-                  // eslint-disable-next-line max-len
-                  ? $t({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' })
-                  : ''
-                }
+                title={variableList?.length >= 200 ? $t(tooltip.cliVariablesReachMax) : ''}
               >
                 <Space>
                   <Button type='link'
                     size='small'
-                    disabled={variableList.length >= 200}
+                    disabled={variableList?.length >= 200}
                     onClick={() => {
                       setVariableModalvisible(true)
                       setVariableModalEditMode(false)
-                      setSelectedEditVariable(null)
+                      setSelectedEditVariable(null as unknown as CliTemplateVariable)
                     }}>
                     {$t({ defaultMessage: 'Add Variable' })}
                   </Button>
@@ -334,29 +326,32 @@ export function CliStepConfiguration (props: {
               style={{ width: '120px' }}
               options={[
                 { label: $t({ defaultMessage: 'All types' }), value: '' },
-                { label: $t({ defaultMessage: 'Address' }), value: 'ADDRESS' },
-                { label: $t({ defaultMessage: 'Range' }), value: 'RANGE' },
-                { label: $t({ defaultMessage: 'String' }), value: 'STRING' }
+                { label: $t({ defaultMessage: 'Address' }), value: VariableType.ADDRESS },
+                { label: $t({ defaultMessage: 'Range' }), value: VariableType.RANGE },
+                { label: $t({ defaultMessage: 'String' }), value: VariableType.STRING }
               ]}
               onChange={(value) => setVariableFilterType(value)}
             />
             <UI.VariableList
               size='small'
-              dataSource={variableList.filter(
+              dataSource={variableList?.filter(
                 v => !variableFilterType || v.type === variableFilterType)}
               renderItem={(item) => {
                 const variable = item as CliTemplateVariable
                 return <List.Item
                   actions={[
-                    <Button size='small'
+                    <Button
+                      data-testid='add-var-btn'
+                      size='small'
                       ghost={true}
                       onClick={() => {
-                        codeMirrorEl?.current?.appendContent('var', variable.name)
+                        appendContentToCLI(codeMirrorInstance, 'var', variable.name)
                       }}>
                       <UI.PlusIcon />
                     </Button>,
                     <Dropdown overlay={variableActionMenu} trigger={['click']} key='actionMenu'>
                       <Button
+                        data-testid='edit-var-btn'
                         size='small'
                         ghost={true}
                         icon={<UI.MoreVerticalIcon />}
@@ -393,6 +388,37 @@ export function CliStepConfiguration (props: {
   </>
 }
 
+function CliTemplateExampleList (props: {
+  codeMirrorInstance: CodeMirror.EditorFromTextArea,
+  configExamples?: CliTemplateExample[]
+}) {
+  const { codeMirrorInstance, configExamples } = props
+  return <UI.ListLayout
+    size='small'
+    dataSource={configExamples}
+    renderItem={(item) => {
+      const example = item as CliTemplateExample
+      return <Tooltip
+        title={example.cli}
+        placement='bottom'
+      ><List.Item
+          actions={[
+            <Button
+              data-testid='add-example-btn'
+              type='link'
+              size='small'
+              onClick={() => {
+                appendContentToCLI(codeMirrorInstance, 'example', `\n${example.cli}\n`)
+              }}>
+              <UI.PlusIcon />
+            </Button>
+          ]}
+        >{example.name}</List.Item>
+      </Tooltip>
+    }}
+  />
+}
+
 function transformVariableValue (vtype: string, value: string) {
   const type = vtype.toUpperCase()
   const separator = type === VariableType.RANGE ? ':' : (type === VariableType.ADDRESS ? '_' : '*')
@@ -408,49 +434,67 @@ function transformVariableValue (vtype: string, value: string) {
   }
 }
 
-function CliTemplateExampleList (props: {
-  configExamples?: CliTemplateExample[],
-  codeMirrorEl: codeMirrorElement
-}) {
-  const { configExamples, codeMirrorEl } = props
-  return <UI.ListLayout
-    size='small'
-    dataSource={configExamples}
-    renderItem={(item) => {
-      const example = item as CliTemplateExample
-      return <Tooltip
-        title={example.cli}
-        placement='bottom'
-      ><List.Item
-          actions={[
-            <Button type='link'
-              size='small'
-              onClick={() => {
-                codeMirrorEl?.current?.appendContent('example', `\n${example.cli}\n`)
-              }}>
-              <UI.PlusIcon />
-            </Button>
-          ]}
-        >{example.name}</List.Item>
-      </Tooltip>
-    }}
-  />
+function appendContentToCLI (
+  codeMirrorInstance: CodeMirror.EditorFromTextArea,
+  type: string,
+  content: string
+) {
+  let replacement = ''
+  const cursor = codeMirrorInstance?.getCursor()
+  const lastWord = codeMirrorInstance?.getRange({
+    line: cursor.line, ch: 0
+  }, cursor)
+
+  const hasDollarSign = lastWord?.slice(-2) === '${'
+  const fromPosition = type === 'variableMenu'
+    ? { line: cursor.line, ch: cursor.ch - (hasDollarSign ? 2 : 1) }
+    : cursor
+
+  if (type === 'example' || type === 'file') {
+    replacement = content
+  } else { //var
+    const needSpace = needSpaceBeforeVariable(type, lastWord)
+    replacement = (needSpace ? htmlDecode('&nbsp;') : '') + '${' + content + '}'
+  }
+
+  codeMirrorInstance?.replaceRange(replacement, fromPosition, cursor)
+  setTimeout(() => {
+    codeMirrorInstance?.focus?.()
+  }, 100)
 }
 
-function checkCliValidate (
+function htmlDecode (code: string) {
+  let div = document.createElement('div')
+  div.innerHTML = code
+  return div.innerText.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
+}
+
+function needSpaceBeforeVariable (type: string, lastWord: string) {
+  const hasDollarSign = lastWord.slice(-2) === '${'
+
+  if(type === 'variableMenu') {
+    const subStringCount = hasDollarSign ? 2 : 1
+    lastWord = lastWord.substr(0, (lastWord.length - subStringCount))
+  }
+
+  return !!lastWord.match(/.*\${[^{}]*}$/)
+}
+
+function validateCLI (
   codeMirrorEl: codeMirrorElement,
   variableList: CliTemplateVariable[],
-  // configType?: string
+  cliDefaultString?: string
 ) {
   const { $t } = getIntl()
   const cm = codeMirrorEl?.current?.getInstance()
+  const variableNameList = variableList?.map(v => v.name)
 
-  const cliTopStr = 'manager registrar' ///
-  const variableNameList = variableList.map(v => v.name)
-
-  const isInputCli = cm?.getValue() && (cm?.getValue().replace(/\s/g, '') !== cliTopStr.replace(/\s/g, ''))
-  const isAllAttributeDefined = cm?.display.wrapper.querySelectorAll('.cm-attribute').length === 0
-  const isAllVariableMatch = [...(cm?.display?.wrapper?.querySelectorAll('.cm-variable') ?? [])]?.filter(variable => {
+  const isInputCli = cm?.getValue()
+    && (cm?.getValue().replace(/\s/g, '') !== cliDefaultString?.replace(/\s/g, ''))
+  const isAllAttributeDefined
+    = cm?.display.wrapper.querySelectorAll('.cm-attribute')?.length === 0
+  const isAllVariableMatch = [...(cm?.display?.wrapper?.querySelectorAll('.cm-variable') ?? [])
+  ]?.filter(variable => {
     const name = variable.textContent.slice(2, -1)
     return variableNameList.indexOf(name) === -1
   })?.length === 0
@@ -462,14 +506,14 @@ function checkCliValidate (
   }
 
   const getDisabledTooltip = () => {
-    if (!isAllVariableMatch) return tooltipMap.variable
+    if (!isInputCli) return tooltipMap.empty
+    else if (!isAllVariableMatch) return tooltipMap.variable
     else if (!isAllAttributeDefined) return tooltipMap.attribute
-    else if (!isInputCli) return tooltipMap.empty
     else return ''
   }
 
   return {
-    valid: isInputCli && isAllAttributeDefined && isAllVariableMatch,
+    valid: (isInputCli && isAllAttributeDefined && isAllVariableMatch) ?? false,
     tooltip: getDisabledTooltip()
   }
 }

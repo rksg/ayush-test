@@ -7,10 +7,14 @@ import { useParams }         from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
+import { tooltip } from './'
+
 export function CliStepNotice () {
   const { $t } = useIntl()
   const params = useParams()
   const editMode = params.action === 'edit'
+  // eslint-disable-next-line max-len
+  const documentLink = 'https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'
 
   return <Row gutter={20}>
     <Col span={10}>
@@ -29,13 +33,12 @@ export function CliStepNotice () {
       >
         <UI.WarningTriangleSolidIcon />
         <FormattedMessage
-          // eslint-disable-next-line max-len
-          defaultMessage={'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures'}
+          {...tooltip?.noticeDesp}
           values={{
-            link: <a className='link'
+            link: <a
+              className='link'
               target='_blank'
-              // eslint-disable-next-line max-len
-              href='https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'
+              href={documentLink}
               rel='noreferrer'>
               {$t({ defaultMessage: 'ICX Fastiron CLI commands' })}
             </a>
