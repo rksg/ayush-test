@@ -4,6 +4,8 @@ import {
   useEffect,
   useRef,
   useState,
+  RefCallback,
+  useImperativeHandle,
   useMemo
 } from 'react'
 
@@ -14,7 +16,8 @@ import {
   SeriesOption,
   CustomSeriesRenderItemAPI,
   CustomSeriesRenderItemParams,
-  TooltipComponentOption
+  TooltipComponentOption,
+  connect
 } from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
@@ -65,6 +68,8 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
+  sharedChartName: string;
+  chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
@@ -270,17 +275,20 @@ export function TimelineChart ({
   chartBoundary,
   selectedData,
   onDotClick,
+  chartRef,
   tooltipFormatter,
   mapping,
   hasXaxisLabel,
   showResetZoom,
   onClick,
   index,
+  sharedChartName,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
+  useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
   const placeholderRows = 2
@@ -311,7 +319,7 @@ export function TimelineChart ({
           },
           connectNulls: true
         } as SeriesOption)
-        : {
+        : ({
           type: 'custom',
           name: series,
           renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
@@ -320,7 +328,7 @@ export function TimelineChart ({
           },
           data: getSeriesData(data, key, series),
           connectNulls: true
-        }
+        })
     ) as SeriesOption[], [data, mapping])
 
   const hasData = useMemo(() => {
@@ -457,7 +465,8 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60
+        minValueSpan: 60,
+        filterMode: 'none'
       }
     ],
     series: mappedData
@@ -467,8 +476,9 @@ export function TimelineChart ({
     if (eChartsRef && eChartsRef.current) {
       const instance = eChartsRef.current.getEchartsInstance()
       instance.setOption(option)
+      connect(sharedChartName)
     }
-  }, [option])
+  }, [option, sharedChartName])
 
   return (
     <>
@@ -489,7 +499,6 @@ export function TimelineChart ({
           click: onClick
         }}
         key={index}
-        onChartReady={eChartsRef as unknown as (instance: unknown) => void}
       />
       {canResetZoom && showResetZoom && (
         <ResetButton
