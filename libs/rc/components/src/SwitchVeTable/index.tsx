@@ -8,8 +8,7 @@ import {
   TableProps,
   Loader,
   Tooltip,
-  showActionModal,
-  Drawer
+  showActionModal
 } from '@acx-ui/components'
 import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
