@@ -82,7 +82,7 @@ describe('Table component', () => {
     const props: TableProps<TestRow> = {
       columns: testColumns,
       dataSource: testData,
-      pagination: { defaultPageSize: 2 }
+      pagination: { pageSize: 2 }
     }
     const { rerender } = render(<Table {...props} />)
     const pagination = await screen.findByRole('listitem', { name: /1/i })
