@@ -5,11 +5,13 @@ import {
   Checkbox,
   Form,
   InputNumber,
-  Switch
+  Switch,
+  Tooltip
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -43,6 +45,22 @@ export function ServicesForm () {
 
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+
+  const showSingleSessionIdAccounting = false
+  // (data?.accountingRadius && data.type === NetworkTypeEnum.AAA ) ||
+  // (data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr )
+
+  // this.showSingleSessionIdAccounting = (this.network.accountingRadius && (networkType === NetworkTypeEnum.AAA)) ||
+  // (networkType === NetworkTypeEnum.CAPTIVEPORTAL && guestPortal.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+  //   this.networkService.isProviderHasAccountingService(this.network));
+
+  //   public isProviderHasAccountingService(network) {
+  //     const providerName = network.guestPortal.wisprPage.externalProviderName;
+  //     const selectedProvider = _.find(this.wisprPortalProviders, p => p.name === providerName);
+  //     const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null;
+  //     return !!(region && region.accountingRadius);
+  //   }
+  // }
 
   useEffect(() => {
     if (data) {
@@ -191,6 +209,27 @@ export function ServicesForm () {
         </>
         }
       </>
+
+      {showSingleSessionIdAccounting &&
+        <UI.FormItemNoLabel
+          name={['wlan', 'advancedCustomization', 'singleSessionIdAccounting']}
+          valuePropName='checked'
+          children={
+            <Checkbox disabled={enableAntiSpoofing}
+              children={
+                <>
+                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  <Tooltip
+                    // eslint-disable-next-line max-len
+                    title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
+                    placement='bottom'>
+                    <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+                  </Tooltip>
+                </>
+              } />}
+        />
+
+      }
 
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}
