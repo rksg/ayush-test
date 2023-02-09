@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { useGetProfilesQuery }                      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
