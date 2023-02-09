@@ -140,7 +140,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
           >
             <label
               class=""
-              for="primaryDnsServer"
+              for="primaryDnsIp"
               title="Primary DNS Server"
             >
               Primary DNS Server
@@ -157,7 +157,7 @@ exports[`EdgeDhcpSettingForm should create EdgeDhcpSettingForm successfully 1`] 
               >
                 <input
                   class="ant-input"
-                  id="primaryDnsServer"
+                  id="primaryDnsIp"
                   type="text"
                   value=""
                 />
