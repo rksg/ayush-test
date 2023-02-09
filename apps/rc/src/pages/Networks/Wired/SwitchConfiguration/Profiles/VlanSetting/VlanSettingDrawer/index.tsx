@@ -18,8 +18,8 @@ import { AclExtendedRule, AclStandardRule, Vlan } from '@acx-ui/rc/utils'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '../../AclSetting'
 
-import { ACLRuleModal } from './ACLRuleModal'
-import * as UI          from './styledComponents'
+import * as UI            from './styledComponents'
+import { VlanPortsModal } from './VlanPortsSetting/VlanPortsModal'
 
 export interface VlanSettingDrawerProps {
   rule?: Vlan
@@ -321,7 +321,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         }}
         dataSource={ruleList || undefined}
       />
-      <ACLRuleModal
+      <VlanPortsModal
         open={openModal}
         aclType={aclType}
         editRecord={selected}

@@ -270,7 +270,9 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       </Form>
       <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
         <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>Rules</label>
+          <label style={{ color: 'var(--acx-neutrals-60)' }}>
+            {$t({ defaultMessage: 'Rules' })}
+          </label>
         </Col>
         <Col>
           <Button
