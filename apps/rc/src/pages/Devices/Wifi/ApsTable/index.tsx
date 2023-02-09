@@ -79,7 +79,7 @@ export default function ApsTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'WiFi' })}
+        title={$t({ defaultMessage: 'Wi-Fi' })}
         extra={[
           <Dropdown overlay={addMenu} key='addMenu'>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
@@ -100,7 +100,7 @@ export default function ApsTable () {
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        temlateLink={importTemplateLink}
+        templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
