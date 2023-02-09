@@ -470,3 +470,7 @@ export const Divider = styled(AntDivider)`
   height: 12px;
   border-left-color: var(--acx-neutrals-30);
 `
+
+export const Highlighter = styled.span`
+  font-weight: bold;
+`

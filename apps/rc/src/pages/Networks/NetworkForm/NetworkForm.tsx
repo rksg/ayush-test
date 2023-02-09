@@ -350,20 +350,6 @@ export default function NetworkForm () {
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
-          {editMode &&saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL&&
-            <StepsForm.StepForm
-              name='moreSettings'
-              title={intl.$t({ defaultMessage: 'More Settings' })}
-              onFinish={async (data) => {
-                const settingSaveData = transferMoreSettingsToSave(data, saveState)
-
-                updateSaveData(settingSaveData)
-                return true
-              }}>
-
-              <NetworkMoreSettingsForm wlanData={saveState} />
-
-            </StepsForm.StepForm>}
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
               <StepsForm.StepForm
                 name='onboarding'
@@ -387,7 +373,20 @@ export default function NetworkForm () {
                  GuestNetworkTypeEnum.WISPr&&<WISPrForm />}
               </StepsForm.StepForm>
           }
+          {editMode &&
+            <StepsForm.StepForm
+              name='moreSettings'
+              title={intl.$t({ defaultMessage: 'More Settings' })}
+              onFinish={async (data) => {
+                const settingSaveData = transferMoreSettingsToSave(data, saveState)
 
+                updateSaveData(settingSaveData)
+                return true
+              }}>
+
+              <NetworkMoreSettingsForm wlanData={saveState} />
+
+            </StepsForm.StepForm>}
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&(
             saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.ClickThrough||
             saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn||

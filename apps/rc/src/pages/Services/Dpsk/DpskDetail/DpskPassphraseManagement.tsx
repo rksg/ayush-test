@@ -15,6 +15,7 @@ import { CopyOutlined }             from '@acx-ui/icons'
 import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
+  useDownloadPassphrasesMutation,
   useDpskPassphraseListQuery,
   useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
@@ -27,7 +28,8 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
 
-import DpskPassphraseDrawer from './DpskPassphraseDrawer'
+import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
 
 
 interface UploadPassphrasesFormFields {
@@ -41,6 +43,7 @@ export default function DpskPassphraseManagement () {
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
+  const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
@@ -54,6 +57,15 @@ export default function DpskPassphraseManagement () {
         'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
     }
   })
+
+  const downloadPassphrases = () => {
+    downloadCsv({ params }).unwrap().catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export passphrases.' })
+      })
+    })
+  }
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
@@ -76,13 +88,16 @@ export default function DpskPassphraseManagement () {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false
+      sorter: false,
+      render: function (data) {
+        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+      }
     },
     {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: false
+      sorter: true
     },
     {
       key: 'passphrase',
@@ -108,7 +123,7 @@ export default function DpskPassphraseManagement () {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanId',
-      sorter: false
+      sorter: true
     },
     {
       key: 'expirationDate',
@@ -157,6 +172,10 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: () => downloadPassphrases()
     }
   ]
 
@@ -169,7 +188,7 @@ export default function DpskPassphraseManagement () {
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}
       maxEntries={512}
-      temlateLink='assets/templates/DPSK_import_template_expiration.csv'
+      templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {
