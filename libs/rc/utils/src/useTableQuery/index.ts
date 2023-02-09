@@ -6,6 +6,7 @@ import _               from 'lodash'
 
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
+import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
 
@@ -54,7 +55,7 @@ export type PAGINATION = {
 
 export const DEFAULT_PAGINATION = {
   page: 1,
-  pageSize: 10,
+  pageSize: TABLE_DEFAULT_PAGE_SIZE,
   total: 0
 }
 
