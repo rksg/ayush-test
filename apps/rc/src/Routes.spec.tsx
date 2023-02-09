@@ -502,9 +502,11 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to edit ACCESS_CONTROL page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT }),
+        path: '/t/tenantId/' + path,
         wrapRoutes: false
       }
     })
