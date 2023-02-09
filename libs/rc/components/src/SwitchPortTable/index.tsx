@@ -15,9 +15,10 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
+import { SwitchLagDrawer } from '../SwitchLagDrawer'
+
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
-import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
 const STACK_PORT_FIELD = 'SwitchPortStackingPortField'
 
