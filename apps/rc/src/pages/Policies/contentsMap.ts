@@ -6,7 +6,9 @@ import {
   RogueRuleType,
   Layer3ProtocolType,
   OsVendorEnum,
-  DeviceTypeEnum
+  DeviceTypeEnum,
+  ApplicationAclType,
+  ApplicationRuleType
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
@@ -119,4 +121,19 @@ export const deviceTypeLabelMapping: Record<DeviceTypeEnum, MessageDescriptor> =
   [DeviceTypeEnum.HomeAvEquipment]: defineMessage({ defaultMessage: 'HomeAvEquipment' }),
   [DeviceTypeEnum.WdsDevice]: defineMessage({ defaultMessage: 'WdsDevice' })
 }
+
+
+export const AppAclLabelMapping: Record<ApplicationAclType, MessageDescriptor> = {
+  [ApplicationAclType.DENY]: defineMessage({ defaultMessage: 'Block Applications' }),
+  [ApplicationAclType.RATE_LIMIT]: defineMessage({ defaultMessage: 'Rate Limit' }),
+  [ApplicationAclType.QOS]: defineMessage({ defaultMessage: 'QoS' })
+}
+
+export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor> = {
+  [ApplicationRuleType.SIGNATURE]: defineMessage({ defaultMessage: 'System defined' }),
+  [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
+}
+
+
+
 
