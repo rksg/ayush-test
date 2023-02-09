@@ -709,7 +709,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
                                 >
                                   network-01 (SSID: 01)
                                 </a>
@@ -866,7 +866,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
                                 >
                                   network-03 (SSID: 03)
                                 </a>
@@ -1023,7 +1023,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/overview"
                                 >
                                   network-05 (SSID: 05)
                                 </a>
@@ -1332,7 +1332,7 @@ exports[`Networks Table should click disabled row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/overview"
                                 >
                                   network-09 (SSID: 09)
                                 </a>
@@ -2332,7 +2332,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
                                 >
                                   network-01 (SSID: 01)
                                 </a>
@@ -2489,7 +2489,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
                                 >
                                   network-03 (SSID: 03)
                                 </a>
@@ -2646,7 +2646,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/overview"
                                 >
                                   network-05 (SSID: 05)
                                 </a>
@@ -2955,7 +2955,7 @@ exports[`Networks Table should delete selected row 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/overview"
                                 >
                                   network-09 (SSID: 09)
                                 </a>
@@ -3955,7 +3955,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
                                 >
                                   network-01 (SSID: 01)
                                 </a>
@@ -4112,7 +4112,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe1fa/network-details/overview"
                                 >
                                   network-03 (SSID: 03)
                                 </a>
@@ -4269,7 +4269,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/373377b0cb6e46ea8982b1c80aabe2fa/network-details/overview"
                                 >
                                   network-05 (SSID: 05)
                                 </a>
@@ -4578,7 +4578,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/3c62b3818d194022b8dd35852c66f646/network-details/overview"
                                 >
                                   network-09 (SSID: 09)
                                 </a>
