@@ -2,12 +2,12 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
-import { AAAPolicyType } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType } from '@acx-ui/components'
+import { AAAPolicyType }            from '@acx-ui/rc/utils'
 
 
 import AAAForm from '../../../Policies/AAA/AAAForm/AAAForm'
-import * as UI from '../styledComponents'
+
 
 export default function AAAPolicyModal (props:{
   updateInstance: (value:AAAPolicyType) => void
@@ -30,14 +30,12 @@ export default function AAAPolicyModal (props:{
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
-      <UI.Drawer
-        title={$t({ defaultMessage: 'Add AAA Server' })}
+      <Modal
+        title={$t({ defaultMessage: 'Add AAA (802.1x) Server' })}
+        type={ModalType.ModalStepsForm}
         visible={visible}
-        onClose={onClose}
         mask={true}
         children={getContent}
-        destroyOnClose={true}
-        width={'calc( 100% - var(--acx-sider-width))'}
       />
     </>
   )

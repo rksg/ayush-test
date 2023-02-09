@@ -144,13 +144,13 @@ export const PortalForm = (props:{
   }, [data])
   return (
     <>
-      <PageHeader
+      {!networkView && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/service' }
         ]}
-      />
+      />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
         <StepsForm<Portal>
           formRef={formRef}

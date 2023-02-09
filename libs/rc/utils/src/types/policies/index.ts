@@ -6,6 +6,9 @@ export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
 
+export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
+export { OsVendorEnum } from '../../models/OsVendorEnum'
+
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pools',

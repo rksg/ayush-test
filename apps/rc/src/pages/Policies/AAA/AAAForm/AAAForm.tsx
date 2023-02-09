@@ -170,14 +170,14 @@ const AAAForm = (props: AAAFormProps) => {
 
   return (
     <>
-      <PageHeader
+      {!props.networkView &&<PageHeader
         title={edit
           ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
           : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
-      />
+      />}
       <StepsForm<AAAPolicyType>
         formRef={formRef}
         onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
