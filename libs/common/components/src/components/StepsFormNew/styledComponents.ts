@@ -26,7 +26,7 @@ export const Wrapper = styled.section`
 
   --acx-steps-form-actions-vertical-space: 12px;
 
-  padding-block-end: 36px;
+  padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
 `
 
 const stepCompletedStyle = css`
