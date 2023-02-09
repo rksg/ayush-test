@@ -8,10 +8,13 @@ import {
   Switch,
   Tooltip
 } from 'antd'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }                                                                                                  from '@acx-ui/icons'
+import { useExternalProvidersQuery }                                                                                                   from '@acx-ui/rc/services'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting, NetworkTypeEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -45,22 +48,30 @@ export function ServicesForm () {
 
   const { data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const params = useParams()
+  const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
+  const providerData = useExternalProvidersQuery({ params })
 
-  const showSingleSessionIdAccounting = false
-  // (data?.accountingRadius && data.type === NetworkTypeEnum.AAA ) ||
-  // (data.type === NetworkTypeEnum.CAPTIVEPORTAL && data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr )
 
-  // this.showSingleSessionIdAccounting = (this.network.accountingRadius && (networkType === NetworkTypeEnum.AAA)) ||
-  // (networkType === NetworkTypeEnum.CAPTIVEPORTAL && guestPortal.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-  //   this.networkService.isProviderHasAccountingService(this.network));
+  useEffect(() => {
+    if (data && providerData.data) {
+      const isProviderHasAccountingService = function () {
+        const providers = providerData?.data?.providers
+        const providerName = data?.guestPortal?.wisprPage?.externalProviderName
+        const selectedProvider = _.find(providers, p => p.name === providerName)
+        const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null
+        return !!(region && region.accountingRadius)
+      }
 
-  //   public isProviderHasAccountingService(network) {
-  //     const providerName = network.guestPortal.wisprPage.externalProviderName;
-  //     const selectedProvider = _.find(this.wisprPortalProviders, p => p.name === providerName);
-  //     const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null;
-  //     return !!(region && region.accountingRadius);
-  //   }
-  // }
+      const showFlag =
+        (data?.accountingRadius && data.type === NetworkTypeEnum.AAA) || (
+          data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+          data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+          isProviderHasAccountingService()
+        )
+      setShowSingleSessionIdAccounting(showFlag)
+    }
+  }, [data, providerData])
 
   useEffect(() => {
     if (data) {
