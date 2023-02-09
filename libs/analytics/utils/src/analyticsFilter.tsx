@@ -5,6 +5,7 @@ import {
   generateVenueFilter,
   DateFilter,
   pathFilter,
+  ssidFilter,
   NetworkPath,
   NodeType,
   useDateFilter,
@@ -14,7 +15,7 @@ import {
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export type AnalyticsFilter = DateFilter & { path: NetworkPath }
-& { filter? : pathFilter } & { mac?: string }
+& { filter? : pathFilter & ssidFilter } & { mac?: string }
 
 type NetworkFilter = { path: NetworkPath, raw: object }
 
