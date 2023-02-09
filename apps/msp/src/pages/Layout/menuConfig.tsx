@@ -83,64 +83,6 @@ export function useMenuConfig (tenantType: string) {
       disabled: isVar || isIntegrator || isSupport
     }
   ]
-  // const config: LayoutProps['menuConfig'] = [
-  //   {
-  //     path: '/dashboard',
-  //     name: $t({ defaultMessage: 'My Customers' }),
-  //     tenantType: 'v',
-  //     inactiveIcon: UsersThreeOutlined,
-  //     activeIcon: UsersThreeSolid,
-  //     routes: [
-  //       {
-  //         path: '/dashboard/mspCustomers',
-  //         name: $t({ defaultMessage: 'MSP Customers' }),
-  //         disabled: isVar
-  //       },
-  //       {
-  //         path: '/dashboard/varCustomers',
-  //         name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
-  //           : $t({ defaultMessage: 'VAR Customers' }),
-  //         disabled: isNonVarMSP || isIntegrator
-  //       }
-  //     ]
-  //   }]
-  // if (isMsp || isNonVarMSP) {
-  //   config.push({
-  //     path: '/integrators',
-  //     name: $t({ defaultMessage: 'Integrators' }),
-  //     tenantType: 'v',
-  //     inactiveIcon: IntegratorsOutlined,
-  //     activeIcon: IntegratorsSolid
-  //   })
-  // }
-  // if (!isSupport) {
-  //   config.push({
-  //     path: '/deviceInventory',
-  //     name: $t({ defaultMessage: 'Device Inventory' }),
-  //     tenantType: 'v',
-  //     inactiveIcon: DevicesOutlined,
-  //     activeIcon: DevicesSolid
-  //   })
-  // }
-  // if (isMsp || isVar || isNonVarMSP) {
-  //   config.push({
-  //     path: '/mspLicenses',
-  //     name: $t({ defaultMessage: 'MSP Licenses' }),
-  //     tenantType: 'v',
-  //     inactiveIcon: MspSubscriptionOutlined,
-  //     activeIcon: MspSubscriptionSolid
-  //   })
-  // }
-  // if (isMsp || isNonVarMSP) {
-  //   config.push(genPlaceholder())
-  //   config.push({
-  //     path: '/portalSetting',
-  //     name: $t({ defaultMessage: 'Settings' }),
-  //     tenantType: 'v',
-  //     inactiveIcon: ConfigurationOutlined,
-  //     activeIcon: ConfigurationSolid
-  //   })
-  // }
 
   return config
 }
