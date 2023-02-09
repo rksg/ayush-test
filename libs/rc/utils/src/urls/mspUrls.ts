@@ -76,5 +76,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   getMspEcProfile: {
     method: 'get',
     url: '/api/mspservice/tenant/:tenantId'
+  },
+  getMspEcAdmin: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId'
+  },
+  updateMspEcAdmin: {
+    method: 'put',
+    url: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId'
   }
 }

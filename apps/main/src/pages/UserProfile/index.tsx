@@ -35,7 +35,7 @@ interface fromLoc {
   from: string
 }
 
-const GetRoleString = ( role: RolesEnum ) => {
+export const GetRoleString = ( role: RolesEnum ) => {
   const { $t } = useIntl()
   switch (role) {
     case RolesEnum.PRIME_ADMIN:

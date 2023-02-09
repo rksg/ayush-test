@@ -9,6 +9,7 @@ import {
   useGetMfaTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
+import { MSPUtils, UserProfile } from '@acx-ui/rc/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -17,9 +18,10 @@ import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
 
 
-const AccountSettings = (props: { className?: string }) => {
+const AccountSettings = (props: { className?: string, userProfileData?: UserProfile }) => {
   const { className } = props
   const params = useParams()
+  const mspUtils = MSPUtils()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
@@ -31,7 +33,7 @@ const AccountSettings = (props: { className?: string }) => {
   } = useUserProfileActions()
 
   const showMfa = userProfileData?.tenantId === userProfileData?.varTenantId
-  let isMspEc = Boolean(mspEcProfileData.data?.msp_label)
+  let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   if (userProfileData?.varTenantId && !showMfa) {
     isMspEc = false
   }

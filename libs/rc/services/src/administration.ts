@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { defineMessage }             from 'react-intl'
 
 import {
+  TableResult,
   CommonResult,
   createHttpRequest,
   RequestPayload,
@@ -10,14 +12,20 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
+  Administrator,
   showActivityMessage,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  Delegation,
+  RolesEnum,
+  VARTenantDetail,
+  RegisteredUserSelectOption,
+  ApiInfo
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['administration'],
+  tagTypes: ['Administration'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -39,7 +47,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'administration', id: 'RECOVER_PASS' }]
+      providesTags: [{ type: 'Administration', id: 'RECOVER_PASS' }]
     }),
     updateRecoveryPassphrase: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -49,7 +57,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'RECOVER_PASS' }]
+      invalidatesTags: [{ type: 'Administration', id: 'RECOVER_PASS' }]
     }),
     getEcTenantDelegation: build.query<TenantDelegationResponse, RequestPayload>({
       query: ({ params }) => {
@@ -65,7 +73,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -73,7 +81,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             'InviteSupport'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
-              { type: 'administration', id: 'ACCESS_SUPPORT' }
+              { type: 'Administration', id: 'ACCESS_SUPPORT' }
             ]))
           })
         })
@@ -93,7 +101,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: response[0] && response[0].createdDate
         }
       },
-      providesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }],
+      providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           showActivityMessage(msg, [
@@ -101,7 +109,49 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
             'InviteSupport'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
-              { type: 'administration', id: 'ACCESS_SUPPORT' }
+              { type: 'Administration', id: 'ACCESS_SUPPORT' }
+            ]))
+          })
+        })
+      }
+    }),
+    getDelegations: build.query<TableResult<Delegation>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getDelegations, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'DeleteDelegation'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'DELEGATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getMspEcDelegations: build.query<TableResult<Delegation>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getMspEcDelegations, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          showActivityMessage(msg, [
+            'DeleteDelegation'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'DELEGATION_LIST' }
             ]))
           })
         })
@@ -122,7 +172,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           createdDate: (response.response as TenantDelegation).createdDate
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -132,7 +182,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'ACCESS_SUPPORT' }]
+      invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     getPreferences: build.query<TenantPreferenceSettings, RequestPayload>({
       query: ({ params }) => {
@@ -141,7 +191,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'administration', id: 'PREFERENCES' }]
+      providesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
     updatePreference: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -151,10 +201,187 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'administration', id: 'PREFERENCES' }]
+      invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
+    }),
+    getAdminList: build.query<TableResult<Administrator>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdministrators, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: Administrator[]) => {
+        return {
+          data: transformAdministratorList(result),
+          page: 0,
+          totalCount: result.length
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    addAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    updateAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    deleteAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    deleteAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdmins, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    revokeInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.revokeInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }]
+    }),
+    inviteDelegation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.inviteVAR, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getRegisteredUsersList: build.query<RegisteredUserSelectOption[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getRegisteredUsersList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: unknown[]) => {
+        return response.map((item: unknown) => {
+          const { email, externalId } = item as { email: string, externalId: string }
+
+          return {
+            externalId: externalId,
+            email: email
+          }
+        })
+      }
+    }),
+    findVARDelegation: build.query<VARTenantDetail, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { username } = payload as { username: string }
+        const api:ApiInfo = { ...AdministrationUrlsInfo.findVAR }
+        api.url += `?username=${username}`
+
+        const req = createHttpRequest(api, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
+
+export const GetRoleIntlString = ( role: RolesEnum ) => {
+  switch (role) {
+    case RolesEnum.PRIME_ADMIN:
+      return defineMessage({ defaultMessage: 'Prime Admin' })
+    case RolesEnum.ADMINISTRATOR:
+      return defineMessage({ defaultMessage: 'Administrator' })
+    case RolesEnum.GUEST_MANAGER:
+      return defineMessage({ defaultMessage: 'Guest Manager' })
+    case RolesEnum.READ_ONLY:
+      return defineMessage({ defaultMessage: 'Read Only' })
+    default:
+      return defineMessage({ defaultMessage: 'Known' })
+  }
+}
+
+
+export const GetRoleStr = ( role: RolesEnum ) => {
+  switch (role) {
+    case RolesEnum.PRIME_ADMIN:
+      return 'Prime Admin'
+    case RolesEnum.ADMINISTRATOR:
+      return 'Administrator'
+    case RolesEnum.GUEST_MANAGER:
+      return 'Guest Manager'
+    case RolesEnum.READ_ONLY:
+      return 'Read Only'
+    default:
+      return 'Known'
+  }
+}
+
+export const getRoles = () => {
+  return [
+    {
+      label: GetRoleIntlString(RolesEnum.PRIME_ADMIN),
+      value: RolesEnum.PRIME_ADMIN
+    },
+    {
+      label: GetRoleIntlString(RolesEnum.ADMINISTRATOR),
+      value: RolesEnum.ADMINISTRATOR
+    },
+    {
+      label: GetRoleIntlString(RolesEnum.GUEST_MANAGER),
+      value: RolesEnum.GUEST_MANAGER
+    },
+    {
+      label: GetRoleIntlString(RolesEnum.READ_ONLY),
+      value: RolesEnum.READ_ONLY
+    }]
+}
+
+const transformAdministratorList = (data: Administrator[]) => {
+  return data.map(item => {
+    item.name = (item.name && item.name !== 'first') ? item.name : ''
+    item.lastName = (item.lastName && item.lastName !== 'last') ? item.lastName : ''
+    item.fullName = item.name + ' ' + item.lastName
+    item.roleDsc = GetRoleStr(item.role)
+
+    // TODO
+    // const isPrimeAdmin = item.roles.find(role => role === RolesEnum.PRIME_ADMIN) !== undefined
+    // if (this.isPrimeAdmin) {
+    //   item.inactiveRow = item.email.toLocaleLowerCase() === currentUserMail.toLocaleLowerCase()
+    //   if (item.inactiveRow) {
+    //     item.inactiveTooltip = 'You cannot edit or delete yourself'
+    //   }
+    // }
+    return item
+  })
+}
 
 export const {
   useGetAccountDetailsQuery,
@@ -165,5 +392,17 @@ export const {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetPreferencesQuery,
-  useUpdatePreferenceMutation
+  useUpdatePreferenceMutation,
+  useGetAdminListQuery,
+  useAddAdminMutation,
+  useUpdateAdminMutation,
+  useDeleteAdminMutation,
+  useDeleteAdminsMutation,
+  useGetDelegationsQuery,
+  useGetMspEcDelegationsQuery,
+  useRevokeInvitationMutation,
+  useInviteDelegationMutation,
+  useGetRegisteredUsersListQuery,
+  useFindVARDelegationQuery,
+  useLazyFindVARDelegationQuery
 } = administrationApi

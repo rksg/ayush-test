@@ -1,3 +1,5 @@
+import { RolesEnum } from './msp'
+
 export enum TenantDelegationStatus {
   INVITED = 'INVITED',
   ACCEPTED = 'ACCEPTED',
@@ -44,4 +46,81 @@ export interface TenantPreferenceSettingValue {
 
 export interface TenantPreferenceSettings {
   global: TenantPreferenceSettingValue;
+}
+
+export interface Administrator {
+  id: string;
+  email: string; // TODO: validation
+  name: string; // TODO: validation
+  lastName: string;  // TODO: validation
+  role: RolesEnum;
+  newEmail: string; // TODO: validation
+  detailLevel?: string;
+  roleDsc?: string;
+  inactiveRow?: boolean;
+  inactiveTooltip?: string;
+  fullName?: string;
+}
+
+export interface TenantDetails {
+  createdDate: string;
+  entitlementId: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean;
+  maintenanceState: boolean;
+  mspEc?: boolean;
+  name: string;
+  ruckusUser: boolean;
+  status: string;
+  tenantType: string;
+  updatedDate: string;
+  upgradeGroup: string;
+  preferences?: string;
+}
+
+export enum AdministrationDelegationType {
+  VAR = 'VAR',
+  SUPPORT = 'SUPPORT'
+}
+
+export enum AdministrationDelegationStatus {
+  INVITED = 'INVITED',
+  ACCEPTED = 'ACCEPTED',
+  REJECTED = 'REJECTED',
+  REVOKED = 'REVOKED'
+}
+
+export interface Delegation {
+  id: string;
+  createdDate: string;
+  updateDate: string;
+  delegatedTo: string;
+  delegatedToName: string;
+  type: AdministrationDelegationType;
+  status: AdministrationDelegationStatus;
+  statusLabel?: string;
+  delegatedBy: string;
+  valid: boolean;
+}
+
+export interface VARTenantDetail {
+  externalId: string;
+  name: string;
+  updateDate: string;
+  externalModifiedDate: string;
+  streetAddress: string;
+  stateOrProvince: string;
+  country: string;
+  city: string;
+  postalCode: string;
+  phoneNumber: string;
+  faxNumber: string;
+  var: boolean;
+  eda: boolean;
+}
+
+export interface RegisteredUserSelectOption {
+  externalId: string;
+  email: string;
 }

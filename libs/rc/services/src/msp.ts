@@ -13,7 +13,8 @@ import {
   MspEc, EcDeviceInventory,
   VarCustomer,
   MspProfile,
-  MspEcProfile
+  MspEcProfile,
+  Delegation
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -139,11 +140,26 @@ export const mspApi = baseMspApi.injectEndpoints({
       query: ({ params }) => {
         const req =
           createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
-
-
-
         return {
           ...req
+        }
+      }
+    }),
+    getMspEcAdmin: build.query<MspEcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspEcAdmin, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateMspEcAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcAdmin, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     })
@@ -161,5 +177,7 @@ export const {
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
   useGetMspProfileQuery,
-  useGetMspEcProfileQuery
+  useGetMspEcProfileQuery,
+  useGetMspEcAdminQuery,
+  useUpdateMspEcAdminMutation
 } = mspApi

@@ -7,7 +7,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  MspEntitlement
+  MspEntitlement,
+  MspEcProfile
 } from './types/msp'
 
 const devicesCountMap = {
@@ -130,5 +131,20 @@ function displayYears (timeLeft: number) {
   } else {
     return getIntl().$t({ defaultMessage:
       'More than {years} {years, plural, one {Year} other {Years}}' }, { years: yearsValueFloored })
+  }
+}
+
+export const MSPUtils = () => {
+
+  const isMspEc = (mspEc: MspEcProfile | undefined): boolean => {
+    if (mspEc?.msp_label) {
+      return true
+    }
+
+    return false
+  }
+
+  return {
+    isMspEc
   }
 }

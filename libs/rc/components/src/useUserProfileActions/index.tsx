@@ -1,5 +1,5 @@
 import { useGetUserProfileQuery } from '@acx-ui/rc/services'
-import { RolesEnum }              from '@acx-ui/rc/utils'
+import { RolesEnum, UserProfile } from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
 
 
@@ -18,6 +18,21 @@ export function useUserProfileActions () {
 
   return {
     ...userProfileData,
+    hasRole,
+    verifyIsPrimeAdminUser
+  }
+}
+
+export const UserProfileUtils = () => {
+  const hasRole = (data: UserProfile, userRole: string): boolean => {
+    return data.roles.find(role => role === userRole) !== undefined
+  }
+
+  const verifyIsPrimeAdminUser = (data: UserProfile) => {
+    return hasRole(data, RolesEnum.PRIME_ADMIN)
+  }
+
+  return {
     hasRole,
     verifyIsPrimeAdminUser
   }
