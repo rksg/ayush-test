@@ -1,4 +1,6 @@
-import { rest } from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
 
 import { PersonaUrls, MacRegListUrlsInfo, DpskUrls }                                from '@acx-ui/rc/utils'
 import { Provider }                                                                 from '@acx-ui/store'
@@ -139,5 +141,40 @@ describe('Persona Group Table', () => {
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
     fireEvent.click(cancelButton)
 
+  })
+
+  it('should export persona group to CSV', async () => {
+    const exportFn = jest.fn()
+
+    mockServer.use(
+      rest.post(PersonaUrls.exportPersonaGroup.url,(req, res, ctx) => {
+        const headers = req.headers['headers']
+
+        // Get List API: 'Content-Type': 'application/json'
+        if (headers['accept'] === 'application/json') {
+          return res(ctx.json(mockPersonaGroupTableResult))
+        } else {
+          exportFn()
+
+          return res(ctx.set({
+            'content-disposition': 'attachment; filename=PersonaGroups_20230118100829.csv',
+            'content-type': 'text/csv;charset=ISO-8859-1'
+          }), ctx.text('PersonaGroup'))
+        }
+      })
+    )
+
+    render(
+      <Provider>
+        <PersonaGroupTable />
+      </Provider>,{
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/i }))
+
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })
 })

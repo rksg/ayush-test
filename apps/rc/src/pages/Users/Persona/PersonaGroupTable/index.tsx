@@ -7,7 +7,8 @@ import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation,
-  useLazyGetDpskQuery
+  useLazyGetDpskQuery,
+  useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -104,6 +105,7 @@ export function PersonaGroupTable () {
 
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,
     { isLoading: isDeletePersonaGroupUpdating }
@@ -147,12 +149,25 @@ export function PersonaGroupTable () {
     setMacRegistrationPoolMap(macPools)
   }, [tableQuery.data])
 
+  const downloadPersonaGroups = () => {
+    downloadCsv({ payload: tableQuery.payload }).unwrap().catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export Persona Groups.' })
+      })
+    })
+  }
+
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Persona Group' }),
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: downloadPersonaGroups
     }
   ]
 
