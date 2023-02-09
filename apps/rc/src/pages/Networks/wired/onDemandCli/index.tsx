@@ -61,8 +61,8 @@ export function OnDemandCliTab () {
         rowSelection={{ type: 'checkbox' }}
         actions={[{
           label: $t({ defaultMessage: 'Add CLI Template' }),
-          disabled: true, //Waiting for support
-          onClick: () => {}
+          disabled: true //Waiting for support
+          // onClick: () => {}
         }]}
       />
     </Loader></>

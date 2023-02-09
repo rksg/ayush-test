@@ -9,7 +9,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (Cloud) diagram s
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -30,7 +30,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (On Premise) diag
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -51,7 +51,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram suc
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -72,7 +72,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram whe
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -93,7 +93,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           src="aaa.png"
@@ -113,7 +113,7 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enab
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -134,7 +134,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -155,7 +155,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -176,7 +176,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -197,7 +197,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -218,7 +218,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -239,7 +239,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -260,7 +260,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -281,7 +281,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -302,7 +302,7 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Captive Portal"
@@ -323,7 +323,7 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (Cloud) diagram
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
@@ -344,7 +344,7 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (On Premise) di
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
@@ -365,7 +365,7 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram success
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
@@ -386,7 +386,7 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (Cloud) diagram
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Open Network"
@@ -407,7 +407,7 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (On Premise) di
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Open Network"
@@ -428,7 +428,7 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram success
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Open Network"
@@ -449,7 +449,7 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -470,7 +470,7 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfu
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           alt="Pre-Shared Key (PSK)"
@@ -491,7 +491,7 @@ exports[`NetworkDiagram should render default diagram successfully 1`] = `
       class="ant-col"
     >
       <div
-        class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+        class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
       >
         <img
           src="none.png"

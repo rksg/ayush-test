@@ -43,7 +43,7 @@ export function ProfilesTab () {
       visible: (selectedRows) => selectedRows.length === 1,
       disabled: true, //Waiting for support
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => { }
+      onClick: () => {}
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -66,13 +66,13 @@ export function ProfilesTab () {
         rowSelection={{ type: 'checkbox' }}
         actions={[{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
-          disabled: true, //Waiting for support
-          onClick: () => {}
+          disabled: true //Waiting for support
+          // onClick: () => {}
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
-          disabled: true, //Waiting for support
-          onClick: () => {}
+          disabled: true //Waiting for support
+          // onClick: () => {}
         }]}
       />
     </Loader></>
