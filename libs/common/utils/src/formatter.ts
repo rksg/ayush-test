@@ -159,7 +159,8 @@ export const formats = {
   radioFormat: (value: string|number) => `${value} GHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
-  enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
+  enabledFormat: (value: boolean, { $t }: IntlShape) =>
+    (value ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value),

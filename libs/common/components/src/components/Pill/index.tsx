@@ -17,9 +17,9 @@ interface TrendPillProps {
   trend: TrendType
   value: string
 }
-export function TrendPill ({ trend, value }: TrendPillProps) {
+export function TrendPill ({ trend, value, ...rest }: TrendPillProps) {
   return (
-    <UI.Pill type={trend}>{value}</UI.Pill>
+    <UI.Pill type={trend} {...rest}>{value}</UI.Pill>
   )
 }
 

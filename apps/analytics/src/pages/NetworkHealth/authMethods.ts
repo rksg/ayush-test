@@ -15,6 +15,7 @@ type AuthMethodField = {
 
 type AuthMethodSpec = {
   code: AuthenticationMethod
+  text: MessageDescriptor
   title: MessageDescriptor
   fields: AuthMethodField[]
   stages: Array<{ key: TestStage, title: MessageDescriptor }>
@@ -35,6 +36,7 @@ const presharedKeyField: AuthMethodField = {
 const specs: AuthMethodSpec[] = [
   {
     code: AuthenticationMethod.WPA2_PERSONAL,
+    text: defineMessage({ defaultMessage: 'WPA2-Personal' }),
     title: defineMessage({ defaultMessage: 'Pre-Shared Key (PSK)' }),
     fields: [
       presharedKeyField
@@ -52,6 +54,7 @@ const specs: AuthMethodSpec[] = [
   },
   {
     code: AuthenticationMethod.WPA3_PERSONAL,
+    text: defineMessage({ defaultMessage: 'WPA3-Personal' }),
     title: defineMessage({ defaultMessage: 'WPA3-Personal' }),
     fields: [
       presharedKeyField
@@ -66,6 +69,7 @@ const specs: AuthMethodSpec[] = [
   },
   {
     code: AuthenticationMethod.WPA2_WPA3_PERSONAL,
+    text: defineMessage({ defaultMessage: 'WPA2/WPA3-Personal' }),
     title: defineMessage({ defaultMessage: 'WPA2/WPA3-Personal' }),
     fields: [
       presharedKeyField
@@ -80,6 +84,7 @@ const specs: AuthMethodSpec[] = [
   },
   {
     code: AuthenticationMethod.WPA2_ENTERPRISE,
+    text: defineMessage({ defaultMessage: 'WPA2-Enterprise' }),
     title: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
     fields: [
       usernameField,
@@ -98,6 +103,7 @@ const specs: AuthMethodSpec[] = [
   },
   {
     code: AuthenticationMethod.OPEN_AUTH,
+    text: defineMessage({ defaultMessage: 'Open Auth' }),
     title: defineMessage({ defaultMessage: 'Open Network' }),
     fields: [],
     stages: [

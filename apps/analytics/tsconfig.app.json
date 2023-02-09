@@ -20,5 +20,5 @@
     "**/*.spec.jsx",
     "**/*.test.jsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "src/pages/NetworkHealth/NetworkHealthDetails/Overview"]
 }

@@ -66,6 +66,24 @@ export type NetworkHealthConfig = {
   createdAt: string // timestamp
 }
 
+type WlanAuthSettings = {
+  authType?: string
+  authentication?: string
+  wpaEncryption?: string
+  wpaVersion?: string
+}
+
+export type NetworkHealthTest = {
+  id: number
+  specId: UUID
+  configId: UUID
+  createdAt: string // timestamp
+  timeoutAt: string // timestamp
+  apEventTime: string // timestamp
+  controlMessageIds?: string[]
+  wlanAuthSettings?: WlanAuthSettings
+}
+
 export type NetworkHealthFormDto = {
   id?: NetworkHealthSpec['id']
   isDnsServerCustom: boolean

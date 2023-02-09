@@ -5,6 +5,8 @@ import { networkHealthApi }     from '@acx-ui/analytics/services'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { APListNode, PathNode } from '@acx-ui/utils'
 
+import { stages } from './contents'
+
 import type {
   APListNodes,
   NetworkHealthFormDto,
@@ -12,7 +14,8 @@ import type {
   NetworkNodes,
   NetworkPaths,
   MutationResult,
-  NetworkHealthConfig
+  NetworkHealthConfig,
+  NetworkHealthTest
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -223,4 +226,124 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
+}
+
+const compareFields = `
+  apsSuccessCount
+  apsTestedCount
+  avgPingTime
+  avgUpload
+  avgDownload
+`
+
+const compareFieldsFn = (stage: string) => `
+  ${stage}Success :apsSuccessCount(stage: ${stage})
+  ${stage}Failure :apsFailureCount(stage: ${stage})
+  ${stage}Error :apsErrorCount(stage: ${stage})
+  ${stage}NA :apsNACount(stage: ${stage})
+  ${stage}Pending :apsPendingCount(stage: ${stage})
+`
+
+export interface NetworkHealthTestResult extends NetworkHealthTest {
+  spec: NetworkHealthSpec
+  config: NetworkHealthConfig
+  summary: Record<string, number|string>
+  previousTest: NetworkHealthTestResult
+  // isOngoing?: boolean
+  // apsUnderTest?: number
+  // apsFinishedTest?: number
+  // lastResult?: number
+  // wlanName: NetworkHealthConfig['wlanName']
+}
+
+const fetchServiceGuardTest = gql`
+  query ServiceGuardTest($testId: Float!) {
+    serviceGuardTest(id: $testId) {
+      id
+      createdAt
+      spec {
+        specId: id
+        name
+        type
+        apsCount
+        clientType
+      }
+      config {
+        wlanName
+        wlanUsername
+        dnsServer
+        pingAddress
+        tracerouteAddress
+        speedTestEnabled
+        radio
+        authenticationMethod
+      }
+      summary {
+        apsFailureCount
+        apsErrorCount
+        apsPendingCount
+        ${compareFields}
+        ${Object.keys(stages).map(stage => compareFieldsFn(stage)).join('\n')}}
+      previousTest {
+        summary {
+          ${compareFields}
+        }
+      }
+      wlanAuthSettings {
+        wpaVersion
+      }
+    }
+  }
+`
+
+const {
+  useNetworkHealthTestQuery
+} = networkHealthApi.injectEndpoints({
+  endpoints: (build) => ({
+    networkHealthTest: build.query<
+    NetworkHealthTestResult,
+    { testId: NetworkHealthTest['id'] }
+  >({
+    query: (variables) => ({
+      variables,
+      document: fetchServiceGuardTest
+    }),
+    transformResponse: (result: { serviceGuardTest: NetworkHealthTestResult }) =>
+      result.serviceGuardTest
+  })
+  })
+})
+
+// const statsFromSummary = (
+//   summary: NetworkHealthTestResult['summary']
+// ) => {
+//   const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
+//     = summary as Record<string, number>
+//   const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
+//   const apsFinishedTest = apsUnderTest
+//     ? apsUnderTest - apsPendingCount
+//     : undefined
+//   const lastResult = apsUnderTest
+//     ? apsSuccessCount / apsUnderTest
+//     : undefined
+//   return { isOngoing, apsFinishedTest, lastResult, apsUnderTest }
+// }
+
+export function useNetworkHealthTest () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthTestQuery(
+    { testId: parseInt(params.testId!, 10) },
+    { skip: !Boolean(params.testId)
+      // selectFromResult: ({ data, ...rest }) => {
+      //   const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
+      //   } = statsFromSummary(data?.summary || {})
+      //   return { data: {
+      //     ...data,
+      //     ...(isOngoing && { isOngoing }),
+      //     ...(apsUnderTest !== undefined && { apsUnderTest }),
+      //     ...(apsFinishedTest !== undefined && { apsFinishedTest }),
+      //     ...(lastResult !== undefined && { lastResult })
+      //   }, ...rest }
+      // }
+    })
 }
