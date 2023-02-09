@@ -51,7 +51,7 @@ describe('AAA Instance Page', () => {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Add Server'))
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
     await userEvent.click(await screen.findByText('Add Server'))
     await userEvent.click(await screen.findByText('Add Secondary Server'))
     await userEvent.type(await screen.findByRole(

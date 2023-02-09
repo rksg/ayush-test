@@ -48,7 +48,7 @@ describe('Portal Instance Page', () => {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
