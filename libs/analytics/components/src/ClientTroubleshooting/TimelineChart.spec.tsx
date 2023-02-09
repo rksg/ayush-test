@@ -60,9 +60,29 @@ describe('TimelineChartComponent', () => {
       expect(setSelected).not.toBeCalled()
     })
     it('should handle dot onClick', () => {
+      const testRect = {
+        x: 30,
+        y: 30,
+        width: 20,
+        height: 20,
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+      }
+
       const testParams = {
         componentSubType: 'scatter',
-        data: [1654423052112, 'connectionEvents', testEvent]
+        data: [1654423052112, 'connectionEvents', testEvent],
+        event: {
+          event: {
+            clientX: 10,
+            clientY: 20,
+            currentTarget: {
+              getBoundingClientRect: jest.fn(() => testRect)
+            }
+          }
+        }
       }
       const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
       const mockOffFn = jest.fn()
@@ -79,9 +99,9 @@ describe('TimelineChartComponent', () => {
       renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected))
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
-      expect(onDotClick).toBeCalledWith(testParams.data[2])
+      expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 0, y: 10 })
       expect(setSelected).toBeCalledTimes(1)
-      expect(setSelected).toBeCalledWith(testParams.data[2] as unknown as Event)
+      expect(setSelected).toBeCalledWith(testParams.data[2])
     })
     it('should not handle onClick for other element', () => {
       const testParams = {
