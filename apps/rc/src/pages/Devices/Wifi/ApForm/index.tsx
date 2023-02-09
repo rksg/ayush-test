@@ -220,12 +220,13 @@ export function ApForm () {
     const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
     if (venueId && list?.length) {
       list?.filter((item) => !item.isDefault)
-        .map((item) => ({
-          label: item.name,
-          value: item.id
-        }))
-        .sort((a, b) => (a.label > b.label) ? 1 : -1)
-      result.push(list)
+        .sort((a, b) => (a.name > b.name) ? 1 : -1)
+        .forEach((item) => (
+          result.push({
+            label: item.name,
+            value: item.id
+          })
+        ))
     }
     return result
   }
