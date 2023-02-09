@@ -224,7 +224,7 @@ export function ManageCustomer () {
       const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
       const wLic = wifi.length > 0 ? wifi[0].quantity : 0
       const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
-      const sLic = sw.length > 0 ? sw[0].quantity : 0
+      const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
       formRef.current?.setFieldsValue({
         name: data?.name,
@@ -651,7 +651,7 @@ export function ManageCustomer () {
     })
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
         <Form.Item
           name='wifiLicense'
           label=''
@@ -749,7 +749,7 @@ export function ManageCustomer () {
         >{intl.$t({ defaultMessage: 'Start Subscription' })}
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{assignedWifiLicense}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
@@ -844,7 +844,7 @@ export function ManageCustomer () {
         <Subtitle level={4}>
           { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
@@ -912,6 +912,8 @@ export function ManageCustomer () {
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
+    const wifiAssigned = trialSelected ? '25' : assignedWifiLicense
+    const switchAssigned = trialSelected ? '25' : assignedSwitchLicense
 
     return (
       <>
@@ -963,12 +965,12 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
         >
-          <Paragraph>{assignedWifiLicense}</Paragraph>
+          <Paragraph>{wifiAssigned}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
         >
-          <Paragraph>{assignedSwitchLicense}</Paragraph>
+          <Paragraph>{switchAssigned}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
