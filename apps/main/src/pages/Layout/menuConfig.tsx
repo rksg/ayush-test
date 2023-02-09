@@ -153,7 +153,7 @@ export function useMenuConfig () {
         [
           {
             path: '/devices/wifi',
-            name: $t({ defaultMessage: 'WiFi' })
+            name: $t({ defaultMessage: 'Wi-Fi' })
           },
           {
             path: '/devices/switch',
@@ -215,7 +215,7 @@ export function useMenuConfig () {
       routes: [
         {
           path: '/users/wifi',
-          name: $t({ defaultMessage: 'WiFi' })
+          name: $t({ defaultMessage: 'Wi-Fi' })
         },
         {
           path: '/users/switch',
