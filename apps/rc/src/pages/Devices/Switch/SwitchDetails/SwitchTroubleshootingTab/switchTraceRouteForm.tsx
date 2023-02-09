@@ -7,7 +7,6 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -137,12 +136,10 @@ export function SwitchTraceRouteForm () {
           name='targetHost'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>}
           rules={[
             { required: true },

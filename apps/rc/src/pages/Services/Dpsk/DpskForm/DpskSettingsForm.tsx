@@ -9,7 +9,6 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
@@ -73,7 +72,7 @@ export default function DpskSettingsForm () {
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Format' }) }
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
                   defaultMessage={`Format options: <br></br><br></br>
@@ -83,9 +82,7 @@ export default function DpskSettingsForm () {
                   `}
                   values={{ br: () => <br /> }}
                 />}
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>
           }
           rules={[{ required: true }]}
@@ -102,13 +99,11 @@ export default function DpskSettingsForm () {
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Length' }) }
-              <Tooltip
+              <Tooltip.Question
                 // eslint-disable-next-line max-len
                 title={intl.$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
                 placement='bottom'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>
           }
         >

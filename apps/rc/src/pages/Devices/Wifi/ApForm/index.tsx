@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space, Tooltip } from 'antd'
-import { DefaultOptionType }                             from 'antd/lib/select'
-import { isEqual, omit, omitBy, pick }                   from 'lodash'
-import { FormattedMessage, useIntl }                     from 'react-intl'
+import { Col, Form, Input, Row, Select, Space } from 'antd'
+import { DefaultOptionType }                    from 'antd/lib/select'
+import { isEqual, omit, omitBy, pick }          from 'lodash'
+import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
   Button,
@@ -15,10 +15,10 @@ import {
   showToast,
   showActionModal,
   StepsForm,
-  StepsFormInstance
+  StepsFormInstance,
+  Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
   useAddApMutation,
@@ -296,7 +296,7 @@ export function ApForm () {
                 name='venueId'
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
-                  {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip
+                  {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
                     title={
                       apMeshRoleDisabled
                         ? $t(WifiNetworkMessages.AP_VENUE_MESH_DISABLED_TOOLTIP)
@@ -306,9 +306,7 @@ export function ApForm () {
                         )
                     }
                     placement='bottom'
-                  >
-                    <QuestionMarkCircleOutlined />
-                  </Tooltip>}
+                  />}
                 </>}
                 initialValue={null}
                 rules={[{
@@ -360,12 +358,10 @@ export function ApForm () {
                 name='name'
                 label={<>
                   {$t({ defaultMessage: 'AP Name' })}
-                  <Tooltip
+                  <Tooltip.Question
                     title={$t(WifiNetworkMessages.AP_NAME_TOOLTIP)}
                     placement='bottom'
-                  >
-                    <QuestionMarkCircleOutlined />
-                  </Tooltip>
+                  />
                 </>}
                 rules={[
                   { required: true },
