@@ -17,6 +17,14 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
   },
+  addAppPolicy: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/application-policy'
+  },
+  getAppPolicy: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId'
+  },
   getL2AclPolicyList: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
@@ -25,7 +33,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
   },
-  getAvcCat: {
+  getAppPolicyList: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/application-policy/query'
+  },
+  getAvcCategory: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-cat'
   },

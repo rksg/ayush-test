@@ -24,7 +24,7 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   CommonResult,
-  devicePolicyInfoType, DevicePolicy, AvcCat, L2AclPolicy, L3AclPolicy,
+  devicePolicyInfoType, DevicePolicy, L2AclPolicy, L3AclPolicy,
   NewTableResult,
   transferToTableResult,
   l3AclPolicyInfoType,
@@ -32,9 +32,10 @@ import {
   AvcApp,
   VlanPool,
   WifiUrlsInfo,
-  AccessControlUrls,
+  AccessControlUrls, AvcCategory,
   ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, RequestFormData
+  createNewTableHttpRequest, TableChangePayload, RequestFormData,
+  appPolicyInfoType, ApplicationPolicy
 } from '@acx-ui/rc/utils'
 
 
@@ -122,6 +123,25 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getDevicePolicy: build.query<devicePolicyInfoType, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AccessControlUrls.getDevicePolicy, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    addAppPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getAppPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -276,6 +296,31 @@ export const policyApi = basePolicyApi.injectEndpoints({
           if (params.requestId) {
             onActivityMessageReceived(msg, [
               'Add Layer 3 Policy Profile'
+            ],() => {
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            }, params.requestId as string)
+          }
+        })
+      }
+    }),
+    appPolicyList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const appPolicyListReq = createHttpRequest(
+          AccessControlUrls.getAppPolicyList,
+          params
+        )
+        return {
+          ...appPolicyListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const params = requestArgs.params as { requestId: string }
+          if (params.requestId) {
+            onActivityMessageReceived(msg, [
+              'Add Application Policy Profile'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
             }, params.requestId as string)
@@ -536,9 +581,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
-    avcCatList: build.query<AvcCat[], RequestPayload>({
+    avcCategoryList: build.query<AvcCategory[], RequestPayload>({
       query: ({ params, payload }) => {
-        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCat, params)
+        const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCategory, params)
         return {
           ...avcCatListReq,
           body: payload
@@ -580,8 +625,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
 
 export const {
-  useAvcCatListQuery,
-  useAvcAppListQuery,
   usePolicyListQuery,
   useMacRegListsQuery,
   useDeleteMacRegListMutation,
@@ -592,11 +635,15 @@ export const {
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
+  useAvcCategoryListQuery,
+  useAvcAppListQuery,
   useAddRoguePolicyMutation,
   useDelRoguePolicyMutation,
   useDelRoguePoliciesMutation,
   useAddL2AclPolicyMutation,
   useGetL2AclPolicyQuery,
+  useAddAppPolicyMutation,
+  useGetAppPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
   useL2AclPolicyListQuery,
@@ -604,6 +651,7 @@ export const {
   useAddDevicePolicyMutation,
   useGetDevicePolicyQuery,
   useDevicePolicyListQuery,
+  useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
