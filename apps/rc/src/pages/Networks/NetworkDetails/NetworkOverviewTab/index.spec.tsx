@@ -6,24 +6,29 @@ import { Form } from 'antd'
 import { Provider } from '@acx-ui/store'
 import { render }   from '@acx-ui/test-utils'
 
-import { NetworkIncidentsTab } from './index'
+import { NetworkOverviewTab } from './index'
+
 
 jest.mock('@acx-ui/analytics/components', () => ({
-  IncidentTabContent: () => <div></div>
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  ConnectedClientsOverTime: () => <div></div>,
+  NetworkHistory: () => <div></div>,
+  TopApplicationsByTraffic: () => <div></div>,
+  TrafficByVolume: () => <div></div>,
+  VenueHealth: () => <div></div>
 }))
 jest.mock('../services', () => ({
-  ...jest.requireActual('../services'),
   extractSSIDFilter: () => [],
   useGetNetwork: () => ({})
 }))
-describe('NetworkIncidentsTab', () => {
+describe('NetworkOverviewTab', () => {
   it('should render network incidents tab successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(
       <Provider>
         <Form>
-          <NetworkIncidentsTab />
+          <NetworkOverviewTab />
         </Form>
       </Provider>, {
         route: { params }
