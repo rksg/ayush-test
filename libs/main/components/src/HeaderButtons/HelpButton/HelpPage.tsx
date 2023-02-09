@@ -10,15 +10,18 @@ import { useLocation } from '@acx-ui/react-router-dom'
 
 import { EmptyDescription } from './styledComponents'
 
+const isDev = process.env['NODE_ENV'] === 'development'
 //for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
 // TODO: change to use '/docs/ruckusone/userguide/mapfile/doc-mapper.json' for local and prod after gateway adds route
-// eslint-disable-next-line max-len
-export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+export const MAPPING_URL = isDev
+  ? '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
 
-// for local test, use '/docs/alto/latest/'
+// for local test, use '/docs/ruckusone/userguide/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/ruckusone/'
-
+export const DOCS_URL = isDev
+  ? '/docs/alto/latest/'
+  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
