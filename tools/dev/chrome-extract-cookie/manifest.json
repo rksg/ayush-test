@@ -15,7 +15,7 @@
     "storage",
     "cookies",
     "nativeMessaging",
-    "notifications" ,
+    "notifications",
     "https://*.ruckuswireless.com/",
     "http://*.ruckuswireless.com/",
     "https://ruckus.cloud/",
@@ -31,6 +31,21 @@
     ],
     "persistent": false
   },
+  "content_scripts": [{
+      "matches": [
+          "https://*.ruckuswireless.com/*"
+      ],
+      "js": [
+          "content/source.js"
+      ]
+  }, {
+      "matches": [
+          "http://localhost:3000/*"
+      ],
+      "js": [
+          "content/target.js"
+      ]
+  }],
   "browser_action": {
     "default_icon": "concept-128x128.png",
     "default_title": "Click the icon to copy cookies from configured domain to localhost. Default is set to devalto. Domain can be changed in options"
