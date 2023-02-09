@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgePortConfig } from '../../../__tests__/fixtures'
+import { mockEdgePortConfig, mockEdgePortStatus } from '../../../__tests__/fixtures'
 
 import Ports from '.'
 
@@ -42,6 +42,10 @@ describe('EditEdge ports', () => {
       rest.get(
         EdgeUrlsInfo.getPortConfig.url,
         (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgePortStatusList.url,
+        (req, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
       )
     )
   })
@@ -76,6 +80,28 @@ describe('EditEdge ports', () => {
     await screen.findByRole('tab', {
       name: 'Sub-interface', selected: true
     })
+  })
+
+  it ('IP status on each port tab should be displayed correctly', async () => {
+    const user = userEvent.setup()
+    params.activeSubTab = 'ports-general'
+    render(
+      <Provider>
+        <Ports />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+
+    for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
+      await user.click(await screen.findByRole('radio', { name: 'Port ' + (i + 1) }))
+      const expectedIp = mockEdgePortStatus[i]?.ip ?? 'N/A'
+      await screen.findByText(
+        'IP Address: ' + expectedIp + ' | ' +
+        'MAC Address: ' + mockEdgePortConfig.ports[i].mac)
+    }
   })
 
   it('switch tab', async () => {

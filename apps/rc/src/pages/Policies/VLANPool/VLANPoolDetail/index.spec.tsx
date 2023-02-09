@@ -13,44 +13,40 @@ import {
 import VLANPoolDetail from '.'
 
 const list = {
-  fields: [
-    'id',
-    'network'
-  ],
-  totalCount: 4,
+  totalCount: 2,
+  totalPages: 1,
   page: 1,
-  data: [
-    {
-      id: '1',
-      name: 'Network A',
-      aps: 40,
-      scope: 'all'
+  data: [{
+    venueId: 'ebcccef6b366415dbb85073e5aa7248c',
+    venueName: 'tVenue1',
+    apGroupData: [{
+      apGroupId: '33e6a901d4a8492eb4a1f2b75de75af3',
+      apGroupName: 'apg1',
+      apCount: 0
     },
     {
-      id: '11',
-      name: 'Network B',
-      aps: 40,
-      scope: 'all'
-    },
-    {
-      id: '12',
-      name: 'Network C',
-      aps: 40,
-      scope: 'all'
-    },
-    {
-      id: '1111',
-      name: 'Network D',
-      aps: 40,
-      scope: 'all'
-    }
-  ]
+      apGroupId: '81134687bde947cb86a0426995fdd442',
+      apGroupName: 'apg2',
+      apCount: 0
+    }]
+  },
+  {
+    venueId: '2df3c129c00e4686b11cf70dac845367',
+    venueName: 'My-Venue',
+    apGroupData: [
+      {
+        apGroupId: '8dfa1ac3147542df82f7f86fd0c2d8bc',
+        apGroupName: 'ALL_APS',
+        apCount: 0
+      }
+    ]
+  }]
 }
 const detailResult = {
-  id: 1,
+  tenantId: '4217246d0e5344b7b1e9d66d4ec4d105',
   name: 'test',
-  vlanMembers: '40',
-  description: 'desc'
+  vlanMembers: ['2-6','7-9'],
+  id: '9461e5412c1b424f975cd4aee2b1eca2'
 }
 
 describe('VLAN Pool Detail Page', () => {
@@ -61,8 +57,8 @@ describe('VLAN Pool Detail Page', () => {
       policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
     }
     mockServer.use(
-      rest.get(
-        VlanPoolUrls.getVLANPoolNetworkInstances.url,
+      rest.post(
+        VlanPoolUrls.getVLANPoolVenues.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
       rest.get(
@@ -72,7 +68,7 @@ describe('VLAN Pool Detail Page', () => {
     )
   })
 
-  it('should render aaa detail page', async () => {
+  it('should render VLAN Pool Detail page correctly', async () => {
     render(<Provider><VLANPoolDetail /></Provider>, {
       route: { params, path: '/:tenantId/policies/vlanPool/:policyId/detail' }
     })
@@ -81,6 +77,6 @@ describe('VLAN Pool Detail Page', () => {
     const body = await screen.findByRole('rowgroup', {
       name: (_, element) => element.classList.contains('ant-table-tbody')
     })
-    await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
+    await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(2))
   })
 })
