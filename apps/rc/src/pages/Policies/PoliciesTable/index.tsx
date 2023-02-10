@@ -6,7 +6,8 @@ import {
   useDelVLANPoolPolicyMutation,
   useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
-  usePolicyListQuery
+  usePolicyListQuery,
+  useDeleteAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -103,10 +104,14 @@ export default function PoliciesTable () {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
     [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
     [PolicyType.AAA]: [],
-    [PolicyType.ACCESS_CONTROL]: [],
+    [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],
-    [PolicyType.VLAN_POOL]: []
+    [PolicyType.VLAN_POOL]: [],
+    [PolicyType.LAYER_2_POLICY]: [],
+    [PolicyType.LAYER_3_POLICY]: [],
+    [PolicyType.APPLICATION_POLICY]: [],
+    [PolicyType.DEVICE_POLICY]: []
   }
 
   const tableQuery = useTableQuery({
