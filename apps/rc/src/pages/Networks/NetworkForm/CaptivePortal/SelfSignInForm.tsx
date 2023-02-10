@@ -7,13 +7,12 @@ import {
   Form,
   Select,
   Space,
-  Tooltip,
   Input
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
-import { get }                         from '@acx-ui/config'
+import { GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'

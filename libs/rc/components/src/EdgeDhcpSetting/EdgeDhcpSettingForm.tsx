@@ -77,7 +77,7 @@ export const EdgeDhcpSettingForm = () => {
             children={<Input />}
           />
           <Form.Item
-            name='primaryDnsServer'
+            name='primaryDnsIp'
             label={$t({ defaultMessage: 'Primary DNS Server' })}
             children={<Input />}
           />
@@ -89,7 +89,7 @@ export const EdgeDhcpSettingForm = () => {
           </Form.Item>
           {enableSecondaryDNSServer &&
               <Form.Item
-                name='secondaryDnsServer'
+                name='secondaryDnsIp'
                 label={$t({ defaultMessage: 'Secondary DNS Server' })}
                 children={<Input />}
               />
@@ -140,7 +140,7 @@ export const EdgeDhcpSettingForm = () => {
       <Row gutter={20}>
         <Col span={15}>
           <Form.Item
-            name='dhcpHosts'
+            name='hosts'
             children={<DHCPHostTable></DHCPHostTable>}
           />
         </Col>
