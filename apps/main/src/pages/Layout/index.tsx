@@ -24,6 +24,7 @@ import { Home }          from './styledComponents'
 function Layout () {
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
+  const showHomeButton = isDelegationMode() || userProfile?.var
 
   return (
     <LayoutComponent
@@ -35,7 +36,7 @@ function Layout () {
         </>
       }
       leftHeaderContent={
-        isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+        showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
           <Home>
             <LayoutUI.Icon children={<HomeSolid />} />
             Home
