@@ -64,7 +64,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={20}
+                defaultValue={DEFAULT_VALUE}
                 min={1}
                 max={200}
                 marks={{
@@ -99,7 +99,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
               <Slider
                 tooltipVisible={false}
                 style={{ width: '245px' }}
-                defaultValue={20}
+                defaultValue={DEFAULT_VALUE}
                 min={1}
                 max={200}
                 marks={{

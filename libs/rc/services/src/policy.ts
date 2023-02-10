@@ -4,7 +4,6 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
-
 import {
   createHttpRequest,
   MacRegistration,
@@ -24,19 +23,25 @@ import {
   onSocketActivityChanged,
   onActivityMessageReceived,
   CommonResult,
-  devicePolicyInfoType, DevicePolicy, L2AclPolicy, L3AclPolicy,
+  devicePolicyInfoType,
+  DevicePolicy,
   NewTableResult,
   transferToTableResult,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
+  L2AclPolicy,
+  L3AclPolicy,
+  AvcCategory,
   AvcApp,
+  appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
   VlanPool,
   WifiUrlsInfo,
-  AccessControlUrls, AvcCategory,
+  AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  appPolicyInfoType, ApplicationPolicy
+  createNewTableHttpRequest, TableChangePayload, RequestFormData
 } from '@acx-ui/rc/utils'
+
+
 
 
 export const basePolicyApi = createApi({
@@ -100,6 +105,47 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    addAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.addAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    updateAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.updateAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfile, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -179,6 +225,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RogueApUrls.getRoguePolicyList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -646,6 +702,10 @@ export const {
   useGetAppPolicyQuery,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
+  useAddAccessControlProfileMutation,
+  useUpdateAccessControlProfileMutation,
+  useDeleteAccessControlProfileMutation,
+  useGetAccessControlProfileQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useAddDevicePolicyMutation,
@@ -653,6 +713,7 @@ export const {
   useDevicePolicyListQuery,
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
+  useGetAccessControlProfileListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,

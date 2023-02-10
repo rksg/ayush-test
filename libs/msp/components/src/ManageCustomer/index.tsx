@@ -462,8 +462,10 @@ export function ManageCustomer () {
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
         service_effective_date: today,
-        service_expiration_date: expirationDate,
-        licenses: assignLicense
+        service_expiration_date: expirationDate
+      }
+      if (!isTrialMode) {
+        customer.licenses = assignLicense
       }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
