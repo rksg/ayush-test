@@ -10,16 +10,16 @@ import { useLocation } from '@acx-ui/react-router-dom'
 
 import { EmptyDescription } from './styledComponents'
 
-const isDev = process.env['NODE_ENV'] === 'development'
+
 //for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
 // TODO: change to use '/docs/ruckusone/userguide/mapfile/doc-mapper.json' for local and prod after gateway adds route
-export const MAPPING_URL = isDev
+export const getMappingURL = () => process.env['NODE_ENV'] === 'development'
   ? '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
   : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/ruckusone/userguide/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const DOCS_URL = isDev
+export const getDocsURL = () => process.env['NODE_ENV'] === 'development'
   ? '/docs/ruckusone/userguide/'
   : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
@@ -36,7 +36,7 @@ const useBasePath = () => {
 }
 
 const getMapping = async (basePath: string, showError: () => void) => {
-  let result = await fetch(MAPPING_URL, {
+  let result = await fetch(getMappingURL(), {
     method: 'GET',
     headers: {
       Accept: 'application/json'
@@ -58,7 +58,7 @@ const updateDesc = async (
   onComplete: (content: string) => void,
   onError: () => void
 ) => {
-  const result = await fetch(DOCS_URL + destFile)
+  const result = await fetch(getDocsURL() + destFile)
   if(!result.ok){
     onError()
     return
@@ -98,7 +98,7 @@ export default function HelpPage (props: {
         mappingRs as string,
         (content) => {
           setHelpDesc(content)
-          setHelpUrl(DOCS_URL + mappingRs)
+          setHelpUrl(getDocsURL() + mappingRs)
         },
         showError
       )
