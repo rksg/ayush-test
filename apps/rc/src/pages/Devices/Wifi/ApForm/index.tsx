@@ -173,6 +173,7 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
+      navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as catchErrorResponse)
     }
@@ -210,20 +211,24 @@ export function ApForm () {
   }
 
   const getApGroupOptions = async (venueId: string) => {
-    const list = venueId
-      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
-      : []
+    const result = []
+    result.push({
+      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      value: null
+    })
 
-    return venueId && list?.length
-      ? list?.map((item) => ({
-        label: !item.isDefault
-          ? item.name
-          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: item.isDefault && !isEditMode ? null : item.id
-      })).sort((a, b) => (a.label > b.label) ? 1 : -1) : [{
-        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: null
-      }]
+    const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
+    if (venueId && list?.length) {
+      list?.filter((item) => !item.isDefault)
+        .sort((a, b) => (a.name > b.name) ? 1 : -1)
+        .forEach((item) => (
+          result.push({
+            label: item.name,
+            value: item.id
+          })
+        ))
+    }
+    return result
   }
 
   const handleVenueChange = async (value: string) => {
@@ -232,7 +237,7 @@ export function ApForm () {
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
     setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
-    formRef?.current?.setFieldValue('apGroupId', options?.[0]?.value ?? (value ? null : ''))
+    formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }

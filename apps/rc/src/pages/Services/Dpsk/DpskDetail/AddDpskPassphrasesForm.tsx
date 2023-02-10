@@ -169,7 +169,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
                 placement='bottom'
                 title={<FormattedMessage
                   defaultMessage={`
-                    Only the device with this MAC address will be allowed into the WiFi network
+                    Only the device with this MAC address will be allowed into the Wi-Fi network
                     with that passphrase. Leave blank to allow the first device using the
                     passphrase to bond to it
                   `}
@@ -192,7 +192,7 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
               title={<FormattedMessage
                 defaultMessage={`
                   The device will be placed on this VLAN after authenticating to
-                  the WiFi network. If empty, the network's default will be used
+                  the Wi-Fi network. If empty, the network's default will be used
                 `}
               />}
             >
