@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Select } from 'antd'
-import _                                 from 'lodash'
-import { useIntl }                       from 'react-intl'
-import styled, { css }                   from 'styled-components/macro'
+import { Form, Input, Select } from 'antd'
+import _                       from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import {
+  Button,
   ContentSwitcher,
   ContentSwitcherProps,
-  Drawer,
+  Drawer, GridCol, GridRow,
   showActionModal, showToast,
   Table,
   TableProps
@@ -38,12 +38,6 @@ export interface DeviceOSRule {
   }
 }
 
-const ViewDetailsWrapper = styled.span<{ $policyId: string }>`
-  ${props => props.$policyId
-    ? css`cursor: pointer;`
-    : css`cursor: not-allowed; color: darkgray;`}
-`
-
 export interface DeviceOSDrawerProps {
   inputName?: string[]
 }
@@ -71,6 +65,14 @@ export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
       {linkArray.length ? $t({ defaultMessage: 'Rate Limit: ' }) : ''} {linkArray.join(' | ')}
     </span>
   </div>
+}
+
+const AclGridCol = ({ children }: { children: ReactNode }) => {
+  return (
+    <GridCol col={{ span: 6 }} style={{ marginTop: '6px' }}>
+      {children}
+    </GridCol>
+  )
 }
 
 const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
@@ -399,8 +401,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   return (
     <>
-      <Row justify={'space-between'} style={{ width: '300px' }}>
-        <Col span={12} style={{ textAlign: 'center' }}>
+      <GridRow style={{ width: '350px' }}>
+        <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
             rules={[{
@@ -416,30 +418,31 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
               />
             }
           />
-        </Col>
-        <Col span={6} style={{ textAlign: 'center' }}>
-          <ViewDetailsWrapper $policyId={devicePolicyId}
+        </GridCol>
+        <AclGridCol>
+          <Button type='link'
+            disabled={!devicePolicyId}
             onClick={() => {
               if (devicePolicyId) {
                 setVisible(true)
                 setQueryPolicyId(devicePolicyId)
               }
-            }}>
+            }
+            }>
             {$t({ defaultMessage: 'View Details' })}
-          </ViewDetailsWrapper>
-        </Col>
-        <Col span={5} style={{ textAlign: 'center' }}>
-          <span
-            style={{ cursor: 'pointer' }}
+          </Button>
+        </AclGridCol>
+        <AclGridCol>
+          <Button type='link'
             onClick={() => {
               setVisible(true)
               setQueryPolicyId('')
               clearFieldsValue()
             }}>
             {$t({ defaultMessage: 'Add New' })}
-          </span>
-        </Col>
-      </Row>
+          </Button>
+        </AclGridCol>
+      </GridRow>
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}

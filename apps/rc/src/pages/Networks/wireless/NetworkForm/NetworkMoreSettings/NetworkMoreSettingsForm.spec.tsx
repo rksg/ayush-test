@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, NetworkSaveData }               from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { mockServer, fireEvent, within, render, screen } from '@acx-ui/test-utils'
 
@@ -18,7 +18,7 @@ const mockWlanData = {
   type: 'open',
   isCloudpathEnabled: false,
   venues: []
-}
+} as NetworkSaveData
 
 describe('NetworkMoreSettingsForm', () => {
   beforeEach(() => {
@@ -186,7 +186,7 @@ describe('NetworkMoreSettingsForm', () => {
       type: 'aaa',
       isCloudpathEnabled: false,
       venues: []
-    }
+    } as NetworkSaveData
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(
       <Provider>
