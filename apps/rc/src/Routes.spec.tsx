@@ -30,15 +30,15 @@ jest.mock('./pages/Devices/Switch/SwitchesTable', () => () => {
   return <div data-testid='SwitchesTable' />
 })
 
-jest.mock('./pages/Networks/NetworksTable', () => () => {
+jest.mock('./pages/Networks/wireless/NetworksTable', () => () => {
   return <div data-testid='NetworksTable' />
 })
 
-jest.mock('./pages/Networks/NetworkForm/NetworkForm', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
   return <div data-testid='NetworkForm' />
 })
 
-jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
