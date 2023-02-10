@@ -757,7 +757,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useDevicePolicyListQuery,
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
