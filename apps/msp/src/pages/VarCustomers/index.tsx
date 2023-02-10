@@ -82,7 +82,7 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       render: function (data, row, _, highlightFn) {
-        const to = `${getBasePath()}/t/${row.id}`
+        const to = `${getBasePath()}/t/${row.tenantId}`
         return (
           <Link to={to}>{highlightFn(data as string)}</Link>
         )
