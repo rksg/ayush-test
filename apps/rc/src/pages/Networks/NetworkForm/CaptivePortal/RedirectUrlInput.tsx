@@ -3,16 +3,14 @@ import { useState } from 'react'
 import {
   Checkbox,
   Form,
-  Input,
-  Tooltip
+  Input
 } from 'antd'
 import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import { useIntl }             from 'react-intl'
 
-import {
-  QuestionMarkCircleOutlined
-} from '@acx-ui/icons'
-import { URLRegExp } from '@acx-ui/rc/utils'
+import { Tooltip }                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { URLRegExp }                  from '@acx-ui/rc/utils'
 
 export function RedirectUrlInput () {
   const intl = useIntl()
