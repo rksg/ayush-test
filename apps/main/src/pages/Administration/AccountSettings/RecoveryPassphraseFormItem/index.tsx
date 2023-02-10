@@ -13,6 +13,7 @@ import { RecoveryPassphrase } from '@acx-ui/rc/utils'
 import { MessageMapping } from '../MessageMapping'
 
 import { ChangePassphraseDrawer } from './ChangePassphraseDrawer'
+import * as UI                    from './styledComponents'
 
 interface RecoveryPassphraseFormItemProps {
   className?:string;
@@ -89,18 +90,6 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
       />
     </>
   )
-})`
-  .ant-input-password.ant-input-affix-wrapper-borderless {
-    width: 200px;
-
-    & > input {
-      text-align: center;
-    }
-  }
-
-  & span[role="img"].anticon {
-    color: var(--acx-accents-blue-50);
-  }
-`
+})`${UI.wrapperStyles}`
 
 export { RecoveryPassphraseFormItem }

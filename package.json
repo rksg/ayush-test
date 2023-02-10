@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "engines": {
-    "node": "=16.15.0",
-    "npm": "=8.5.5"
+    "node": "=16.10.0",
+    "npm": "=7.24.0"
   },
   "scripts": {
     "start": "nx serve",
@@ -13,7 +13,8 @@
     "tslint": "tools/docker/tscValidator.sh",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
+    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -28,7 +29,7 @@
     "@reduxjs/toolkit": "1.8.4",
     "@rtk-query/graphql-request-base-query": "2.0.1",
     "@splitsoftware/splitio-react": "1.4.1",
-    "@superset-ui/embedded-sdk": "0.1.0-alpha.7",
+    "@superset-ui/embedded-sdk": "0.1.0-alpha.8",
     "@types/react-highlight-words": "0.16.4",
     "antd": "4.22.7",
     "buffer": "6.0.3",
@@ -37,6 +38,7 @@
     "diff-match-patch": "1.0.5",
     "echarts": "5.4.0",
     "echarts-for-react": "3.0.2",
+    "escape-string-regexp": "5.0.0",
     "fast-equals": "4.0.1",
     "file-saver": "2.0.5",
     "google-libphonenumber": "3.2.31",
@@ -139,6 +141,7 @@
     "jest-websocket-mock": "2.3.0",
     "msw": "0.39.2",
     "nx": "14.1.2",
+    "patch-package": "6.5.1",
     "prettier": "2.5.1",
     "react-scripts": "5.0.1",
     "react-test-renderer": "18.1.0",

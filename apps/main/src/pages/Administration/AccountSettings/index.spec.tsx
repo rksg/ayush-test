@@ -3,9 +3,10 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { administrationApi, mspApi, userApi }                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, MspUrlsInfo, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                                    from '@acx-ui/store'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { administrationApi, mspApi }                   from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store  }                            from '@acx-ui/store'
 import {
   render,
   screen,
@@ -24,6 +25,7 @@ import AccountSettings from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
+
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
 }))
@@ -40,12 +42,17 @@ jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
 }))
 
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
+
 describe('Account Settings', () => {
   beforeEach(() => {
     act(() => {
       store.dispatch(administrationApi.util.resetApiState())
       store.dispatch(mspApi.util.resetApiState())
-      store.dispatch(userApi.util.resetApiState())
     })
 
     mockServer.use(
@@ -60,10 +67,6 @@ describe('Account Settings', () => {
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,
         (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
-      ),
-      rest.get(
-        CommonUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeUserProfile))
       )
     )
   })
@@ -71,10 +74,15 @@ describe('Account Settings', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <AccountSettings />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
+
 
     expect((await screen.findAllByTestId(/rc-.*/)).length).toBe(5)
   })
@@ -82,17 +90,15 @@ describe('Account Settings', () => {
   it('should not display map region selector', async () => {
     const fakeNotAdminUser = _.cloneDeep(fakeUserProfile)
     fakeNotAdminUser.roles = []
-
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeNotAdminUser))
-      )
-    )
+    const notPrimeAdminUser: () => boolean = jest.fn().mockReturnValue(false)
 
     render(
       <Provider>
-        <AccountSettings />
+        <UserProfileContext.Provider
+          value={{ data: fakeNotAdminUser, isPrimeAdmin: notPrimeAdminUser } as UserProfileContextProps}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -114,7 +120,11 @@ describe('Account Settings', () => {
 
     render(
       <Provider>
-        <AccountSettings />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -127,16 +137,13 @@ describe('Account Settings', () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
     fakeUser.varTenantId = 'test_tenant'
 
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeUser))
-      )
-    )
-
     render(
       <Provider>
-        <AccountSettings />
+        <UserProfileContext.Provider
+          value={{ data: fakeUser, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <AccountSettings />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })

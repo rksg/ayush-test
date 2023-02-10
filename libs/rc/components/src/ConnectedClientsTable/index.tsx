@@ -3,12 +3,12 @@ import { useEffect } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                                                  from '@acx-ui/components'
-import { Table, TableProps, Loader }                                          from '@acx-ui/components'
-import { useGetClientListQuery }                                              from '@acx-ui/rc/services'
-import { ClientList, getDeviceTypeIcon, getOsTypeIcon, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                              from '@acx-ui/react-router-dom'
-import { formatter }                                                          from '@acx-ui/utils'
+import { Subtitle, Tooltip }                                                                              from '@acx-ui/components'
+import { Table, TableProps, Loader }                                                                      from '@acx-ui/components'
+import { useGetClientListQuery }                                                                          from '@acx-ui/rc/services'
+import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
+import { formatter }                                                                                      from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -149,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       render: (data, row) =>
         (
-          <TenantLink to={`/networks/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{data}</TenantLink>
         )
     },
     {
@@ -259,12 +259,9 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       dataIndex: 'status',
       sorter: true,
       show: !!showAllColumns,
-      render: (data) => <>
-        { data ? intl.$t({ defaultMessage: 'Authorized' }) :
-          intl.$t({ defaultMessage: 'Unauthorized' })
-        }
-      </>
-
+      render: (data) => data ?
+        intl.$t({ defaultMessage: 'Authorized' }) :
+        intl.$t({ defaultMessage: 'Unauthorized' })
     },
     {
       key: 'encryptMethod',
@@ -324,7 +321,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
 }
 
 
-const defaultPayload = {
+export const defaultClientPayload = {
   searchString: '',
   searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType'],
   filters: {},
@@ -336,49 +333,56 @@ const defaultPayload = {
     'apName','clientVlan','networkId','switchName','healthStatusReason','lastUpdateTime']
 }
 
-export const ConnectedClientsTable =
-(props: { showAllColumns?: boolean, searchString: string, setConnectedClientCount: (connectClientCount: number) => void }) => {
+export const ConnectedClientsTable = (props: {
+  showAllColumns?: boolean,
+  searchString?: string,
+  setConnectedClientCount?: (connectClientCount: number) => void,
+  tableQuery?: TableQuery<ClientList, RequestPayload<unknown>, unknown>
+}) => {
   const { $t } = useIntl()
   const params = useParams()
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
-  defaultPayload.searchString = searchString
-  defaultPayload.filters = params.venueId ? { venueId: [params.venueId] } :
+  defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
     params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
 
-  const ConnectedClientsTable = () => {
-    const tableQuery = usePollingTableQuery({
-      useQuery: useGetClientListQuery,
-      defaultPayload
-    })
 
-    useEffect(() => {
-      if (tableQuery.data?.data) {
-        setConnectedClientCount(tableQuery.data?.totalCount)
-      }
-    }, [])
+  const inlineTableQuery = usePollingTableQuery({
+    useQuery: useGetClientListQuery,
+    defaultPayload: { ...defaultClientPayload, searchString },
+    option: { skip: !!props.tableQuery }
+  })
+  const tableQuery = props.tableQuery || inlineTableQuery
 
-    return (
-      <UI.ClientTableDiv>
-        <Loader states={[
-          tableQuery
-        ]}>
-          <Subtitle level={4}>
-            {$t({ defaultMessage: 'Connected Clients' })}
-          </Subtitle>
-          <Table
-            columns={getCols(useIntl(), showAllColumns)}
-            dataSource={tableQuery.data?.data}
-            pagination={tableQuery.pagination}
-            onChange={tableQuery.handleTableChange}
-            rowKey='clientMac'
-          />
-        </Loader>
-      </UI.ClientTableDiv>
-    )
-  }
+  useEffect(() => {
+    if (tableQuery.data?.data && setConnectedClientCount) {
+      setConnectedClientCount(tableQuery.data?.totalCount)
+    }
+  }, [tableQuery.data?.data, tableQuery.data?.totalCount])
+
+  useEffect(() => {
+    if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
+      tableQuery.setPayload({
+        ...(tableQuery.payload as typeof defaultClientPayload), searchString })
+    }
+  }, [searchString])
 
   return (
-    <ConnectedClientsTable />
+    <UI.ClientTableDiv>
+      <Loader states={[
+        tableQuery
+      ]}>
+        <Subtitle level={4}>
+          {$t({ defaultMessage: 'Connected Clients' })}
+        </Subtitle>
+        <Table
+          columns={getCols(useIntl(), showAllColumns)}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='clientMac'
+        />
+      </Loader>
+    </UI.ClientTableDiv>
   )
 }

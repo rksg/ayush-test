@@ -3,6 +3,7 @@ import React from 'react'
 
 import { cleanup, render, screen } from '@testing-library/react'
 import userEvent                   from '@testing-library/user-event'
+import { Form }                    from 'antd'
 import { IntlProvider }            from 'react-intl'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -283,9 +284,14 @@ describe('SignaleRadioSettings component', () => {
     }
   }
 
+  const mockEditContext = React.createContext({
+    editContextData: {},
+    setEditContextData: jest.fn()
+  })
+
   afterEach(() => cleanup())
 
-  it('should render Venue Radio 2.4G singleRadioSettings', async () => {
+  it('should render Venue Radio 24G singleRadioSettings', async () => {
     const radioType = ApRadioTypeEnum.Radio24G
     const bandwidthOptions = channelBandwidth24GOptions
     const supportCh = validRadioChannels['2.4GChannels']
@@ -293,13 +299,15 @@ describe('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-          onResetDefaultValue={resetToDefaultSpy}
-        />
+        <Form>
+          <SingleRadioSettings
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={mockEditContext}
+            onResetDefaultValue={resetToDefaultSpy}
+          />
+        </Form>
       </IntlProvider>
     )
 
@@ -339,13 +347,15 @@ describe('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-          onResetDefaultValue={resetToDefaultSpy}
-        />
+        <Form>
+          <SingleRadioSettings
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={mockEditContext}
+            onResetDefaultValue={resetToDefaultSpy}
+          />
+        </Form>
       </IntlProvider>
     )
 
@@ -390,13 +400,15 @@ describe('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-          onResetDefaultValue={resetToDefaultSpy}
-        />
+        <Form>
+          <SingleRadioSettings
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={mockEditContext}
+            onResetDefaultValue={resetToDefaultSpy}
+          />
+        </Form>
       </IntlProvider>
     )
 
@@ -426,21 +438,26 @@ describe('SignaleRadioSettings component', () => {
 
   })
 
-  it('should render AP Radio 2.4G singleRadioSettings', async () => {
+  it('should render AP Radio 24G singleRadioSettings', async () => {
     const radioType = ApRadioTypeEnum.Radio24G
     const bandwidthOptions = channelBandwidth24GOptions
     const supportCh = validRadioChannels['2.4GChannels']
 
     const { asFragment } = render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          context='ap'
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-          isUseVenueSettings={false}
-        />
+        <Form>
+          <SingleRadioSettings
+            context='ap'
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={React.createContext({
+              editContextData: {},
+              setEditContextData: jest.fn()
+            })}
+            isUseVenueSettings={false}
+          />
+        </Form>
       </IntlProvider>
     )
 
@@ -454,8 +471,8 @@ describe('SignaleRadioSettings component', () => {
 
     const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
-    expect((await screen.findByTitle('Auto'))).toBeDefined()
-    await userEvent.click((await screen.findByTitle('Auto')))
+
+    await userEvent.click((await screen.findByRole('option', { name: 'Auto' })))
 
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
@@ -472,14 +489,16 @@ describe('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          context='ap'
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-          isUseVenueSettings={false}
-        />
+        <Form>
+          <SingleRadioSettings
+            context='ap'
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={mockEditContext}
+            isUseVenueSettings={false}
+          />
+        </Form>
       </IntlProvider>
     )
 
@@ -493,8 +512,7 @@ describe('SignaleRadioSettings component', () => {
 
     const bandwidthSelect = await screen.findByRole('combobox', { name: /Bandwidth/i })
     await userEvent.click(bandwidthSelect)
-    expect((await screen.findByTitle('Auto'))).toBeDefined()
-    await userEvent.click((await screen.findByTitle('Auto')))
+    await userEvent.click((await screen.findByRole('option', { name: 'Auto' })))
 
     const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
     await userEvent.click(transmitSelect)
@@ -519,12 +537,14 @@ describe('SignaleRadioSettings component', () => {
 
     render (
       <IntlProvider locale='en'>
-        <SingleRadioSettings
-          radioType={radioType}
-          bandwidthOptions={bandwidthOptions}
-          supportChannels={supportCh}
-          editContext={React.createContext({})}
-        />
+        <Form>
+          <SingleRadioSettings
+            radioType={radioType}
+            bandwidthOptions={bandwidthOptions}
+            supportChannels={supportCh}
+            editContext={mockEditContext}
+          />
+        </Form>
       </IntlProvider>
     )
 

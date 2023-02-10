@@ -1,22 +1,18 @@
-import {
-  Loader
-} from '@acx-ui/components'
-import { /*useUserProfileActions*/ UserProfileUtils } from '@acx-ui/rc/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
-import { MSPUtils, TenantType, UserProfile } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
+import { MSPUtils, TenantType } from '@acx-ui/rc/utils'
+import { useParams }            from '@acx-ui/react-router-dom'
 
 import AdministrationDelegationsTable from './AdministrationDelegationsTable'
 import AdministratorsTable            from './AdministratorsTable'
 
-const Administrators = (props: { userProfileData?: UserProfile }) => {
-  const { userProfileData } = props
+const Administrators = () => {
   const params = useParams()
   const mspUtils = MSPUtils()
-  const userProfileUtils = UserProfileUtils()
+  const { data: userProfileData, isPrimeAdmin } = useUserProfileContext()
 
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
@@ -33,9 +29,8 @@ const Administrators = (props: { userProfileData?: UserProfile }) => {
     }
   }
 
-  const isPrimeAdminUser = userProfileData ? userProfileUtils.verifyIsPrimeAdminUser(userProfileData) : false
+  const isPrimeAdminUser = isPrimeAdmin()
   const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
-
 
 
   // const dateTimeFormat = userProfileData?.dateFormat
@@ -44,7 +39,11 @@ const Administrators = (props: { userProfileData?: UserProfile }) => {
 
   return (
     <>
-      <AdministratorsTable currentUserMail={currentUserMail} isPrimeAdminUser={isPrimeAdminUser} isMspEc={isMspEc}/>
+      <AdministratorsTable
+        currentUserMail={currentUserMail}
+        isPrimeAdminUser={isPrimeAdminUser}
+        isMspEc={isMspEc}
+      />
       {isDelegationReady &&
         <AdministrationDelegationsTable isMspEc={isMspEc} userProfileData={userProfileData}/>
       }

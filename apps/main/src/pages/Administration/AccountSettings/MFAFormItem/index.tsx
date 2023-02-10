@@ -11,16 +11,19 @@ import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
+import * as UI from './styledComponents'
+
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
-  className?: string,
-  mfaTenantDetailsData?: MFASession
+  className?: string;
+  mfaTenantDetailsData?: MFASession;
+  isPrimeAdminUser: boolean;
 }
 
 const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
-  const { className, mfaTenantDetailsData } = props
+  const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
   const params = useParams()
   const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
 
@@ -66,6 +69,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
 
   const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
+  const isDisabled = !isPrimeAdminUser || isUpdating
 
   return (
     <Row gutter={24} className={className}>
@@ -75,7 +79,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             onChange={handleEnableMFAChange}
             checked={isMfaEnabled}
             value={isMfaEnabled}
-            disabled={isUpdating}
+            disabled={isDisabled}
           >
             {$t({ defaultMessage: 'Enable Multi-Factor Authentication (MFA)' })}
           </Checkbox>
@@ -99,48 +103,31 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               </List.Item>
             )}
           />
-
-          {isMfaEnabled && (
-            <Card
-              title={$t({ defaultMessage: 'Recovery Codes' })}
-              type='no-border'
-            >
-
-              <Typography.Text className='description recoveryCodeDescription'>
-                {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
-              </Typography.Text>
-              <Typography.Text className='description recoveryCodeDescription'>
-                {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
-              </Typography.Text>
-              <TextArea
-                rows={5}
-                maxLength={64}
-                value={recoveryCodes?.join('\n')}
-              />
-              <SpaceWrapper justifycontent='flex-end'>
-                <Typography.Link onClick={handleClickCopyCodes}>
-                  {$t({ defaultMessage: 'Copy Codes' })}
-                </Typography.Link>
-              </SpaceWrapper>
-            </Card>)
-          }
+          <Card
+            title={$t({ defaultMessage: 'Recovery Codes' })}
+            type='no-border'
+          >
+            <Typography.Text className='description darkGreyText'>
+              {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
+            </Typography.Text>
+            <Typography.Text className='description darkGreyText'>
+              {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
+            </Typography.Text>
+            <TextArea
+              rows={5}
+              maxLength={64}
+              value={recoveryCodes?.join('\n')}
+            />
+            <SpaceWrapper justifycontent='flex-end'>
+              <Typography.Link onClick={handleClickCopyCodes}>
+                {$t({ defaultMessage: 'Copy Codes' })}
+              </Typography.Link>
+            </SpaceWrapper>
+          </Card>
         </SpaceWrapper>
       </Col>
     </Row>
   )
-})`
-  & input[type=checkbox] {
-    padding-right: 5px;
-  }
-
-  & .recoveryCodeDescription {
-    color: var(--acx-neutrals-70);
-  }
-
-  & textarea {
-    background-color: var(--acx-neutrals-20);
-    margin-top: 15px;
-  }
-`
+})`${UI.styles}`
 
 export { MFAFormItem }

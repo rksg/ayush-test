@@ -13,19 +13,22 @@ import {
   RecoveryPassphrase,
   TenantPreferenceSettings,
   Administrator,
-  showActivityMessage,
+  onActivityMessageReceived,
   onSocketActivityChanged,
   Delegation,
   RolesEnum,
   VARTenantDetail,
   RegisteredUserSelectOption,
-  ApiInfo
+  ApiInfo,
+  ClientConfig,
+  RadiusClientConfigUrlsInfo,
+  RadiusServerSetting
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['Administration'],
+  tagTypes: ['Administration', 'RadiusClientConfig'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -76,7 +79,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteSupportDelegation',
             'InviteSupport'
           ], () => {
@@ -104,7 +107,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteSupportDelegation',
             'InviteSupport'
           ], () => {
@@ -126,7 +129,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteDelegation'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
@@ -147,7 +150,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, [
+          onActivityMessageReceived(msg, [
             'DeleteDelegation'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
@@ -309,6 +312,34 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    // TODO: backend is not support activity message now, and will add if function be completed.
+    UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.updateRadiusClient)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RadiusClientConfig', id: 'DETAIL' }]
+    }),
+    getRadiusClientConfig: build.query<ClientConfig, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.getRadiusClient)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'RadiusClientConfig', id: 'DETAIL' }]
+    }),
+    getRadiusServerSetting: build.query<RadiusServerSetting, RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RadiusClientConfigUrlsInfo.getRadiusServerSetting)
+        return{
+          ...req
+        }
+      }
     })
   })
 })
@@ -404,5 +435,8 @@ export const {
   useInviteDelegationMutation,
   useGetRegisteredUsersListQuery,
   useFindVARDelegationQuery,
-  useLazyFindVARDelegationQuery
+  useLazyFindVARDelegationQuery,
+  useGetRadiusClientConfigQuery,
+  useUpdateRadiusClientConfigMutation,
+  useGetRadiusServerSettingQuery
 } = administrationApi

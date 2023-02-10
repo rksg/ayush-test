@@ -1,24 +1,20 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import {
-  // SelectProps,
-  // ModalProps as AntdModalProps,
   Form,
   Radio,
   Row,
   Col,
   Space,
-  // Spin
   Select,
   Input
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Modal, showActionModal, showToast } from '@acx-ui/components'
+import { Modal, showActionModal/*, showToast */ } from '@acx-ui/components'
 import {
   useAddAdminMutation,
   useUpdateAdminMutation,
   useGetRegisteredUsersListQuery,
-  useGetMspEcAdminQuery,
+  // useGetMspEcAdminQuery,
   getRoles,
   useUpdateMspEcAdminMutation
 } from '@acx-ui/rc/services'
@@ -123,12 +119,12 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
   const [updateAdmin, { isLoading: isUpdateAdminUpdating }] = useUpdateAdminMutation()
-  const [updateMspEcAdmin, { isLoading: isUpdateMSPAdminUpdating }] = useUpdateMspEcAdminMutation()
+  const [updateMspEcAdmin] = useUpdateMspEcAdminMutation()
 
-  const { data: mspEcAdmin, isLoading: isLoadingMspEcAdmin } = useGetMspEcAdminQuery({
-    mspEcTenantId: params.tenantId,
-    mspEcAdminId: editData.id
-  }, { skip: isMspEc === false })
+  // const { data: mspEcAdmin, isLoading: isLoadingMspEcAdmin } = useGetMspEcAdminQuery({
+  //   mspEcTenantId: params.tenantId,
+  //   mspEcAdminId: editData.id
+  // }, { skip: isMspEc === false })
 
   const handleSubmitFailed = (error: CommonErrorsResult<catchErrorDetails>) => {
     const errData = error.data.errors

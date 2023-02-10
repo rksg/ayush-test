@@ -78,9 +78,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -110,9 +108,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -141,9 +137,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -180,9 +174,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -217,9 +209,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -247,9 +237,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -279,9 +267,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -315,9 +301,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -344,9 +328,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -371,9 +353,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -398,9 +378,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -426,9 +404,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -490,9 +466,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -521,9 +495,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -553,9 +525,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />
@@ -585,9 +555,7 @@ describe('RadioSettingsTab', ()=> {
               updateChanges: jest.fn(),
               discardChanges: jest.fn()
             },
-            setEditContextData: jest.fn(),
-            editRadioContextData: {},
-            setEditRadioContextData: jest.fn()
+            setEditContextData: jest.fn()
           }}
           >
             <RadioSettings />

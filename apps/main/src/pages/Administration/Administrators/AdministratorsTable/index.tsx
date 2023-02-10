@@ -94,7 +94,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       }
     },
     {
-      visible: (selectedRows) => {
+      visible: () => {
         // TODO: disable to delete themselves
         // TODO: cannot delete all prime_admin
         const canVisible = true

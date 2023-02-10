@@ -42,6 +42,11 @@ jest.mock('@acx-ui/rc/components', () => {
     .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
   return Object.fromEntries(sets)
 })
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 
 describe('ClientDetails', () => {
   beforeEach(() => {
@@ -71,6 +76,32 @@ describe('ClientDetails', () => {
 
   it('should render correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getAllByRole('tab')).toHaveLength(4)
+
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+
+    fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/users/wifi/clients/${params.clientId}/details/reports`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('should render correctly with featureToggle off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
     const params = {
       tenantId: 'tenant-id',

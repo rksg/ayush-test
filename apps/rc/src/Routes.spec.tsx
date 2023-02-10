@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -9,7 +10,8 @@ import {
   getPolicyListRoutePath,
   PolicyType,
   getPolicyRoutePath,
-  PolicyOperation
+  PolicyOperation,
+  getServiceCatalogRoutePath
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -40,12 +42,16 @@ jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
-jest.mock('./pages/Policies/PoliciesTable', () => () => {
-  return <div data-testid='PoliciesTable' />
+jest.mock('./pages/Services/MyServices', () => () => {
+  return <div data-testid='MyServices' />
 })
 
-jest.mock('./pages/Services/ServicesTable', () => () => {
-  return <div data-testid='ServicesTable' />
+jest.mock('./pages/Services/ServiceCatalog', () => () => {
+  return <div data-testid='ServiceCatalog' />
+})
+
+jest.mock('./pages/Policies/PoliciesTable', () => () => {
+  return <div data-testid='PoliciesTable' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -104,6 +110,17 @@ jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
 })
 
+jest.mock('./pages/Users/Persona', () => () => {
+  return <div data-testid='PersonaPortal' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaDetails', () => () => {
+  return <div data-testid='PersonaDetails' />
+})
+
+jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
+  return <div data-testid='PersonaGroupDetails' />
+})
 
 describe('RcRoutes: Devices', () => {
   test('should redirect devices to devices/wifi', async () => {
@@ -192,7 +209,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to networks/add', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/add',
+        path: '/t/tenantId/networks/wireless/add',
         wrapRoutes: false
       }
     })
@@ -202,7 +219,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-details', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/networkId/network-details/some-tab',
+        path: '/t/tenantId/networks/wireless/networkId/network-details/some-tab',
         wrapRoutes: false
       }
     })
@@ -212,7 +229,7 @@ describe('RcRoutes: Networks', () => {
   test('should navigate to network-action', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/networks/networkId/edit',
+        path: '/t/tenantId/networks/wireless/networkId/edit',
         wrapRoutes: false
       }
     })
@@ -229,7 +246,17 @@ describe('RcRoutes: Services', () => {
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('ServicesTable')).toBeVisible()
+    expect(screen.getByTestId('MyServices')).toBeVisible()
+  })
+
+  test('should navigate to service catalog', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getServiceCatalogRoutePath(),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ServiceCatalog')).toBeVisible()
   })
 
   test('should navigate to select service page', async () => {
@@ -539,6 +566,39 @@ describe('RcRoutes: User', () => {
       }
     })
     expect(screen.getByTestId('UserClientDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Portal', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaPortal')).toBeVisible()
+  })
+  test('should redirect to Persona detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId/persona/personaId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaDetails')).toBeVisible()
+  })
+  test('should redirect to Persona Group detail', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/users/persona-management/persona-group/personGroupId',
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('PersonaGroupDetails')).toBeVisible()
   })
 })
 

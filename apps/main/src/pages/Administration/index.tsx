@@ -1,15 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs, PageHeader, Loader }              from '@acx-ui/components'
+import { Tabs, PageHeader }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useUserProfileActions }                 from '@acx-ui/rc/components'
+import { useUserProfileContext }                 from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import AccountSettings from './AccountSettings'
-import Administrators  from './Administrators'
-import FWVersionMgmt   from './FWVersionMgmt'
-import Notifications   from './Notifications'
-import Subscriptions   from './Subscriptions'
+import AccountSettings   from './AccountSettings'
+import Administrators    from './Administrators'
+import FWVersionMgmt     from './FWVersionMgmt'
+import LocalRadiusServer from './LocalRadiusServer'
+import Notifications     from './Notifications'
+import Subscriptions     from './Subscriptions'
 
 
 const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
@@ -42,6 +43,7 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
         tab={$t({ defaultMessage: 'Firmware Version Management' })}
         key='fwVersionMgmt'
       />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
     </Tabs>
   )
 }
@@ -51,17 +53,15 @@ const tabPanes = {
   administrators: Administrators,
   notifications: Notifications,
   subscriptions: Subscriptions,
-  fwVersionMgmt: FWVersionMgmt
+  fwVersionMgmt: FWVersionMgmt,
+  localRadiusServer: LocalRadiusServer
 }
 
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
   const isEnable = useIsSplitOn(Features.UNRELEASED)
-  const {
-    data: userProfileData,
-    isLoading: isGetUserProfileLoading
-  } = useUserProfileActions()
+  const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {
     return <span>{ $t({ defaultMessage: 'Administration is not enabled' }) }</span>
@@ -75,13 +75,13 @@ export default function Administration () {
   }
 
   const hasAdministratorTab = !userProfileData?.delegatedDogfood && !isSupport
-  if (isGetUserProfileLoading && hasAdministratorTab === false && activeTab === 'administrators') {
+  if (hasAdministratorTab === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
-  return <Loader states={[{ isLoading: isGetUserProfileLoading }]}>
+  return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Administration' })}
       breadcrumb={[
@@ -89,6 +89,6 @@ export default function Administration () {
       ]}
       footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />
-    { ActiveTabPane && <ActiveTabPane userProfileData={userProfileData} /> }
-  </Loader>
+    { ActiveTabPane && <ActiveTabPane /> }
+  </>)
 }

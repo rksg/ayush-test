@@ -86,7 +86,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(await screen.findByRole('button', { name: 'Add Route' }))
+    await user.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
     const vlanInput = await screen.findByRole('textbox', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '2' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -103,7 +103,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    await user.click(await screen.findByRole('button', { name: 'Add Route' }))
+    await user.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
     await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
     await user.click(await screen.findByText('Static IP'))
     const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
@@ -150,6 +150,19 @@ describe('EditEdge ports - sub-interface', () => {
     await user.click(await screen.findByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2"?')
     await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+  })
+
+  it('should show no data string when ports data is empty', async () => {
+    render(
+      <Provider>
+        <SubInterface data={[]} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 

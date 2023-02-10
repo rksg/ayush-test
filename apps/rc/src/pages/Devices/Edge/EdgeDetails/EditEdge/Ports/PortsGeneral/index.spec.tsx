@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgePortConfig } from '../../../../__tests__/fixtures'
+import { mockEdgePortConfig, mockEdgePortConfigWithStatusIp } from '../../../../__tests__/fixtures'
 
 import PortsGeneral from '.'
 
@@ -55,7 +55,7 @@ describe('EditEdge ports - ports general', () => {
   it('should active ports general successfully', async () => {
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -73,7 +73,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -93,7 +93,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -116,7 +116,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -139,7 +139,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -158,7 +158,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -177,7 +177,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -194,7 +194,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -216,7 +216,7 @@ describe('EditEdge ports - ports general', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,
@@ -231,6 +231,19 @@ describe('EditEdge ports - ports general', () => {
     expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('tap0')
     await user.click(await screen.findByRole('radio', { name: 'Port 5' }))
     expect(screen.getByRole('textbox', { name: 'Port Name' })).toHaveValue('port2')
+  })
+
+  it('should show no data string when ports data is empty', async () => {
+    render(
+      <Provider>
+        <PortsGeneral data={[]} />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
+        }
+      })
+    expect(screen.getByText('No data to display')).toBeVisible()
   })
 })
 
@@ -260,7 +273,7 @@ describe('EditEdge ports - ports general  api fail', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <PortsGeneral data={mockEdgePortConfig.ports} />
+        <PortsGeneral data={mockEdgePortConfigWithStatusIp.ports} />
       </Provider>, {
         route: {
           params,

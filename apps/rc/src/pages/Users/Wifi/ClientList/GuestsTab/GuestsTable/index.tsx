@@ -299,7 +299,7 @@ export default function GuestsTable () {
           title={$t({ defaultMessage: 'Import from file' })}
           maxSize={CsvSize['5MB']}
           maxEntries={250}
-          temlateLink='assets/templates/guests_import_template.csv'
+          templateLink='assets/templates/guests_import_template.csv'
           visible={importVisible}
           isLoading={importResult.isLoading}
           importError={importResult.error as FetchBaseQueryError}
@@ -337,7 +337,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
   // return currentGuest.ssid
   if (currentGuest.networkId) {
     return (
-      <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
+      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/aps`}>
         {currentGuest.ssid}</TenantLink>
     )
   } else {

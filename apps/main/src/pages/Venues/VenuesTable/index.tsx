@@ -1,4 +1,3 @@
-import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -8,16 +7,11 @@ import {
   Table,
   TableProps,
   Loader,
-  StackedBarChart,
-  cssStr,
-  showActionModal,
-  deviceStatusColors,
-  getDeviceConnectionStatusColors
+  showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { useVenuesListQuery, useDeleteVenueMutation } from '@acx-ui/rc/services'
 import {
-  ApDeviceStatusEnum,
   Venue,
   ApVenueStatusEnum,
   TableQuery,
@@ -54,32 +48,32 @@ function useColumns () {
         return `${row.country}, ${row.city}`
       }
     },
-    { // TODO: Waiting for backend support
-      key: 'incidents',
-      dataIndex: 'incidents',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Incidents' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
-    { // TODO: Waiting for backend support
-      key: 'health',
-      dataIndex: 'health',
-      title: () => {
-        return (
-          <>
-            { $t({ defaultMessage: 'Health Score' }) }
-            <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-          </>
-        )
-      },
-      align: 'center'
-    },
+    // { // TODO: Waiting for backend support
+    //   key: 'incidents',
+    //   dataIndex: 'incidents',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Incidents' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
+    // { // TODO: Waiting for backend support
+    //   key: 'health',
+    //   dataIndex: 'health',
+    //   title: () => {
+    //     return (
+    //       <>
+    //         { $t({ defaultMessage: 'Health Score' }) }
+    //         <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //       </>
+    //     )
+    //   },
+    //   align: 'center'
+    // },
     // { // TODO: Waiting for HEALTH feature support
     //   title: $t({ defaultMessage: 'Services' }),
     //   key: 'services',
@@ -88,7 +82,7 @@ function useColumns () {
     // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
-      align: 'left',
+      align: 'center',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       sorter: true,
@@ -97,15 +91,12 @@ function useColumns () {
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
           : 0
-        return (<Space direction='horizontal' size={4}>
-          { row.aggregatedApStatus
-            ? getApStatusChart(row.aggregatedApStatus)
-            : getEmptyStatusChart() }
+        return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices`}
             children={count ? count : 0}
           />
-        </Space>)
+        )
       }
     },
     {
@@ -292,64 +283,6 @@ export function VenuesTable () {
       <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
     </>
   )
-}
-
-function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
-  const barColors = getDeviceConnectionStatusColors()
-  const apStatusMap = [[
-    ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD,
-    ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED,
-    ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED
-  ], [
-    ApDeviceStatusEnum.REBOOTING
-  ], [
-    ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
-    ApDeviceStatusEnum.INITIALIZING,
-    ApDeviceStatusEnum.OFFLINE
-
-  ], [
-    ApDeviceStatusEnum.OPERATIONAL,
-    ApDeviceStatusEnum.APPLYING_FIRMWARE,
-    ApDeviceStatusEnum.APPLYING_CONFIGURATION
-  ]]
-
-  const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
-    const index = apStatusMap.findIndex(s =>
-      String(s).toLowerCase().includes((key).toLowerCase()))
-    counts[index] += value as number
-    return counts
-  }, [0, 0, 0, 0]).map((data, index) => ({
-    name: `P${index + 1}`,
-    value: data
-  }))
-
-  return <StackedBarChart
-    style={{ height: 10, width: 100 }}
-    data={[{
-      category: 'apStatus',
-      series: series
-    }]}
-    showLabels={false}
-    showTotal={false}
-    barColors={barColors}
-  />
-}
-
-function getEmptyStatusChart () {
-  return <StackedBarChart
-    style={{ height: 10, width: 100 }}
-    data={[{
-      category: 'emptyStatus',
-      series: [{
-        name: '',
-        value: 1
-      }]
-    }]}
-    showTooltip={false}
-    showLabels={false}
-    showTotal={false}
-    barColors={[cssStr(deviceStatusColors.empty)]}
-  />
 }
 
 function shouldShowConfirmation (selectedVenues: Venue[]) {

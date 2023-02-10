@@ -3,46 +3,47 @@ import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
 import { Loader }                from '@acx-ui/components'
-import { useUserProfileActions } from '@acx-ui/rc/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMfaTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
-import { MSPUtils, UserProfile } from '@acx-ui/rc/utils'
+import { MSPUtils } from '@acx-ui/rc/utils'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
+import * as UI                           from './styledComponents'
 
-
-const AccountSettings = (props: { className?: string, userProfileData?: UserProfile }) => {
+interface AccountSettingsProps {
+  className?: string,
+}
+const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = useParams()
+  const {
+    data: userProfileData,
+    isPrimeAdmin
+  } = useUserProfileContext()
   const mspUtils = MSPUtils()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const {
-    data: userProfileData,
-    verifyIsPrimeAdminUser,
-    isLoading: isGetUserProfileLoading
-  } = useUserProfileActions()
 
-  const showMfa = userProfileData?.tenantId === userProfileData?.varTenantId
+  const canMSPDelegation = userProfileData?.tenantId === userProfileData?.varTenantId
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
-  if (userProfileData?.varTenantId && !showMfa) {
+  if (userProfileData?.varTenantId && canMSPDelegation === false) {
     isMspEc = false
   }
 
-  const isPrimeAdminUser = verifyIsPrimeAdminUser()
+  const isPrimeAdminUser = isPrimeAdmin()
   const showRksSupport = isMspEc === false
-  const isFirstLoading
-    = recoveryPassphraseData.isLoading || mfaTenantDetailsData.isLoading
-      || mspEcProfileData.isLoading || isGetUserProfileLoading
+  const isFirstLoading = recoveryPassphraseData.isLoading
+    || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
 
   const isFetching = recoveryPassphraseData.isFetching
 
@@ -68,14 +69,20 @@ const AccountSettings = (props: { className?: string, userProfileData?: UserProf
         { showRksSupport && (
           <>
             <Divider />
-            <AccessSupportFormItem userProfileData={userProfileData} isMspEc={isMspEc} />
+            <AccessSupportFormItem
+              isMspEc={isMspEc}
+              canMSPDelegation={canMSPDelegation}
+            />
           </>
         )}
 
-        {showMfa && (
+        {canMSPDelegation && (
           <>
             <Divider />
-            <MFAFormItem mfaTenantDetailsData={mfaTenantDetailsData.data} />
+            <MFAFormItem
+              mfaTenantDetailsData={mfaTenantDetailsData.data}
+              isPrimeAdminUser={isPrimeAdminUser}
+            />
           </>
         )}
       </Form>
@@ -83,35 +90,4 @@ const AccountSettings = (props: { className?: string, userProfileData?: UserProf
   )
 }
 
-export default styled(AccountSettings)`
-  & .ant-list-item {
-    padding: 0;
-  }
-
-  & .ant-select.ant-select-in-form-item {
-    width: 200px;
-  }
-
-  & .ant-checkbox-wrapper-in-form-item {
-    color: var(--acx-neutrals-60)
-  }
-
-  & .greyText {
-    color: var(--acx-neutrals-50)
-  }
-
-  & .description {
-    font-size: var(--acx-body-4-font-size);
-  }
-
-  & .descriptionsWrapper {
-    margin-left: 24px;
-    flex-wrap: wrap;
-    align-content: flex-start;
-  }
-
-  .ant-divider {
-    margin: 4px 0px 20px;
-    background: var(--acx-neutrals-30);
-  }
-`
+export default styled(AccountSettings)`${UI.styles}`
