@@ -9,7 +9,7 @@ import { getIntl }            from '@acx-ui/utils'
 
 export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const { $t } = getIntl()
-  const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg']
+  const acceptedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml']
   const validImage = acceptedImageTypes.includes(img.type)
   if (!validImage) {
     const content = $t({ defaultMessage: 'Invalid Image type!' })
@@ -44,3 +44,4 @@ export function getLanguage (key: keyof typeof PortalLanguageEnum) {
   const locale = PortalLanguageEnum[key]
   return getDisplayLanguage(locale)
 }
+export const hoverOutline = 'solid 1px var(--acx-accents-orange-50)'

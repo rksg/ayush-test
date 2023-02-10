@@ -78,7 +78,12 @@ const onboardingTitle = defineMessage({
     other {Onboarding}
   }`
 })
-export default function NetworkForm () {
+export default function NetworkForm (props:{
+  isFromUser?: boolean,
+  createType?: NetworkTypeEnum,
+  backToUser?: ()=>void
+}) {
+  const { isFromUser, createType, backToUser } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
@@ -93,7 +98,7 @@ export default function NetworkForm () {
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
-    type: NetworkTypeEnum.OPEN,
+    type: createType || NetworkTypeEnum.OPEN,
     isCloudpathEnabled: false,
     venues: []
   })
@@ -171,7 +176,7 @@ export default function NetworkForm () {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      isFromUser? backToUser?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -184,7 +189,7 @@ export default function NetworkForm () {
     try {
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      isFromUser? backToUser?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -283,15 +288,17 @@ export default function NetworkForm () {
   }
   return (
     <>
-      <PageHeader
+      {!isFromUser && <PageHeader
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
-      />
+      />}
       <NetworkFormContext.Provider value={{
+        isFromUser,
+        createType,
         editMode,
         cloneMode,
         data: saveState,
@@ -300,7 +307,7 @@ export default function NetworkForm () {
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => navigate(linkToNetworks)}
+          onCancel={() => isFromUser? backToUser?.() : navigate(linkToNetworks)}
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
           <StepsForm.StepForm
@@ -308,7 +315,14 @@ export default function NetworkForm () {
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
               const detailsSaveData = transferDetailToSave(data)
-              updateSaveData(detailsSaveData)
+              if(isFromUser&&createType){
+                detailsSaveData.type = createType
+              }
+              if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
+                updateSaveData({ ...detailsSaveData,
+                  guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
+              }
+              else updateSaveData(detailsSaveData)
               return true
             }}
           >
@@ -345,8 +359,9 @@ export default function NetworkForm () {
           >
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
             {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
+            {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
+              <DpskSettingsForm saveState={saveState}/>}
+            {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
             {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
 
           </StepsForm.StepForm>
