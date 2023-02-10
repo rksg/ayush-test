@@ -8,7 +8,7 @@ import { UserProfileProvider }                 from '@acx-ui/rc/components'
 import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
-import { getJwtToken }                         from '@acx-ui/utils'
+import { getTenantId }                         from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -36,13 +36,6 @@ export function loadMessages (locales: readonly string[]): string {
   return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
-function getTenantId () {
-  const chunks = window.location.pathname.split('/')
-  for (const c in chunks) {
-    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
-  }
-  return
-}
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
   // @ts-ignore
@@ -68,27 +61,17 @@ export function renderPendoAnalyticsTag () {
 
 export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
-  const jwtToken = getJwtToken()
   const param = { tenantId }
-  const userUrl = createHttpRequest (
+  const userProfileRequest = createHttpRequest (
     CommonUrlsInfo.getUserProfile,
     param
   )
+  const url = userProfileRequest.url
+  /* eslint-disable no-console */
+  console.log(`userProfileRequest: ${userProfileRequest}`)
 
-  const url = userUrl.url
-  const options = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': ''
-    }
-  }
-  if (jwtToken) {
-    options.headers.Authorization = `Bearer ${getJwtToken()}`
-  }
   try {
-    const res = await fetch(url, options)
+    const res = await fetch(url, userProfileRequest)
     const user = await res.json()
     window.pendo.initialize({
       visitor: {
