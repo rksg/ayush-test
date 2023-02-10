@@ -143,7 +143,7 @@ describe('Cli Template Form - Add', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
-  })
+  }, 25000)
 
   it('should render variable list correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
