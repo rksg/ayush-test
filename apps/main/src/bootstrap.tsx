@@ -69,8 +69,6 @@ export function renderPendoAnalyticsTag () {
 export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
   const jwtToken = getJwtToken()
-  // eslint-disable-next-line no-console
-  console.log(`jwt token: ${jwtToken}`)
   const param = { tenantId }
   const userUrl = createHttpRequest (
     CommonUrlsInfo.getUserProfile,
@@ -78,15 +76,18 @@ export async function pendoInitalization (): Promise<void> {
   )
 
   const url = userUrl.url
-  try {
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `${getJwtToken()} ? Bearer ${getJwtToken()} : {}`
-      }
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': ''
     }
+  }
+  if (jwtToken) {
+    options.headers.Authorization = `Bearer ${getJwtToken()}`
+  }
+  try {
     const res = await fetch(url, options)
     const user = await res.json()
     window.pendo.initialize({
