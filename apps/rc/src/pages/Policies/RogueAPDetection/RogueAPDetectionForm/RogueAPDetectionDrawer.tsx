@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Input, Select, Tooltip } from 'antd'
-import { useIntl }                      from 'react-intl'
+import { Form, Input, Select } from 'antd'
+import { useIntl }             from 'react-intl'
 
-import { Drawer }                                                                 from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                             from '@acx-ui/icons'
+import { Drawer, Tooltip }                                                        from '@acx-ui/components'
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueCategory, RogueRuleType } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }                                            from '@acx-ui/utils'
 
@@ -225,12 +224,10 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
         initialValue={isEditMode ? type : RogueRuleType.AD_HOC_RULE}
         children={selectRule}
       />
-      <Tooltip
+      <Tooltip.Question
         title={$t({ defaultMessage: 'The type of rule to match for this category policy.' })}
         placement='bottom'
-      >
-        <QuestionMarkCircleOutlined />
-      </Tooltip>
+      />
     </div>
 
     { type === RogueRuleType.CUSTOM_SNR_RULE &&
@@ -249,12 +246,10 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
           placeholder={$t({ defaultMessage: '0-100' })} />}
       />
       <div style={{ margin: '10px' }}>dB</div>
-      <Tooltip
+      <Tooltip.Question
         title={$t({ defaultMessage: 'SNR cutoff for rogue classification.' })}
         placement='bottom'
-      >
-        <QuestionMarkCircleOutlined />
-      </Tooltip>
+      />
     </div> }
 
     { type === RogueRuleType.CUSTOM_SSID_RULE &&
@@ -306,12 +301,10 @@ const RogueAPDetectionDrawer = (props: RogueAPDetectionDrawerProps) => {
         initialValue={isEditMode ? classification : RogueCategory.MALICIOUS}
         children={selectCategory}
       />
-      <Tooltip
+      <Tooltip.Question
         title={$t({ defaultMessage: 'Classify rogue APs when the above rule type is matched.' })}
         placement='bottom'
-      >
-        <QuestionMarkCircleOutlined />
-      </Tooltip>
+      />
     </div>
 
   </Form>

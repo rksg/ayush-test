@@ -17,8 +17,8 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
+import { InformationSolid }               from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm } from '@acx-ui/rc/components'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -233,7 +233,7 @@ function SettingsForm () {
           <Form.Item
             label={<>
               { intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' }) }
-              <Tooltip
+              <Tooltip.Question
                 title={<FormattedMessage
                   {...WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
                   values={{
@@ -242,9 +242,7 @@ function SettingsForm () {
                     li: (text: string) => <li>{text}</li>
                   }}
                 />}
-                placement='bottom'>
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+                placement='bottom' />
             </>}
             name={['wlan', 'managementFrameProtection']}
             initialValue={ManagementFrameProtectionEnum.Disabled}
@@ -265,12 +263,10 @@ function SettingsForm () {
               <Switch disabled={editMode} onChange={onMacAuthChange}/>
             </Form.Item>
             <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
-            <Tooltip
+            <Tooltip.Question
               title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </Form.Item>
         </Form.Item>
         {macAddressAuthentication && <>

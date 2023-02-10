@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from 'react'
 
-import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                              from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { Alert, Tooltip }                                     from '@acx-ui/components'
 import { useGetPortalLangMutation }                           from '@acx-ui/rc/services'
 import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
@@ -121,12 +119,11 @@ export default function PortalDemo ({
           </div>
           <div style={{ flex: '0 0 40px' }}>
             {!networkPreview &&<UI.FieldExtraTooltip>
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
                   {...captiveTypesDescription[type]}
                 />}
-                children={<QuestionMarkCircleOutlined/>}
               />
             </UI.FieldExtraTooltip>}
           </div>
