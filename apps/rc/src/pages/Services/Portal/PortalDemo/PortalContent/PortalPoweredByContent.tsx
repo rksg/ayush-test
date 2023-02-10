@@ -98,7 +98,7 @@ export default function PortalPoweredByContent (props: {
           visible={poweredTextClicked}
           onVisibleChange={(value) => setPoweredTextClicked(value)}>
           <UI.FieldText style={{ fontSize: demoValue.poweredSize,
-            marginLeft: -15, marginBottom: -29,
+            marginLeft: -15, marginBottom: -15,
             width: 152*(demoValue.poweredSize
           /PortalDemoDefaultSize.poweredSize)+'px' ,
             lineHeight: 24 * (demoValue.poweredSize

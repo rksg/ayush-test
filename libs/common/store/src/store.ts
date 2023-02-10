@@ -1,7 +1,7 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }               from '@acx-ui/analytics/services'
+import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -17,6 +17,9 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
+  baseMfaApi as mfaApi,
+  baseAdministrationApi as administrationApi,
+  baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
 
@@ -74,7 +77,11 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer
+    [mfaApi.reducerPath]: mfaApi.reducer,
+    [administrationApi.reducerPath]: administrationApi.reducer,
+    [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
+    [personaApi.reducerPath]: personaApi.reducer,
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -99,7 +106,11 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
-      personaApi.middleware
+      mfaApi.middleware,
+      administrationApi.middleware,
+      edgeDhcpApi.middleware,
+      personaApi.middleware,
+      networkHealthApi.middleware
     ])
   },
 

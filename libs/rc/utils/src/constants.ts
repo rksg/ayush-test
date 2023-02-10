@@ -110,6 +110,7 @@ export enum QosPriorityEnum {
 export enum ServiceType {
   PORTAL = 'Portal',
   DHCP = 'DHCP (Wi-Fi)',
+  EDGE_DHCP = 'DHCP (Edge)',
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
@@ -548,8 +549,8 @@ const guestPrintDictionary = {
   cs: {
     /* Czech */
     hello: 'Ahoj! ',
-    youCanAccess: 'Nyní můžete přistupovat k síti WiFi',
-    wifiNetwork: 'WiFi síť:',
+    youCanAccess: 'Nyní můžete přistupovat k síti Wi-Fi',
+    wifiNetwork: 'Wi-Fi síť:',
     password: 'Heslo:',
     accessIsValid: ' Přístup je platný pro ',
     enjoy: 'Užijte si to',
@@ -558,8 +559,8 @@ const guestPrintDictionary = {
   sk: {
     /* Slovak */
     hello: 'Ahoj! ',
-    youCanAccess: 'Teraz môžete pristupovať k sieti WiFi',
-    wifiNetwork: 'WiFi sieť:',
+    youCanAccess: 'Teraz môžete pristupovať k sieti Wi-Fi',
+    wifiNetwork: 'Wi-Fi sieť:',
     password: 'Heslo:',
     accessIsValid: 'Prístup je platný pre ',
     enjoy: 'Užite si to',
@@ -568,8 +569,8 @@ const guestPrintDictionary = {
   hu: {
     /* Hungarian */
     hello: 'Hello ',
-    youCanAccess: 'Most már elérheti a WiFi hálózatunkat',
-    wifiNetwork: 'WiFi hálózat:',
+    youCanAccess: 'Most már elérheti a Wi-Fi hálózatunkat',
+    wifiNetwork: 'Wi-Fi hálózat:',
     password: 'Jelszó:',
     accessIsValid: 'Hozzáférés érvényes ',
     enjoy: 'Jó szórakozást',
@@ -737,8 +738,8 @@ const guestPrintDictionary = {
   ja: {
     /* Japanese */
     hello: 'Hello ',
-    youCanAccess: 'WiFi ゲスト アクセス ネットワークに接続することができます。',
-    wifiNetwork: 'WiFi ネットワーク:',
+    youCanAccess: 'Wi-Fi ゲスト アクセス ネットワークに接続することができます。',
+    wifiNetwork: 'Wi-Fi ネットワーク:',
     password: 'パスワード:',
     accessIsValid: 'のアクセス権限が付与されました。 ',
     enjoy: 'お楽しみください',

@@ -5,7 +5,6 @@ import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -67,7 +66,9 @@ export function SecurityTab () {
   useEffect(() => {
     if (selectOptions.length > 0) {
       if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
-        formRef.current?.setFieldValue('roguePolicyId', selectOptions[0].key)
+        // eslint-disable-next-line max-len
+        const defaultProfile = selectOptions.find(option => option.props.children === 'Default profile')
+        formRef.current?.setFieldValue('roguePolicyId', defaultProfile?.key)
       }
     }
     if (!roguePolicyIdValue && selected?.id) {
@@ -222,12 +223,10 @@ export function SecurityTab () {
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}
-                <Tooltip
+                <Tooltip.Question
                   title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </>}
             >
               <Space>

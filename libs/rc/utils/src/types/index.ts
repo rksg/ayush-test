@@ -8,6 +8,7 @@ import {
   NetworkTypeEnum,
   QosPriorityEnum
 } from '../constants'
+import { EdgeStatusSeverityEnum }        from '../models'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
 import { NetworkVenue }                  from '../models/NetworkVenue'
@@ -15,9 +16,10 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel }          from './ap'
-import { EPDG }             from './services'
-import { SwitchStatusEnum } from './switch'
+import { ApModel }                     from './ap'
+import { EdgeStatusSeverityStatistic } from './edge'
+import { EPDG }                        from './services'
+import { SwitchStatusEnum }            from './switch'
 
 export * from './ap'
 export * from './venue'
@@ -31,8 +33,11 @@ export * from './edge'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './mfa'
+export * from './administration'
 export * from './timeline'
 export * from './persona'
+export * from './radiusClientConfig'
 export * from './property'
 
 export interface CommonResult {
@@ -222,6 +227,7 @@ export interface Dashboard {
       },
       totalCount: number;
     },
+    edges?: EdgeStatusSeverityStatistic,
     venues?: {
       summary: {
         [prop: string]: number;
@@ -261,6 +267,17 @@ export interface Dashboard {
         totalCount: number
       }
     }> | undefined,
+    totalCount: number
+  };
+  edges?: {
+    edgesStatus: Array<{
+      [prop: string]: {
+        edgeStatus: {
+          [ key in EdgeStatusSeverityEnum]?: number
+        },
+        totalCount: number
+      }
+    }>,
     totalCount: number
   };
   venues?: Array<{

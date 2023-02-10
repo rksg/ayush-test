@@ -43,7 +43,7 @@ export function UserProfile () {
   const { Paragraph } = Typography
   const { tenantId } = useParams()
   const navigate = useNavigate()
-  const userProfile = useUserProfileContext()
+  const { data: userProfile } = useUserProfileContext()
   const location = useLocation().state as fromLoc
 
   const [updateUserProfile] = useUpdateUserProfileMutation()
