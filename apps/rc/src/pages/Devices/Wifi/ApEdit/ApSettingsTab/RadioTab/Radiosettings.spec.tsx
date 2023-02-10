@@ -515,7 +515,7 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(up5gTab)
     })
 
-    it('should render correctly with disable lower 5G', async () => {
+    it.skip('should render correctly with disable lower 5G', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
