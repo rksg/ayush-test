@@ -3,11 +3,11 @@ import { gql } from 'graphql-request'
 import { dataApi }                               from '@acx-ui/analytics/services'
 import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
 
-export type SwitchesTrafficByVolumeData = {
+export type ResourceUtilizationData = {
   time: string[]
-  switchTotalTraffic: number[]
-  switchTotalTraffic_tx: number[]
-  switchTotalTraffic_rx: number[]
+  cpuPercent: number[]
+  memoryPercent: number[]
+  poePercent: number[]
 }
 
 interface Response <TimeSeriesData> {
@@ -20,26 +20,22 @@ interface Response <TimeSeriesData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    switchesTrafficByVolume: build.query<
-    SwitchesTrafficByVolumeData,
+    resourceUtilization: build.query<
+      ResourceUtilizationData,
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-          query SwitchesTrafficByVolumeWidget(
-            $path: [HierarchyNodeInput]
-            $start: DateTime
-            $end: DateTime
-            $granularity: String
-            $filter: FilterInput
-          ) {
-            network(start: $start, end: $end, filter : $filter) {
+          query SwitchResourceUtilizationMetrics(
+            $path: [HierarchyNodeInput], $granularity: String, $end: DateTime, 
+            $start: DateTime, $filter: FilterInput) {
+            network(end: $end, start: $start, filter: $filter) {
               hierarchyNode(path: $path) {
                 timeSeries(granularity: $granularity) {
+                  cpuPercent
+                  memoryPercent
+                  poePercent
                   time
-                  switchTotalTraffic: switchTotalTraffic
-                  switchTotalTraffic_tx: switchTotalTraffic(direction: "tx")
-                  switchTotalTraffic_rx: switchTotalTraffic(direction: "rx")
                 }
               }
             }
@@ -53,10 +49,10 @@ export const api = dataApi.injectEndpoints({
           filter: payload.filter
         }
       }),
-      transformResponse: (response: Response<SwitchesTrafficByVolumeData>) =>
+      transformResponse: (response: Response<ResourceUtilizationData>) =>
         response.network.hierarchyNode.timeSeries
     })
   })
 })
 
-export const { useSwitchesTrafficByVolumeQuery } = api
+export const { useResourceUtilizationQuery } = api
