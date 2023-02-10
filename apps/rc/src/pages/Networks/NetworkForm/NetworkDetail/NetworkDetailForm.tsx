@@ -7,7 +7,6 @@ import { useIntl }                             from 'react-intl'
 
 import { Button, StepsForm, Tooltip, cssStr }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                  from '@acx-ui/icons'
 import { useLazyGetVenueNetworkApGroupQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
@@ -140,12 +139,10 @@ export function NetworkDetailForm () {
           style={{ marginBottom: '5px' }}
           label={<>
             { intl.$t({ defaultMessage: 'Network Name' }) }
-            <Tooltip
+            <Tooltip.Question
               title={intl.$t(WifiNetworkMessages.NETWORK_NAME_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>}
           rules={[
             { required: true },
@@ -181,15 +178,13 @@ export function NetworkDetailForm () {
             name={['wlan', 'ssid']}
             label={<>
               {intl.$t({ defaultMessage: 'SSID' })}
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={intl.$t({
                   // eslint-disable-next-line max-len
                   defaultMessage: 'SSID may contain between 2 and 32 characters (32 Bytes when using UTF-8 non-Latin characters)'
                 })}
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>}
             rules={[
               { required: true,
