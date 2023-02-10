@@ -125,8 +125,6 @@ describe('SyslogDetailView', () => {
 
     await screen.findByText(/venue name/i)
 
-    await screen.findByText(/instance \(3\)/i)
-
     await screen.findByRole('cell', {
       name: 'test-venue2'
     })

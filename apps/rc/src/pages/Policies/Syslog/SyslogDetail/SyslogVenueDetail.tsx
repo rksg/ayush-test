@@ -72,8 +72,8 @@ const SyslogVenueDetail = () => {
   const basicData = tableQuery.data?.data
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length ?? 0})`}>
-      <div style={{ width: '100%' }}>
+    <Card title={`${$t({ defaultMessage: 'Instance' })} (${tableQuery.data?.totalCount ?? 0})`}>
+      <div>
         <Table
           columns={basicColumns}
           dataSource={basicData}
