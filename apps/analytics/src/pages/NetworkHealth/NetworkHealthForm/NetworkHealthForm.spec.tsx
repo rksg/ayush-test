@@ -111,7 +111,7 @@ describe('NetworkHealthForm', () => {
 
     await click(actions.getByRole('button', { name: 'Finish' }))
 
-    expect(await screen.findByText('Network Health spec created')).toBeVisible()
+    expect(await screen.findByText('Network Health test created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 
@@ -143,7 +143,7 @@ describe('NetworkHealthForm', () => {
     // Submit
     await click(actions.getByRole('button', { name: 'Finish' }))
 
-    expect(await screen.findByText('Network Health spec updated')).toBeVisible()
+    expect(await screen.findByText('Network Health test updated')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 

@@ -89,14 +89,15 @@ export const apsSelectionTooltip = defineMessage({
   </p>`
 })
 
-export const errorMsgMapping = {
+export const messageMapping = {
   RUN_TEST_NO_APS: defineMessage({ defaultMessage: 'There are no APs to run the test' }),
-  SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Test does not exist' }),
-  MAIN_SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health spec not exist' }),
+  SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
   INTERNAL_SERVER_ERROR: defineMessage({ defaultMessage: 'Internal Server Error' }),
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
-  DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' })
+  DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
+  TEST_CREATED: defineMessage({ defaultMessage: 'Network Health test created' }),
+  TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

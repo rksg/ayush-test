@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
@@ -42,11 +41,17 @@ function AllRoutes () {
         <Route path='timeline/*' element={<TimelineBase />}>
           <Route path='*' element={<RcRoutes />} />
         </Route>
+<<<<<<< HEAD
         {true &&
           <Route path='serviceValidation/*' element={<ServiceValidation />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
         }
+=======
+        <Route path='serviceValidation/*' element={<ServiceValidation />}>
+          <Route path='*' element={<AnalyticsRoutes />} />
+        </Route>
+>>>>>>> master
         <Route path='reports/*' element={<ReportsBase />}>
           <Route path='*' element={<ReportsRoutes />} />
         </Route>

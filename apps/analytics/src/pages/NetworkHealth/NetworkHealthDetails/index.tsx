@@ -153,9 +153,6 @@ function NetworkHealthDetails () {
             ].join(': ')).join(' | ') || $t({ defaultMessage: 'Test details' })}
         </Loader>}
         breadcrumb={[{
-          text: $t({ defaultMessage: 'Service Validation' }),
-          link: '/serviceValidation'
-        }, {
           text: $t({ defaultMessage: 'Network Health' }),
           link: '/serviceValidation/networkHealth'
         }]}

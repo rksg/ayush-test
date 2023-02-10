@@ -24,18 +24,12 @@ const initialValues: Partial<NetworkHealthFormDto> = {
   radio: Band.Band2_4,
   speedTestEnabled: false,
   isDnsServerCustom: false
-  // TODO:
-  // Remove when raise PR
-  // networkPaths: { networkNodes: 'BDCSZ|C8:03:F5:2C:83:A0' }
 }
 
 export function NetworkHealthForm () {
   const { $t } = useIntl()
   const navigateToList = useNavigateToPath('/serviceValidation/networkHealth')
   const breadcrumb = [{
-    text: $t({ defaultMessage: 'Service Validation' }),
-    link: '/serviceValidation'
-  }, {
     text: $t({ defaultMessage: 'Network Health' }),
     link: '/serviceValidation/networkHealth'
   }]
@@ -53,13 +47,13 @@ export function NetworkHealthForm () {
       showToast({
         type: 'success',
         content: response.originalArgs?.id
-          ? $t({ defaultMessage: 'Network Health spec updated' })
-          : $t({ defaultMessage: 'Network Health spec created' })
+          ? $t(contents.messageMapping.TEST_UPDATED)
+          : $t(contents.messageMapping.TEST_CREATED)
       })
       navigateToList()
     } else {
-      const key = response.data.userErrors[0].message as keyof typeof contents.errorMsgMapping
-      const errorMessage = $t(contents.errorMsgMapping[key])
+      const key = response.data.userErrors[0].message as keyof typeof contents.messageMapping
+      const errorMessage = $t(contents.messageMapping[key])
       showToast({ type: 'error', content: errorMessage })
     }
   }, [$t, navigateToList, response])
@@ -70,17 +64,18 @@ export function NetworkHealthForm () {
       editMode={editMode}
       initialValues={specToDto(spec.data) ?? initialValues}
       onFinish={async (values) => { await submit(values).unwrap() }}
+      onCancel={navigateToList}
     >
       <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'Settings' })}
+        title={$t(contents.steps.settings)}
         children={<NetworkHealthFormSettings />}
       />
       <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'APs Selection' })}
+        title={$t(contents.steps.apsSelection)}
         children={<NetworkHealthFormAPsSelection />}
       />
       {!editMode ? <StepsFormNew.StepForm
-        title={$t({ defaultMessage: 'Summary' })}
+        title={$t(contents.steps.summary)}
         children={<NetworkHealthFormSummary />}
       /> : null}
     </StepsFormNew>

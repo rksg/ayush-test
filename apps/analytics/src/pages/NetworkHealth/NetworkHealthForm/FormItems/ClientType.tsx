@@ -3,8 +3,8 @@ import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew, Tooltip, useStepFormContext } from '@acx-ui/components'
 
-import * as contents                 from '../../contents'
-import { ClientType as EClientType } from '../../types'
+import * as contents                    from '../../contents'
+import { ClientType as ClientTypeEnum } from '../../types'
 
 const name = 'clientType' as const
 const label = defineMessage({ defaultMessage: 'Client Type' })
@@ -18,12 +18,12 @@ export function ClientType () {
   const { $t } = useIntl()
   const { editMode } = useStepFormContext()
   const types = [
-    EClientType.VirtualClient,
-    EClientType.VirtualWirelessClient
+    ClientTypeEnum.VirtualClient,
+    ClientTypeEnum.VirtualWirelessClient
   ]
 
   const children = editMode ? <StepsFormNew.FieldSummary
-    convert={(value) => $t(contents.clientTypes[value as EClientType])}
+    convert={(value) => $t(contents.clientTypes[value as ClientTypeEnum])}
   /> : <Radio.Group>
     {types.map(type => <Radio
       key={type}
@@ -35,7 +35,7 @@ export function ClientType () {
   return <Form.Item
     label={<>
       {$t(label)}
-      <Tooltip.Info title={tooltip} />
+      <Tooltip.Question title={tooltip} />
     </>}
     children={
       <Form.Item
@@ -57,7 +57,7 @@ ClientType.FieldSummary = function DnsServerFieldSummary () {
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<EClientType>
+    children={<StepsFormNew.FieldSummary<ClientTypeEnum>
       convert={(type) => $t(contents.clientTypes[type!])}
     />}
   />

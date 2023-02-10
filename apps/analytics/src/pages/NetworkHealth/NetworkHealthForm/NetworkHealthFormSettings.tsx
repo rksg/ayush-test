@@ -12,7 +12,7 @@ export function NetworkHealthFormSettings () {
 
   return <>
     <StepsForm.Title children={$t(contents.steps.settings)} />
-    <Row>
+    <Row gutter={20}>
       <Col span={12} xl={10} xxl={8}>
         <FormItems.TestName />
         <FormItems.ClientType />

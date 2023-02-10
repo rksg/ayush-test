@@ -13,7 +13,8 @@
     "tslint": "tools/docker/tscValidator.sh",
     "extract": "formatjs extract",
     "compile": "formatjs compile",
-    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json"
+    "extract-compile": "formatjs extract '{apps,libs}/**/src/**/*.{ts,tsx}' --ignore='**/{*.d.ts,*.spec.ts,*.spec.tsx,stories.tsx}' --out-file apps/main/src/locales/en-US.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --additional-function-names '$t' && formatjs compile 'apps/main/src/locales/en-US.json' --out-file apps/main/src/locales/compiled/en-US.json",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -142,6 +143,7 @@
     "jest-websocket-mock": "2.3.0",
     "msw": "0.39.2",
     "nx": "14.1.2",
+    "patch-package": "6.5.1",
     "prettier": "2.5.1",
     "react-scripts": "5.0.1",
     "react-test-renderer": "18.1.0",

@@ -34,7 +34,7 @@ export function RadioBand () {
   const mainLabel = clientType === ClientType.VirtualClient
     ? <>
       {$t(label)}
-      <Tooltip.Info title={tooltipTitle} />
+      <Tooltip.Question title={tooltipTitle} />
     </>
     : $t(label)
 

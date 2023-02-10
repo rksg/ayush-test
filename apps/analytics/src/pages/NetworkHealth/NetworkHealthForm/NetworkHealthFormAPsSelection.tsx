@@ -16,7 +16,7 @@ export function NetworkHealthFormAPsSelection () {
   return <>
     <StepsForm.Title>
       {$t(contents.steps.apsSelection)}
-      <Tooltip.Info title={tooltip} />
+      <Tooltip.Question title={tooltip} />
     </StepsForm.Title>
     <FormItems.APsSelection />
   </>

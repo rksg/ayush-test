@@ -6,7 +6,7 @@ import { Loader, showToast } from '@acx-ui/components'
 import { useNavigateToPath } from '@acx-ui/react-router-dom'
 import { getIntl }           from '@acx-ui/utils'
 
-import { errorMsgMapping }      from '../contents'
+import { messageMapping }       from '../contents'
 import { useNetworkHealthSpec } from '../services'
 
 export function showAlertAndNavigateAway (
@@ -19,7 +19,7 @@ export function showAlertAndNavigateAway (
 
   showToast({
     type: 'error',
-    content: $t(errorMsgMapping.MAIN_SPEC_NOT_FOUND)
+    content: $t(messageMapping.SPEC_NOT_FOUND)
   })
   navigateToList()
 }

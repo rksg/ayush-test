@@ -4,7 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew, useStepFormContext } from '@acx-ui/components'
 
-import { errorMsgMapping }                    from '../../contents'
+import { messageMapping }                     from '../../contents'
 import { useLazyNetworkHealthSpecNamesQuery } from '../../services'
 
 const name = 'name' as const
@@ -21,7 +21,7 @@ export function TestName () {
     const names = await getNames(undefined).unwrap()
     if (!names.includes(value)) return
 
-    throw new Error($t(errorMsgMapping.DUPLICATE_NAME_NOT_ALLOWED))
+    throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
   }
 
   return <Form.Item

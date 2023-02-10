@@ -16,7 +16,7 @@ import {
 } from '../../authMethods'
 import * as contents     from '../../contents'
 import {
-  AuthenticationMethod as EeAuthenticationMethod,
+  AuthenticationMethod as AuthenticationMethodEnum,
   NetworkHealthFormDto
 } from '../../types'
 
@@ -48,7 +48,7 @@ export function AuthenticationMethod () {
 
   const mainLabel = <>
     {$t(label)}
-    <Tooltip.Info
+    <Tooltip.Question
       title={<FormattedMessage
         {...contents.unsupportedAuthMethods[clientType]}
         values={contents.formatValues}
@@ -79,7 +79,7 @@ AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary ()
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary<EeAuthenticationMethod>
+    children={<StepsFormNew.FieldSummary<AuthenticationMethodEnum>
       convert={(code) => $t(authMethodsByCode[code!].title)}
     />}
   />
