@@ -171,7 +171,7 @@ export const healthApi = dataApi.injectEndpoints({
           }
           `,
           variables: {
-            path: payload.filter // get kpi threshold does not accept filter
+            path: payload.filter?.networkNodes // get kpi threshold does not accept filter
               ? payload.filter.networkNodes?.[0]
               : payload.path
           }
