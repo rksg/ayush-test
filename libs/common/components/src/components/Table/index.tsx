@@ -87,7 +87,7 @@ export interface TableHighlightFnArgs {
 
 const defaultPagination = {
   mini: true,
-  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
   showTotal: false,
@@ -262,7 +262,7 @@ function Table <RecordType extends Record<string, any>> ({
   let pagination: false | TablePaginationConfig = false
   if (type === 'tall') {
     pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-    if ((pagination.total || dataSource?.length || 0) < pagination.pageSize!) {
+    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
       pagination = false
     }
   }

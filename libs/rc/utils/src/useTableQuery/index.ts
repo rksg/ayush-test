@@ -50,12 +50,14 @@ export interface TABLE_QUERY <
 export type PAGINATION = {
   page: number,
   pageSize: number,
+  defaultPageSize: number,
   total: number
 }
 
 export const DEFAULT_PAGINATION = {
   page: 1,
   pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   total: 0
 }
 
@@ -121,7 +123,10 @@ export function useTableQuery <
 
   const initialPagination = {
     ...DEFAULT_PAGINATION,
-    ...(option?.pagination || {})
+    ...(option?.pagination ? {
+      defaultPageSize: option.pagination.pageSize || TABLE_DEFAULT_PAGE_SIZE,
+      ...option.pagination
+    } : {})
   }
 
   const initialSorter = {
