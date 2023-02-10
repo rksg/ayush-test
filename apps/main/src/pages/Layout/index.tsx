@@ -19,6 +19,7 @@ import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
+import { Home }          from './styledComponents'
 
 function Layout () {
   const { data: userProfile } = useUserProfileContext()
@@ -35,7 +36,10 @@ function Layout () {
       }
       leftHeaderContent={
         isDelegationMode() && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-          <LayoutUI.Icon children={<HomeSolid />} />
+          <Home>
+            <LayoutUI.Icon children={<HomeSolid />} />
+            Home
+          </Home>
         </Link>
       }
 
