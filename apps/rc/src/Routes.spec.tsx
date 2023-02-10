@@ -501,6 +501,18 @@ describe('RcRoutes: Policies', () => {
     expect(screen.getByText(/add access control policy/i)).toBeVisible()
   })
 
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit access control policy/i)).toBeVisible()
+  })
+
 })
 
 describe('RcRoutes: User', () => {
