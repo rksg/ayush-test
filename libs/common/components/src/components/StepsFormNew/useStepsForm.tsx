@@ -12,6 +12,10 @@ import type { InternalStepFormProps }               from './types'
 import type { FormInstance, FormProps, StepsProps } from 'antd'
 import type { UseStepsFormConfig }                  from 'sunflower-antd'
 
+function isPromise <T> (value: unknown): value is Promise<T> {
+  return Boolean((value as Promise<unknown>).then)
+}
+
 type UseStepsFormParam <T> = Omit<
   UseStepsFormConfig,
   'form' | 'defaultFormValues' | 'current' | 'submit'
@@ -60,12 +64,14 @@ function useStepsFormNew <T> ({
     callback(() => setSubmitting(false))
   }
 
-  async function handleAsyncSubmit <T> (promise: Promise<T>) {
+  function handleAsyncSubmit <T> (promise: Promise<T>) {
     const timeout = setTimeout(setLoading, 50, true)
-    const value = await promise
-    clearTimeout(timeout)
-    setLoading(false)
-    return value
+    return promise
+      .catch(() => {/* do nothing */})
+      .finally(() => {
+        clearTimeout(timeout)
+        setLoading(false)
+      })
   }
 
   function cancel () {
