@@ -5,7 +5,6 @@ import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -224,12 +223,10 @@ export function SecurityTab () {
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}
-                <Tooltip
+                <Tooltip.Question
                   title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </>}
             >
               <Space>

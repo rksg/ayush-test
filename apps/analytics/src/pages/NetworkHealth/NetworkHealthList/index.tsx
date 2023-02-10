@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader } from '@acx-ui/components'
+import { PageHeader, Button } from '@acx-ui/components'
+import { TenantLink }         from '@acx-ui/react-router-dom'
 
 import { NetworkHealthTable } from '../NetworkHealthTable'
 
@@ -10,15 +11,15 @@ function NetworkHealthList () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Network Health' })}
-        breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Service Validation' }),
-            link: '/serviceValidation'
-          }
+        extra={[
+          <TenantLink to='/serviceValidation/networkHealth/add' key='add'>
+            <Button type='primary'>{ $t({ defaultMessage: 'Create Test' }) }</Button>
+          </TenantLink>
         ]}
       />
       <NetworkHealthTable />
     </>
+    
   )
 }
 

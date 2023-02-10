@@ -29,9 +29,10 @@ import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/NetworksTable'
+import Wired                       from './pages/Networks/wired'
+import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
+import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
+import NetworksTable               from './pages/Networks/wireless/NetworksTable'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
@@ -51,6 +52,7 @@ import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail           from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                 from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
@@ -166,6 +168,8 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
       />
+      <Route path='networks/wired' element={<Wired />} />
+      <Route path='networks/wired/:activeTab' element={<Wired />} />
     </Route>
   )
 }
@@ -297,6 +301,10 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.DETAIL })}
         element={<EdgeDHCPDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
+        element={<EditDhcp />}
       />
     </Route>
   )

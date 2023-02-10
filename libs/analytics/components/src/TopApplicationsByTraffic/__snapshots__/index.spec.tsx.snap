@@ -37,7 +37,8 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 <div
                   class="ant-space-item"
                 >
-                  <div
+                  <svg
+                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
                     data-testid="HistoricalOutlined"
                   />
                 </div>

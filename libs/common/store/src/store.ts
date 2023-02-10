@@ -81,7 +81,8 @@ export const store = configureStore({
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer
+    [personaApi.reducerPath]: personaApi.reducer,
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -110,7 +111,8 @@ export const store = configureStore({
       mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
-      personaApi.middleware
+      personaApi.middleware,
+      networkHealthApi.middleware
     ])
   },
 
