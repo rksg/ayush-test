@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 import { Form, FormInstance, Input, InputNumber, Select } from 'antd'
 import { FormattedMessage, useIntl }                      from 'react-intl'
 
-import { Drawer, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Drawer, Tooltip }        from '@acx-ui/components'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
@@ -157,7 +156,7 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
           label={
             <>
               {$t({ defaultMessage: 'Service Name' })}
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
                   defaultMessage={`The name can only contain between 2 and 64 characters.
@@ -168,9 +167,7 @@ function ForwardingRuleForm (props: ForwardingRuleFormProps) {
                     specialChars: '!";#$%\'()*+,-./:;<=>?@[]^_{|}~*&\\`'
                   }}
                 />}
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>
           }
           rules={[

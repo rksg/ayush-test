@@ -31,14 +31,6 @@ import { NetworkApGroupDialog } from './index'
 
 const venueName = 'My-Venue'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  SearchOutlined: () => <div data-testid='search-outlined' />,
-  CancelCircle: () => <div data-testid='cancel-circle' />,
-  CloseSymbol: () => <div data-testid='close-symbol' />,
-  SettingsOutlined: (props: {}) => <div data-testid='settings-outlined' {...props} />
-}))
-
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
     mockServer.use(
