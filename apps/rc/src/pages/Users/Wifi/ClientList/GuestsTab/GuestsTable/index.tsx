@@ -37,7 +37,7 @@ import {
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                           from '@acx-ui/utils'
 
-import NetworkForm                           from '../../../../../Networks/NetworkForm/NetworkForm'
+import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 import {
