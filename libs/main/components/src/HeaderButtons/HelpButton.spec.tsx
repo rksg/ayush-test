@@ -5,7 +5,7 @@ import { useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import HelpButton                from './HelpButton'
+import HelpButton                    from './HelpButton'
 import { getMappingURL, getDocsURL } from './HelpButton/HelpPage'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
