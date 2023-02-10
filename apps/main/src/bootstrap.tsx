@@ -42,7 +42,7 @@ export function renderPendoAnalyticsTag () {
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
     /* eslint-disable */  // Disables everything from this point down
-    console.log('Failed to load pendo api key from env', event)
+    console.error('Failed to load pendo api key from env', event)
   }
   // Installing Pendo snippet
   const scriptText = `(function(apiKey){
@@ -67,8 +67,6 @@ export async function pendoInitalization (): Promise<void> {
     param
   )
   const url = userProfileRequest.url
-  /* eslint-disable no-console */
-  console.log(`userProfileRequest: ${userProfileRequest}`)
 
   try {
     const res = await fetch(url, userProfileRequest)
@@ -94,7 +92,7 @@ export async function pendoInitalization (): Promise<void> {
     })
   } catch (error) {
     /* eslint-disable no-console */
-    console.log(error)
+    console.error(error)
   }
 }
 
