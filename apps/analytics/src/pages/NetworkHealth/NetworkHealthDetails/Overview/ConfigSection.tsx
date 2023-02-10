@@ -31,7 +31,7 @@ const fieldFormatterList: FieldFormatter[] = [
   }),
   (details, $t) => ({
     children: _.get(details, 'config.authenticationMethod')
-      ? $t(authMethodsByCode[details.config.authenticationMethod].text)
+      ? $t(authMethodsByCode[details.config.authenticationMethod].title)
       : $t({ defaultMessage: 'Unknown' }),
     label: $t({ defaultMessage: 'Authentication Method' })
   }),

@@ -115,7 +115,7 @@ const subtitles: Subtitle[] = [
     key: 'config.authenticationMethod',
     title: defineMessage({ defaultMessage: 'Authentication Method' }),
     format: (details, $t) => details.config.authenticationMethod
-      ? $t(authMethodsByCode[details.config.authenticationMethod].text)
+      ? $t(authMethodsByCode[details.config.authenticationMethod].title)
       : $t({ defaultMessage: 'Unknown' })
   }
 ]

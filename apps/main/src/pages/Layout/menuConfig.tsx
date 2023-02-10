@@ -79,7 +79,7 @@ export function useMenuConfig () {
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid
     },
-    ...(true ? [{
+    ...(useIsTierAllowed('ANLT-ADV') ? [{
       path: '/serviceValidation',
       name: $t({ defaultMessage: 'Service Validation' }),
       inactiveIcon: ServiceValidationOutlined,

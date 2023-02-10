@@ -249,11 +249,6 @@ export interface NetworkHealthTestResult extends NetworkHealthTest {
   config: NetworkHealthConfig
   summary: Record<string, number|string>
   previousTest: NetworkHealthTestResult
-  // isOngoing?: boolean
-  // apsUnderTest?: number
-  // apsFinishedTest?: number
-  // lastResult?: number
-  // wlanName: NetworkHealthConfig['wlanName']
 }
 
 const fetchServiceGuardTest = gql`
@@ -314,36 +309,9 @@ const {
   })
 })
 
-// const statsFromSummary = (
-//   summary: NetworkHealthTestResult['summary']
-// ) => {
-//   const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
-//     = summary as Record<string, number>
-//   const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
-//   const apsFinishedTest = apsUnderTest
-//     ? apsUnderTest - apsPendingCount
-//     : undefined
-//   const lastResult = apsUnderTest
-//     ? apsSuccessCount / apsUnderTest
-//     : undefined
-//   return { isOngoing, apsFinishedTest, lastResult, apsUnderTest }
-// }
-
 export function useNetworkHealthTest () {
   const params = useParams<{ testId: string }>()
   return useNetworkHealthTestQuery(
     { testId: parseInt(params.testId!, 10) },
-    { skip: !Boolean(params.testId)
-      // selectFromResult: ({ data, ...rest }) => {
-      //   const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
-      //   } = statsFromSummary(data?.summary || {})
-      //   return { data: {
-      //     ...data,
-      //     ...(isOngoing && { isOngoing }),
-      //     ...(apsUnderTest !== undefined && { apsUnderTest }),
-      //     ...(apsFinishedTest !== undefined && { apsFinishedTest }),
-      //     ...(lastResult !== undefined && { lastResult })
-      //   }, ...rest }
-      // }
-    })
+    { skip: !Boolean(params.testId) })
 }
