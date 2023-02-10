@@ -176,3 +176,13 @@ storiesOf('MultiLineTimeSeriesChart', module)
       />
     </div>
   )
+
+  .add('Custom Legend Format', () =>
+    <div style={{ width: 480, height: 250, padding: 10, border: '1px solid lightgray' }}>
+      <MultiLineTimeSeriesChart
+        style={{ width: 460, height: 230 }}
+        data={getSeriesData()}
+        legendFormatter={()=>''}
+      />
+    </div>
+  )
