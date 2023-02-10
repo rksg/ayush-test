@@ -75,6 +75,8 @@ export class ApDeep {
 
   updatedDate?: Date
 
+  multicastDnsProxyServiceProfileId?: string
+
   constructor () {
     this.serialNumber = ''
 
@@ -117,5 +119,7 @@ export class ApDeep {
     this.position = new ApPosition()
 
     this.deviceGps = new DeviceGps()
+
+    this.multicastDnsProxyServiceProfileId = ''
   }
 }

@@ -13,6 +13,7 @@ import { ApEditContext } from '../index'
 import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
+import { MdnsProxyTab }      from './MdnsProxyTab/MdnsProxyTab'
 import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
@@ -78,7 +79,7 @@ export function ApSettingsTab () {
         tab={<Tooltip title={$t(notAvailableMsg)}>
           {tabTitleMap('proxy')}</Tooltip>}
         key='proxy'>
-        {$t({ defaultMessage: 'mDNS Proxy' })}
+        <MdnsProxyTab />
       </TabPane>
       {supportDirectedMulticast &&
         <TabPane tab={<>
