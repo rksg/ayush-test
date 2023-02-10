@@ -736,6 +736,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
+        return transferToTableResult<NetworkSegmentationGroup>(result)
+      }
     })
   })
 })
@@ -744,7 +757,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useDevicePolicyListQuery,
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
@@ -791,6 +803,7 @@ export const {
   useUpdatePortalMutation,
   useUploadURLMutation,
   useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,

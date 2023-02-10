@@ -1,63 +1,56 @@
-import { useEffect } from 'react'
-
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                   from '@acx-ui/components'
-import { useVLANPoolNetworkInstancesQuery, useGetVLANPoolPolicyDetailQuery } from '@acx-ui/rc/services'
-import { VLANPoolDetailInstances, useTableQuery }                            from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                             from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                from '@acx-ui/components'
+import { useGetVLANPoolVenuesQuery }                      from '@acx-ui/rc/services'
+import { VLANPoolVenues, VLANPoolAPGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                     from '@acx-ui/react-router-dom'
+
 
 export default function VLANPoolInstancesTable (){
 
   const { $t } = useIntl()
-  const params = useParams()
-  const { data } = useGetVLANPoolPolicyDetailQuery({ params })
+  // const params = useParams()
+
   const tableQuery = useTableQuery({
-    useQuery: useVLANPoolNetworkInstancesQuery,
+    useQuery: useGetVLANPoolVenuesQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'aps', 'scope'],
-      filters: {
-        id: data?.networkIds?.length? data?.networkIds : ['none']
-      },
-      sortField: 'name',
+      fields: ['venueId', 'venueName', 'apGroupData'],
+      pageSize: 10000
+    },
+    sorter: {
+      sortField: 'venueName',
       sortOrder: 'ASC'
     }
   })
 
-  useEffect(()=>{
-    if(data){
-      tableQuery.setPayload({
-        ...tableQuery.payload,
-        filters: {
-          id: data?.networkIds?.length? data?.networkIds : ['none']
-        }
-      })
-    }
-  },[data])
-  const columns: TableProps<VLANPoolDetailInstances>['columns'] = [
+
+  const columns: TableProps<VLANPoolVenues>['columns'] = [
     {
-      key: 'NetworkName',
-      title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'name',
+      key: 'venueName',
+      title: $t({ defaultMessage: 'Venue Name' }),
+      dataIndex: 'venueName',
       sorter: true,
-      render: function (_data, row) {
-        return (
-          <TenantLink
-            to={`/networks/${row.id}/network-details/aps`}>
-            {row.name}</TenantLink>
-        )
-      }
+      render: (name, row) =>
+        (<TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>)
+
     },
     {
-      key: 'APs',
+      key: 'apGroupData',
       title: $t({ defaultMessage: 'APs' }),
-      dataIndex: 'aps'
+      dataIndex: 'apGroupData',
+      render: (groups) => _.sumBy(groups as VLANPoolAPGroup[], (o)=> o.apCount )
     },
     {
       key: 'DeploymentScope',
       title: $t({ defaultMessage: 'Deployment Scope' }),
-      dataIndex: 'scope'
+      dataIndex: 'apGroupData',
+      render: (groups) => {
+        const isAllAP = _.some(groups as VLANPoolAPGroup[], { apGroupName: 'ALL_APS' })
+        return isAllAP ? $t({ defaultMessage: 'All APs' }):(groups as VLANPoolAPGroup[]).length
+      }
     }
+
   ]
 
   return (

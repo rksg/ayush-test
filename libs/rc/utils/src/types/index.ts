@@ -426,8 +426,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {

@@ -17,7 +17,8 @@ import {
 } from '@acx-ui/components'
 import {
   useMspEntitlementListQuery,
-  useMspAssignmentSummaryQuery
+  useMspAssignmentSummaryQuery,
+  useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -32,6 +33,12 @@ export function Subscriptions () {
   const [usedWifiCount, setUsedWifiCount] = useState(0)
   const [totalSwitchCount, setTotalSwitchCount] = useState(0)
   const [usedSwitchCount, setUsedSwitchCount] = useState(0)
+
+  const { tenantId } = useParams()
+
+  const [
+    refreshEntitlement
+  ] = useRefreshMspEntitlementMutation()
 
   const columns: TableProps<MspEntitlement>['columns'] = [
     {
@@ -107,7 +114,8 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: () => {
-        // TODO
+        refreshEntitlement({ params: { tenantId } })
+          .then()
       }
     }
   ]

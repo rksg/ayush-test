@@ -58,14 +58,14 @@ export function IpSettings () {
 
   useEffect(() => {
 
-    if (currentAP) {
+    if (currentAP && getApIpSettings && !getApIpSettings.isLoading) {
       const { primaryDnsServer, secondaryDnsServer } = currentAP.apStatusData?.APSystem || {}
 
       setDynamicIpAddr(currentAP.IP || '')
       setDynamicDns1(primaryDnsServer || '')
       setDynamicDns2(secondaryDnsServer || '')
 
-      let ipSettings = getApIpSettings?.data
+      let ipSettings = getApIpSettings.data
       if (!ipSettings) {
         ipSettings = {
           ipType: IpTypeEnum.DYNAMIC,
@@ -80,7 +80,7 @@ export function IpSettings () {
       setFormInitializing(false)
     }
 
-  }, [getApIpSettings?.data, currentAP])
+  }, [getApIpSettings?.isLoading, currentAP])
 
 
   const handleUpdateIpSettings = async (values: APNetworkSettings) => {
