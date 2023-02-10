@@ -54,7 +54,8 @@ function useStepsFormNew <T> ({
   const formConfig = useStepsForm({
     ...config,
     submit: onFinish,
-    total
+    total,
+    isBackValidate: Boolean(editMode)
   } as UseStepsFormConfig)
   const form = formConfig.form as FormInstance<T>
   const props = formConfig.formProps as FormProps<T>
@@ -95,9 +96,9 @@ function useStepsFormNew <T> ({
     const values = form.getFieldsValue(true)
     guardSubmit((done) => {
       onCurrentStepFinish(values, () => {
-        formConfig.gotoStep(n)
-          .catch(() => { /* mute validation error */ })
-          .finally(done)
+        const result = formConfig.gotoStep(n)
+        if (isPromise(result)) result.catch(() => { /* mute validation error */ }).finally(done)
+        else done()
       })
     })
   }
