@@ -4,12 +4,11 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Table, TableColumn, TableProps }         from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer, PersonaGroupSelect }                               from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportCsvDrawer, PersonaGroupSelect }                       from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
-  useDeletePersonaMutation,
   useLazyDownloadPersonasQuery,
   useImportPersonasMutation,
   useDeletePersonasMutation
@@ -152,6 +151,16 @@ export function BasePersonaTable (props: PersonaTableProps) {
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toastDetailErrorMessage = (error: any) => {
+    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+    })
+  }
+
   const importPersonas = async (formData: FormData, values: object) => {
     const { groupId } = values as { groupId: string }
     try {
@@ -162,12 +171,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       setUploadCsvDrawerVisible(false)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      if (error.data?.message) {
-        showToast({
-          type: 'error',
-          content: error.data.message
-        })
-      }
+      toastDetailErrorMessage(error)
     }
   }
 
