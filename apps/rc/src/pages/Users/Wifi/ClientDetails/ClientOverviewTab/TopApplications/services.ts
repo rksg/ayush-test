@@ -1,0 +1,61 @@
+import { gql } from 'graphql-request'
+
+import { dataApi }                               from '@acx-ui/analytics/services'
+import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
+
+export type App = {
+  name: string
+  applicationTraffic: number
+  clientCount: number
+  timeSeries: {
+    time: string[]
+    applicationTraffic: number[]
+  }
+}
+
+interface Response<App> {
+  client: {
+    topNApplicationByTraffic: App[]
+  }
+}
+
+export const api = dataApi.injectEndpoints({
+  endpoints: (build) => ({
+    topApplications: build.query<
+      App[],
+      AnalyticsFilter
+    >({
+      query: (payload) => ({
+        document: gql`
+          query TopApplicationsByTrafficPerClient($mac: String, $start: DateTime, 
+            $end: DateTime, $n: Int!, $granularity: String!) {
+              client(mac: $mac, start: $start, end: $end) {
+                topNApplicationByTraffic(n: $n) {
+                  applicationTraffic
+                  clientCount
+                  name
+                  timeSeries(granularity: $granularity) {
+                    applicationTraffic
+                    time
+                  }
+                }
+              }
+            }  
+        `,
+        variables: {
+          n: 10,
+          mac: payload.mac,
+          path: payload.path,
+          start: payload.startDate,
+          end: payload.endDate,
+          filter: payload.filter,
+          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT1H')
+        }
+      }),
+      transformResponse: (response: Response<App>) =>
+        response.client.topNApplicationByTraffic
+    })
+  })
+})
+
+export const { useTopApplicationsQuery } = api

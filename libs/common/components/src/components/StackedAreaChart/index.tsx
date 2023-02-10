@@ -40,6 +40,7 @@ export interface StackedAreaChartProps
     type?: 'smooth' | 'step'
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
+    legendFormatter?: string | ((name: string) => string)
     yAxisProps?: {
       max?: number
       min?: number
@@ -78,6 +79,7 @@ export function StackedAreaChart <
   type = 'smooth',
   data: initialData,
   legendProp = 'name' as keyof TChartData,
+  legendFormatter,
   yAxisProps,
   dataFormatter = formatter('countFormat'),
   seriesFormatters,
@@ -109,6 +111,7 @@ export function StackedAreaChart <
       legend: {
         ...legendOptions(),
         textStyle: legendTextStyleOptions(),
+        formatter: legendFormatter || '{name}' ,
         data: initialData.map(datum => datum[legendProp]) as unknown as string[]
       }
     }),
