@@ -80,7 +80,8 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                       <div
                         class="ant-space-item"
                       >
-                        <span
+                        <svg
+                          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
                           data-testid="CheckMarkCircleSolid"
                         />
                       </div>
