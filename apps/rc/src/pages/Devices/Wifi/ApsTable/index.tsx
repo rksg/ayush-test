@@ -26,7 +26,7 @@ export default function ApsTable () {
     sortOrder: 'ASC'
   } }, {
     selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name }))
+      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
     })
   })
 
@@ -38,7 +38,7 @@ export default function ApsTable () {
     filters: { isDefault: [false] }
   } }, {
     selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name }))
+      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
     })
   })
 

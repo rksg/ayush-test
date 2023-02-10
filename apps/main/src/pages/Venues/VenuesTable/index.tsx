@@ -294,7 +294,7 @@ export function VenuesTable () {
 
   const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
     selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name }))
+      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name })) || true
     })
   })
 
