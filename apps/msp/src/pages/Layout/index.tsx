@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI,
@@ -27,10 +26,8 @@ import {
   useGetTenantDetailQuery
 } from '@acx-ui/rc/services'
 import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
-import * as UI           from './styledComponents'
 
 function Layout () {
   const { $t } = useIntl()
@@ -80,16 +77,11 @@ function Layout () {
         }</Dropdown>
       }
       rightHeaderContent={<>
-        <UI.CompanyName>{companyName}</UI.CompanyName>
-        <LayoutUI.Divider />
+        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         <AlarmsButton/>
         <ActivityButton/>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <HelpButton/>
-        </Tooltip>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <UserButton/>
-        </Tooltip>
+        <HelpButton/>
+        <UserButton/>
       </>}
     />
   )

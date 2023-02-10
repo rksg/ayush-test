@@ -1,6 +1,3 @@
-import { useIntl } from 'react-intl'
-
-import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -19,11 +16,9 @@ import {
 import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                           from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
-import * as UI           from './styledComponents'
 
 function Layout () {
   const { data: userProfile } = useUserProfileContext()
@@ -47,15 +42,13 @@ function Layout () {
       rightHeaderContent={<>
         <SearchBar />
         <LayoutUI.Divider />
-        {isDelegationMode() ? <MspEcDropdownList/> : <UI.CompanyName>{companyName}</UI.CompanyName>}
+        {isDelegationMode()
+          ? <MspEcDropdownList/>
+          : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         <AlarmsButton/>
         <ActivityButton/>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <HelpButton/>
-        </Tooltip>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <UserButton/>
-        </Tooltip>
+        <HelpButton/>
+        <UserButton/>
       </>}
     />
   )

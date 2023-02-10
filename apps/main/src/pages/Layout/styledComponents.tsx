@@ -71,8 +71,3 @@ export const Close = styled(Button)`
     }
   }
 `
-export const CompanyName = styled.div`
-  text-align: right;
-  margin-right: 5px;
-  max-width: 175px;
-`

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
+import { CaretDownSolid }                                         from '@acx-ui/icons'
 import { useUserProfileContext }                                  from '@acx-ui/rc/components'
 import {
   useMspCustomerListDropdownQuery,
@@ -14,7 +15,7 @@ import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/u
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
 import { AccountType }                                        from '@acx-ui/utils'
 
-import * as UI from '../styledComponents'
+import * as UI from './styledComponents'
 
 export function MspEcDropdownList () {
   const { $t } = useIntl()
@@ -282,12 +283,12 @@ export function MspEcDropdownList () {
 
   return (
     <>
-      <div onClick={()=>setVisible(true)}>
-        <label >{customerName}</label>
+      <UI.CompanyNameDropdown onClick={()=>setVisible(true)}>
+        <div>{customerName}</div>
         <LayoutUI.Icon
-          children={<UI.CaretDownIcon/>}
+          children={<CaretDownSolid />}
         />
-      </div>
+      </UI.CompanyNameDropdown>
       <Drawer
         width={360}
         title={$t({ defaultMessage: 'Change Customer' })}

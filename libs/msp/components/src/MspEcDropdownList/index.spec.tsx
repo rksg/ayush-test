@@ -110,7 +110,7 @@ describe('MspEcDropdownList', () => {
       })
 
     await screen.findByText('Din Tai Fung')
-    await userEvent.click(screen.getByTestId('CaretDownOutlined'))
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!
