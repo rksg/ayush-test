@@ -13,13 +13,17 @@ import { PersonaTable } from '.'
 
 
 describe('Persona Table', () => {
+  const searchPersonaApi = jest.fn()
   let params: { tenantId: string, personaGroupId?: string }
 
   beforeEach( () => {
     mockServer.use(
       rest.post(
         PersonaUrls.searchPersonaList.url,
-        (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
+        (req, res, ctx) => {
+          searchPersonaApi()
+          return res(ctx.json(mockPersonaTableResult))
+        }
       ),
       rest.get(
         PersonaUrls.getPersonaGroupList.url,
@@ -48,6 +52,13 @@ describe('Persona Table', () => {
     // assert link in Table view
     await screen.findByRole('link', { name: targetPersona.name })
     await screen.findAllByRole('link', { name: personaGroupLinkName })
+
+    // change search bar and trigger re-fetching mechanism
+    const searchBar = await screen.findByRole('textbox')
+    await userEvent.type(searchBar, 'search text')
+
+    // first: table query + second: search bar changed query
+    await waitFor(() => expect(searchPersonaApi).toHaveBeenCalledTimes(2))
   })
 
   it('should create persona', async () => {

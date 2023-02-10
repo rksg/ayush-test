@@ -5,7 +5,7 @@ export const PersonaBaseUrl = '/api/personaGroups'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 // eslint-disable-next-line max-len
-type PersonaUrlType = 'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' | 'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' | 'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' | 'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' | 'exportPersonaGroup'
+type PersonaUrlType = 'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' | 'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' | 'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' | 'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' | 'exportPersonaGroup' | 'deletePersonas'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -19,7 +19,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/search`
+    url: `${PersonaBaseUrl}/search${paginationParams}`
   },
   exportPersonaGroup: {
     method: 'post',
@@ -56,7 +56,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   searchPersonaList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/all/personas/search`
+    url: `${PersonaBaseUrl}/all/personas/search${paginationParams}`
   },
   importPersonas: {
     method: 'post',
@@ -73,6 +73,10 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   deletePersona: {
     method: 'delete',
     url: `${PersonaBaseUrl}/:groupId/personas/:id`
+  },
+  deletePersonas: {
+    method: 'delete',
+    url: `${PersonaBaseUrl}/all/personas`
   },
   addPersonaDevices: {
     method: 'post',

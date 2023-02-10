@@ -4,9 +4,8 @@ import { useContext, useEffect, useState } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { StepsForm, Tooltip }         from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ExternalAntenna }            from '@acx-ui/rc/utils'
+import { StepsForm, Tooltip } from '@acx-ui/components'
+import { ExternalAntenna }    from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../..'
 
@@ -270,9 +269,7 @@ export function ExternalAntennaForm (props:{
         (formSettings.has24G && (enable24G || coupled)) &&
           <Form.Item label={<>
             { $t({ defaultMessage: '2.4 GHz Antenna gain:' }) }
-            <Tooltip title={ANTENNA_TOOLTIP}>
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            <Tooltip.Question title={ANTENNA_TOOLTIP} />
           </>}>
             <Space>
               <Form.Item
@@ -315,9 +312,7 @@ export function ExternalAntennaForm (props:{
         (formSettings.has50G && (enable50G || coupled)) &&
         <Form.Item label={<>
           { $t({ defaultMessage: '5 GHz Antenna gain:' }) }
-          <Tooltip title={ANTENNA_TOOLTIP}>
-            <QuestionMarkCircleOutlined />
-          </Tooltip>
+          <Tooltip.Question title={ANTENNA_TOOLTIP} />
         </>}>
           <Space>
             <Form.Item

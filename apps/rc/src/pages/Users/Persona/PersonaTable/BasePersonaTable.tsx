@@ -9,9 +9,12 @@ import { CsvSize, ImportCsvDrawer, PersonaGroupSelect }                         
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
-  useDeletePersonaMutation, useLazyDownloadPersonasQuery, useImportPersonasMutation
+  useDeletePersonaMutation,
+  useLazyDownloadPersonasQuery,
+  useImportPersonasMutation,
+  useDeletePersonasMutation
 } from '@acx-ui/rc/services'
-import {  Persona, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 
 import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                        from '../PersonaDrawer'
@@ -37,6 +40,7 @@ function useColumns (props: PersonaTableColProps) {
           personaGroupId={row.groupId}
         />
       ,
+      sorter: true,
       ...props.name
     },
     {
@@ -57,7 +61,6 @@ function useColumns (props: PersonaTableColProps) {
       key: 'deviceCount',
       dataIndex: 'deviceCount',
       title: $t({ defaultMessage: 'Devices' }),
-      sorter: true,
       align: 'center',
       ...props.deviceCount
     },
@@ -70,13 +73,15 @@ function useColumns (props: PersonaTableColProps) {
     },
     {
       key: 'groupId',
-      dataIndex: 'groupId',
+      dataIndex: 'group',
       title: $t({ defaultMessage: 'Persona Group' }),
       sorter: true,
       render: (_, row) => {
         const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
         return <PersonaGroupLink personaGroupId={row.groupId} name={name} />
       },
+      filterMultiple: false,
+      filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
       ...props.groupId
     },
     {
@@ -137,12 +142,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
   })
   const [downloadCsv] = useLazyDownloadPersonasQuery()
   const [uploadCsv, uploadCsvResult] = useImportPersonasMutation()
-  const [deletePersona, { isLoading: isDeletePersonaUpdating }] = useDeletePersonaMutation()
+  const [deletePersonas, { isLoading: isDeletePersonasUpdating }] = useDeletePersonasMutation()
 
   const personaListQuery = useTableQuery({
     useQuery: useSearchPersonaListQuery,
-    apiParams: { sort: 'name,ASC' },
-    defaultPayload: personaGroupId ? { groupId: personaGroupId } : { }
+    defaultPayload: {
+      keyword: '',
+      groupId: personaGroupId
+    }
   })
 
   const importPersonas = async (formData: FormData, values: object) => {
@@ -200,28 +207,40 @@ export function BasePersonaTable (props: PersonaTableProps) {
       onClick: ([data], clearSelection) => {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
-      }
+      },
+      disabled: (selectedItems => selectedItems.length > 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, groupId, id }], clearSelection) => {
+      onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Persona' }),
-            entityValue: name
+            entityValue: selectedItems[0].name,
+            numOfEntities: selectedItems.length
           },
           onOk: () => {
-            deletePersona({ params: { groupId, id } })
+            const ids = selectedItems.map(({ id }) => id)
+            const names = selectedItems.map(({ name }) => name).join(', ')
+
+            deletePersonas({ payload: ids })
               .unwrap()
-              .then(() => clearSelection())
-              .catch(error => {
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Persona {names} was deleted' }, { names })
+                })
+                clearSelection()
+              })
+              .catch((e) => {
                 showToast({
                   type: 'error',
-                  content: $t({ defaultMessage: 'An error occurred' }),
-                  // FIXME: Correct the error message
-                  link: { onClick: () => alert(JSON.stringify(error)) }
+                  content: $t(
+                    { defaultMessage: 'An error occurred {detail}' },
+                    { detail: e?.data?.message ?? undefined }
+                  )
                 })
               })
           }
@@ -230,14 +249,33 @@ export function BasePersonaTable (props: PersonaTableProps) {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...personaListQuery.payload,
+      keyword: customSearch?.searchString ?? '',
+      propertyId: Array.isArray(customFilters?.propertyId)
+        ? customFilters?.propertyId[0]
+        : undefined
+    }
+
+    // Do not support group filter while user in the PersonaDetail page
+    personaGroupId
+      ? Object.assign(payload, { groupId: personaGroupId })
+      : Object.assign(payload, { groupId: Array.isArray(customFilters.group)
+        ? customFilters.group[0] : undefined })
+
+    personaListQuery.setPayload(payload)
+  }
+
   return (
     <Loader
       states={[
         personaListQuery,
-        { isLoading: false, isFetching: isDeletePersonaUpdating }
+        { isLoading: false, isFetching: isDeletePersonasUpdating }
       ]}
     >
       <Table
+        enableApiFilter
         columns={columns}
         dataSource={personaListQuery.data?.data}
         pagination={personaListQuery.pagination}
@@ -245,7 +283,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={actions}
         rowActions={rowActions}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
+        onFilterChange={handleFilterChange}
       />
 
       <PersonaDrawer
