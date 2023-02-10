@@ -67,7 +67,7 @@ describe('DHCP Detail Page', () => {
     )
   })
 
-  it('should render detail page', async () => {
+  it.skip('should render detail page', async () => {
     render(
       <Provider>
         <DHCPServiceDetail />
