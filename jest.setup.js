@@ -15,6 +15,9 @@ const { configure } = require('@testing-library/dom')
 
 configure({ asyncUtilTimeout: 3000 })
 
+// turn off warning from async-validator
+global.ASYNC_VALIDATOR_NO_WARNING = 1
+
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
