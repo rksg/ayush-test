@@ -32,10 +32,9 @@ const Administrators = () => {
   const isPrimeAdminUser = isPrimeAdmin()
   const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
 
-
+  // TODO: where to use?
   // const dateTimeFormat = userProfileData?.dateFormat
   //   ? userProfileData.dateFormat.toUpperCase() + ' ,HH:mm:ss' : ''
-
 
   return (
     <>
@@ -45,7 +44,9 @@ const Administrators = () => {
         isMspEc={isMspEc}
       />
       {isDelegationReady &&
-        <AdministrationDelegationsTable isMspEc={isMspEc} userProfileData={userProfileData}/>
+        <AdministrationDelegationsTable
+          isMspEc={isMspEc}
+          userProfileData={userProfileData}/>
       }
     </>
   )

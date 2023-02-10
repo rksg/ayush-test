@@ -206,7 +206,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
-    getAdminList: build.query<TableResult<Administrator>, RequestPayload>({
+    getAdminList: build.query<Administrator[], RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getAdministrators, params)
@@ -215,11 +215,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       transformResponse: (result: Administrator[]) => {
-        return {
-          data: transformAdministratorList(result),
-          page: 0,
-          totalCount: result.length
-        }
+        return transformAdministratorList(result)
       },
       providesTags: [{ type: 'Administration', id: 'LIST' }]
     }),
@@ -402,14 +398,6 @@ const transformAdministratorList = (data: Administrator[]) => {
     item.fullName = item.name + ' ' + item.lastName
     item.roleDsc = GetRoleStr(item.role)
 
-    // TODO
-    // const isPrimeAdmin = item.roles.find(role => role === RolesEnum.PRIME_ADMIN) !== undefined
-    // if (this.isPrimeAdmin) {
-    //   item.inactiveRow = item.email.toLocaleLowerCase() === currentUserMail.toLocaleLowerCase()
-    //   if (item.inactiveRow) {
-    //     item.inactiveTooltip = 'You cannot edit or delete yourself'
-    //   }
-    // }
     return item
   })
 }

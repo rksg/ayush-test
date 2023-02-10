@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import {
   Loader,
@@ -8,14 +10,17 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
+  useGetMspProfileQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import {  useTableQuery, Administrator } from '@acx-ui/rc/utils'
+import { Administrator, RolesEnum, MSPUtils } from '@acx-ui/rc/utils'
 
-import AddAdministratorDialog from '../AddAdministratorDialog'
+import AddAdministratorDialog  from './AddAdministratorDialog'
+import EditAdministratorDialog from './EditAdministratorDialog'
 
 interface AdministratorsTableProps {
   currentUserMail: string | undefined;
@@ -23,34 +28,63 @@ interface AdministratorsTableProps {
   isMspEc: boolean;
 }
 
-// const defaultPayload = {
-//   fields: [
-//     'fullName',
-//     'email',
-//     'role'
-//   ],
-//   filters: {},
-//   sortField: 'fullName',
-//   sortOrder: 'ASC'
-// }
-
 const AdministratorsTable = (props: AdministratorsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, isMspEc } = props
+  const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const [editData, setEditData] = useState<Administrator>({} as Administrator)
+  const [editNameOnly, setEditNameOnly] = useState(false)
+  const { data: userProfileData } = useUserProfileContext()
+  const mspUtils = MSPUtils()
+  const currentUserMail = userProfileData?.email
+  const currentUserDetailLevel = userProfileData?.detailLevel
 
-  const tableQuery = useTableQuery<Administrator>({
-    useQuery: useGetAdminListQuery,
-    defaultPayload: {}
-  })
+  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+
+  const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
 
   const [deleteAdmin, { isLoading: isDeleteAdminUpdating }] = useDeleteAdminMutation()
   const [deleteAdmins, { isLoading: isDeleteAdminsUpdating }] = useDeleteAdminsMutation()
 
-  const handleClickAddAdmin = () => {
+  const handleOpenDialog = () => {
     setShowDialog(true)
+  }
+
+  const handleClickAdd = () => {
+    setEditMode(false)
+    setEditData({} as Administrator)
+    handleOpenDialog()
+  }
+
+  const isAllPrimeAdminSelected = (selectedRows: Administrator[]) => {
+    let isAllSelected = true
+    adminList?.forEach((admin) => {
+      if (admin.role === RolesEnum.PRIME_ADMIN) {
+        const index = _.findIndex(selectedRows, (o) => admin.id === o.id)
+        if (index === -1) {
+          isAllSelected = false
+        }
+      }
+    })
+
+    return isAllSelected
+  }
+
+  const isSelfSelected = (selectedRows: Administrator[]): boolean => {
+    let isSelected = false
+    adminList?.forEach((admin) => {
+      if (admin.email === currentUserMail) {
+        const index = _.findIndex(selectedRows, (o) => admin.id === o.id)
+        if (index !== -1) { // the admin himself/herself was selected
+          isSelected = true
+        }
+      }
+    })
+
+    return isSelected
   }
 
   const columns: TableProps<Administrator>['columns'] = [
@@ -58,8 +92,12 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       dataIndex: 'id',
-      sorter: true,
-      defaultSortOrder: 'ascend',
+      sorter: (a, b) => {
+        if (!a.fullName || !b.fullName) {
+          return !a.fullName ? -1 :1
+        }
+        return a.fullName > b.fullName ? 1 : -1
+      },
       render: (data, row) => {
         return row.fullName
       }
@@ -68,37 +106,69 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
       dataIndex: 'email',
-      sorter: true
+      sorter: (a, b) => {
+        return a.email > b.email ? -1 : 1
+      }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleDsc',
       dataIndex: 'roleDsc',
-      sorter: true
+      sorter: (a, b) => {
+        return a.role > b.role ? -1 : 1
+      }
     }
   ]
 
   const rowActions: TableProps<Administrator>['rowActions'] = [
     {
       visible: (selectedRows) => {
-        // TODO: cannot edit themselves
-        const canVisible = selectedRows.length === 1
-        return canVisible
+        // DISABLE to edit:
+        //  - prime admin himself/herself
+        //  - multiple-selected
+
+        if (selectedRows.length === 1) {
+          const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
+          const selfSelected = isSelfSelected(selectedRows)
+          const selectedRow = selectedRows[0]
+
+          // name is the only editable field:
+          // - himself/herself
+          // - the only one prime admin
+          setEditNameOnly(selfSelected ||
+            (allPrimeAdminSelected && selectedRow.role === RolesEnum.PRIME_ADMIN))
+
+          return selfSelected === false || isPrimeAdminUser === false
+        } else {
+          return false
+        }
       },
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
         setEditData(selectedRows[0])
-        handleClickAddAdmin()
+        handleOpenDialog()
       }
     },
     {
-      visible: () => {
-        // TODO: disable to delete themselves
-        // TODO: cannot delete all prime_admin
-        const canVisible = true
-        return canVisible
+      visible: (selectedRows) => {
+        // DISABLE to delete:
+        //  - himself/herself
+        //  - delete all prime admin
+
+        const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
+        const selfSelected = isSelfSelected(selectedRows)
+        if (selfSelected) return false
+
+        if (selectedRows.length === 1) {
+          const selectedRow = selectedRows[0]
+
+          // the selected row is NOT the only one prime admin in list?
+          return (allPrimeAdminSelected === false || selectedRow.role !== RolesEnum.PRIME_ADMIN)
+        } else {
+          return allPrimeAdminSelected === false
+        }
       },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -127,39 +197,52 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     tableActions.push({
       /* TODO: hide: !rbacService.isRoleAllowed('AddAdminButton') */
       label: $t({ defaultMessage: 'Add Administrator' }),
-      onClick: handleClickAddAdmin
+      onClick: handleClickAdd
     })
   }
 
-  const isOnboardedMsp = false // judge from getMspProfile data
-  return (
-    <>
-      <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeleteAdminUpdating || isDeleteAdminsUpdating }
-      ]}>
-        <Table
-          columns={columns}
-          dataSource={tableQuery?.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={isPrimeAdminUser ? rowActions : undefined}
-          rowSelection={{ type: isPrimeAdminUser ? 'checkbox' : 'radio' }}
-          actions={tableActions}
-        />
-      </Loader>
+  // TODO: tooltip "'You cannot edit or delete yourself'"
+  //        for prime admin user select himself/herself
 
-      <AddAdministratorDialog
-        visible={showDialog}
-        setVisible={setShowDialog}
-        editMode={editMode}
-        editData={editData}
-        editNameOnly={true}
-        isMspEc={isMspEc}
-        isOnboardedMsp={isOnboardedMsp}
+  return (
+    <Loader states={[
+      { isLoading: isLoading || !userProfileData,
+        isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
+      }
+    ]}>
+      <Table
+        columns={columns}
+        dataSource={adminList}
+        rowKey='id'
+        rowActions={isPrimeAdminUser ? rowActions : undefined}
+        rowSelection={{
+          type: isPrimeAdminUser ? 'checkbox' : 'radio',
+          getCheckboxProps: (record: Administrator) => ({
+            disabled: record.email === currentUserMail,
+            name: record.fullName
+
+          })
+        }}
+        actions={tableActions}
       />
-    </>
+
+      { editMode ?
+        <EditAdministratorDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+          editData={editData}
+          editNameOnly={editNameOnly}
+          isMspEc={isMspEc}
+          currentUserDetailLevel={currentUserDetailLevel}
+        /> :
+        <AddAdministratorDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+          isMspEc={isMspEc}
+          isOnboardedMsp={isOnboardedMsp}
+          currentUserDetailLevel={currentUserDetailLevel}
+        />}
+    </Loader>
   )
 }
 

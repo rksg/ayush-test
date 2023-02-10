@@ -8,7 +8,8 @@ import {
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
   MspEntitlement,
-  MspEcProfile
+  MspEcProfile,
+  MspProfile
 } from './types/msp'
 
 const devicesCountMap = {
@@ -171,7 +172,16 @@ export const MSPUtils = () => {
     return false
   }
 
+  const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
+    if (msp?.msp_label !== '') {
+      return true
+    }
+
+    return false
+  }
+
   return {
-    isMspEc
+    isMspEc,
+    isOnboardedMsp
   }
 }

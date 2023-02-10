@@ -22,7 +22,7 @@ import {
   UserProfile
 } from '@acx-ui/rc/utils'
 
-import DelegationInviteDialog from '../DelegationInviteDialog'
+import DelegationInviteDialog from './DelegationInviteDialog'
 
 
 interface AdministrationDelegationsTableProps {
