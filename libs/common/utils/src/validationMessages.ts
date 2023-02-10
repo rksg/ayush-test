@@ -26,6 +26,18 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
+  ipDomain: defineMessage({
+    defaultMessage: 'Please enter a valid IP address or domain',
+    description: 'Validation - IP address checks'
+  }),
+  domain: defineMessage({
+    defaultMessage: 'Please enter a valid domain',
+    description: 'Validation - domain checks'
+  }),
+  domains: defineMessage({
+    defaultMessage: 'Please enter valid domain(s)',
+    description: 'Validation - domains checks'
+  }),
   ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'

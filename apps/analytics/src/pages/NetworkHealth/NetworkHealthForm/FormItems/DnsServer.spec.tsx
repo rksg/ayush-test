@@ -42,7 +42,7 @@ describe('DnsServer', () => {
     await click(submit)
 
     const error2 = await screen.findByRole('alert', {
-      name: (_, el) => el.textContent === 'Invalid IP'
+      name: (_, el) => el.textContent === 'Please enter a valid IP address'
     })
     expect(error2).toBeVisible()
 

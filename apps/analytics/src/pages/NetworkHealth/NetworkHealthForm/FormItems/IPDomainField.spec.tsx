@@ -55,6 +55,7 @@ describe('PingDestinationAddress', () => {
   it('invalidate field when value is not IP address/domain', async () => {
     renderForm(field, {})
 
+    const error = 'Please enter a valid IP address or domain'
     const input = screen.getByRole('textbox')
     const submit = screen.getByRole('button', { name: 'Submit' })
 
@@ -63,7 +64,7 @@ describe('PingDestinationAddress', () => {
     await click(submit)
 
     expect(await screen.findByRole('alert', {
-      name: (_, el) => el.textContent?.includes('Invalid IP/Domain') || false
+      name: (_, el) => el.textContent === error
     })).toBeVisible()
 
     await clear(input)
@@ -71,7 +72,7 @@ describe('PingDestinationAddress', () => {
     await click(submit)
 
     expect(await screen.findByRole('alert', {
-      name: (_, el) => el.textContent?.includes('Invalid IP/Domain') || false
+      name: (_, el) => el.textContent === error
     })).toBeVisible()
   })
 })
