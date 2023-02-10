@@ -26,10 +26,11 @@ import {
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
-import ApplicationDrawer  from '../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
-import DeviceOSDrawer     from '../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
-import Layer2Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
-import Layer3Drawer       from '../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
+
+import ApplicationDrawer  from '../../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
+import DeviceOSDrawer     from '../../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
+import Layer2Drawer       from '../../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
+import Layer3Drawer       from '../../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
 import NetworkFormContext from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
