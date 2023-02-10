@@ -16,8 +16,9 @@ import { CloudMessageBanner } from '@acx-ui/rc/components'
 import { Outlet }             from '@acx-ui/react-router-dom'
 import { notAvailableMsg }    from '@acx-ui/utils'
 
-
+import LicenseBar        from './LicenseBar'
 import { useMenuConfig } from './menuConfig'
+import RegionButton      from './RegionButton'
 import SearchBar         from './SearchBar'
 
 function Layout () {
@@ -30,9 +31,16 @@ function Layout () {
           <Outlet />
         </>
       }
+      leftHeaderContent={
+        <div style={{ width: '40%', display: 'flex', alignItems: 'center' }}>
+          <RegionButton/>
+          <LicenseBar/>
+        </div>
+      }
       rightHeaderContent={<>
         <SearchBar />
         <LayoutUI.Divider />
+
         <AlarmsButton/>
         <ActivityButton/>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>

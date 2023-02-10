@@ -6,7 +6,10 @@ import {
   Button
 }                        from '@acx-ui/components'
 import {
-  SendMessageOutlined
+  SendMessageOutlined,
+  BulbSolid,
+  BulbOffSolid,
+  WarningCircle
 }                          from '@acx-ui/icons'
 
 export const SearchBar = styled.div`
@@ -69,5 +72,87 @@ export const Close = styled(Button)`
     > svg path {
       stroke: var(--acx-primary-white);
     }
+  }
+`
+export const LicenseContainer = styled.div`
+  display: flex;
+  background-color: var(--acx-neutrals-90);
+  height: 45px;
+  align-items: center;
+  border-radius: 4px;
+  margin-left: 15px;
+  padding-left: 5px;
+  padding-right: 5px;
+`
+export const LicenseIconWrapper = styled.div`
+  width: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+`
+
+export const TipsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  line-height: 20px;
+  align-items: start;
+  white-space: nowrap;
+`
+export const ActiveBtn = styled(Button).attrs({ type: 'link' })`
+  height: 20px;
+  color: var(--acx-accents-orange-50);
+  font-weight: var(--acx-subtitle-4-font-weight);
+`
+
+export const LayoutIcon = styled(LayoutUI.Icon)`
+    align-items: center;
+    display: flex;
+`
+
+export const BulbLesser60 = styled(BulbOffSolid)`
+  width: 16px;
+  height: 16px;
+  path {
+    stroke: var(--acx-accents-orange-50);
+  }
+`
+
+export const BulbLesser7 = styled(BulbSolid)`
+  width: 16px;
+  height: 16px;
+  path:nth-child(1){
+    stroke: var(--acx-accents-orange-50);
+    fill: var(--acx-accents-orange-50);
+  }
+  path:nth-child(2){
+    stroke: var(--acx-accents-orange-50);
+  }
+  path:nth-child(3){
+    stroke: var(--acx-accents-orange-50);
+  }
+`
+export const BulbGrace = styled(BulbOffSolid)`
+  width: 16px;
+  height: 16px;
+  fill: var(--acx-primary-white);
+`
+
+export const Expired = styled(WarningCircle)`
+  width: 24px !important;
+  height: 24px !important;
+  display: inline-block;
+  path:nth-child(1) {
+    stroke: var(--acx-accents-orange-55);
+  }
+  path:nth-child(2) {
+    fill: var(--acx-primary-white);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-accents-orange-55);
+  }
+  path:nth-child(4) {
+    fill: var(--acx-accents-orange-55);
+    stroke: var(--acx-accents-orange-55);
   }
 `
