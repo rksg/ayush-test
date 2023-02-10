@@ -15,9 +15,9 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm }               from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { InformationSolid }               from '@acx-ui/icons'
+import { ToggleButton, IpPortSecretForm } from '@acx-ui/rc/components'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
@@ -168,9 +168,8 @@ function SettingsForm () {
       setData && setData({ ...data, [fieldName]: value })
     }
 
-    const proxyServiceTooltip = <Tooltip
+    const proxyServiceTooltip = <Tooltip.Question
       placement='bottom'
-      children={<QuestionMarkCircleOutlined />}
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'

@@ -108,7 +108,7 @@ export function getJwtToken () {
   } else {
     if (isDev) {
       // eslint-disable-next-line no-console
-      console.warn('JWT TOKEN NOT FOUND!!!!!')
+      console.warn('JWT TOKEN NOT FOUND!')
     }
     return null
   }

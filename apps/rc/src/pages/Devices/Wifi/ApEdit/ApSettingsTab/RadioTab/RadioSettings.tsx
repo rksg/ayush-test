@@ -2,12 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch, Tooltip } from 'antd'
-import { cloneDeep, includes }                                             from 'lodash'
-import { FormattedMessage, useIntl }                                       from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch } from 'antd'
+import { cloneDeep, includes }                                    from 'lodash'
+import { FormattedMessage, useIntl }                              from 'react-intl'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                    from '@acx-ui/icons'
+import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -517,12 +516,10 @@ export function RadioSettings () {
                 <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
               </Col>
               <Col span={2}>
-                <Tooltip
+                <Tooltip.Question
                   title={$t({ defaultMessage: 'This applies only to AP models that support tri-band, such as the R760' })}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </Col>
             </Row>
             <Form.Item

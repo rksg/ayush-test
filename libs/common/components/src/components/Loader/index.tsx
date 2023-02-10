@@ -20,9 +20,10 @@ export type LoaderProps = React.PropsWithChildren<{
   states?: QueryState[];
   fallback?: React.ReactNode;
   errorFallback?: React.ReactNode;
+  style?: React.CSSProperties;
 }>
 
-export function Loader (props: LoaderProps) {
+export function Loader ({ style, ...props }: LoaderProps) {
   const isLoading = Boolean(props.states?.some(state => state.isLoading))
   const isFetching = Boolean(props.states?.some(state => state.isFetching))
 
@@ -35,7 +36,7 @@ export function Loader (props: LoaderProps) {
     : undefined
 
   return (
-    <UI.Wrapper $isLoading={isLoading}>
+    <UI.Wrapper $isLoading={isLoading} style={style}>
       <ErrorBoundary fallback={errorFallback}>
         <ErrorContainer states={props.states} />
         <SuspenseBoundary fallback={fallback}>

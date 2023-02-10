@@ -8,7 +8,14 @@ import { render }   from '@acx-ui/test-utils'
 
 import { NetworkIncidentsTab } from './index'
 
-
+jest.mock('@acx-ui/analytics/components', () => ({
+  IncidentTabContent: () => <div></div>
+}))
+jest.mock('../services', () => ({
+  ...jest.requireActual('../services'),
+  extractSSIDFilter: () => [],
+  useGetNetwork: () => ({})
+}))
 describe('NetworkIncidentsTab', () => {
   it('should render network incidents tab successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
