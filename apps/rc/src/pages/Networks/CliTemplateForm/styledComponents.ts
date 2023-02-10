@@ -5,6 +5,7 @@ import {
   Space
 } from 'antd'
 import styled from 'styled-components/macro'
+import 'codemirror/addon/hint/show-hint.css'
 
 import { Tabs }          from '@acx-ui/components'
 import {
@@ -96,7 +97,7 @@ export const tooltip = styled('div')`
   }
 `
 
-export const ListLayout = styled(List)`
+export const ExampleList = styled(List)`
   max-height: 430px;
   overflow-y: auto;
   .ant-list-items {
@@ -144,7 +145,7 @@ export const CodeMirrorContainer = styled('div')`
     font-family: var(--acx-neutral-brand-font);
     font-size: var(--acx-body-3-font-size);
     background: var(--acx-neutrals-15);
-    padding: 11px 8px 0;
+    padding: 11px 38px 0 8px;
   }
 `
 

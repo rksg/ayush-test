@@ -30,8 +30,6 @@ interface CodeMirrorWidgetProps {
     width?: string
   }
   containerId?: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange?: any
 }
 
 CodeMirror.defineMode('cliMode', function () {
@@ -50,7 +48,7 @@ CodeMirror.defineMode('cliMode', function () {
 })
 
 export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
-  const { type, data, size, containerId, onChange } = props
+  const { type, data, size, containerId } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
   const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
@@ -76,7 +74,6 @@ export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) =
           lineWrapping: true
         }
       )
-      onChange && tmpReadOnlyCodeMirror.on('change', onChange)
       setReadOnlyCodeMirror(tmpReadOnlyCodeMirror)
     }
   }

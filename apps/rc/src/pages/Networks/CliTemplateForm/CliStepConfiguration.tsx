@@ -1,7 +1,9 @@
 import { useContext, useState, useRef, useEffect } from 'react'
 
-import { Col, Dropdown, Form, Input, List, Menu, MenuProps, Row, Space, Select, Switch, Typography } from 'antd'
-import { useIntl, FormattedMessage }                                                                 from 'react-intl'
+import { Col, Dropdown, Form, Input, List, Menu, MenuProps, Row, Space, Select, Switch, Typography, FormInstance } from 'antd'
+import { useIntl, FormattedMessage }                                                                               from 'react-intl'
+
+import 'codemirror/addon/hint/show-hint.js'
 
 import {
   Button,
@@ -116,6 +118,20 @@ export function CliStepConfiguration (props: {
   ).map(t => t.name) ?? []
 
   useEffect(() => {
+    if (codeMirrorInstance) {
+      codeMirrorInstance.on('change', (
+        cm: CodeMirror.EditorFromTextArea
+      ) => codemirrorOnChange(cm, setCli, form))
+
+      codeMirrorInstance.on('keyup', (
+        cm: CodeMirror.EditorFromTextArea,
+        event: React.KeyboardEvent
+      ) => codemirrorOnKeyup(cm, event, form)
+      )
+    }
+  }, [codeMirrorInstance])
+
+  useEffect(() => {
     if (editMode && data) {
       form?.setFieldsValue(data)
       codeMirrorInstance?.setValue(data?.cli)
@@ -170,9 +186,11 @@ export function CliStepConfiguration (props: {
             { required: true },
             { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) },
-            { validator: (_, value) => checkObjectNotExists(
-              existingTemplateNameList, value, $t({ defaultMessage: 'Template' })
-            ) }
+            {
+              validator: (_, value) => checkObjectNotExists(
+                existingTemplateNameList, value, $t({ defaultMessage: 'Template' })
+              )
+            }
           ]}
           initialValue=''
           validateFirst
@@ -257,7 +275,6 @@ export function CliStepConfiguration (props: {
         </Space>
         <UI.CodeMirrorContainer>
           <CodeMirrorWidget
-            // TODO: variables menu
             ref={codeMirrorEl}
             type='cli'
             size={{
@@ -269,10 +286,6 @@ export function CliStepConfiguration (props: {
               configOptions: {
                 readOnly: false
               }
-            }}
-            onChange={(cm: CodeMirror.EditorFromTextArea) => {
-              setCli(cm.getValue())
-              form?.setFieldValue('cli', cm.getValue())
             }}
           />
         </UI.CodeMirrorContainer>
@@ -393,7 +406,7 @@ function CliTemplateExampleList (props: {
   configExamples?: CliTemplateExample[]
 }) {
   const { codeMirrorInstance, configExamples } = props
-  return <UI.ListLayout
+  return <UI.ExampleList
     size='small'
     dataSource={configExamples}
     renderItem={(item) => {
@@ -434,6 +447,50 @@ function transformVariableValue (vtype: string, value: string) {
   }
 }
 
+function codemirrorOnChange (
+  cm: CodeMirror.EditorFromTextArea,
+  setCli: (data: string) => void,
+  form: FormInstance
+) {
+  setCli(cm.getValue())
+  form?.setFieldValue('cli', cm.getValue())
+}
+
+function codemirrorOnKeyup (
+  cm: CodeMirror.EditorFromTextArea,
+  event: React.KeyboardEvent,
+  form: FormInstance
+) {
+  const targetValue = (event.target as HTMLInputElement).value
+  const lastTargetValue = targetValue.charAt(targetValue.length - 1)
+  const isLeftCurlyBracket = event.keyCode === 219 && lastTargetValue === '{'
+  const variables = form?.getFieldValue('variables')
+  const completion = cm.state.completionActive
+
+  if (variables.length && !cm.state.completionActive && isLeftCurlyBracket) {
+    cm.showHint({
+      completeSingle: false,
+      hint: (cm: CodeMirror.Editor) => ({
+        from: cm.getCursor(), to: cm.getCursor(),
+        list: variables.map((v: CliTemplateVariable) => v.name)
+      })
+    })
+  } else if (variables?.length && event.keyCode !== 16 && !isLeftCurlyBracket) {
+    cm.closeHint()
+  }
+
+  if (completion?.pick) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    completion.pick = function (data: any, i: number) {
+      let completion = data.list
+      completion?.pick?.apply(this, arguments)
+
+      appendContentToCLI(cm, 'variableMenu', data.list[i])
+      cm.closeHint()
+    }
+  }
+}
+
 function appendContentToCLI (
   codeMirrorInstance: CodeMirror.EditorFromTextArea,
   type: string,
@@ -452,7 +509,7 @@ function appendContentToCLI (
 
   if (type === 'example' || type === 'file') {
     replacement = content
-  } else { //var
+  } else { // variable & variable menu
     const needSpace = needSpaceBeforeVariable(type, lastWord)
     replacement = (needSpace ? htmlDecode('&nbsp;') : '') + '${' + content + '}'
   }
@@ -463,16 +520,10 @@ function appendContentToCLI (
   }, 100)
 }
 
-function htmlDecode (code: string) {
-  let div = document.createElement('div')
-  div.innerHTML = code
-  return div.innerText.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
-}
-
 function needSpaceBeforeVariable (type: string, lastWord: string) {
   const hasDollarSign = lastWord.slice(-2) === '${'
 
-  if(type === 'variableMenu') {
+  if (type === 'variableMenu') {
     const subStringCount = hasDollarSign ? 2 : 1
     lastWord = lastWord.substr(0, (lastWord.length - subStringCount))
   }
@@ -516,4 +567,10 @@ function validateCLI (
     valid: (isInputCli && isAllAttributeDefined && isAllVariableMatch) ?? false,
     tooltip: getDisabledTooltip()
   }
+}
+
+function htmlDecode (code: string) {
+  let div = document.createElement('div')
+  div.innerHTML = code
+  return div.innerText.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }
