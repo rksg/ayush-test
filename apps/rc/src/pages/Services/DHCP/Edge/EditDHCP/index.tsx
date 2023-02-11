@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 
+import { doRunResponse }          from 'apps/rc/src/pages/Devices/Switch/SwitchDetails/SwitchTroubleshootingTab/__tests__/fixtures'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -34,6 +35,10 @@ const EditDhcp = () => {
     if(edgeDhcpData) {
       formRef.current?.resetFields()
       formRef.current?.setFieldsValue(edgeDhcpData)
+      formRef.current?.setFieldValue(
+        'enableSecondaryDNSServer',
+        !!formRef.current?.getFieldValue('secondaryDnsIp')
+      )
     }
   }, [edgeDhcpData])
 

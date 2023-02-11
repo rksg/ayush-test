@@ -1,4 +1,5 @@
 import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
+import { useForm }                                                   from 'antd/lib/form/Form'
 import { useIntl }                                                   from 'react-intl'
 
 import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
@@ -129,6 +130,9 @@ export const EdgeDhcpSettingForm = () => {
         <Col span={15}>
           <Form.Item
             name='dhcpPools'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
+            ]}
             children={<DHCPPoolTable></DHCPPoolTable>}
           />
         </Col>

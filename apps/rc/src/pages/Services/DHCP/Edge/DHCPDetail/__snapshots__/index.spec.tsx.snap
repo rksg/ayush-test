@@ -70,7 +70,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              DHCP-1
+              TestDHCP-1
             </h1>
           </span>
         </div>
@@ -227,7 +227,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           <span
                             class="ant-typography"
                           >
-                            OFF
+                            ON
                           </span>
                         </div>
                       </div>
@@ -291,7 +291,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                           <span
                             class="ant-typography"
                           >
-                            24 hrs
+                            24 hours
                           </span>
                         </div>
                       </div>
@@ -352,7 +352,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                 <h2
                   class="ant-typography"
                 >
-                  Instances (2)
+                  Instances (0)
                 </h2>
                 <div
                   class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
@@ -411,7 +411,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                               class="ant-spin-container"
                             >
                               <div
-                                class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
                               >
                                 <div
                                   class="ant-table-container"
@@ -451,13 +451,14 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                               class="ant-table-selection"
                                             >
                                               <label
-                                                class="ant-checkbox-wrapper"
+                                                class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled"
                                               >
                                                 <span
-                                                  class="ant-checkbox"
+                                                  class="ant-checkbox ant-checkbox-disabled"
                                                 >
                                                   <input
                                                     class="ant-checkbox-input"
+                                                    disabled=""
                                                     type="checkbox"
                                                     value=""
                                                   />
@@ -691,166 +692,17 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
                                           </td>
                                         </tr>
                                         <tr
-                                          class="ant-table-row ant-table-row-level-0"
-                                          data-row-key="1"
+                                          class="ant-table-placeholder"
                                         >
                                           <td
-                                            class="ant-table-cell ant-table-selection-column"
-                                          >
-                                            <label
-                                              class="ant-checkbox-wrapper"
-                                            >
-                                              <span
-                                                class="ant-checkbox"
-                                              >
-                                                <input
-                                                  class="ant-checkbox-input"
-                                                  type="checkbox"
-                                                  value=""
-                                                />
-                                                <span
-                                                  class="ant-checkbox-inner"
-                                                />
-                                              </span>
-                                            </label>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell ant-table-column-sort"
-                                          >
-                                            <a
-                                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/1/edge-details/overview"
-                                            >
-                                              Edge-1
-                                            </a>
-                                          </td>
-                                          <td
                                             class="ant-table-cell"
+                                            colspan="8"
                                           >
-                                            <a
-                                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1/venue-details/overview"
-                                            >
-                                              Venue A
-                                            </a>
+                                            <div
+                                              class="ant-table-expanded-row-fixed"
+                                              style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                            />
                                           </td>
-                                          <td
-                                            class="ant-table-cell"
-                                          >
-                                            <span
-                                              class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
-                                            >
-                                              <span
-                                                class="ant-badge-status-dot"
-                                              />
-                                              <span
-                                                class="ant-badge-status-text"
-                                              >
-                                                Good
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            90
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            23
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            93%
-                                          </td>
-                                          <td
-                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                            style="position: sticky; right: 0px;"
-                                          />
-                                        </tr>
-                                        <tr
-                                          class="ant-table-row ant-table-row-level-0"
-                                          data-row-key="2"
-                                        >
-                                          <td
-                                            class="ant-table-cell ant-table-selection-column"
-                                          >
-                                            <label
-                                              class="ant-checkbox-wrapper"
-                                            >
-                                              <span
-                                                class="ant-checkbox"
-                                              >
-                                                <input
-                                                  class="ant-checkbox-input"
-                                                  type="checkbox"
-                                                  value=""
-                                                />
-                                                <span
-                                                  class="ant-checkbox-inner"
-                                                />
-                                              </span>
-                                            </label>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell ant-table-column-sort"
-                                          >
-                                            <a
-                                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/2/edge-details/overview"
-                                            >
-                                              Edge-2
-                                            </a>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                          >
-                                            <a
-                                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/1/venue-details/overview"
-                                            >
-                                              Venue A
-                                            </a>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                          >
-                                            <span
-                                              class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
-                                            >
-                                              <span
-                                                class="ant-badge-status-dot"
-                                              />
-                                              <span
-                                                class="ant-badge-status-text"
-                                              >
-                                                Good
-                                              </span>
-                                            </span>
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            90
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            23
-                                          </td>
-                                          <td
-                                            class="ant-table-cell"
-                                            style="text-align: center;"
-                                          >
-                                            93%
-                                          </td>
-                                          <td
-                                            class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
-                                            style="position: sticky; right: 0px;"
-                                          />
                                         </tr>
                                       </tbody>
                                     </table>
