@@ -9,7 +9,7 @@ import { CommonUrlsInfo, NetworkSaveData }               from '@acx-ui/rc/utils'
 import { Provider }                                      from '@acx-ui/store'
 import { mockServer, fireEvent, within, render, screen } from '@acx-ui/test-utils'
 
-import { policyListResponse } from '../__tests__/fixtures'
+import { externalProviders, policyListResponse } from '../__tests__/fixtures'
 
 import { MoreSettingsForm, NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -52,7 +52,9 @@ describe('NetworkMoreSettingsForm', () => {
       rest.get(CommonUrlsInfo.getVlanPoolList.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getAccessControlProfileList.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json(externalProviders)))
     )
   })
   it('should render More settings form successfully', async () => {
