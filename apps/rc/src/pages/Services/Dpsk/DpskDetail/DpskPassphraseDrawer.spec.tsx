@@ -146,7 +146,7 @@ async function populateValues (values: Partial<CreateDpskPassphrasesFormFields>)
   const numberOfDevices = values.numberOfDevices!
 
   // eslint-disable-next-line max-len
-  const numberOfPassphrasesElem = await screen.findByLabelText('Number of Passphrases')
+  const numberOfPassphrasesElem = await screen.findByLabelText('Number of Passphrases (Up to 5000 passphrases)')
   await userEvent.clear(numberOfPassphrasesElem)
   await userEvent.type(numberOfPassphrasesElem, numberOfPassphrases.toString())
 
