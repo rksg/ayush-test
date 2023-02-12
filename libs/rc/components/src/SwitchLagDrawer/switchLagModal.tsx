@@ -167,8 +167,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }, [portList.data, lagList, switchDetailHeader, editData])
 
 
-  useEffect(()=>{
-    if(!isEditMode && switchesDefaultVlan) {
+  useEffect(() => {
+    if (!isEditMode &&
+      Array.isArray(switchesDefaultVlan) && switchesDefaultVlan.length > 0) {
       const defaultVlan = switchesDefaultVlan[0].defaultVlanId
       setDefaultVlanId(defaultVlan)
       form.setFieldValue('untaggedVlan', defaultVlan)

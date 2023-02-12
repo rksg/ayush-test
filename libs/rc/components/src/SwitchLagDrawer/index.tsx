@@ -6,11 +6,25 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { DeleteOutlinedIcon, EditOutlinedIcon }                                from '@acx-ui/icons'
-import { useDeleteLagMutation, useGetLagListQuery }                            from '@acx-ui/rc/services'
-import { Lag }                                                                 from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
+import { Button,
+  Drawer,
+  Loader,
+  showActionModal,
+  Table,
+  TableProps,
+  Tooltip
+} from '@acx-ui/components'
+import {
+  DeleteOutlinedIcon,
+  EditOutlinedIcon
+} from '@acx-ui/icons'
+import {
+  useDeleteLagMutation,
+  useGetLagListQuery,
+  useSwitchDetailHeaderQuery
+}                            from '@acx-ui/rc/services'
+import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
 
 import { SwitchLagModal } from './switchLagModal'
 
@@ -25,11 +39,15 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
   const { visible, setVisible } = props
 
   const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
+  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
   const [deleteLag] = useDeleteLagMutation()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [row, setRow] = useState([] as Lag[])
+  const isOperational = switchDetail?.deviceStatus ?
+    isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
+
 
   const onClose = () => {
     setVisible(false)
@@ -75,6 +93,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
           <Button
             key='edit'
             role='editBtn'
+            disabled={!isOperational}
             ghost={true}
             icon={<EditOutlinedIcon />}
             style={{ height: '16px' }}
@@ -84,6 +103,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
             key='delete'
             role='deleteBtn'
             ghost={true}
+            disabled={!isOperational}
             icon={<DeleteOutlinedIcon />}
             style={{ height: '16px' }}
             onClick={() => handleDelete(row)}
@@ -150,6 +170,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               actions={
                 [{
                   label: $t({ defaultMessage: 'Add LAG' }),
+                  disabled: !isOperational,
                   onClick: () => {
                     setModalVisible(true)
                     setIsEditMode(false)
