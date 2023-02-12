@@ -30,15 +30,15 @@ jest.mock('./pages/Devices/Switch/SwitchesTable', () => () => {
   return <div data-testid='SwitchesTable' />
 })
 
-jest.mock('./pages/Networks/NetworksTable', () => () => {
+jest.mock('./pages/Networks/wireless/NetworksTable', () => () => {
   return <div data-testid='NetworksTable' />
 })
 
-jest.mock('./pages/Networks/NetworkForm/NetworkForm', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
   return <div data-testid='NetworkForm' />
 })
 
-jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
@@ -499,6 +499,18 @@ describe('RcRoutes: Policies', () => {
       }
     })
     expect(screen.getByText(/add access control policy/i)).toBeVisible()
+  })
+
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit access control policy/i)).toBeVisible()
   })
 
 })

@@ -1,8 +1,7 @@
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { cssStr, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { cssStr, Tooltip } from '@acx-ui/components'
 import {
   ApLanPortTypeEnum,
   ApModel,
@@ -101,12 +100,10 @@ export function LanPortSettings (props: {
       name={['lan', index, 'type']}
       label={<>
         {$t({ defaultMessage: 'Port type' })}
-        <Tooltip
+        <Tooltip.Question
           title={$t(WifiNetworkMessages.LAN_PORTS_PORT_TOOLTIP)}
           placement='bottom'
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        />
       </>}
       children={<Select
         disabled={readOnly
@@ -122,12 +119,10 @@ export function LanPortSettings (props: {
       name={['lan', index, 'untagId']}
       label={<>
         {$t({ defaultMessage: 'VLAN untag ID' })}
-        <Tooltip
+        <Tooltip.Question
           title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
           placement='bottom'
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        />
       </>}
       rules={[{
         required: true,
@@ -159,12 +154,10 @@ export function LanPortSettings (props: {
       name={['lan', index, 'vlanMembers']}
       label={<>
         {$t({ defaultMessage: 'VLAN member' })}
-        <Tooltip
+        <Tooltip.Question
           title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_MEMBERS_TOOLTIP)}
           placement='bottom'
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        />
       </>}
       rules={[
         { validator: (_, value) => checkVlanMember(value) }

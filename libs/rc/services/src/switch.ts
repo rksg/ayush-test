@@ -43,6 +43,8 @@ import {
   SwitchDhcp,
   SwitchDhcpLease,
   CommonResult,
+  SwitchProfileModel,
+  SwitchCliTemplateModel,
   Lag
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
@@ -50,7 +52,12 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort'],
+  tagTypes: ['Switch',
+    'SwitchBackup',
+    'SwitchClient',
+    'SwitchPort',
+    'SwitchProfiles',
+    'SwitchOnDemandCli'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -163,6 +170,37 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
+
+    getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getProfiles,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+
+    getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getCliTemplates,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
+
     addSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -944,5 +982,7 @@ export const {
   useCreateDhcpServerMutation,
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
-  useGetDhcpLeasesQuery
+  useGetDhcpLeasesQuery,
+  useGetCliTemplatesQuery,
+  useGetProfilesQuery
 } = switchApi

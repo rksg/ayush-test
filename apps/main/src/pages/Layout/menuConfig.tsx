@@ -177,7 +177,7 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Wireless Networks' })
         },
         {
-          path: '/networks/wired',
+          path: '/networks/wired/profiles',
           name: $t({ defaultMessage: 'Wired Networks' }),
           disabled: !useIsSplitOn(Features.UNRELEASED)
         }

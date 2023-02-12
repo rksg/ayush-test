@@ -274,6 +274,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  getProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getCliTemplates: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
   getLagList: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'

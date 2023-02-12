@@ -7,6 +7,7 @@ import { useParams }    from 'react-router-dom'
 import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
 import {
+  useLazyGetVenueQuery,
   useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
   useLazyGetMacRegListQuery,
@@ -14,9 +15,9 @@ import {
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink } from '../LinkHelper'
-import { PersonaGroupDrawer }                                             from '../PersonaGroupDrawer'
-import { BasePersonaTable }                                               from '../PersonaTable/BasePersonaTable'
+import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLink } from '../LinkHelper'
+import { PersonaGroupDrawer }                                                        from '../PersonaGroupDrawer'
+import { BasePersonaTable }                                                          from '../PersonaTable/BasePersonaTable'
 
 
 
@@ -49,12 +50,14 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
-  const { personaGroupId } = useParams()
+  const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
+  const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [nsgDisplay, setNsgDisplay] = useState<{ id?: string, name?: string }>()
 
+  const [getVenue] = useLazyGetVenueQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
@@ -65,7 +68,8 @@ function PersonaGroupDetails () {
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const { macRegistrationPoolId, dpskPoolId, nsgId } = detailsQuery.data as PersonaGroup
+    const { macRegistrationPoolId, dpskPoolId, nsgId, propertyId }
+    = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
       getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
@@ -91,12 +95,25 @@ function PersonaGroupDetails () {
         .then(result => name = result.data?.name)
         .finally(() => setNsgDisplay({ id: nsgId, name }))
     }
+
+    if (propertyId) {
+      // FIXME: After the property id does not present in UUID format, I will remove .replace()
+      const venueId = propertyId.replaceAll('-', '')
+      let name: string | undefined
+      getVenue({ params: { venueId, tenantId } })
+        .then(result => name = result.data?.name)
+        .finally(() => setVenueDisplay({ id: venueId, name }))
+    }
   }, [detailsQuery.data])
 
   const basicInfo = [
     {
-      title: $t({ defaultMessage: 'Venue' })
-      // TODO: Integrate API to fetch Venue belonging to this PersonaGroup and linked
+      title: $t({ defaultMessage: 'Venue' }),
+      value:
+      <VenueLink
+        name={venueDisplay?.name}
+        venueId={venueDisplay?.id}
+      />
     },
     {
       title: $t({ defaultMessage: 'Personas' }),
@@ -169,7 +186,7 @@ function PersonaGroupDetails () {
             <BasePersonaTable
               colProps={{
                 name: { searchable: true },
-                groupId: { show: false }
+                groupId: { show: false, filterable: false }
               }}/>
           </div>
         </GridCol>
