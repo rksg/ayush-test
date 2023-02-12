@@ -502,7 +502,6 @@ describe('RcRoutes: Policies', () => {
 
   test('should navigate to Client Isolation details page', async () => {
     const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
-
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -511,6 +510,18 @@ describe('RcRoutes: Policies', () => {
     })
     expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
   })
+
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/edit access control policy/i)).toBeVisible()
+  })
+
 })
 
 describe('RcRoutes: User', () => {

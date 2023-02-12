@@ -33,6 +33,7 @@ import Wired                       from './pages/Networks/wired'
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
+import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import ClientIsolationDetail       from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
@@ -370,7 +371,17 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm edit={false}/>}
+        element={<AccessControlForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={<AccessControlForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
