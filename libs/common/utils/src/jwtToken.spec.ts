@@ -66,7 +66,8 @@ describe('jwtToken', () => {
     expect(getJwtTokenPayload().tenantType).toEqual('REC')
   })
 
-  it('token with MSP/MSP_EC/MSP_NON_VAR/MSP_INTEGRATOR/MSP_INSTALLER tenantType to return value MSP', () => {
+  it('token with MSP/MSP_EC/MSP_NON_VAR/MSP_INTEGRATOR/MSP_INSTALLER ' +
+    'tenantType to return value MSP', () => {
     const token = {
       acx_account_regions: ['EU', 'AS', 'NA'],
       acx_account_tier: 'Gold',
@@ -77,7 +78,7 @@ describe('jwtToken', () => {
     sessionStorage.setItem('jwt', jwtToken)
     expect(getJwtTokenPayload().tenantType).toEqual('MSP')
   })
-  
+
   it('handle cache', () => {
     const token = {
       acx_account_regions: ['EU', 'AS', 'NA'],
