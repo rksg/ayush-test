@@ -1,29 +1,28 @@
-import { rest }    from 'msw'
-import * as router from 'react-router-dom'
+import { rest } from 'msw'
 
-import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                   from '@acx-ui/rc/services'
+import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
 import { ClientTimelineTab } from '.'
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn(),
-  useParams: jest.fn()
+jest.mock('./SessionTable', () => ({
+  SessionTable: () =>
+    <div data-testid={'rc-SessionTable'} title='SessionTable' />
 }))
 
 describe('ClientTimelineTab', ()=>{
-  it('should render', async () => {
-    jest.spyOn(router, 'useParams').mockImplementation(
-      () => ({ tenantId: 't1', clientId: 'clientId' })
-    )
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
+  })
+  it('should render: Events', async () => {
     render(<Provider><ClientTimelineTab /></Provider>, {
       route: {
         params: { tenantId: 't1', clientId: 'clientId' },
@@ -31,7 +30,24 @@ describe('ClientTimelineTab', ()=>{
 
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
+  })
+
+  it('should render: Sessions', async () => {
+    render(<Provider><ClientTimelineTab /></Provider>, {
+      route: {
+        params: {
+          tenantId: 't1',
+          clientId: 'clientId',
+          activeTab: 'timeline',
+          activeSubTab: 'sessions'
+        },
+        path: '/t/:tenantId/users/wifi/clients/:clientId/details/:activeTab/:activeSubTab'
+
+      }
+    })
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Sessions')
+    expect(await screen.findByTestId('rc-SessionTable')).toBeVisible()
   })
 })
