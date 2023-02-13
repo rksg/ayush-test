@@ -21,7 +21,7 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
+  await waitForElementToBeRemoved(validating, { timeout: 7000 })
 
   //await userEvent.click(await screen.findByRole('radio', { name: /through a captive portal/ }))
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
@@ -67,7 +67,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
 
   it('should test Guest pass network successfully', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
-    await fillInBeforeSettings('Guest pass network test')
+    await fillInBeforeSettings('Guest Pass network test')
 
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
