@@ -66,8 +66,8 @@ export const createHttpRequest = (
   const newSubdomain = window.location.origin.replace('//', '//api.')
   return {
     headers,
+    credentials: 'include' as RequestCredentials,
     method: apiInfo.method,
-    credentials: 'include',
     url: apiInfo.newApi && !isLocalHost ? `${newSubdomain}${url}` :
       `${window.location.origin}${url}`
   }
