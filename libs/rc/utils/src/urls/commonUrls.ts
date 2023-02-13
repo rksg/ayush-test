@@ -123,6 +123,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venue/citylist'
+  },
   getVenueSettings: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId'
