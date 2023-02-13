@@ -12,7 +12,11 @@ export function ClientIsolationInstancesTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetVenueUsageByClientIsolationQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    sorter: {
+      sortField: '',
+      sortOrder: 'ASC'
+    }
   })
 
   const columns: TableProps<VenueUsageByClientIsolation>['columns'] = [

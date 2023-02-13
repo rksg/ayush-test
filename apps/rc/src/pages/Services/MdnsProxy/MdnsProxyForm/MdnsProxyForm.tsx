@@ -65,7 +65,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         await addMdnsProxy({ params, payload: data }).unwrap()
       }
 
-      navigate(myServicesPath, { replace: true })
+      navigate(serviceTablePath, { replace: true })
     } catch (error) {
       const errorResponse = error as catchErrorResponse
       const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
