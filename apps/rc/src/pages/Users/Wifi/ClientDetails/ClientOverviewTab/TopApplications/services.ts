@@ -45,11 +45,10 @@ export const api = dataApi.injectEndpoints({
         variables: {
           n: 10,
           mac: payload.mac,
-          path: payload.path,
           start: payload.startDate,
           end: payload.endDate,
           filter: payload.filter,
-          granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT1H')
+          granularity: calculateGranularity(payload.startDate, payload.endDate)
         }
       }),
       transformResponse: (response: Response<App>) =>
