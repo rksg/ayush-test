@@ -641,9 +641,9 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[2]
       : undefined) as unknown as DisplayEvent
-
+    const interval = 1000 * 60
     const trackerHasData =
-      ((trackerDate >= (obj?.start - 300000)) && (trackerDate <= (obj?.end + 300000)))
+      ((trackerDate >= (obj?.start - interval)) && (trackerDate <= (obj?.end + interval)))
     const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''

@@ -87,9 +87,14 @@ export function TimeLine (props: TimeLineProps) {
     isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined
   ) => {
     if (noData) {
-      return <UI.StyledDisabledPlusSquareOutline
-        style={{ cursor: 'not-allowed' }}
-      />
+      return <Tooltip
+        title={$t({ defaultMessage: 'No APs Available' })}
+        placement='top'
+      >
+        <UI.StyledDisabledPlusSquareOutline
+          style={{ cursor: 'not-allowed' }}
+        />
+      </Tooltip>
     }
 
     return isExpand ? (
@@ -104,8 +109,6 @@ export function TimeLine (props: TimeLineProps) {
       />
     )
   }
-
-
 
   const TimelineData = getTimelineData(events, incidents)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
