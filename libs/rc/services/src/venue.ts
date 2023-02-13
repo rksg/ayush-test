@@ -60,7 +60,7 @@ const RKS_NEW_UI = {
 }
 
 export const baseVenueApi = createApi({
-  baseQuery: fetchBaseQuery({}),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
   tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
   refetchOnMountOrArgChange: true,
