@@ -1,4 +1,6 @@
+import { PersonaEthernetPort } from './persona'
 
+// FIXME: remove unused interface
 export enum PropertyManagerRoleEnum {
   PrimeAdministrator = 'Prime Administrator',
   Administrator = 'Administrator',
@@ -42,8 +44,8 @@ export enum PropertyDpskType {
 interface PropertyDpskSetting {
   type: PropertyDpskType,
   // TODO: Check this field meaning
-  status: 'CREATED' | 'ASSIGNED' | 'UNASSIGNED' | 'FAILED'
-  passphrase: string,
+  status?: 'CREATED' | 'ASSIGNED' | 'UNASSIGNED' | 'FAILED'
+  passphrase?: string,
   vlan?: number
 }
 
@@ -60,24 +62,32 @@ export interface PropertyUnit {
     email?: string,
     phoneNumber?: string
   },
-  // FIXME: dpsks should be in personaSettings
-  dpsks: PropertyDpskSetting[],
-  personaSettings?: {
-    dpsks: PropertyDpskSetting[],
-    accessPoint: {
-      name: string,
-      selectedPorts: {
-        macAddress: string,
-        portIndex: number
-      }[]
-    },
-    vni: number,
-    personaId: string,
-    guestPersonaId: string
-  }
+  dpsks?: PropertyDpskSetting[],
+  // FIXME: maybe can remove this and confirm PersonaId/GuestPersonaId would unwrap out of this
+  personaId: string,
+  guestPersonaId?: string,
+  accessPoint?: {
+    name: string,
+    selectedPorts: {
+      macAddress: string,
+      portIndex: number
+    }[]
+  },
+  vni: number
+}
+
+export interface UnitPersonaConfig {
+  vlan?: number,
+  dpskPassphrase?: string,
+  ethernetPorts?: PersonaEthernetPort[]
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
-  dpskConfig: Omit<PropertyDpskSetting, 'type'>,
-  guestDpskConfig: Omit<PropertyDpskSetting, 'type'>
+  unitPersona?: UnitPersonaConfig,
+  guestPersona?: UnitPersonaConfig
+}
+
+export interface ResidentPortal {
+  id: string,
+  name: string
 }

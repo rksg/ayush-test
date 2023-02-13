@@ -11,7 +11,7 @@ import {
   useLazyGetPersonaGroupByIdQuery,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { PropertyDpskType, PropertyUnit, PropertyUnitStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { PropertyUnit, PropertyUnitStatus, useTableQuery } from '@acx-ui/rc/utils'
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
@@ -19,12 +19,11 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 export function VenuePropertyTab () {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  // FIXME: default = false
-  const [withNsg, setWithNsg] = useState(true)
+  const [withNsg, setWithNsg] = useState(false)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
     visible: boolean,
-    data?: PropertyUnit
+    unitId?: string
   }>({
     isEdit: false,
     visible: false
@@ -51,7 +50,7 @@ export function VenuePropertyTab () {
   const actions: TableProps<PropertyUnit>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Unit' }),
-      onClick: () => setDrawerState({ isEdit: false, visible: true, data: undefined })
+      onClick: () => setDrawerState({ isEdit: false, visible: true, unitId: undefined })
     }
   ]
 
@@ -60,7 +59,10 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length <= 1),
       onClick: ([data], clearSelection) => {
-        setDrawerState({ data, isEdit: true, visible: true })
+        // FIXME: Replace to use ID directly
+        // @ts-ignore
+        const id = data?.links[0].href.split('/')[6] ?? ''
+        setDrawerState({ unitId: id, isEdit: true, visible: true })
         clearSelection()
       }
     },
@@ -79,9 +81,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'View Portal' }),
       visible: (selectedItems => selectedItems.length <= 1),
-      onClick: ([data], clearSelection) => {
+      onClick: (_, clearSelection) => {
         // TODO: View Portal Action implementation
-        console.log('[View Portal] :: ', data.name)
         clearSelection()
       }
     },
@@ -143,9 +144,9 @@ export function VenuePropertyTab () {
       show: withNsg,
       key: 'accessPoint',
       title: $t({ defaultMessage: 'Access Point' }),
-      dataIndex: ['personaSettings', 'accessPoint'],
+      dataIndex: ['accessPoint'],
       // FIXME: fetch AP by macAddress?
-      render: (_, row) => row.personaSettings?.accessPoint.name
+      render: (_, row) => row?.accessPoint?.name
     },
     {
       show: withNsg,
@@ -170,57 +171,6 @@ export function VenuePropertyTab () {
     }
   ]
 
-  // FIXME: API integration with Get Unit List
-  const mockPropertyUnit: PropertyUnit[] = [
-    {
-      id: 'unit-id-A',
-      name: 'Unit A',
-      dpsks: [
-        {
-          type: PropertyDpskType.UNIT,
-          passphrase: 'AA unit passphrase',
-          vlan: 100,
-          status: 'CREATED'
-        },
-        {
-          type: PropertyDpskType.GUEST,
-          passphrase: 'AA guest passphrase',
-          vlan: 1000,
-          status: 'CREATED'
-        }
-      ],
-      resident: {
-        name: 'AA Resident name',
-        email: 'AA resident@commscope.com',
-        phoneNumber: 'AA xxx-xxx-xxxx'
-      },
-      status: PropertyUnitStatus.ENABLED
-    },
-    {
-      id: 'unit-id-b',
-      name: 'Unit B',
-      dpsks: [
-        {
-          type: PropertyDpskType.UNIT,
-          passphrase: 'BB unit passphrase',
-          vlan: 600,
-          status: 'CREATED'
-        },
-        {
-          type: PropertyDpskType.GUEST,
-          passphrase: 'BB guest passphrase',
-          status: 'CREATED'
-        }
-      ],
-      resident: {
-        name: 'BB Resident name',
-        email: 'BB resident@commscope.com',
-        phoneNumber: 'BB xxx-xxx-xxxx'
-      },
-      status: PropertyUnitStatus.ENABLED
-    }
-  ]
-
   return (
     <Loader
       // FIXME: queryUnitList need to be added into states
@@ -232,20 +182,22 @@ export function VenuePropertyTab () {
       <Table
         rowKey='name'
         columns={columns}
-        dataSource={queryUnitList.data?.data || mockPropertyUnit}
+        dataSource={queryUnitList.data?.data}
         pagination={queryUnitList.pagination}
         onChange={queryUnitList.handleTableChange}
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}
       />
-      <PropertyUnitDrawer
-        data={drawerState.data}
-        isEdit={drawerState.isEdit}
-        visible={drawerState.visible}
-        withNsg={withNsg}
-        onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
-      />
+      {venueId &&
+        <PropertyUnitDrawer
+          venueId={venueId}
+          unitId={drawerState?.unitId}
+          isEdit={drawerState.isEdit}
+          visible={drawerState.visible}
+          onClose={() => setDrawerState({ isEdit: false, visible: false, unitId: undefined })}
+        />
+      }
     </Loader>
   )
 }

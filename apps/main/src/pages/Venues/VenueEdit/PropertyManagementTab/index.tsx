@@ -8,6 +8,7 @@ import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui
 import { PersonaGroupSelect }                                      from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
+  useGetResidentPortalListQuery,
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
@@ -45,6 +46,7 @@ export function PropertyManagementTab () {
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const { data: residentPortalList } = useGetResidentPortalListQuery({})
   const [updatePropertyConfigs] = useUpdatePropertyConfigsMutation()
   const [patchPropertyConfigs] = usePatchPropertyConfigsMutation()
 
@@ -170,7 +172,8 @@ export function PropertyManagementTab () {
                     name='residentPortalId'
                     label={$t({ defaultMessage: 'Resident Portal profile' })}
                     // rules={[{ required: true }]}
-                    children={<Select />}
+                    children={<Select options={residentPortalList?.data
+                      .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
                   />
                 </Col>
               </Row>

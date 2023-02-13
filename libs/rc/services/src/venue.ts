@@ -55,7 +55,7 @@ import {
   PropertyConfigs,
   PropertyUrlsInfo,
   PropertyUnit,
-  NewTableResult, transferToTableResult
+  ResidentPortal
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -918,8 +918,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
 
     // TODO: Not integration test
+    // eslint-disable-next-line max-len
+    getPropertyUnitById: build.query<PropertyUnit, RequestPayload<{ venueId: string, unitId: string }>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(PropertyUrlsInfo.getUnitById, params, { Accept: 'application/hal+json' })
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'ID' }]
+    }),
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
+        // TODO: confirm whether * or not in this api
         const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params, { Accept: '*' })
         return {
           ...req,
@@ -947,6 +959,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
+    getResidentPortalList: build.query<TableResult<ResidentPortal>, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PropertyUrlsInfo.getResidentPortalList, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -1034,7 +1054,9 @@ export const {
   usePatchPropertyConfigsMutation,
   useAddPropertyUnitMutation,
 
+  useGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
-  useDeletePropertyUnitsMutation
+  useDeletePropertyUnitsMutation,
+  useGetResidentPortalListQuery
 } = venueApi

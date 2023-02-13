@@ -6,7 +6,7 @@ import { CommonUrlsInfo, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                         from '@acx-ui/store'
 import { mockServer, render, screen }       from '@acx-ui/test-utils'
 
-import { mockPropertyUnit, venueLanPorts } from '../../../__tests__/fixtures'
+import { venueLanPorts } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
 
@@ -37,7 +37,7 @@ describe('Property Unit Drawer', () => {
   it('should render add drawer without NSG', async () => {
     render(
       <Provider>
-        <PropertyUnitDrawer visible isEdit={false} withNsg={false} onClose={closeFn}/>
+        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
       </Provider>, { route: { params } }
     )
 
@@ -55,7 +55,7 @@ describe('Property Unit Drawer', () => {
   it('should render add drawer with NSG', async () => {
     render(
       <Provider>
-        <PropertyUnitDrawer visible withNsg isEdit={false} onClose={closeFn}/>
+        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
       </Provider>, { route: { params } }
     )
     // Type unit name
@@ -80,10 +80,9 @@ describe('Property Unit Drawer', () => {
     render(
       <Provider>
         <PropertyUnitDrawer
+          venueId={params.venueId}
           visible
           isEdit
-          data={mockPropertyUnit}
-          withNsg={false}
           onClose={closeFn}
         />
       </Provider>, { route: { params } })
@@ -98,7 +97,7 @@ describe('Property Unit Drawer', () => {
   it('should change vlan value', async () => {
     render(
       <Provider>
-        <PropertyUnitDrawer visible isEdit={false} withNsg={false} onClose={closeFn}/>
+        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
       </Provider>, { route: { params } }
     )
 
@@ -138,10 +137,9 @@ describe('Property Unit Drawer', () => {
       <Provider>
         <PropertyUnitDrawer
           visible={false}
-          data={mockPropertyUnit}
           isEdit={false}
-          withNsg={false}
           onClose={closeFn}
+          venueId={params.venueId}
         />
       </Provider>, { route: { params } })
   })
