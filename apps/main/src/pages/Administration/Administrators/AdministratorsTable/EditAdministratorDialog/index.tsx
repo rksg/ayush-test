@@ -31,16 +31,6 @@ interface EditAdministratorDialogProps {
   currentUserDetailLevel?: string;
 }
 
-// interface EditAdministratorDataModel {
-//   detailLevel: string;
-//   role: string;
-//   email: string;
-//   externalId?: string;
-//   delegateToAllECs?: boolean;
-//   delegatedECs?: boolean;
-// }
-
-
 const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   const {
     visible,
@@ -57,16 +47,17 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   const [updateAdmin, { isLoading: isUpdateAdminUpdating }] = useUpdateAdminMutation()
   const [updateMspEcAdmin] = useUpdateMspEcAdminMutation()
 
-  const { data: mspEcAdmin } = useGetMspEcAdminQuery({
-    mspEcTenantId: params.tenantId,
-    mspEcAdminId: editData.id
+  const { data: mspEcAdmin, isError } = useGetMspEcAdminQuery({
+    params: {
+      mspEcTenantId: params.tenantId,
+      mspEcAdminId: editData.id
+    }
   }, { skip: !isMspEc })
-
 
   const updateMspEcAdminUsername = async (data: Administrator) => {
     try {
       const payload = {
-        ...data,
+        ...mspEcAdmin,
         first_name: data.name,
         last_name: data.lastName
       }
@@ -91,7 +82,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   }
 
   const handleSubmit = async () => {
-    const formValues = form.getFieldsValue()
+    const formValues = form.getFieldsValue(true)
 
     try {
       const payload = {
@@ -106,7 +97,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
         updateMspEcAdminUsername(formValues)
       }
 
-      setVisible(false)
+      handleCancel()
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }
       showActionModal({
@@ -131,7 +122,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
   const isLoading = isUpdateAdminUpdating
 
   // only msp ec can edit name
-  const isNameEditable = isMspEc && mspEcAdmin ? true : false
+  const isNameEditable = isMspEc && isError === false ? true : false
 
   return (
     <Modal
@@ -140,7 +131,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
       okText={$t({ defaultMessage: 'OK' })}
       maskClosable={false}
       keyboard={false}
-      width={840}
+      width={500}
       onOk={handleSubmit}
       onCancel={handleCancel}
       okButtonProps={{ disabled: isLoading }}
@@ -148,7 +139,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
     >
       <Form
         form={form}
-        layout='vertical'
+        layout='horizontal'
       >
         {isNameEditable ? (
           <>

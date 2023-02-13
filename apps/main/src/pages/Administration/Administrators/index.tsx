@@ -8,6 +8,7 @@ import { useParams }            from '@acx-ui/react-router-dom'
 
 import AdministrationDelegationsTable from './AdministrationDelegationsTable'
 import AdministratorsTable            from './AdministratorsTable'
+import * as UI                        from './styledComponents'
 
 const Administrators = () => {
   const params = useParams()
@@ -37,7 +38,11 @@ const Administrators = () => {
   //   ? userProfileData.dateFormat.toUpperCase() + ' ,HH:mm:ss' : ''
 
   return (
-    <>
+    <UI.Wrapper
+      direction='vertical'
+      justify-content='space-around'
+      size={36}
+    >
       <AdministratorsTable
         currentUserMail={currentUserMail}
         isPrimeAdminUser={isPrimeAdminUser}
@@ -48,7 +53,7 @@ const Administrators = () => {
           isMspEc={isMspEc}
           userProfileData={userProfileData}/>
       }
-    </>
+    </UI.Wrapper>
   )
 }
 

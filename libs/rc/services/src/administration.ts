@@ -2,7 +2,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { defineMessage }             from 'react-intl'
 
 import {
-  TableResult,
   CommonResult,
   createHttpRequest,
   RequestPayload,
@@ -22,7 +21,8 @@ import {
   ApiInfo,
   ClientConfig,
   RadiusClientConfigUrlsInfo,
-  RadiusServerSetting
+  RadiusServerSetting,
+  AdministrationDelegationStatus
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -118,7 +118,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
-    getDelegations: build.query<TableResult<Delegation>, RequestPayload>({
+    getDelegations: build.query<Delegation[], RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getDelegations, params)
@@ -130,7 +130,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'DeleteDelegation'
+            'DeleteDelegation',
+            'InviteVar'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
               { type: 'Administration', id: 'DELEGATION_LIST' }
@@ -139,7 +140,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
-    getMspEcDelegations: build.query<TableResult<Delegation>, RequestPayload>({
+    getMspEcDelegations: build.query<Delegation[], RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getMspEcDelegations, params)
@@ -151,7 +152,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'DeleteDelegation'
+            'DeleteDelegation',
+            'InviteVar'
           ], () => {
             api.dispatch(administrationApi.util.invalidateTags([
               { type: 'Administration', id: 'DELEGATION_LIST' }
@@ -217,7 +219,21 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       transformResponse: (result: Administrator[]) => {
         return transformAdministratorList(result)
       },
-      providesTags: [{ type: 'Administration', id: 'LIST' }]
+      providesTags: [{ type: 'Administration', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'InviteAdmin',
+            'UpdateAdmin',
+            'DeleteAdmin',
+            'DeleteAdmins'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     }),
     addAdmin: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -267,7 +283,14 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }]
+      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if (msg.useCase === 'DeleteDelegation') {
+            (requestArgs.callback as Function)()
+          }
+        })
+      }
     }),
     inviteDelegation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -276,7 +299,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }]
     }),
     getRegisteredUsersList: build.query<RegisteredUserSelectOption[], RequestPayload>({
       query: ({ params }) => {
@@ -367,7 +391,7 @@ export const GetRoleStr = ( role: RolesEnum ) => {
     case RolesEnum.READ_ONLY:
       return 'Read Only'
     default:
-      return 'Known'
+      return 'Unknown'
   }
 }
 
@@ -389,6 +413,21 @@ export const getRoles = () => {
       label: GetRoleIntlString(RolesEnum.READ_ONLY),
       value: RolesEnum.READ_ONLY
     }]
+}
+
+export const getDelegetionStatusIntlString = (status: AdministrationDelegationStatus) => {
+  switch (status) {
+    case AdministrationDelegationStatus.INVITED :
+      return defineMessage({ defaultMessage: 'Invitation sent' })
+    case AdministrationDelegationStatus.ACCEPTED :
+      return defineMessage({ defaultMessage: 'Access granted' })
+    case AdministrationDelegationStatus.REJECTED :
+      return defineMessage({ defaultMessage: 'Invitation declined' })
+    case AdministrationDelegationStatus.REVOKED :
+      return defineMessage({ defaultMessage: 'revoked' })
+    default:
+      return defineMessage({ defaultMessage: 'Unknown' })
+  }
 }
 
 const transformAdministratorList = (data: Administrator[]) => {

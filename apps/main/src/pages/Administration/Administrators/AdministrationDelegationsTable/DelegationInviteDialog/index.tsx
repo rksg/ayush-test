@@ -57,10 +57,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
     </Typography.Paragraph>
   </Form>
 
-  const [
-    inviteDelegation
-    // { isLoading: isInviteUpdating }
-  ] = useInviteDelegationMutation()
+  const [ inviteDelegation ] = useInviteDelegationMutation()
 
   const handleOk = async () => {
     const { email } = form.getFieldsValue()
@@ -89,10 +86,8 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
         onOk: async () => {
           try {
             await inviteDelegation({
-              params: {
-                tenantId: params.tenantId,
-                email
-              }
+              params,
+              payload: { username: email }
             }).unwrap()
 
             setVisible(false)
@@ -158,7 +153,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
   return (
     <Modal
       title={$t({ defaultMessage: 'Invite 3rd Party Administrator' })}
-      width={400}
+      width={500}
       visible={visible}
       okText={$t({ defaultMessage: 'Find' })}
       onCancel={handleCancel}

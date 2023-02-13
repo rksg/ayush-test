@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { Empty }     from 'antd'
 import { useIntl }   from 'react-intl'
@@ -9,12 +9,14 @@ import {
   Loader,
   showActionModal,
   Table,
-  TableProps
+  TableProps,
+  Subtitle
 } from '@acx-ui/components'
 import {
   useGetMspEcDelegationsQuery,
   useGetDelegationsQuery,
-  useRevokeInvitationMutation
+  useRevokeInvitationMutation,
+  getDelegetionStatusIntlString
 } from '@acx-ui/rc/services'
 import {
   AdministrationDelegationStatus,
@@ -22,37 +24,53 @@ import {
   UserProfile
 } from '@acx-ui/rc/utils'
 
+import * as UI from '../styledComponents'
+
 import DelegationInviteDialog from './DelegationInviteDialog'
 
 
-interface AdministrationDelegationsTableProps {
-  isMspEc: boolean;
-  userProfileData: UserProfile | undefined;
+const MSPAdministratorsTable = ({ data }: { data: Delegation[] | undefined }) => {
+  const { $t } = useIntl()
+
+  const columns: TableProps<Delegation>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'MSP Name' }),
+      key: 'delegatedToName',
+      dataIndex: 'delegatedToName',
+      render: (data, row) => {
+        return row.delegatedToName
+      }
+    }
+  ]
+
+  return (
+    <>
+      <UI.TableTitleWrapper>
+        {$t({ defaultMessage: 'MSP Administrators' })}
+      </UI.TableTitleWrapper>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey='id'
+      />
+    </>
+  )
 }
 
+
+interface AdministrationDelegationsTableProps {
+  data: Delegation[] | undefined;
+  isSupport: boolean;
+}
 const AdministrationDelegationsTable = (props: AdministrationDelegationsTableProps) => {
+  const { data, isSupport } = props
   const { $t } = useIntl()
   const params = useParams()
-  const { isMspEc, userProfileData } = props
   const [showDialog, setShowDialog] = useState(false)
   const [isTenantLocked, setIsTenantLocked] = useState(false)
-
-  const {
-    data: mspEcDelegationData,
-    isLoading: isLoadingEcDelegation,
-    isFetching: isFetchingEcDelegation
-  } = useGetMspEcDelegationsQuery({ params }, { skip: !isMspEc })
-  const {
-    data: delegationData,
-    isLoading: isLoadingDelegation,
-    isFetching: isFetchingDelegation
-  }= useGetDelegationsQuery({ params }, { skip: isMspEc })
-
   const [revokeInvitation] = useRevokeInvitationMutation()
 
-  const hasDelegations = isMspEc ? isLoadingEcDelegation : Boolean(delegationData?.data?.length)
-  const isSupport = userProfileData?.support
-
+  const hasDelegations = Boolean(data?.length)
 
   const handleClickInviteDelegation = () => {
     setShowDialog(true)
@@ -66,7 +84,13 @@ const AdministrationDelegationsTable = (props: AdministrationDelegationsTablePro
       delegationId: rowData.id
     }
 
-    revokeInvitation(paramValues)
+    try {
+      revokeInvitation({ params: paramValues, callback: () => {
+        setIsTenantLocked(false)
+      } }).unwrap()
+    } catch {
+      setIsTenantLocked(false)
+    }
   }
 
   const handleClickRevokeInvitation = (rowData: Delegation) => () => {
@@ -96,62 +120,47 @@ const AdministrationDelegationsTable = (props: AdministrationDelegationsTablePro
 
   const columns: TableProps<Delegation>['columns'] = [
     {
-      title: isMspEc ? $t({ defaultMessage: 'MSP Name' }) : $t({ defaultMessage: 'Partner Name' }),
+      title: $t({ defaultMessage: 'Partner Name' }),
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
       render: (data, row) => {
         return row.delegatedToName
       }
-    }
-  ]
-
-
-  if (isMspEc !== true) {
-    columns.push({
+    },
+    {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'status',
       render: (_, row) => {
-        return row.statusLabel
+        return $t(getDelegetionStatusIntlString(row.status))
+      }
+    }
+  ]
+
+  // TODO: rbacService.isRoleAllowed('RevokeInvitationButton')
+  if (!isSupport) {
+    columns.push({
+      title: $t({ defaultMessage: 'Action' }),
+      key: 'action',
+      dataIndex: 'action',
+      render: (_, row) => {
+        return <Button
+          onClick={handleClickRevokeInvitation(row)}
+          disabled={isTenantLocked}
+        >
+          {
+            row.status === AdministrationDelegationStatus.ACCEPTED
+              ? $t({ defaultMessage: 'Revoke access' })
+              : $t({ defaultMessage: 'Cancel invitation' })
+          }
+        </Button>
       }
     })
-
-    // TODO: rbacService.isRoleAllowed('RevokeInvitationButton')
-    if (!isSupport) {
-      columns.push({
-        title: $t({ defaultMessage: 'Action' }),
-        key: 'action',
-        dataIndex: 'action',
-        render: (_, row) => {
-          return <Button
-            onClick={handleClickRevokeInvitation(row)}
-            disabled={isTenantLocked}
-          >
-            {
-              row.status === AdministrationDelegationStatus.ACCEPTED
-                ? $t({ defaultMessage: 'Revoke access' })
-                : $t({ defaultMessage: 'Cancel invitation' })
-            }
-          </Button>
-        }
-      })
-    }
   }
-
-  // TODO: setIsTenantLocked(false) afetr received activity notification
-  // await onSocketActivityChanged(requestArgs, api, (msg) => {
-  //   setIsTenantLocked(false)
-  // })
-
-
-  useEffect(() => {
-    // FIXME: isfectching also invoked when error?
-    setIsTenantLocked(false)
-  }, [isFetchingEcDelegation])
 
 
   const tableActions = []
-  if (isMspEc !== true && isSupport === false) {
+  if (isSupport === false) {
     tableActions.push({
       /* TODO: hide: !rbacService.isRoleAllowed('Invite3rdPartyButton') */
       label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
@@ -160,32 +169,26 @@ const AdministrationDelegationsTable = (props: AdministrationDelegationsTablePro
     })
   }
 
-  const tableData = isMspEc ? mspEcDelegationData : delegationData
-
   return (
     <>
-      <Loader states={[
-        { isLoading: isLoadingEcDelegation || isLoadingDelegation,
-          isFetching: isFetchingEcDelegation || isFetchingDelegation
-        }
-      ]}>
-        <Table
-          headerTitle={isMspEc ?
-            $t({ defaultMessage: 'MSP Administrators' }) :
-            $t({ defaultMessage: '3rd Party Administrator' })}
-          // TODO:
-          // subTitle={isMspEc ? '' : $t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
-          columns={columns}
-          dataSource={tableData?.data}
-          rowKey='id'
-          locale={{
-            // eslint-disable-next-line max-len
-            emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
-          }}
-          actions={tableActions}
-        />
-
-      </Loader>
+      <UI.TableTitleWrapper direction='vertical'>
+        <Subtitle level={4}>
+          {$t({ defaultMessage: '3rd Party Administrator' })}
+        </Subtitle>
+        <Subtitle level={5}>
+          {$t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
+        </Subtitle>
+      </UI.TableTitleWrapper>
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey='id'
+        locale={{
+          // eslint-disable-next-line max-len
+          emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
+        }}
+        actions={tableActions}
+      />
       <DelegationInviteDialog
         visible={showDialog}
         setVisible={setShowDialog}
@@ -194,4 +197,44 @@ const AdministrationDelegationsTable = (props: AdministrationDelegationsTablePro
   )
 }
 
-export default AdministrationDelegationsTable
+interface AdminDelegationsTableProps {
+  isMspEc: boolean;
+  userProfileData: UserProfile | undefined;
+}
+const AdminDelegationsTable = (props: AdminDelegationsTableProps) => {
+  const params = useParams()
+  const { isMspEc, userProfileData } = props
+  const isSupport = userProfileData?.support ?? false
+
+  const {
+    data: mspEcDelegationData,
+    isLoading: isLoadingEcDelegation,
+    isFetching: isFetchingEcDelegation
+  } = useGetMspEcDelegationsQuery({ params }, { skip: !isMspEc })
+
+  const {
+    data: delegationData,
+    isLoading: isLoadingDelegation,
+    isFetching: isFetchingDelegation
+  }= useGetDelegationsQuery({ params }, { skip: isMspEc })
+
+
+  return (
+    <Loader states={[
+      { isLoading: isLoadingEcDelegation || isLoadingDelegation,
+        isFetching: isFetchingEcDelegation || isFetchingDelegation
+      }
+    ]}>
+      {
+        isMspEc ?
+          <MSPAdministratorsTable data={mspEcDelegationData} />
+          : <AdministrationDelegationsTable
+            data={delegationData}
+            isSupport={isSupport}
+          />
+      }
+    </Loader>
+  )
+}
+
+export default AdminDelegationsTable

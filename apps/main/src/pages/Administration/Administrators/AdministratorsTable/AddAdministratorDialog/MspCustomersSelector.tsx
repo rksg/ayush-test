@@ -1,21 +1,18 @@
-// import { useState } from 'react'
+import React from 'react'
 
 import {
   Form,
   Radio,
-  // Row,
-  // Col,
-  // Space,
   Select
 } from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 
+import { SpaceWrapper }     from '@acx-ui/rc/components'
 import {
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
-import {
+import { useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',
@@ -54,7 +51,6 @@ export const getEcTypes = () => {
 
 const MspCustomerSelector = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
   const ecType = Form.useWatch('ecType', form)
 
@@ -63,8 +59,21 @@ const MspCustomerSelector = () => {
     value: item.value
   }))
 
-  const { data, isLoading } = useMspCustomerListQuery({ params })
-  const options = data?.data.map((item) => {
+  const tableQuery = useTableQuery({
+    useQuery: useMspCustomerListQuery,
+    defaultPayload: {
+      filters: {},
+      fields: [
+        'id',
+        'name'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+
+  const options = tableQuery.data?.data.map((item) => {
     return {
       label: item.name,
       value: item.id
@@ -72,39 +81,41 @@ const MspCustomerSelector = () => {
   }).filter(a => a.label !== '')
 
   return (
-    <>
-      <Form.Item
-        name='ecType'
-        label={$t({ defaultMessage: 'Managed Customers' })}
-        initialValue={ECCustomerRadioButtonEnum.all}
-      >
-        <Radio.Group style={{ width: '100%' }}>
+    <Form.Item
+      name='ecType'
+      label={$t({ defaultMessage: 'Managed Customers' })}
+      initialValue={ECCustomerRadioButtonEnum.all}
+    >
+      <Radio.Group style={{ width: '100%' }}>
+        <SpaceWrapper direction='vertical' size='middle'>
           {ecTypesList.map((item) => {
             return (
-              <Radio
-                value={item.value}
-              >
-                {$t({ defaultMessage: 'Managed Customers:' })}
-              </Radio>
-            )
-          })
+              <React.Fragment key={item.value}>
+                <Radio value={item.value}>
+                  {item.label}
+                </Radio>
 
-          }
-        </Radio.Group>
-      </Form.Item>
-
-      {ecType === ECCustomerRadioButtonEnum.specific && (
-        <Form.Item
-          name='mspEC'
-          noStyle
-        >
-          <Select
-            options={options}
-            disabled={isLoading}
-          />
-        </Form.Item>
-      )}
-    </>
+                {(ecType === ECCustomerRadioButtonEnum.specific &&
+                 item.value === ECCustomerRadioButtonEnum.specific) && (
+                  <Form.Item
+                    name='delegatedEcs'
+                    noStyle
+                  >
+                    <Select
+                      mode='multiple'
+                      options={options}
+                      disabled={tableQuery.isLoading}
+                      showSearch
+                      allowClear
+                      optionFilterProp='label'
+                    />
+                  </Form.Item>
+                )}
+              </React.Fragment>
+            )})}
+        </SpaceWrapper>
+      </Radio.Group>
+    </Form.Item>
   )
 }
 

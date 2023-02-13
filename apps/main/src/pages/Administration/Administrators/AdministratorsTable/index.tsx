@@ -8,7 +8,8 @@ import {
   Loader,
   showActionModal,
   Table,
-  TableProps
+  TableProps,
+  Subtitle
 } from '@acx-ui/components'
 import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
@@ -18,6 +19,8 @@ import {
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
 import { Administrator, RolesEnum, MSPUtils } from '@acx-ui/rc/utils'
+
+import * as UI from '../styledComponents'
 
 import AddAdministratorDialog  from './AddAdministratorDialog'
 import EditAdministratorDialog from './EditAdministratorDialog'
@@ -177,14 +180,14 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Administrators' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            entityValue: rows.length === 1 ? rows[0].fullName : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
             rows.length === 1 ?
-              deleteAdmin({ params: { serialNumber: rows[0].id } })
+              deleteAdmin({ params: { ...params, adminId: rows[0].id } })
                 .then(clearSelection) :
-              deleteAdmins({ payload: rows.map(item => item.id) })
+              deleteAdmins({ params, payload: rows.map(item => item.id) })
                 .then(clearSelection)
           }
         })
@@ -210,6 +213,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
+      <UI.TableTitleWrapper direction='vertical'>
+        <Subtitle level={4}>
+          {$t({ defaultMessage: 'Local Administrators' })}
+        </Subtitle>
+      </UI.TableTitleWrapper>
       <Table
         columns={columns}
         dataSource={adminList}
