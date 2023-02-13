@@ -38,9 +38,13 @@ import {
   WifiUrlsInfo,
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
-  createNewTableHttpRequest, TableChangePayload, RequestFormData
+  createNewTableHttpRequest, TableChangePayload, RequestFormData,
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation
 } from '@acx-ui/rc/utils'
 
+const RKS_NEW_UI = {
+  'x-rks-new-ui': true
+}
 
 
 
@@ -51,10 +55,6 @@ export const basePolicyApi = createApi({
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
-
-const RKS_NEW_UI = {
-  'x-rks-new-ui': true
-}
 
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
@@ -485,7 +485,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.addClientIsolation, params)
         return {
           ...req,
           body: payload
@@ -495,7 +495,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolation, params)
         return {
           ...req
         }
@@ -517,7 +517,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationList, params)
         return {
           ...req
         }
@@ -539,7 +539,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolation, params)
         return {
           ...req
         }
@@ -616,13 +616,35 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params, RKS_NEW_UI)
+        const req = createHttpRequest(ClientIsolationUrls.updateClientIsolation, params)
         return {
           ...req,
           body: payload
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getClientIsolationUsageByVenue: build.query<TableResult<ClientIsolationListUsageByVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getClientIsolationListUsageByVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getVenueUsageByClientIsolation: build.query<TableResult<VenueUsageByClientIsolation>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
@@ -659,7 +681,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params)
         return {
           ...req
         }
@@ -732,6 +754,8 @@ export const {
   useLazyGetClientIsolationListQuery,
   useGetClientIsolationQuery,
   useUpdateClientIsolationMutation,
+  useGetClientIsolationUsageByVenueQuery,
+  useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useGetSyslogPolicyListQuery
