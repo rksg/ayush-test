@@ -14,9 +14,6 @@ module.exports = async function setupProxy (app) {
       .get(LOCAL_MLISA_URL, () => { resolve('up') })
       .on('error', () => { resolve('down') })
   })
-
-
-
   if (await localDataApi === 'up') {
     app.use(createProxyMiddleware(
       '/api/a4rc',
@@ -68,7 +65,6 @@ module.exports = async function setupProxy (app) {
       }
     }
   ))
-
   app.use(createProxyMiddleware(
     '/mfa',
     { target: CLOUD_URL, changeOrigin: true,
