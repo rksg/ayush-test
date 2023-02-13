@@ -316,7 +316,8 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           data: getSeriesData(data, key, series),
-          connectNulls: true
+          connectNulls: true,
+          clip: true
         })
     ) as SeriesOption[], [data, mapping])
 
