@@ -3,6 +3,8 @@ import { gql } from 'graphql-request'
 import { networkHealthApi } from '@acx-ui/analytics/services'
 import { RequestPayload }   from '@acx-ui/rc/utils'
 
+import type { MutationResult } from '../types'
+
 export type ServiceGuardSpec = {
   id: string,
   name: string,
@@ -31,6 +33,10 @@ export type ServiceGuardTest = {
 interface Response {
   allServiceGuardSpecs: ServiceGuardSpec[]
 }
+
+type DeleteMutationResult = MutationResult<{
+  deletedSpecId: string
+}>
 
 export const api = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
@@ -71,7 +77,7 @@ export const api = networkHealthApi.injectEndpoints({
       transformResponse: (response: Response) => response.allServiceGuardSpecs
     }),
     networkHealthDelete: build.mutation<
-      ServiceGuardSpec, RequestPayload
+      DeleteMutationResult, RequestPayload
     >({
       query: (payload) => ({
         document: gql`
@@ -90,7 +96,9 @@ export const api = networkHealthApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'NetworkHealth', id: 'LIST' }
-      ]
+      ],
+      transformResponse: (response: { deleteServiceGuardSpec: DeleteMutationResult }) =>
+        response.deleteServiceGuardSpec
     })
   })
 })

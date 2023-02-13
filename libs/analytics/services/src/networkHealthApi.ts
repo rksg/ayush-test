@@ -15,6 +15,6 @@ export const networkHealthApi = createApi({
   }),
   reducerPath: 'analytics-network-health-api',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['NetworkHeath'],
+  tagTypes: ['NetworkHealth'],
   endpoints: () => ({ })
 })
