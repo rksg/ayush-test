@@ -99,12 +99,13 @@ export default function NetworkForm () {
   })
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(saveState.isCloudpathEnabled){
+    if (saveState.isCloudpathEnabled) {
       delete saveState.authRadius
       delete saveState.accountingRadius
-    }else{
+    } else {
       delete saveState.cloudpathServerId
     }
+
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -180,8 +181,15 @@ export default function NetworkForm () {
     }
   }
 
+  const deleteUnnecessaryFields = function () {
+    if(saveState.enableAccountingService === false) {
+      delete saveState.accountingRadius
+    }
+  }
+
   const handleEditNetwork = async (data: NetworkSaveData) => {
     try {
+      deleteUnnecessaryFields()
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
       navigate(linkToNetworks, { replace: true })

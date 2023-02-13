@@ -5,6 +5,7 @@ import {
   Input,
   List
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -66,12 +67,14 @@ function useColumns () {
 export function DnsProxyModal () {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
+  const { setEnableDnsProxy } = useContext(DnsProxyContext)
   const { dnsProxyList, setDnsProxyList } = useContext(DnsProxyContext)
   const [modalState, setModalState] = useState(state)
 
   useEffect(() => {
     setModalState({
       ...modalState,
+      dnsModalvisible: _.isEmpty(dnsProxyList),
       cloneList: dnsProxyList
     })
   }, [])
@@ -85,6 +88,9 @@ export function DnsProxyModal () {
       key: item.domainName,
       ipList: item.ipList
     }))
+    if(_.isEmpty(list)){
+      setEnableDnsProxy(false)
+    }
     setDnsProxyList(list)
     setModalState({
       ...modalState,
@@ -94,6 +100,9 @@ export function DnsProxyModal () {
   }
 
   const handleCancel = () => {
+    if(_.isEmpty(modalState.cloneList)){
+      setEnableDnsProxy(false)
+    }
     setDnsProxyList(modalState.cloneList)
     setModalState({
       ...modalState,
