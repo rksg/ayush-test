@@ -12,11 +12,6 @@ import {
 
 import { LanPortSettings } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
-}))
-
 const selectedModelCaps = {
   canSupportPoeMode: true,
   canSupportPoeOut: false,

@@ -2,15 +2,17 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
+import { mockServer, render, screen }  from '@acx-ui/test-utils'
 
 import {
   venueData,
   venueRogueAp,
   venueDosProtection,
-  venueRoguePolicy
+  venueRoguePolicy,
+  venueRoguePolicyList,
+  rogueApPolicyNotDefaultProfile
 } from '../../../__tests__/fixtures'
 import { VenueEditContext } from '../../index'
 
@@ -74,7 +76,75 @@ describe('SecurityTab', () => {
   //     venueSetting.dhcpServiceSetting.enabled = true
   //     const { asFragment } = render(<Provider><SecurityTab /></Provider>, { route: { params } })
 
-//     expect(asFragment()).toMatchSnapshot()
-//     await userEvent.click(await screen.findByRole('switch'))
-//   })
+  //     expect(asFragment()).toMatchSnapshot()
+  //     await userEvent.click(await screen.findByRole('switch'))
+  //   })
+
+  it('should render correctly with RogueApProfile settings', async () => {
+    mockServer.use(
+      rest.get(
+        RogueApUrls.getRoguePolicyList.url,
+        (_, res, ctx) => res(ctx.json(venueRoguePolicyList))),
+      rest.get(
+        RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await screen.findByTitle('roguePolicy1')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
+
+    await screen.findByTitle('Rogue AP Detection Policy Profile:')
+
+    await screen.findByTitle('Classification rules (2)')
+
+    const saveButton = await screen.findAllByRole('button', { name: 'Save' })
+
+    await userEvent.click(saveButton[1])
+  })
+
+  it('should render correctly with RogueApProfile settings then cancel', async () => {
+    mockServer.use(
+      rest.get(
+        RogueApUrls.getRoguePolicyList.url,
+        (_, res, ctx) => res(ctx.json(venueRoguePolicyList))),
+      rest.get(
+        RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
+      )
+    )
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await screen.findByTitle('roguePolicy1')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
+
+    await screen.findByTitle('Rogue AP Detection Policy Profile:')
+
+    await screen.findByTitle('Classification rules (2)')
+
+    const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
+
+    await userEvent.click(cancelButton[1])
+  })
 })

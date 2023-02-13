@@ -33,8 +33,11 @@ export * from './edge'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './mfa'
+export * from './administration'
 export * from './timeline'
 export * from './persona'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string
@@ -363,6 +366,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
@@ -423,8 +427,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {

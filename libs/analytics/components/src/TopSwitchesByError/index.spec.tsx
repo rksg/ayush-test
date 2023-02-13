@@ -10,12 +10,6 @@ import { api } from './services'
 
 import { TopSwitchesByError } from './index'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -28,6 +22,7 @@ const sample = {
   topNSwitchesByErrors: [{
     name: 'CIOT-ISOLATION-MLISA',
     mac: 'D4:C1:9E:20:5F:25',
+    serial: 'EZE3341M005',
     inErr: 1,
     outErr: 1
   }]

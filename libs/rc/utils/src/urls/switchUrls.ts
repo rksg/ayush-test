@@ -281,5 +281,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchRearView: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId:/rear?unitid=:unitId'
+  },
+  getProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getCliTemplates: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template/query'
   }
 }

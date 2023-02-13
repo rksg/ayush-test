@@ -21,11 +21,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TtcTimeWidget: () => <div data-testid={'analytics-TtcTimeWidget'} title='TtcTimeWidget' />
 }))
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CheckMarkCircleSolid: () => <span data-testid='CheckMarkCircleSolid' />
-}))
-
 const alarmList = {
   data: [
     {

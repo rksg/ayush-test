@@ -146,10 +146,11 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 200,
       dataIndex: 'description',
       key: 'description',
-      render: (_, value ) => (
+      render: (_, value, __, highlightFn ) => (
         <ShortIncidentDescription
           onClickDesc={setDrawerSelection}
           incident={value}
+          highlightFn={highlightFn}
         />
       ),
       sorter: { compare: sortProp('description', defaultSort) },
@@ -192,9 +193,9 @@ export function IncidentTable ({ filters }: { filters: IncidentFilter }) {
       width: 200,
       dataIndex: 'scope',
       key: 'scope',
-      render: (_, value ) => {
+      render: (_, value, __, highlightFn ) => {
         return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
-          {value.scope}
+          {highlightFn(value.scope)}
         </Tooltip>
       },
       sorter: { compare: sortProp('scope', defaultSort) },

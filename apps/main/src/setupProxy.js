@@ -70,5 +70,13 @@ module.exports = async function setupProxy (app) {
       }
     }
   ))
+  app.use(createProxyMiddleware(
+    '/mfa',
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
   return app
 }

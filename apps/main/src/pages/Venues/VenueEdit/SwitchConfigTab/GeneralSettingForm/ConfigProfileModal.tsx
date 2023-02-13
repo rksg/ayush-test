@@ -72,7 +72,9 @@ export function ConfigProfileModal (props: {
     render: (data) => {
       const models = (data as string)?.split(',') ?? []
       const title = <>{models.map((m, idx) => <div key={idx}>{m}</div>)}</>
-      const content = models?.length > 1 ? `${models.length} models` : data
+      const content = models?.length > 1 ? $t({
+        defaultMessage: '{count} models'
+      }, { count: models.length }) : data
       return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {

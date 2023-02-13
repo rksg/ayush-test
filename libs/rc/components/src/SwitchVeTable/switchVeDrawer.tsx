@@ -282,8 +282,10 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           >
             <Select
               onChange={(e) => {
-                e && form.resetFields(['veId'])
-                form.setFieldValue('veId', e || '')
+                if (!isEditMode) {
+                  e && form.resetFields(['veId'])
+                  form.setFieldValue('veId', e || '')
+                }
               }}
               disabled={(isVenueLevel && !switchId) || isIncludeIpSetting}
               options={[
