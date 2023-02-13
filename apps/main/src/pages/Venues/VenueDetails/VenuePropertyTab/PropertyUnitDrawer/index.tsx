@@ -5,7 +5,7 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, Drawer, Loader, showToast, StepsForm }                                      from '@acx-ui/components'
+import { Button, Drawer, Loader, showToast, StepsForm } from '@acx-ui/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -13,7 +13,9 @@ import {
   useGetVenueLanPortsQuery,
   useLazyGetPersonaByIdQuery,
   useGetPropertyConfigsQuery,
-  useUpdatePropertyUnitMutation, useUpdatePersonaMutation, useLazyGetPersonaGroupByIdQuery
+  useUpdatePropertyUnitMutation,
+  useUpdatePersonaMutation,
+  useLazyGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -94,7 +96,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   useEffect(() => {
     if (data) {
-      console.log('[Current data] :: ', data)
+      // console.log('[Current data] :: ', data)
       form.resetFields()
       form.setFieldsValue(data)
     }
@@ -102,12 +104,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   useEffect(() => {
     if (!unitQuery.isLoading && unitQuery.data) {
-      console.log('Step 2 >> Get Unit while edit :: ', unitId, unitQuery.data)
-
-      // FIXME: fetch PersonaId/GuestId from Unit data
       const { personaId, guestPersonaId } = unitQuery.data
-      // const personaId = 'c86720d7-60f6-40c0-92fc-cba660c3d65d'
-      // const guestPersonaId = '93bbca6a-60af-437c-863d-6f783d077928'
 
       form.setFieldValue('enableGuestVlan', !guestPersonaId)
       setChangeVlanField(false)
@@ -119,22 +116,17 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }, [unitQuery.data])
 
   const fetchPersonaInfo = (personaId?: string, guestPersonaId?: string) => {
-    console.log('Step 3 >> Get persona/guestPersona information.')
-    // FIXME: close drawer and show error message
-    if (!personaGroupId) { }
+    // TODO: close drawer and show error message
+    // if (!personaGroupId) { }
 
     if (personaId) {
       getPersonaById({ params: { groupId: personaGroupId, id: personaId } })
         .then(result => {
           if (result.data) {
-            console.log('Step 3-1 >> Persona :: ', result.data)
-            setVlanCache(result.data.vlan)
-            const unitPersona: UnitPersonaConfig = {
-              vlan: result.data.vlan,
-              dpskPassphrase: result.data.dpskPassphrase
-            }
+            const { vlan, dpskPassphrase } = result.data
 
-            setData(prev => ({ ...prev, unitPersona }))
+            setVlanCache(vlan)
+            setData(prev => ({ ...prev, vlan, dpskPassphrase }))
           }
         })
     }
@@ -143,14 +135,10 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       getPersonaById({ params: { groupId: personaGroupId, id: guestPersonaId } })
         .then(result => {
           if (result.data) {
-            console.log('Step 3-2 >> GuestPersona :: ', result.data)
-            setGuestVlanCache(result.data.vlan)
-            const guestPersona: UnitPersonaConfig = {
-              vlan: result.data.vlan,
-              dpskPassphrase: result.data.dpskPassphrase
-            }
+            const { vlan, dpskPassphrase } = result.data
 
-            setData(prev => ({ ...prev, guestPersona }))
+            setGuestVlanCache(vlan)
+            setData(prev => ({ ...prev, vlan, dpskPassphrase }))
           }
         })
     }
@@ -172,27 +160,23 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
-    console.log('handle persona updating ', id, payload)
-    if (id) {
+    if (id && payload) {
       await updatePersonaMutation({ params: { groupId: personaGroupId, id }, payload }).unwrap()
     }
   }
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception and loading state
-    console.log('Handle edit unit action with data :: ', formValues)
-    const { personaId, guestPersonaId, unitPersona, guestPersona, ...unitPayload } = formValues
+    const { unitPersona, guestPersona, ...unitPayload } = formValues
+    const { personaId, guestPersonaId } = data as PropertyUnitFormFields
 
-    await updateUnitMutation({ params: { venueId, unitId }, payload: unitPayload })
-    // .unwrap()
+    await updateUnitMutation({ params: { venueId, unitId }, payload: unitPayload }).unwrap()
 
-    // FIXME: fetch Persona/GuestId from Unit data
     await patchPersona(personaId, unitPersona)
     await patchPersona(guestPersonaId, guestPersona)
   }
 
   const handleAddUnit = async (formValues: PropertyUnit) => {
-    console.log('Handle add unit action with data :: ', formValues)
     // TODO: if withNsg is true, I need to format the Access ap data.
     return await addUnitMutation({ params: { venueId }, payload: formValues }).unwrap()
   }
@@ -480,7 +464,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       visible={visible}
       onClose={onClose}
       children={
-        <Loader states={[{ isLoading: unitQuery.isLoading }, propertyConfigsQuery, personaResult]}>
+        <Loader states={[
+          { isLoading: unitQuery.isLoading },
+          propertyConfigsQuery,
+          personaResult]
+        }>
           {unitForm}
         </Loader>
       }

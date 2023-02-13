@@ -32,7 +32,7 @@ export function VenuePropertyTab () {
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
-  const [getPersonaGroupById, state] = useLazyGetPersonaGroupByIdQuery()
+  const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
 
   useEffect(() => {
     if (propertyConfigsQuery.isLoading) return
@@ -58,10 +58,7 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length <= 1),
-      onClick: ([data], clearSelection) => {
-        // FIXME: Replace to use ID directly
-        // @ts-ignore
-        const id = data?.links[0].href.split('/')[6] ?? ''
+      onClick: ([{ id }], clearSelection) => {
         setDrawerState({ unitId: id, isEdit: true, visible: true })
         clearSelection()
       }
@@ -173,10 +170,10 @@ export function VenuePropertyTab () {
 
   return (
     <Loader
-      // FIXME: queryUnitList need to be added into states
       states={[
+        queryUnitList,
         { isFetching: propertyConfigsQuery.isFetching, isLoading: false },
-        { isFetching: state.isFetching, isLoading: false }
+        { isFetching: personaGroupQuery.isFetching, isLoading: false }
       ]}
     >
       <Table
