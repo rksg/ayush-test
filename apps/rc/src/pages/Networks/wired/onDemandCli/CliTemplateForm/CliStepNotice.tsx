@@ -48,8 +48,9 @@ export function CliStepNotice () {
 
       {!editMode && <Form.Item
         name='agree'
-        style={{ color: cssStr('--acx-primary-black'), fontSize: '12px' }}  ///
-        label={$t({ defaultMessage: 'Please type “AGREE” here to continue:' })}
+        label={<Space style={{ color: cssStr('--acx-primary-black') }}>{
+          $t({ defaultMessage: 'Please type “AGREE” here to continue' })
+        }</Space>}
         rules={[
           { required: true, message: $t({ defaultMessage: 'Please type “AGREE”' }) },
           { validator: (_, value) => agreeRegExp(value) }
