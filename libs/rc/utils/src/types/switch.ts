@@ -218,6 +218,7 @@ export class SwitchViewModel extends Switch {
   firmware?: string
   activeSerial?: string
   syncDataId?: string
+  lastSeenTime?: string
 }
 
 export interface SwitchRow {
