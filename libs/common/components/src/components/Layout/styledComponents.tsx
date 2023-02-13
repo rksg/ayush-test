@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
   --acx-header-company-name-width: 175px;
+  --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
 
   .ant-pro-basicLayout {
@@ -353,7 +354,7 @@ export const LayoutUI = {
     max-width: var(--acx-header-company-name-width);
     max-height: calc(2 * var(--acx-body-4-line-height));
     overflow: hidden;
-    margin-right: -3px;
+    margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
     padding-right: 9px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
