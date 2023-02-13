@@ -1,23 +1,10 @@
+import { SwitchViewModel, SWITCH_TYPE, SwitchStatusEnum } from "@acx-ui/rc/utils"
+
 export const lagList = [
-  {
-    id: '3101fceeec984b7f91ed65c9e833c4cf',
-    lagId: 2,
-    name: 'test2',
-    ports: [
-      '1/1/6'
-    ],
-    realRemove: true,
-    switchId: 'c0:c5:20:aa:33:3f',
-    taggedVlans: [
-      ''
-    ],
-    type: 'static',
-    untaggedVlan: '1'
-  },
   {
     id: 'b343a5a0f88d4a878a070aadc5363538',
     lagId: 1,
-    name: 'test',
+    name: 'test-lag',
     ports: [
       '1/1/5'
     ],
@@ -31,6 +18,40 @@ export const lagList = [
     untaggedVlan: '1'
   }
 ]
+
+
+export const switchDetailData: SwitchViewModel = {
+  type: 'device',
+  isStack: true,
+  rearModule: 'none',
+  switchMac: 'c0:c5:20:98:b9:67',
+  switchName: 'ICX7150-C12 Router',
+  model: 'ICX7150-C12P',
+  id: 'c0:c5:20:98:b9:67',
+  syncDataEndTime: '2023-01-16T06:07:09Z',
+  firmwareVersion: 'SPR09010e',
+  clientCount: 1,
+  serialNumber: 'FEK3216Q05B',
+  ipAddress: '10.206.33.13',
+  cliApplied: false,
+  subnetMask: '255.255.254.0',
+  venueName: 'My-Venue',
+  name: 'ICX7150-C12 Router',
+  suspendingDeployTime: '',
+  switchType: SWITCH_TYPE.ROUTER,
+  configReady: true,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
+  venueId: 'c675aa2d39b74c22b93b96d5dc297d5c',
+  syncedSwitchConfig: true,
+  defaultGateway: '10.206.33.254',
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK3216Q02P' },
+    { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
+  ],
+  uptime: '7 days, 7:36:21.00',
+  formStacking: false
+}
+
 
 
 

@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { SwitchUrlsInfo }                                                   from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
-  lagList
+  lagList, switchDetailData
 } from './__tests__/fixtures'
 
 import { SwitchLagDrawer } from '.'
@@ -28,7 +29,9 @@ describe('SwitchLagDrawer', () => {
       rest.get(
         SwitchUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(lagList))
-      )
+      ),
+      rest.get( SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(switchDetailData)))
     )
   })
 
@@ -42,27 +45,27 @@ describe('SwitchLagDrawer', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-    await screen.findByText('test2')
+    await screen.findByText('test-lag')
     fireEvent.click(await screen.findByRole('button', { name: /Add LAG/i }))
     expect(await screen.findByTestId('switchLagModal')).toBeVisible()
   })
 
-  //   it('should render ports of switch ICX7150 correctly', async () => {
-  //     mockServer.use(
-  //       rest.post(
-  //         SwitchUrlsInfo.getSwitchPortlist.url,
-  //         (req, res, ctx) => res(ctx.json(portlistData_7150))
-  //       )
-  //     )
-  //     const { asFragment } = render(<Provider>
-  //       <SwitchPortTable isVenueLevel={true} />
-  //     </Provider>, {
-  //       route: { params, path: '/:tenantId' }
-  //     })
+  it('should delete lag correctly', async () => {
+    render(<Provider>
+      <SwitchLagDrawer
+        visible={true}
+        setVisible={mockedSetVisible} />
+    </Provider>, {
+      route: { params, path: '/:tenantId/:switchId' }
+    })
 
-//     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
-//     await screen.findAllByText('1/1/1')
-//     expect(screen.queryByText('Manage LAG')).not.toBeInTheDocument()
-//     expect(asFragment()).toMatchSnapshot()
-//   })
+    await screen.findByText('test-lag')
+    fireEvent.click(await screen.findByRole('button', { name: /Add LAG/i }))
+    expect(await screen.findByTestId('switchLagModal')).toBeVisible()
+
+    const deleteBtns = screen.getAllByRole('deleteBtn')
+    fireEvent.click(deleteBtns[0])
+    await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
+  })
+
 })
