@@ -15,6 +15,8 @@ import {
   TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
   SupportDelegation,
   VarCustomer,
   MspProfile,
@@ -39,7 +41,18 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateMspEc',
+            'UpdateMspEc'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -327,6 +340,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    refreshMspEntitlement: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.refreshMspEntitlement, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -360,5 +382,6 @@ export const {
   useReactivateMspEcMutation,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
-  useDisableMspEcSupportMutation
+  useDisableMspEcSupportMutation,
+  useRefreshMspEntitlementMutation
 } = mspApi

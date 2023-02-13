@@ -1,7 +1,7 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }               from '@acx-ui/analytics/services'
+import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -49,8 +49,8 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       (status === 400 && error === 'API-KEY not present') ||
       status === 401 || status === 403
     ) {
-      // sessionStorage.removeItem('jwt')
-      // window.location.href = '/logout'
+      sessionStorage.removeItem('jwt')
+      window.location.href = '/logout'
     }
   }
   return next(action)
@@ -80,7 +80,8 @@ export const store = configureStore({
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer
+    [personaApi.reducerPath]: personaApi.reducer,
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -108,7 +109,8 @@ export const store = configureStore({
       mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
-      personaApi.middleware
+      personaApi.middleware,
+      networkHealthApi.middleware
     ])
   },
 

@@ -2,8 +2,7 @@ import { useState } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Anchor, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Anchor, Tooltip } from '@acx-ui/components'
 
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
@@ -39,7 +38,7 @@ export function ClientDualTable () {
           }
         }}
       />
-      <Tooltip
+      <Tooltip.Question
         title={<FormattedMessage {...getSearchToolTipText()}
           values={{
             div: (contents) => <div>{contents}</div>,
@@ -48,9 +47,7 @@ export function ClientDualTable () {
           }}/>}
         placement='bottom'
         style={{ gap: '10px' }}
-      >
-        <QuestionMarkCircleOutlined />
-      </Tooltip>
+      />
     </SearchBarDiv>
     <SearchCountDiv>
       {searchValue.length >= 2 &&

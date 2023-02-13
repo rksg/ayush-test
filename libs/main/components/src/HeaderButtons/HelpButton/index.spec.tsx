@@ -8,8 +8,8 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import Firewall                            from './Firewall'
-import HelpPage, { MAPPING_URL, DOCS_URL } from './HelpPage'
+import Firewall                                from './Firewall'
+import HelpPage, { getMappingURL, getDocsURL } from './HelpPage'
 
 describe('Firewall Component', () => {
 
@@ -35,14 +35,14 @@ describe('HelpPage Component', () => {
 
   it('should render <HelpPage/> component correctly', async () => {
     mockServer.use(
-      rest.get(MAPPING_URL, (_, res, ctx) =>
+      rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
-          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
-          '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
-          '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+          't/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          't/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          't/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
-      rest.get(DOCS_URL+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
         res(ctx.text('<p class="shortdesc">Dashboard test</p>'))
       ))
 
@@ -60,7 +60,7 @@ describe('HelpPage Component', () => {
 
   it('Render <HelpPage/> component failing case', async () => {
     mockServer.use(
-      rest.get(MAPPING_URL, (_, res, ctx) =>
+      rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
           empty: ''
         }))
@@ -83,7 +83,7 @@ describe('HelpPage Component', () => {
   it('Render <HelpPage/> component retrieve mapping file failing case', async () => {
 
     mockServer.use(
-      rest.get(MAPPING_URL, (_, res, ctx) =>
+      rest.get(getMappingURL(), (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -113,14 +113,14 @@ describe('HelpPage Component', () => {
   it('Render <HelpPage/> component retrieve HTML file failing case', async () => {
 
     mockServer.use(
-      rest.get(MAPPING_URL, (_, res, ctx) =>
+      rest.get(getMappingURL(), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
           '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
         }))
       ),
-      rest.get(DOCS_URL+':docID', (_, res, ctx) =>
+      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -143,4 +143,26 @@ describe('HelpPage Component', () => {
     await new Promise((r)=>{setTimeout(r, 300)})
     expect(await screen.findByText(('The content is not available.'))).toBeInTheDocument()
   })
+})
+
+
+const originalEnv = process.env
+describe('HelpPage Component URLs', () => {
+  beforeEach(() => {
+    jest.resetModules()
+    process.env = {
+      ...originalEnv,
+      NODE_ENV: 'development'
+    }
+  })
+  afterEach(() => {
+    process.env = originalEnv
+  })
+  it('<HelpPage/> component retrieve URL correctly', async () => {
+    const mappingURL = getMappingURL()
+    expect(mappingURL).not.toBeNull()
+    const docURL = getDocsURL()
+    expect(docURL).not.toBeNull()
+  })
+
 })

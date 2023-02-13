@@ -50,7 +50,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                           <div
                             class="ant-pro-table-list-toolbar-setting-item"
                           >
-                            <div
+                            <svg
                               data-testid="SettingsOutlined"
                             />
                           </div>
