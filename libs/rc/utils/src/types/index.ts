@@ -366,6 +366,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
