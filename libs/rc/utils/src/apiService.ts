@@ -67,6 +67,7 @@ export const createHttpRequest = (
   return {
     headers,
     method: apiInfo.method,
+    credentials: 'include',
     url: apiInfo.newApi && !isLocalHost ? `${newSubdomain}${url}` :
       `${window.location.origin}${url}`
   }
