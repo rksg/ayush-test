@@ -20,7 +20,7 @@ exports[`Integrators should render table 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              Integrators
+              3rd Party
             </h1>
           </span>
         </div>

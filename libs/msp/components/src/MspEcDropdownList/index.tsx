@@ -30,6 +30,7 @@ export function MspEcDropdownList () {
   // user profile for tenant from jwt token
   const { data: userProfile } = useUserProfileContext()
 
+  // let ecFilterType = [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR]
   let isMspEc = false
   let isSupportEc = false
   let isSupport = false
@@ -40,7 +41,9 @@ export function MspEcDropdownList () {
     else
       isSupport = true
   } else {
-    if (tenantDetail?.tenantType === AccountType.MSP_EC)
+    if (tenantDetail?.tenantType === AccountType.MSP_EC ||
+      tenantDetail?.tenantType === AccountType.MSP_INSTALLER ||
+      tenantDetail?.tenantType === AccountType.MSP_INTEGRATOR)
       isMspEc = true
     else
       isVar = true
@@ -48,7 +51,8 @@ export function MspEcDropdownList () {
 
   const mspEcPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: { tenantType: tenantDetail?.tenantType === AccountType.MSP_EC
+      ? [AccountType.MSP_EC] : [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
       'name',

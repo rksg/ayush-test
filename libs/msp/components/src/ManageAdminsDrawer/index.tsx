@@ -6,6 +6,7 @@ import { useIntl }      from 'react-intl'
 import {
   Drawer,
   Loader,
+  showActionModal,
   Subtitle,
   Table,
   TableProps
@@ -62,13 +63,21 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const handleSave = () => {
     let payload: MspEcDelegatedAdmins[] = []
     const selectedRows = form.getFieldsValue(['mspAdmins'])
-    if (selectedRows && selectedRows.mspAdmins) {
+    if (selectedRows && selectedRows.mspAdmins && selectedRows.mspAdmins.length > 0) {
       selectedRows.mspAdmins.forEach((element:MspAdministrator) => {
         payload.push ({
           msp_admin_id: element.id,
           msp_admin_role: element.role
         }
         )})
+    } else {
+      showActionModal({
+        type: 'error',
+        content: $t({
+          defaultMessage: 'Please select at least one MSP administrator'
+        })
+      })
+      return
     }
     if (tenantId) {
       saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })

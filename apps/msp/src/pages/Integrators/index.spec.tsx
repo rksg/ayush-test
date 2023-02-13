@@ -48,7 +48,7 @@ describe('Integrators', () => {
   it('should render page header and grid layout', async () => {
     render(<Provider><Integrators /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('Integrators')).toBeVisible()
+    expect(screen.getByText('3rd Party')).toBeVisible()
     expect(screen.getByText('Manage own account')).toBeVisible()
     expect(screen.getByText('Add Integrator')).toBeVisible()
   })
