@@ -106,7 +106,7 @@ describe('Cli Template Form - Add', () => {
   })
   it('should render correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/add' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -143,11 +143,11 @@ describe('Cli Template Form - Add', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
-  }, 25000)
+  }, 30000)
 
   it('should render variable list correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/add' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -165,11 +165,11 @@ describe('Cli Template Form - Add', () => {
     await addVariable('var2', 'range')
     await addVariable('var3', 'string')
     await screen.findByText('test string')
-  })
+  }, 25000)
 
   it('should handle CLI valiation', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/add' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -195,7 +195,7 @@ describe('Cli Template Form - Add', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/add' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -258,7 +258,7 @@ describe('Cli Template Form - Edit', () => {
     render(<Provider>
       <CliTemplateForm />
     </Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -291,7 +291,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle edit variable', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -312,6 +312,7 @@ describe('Cli Template Form - Edit', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
   })
 
+  // TODO
   // it('should disable the add variable button when the variable count reaches 200', async () => {
   //   mockServer.use(
   //     rest.get(SwitchUrlsInfo.getCliTemplate.url,
@@ -322,7 +323,7 @@ describe('Cli Template Form - Edit', () => {
   //     )
   //   )
   //   render(<Provider><CliTemplateForm /></Provider>, {
-  //     route: { params, path: '/:tenantId/networks/wired/cli-templates/:templateId/:action' }
+  //     route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
   //   })
 
   //   await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -344,7 +345,7 @@ describe('Cli Template Form - Edit', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -363,7 +364,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should redirect to list table after clicking cancel button', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/cli-templates/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()

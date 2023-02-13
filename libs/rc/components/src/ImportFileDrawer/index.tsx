@@ -180,7 +180,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       </Button>
     </div>} >
     <Upload.Dragger
-      accept={acceptType?.map(type => `.${String(type)}`).join(', ') || '.csv'} //'.csv'
+      accept={acceptType?.map(type => `.${String(type)}`).join(', ')}
       maxCount={1}
       showUploadList={false}
       beforeUpload={beforeUpload} >

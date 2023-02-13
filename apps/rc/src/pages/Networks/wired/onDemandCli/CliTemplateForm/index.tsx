@@ -52,7 +52,7 @@ export default function CliTemplateForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToNetworks = useTenantLink('/networks')
+  const linkToNetworks = useTenantLink('/networks/wired/onDemandCli')
   const editMode = params.action === 'edit'
 
   const formRef = useRef<StepsFormInstance>()
@@ -77,7 +77,7 @@ export default function CliTemplateForm () {
           )
         }
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })  // TODO: change route
+      navigate(linkToNetworks, { replace: true })
     } catch (error) {
       const errorRes = error as CatchErrorResponse
       const message
@@ -100,7 +100,7 @@ export default function CliTemplateForm () {
           )
         }
       }).unwrap()
-      navigate(linkToNetworks, { replace: true }) // TODO: change route
+      navigate(linkToNetworks, { replace: true })
     } catch (error) {
       const errorRes = error as CatchErrorResponse
       const message
@@ -120,7 +120,7 @@ export default function CliTemplateForm () {
           ? $t({ defaultMessage: 'Edit CLI Template' })
           : $t({ defaultMessage: 'Add CLI Template' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
+          { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/onDemandCli' }
         ]}
       />
 

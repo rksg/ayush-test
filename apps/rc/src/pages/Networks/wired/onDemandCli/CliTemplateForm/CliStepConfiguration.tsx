@@ -486,7 +486,7 @@ function codemirrorOnKeyup (
   const variables = form?.getFieldValue('variables')
   const completion = cm.state.completionActive
 
-  if (variables.length && !cm.state.completionActive && isLeftCurlyBracket) {
+  if (variables?.length && !cm.state.completionActive && isLeftCurlyBracket) {
     cm.showHint({
       completeSingle: false,
       hint: (cm: CodeMirror.Editor) => ({
