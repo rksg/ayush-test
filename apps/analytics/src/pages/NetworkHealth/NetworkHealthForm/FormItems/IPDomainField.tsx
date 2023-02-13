@@ -7,7 +7,7 @@ import { getIntl, validationMessages }           from '@acx-ui/utils'
 
 import type { FormItemProps } from 'antd'
 
-function isRejected <T,> (p:PromiseSettledResult<T>): p is PromiseRejectedResult{
+function isRejected <T,> (p: PromiseSettledResult<T>): p is PromiseRejectedResult {
   return p.status === 'rejected'
 }
 

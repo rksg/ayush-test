@@ -294,7 +294,7 @@ describe('StepsForm', () => {
     expect(await screen.findByRole('heading', { name: 'Step 1' })).toBeVisible()
   })
 
-  it('prevent navigate back without trigger validate in edit mode', async () => {
+  it('prevent navigate back and trigger validate in edit mode', async () => {
     render(
       <StepsForm editMode>
         <StepsForm.StepForm title='Step 1'>
