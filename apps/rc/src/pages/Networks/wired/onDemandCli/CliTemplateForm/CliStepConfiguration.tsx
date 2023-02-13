@@ -79,6 +79,7 @@ const cliExamplesTooltip = <FormattedMessage
   }}
 />
 
+const maxVariableCount = 200
 const cliTemplatesPayload = {
   fields: ['name', 'id', 'venueSwitches'],
   pageSize: 9999,
@@ -136,7 +137,7 @@ export function CliStepConfiguration (props: {
     if (editMode && data) {
       form?.setFieldsValue(data)
       codeMirrorInstance?.setValue(data?.cli)
-      setVariableList(data?.variables as CliTemplateVariable[])
+      setVariableList((data?.variables ?? []) as CliTemplateVariable[])
     }
   }, [data])
 
@@ -299,20 +300,22 @@ export function CliStepConfiguration (props: {
         <UI.TabsLayout
           defaultActiveKey='examples'
         >
-          <Tabs.TabPane tab={<Space>
-            {$t({ defaultMessage: 'CLI Examples' })}
-            <Tooltip
-              title={
-                <UI.tooltip>{cliExamplesTooltip}</UI.tooltip>
-              }
-              placement='bottom'
-            >
-              <span data-testid='tooltip-example'>
-                <UI.QuestionMarkIcon />
-              </span>
-            </Tooltip>
-          </Space>}
-          key='examples'>
+          <Tabs.TabPane
+            tab={<Space>
+              {$t({ defaultMessage: 'CLI Examples' })}
+              <Tooltip
+                title={
+                  <UI.tooltip>{cliExamplesTooltip}</UI.tooltip>
+                }
+                placement='bottom'
+              >
+                <span data-testid='tooltip-example'>
+                  <UI.QuestionMarkIcon />
+                </span>
+              </Tooltip>
+            </Space>}
+            key='examples'
+          >
             <CliTemplateExampleList
               configExamples={configExamples}
               codeMirrorInstance={codeMirrorInstance}
@@ -322,12 +325,14 @@ export function CliStepConfiguration (props: {
           <Tabs.TabPane tab={$t({ defaultMessage: 'Variables' })} key='variables'>
             <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip
-                title={variableList?.length >= 200 ? $t(tooltip.cliVariablesReachMax) : ''}
+                title={variableList?.length >= maxVariableCount
+                  ? $t(tooltip.cliVariablesReachMax) : ''
+                }
               >
                 <Space>
                   <Button type='link'
                     size='small'
-                    disabled={variableList?.length >= 200}
+                    disabled={variableList?.length >= maxVariableCount}
                     onClick={() => {
                       setVariableModalvisible(true)
                       setVariableModalEditMode(false)
@@ -363,7 +368,7 @@ export function CliStepConfiguration (props: {
                       size='small'
                       ghost={true}
                       onClick={() => {
-                        appendContentToCLI(codeMirrorInstance, 'var', variable.name)
+                        appendContentToCliEditor(codeMirrorInstance, 'var', variable.name)
                       }}>
                       <UI.PlusIcon />
                     </Button>,
@@ -412,7 +417,7 @@ export function CliStepConfiguration (props: {
       visible={importModalvisible}
       readAsText={true}
       importRequest={(formData, values, content)=>{
-        appendContentToCLI(codeMirrorInstance, 'file', `\n${content}\n`)
+        appendContentToCliEditor(codeMirrorInstance, 'file', `\n${content}\n`)
         setImportModalvisible(false)
       }}
       onClose={()=>setImportModalvisible(false)}
@@ -440,7 +445,7 @@ function CliTemplateExampleList (props: {
               type='link'
               size='small'
               onClick={() => {
-                appendContentToCLI(codeMirrorInstance, 'example', `\n${example.cli}\n`)
+                appendContentToCliEditor(codeMirrorInstance, 'example', `\n${example.cli}\n`)
               }}>
               <UI.PlusIcon />
             </Button>
@@ -504,13 +509,13 @@ function codemirrorOnKeyup (
       let completion = data.list
       completion?.pick?.apply(this, arguments)
 
-      appendContentToCLI(cm, 'variableMenu', data.list[i])
+      appendContentToCliEditor(cm, 'variableMenu', data.list[i])
       cm.closeHint()
     }
   }
 }
 
-function appendContentToCLI (
+function appendContentToCliEditor (
   codeMirrorInstance: CodeMirror.EditorFromTextArea,
   type: string,
   content: string

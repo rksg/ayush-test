@@ -70,7 +70,7 @@ export function CliVariableModal (props: {
             { validator: (_, value) => nameCannotStartWithNumberRegExp(value) },
             { validator: (_, value) => cliVariableNameRegExp(value) },
             { validator: (_, value) => {
-              const variables = variableList.filter(v => v.name !== data?.name).map(v => v.name)
+              const variables = variableList?.filter(v => v.name !== data?.name).map(v => v.name)
               return checkObjectNotExists(variables, value,
                 $t({ defaultMessage: 'Name' }), 'value')
             } }
