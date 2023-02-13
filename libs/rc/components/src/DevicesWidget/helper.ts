@@ -78,7 +78,7 @@ export const getVenueSwitchDonutChartData =
   return chartData
 }
 
-const seriesMappingAP = () => [
+export const seriesMappingAP = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
