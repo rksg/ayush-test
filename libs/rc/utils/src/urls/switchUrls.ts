@@ -274,6 +274,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  addCliTemplate: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template'
+  },
+  getCliConfigExamples: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/example'
+  },
   getProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
@@ -281,5 +289,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  getCliTemplate: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/:templateId'
+  },
+  updateCliTemplate: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   }
 }

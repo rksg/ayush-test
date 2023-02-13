@@ -14,7 +14,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -295,10 +295,11 @@ export default function GuestsTable () {
           visible={drawerVisible}
           setVisible={setDrawerVisible}
         />
-        <ImportCsvDrawer type='GuestPass'
+        <ImportFileDrawer type='GuestPass'
           title={$t({ defaultMessage: 'Import from file' })}
           maxSize={CsvSize['5MB']}
           maxEntries={250}
+          acceptType={['csv']}
           templateLink='assets/templates/guests_import_template.csv'
           visible={importVisible}
           isLoading={importResult.isLoading}
@@ -315,7 +316,7 @@ export default function GuestsTable () {
           }}
           onClose={()=>setImportVisible(false)} >
           <GuestFields withBasicFields={false} />
-        </ImportCsvDrawer>
+        </ImportFileDrawer>
       </Loader>
     )
   }

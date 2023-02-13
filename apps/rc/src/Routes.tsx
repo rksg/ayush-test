@@ -30,6 +30,7 @@ import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
 import Wired                       from './pages/Networks/wired'
+import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
@@ -165,6 +166,11 @@ function NetworkRoutes () {
       <Route
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
+      />
+      <Route path='networks/wired/onDemandCli/add' element={<CliTemplateForm />} />
+      <Route
+        path='networks/wired/onDemandCli/:templateId/:action'
+        element={<CliTemplateForm />}
       />
       <Route
         path='networks/wireless/:networkId/:action'

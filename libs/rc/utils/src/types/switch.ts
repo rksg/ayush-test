@@ -540,3 +540,37 @@ export interface SwitchDhcpLease {
   leaseExpiration: string
   leaseType: string
 }
+
+export interface CliTemplateExample {
+  id: string
+  name: string
+  cli: string
+  version: string
+}
+
+export interface CliTemplateVariable {
+  name: string
+  type: string
+  value: string
+}
+
+export interface CliTemplateVenueSwitches {
+  id: string
+  venueId?: string
+  switches: string[]
+}
+
+export interface CliConfiguration {
+  id: string
+  name: string
+  cli: string
+  reload?: boolean
+  applyLater?: boolean
+  venueSwitches?: CliTemplateVenueSwitches[]
+  variables?: CliTemplateVariable[]
+
+  // profile
+  overwrite?: boolean  //For profiles
+  // venues = []; //For profiles
+  // models = []; //For profiles
+}

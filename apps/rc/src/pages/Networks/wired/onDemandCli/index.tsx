@@ -3,9 +3,11 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps, Tooltip }           from '@acx-ui/components'
 import { useGetCliTemplatesQuery }                      from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate }                                  from '@acx-ui/react-router-dom'
 
 export function OnDemandCliTab () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
 
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
@@ -36,9 +38,10 @@ export function OnDemandCliTab () {
   const rowActions: TableProps<SwitchCliTemplateModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      disabled: true, //Waiting for support
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => { }
+      onClick: (selectedRows) => {
+        navigate(`${selectedRows[0].id}/edit`, { replace: false })
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -61,8 +64,9 @@ export function OnDemandCliTab () {
         rowSelection={{ type: 'checkbox' }}
         actions={[{
           label: $t({ defaultMessage: 'Add CLI Template' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => {
+            navigate('add', { replace: false })
+          }
         }]}
       />
     </Loader></>

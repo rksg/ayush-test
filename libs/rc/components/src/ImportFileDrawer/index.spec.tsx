@@ -2,10 +2,11 @@ import userEvent from '@testing-library/user-event'
 
 import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
 
-import { CsvSize, ImportCsvDrawer } from '.'
+import { CsvSize, ImportFileDrawer } from '.'
 
 const props = {
   title: 'Import from file',
+  acceptType: ['csv'],
   visible: true,
   templateLink: '#',
   maxSize: CsvSize['5MB'],
@@ -16,7 +17,7 @@ const props = {
 describe('Import CSV Drawer', () => {
 
   it('should render correctly', async () => {
-    render(<ImportCsvDrawer type='AP'
+    render(<ImportFileDrawer type='AP'
       {...props}
     />)
     const dialog = await screen.findByRole('dialog')
@@ -47,7 +48,7 @@ describe('Import CSV Drawer', () => {
         description: 'Serial number is invalid. In row: 1'
       }]
     }
-    render(<ImportCsvDrawer type='AP'
+    render(<ImportFileDrawer type='AP'
       {...props}
       importError={{
         status: 422,
@@ -62,7 +63,7 @@ describe('Import CSV Drawer', () => {
   })
 
   it('upload file', async () => {
-    render(<ImportCsvDrawer type='AP'
+    render(<ImportFileDrawer type='AP'
       {...props}
     />)
     const dialog = await screen.findByRole('dialog')

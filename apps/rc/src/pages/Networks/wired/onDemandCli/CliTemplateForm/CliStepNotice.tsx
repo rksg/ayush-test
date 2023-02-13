@@ -1,0 +1,65 @@
+import { Form, Input, Col, Row, Space, Typography } from 'antd'
+import { FormattedMessage, useIntl }                from 'react-intl'
+
+import { cssStr, StepsForm } from '@acx-ui/components'
+import { agreeRegExp }       from '@acx-ui/rc/utils'
+import { useParams }         from '@acx-ui/react-router-dom'
+
+import * as UI from './styledComponents'
+
+import { tooltip } from './'
+
+export function CliStepNotice () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const editMode = params.action === 'edit'
+  // eslint-disable-next-line max-len
+  const documentLink = 'https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'
+
+  return <Row gutter={20}>
+    <Col span={10}>
+      <StepsForm.Title>{$t({ defaultMessage: 'Important Notice' })}</StepsForm.Title>
+      <Typography.Text style={{
+        fontWeight: 600,
+        display: 'block', margin: '4px 0 12px',
+        fontSize: cssStr('--acx-body-3-font-size')
+      }}>
+        {$t({ defaultMessage: 'Read this before you start:' })}
+      </Typography.Text>
+
+      <Space style={{
+        color: cssStr('--acx-semantics-red-50'), marginBottom: '10px',
+        alignItems: 'flex-start', fontSize: '12px' }}
+      >
+        <UI.WarningTriangleSolidIcon />
+        <FormattedMessage
+          {...tooltip?.noticeDesp}
+          values={{
+            link: <a
+              className='link'
+              target='_blank'
+              href={documentLink}
+              rel='noreferrer'>
+              {$t({ defaultMessage: 'ICX Fastiron CLI commands' })}
+            </a>
+          }}
+        />
+      </Space>
+
+      {!editMode && <Form.Item
+        name='agree'
+        label={<Space style={{ color: cssStr('--acx-primary-black') }}>{
+          $t({ defaultMessage: 'Please type “AGREE” here to continue' })
+        }</Space>}
+        rules={[
+          { required: true, message: $t({ defaultMessage: 'Please type “AGREE”' }) },
+          { validator: (_, value) => agreeRegExp(value) }
+        ]}
+        validateFirst
+        children={
+          <Input style={{ width: '120px' }} />
+        }
+      />}
+    </Col>
+  </Row>
+}

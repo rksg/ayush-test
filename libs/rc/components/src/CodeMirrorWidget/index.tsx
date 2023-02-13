@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
-
 import './type.d'
 import * as CodeMirror            from 'codemirror'
 import { MergeViewConfiguration } from 'codemirror/addon/merge/merge.js'
@@ -12,7 +11,6 @@ import 'codemirror/addon/selection/active-line.js'
 import 'codemirror/addon/mode/overlay'
 
 import * as UI from './styledComponents'
-
 
 interface CodeMirrorData {
   clis: string
@@ -25,17 +23,34 @@ interface MergeData {
 }
 
 interface CodeMirrorWidgetProps {
-  data:CodeMirrorData | MergeData
-  type:string
+  data: CodeMirrorData | MergeData
+  type: 'single' | 'merge' | 'cli'
   size?: {
-    height?:string
-    width?:string
+    height?: string
+    width?: string
   }
+  containerId?: string
 }
 
-export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) => {
-  const { type, data, size } = props
+CodeMirror.defineMode('cliMode', function () {
+  return {
+    token: function (stream) {
+      if (stream.match(/^\${[^{}]*}/)) {
+        return 'variable'
+      } else if (stream.match(/<([^>]*)>/)) {
+        return 'attribute'
+      } else {
+        stream.next()
+        return null
+      }
+    }
+  }
+})
+
+export const CodeMirrorWidget = forwardRef((props: CodeMirrorWidgetProps, ref) => {
+  const { type, data, size, containerId } = props
   const [readOnlyCodeMirror, setReadOnlyCodeMirror] = useState(null as unknown as CodeMirror.EditorFromTextArea)
+  const codeViewContainerId = containerId ?? 'codeViewContainer'
   const height = size?.height || '450px'
   const width = size?.width || '100%'
 
@@ -46,14 +61,14 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   }
 
   const initSingleView = (data: CodeMirrorData) => {
-    const target = document.getElementById('codeView') as HTMLTextAreaElement
+    const target = document.querySelector(`#${codeViewContainerId} > #codeView`) as HTMLTextAreaElement
     const code = htmlDecode(data.clis)
     const configOptions = data.configOptions
     if (target) {
       target['value'] = code as string
       const tmpReadOnlyCodeMirror = CodeMirror.fromTextArea(
         target
-        , configOptions ? configOptions :{
+        , configOptions ? configOptions : {
           readOnly: true,
           lineNumbers: true,
           lineWrapping: true
@@ -64,7 +79,7 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
   }
 
   useImperativeHandle(ref, () => ({
-    highlightLine (line:number) {
+    highlightLine (line: number) {
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.setOption('styleActiveLine', true)
         readOnlyCodeMirror.setCursor(line)
@@ -74,11 +89,28 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
       if (readOnlyCodeMirror) {
         readOnlyCodeMirror.setOption('styleActiveLine', false)
       }
+    },
+    getInstance () {
+      return readOnlyCodeMirror
+    },
+    setValue (value: string) {
+      if (readOnlyCodeMirror) {
+        readOnlyCodeMirror.setValue(value)
+        setTimeout(function () {
+          readOnlyCodeMirror.refresh()
+          readOnlyCodeMirror.focus()
+        }, 100)
+      }
+    },
+    changeFontSize (size: string) {
+      if (readOnlyCodeMirror) {
+        readOnlyCodeMirror.getWrapperElement().style.fontSize = size + 'px'
+      }
     }
   }))
 
   const initNode = () => {
-    const container = document.getElementById('codeViewContainer')
+    const container = document.getElementById(codeViewContainerId)
     while (container?.firstChild) {
       container.removeChild(container?.firstChild)
     }
@@ -86,6 +118,13 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
     codeNode.id = 'codeView'
     container?.appendChild(codeNode)
   }
+
+  useEffect(() => {
+    if (type === 'cli') {
+      initNode()
+      initSingleView(data as CodeMirrorData)
+    }
+  }, [])
 
   useEffect(() => {
     if (type === 'single' && _.get(data, 'clis')) {
@@ -102,7 +141,6 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
       readOnlyCodeMirror.setSize(width, height)
     }
   }, [readOnlyCodeMirror])
-
 
   const initMergeView = (data: MergeData) => {
     MergeViewCodeMirror.init(CodeMirror, DiffMatchPatch)
@@ -124,7 +162,7 @@ export const CodeMirrorWidget = forwardRef((props:CodeMirrorWidgetProps, ref) =>
 
   return (
     <UI.Container>
-      <div id='codeViewContainer'></div>
+      <div id={codeViewContainerId}></div>
     </UI.Container>
   )
 })
