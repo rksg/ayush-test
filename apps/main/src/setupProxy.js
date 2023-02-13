@@ -40,9 +40,20 @@ module.exports = async function setupProxy (app) {
     }
   ))
 
-
   app.use(createProxyMiddleware(
     '/venues',
+    {
+      target: CLOUD_URL.replace('//', '//api.'),
+      changeOrigin: true,
+      secure: false,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+
+  app.use(createProxyMiddleware(
+    '/switches',
     {
       target: CLOUD_URL.replace('//', '//api.'),
       changeOrigin: true,

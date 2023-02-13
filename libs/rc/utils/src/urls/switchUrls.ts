@@ -172,7 +172,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchConfigurationProfileByVenue: {
     method: 'get',
-    url: '/venuees/:venueId/switchProfiles',
+    url: '/venues/:venueId/switchProfiles',
     newApi: true
   },
   savePortsSetting: {
