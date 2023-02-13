@@ -327,6 +327,7 @@ export function TimelineChart ({
           itemStyle: {
             color: getBarColor as unknown as string
           },
+          animation: false,
           data: getSeriesData(data, key, series),
           clip: true
         })
