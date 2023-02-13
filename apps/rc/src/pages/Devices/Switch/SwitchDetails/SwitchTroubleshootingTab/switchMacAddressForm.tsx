@@ -12,7 +12,7 @@ import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useMacAddressTableMutation,
+  useTroubleshootingMutation,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
@@ -78,7 +78,7 @@ export function SwitchMacAddressForm () {
     troubleshootingType: TroubleshootingType.MAC_ADDRESS_TABLE
   }
 
-  const [runMutation] = useMacAddressTableMutation()
+  const [runMutation] = useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

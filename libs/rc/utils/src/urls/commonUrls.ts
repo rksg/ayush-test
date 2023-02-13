@@ -258,7 +258,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getConfigProfiles: {
     method: 'post',
-    url: '/switchProfiles/query'
+    url: '/switchProfiles/query',
+    newApi: true
   },
   getVenueSwitchSetting: {
     method: 'get',
@@ -278,7 +279,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchConfigProfile: {
     method: 'get',
-    url: '/switchProfiles/:switchProfileId'
+    url: '/switchProfiles/:switchProfileId',
+    newApi: true
   },
   getPoliciesList: {
     method: 'post',

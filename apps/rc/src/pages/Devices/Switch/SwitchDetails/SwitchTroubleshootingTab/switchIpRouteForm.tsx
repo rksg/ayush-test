@@ -9,7 +9,7 @@ import { useParams }      from 'react-router-dom'
 import { Button, Loader, showToast }    from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
-  useIpRouteMutation,
+  useTroubleshootingMutation,
   useLazyGetTroubleshootingCleanQuery
 } from '@acx-ui/rc/services'
 import {
@@ -31,7 +31,7 @@ export function SwitchIpRouteForm () {
     troubleshootingType: TroubleshootingType.ROUTE_TABLE
   }
 
-  const [runMutation] = useIpRouteMutation()
+  const [runMutation] = useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

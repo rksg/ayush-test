@@ -611,35 +611,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    ping: build.mutation<TroubleshootingResult, RequestPayload>({
+    troubleshooting: build.mutation<TroubleshootingResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
+        const req = createHttpRequest(SwitchUrlsInfo.troubleshooting, params)
         return {
           ...req,
           body: payload
@@ -885,10 +859,7 @@ export const {
   useGetSwitchClientListQuery,
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
-  usePingMutation,
-  useTraceRouteMutation,
-  useIpRouteMutation,
-  useMacAddressTableMutation,
+  useTroubleshootingMutation,
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,

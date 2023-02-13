@@ -11,7 +11,7 @@ import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useTraceRouteMutation
+  useTroubleshootingMutation
 } from '@acx-ui/rc/services'
 import {
   targetHostRegExp,
@@ -35,7 +35,7 @@ export function SwitchTraceRouteForm () {
     troubleshootingType: TroubleshootingType.TRACE_ROUTE
   }
 
-  const [runMutation] = useTraceRouteMutation()
+  const [runMutation] = useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

@@ -10,7 +10,7 @@ import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  usePingMutation }                             from '@acx-ui/rc/services'
+  useTroubleshootingMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp,
   TroubleshootingType,
   WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
@@ -31,7 +31,7 @@ export function SwitchPingForm () {
     troubleshootingType: TroubleshootingType.PING
   }
 
-  const [runMutation] = usePingMutation()
+  const [runMutation] = useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
