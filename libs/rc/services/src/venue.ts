@@ -61,7 +61,7 @@ const RKS_NEW_UI = {
 
 export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery({
-    credentials:"include"
+    credentials: 'include'
   }),
   reducerPath: 'venueApi',
   tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],

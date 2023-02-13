@@ -62,12 +62,12 @@ export const createHttpRequest = (
   }
   const headers = { ...defaultHeaders, ...customHeaders }
   const url = generatePath(`${apiInfo.url}`, paramValues)
-  const isLocalHost = window.location.hostname === 'localhost'
+  // const isLocalHost = window.location.hostname === 'localhost'
   const newSubdomain = window.location.origin.replace('//', '//api.')
   return {
     headers,
     method: apiInfo.method,
-    url: apiInfo.newApi && !isLocalHost ? `${newSubdomain}${url}` :
+    url: apiInfo.newApi ? `${newSubdomain}${url}` :
       `${window.location.origin}${url}`
   }
 }
