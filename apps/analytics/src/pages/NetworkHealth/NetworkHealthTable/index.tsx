@@ -1,14 +1,16 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 
 import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { noDataSymbol, sortProp, defaultSort }        from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal } from '@acx-ui/components'
-import { useUserProfileContext }                      from '@acx-ui/rc/components'
-import { TenantLink, useTenantLink }                  from '@acx-ui/react-router-dom'
-import { formatter }                                  from '@acx-ui/utils'
+import { noDataSymbol, sortProp, defaultSort }                   from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
+import { useUserProfileContext }                                 from '@acx-ui/rc/components'
+import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
+import { formatter }                                             from '@acx-ui/utils'
+
+import * as contents from '../contents'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
 
@@ -50,12 +52,42 @@ export function NetworkHealthTable () {
   const navigate = useNavigate()
   const navigateToList = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
-  const [deleteMutation] = useNetworkHealthDeleteMutation()
+  const [deleteMutation, response] = useNetworkHealthDeleteMutation()
+
+  useEffect(() => {
+    if (!response.data) return
+
+    if (!response.data.userErrors) {
+      showToast({
+        type: 'success',
+        content: $t(contents.messageMapping.TEST_DELETED)
+      })
+    } else {
+      showToast({
+        type: 'error',
+        content: $t(contents.messageMapping.SPEC_NOT_FOUND)
+      })
+    }
+  }, [$t, response])
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
-      onClick: () => {},
+      onClick: (selectedRow, clearSelection) => {
+        if(selectedRow[0].apsCount > 0) {
+          showToast({
+            type: 'success',
+            content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
+          })
+          clearSelection()
+        } else {
+          showToast({
+            type: 'error',
+            content: $t(contents.messageMapping.RUN_TEST_NO_APS)
+          })
+          clearSelection()
+        }
+      },
       disabled: (selectedRow) => (
         selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount === 0
       ) ? false : true
@@ -82,8 +114,10 @@ export function NetworkHealthTable () {
             entityName: $t(defineMessage({ defaultMessage: 'test' })),
             entityValue: name
           },
-          onOk: () => deleteMutation({ params: { id } })
-            .then(clearSelection)
+          onOk: async () => {
+            await deleteMutation({ params: { id } })
+            clearSelection()
+          }
         })
       }
     }

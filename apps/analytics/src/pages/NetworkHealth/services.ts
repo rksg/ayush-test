@@ -194,7 +194,7 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { createServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.createServiceGuardSpec
     }),
@@ -208,7 +208,7 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
     })
