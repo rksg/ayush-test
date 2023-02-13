@@ -338,5 +338,29 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  wifiAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/allowed-operations'
+  },
+  switchAllowedOperations: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/allowed-operations'
+  },
+  tenantAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/allowed-operations'
+  },
+  venueAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/allowed-operations'
+  },
+  guestAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+  },
+  upgradeAllowedOperations: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
   }
 }
