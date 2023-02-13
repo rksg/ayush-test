@@ -12,7 +12,7 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import { CodeMirrorWidget } from '@acx-ui/rc/components'
+import { CsvSize, CodeMirrorWidget, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliTemplatesQuery
@@ -103,6 +103,7 @@ export function CliStepConfiguration (props: {
   const [variableModalvisible, setVariableModalvisible] = useState(false)
   const [variableModalEditMode, setVariableModalEditMode] = useState(false)
   const [selectedEditVariable, setSelectedEditVariable] = useState({} as CliTemplateVariable)
+  const [importModalvisible, setImportModalvisible] = useState(false)
 
   const { editMode, data, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
@@ -253,9 +254,13 @@ export function CliStepConfiguration (props: {
             </Tooltip>
           </Space>
           <Space style={{ display: 'flex', fontSize: '12px', margin: '4px 25px 10px 0' }}>
-            <Button type='link' size='small'>{
-              $t({ defaultMessage: 'Import from file' }) //TODO
-            }</Button>
+            <Button
+              type='link'
+              size='small'
+              onClick={() => setImportModalvisible(true)}
+            >{
+                $t({ defaultMessage: 'Import from file' })
+              }</Button>
             <UI.SelectionControlLayout>
               {$t({ defaultMessage: 'Font size:' })}
               <SelectionControl
@@ -397,6 +402,20 @@ export function CliStepConfiguration (props: {
       setModalvisible={setVariableModalvisible}
       variableList={variableList}
       setVariableList={setVariableList}
+    />
+
+    <ImportFileDrawer
+      type='CLI'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['2MB']}
+      acceptType={['csv', 'txt']}
+      visible={importModalvisible}
+      readAsText={true}
+      importRequest={(formData, values, content)=>{
+        appendContentToCLI(codeMirrorInstance, 'file', `\n${content}\n`)
+        setImportModalvisible(false)
+      }}
+      onClose={()=>setImportModalvisible(false)}
     />
   </>
 }
@@ -572,5 +591,5 @@ function validateCLI (
 function htmlDecode (code: string) {
   let div = document.createElement('div')
   div.innerHTML = code
-  return div.innerText.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
+  return div.innerText?.replace(/↵/g, '\n') || div?.textContent?.replace(/↵/g, '')
 }

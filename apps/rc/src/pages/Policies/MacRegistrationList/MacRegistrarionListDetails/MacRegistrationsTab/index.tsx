@@ -4,7 +4,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
 import { useIntl }             from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,
   useMacRegistrationsQuery,
@@ -166,10 +166,11 @@ export function MacRegistrationsTab () {
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
       />
-      <ImportCsvDrawer type='DPSK'
+      <ImportFileDrawer type='DPSK'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
+        acceptType={['csv']}
         templateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}

@@ -9,10 +9,10 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ApTable, CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
-import { useImportApMutation }               from '@acx-ui/rc/services'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { ApTable, CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import { useImportApMutation }                from '@acx-ui/rc/services'
+import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -68,10 +68,11 @@ export default function ApsTable () {
           type: 'checkbox'
         }}
       />
-      <ImportCsvDrawer type='AP'
+      <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
+        acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={importResult.isLoading}

@@ -23,7 +23,7 @@ export {
 } from './EventTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
-export { ImportCsvDrawer, CsvSize } from './ImportCsvDrawer'
+export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
