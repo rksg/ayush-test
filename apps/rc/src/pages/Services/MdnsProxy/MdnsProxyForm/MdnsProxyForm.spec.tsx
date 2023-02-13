@@ -102,10 +102,20 @@ describe('MdnsProxyForm', () => {
   })
 
   it('should show toast when edit service profile failed', async () => {
+    const targetErrorMessage = 'Profile not found'
+
     mockServer.use(
       rest.put(
         MdnsProxyUrls.updateMdnsProxy.url,
-        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+        (req, res, ctx) => {
+          return res(ctx.status(404), ctx.json({
+            requestId: 'fa60fbba-529f-4206-a131-3fe778a4202f',
+            errors: [{
+              code: 'WIFI-10000',
+              message: targetErrorMessage
+            }]
+          }))
+        }
       )
     )
 
@@ -123,7 +133,7 @@ describe('MdnsProxyForm', () => {
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
-    await screen.findByText('An error occurred')
+    await screen.findByText(targetErrorMessage)
   })
 
   it('should render edit form', async () => {

@@ -68,7 +68,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
       navigate(serviceTablePath, { replace: true })
     } catch (error) {
       const errorResponse = error as catchErrorResponse
-      const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
+      const errorMsg = errorResponse.data?.errors?.map(error => error.message).join('<br />')
 
       showToast({
         type: 'error',
