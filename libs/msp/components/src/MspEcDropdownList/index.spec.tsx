@@ -79,6 +79,11 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   TenantIdFromJwt: () => ({ tenantId })
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  useUserProfileContext: () => ({
+    data: { support: false }
+  })
+}))
 
 describe('MspEcDropdownList', () => {
   let params: { tenantId: string }
