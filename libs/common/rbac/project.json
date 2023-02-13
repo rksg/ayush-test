@@ -1,0 +1,22 @@
+{
+  "sourceRoot": "libs/common/rbac/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/common/rbac/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/common/rbac"],
+      "options": {
+        "jestConfig": "libs/common/rbac/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
