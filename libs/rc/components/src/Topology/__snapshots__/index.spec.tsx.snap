@@ -37,7 +37,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -66,7 +66,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -95,7 +95,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Degradedmarker)"
                     marker-start="url(#Degradedmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-yellow-40); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-yellow-40); opacity: 0.2;"
                   />
                   <marker
                     id="Degradedmarker"
@@ -153,7 +153,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Unknownmarker)"
                     marker-start="url(#Unknownmarker)"
-                    style="fill: transparent; stroke: var(--acx-neutrals-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-neutrals-50); opacity: 0.2;"
                   />
                   <marker
                     id="Unknownmarker"
@@ -182,7 +182,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Degradedmarker)"
                     marker-start="url(#Degradedmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-yellow-40); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-yellow-40); opacity: 0.2;"
                   />
                   <marker
                     id="Degradedmarker"
@@ -211,7 +211,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -240,7 +240,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -269,7 +269,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -298,7 +298,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -327,7 +327,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -356,7 +356,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -385,7 +385,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
-                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-semantics-green-50); opacity: 0.2;"
                   />
                   <marker
                     id="Goodmarker"
@@ -410,7 +410,7 @@ exports[`Topology should render correctly 1`] = `
               >
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -428,7 +428,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -446,7 +446,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -464,7 +464,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -482,7 +482,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -500,7 +500,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -518,7 +518,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -536,7 +536,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -554,7 +554,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -572,7 +572,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -590,7 +590,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -608,7 +608,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -626,7 +626,7 @@ exports[`Topology should render correctly 1`] = `
                 </g>
                 <g
                   class="edgeLabel"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform=""
                 >
                   <g
@@ -649,7 +649,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(50,100)"
                 >
                   <g
@@ -688,7 +688,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(0,100)"
                 >
                   <g
@@ -703,9 +703,7 @@ exports[`Topology should render correctly 1`] = `
                           dy="1em"
                           space="preserve"
                           x="1"
-                        >
-                          Ap002
-                        </tspan>
+                        />
                       </text>
                     </g>
                   </g>
@@ -727,7 +725,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(0,50)"
                 >
                   <g
@@ -742,9 +740,7 @@ exports[`Topology should render correctly 1`] = `
                           dy="1em"
                           space="preserve"
                           x="1"
-                        >
-                          Switch002
-                        </tspan>
+                        />
                       </text>
                     </g>
                   </g>
@@ -766,7 +762,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(75,50)"
                 >
                   <g
@@ -805,7 +801,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(125,50)"
                 >
                   <g
@@ -883,7 +879,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(100,100)"
                 >
                   <g
@@ -937,9 +933,7 @@ exports[`Topology should render correctly 1`] = `
                           dy="1em"
                           space="preserve"
                           x="1"
-                        >
-                          Ap006
-                        </tspan>
+                        />
                       </text>
                     </g>
                   </g>
@@ -961,7 +955,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(100,150)"
                 >
                   <g
@@ -1000,7 +994,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(100,200)"
                 >
                   <g
@@ -1039,7 +1033,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(225,50)"
                 >
                   <g
@@ -1078,7 +1072,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(275,50)"
                 >
                   <g
@@ -1117,7 +1111,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(325,50)"
                 >
                   <g
@@ -1156,7 +1150,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(175,0)"
                 >
                   <g
@@ -1197,6 +1191,166 @@ exports[`Topology should render correctly 1`] = `
           </g>
         </g>
       </svg>
+      <div
+        data-testid="edgeTooltip"
+        style="position: absolute; width: 280px; min-height: 350px; z-index: 9999;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 ebSYxh"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+              >
+                Ap 
+                <span>
+                  <svg
+                    data-testid="BiDirectionalArrow"
+                  />
+                </span>
+                 Ap
+              </div>
+              <div
+                class="ant-row"
+                style="margin: -12px -6px -12px -6px; line-height: 24px;"
+              >
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  Ap:
+                </div>
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  <button
+                    class="ant-btn ant-btn-link ant-btn-sm"
+                    style="padding: 0px;"
+                    type="button"
+                  >
+                    <span>
+                      Ap004
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="ant-row"
+                style="margin: -12px -6px -12px -6px; line-height: 24px;"
+              >
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  Ap:
+                </div>
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  <button
+                    class="ant-btn ant-btn-link ant-btn-sm"
+                    style="padding: 0px;"
+                    type="button"
+                  >
+                    <span>
+                      5C:DF:89:2A:AF:06
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div
+                class="ant-row"
+                style="margin: -12px -6px -12px -6px; line-height: 24px;"
+              >
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  Link Speed:
+                </div>
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  1 Gb/s
+                </div>
+              </div>
+              <div
+                class="ant-row"
+                style="margin: -12px -6px -12px -6px; line-height: 24px;"
+              >
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  PoE:
+                </div>
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  Off
+                </div>
+              </div>
+              <div
+                class="ant-row"
+                style="margin: -12px -6px -12px -6px; line-height: 24px;"
+              >
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  Port:
+                </div>
+                <div
+                  class="ant-col ant-col-12"
+                  style="padding: 12px 6px 12px 6px;"
+                >
+                  1/1/1
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div
         class="ant-space ant-space-vertical sc-iBkjds gVA-Dnc"
       >

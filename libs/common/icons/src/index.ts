@@ -285,7 +285,7 @@ export { ReactComponent as TopologySwitchSolid } from './icons/TopologySwitchSol
 export { ReactComponent as TopologySwitchStack } from './icons/TopologySwitchStack.svg'
 export { ReactComponent as CloudIconSolid } from './icons/CloudIconSolid.svg'
 export { ReactComponent as BiDirectionalArrow } from './icons/BiDirectionalArrow.svg'
-export { ReactComponent as UnKnownDevice } from './icons/UnKnownDevice.svg'
+export { ReactComponent as UnKnownDevice } from './icons/UnknownDevice.svg'
 export { ReactComponent as SwitchStackDevice } from './icons/SwitchStackDevice.svg'
 export { ReactComponent as MeshAPDevice } from './icons/MeshAPDevice.svg'
 export { ReactComponent as MeshRootAPDevice } from './icons/MeshRootAPDevice.svg'
