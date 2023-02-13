@@ -50,20 +50,16 @@ export function MspEcDropdownList () {
     if (support === true) {
       if (tenantType === AccountType.MSP_EC)
         setDelegationType(DelegationType.SUPPORT_MSP_EC)
-        // isSupportEc = true
       else
         setDelegationType(DelegationType.SUPPORT_REC)
-        // isSupport = true
     } else {
       if (tenantType === AccountType.MSP_EC)
         setDelegationType(DelegationType.MSP_EC)
       else if ( tenantType === AccountType.MSP_INSTALLER ||
-        tenantType === AccountType.MSP_INTEGRATOR)
+                tenantType === AccountType.MSP_INTEGRATOR)
         setDelegationType(DelegationType.MSP_INTEGRATOR)
-        // isMspEc = true
       else
         setDelegationType(DelegationType.VAR_REC)
-        // isVar = true
     }
   }
 
