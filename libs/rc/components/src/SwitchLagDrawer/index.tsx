@@ -26,7 +26,7 @@ import {
 import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
 
-import { SwitchLagModal } from './switchLagModal'
+import { SwitchLagModal } from './SwitchLagModal'
 
 interface SwitchLagProps {
   visible: boolean

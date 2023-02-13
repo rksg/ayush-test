@@ -224,7 +224,6 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         await addLag({ params: { tenantId, switchId }, payload }).unwrap()
         onClose()
       } catch (err) {
-        console.log(err) // eslint-disable-line no-console
         showGeneralError(err)
       }
     }

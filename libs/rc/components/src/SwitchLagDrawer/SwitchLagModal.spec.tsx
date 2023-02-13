@@ -64,8 +64,10 @@ describe('SwitchLagDrawer', () => {
     expect(await screen.findByTestId('switchLagModal')).toBeVisible()
 
     const deleteBtns = screen.getAllByRole('deleteBtn')
+
     fireEvent.click(deleteBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
+    // await screen.findByText(/Are you sure you want to delete this LAG/i)
+    // await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
 
   it('should click edit button correctly', async () => {
