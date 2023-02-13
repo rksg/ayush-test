@@ -330,6 +330,7 @@ export function TimelineChart ({
   const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
+      show: false,
       top: 0,
       bottom: 0,
       left: chartPadding,
@@ -339,7 +340,6 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
-      zlevel: 10,
       triggerOn: 'mousemove',
       show: hasData,
       axisPointer: {
@@ -352,8 +352,7 @@ export function TimelineChart ({
           color: cssStr('--acx-neutrals-70'),
           type: 'solid',
           width: 1
-        },
-        zlevel: 10
+        }
       },
       // use this formatter to add popover content
       formatter: /* istanbul ignore next */ () => '',
@@ -364,7 +363,6 @@ export function TimelineChart ({
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
-      boundaryGap: false,
       ...(hasXaxisLabel
         ? {
           axisLabel: {
@@ -453,7 +451,7 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60,
+        minValueSpan: 60 * 1000 * 10,
         filterMode: 'none'
       }
     ],
