@@ -10,15 +10,14 @@ import { useUpdatePortConfigMutation }                                          
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }          from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                          from '@acx-ui/react-router-dom'
 
-
-import { PortConfigForm } from './PortConfigForm'
+import { EdgePortWithStatus, PortConfigForm } from './PortConfigForm'
 
 interface PortsGeneralProps {
-  data: EdgePort[]
+  data: EdgePortWithStatus[]
 }
 
 interface PortConfigFormType {
-  [key: string]: EdgePort
+  [key: string]: EdgePortWithStatus
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {

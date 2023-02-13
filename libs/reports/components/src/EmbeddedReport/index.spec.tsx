@@ -34,6 +34,7 @@ const getEmbeddedReponse = {
 } as DashboardMetadata
 
 describe('EmbeddedDashboard', () => {
+  const oldEnv = process.env
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -46,9 +47,11 @@ describe('EmbeddedDashboard', () => {
       )
     )
   })
-  afterEach(() =>
+  afterEach(() => {
+    process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
-  )
+  })
+
   const params = { tenantId: 'tenant-id' }
   it('should render the dashboard', async () => {
     rest.post(
@@ -61,5 +64,13 @@ describe('EmbeddedDashboard', () => {
     </Provider>, { route: { params } })
     // expect(mockEmbedDashboard).toHaveBeenCalledWith()
     // TODO - Will revisit this
+  })
+  it('should set the Host name to devalto for dev', () => {
+    process.env = { NODE_ENV: 'development' }
+    render(<Provider>
+      <EmbeddedReport
+        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
+        rlsClause={'something'}/>
+    </Provider>, { route: { params } })
   })
 })

@@ -5,10 +5,16 @@ import {
   Dashboard,
   ApVenueStatusEnum,
   SwitchStatusEnum,
-  VenueDetailHeader
+  EdgeStatusSeverityEnum,
+  VenueDetailHeader,
+  EdgeStatusSeverityStatistic
 } from '@acx-ui/rc/utils'
 
-import { getAPStatusDisplayName, getSwitchStatusDisplayName } from '../MapWidget/VenuesMap/helper'
+import {
+  getAPStatusDisplayName,
+  getEdgeStatusDisplayName,
+  getSwitchStatusDisplayName
+} from '../MapWidget/VenuesMap/helper'
 
 const seriesMappingSwitch = () => [
   { key: SwitchStatusEnum.DISCONNECTED,
@@ -72,7 +78,7 @@ export const getVenueSwitchDonutChartData =
   return chartData
 }
 
-const seriesMappingAP = () => [
+export const seriesMappingAP = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
     name: getAPStatusDisplayName(ApVenueStatusEnum.REQUIRES_ATTENTION, false),
     color: cssStr('--acx-semantics-red-50') },
@@ -109,6 +115,49 @@ export const getApDonutChartData =
         }
       }
       else if (value) {
+        chartData.push({ name, value, color })
+      }
+    })
+  }
+  return chartData
+}
+
+const seriesMappingEdge = () => [
+  { key: EdgeStatusSeverityEnum.REQUIRES_ATTENTION,
+    name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.REQUIRES_ATTENTION, false),
+    color: cssStr('--acx-semantics-red-50') },
+  { key: EdgeStatusSeverityEnum.TRANSIENT_ISSUE,
+    name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.TRANSIENT_ISSUE, false),
+    color: cssStr('--acx-semantics-yellow-40') },
+  { key: EdgeStatusSeverityEnum.IN_SETUP_PHASE,
+    name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false),
+    color: cssStr('--acx-neutrals-50') },
+  { key: EdgeStatusSeverityEnum.OFFLINE,
+    name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OFFLINE, false),
+    color: cssStr('--acx-neutrals-50') },
+  { key: EdgeStatusSeverityEnum.OPERATIONAL,
+    name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.OPERATIONAL, false),
+    color: cssStr('--acx-semantics-green-50') }
+] as Array<{ key: string, name: string, color: string }>
+
+export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) => DonutChartData[] =
+(statistic) => {
+  const chartData: DonutChartData[] = []
+  if (statistic) {
+    seriesMappingEdge().forEach(({ key, name, color }) => {
+      const value = statistic.summary[key as EdgeStatusSeverityEnum]
+      if (key === EdgeStatusSeverityEnum.OFFLINE) {
+        const setupPhase = find(chartData, {
+          name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false)
+        })
+        const offlineCount: number = value ?? 0
+        if (setupPhase) {
+          setupPhase.name = `${setupPhase.name}: ${setupPhase.value}, ${name}: ${offlineCount}`
+          setupPhase.value = setupPhase.value + offlineCount
+        } else {
+          chartData.push({ name, value: offlineCount, color })
+        }
+      } else if (value) {
         chartData.push({ name, value, color })
       }
     })

@@ -186,6 +186,7 @@ describe('WifiCallingFormReducer test', () => {
       qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE,
       tags: [],
       ePDG: [],
+      epdgs: [],
       networkIds: [],
       networksName: []
     } as WifiCallingFormContextType

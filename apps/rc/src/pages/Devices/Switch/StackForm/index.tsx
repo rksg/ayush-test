@@ -7,8 +7,7 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
@@ -31,9 +30,10 @@ import {
   Table,
   showToast,
   Tabs,
+  Tooltip,
   Alert
 } from '@acx-ui/components'
-import { DeleteOutlinedIcon, QuestionMarkCircleOutlined, Drag } from '@acx-ui/icons'
+import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
   useVenuesListQuery,
@@ -401,6 +401,7 @@ export function StackForm () {
         return (
           <Form.Item
             name={`serialNumber${row.key}`}
+            validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
             rules={[
               {
                 required: activeRow === row.key ? true : false,
@@ -409,10 +410,11 @@ export function StackForm () {
               { validator: (_, value) => validatorSwitchModel(value) },
               { validator: (_, value) => validatorUniqueMember(value) }
             ]}
+            validateFirst
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onChange={() => handleChange(row, index)}
+              onBlur={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
               disabled={row.disabled}
             />
@@ -625,16 +627,14 @@ export function StackForm () {
                     label={
                       <>
                         {$t({ defaultMessage: 'DHCP Client' })}
-                        <Tooltip
+                        <Tooltip.Question
                           title={$t({
                             defaultMessage:
                             // eslint-disable-next-line max-len
                             'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
                           })}
                           placement='bottom'
-                        >
-                          <QuestionMarkCircleOutlined />
-                        </Tooltip>
+                        />
                       </>
                     }
                     initialValue={null}

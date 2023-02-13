@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
+import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
 
 interface ReportProps {
   embedDashboardName: string
@@ -28,8 +28,8 @@ export function EmbeddedReport (props: ReportProps) {
   /**
   * Hostname - Backend service where superset is running.
   * For developement,
-  * Use https://devalto.ruckuswireless.com', for devalto.
-  * Use https://local.alto.mlisa.io', for minikube.
+  * Use https://devalto.ruckuswireless.com, for devalto.
+  * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
     ? 'https://devalto.ruckuswireless.com' // Dev
@@ -71,21 +71,26 @@ export function EmbeddedReport (props: ReportProps) {
   useEffect(()=> {
     let timer: ReturnType<typeof setInterval>
     let embeddedObj :Promise<EmbeddedDashboard>
+    const jwtToken = getJwtToken()
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
-        mountPoint: document.getElementById('acx-report')!,
+        mountPoint: document.getElementById(`acx-report-${embedDashboardName}`)!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true, hideTitle: true }
-        // debug: true
+        dashboardUiConfig: { hideChartControls: true, hideTitle: true },
+        // debug: true,
+        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
       })
-      embeddedObj.then( async embObj =>{
+      embeddedObj.then(async embObj =>{
         timer = setInterval(async () => {
           const { height } = await embObj.getScrollSize()
-          const iframeElement = document.querySelector('iframe')
-          if(iframeElement){
-            iframeElement.setAttribute('style', `height: ${height}px !important`)
+          if (height > 0) {
+            const iframeElement = document.querySelector(
+              `div[id="acx-report-${embedDashboardName}"] > iframe`)
+            if(iframeElement){
+              iframeElement.setAttribute('style', `height: ${height}px !important`)
+            }
           }
         }, 1000)
       })
@@ -98,7 +103,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   return (
     <Loader>
-      <div id='acx-report' />
+      <div id={`acx-report-${embedDashboardName}`} className='acx-report' />
     </Loader>
   )
 }

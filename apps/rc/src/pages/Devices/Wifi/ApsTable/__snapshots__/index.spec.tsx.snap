@@ -20,7 +20,7 @@ exports[`AP List Table should render table 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              WiFi
+              Wi-Fi
             </h1>
           </span>
         </div>

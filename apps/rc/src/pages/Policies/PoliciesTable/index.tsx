@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
+  useDelVLANPoolPolicyMutation,
   useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
-  usePolicyListQuery
+  usePolicyListQuery,
+  useDeleteAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -95,16 +97,21 @@ export default function PoliciesTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
+  const [ delVLANPoolPolicy ] = useDelVLANPoolPolicyMutation()
   // const [ delRoguePolicy ] = useDelRoguePolicyMutation()
 
   const deletePolicyFnMapping = {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
     [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
     [PolicyType.AAA]: [],
-    [PolicyType.ACCESS_CONTROL]: [],
+    [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],
-    [PolicyType.VLAN_POOL]: []
+    [PolicyType.VLAN_POOL]: [],
+    [PolicyType.LAYER_2_POLICY]: [],
+    [PolicyType.LAYER_3_POLICY]: [],
+    [PolicyType.APPLICATION_POLICY]: [],
+    [PolicyType.DEVICE_POLICY]: []
   }
 
   const tableQuery = useTableQuery({
@@ -129,6 +136,16 @@ export default function PoliciesTable () {
             if (deleteFn) {
               deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
             }
+
+            if (type === PolicyType.VLAN_POOL) {
+              await delVLANPoolPolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
+
+            clearSelection()
           }
         })
       }

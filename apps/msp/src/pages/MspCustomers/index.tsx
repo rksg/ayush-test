@@ -9,7 +9,6 @@ import {
   Loader,
   PageHeader,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -19,9 +18,13 @@ import {
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
+import { useUserProfileContext }   from '@acx-ui/rc/components'
 import {
+  useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
-  useMspCustomerListQuery
+  useReactivateMspEcMutation,
+  useMspCustomerListQuery,
+  useSupportMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -30,7 +33,13 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+
+const getStatus = (row: MspEc) => {
+  const isTrial = row.accountType === 'TRIAL'
+  const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
+  return value
+}
 
 const transformApEntitlement = (row: MspEc) => {
   return row.wifiLicenses ? row.wifiLicenses : 0
@@ -55,18 +64,7 @@ const transformApUtilization = (row: MspEc) => {
 }
 
 const transformSwitchEntitlement = (row: MspEc) => {
-  const entitlements = row.entitlements
-  let totalCount = 0
-  const switchEntitlements: DelegationEntitlementRecord[] = []
-  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
-      return
-    }
-    switchEntitlements.push(entitlement)
-  })
-  totalCount = switchEntitlements.reduce((total, current) =>
-    total + parseInt(current.quantity, 10), 0)
-  return totalCount
+  return row.switchLicenses ? row.switchLicenses : 0
 }
 
 const transformCreationDate = (row: MspEc) => {
@@ -97,31 +95,57 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: ['MSP_EC'] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'status',
-    'alarmCount',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'creationDate',
-    'expirationDate',
-    'wifiLicense',
-    'switchLicens',
-    'streetAddress'
-  ]
-}
-
 export function MspCustomers () {
   const { $t } = useIntl()
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [tenantId, setTenantId] = useState('')
+  const [ecTenantId, setTenantId] = useState('')
+
+  const { data: userProfile } = useUserProfileContext()
+
+  const mspPayload = {
+    searchString: '',
+    filters: { tenantType: ['MSP_EC'] },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ]
+  }
+
+  const supportPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'id',
+      'mspName',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name'],
+    filters: {
+      includeExpired: [false]
+    }
+  }
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -131,10 +155,10 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -142,7 +166,10 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      sorter: true
+      sorter: true,
+      render: function (data, row) {
+        return getStatus(row)
+      }
     },
     {
       title: $t({ defaultMessage: 'Address' }),
@@ -237,29 +264,98 @@ export function MspCustomers () {
   ]
 
   const MspEcTable = () => {
+    const navigate = useNavigate()
+    const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload: mspPayload
     })
     const [
       deleteMspEc,
       { isLoading: isDeleteEcUpdating }
     ] = useDeleteMspEcMutation()
 
+    const [
+      deactivateMspEc
+    ] = useDeactivateMspEcMutation()
+
+    const [
+      reactivateMspEc
+    ] = useReactivateMspEcMutation()
+
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
-        label: $t({ defaultMessage: 'Manage' }),
-        onClick: (selectedRows) =>
-          showToast({
-            type: 'info',
-            content: `Manage ${selectedRows[0].name}`
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
           })
+        }
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           setModalVisible(true)
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Deactivate' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
+            return true
+          }
+          return false
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t({
+            defaultMessage: `Deactivate Customer 
+           "{formattedName}"?`
+          }, { formattedName: name })
+
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t({
+              defaultMessage: `Deactivate "{formattedName}" will suspend all its services, 
+              are you sure you want to proceed?`
+            }, { formattedName: name }),
+            okText: $t({ defaultMessage: 'Deactivate' }),
+            onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Reactivate' }),
+        visible: (selectedRows) => {
+          if(selectedRows[0] &&
+            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL')) {
+            return false
+          }
+          return true
+        },
+        onClick: ([{ name, id }], clearSelection) => {
+          const title = $t({
+            defaultMessage: `Reactivate Customer 
+           "{formattedName}"?`
+          }, { formattedName: name })
+
+          showActionModal({
+            type: 'confirm',
+            title: title,
+            content: $t({
+              defaultMessage: `Reactivate this customer 
+              "{formattedName}"?`
+            }, { formattedName: name }),
+            okText: $t({ defaultMessage: 'Reactivate' }),
+            onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
+              .then(clearSelection)
+          })
         }
       },
       {
@@ -296,6 +392,27 @@ export function MspCustomers () {
     )
   }
 
+  const SupportEcTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useSupportMspCustomerListQuery,
+      defaultPayload: supportPayload
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
+    )
+  }
+
   return (
     <>
       <PageHeader
@@ -305,16 +422,19 @@ export function MspCustomers () {
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
+            <Button
+              hidden={userProfile?.support}
+              type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
-      <MspEcTable />
+      {userProfile?.support && <SupportEcTable />}
+      {!userProfile?.support && <MspEcTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
-        tenantId={tenantId}
+        tenantId={ecTenantId}
       />
     </>
   )

@@ -33,7 +33,8 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        return <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+        return <TenantLink
+          to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
       }
     },
     {
@@ -58,7 +59,7 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       sorter: true,
       render: function (count, row) {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/networks/${row.id}/network-details/venues`} children={count ? count : 0} />
+        return <TenantLink to={`/networks/wireless/${row.id}/network-details/venues`} children={count ? count : 0} />
       }
     }
   ]

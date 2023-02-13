@@ -1,0 +1,106 @@
+import { useIntl } from 'react-intl'
+
+import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import {
+  useGetDhcpStatsQuery,
+  useGetDpskListQuery,
+  useGetPortalProfileListQuery,
+  useServiceListQuery
+} from '@acx-ui/rc/services'
+import {
+  getSelectServiceRoutePath,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { ServiceCard } from '../ServiceCard'
+
+const defaultPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'type',
+    'scope',
+    'cog'
+  ]
+}
+
+export default function MyServices () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
+
+  const services = [
+    {
+      type: ServiceType.MDNS_PROXY,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.MDNS_PROXY] } }
+      })
+    },
+    {
+      type: ServiceType.DHCP,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
+      })
+    },
+    {
+      type: ServiceType.EDGE_DHCP,
+      category: RadioCardCategory.EDGE,
+      tableQuery: useGetDhcpStatsQuery({
+        params, payload: { ...defaultPayload }
+      }),
+      disabled: !edgeEnabled
+    },
+    {
+      type: ServiceType.DPSK,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetDpskListQuery({})
+    },
+    {
+      type: ServiceType.WIFI_CALLING,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
+        params, payload: { ...defaultPayload, filters: { type: [ServiceType.WIFI_CALLING] } }
+      })
+    },
+    {
+      type: ServiceType.PORTAL,
+      category: RadioCardCategory.WIFI,
+      tableQuery: useGetPortalProfileListQuery({ params })
+    }
+  ]
+
+
+  return (
+    <>
+      <PageHeader
+        title={$t({ defaultMessage: 'My Services' })}
+        extra={[
+          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
+            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
+          </TenantLink>
+        ]}
+      />
+      <GridRow>
+        {services.map(service => {
+          return (
+            !service.disabled &&
+            <GridCol col={{ span: 6 }}>
+              <ServiceCard
+                key={service.type}
+                serviceType={service.type}
+                categories={[service.category]}
+                count={service.tableQuery.data?.totalCount}
+                type={'default'}
+              />
+            </GridCol>
+          )
+        })}
+      </GridRow>
+    </>
+  )
+}

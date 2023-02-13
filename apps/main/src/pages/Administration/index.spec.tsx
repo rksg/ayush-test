@@ -1,10 +1,14 @@
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider  }    from '@acx-ui/store'
+/* eslint-disable max-len */
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { Provider  }                                   from '@acx-ui/store'
 import {
   render,
   screen,
   fireEvent
 } from '@acx-ui/test-utils'
+
+import { fakeUserProfile } from './AccountSettings/__tests__/fixtures'
 
 import Administration from '.'
 
@@ -13,10 +17,17 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+
+const fakeSupportUser = { ...fakeUserProfile, dogfood: true }
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
 
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
-  { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'accountSettings' }
+  { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
 
   it('should not render when feature flag off', async () => {
@@ -24,7 +35,11 @@ describe('Administration page', () => {
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -34,7 +49,11 @@ describe('Administration page', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -46,19 +65,27 @@ describe('Administration page', () => {
   it('should have correct tabs amount', async () => {
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(5)
+    expect(tabs.length).toBe(6 )
   })
 
   it('should handle tab changes', async () => {
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -72,12 +99,15 @@ describe('Administration page', () => {
   })
 
   it('should render notifications tab correctly', async () => {
-    let params: { tenantId: string, activeTab: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'notifications' }
+    params.activeTab = 'notifications'
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -87,12 +117,15 @@ describe('Administration page', () => {
   })
 
   it('should render administrators tab correctly', async () => {
-    let params: { tenantId: string, activeTab: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'administrators' }
+    params.activeTab = 'administrators'
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -101,13 +134,32 @@ describe('Administration page', () => {
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
+  it('should not have administrators tab', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ data: fakeSupportUser, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.queryByRole('tab', { name: 'Administrators' })
+    expect(tab).not.toBeInTheDocument()
+  })
+
   it('should render subscriptions tab correctly', async () => {
-    let params: { tenantId: string, activeTab: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'subscriptions' }
+    params.activeTab = 'subscriptions'
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -117,8 +169,26 @@ describe('Administration page', () => {
   })
 
   it('should render firmware version management tab correctly', async () => {
+    params.activeTab = 'fwVersionMgmt'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render local radius server tab correctly', async () => {
     let params: { tenantId: string, activeTab: string } =
-    { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'fwVersionMgmt' }
+      { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac', activeTab: 'localRadiusServer' }
 
     render(
       <Provider>
@@ -127,7 +197,7 @@ describe('Administration page', () => {
         route: { params }
       })
 
-    const tab = screen.getByRole('tab', { name: 'Firmware Version Management' })
+    const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 })

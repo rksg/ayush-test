@@ -20,5 +20,13 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
   getClientIsolationList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/isolation-allowlist'
+  },
+  getClientIsolationListUsageByVenue: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/isolationAllowlists/query'
+  },
+  getVenueUsageByClientIsolation: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId/venues/query'
   }
 }

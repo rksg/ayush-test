@@ -63,6 +63,22 @@ export const validationMessages = {
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
   }),
+  minStr: defineMessage({
+    defaultMessage: "Field must be at least $'{min'} characters",
+    description: 'Validation - string min checks'
+  }),
+  maxStr: defineMessage({
+    defaultMessage: "Field exceeds $'{max'} characters",
+    description: 'Validation - string max checks'
+  }),
+  lenStr: defineMessage({
+    defaultMessage: "Field must be exactly $'{len'} characters",
+    description: 'Validation - string len checks'
+  }),
+  rangeStr: defineMessage({
+    defaultMessage: "Field must be between $'{min'} and $'{max'} characters",
+    description: 'Validation - string range checks'
+  }),
   hasGraveAccentAndDollarSign: defineMessage({
     defaultMessage: '"`" and "$(" are not allowed',
     description: 'Validation - grave accent and dollar sign checks'
@@ -137,7 +153,7 @@ export const validationMessages = {
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
-      be moved to the venue which doesn\'t enable DHCP service`,
+      be moved to the venue which doesn’t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({
@@ -185,6 +201,34 @@ export const validationMessages = {
     defaultMessage: 'Please select at least two channels',
     description: 'Validation - radio channel checks'
   }),
+  recoveryPassphrasePart: defineMessage({
+    defaultMessage: 'Passphrase part must be exactly 4 digits long',
+    description: 'Validation - recovery passphrase part'
+  }),
+  recoveryPassphrasePartSpace: defineMessage({
+    defaultMessage: 'Passphrase cannot have space',
+    description: 'Validation - recovery passphrase part cannot have space'
+  }),
+  vlanMembersMaxLength: defineMessage({
+    defaultMessage: 'You can define up to 64 VLAN members',
+    description: 'Validation - VLAN members max length checks'
+  }),
+  vlanMembersMaxSize: defineMessage({
+    defaultMessage: 'Number of single VLANs and ranges can\'t exceed 16',
+    description: 'Validation - VLAN members max size checks'
+  }),
+  invalidVlanMember: defineMessage({
+    defaultMessage: 'Valid VLAN member ID is between 2 and 4094',
+    description: 'Validation - VLAN ID invalid checks'
+  }),
+  vlanMembersOverlapping: defineMessage({
+    defaultMessage: 'Overlapping VLAN found',
+    description: 'Validation - VLAN Overlapping checks'
+  }),
+  invalidVlanMemberRange: defineMessage({
+    defaultMessage: 'Start value must be less than end value',
+    description: 'Validation - VLAN MemberRange checks'
+  }),
   switchIpInvalid: defineMessage({
     defaultMessage: 'Enter a valid IPv4 address and not broadcast address',
     description: 'Validation - switch ip checks'
@@ -217,6 +261,10 @@ export const validationMessages = {
     defaultMessage: 'Enter a valid number between 0 and 255',
     description: 'Validation - switch static route admin distance'
   })
+
+
+
+
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {
@@ -225,6 +273,12 @@ export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessage
     number: {
       min: $t(validationMessages.min),
       max: $t(validationMessages.max)
+    },
+    string: {
+      len: $t(validationMessages.lenStr),
+      min: $t(validationMessages.minStr),
+      max: $t(validationMessages.maxStr),
+      range: $t(validationMessages.rangeStr)
     }
   }
 }

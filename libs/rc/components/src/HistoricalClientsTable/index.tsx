@@ -75,7 +75,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     dataIndex: 'ssid',
     sorter: true,
     render: (data, row) => row?.networkId
-      ? <TenantLink to={`/networks/${row?.networkId}/network-details/aps`}>{data}</TenantLink>
+      ? <TenantLink
+        to={`/networks/wireless/${row?.networkId}/network-details/aps`}>{data}</TenantLink>
       : data
   }, {
     key: 'disconnectTime',
@@ -131,7 +132,7 @@ export function HistoricalClientsTable
       if (tableQuery.data?.data) {
         setHistoricalClientCount(tableQuery.data?.totalCount)
       }
-    }, [])
+    }, [tableQuery])
 
     return (
       <div id={id}>

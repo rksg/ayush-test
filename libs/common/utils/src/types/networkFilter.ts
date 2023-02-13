@@ -14,6 +14,11 @@ export interface PathNode {
   name: string
 }
 
+export interface APListNode {
+  type: 'apMac'
+  list: string[]
+}
+
 export interface NetworkPath extends Array<PathNode> {}
 
 export type NetworkNode = {
@@ -25,4 +30,7 @@ export type NetworkNodePath = NetworkNode[] | []
 export type pathFilter = {
   networkNodes? : NetworkPath[],
   switchNodes? : NetworkPath[]
+}
+export type ssidFilter = {
+  ssids? : string[]
 }

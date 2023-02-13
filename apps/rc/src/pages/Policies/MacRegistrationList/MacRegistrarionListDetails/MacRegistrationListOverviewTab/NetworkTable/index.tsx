@@ -30,7 +30,8 @@ function useColumns () {
           return data
         } else {
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/overview`}>{data}</TenantLink>
+            <TenantLink
+              to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
           )
         }
       }

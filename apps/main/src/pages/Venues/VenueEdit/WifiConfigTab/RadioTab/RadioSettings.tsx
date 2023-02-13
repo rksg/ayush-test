@@ -8,15 +8,13 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Switch,
-  Tooltip } from 'antd'
+  Switch } from 'antd'
 import { includes, isEmpty } from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
 
-import { Loader, showToast, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                            from '@acx-ui/icons'
+import { Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -202,7 +200,7 @@ export function RadioSettings () {
 
     if (apList) {
       apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res
+        const { data } = res || {}
         if (data) {
           const findAp = data.some((ap: APExtended) => ap.venueId === venueId)
           setHasTriBandAps(findAp)
@@ -466,13 +464,11 @@ export function RadioSettings () {
                   }}
                   style={{ marginLeft: '20px' }}
                 />
-                <Tooltip
+                <Tooltip.Question
                 // eslint-disable-next-line max-len
                   title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </>
               }
               {triBandRadioFeatureFlag && isTriBandRadio &&
