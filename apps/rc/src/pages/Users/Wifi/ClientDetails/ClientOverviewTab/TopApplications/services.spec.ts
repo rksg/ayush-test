@@ -6,21 +6,20 @@ import { mockGraphqlQuery } from '@acx-ui/test-utils'
 import { topApplicationsResponse } from './__tests__/fixtures'
 import { api }                     from './services'
 
-describe('usetopApplicationsQuery', () => {
+describe('useTopApplicationsQuery', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
-    path: [{ type: 'network', name: 'Network' }],
     filter: {
     }
-  } as AnalyticsFilter & { by: 'traffic' | 'error' }
+  } as AnalyticsFilter
 
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
 
   it('should return correct data', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopNPorts', {
+    mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficPerClient', {
       data: topApplicationsResponse
     })
     const { status, data, error } = await store.dispatch(
@@ -28,12 +27,12 @@ describe('usetopApplicationsQuery', () => {
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(
-      topApplicationsResponse.network.hierarchyNode.topNPorts
+      topApplicationsResponse.client.topNApplicationByTraffic
     )
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'TopNPorts', {
+    mockGraphqlQuery(dataApiURL, 'TopApplicationsByTrafficPerClient', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(

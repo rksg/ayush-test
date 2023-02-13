@@ -1,56 +1,52 @@
 export const topApplicationsResponse = {
-  network: {
-    hierarchyNode: {
-      topNPorts: [
-        {
-          name: 'GigabitEthernet1/1/1',
-          metricValue: 0,
-          timeSeries: {
-            time: [
-              '2023-02-09T06:00:00.000Z',
-              '2023-02-09T06:15:00.000Z',
-              '2023-02-09T06:30:00.000Z'
-            ],
-            metricValue: [
-              0,
-              0,
-              0
-            ]
-          }
-        },
-        {
-          name: 'GigabitEthernet1/1/2',
-          metricValue: 0,
-          timeSeries: {
-            time: [
-              '2023-02-09T06:00:00.000Z',
-              '2023-02-09T06:15:00.000Z',
-              '2023-02-09T06:30:00.000Z'
-            ],
-            metricValue: [
-              0,
-              0,
-              0
-            ]
-          }
-        },
-        {
-          name: 'GigabitEthernet1/1/3',
-          metricValue: 0,
-          timeSeries: {
-            time: [
-              '2023-02-09T06:00:00.000Z',
-              '2023-02-09T06:15:00.000Z',
-              '2023-02-09T06:30:00.000Z'
-            ],
-            metricValue: [
-              0,
-              0,
-              0
-            ]
-          }
+  client: {
+    topNApplicationByTraffic: [
+      {
+        applicationTraffic: 32856801,
+        clientCount: 1,
+        name: 'amazon',
+        timeSeries: {
+          applicationTraffic: [
+            2838649,
+            2304962
+          ],
+          time: [
+            '2023-02-12T09:00:00.000Z',
+            '2023-02-12T10:00:00.000Z'
+          ]
         }
-      ]
-    }
+      },
+      {
+        applicationTraffic: 10165034,
+        clientCount: 1,
+        name: 'google_api',
+        timeSeries: {
+          applicationTraffic: [
+            9479791,
+            685243
+          ],
+          time: [
+            '2023-02-12T09:00:00.000Z',
+            '2023-02-12T10:00:00.000Z'
+          ]
+        }
+      },
+      {
+        applicationTraffic: 6887330,
+        clientCount: 1,
+        name: 'Youtube.com',
+        timeSeries: {
+          applicationTraffic: [
+            6887330,
+            null
+          ],
+          time: [
+            '2023-02-12T09:00:00.000Z',
+            '2023-02-12T10:00:00.000Z'
+
+          ]
+        }
+      }
+    ]
   }
 }

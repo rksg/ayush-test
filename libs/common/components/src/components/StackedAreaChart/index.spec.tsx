@@ -97,6 +97,14 @@ describe('StackedAreaChart',() => {
     expect(screen.queryByText('2.4 GHz')).toBeNull()
   })
 
+  it('should render custom legend format', () => {
+    render(<StackedAreaChart
+      data={data}
+      legendFormatter='test: {name}'
+    />)
+    expect(screen.queryByText('test: 2.4 GHz')).toBeVisible()
+  })
+
   it('should render reset button after zoom', async () => {
     const mockSetCanResetZoom = jest.fn()
     const useStateSpy = jest.spyOn(React, 'useState')
