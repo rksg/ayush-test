@@ -98,7 +98,7 @@ export function ApGroupForm () {
   }
 
   const nameValidator = async (value: string) => {
-    if (value.trim()=='') {
+    if (value.trim() === '') {
       return trailingNorLeadingSpaces(value)
     }
     const venueId = formRef.current?.getFieldValue('venueId')

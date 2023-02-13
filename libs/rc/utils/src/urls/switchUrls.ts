@@ -282,6 +282,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/cli-template/example'
   },
+  getProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
