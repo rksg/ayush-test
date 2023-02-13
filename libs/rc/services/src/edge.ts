@@ -17,7 +17,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'edgeApi',
   tagTypes: ['Edge'],
   refetchOnMountOrArgChange: true,

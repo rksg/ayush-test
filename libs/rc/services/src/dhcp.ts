@@ -8,7 +8,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseDhcpApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'dhcpApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

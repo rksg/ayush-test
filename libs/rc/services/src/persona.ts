@@ -15,7 +15,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const basePersonaApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   tagTypes: ['PersonaGroup', 'Persona'],
   reducerPath: 'personaGroupApi',
   refetchOnMountOrArgChange: true,

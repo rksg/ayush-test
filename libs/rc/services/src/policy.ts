@@ -49,7 +49,9 @@ const RKS_NEW_UI = {
 
 
 export const basePolicyApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'policyApi',
   tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
   refetchOnMountOrArgChange: true,

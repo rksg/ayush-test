@@ -16,7 +16,9 @@ import {
 import { getMetaList } from './utils'
 
 export const baseEventAlarmApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'eventAlarmApi',
   tagTypes: ['Alarms'],
   refetchOnMountOrArgChange: true,

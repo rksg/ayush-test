@@ -15,7 +15,9 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'administrationApi',
   tagTypes: ['Administration', 'RadiusClientConfig'],
   refetchOnMountOrArgChange: true,

@@ -41,7 +41,9 @@ import {
 import { formatter } from '@acx-ui/utils'
 
 export const baseApApi = createApi({
-  baseQuery: fetchBaseQuery(),
+  baseQuery: fetchBaseQuery({
+    credentials: 'include'
+  }),
   reducerPath: 'apApi',
   tagTypes: ['Ap'],
   refetchOnMountOrArgChange: true,
