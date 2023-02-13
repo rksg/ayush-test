@@ -35,7 +35,8 @@ import {
   cssStr,
   cssNumber
 } from '@acx-ui/components'
-import type { TimeStampRange } from '@acx-ui/types'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TimeStampRange }        from '@acx-ui/types'
 
 import {
   eventColorByCategory,
@@ -74,7 +75,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
-  onClick: Function
+  onClick?: Function
   index?: React.Attributes['key'];
 }
 
@@ -163,21 +164,35 @@ export const useDotClick = (
   onDotClick: ((param: unknown) => void) | undefined,
   setSelected?: Function
 ) => {
+  const navigate = useNavigate()
+  const currentPath = useTenantLink('/')
+  const basePath = currentPath.pathname
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
-      if (params.componentSubType !== 'scatter') return
-      const data = params.data as [number, string, Event]
-      setSelected && setSelected(data[2] as unknown as number)
-      const { clientX, clientY, currentTarget } = (params as unknown as
-        { event: { event: PointerEvent } }).event.event
-      const { top, left } = (currentTarget as HTMLElement).getBoundingClientRect()
-      onDotClick && onDotClick(({
-        ...data[2],
-        x: clientX - left,
-        y: clientY - top
-      }))
+      if (params.componentSubType === 'scatter') {
+        const data = params.data as [number, string, Event]
+        setSelected && setSelected(data[2] as unknown as number)
+        const { clientX, clientY, currentTarget } = (params as unknown as
+          { event: { event: PointerEvent } }).event.event
+        const { top, left } = (currentTarget as HTMLElement).getBoundingClientRect()
+        onDotClick && onDotClick(({
+          ...data[2],
+          x: clientX - left,
+          y: clientY - top
+        }))
+      }
+
+      const typedParams = (params as
+        { componentSubType: string; data: unknown, seriesName: string })
+
+      if (params.componentSubType === 'custom' && typedParams.seriesName === 'incidents') {
+        const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
+        const { id } = typedIncidentParam.data[3]
+        if (!id) return
+        navigate(`${basePath}/analytics/incidents/${id}`)
+      }
     },
-    [setSelected, onDotClick]
+    [setSelected, onDotClick, navigate, basePath]
   )
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
@@ -495,9 +510,6 @@ export function TimelineChart ({
         }}
         ref={eChartsRef}
         option={option}
-        onEvents={{
-          click: onClick
-        }}
         key={index}
       />
       {canResetZoom && showResetZoom && (
