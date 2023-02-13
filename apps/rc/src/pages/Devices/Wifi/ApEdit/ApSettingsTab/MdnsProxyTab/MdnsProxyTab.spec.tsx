@@ -1,11 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { apApi }                       from '@acx-ui/rc/services'
 import { MdnsProxyUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
+import { useTenantLink }               from '@acx-ui/react-router-dom'
+import { Provider, store }             from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
@@ -17,6 +20,12 @@ import {
 } from './__tests__/fixtures'
 import { MdnsProxyTab } from './MdnsProxyTab'
 
+const mockedUseNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: (to: string) => to
+}))
 
 describe('MdnsProxyTab', () => {
   const editApPath = '/:tenantId/devices/wifi/:serialNumber/edit/settings/proxy'
@@ -25,7 +34,8 @@ describe('MdnsProxyTab', () => {
     serialNumber: '__SERIAL_NUMBER__'
   }
 
-  beforeEach(async () => {
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
     mockServer.use(
       rest.get(
         MdnsProxyUrls.getMdnsProxyList.url,
@@ -37,17 +47,16 @@ describe('MdnsProxyTab', () => {
   it('should change the mDNS Proxy', async () => {
     const selectedMdnsProxy = mockedMdnsProxyList[0]
     const updatedMdnsProxy = mockedMdnsProxyList[1]
-    const targetAp = {
-      serialNumber: '121749001049',
-      multicastDnsProxyServiceProfileId: selectedMdnsProxy.id
-    }
 
     const changeMdnsProxyFn = jest.fn()
     const removeMdnsProxyFn = jest.fn()
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (req, res, ctx) => res(ctx.json({ ...targetAp }))
+        (req, res, ctx) => res(ctx.json({
+          serialNumber: '991749001099',
+          multicastDnsProxyServiceProfileId: selectedMdnsProxy.id
+        }))
       ),
       rest.post(
         MdnsProxyUrls.addMdnsProxyAps.url,
@@ -60,7 +69,7 @@ describe('MdnsProxyTab', () => {
         MdnsProxyUrls.deleteMdnsProxyAps.url,
         (req, res, ctx) => {
           removeMdnsProxyFn(req.body)
-          return res(ctx.json({ requestId: '__REQUEST_ID__' }))
+          return res(ctx.status(404), ctx.json({ requestId: '__REQUEST_ID__' }))
         }
       )
     )
@@ -96,12 +105,10 @@ describe('MdnsProxyTab', () => {
     await userEvent.click(mDnsProxyCombobox)
     await userEvent.click(await screen.findByText(updatedMdnsProxy.serviceName))
 
-    // Verifying the change detection behavior works or not
-    await waitFor(() => {
-      expect(setEditContextDataFn).toHaveBeenCalledWith(expect.objectContaining({
-        isDirty: true
-      }))
-    })
+    // Verifying the changed detection behavior
+    expect(setEditContextDataFn).toHaveBeenCalledWith(expect.objectContaining({
+      isDirty: true
+    }))
 
     // Verify changing the mDNS Proxy
     await userEvent.click(screen.getByRole('button', { name: /Apply mDNS Proxy/ }))
@@ -109,11 +116,83 @@ describe('MdnsProxyTab', () => {
       expect(changeMdnsProxyFn).toHaveBeenCalledWith([params.serialNumber])
     })
 
-    // Verify removing the mDNS Proxy
+    // Verify removing the mDNS Proxy & error message
     await userEvent.click(activateServiceSwitch)
     await userEvent.click(screen.getByRole('button', { name: /Apply mDNS Proxy/ }))
     await waitFor(() => {
       expect(removeMdnsProxyFn).toHaveBeenCalledWith([params.serialNumber])
     })
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should show error message when changing mDNS Proxy failed', async () => {
+    const targetErrorMessage = 'MulticastDnsProxyServiceProfile Not Found'
+
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (req, res, ctx) => res(ctx.json({
+          serialNumber: '121749001049'
+        }))
+      ),
+      rest.post(
+        MdnsProxyUrls.addMdnsProxyAps.url,
+        (req, res, ctx) => {
+          return res(ctx.status(404), ctx.json({
+            requestId: 'fa60fbba-529f-4206-a131-3fe778a4202f',
+            errors: [{
+              code: 'WIFI-10000',
+              message: targetErrorMessage
+            }]
+          }))
+        }
+      ),
+      rest.delete(
+        MdnsProxyUrls.deleteMdnsProxyAps.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({ requestId: 'fa60fbba-529f-4206' }))
+      )
+    )
+
+    const setEditContextDataFn = jest.fn()
+
+    render(
+      <Provider>
+        <ApEditContext.Provider value={{
+          editContextData: {
+            tabTitle: '',
+            isDirty: false,
+            hasError: false,
+            updateChanges: jest.fn(),
+            discardChanges: jest.fn()
+          },
+          setEditContextData: setEditContextDataFn
+        }}>
+          <MdnsProxyTab />
+        </ApEditContext.Provider>
+      </Provider>, {
+        route: { path: editApPath, params }
+      }
+    )
+
+    // Verifying the changed detection behavior
+    await userEvent.click(await screen.findByRole('switch', { name: /Activate Service/ }))
+    expect(setEditContextDataFn).toHaveBeenCalledWith(expect.objectContaining({
+      isDirty: true
+    }))
+
+    // Verify error message when changing mDNS Proxy failed
+    const mDnsProxyCombobox = await screen.findByRole('combobox', { name: /mDNS Proxy Service/ })
+    const updatedMdnsProxy = mockedMdnsProxyList[1]
+    await userEvent.click(mDnsProxyCombobox)
+    await userEvent.click(await screen.findByText(updatedMdnsProxy.serviceName))
+    await userEvent.click(await screen.findByRole('button', { name: /Apply mDNS Proxy/ }))
+    expect(await screen.findByText(targetErrorMessage)).toBeVisible()
+
+    // Verify Cancel form behavior
+    await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
+    const { result: selectServicePath } = renderHook(() => {
+      return useTenantLink(`/devices/wifi/${params.serialNumber}/details/overview`)
+    })
+    expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
   })
 })

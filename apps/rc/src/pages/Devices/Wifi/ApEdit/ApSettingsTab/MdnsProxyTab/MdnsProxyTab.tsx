@@ -82,24 +82,21 @@ export function MdnsProxyTab () {
 
   useEffect(() => {
     if (!isFormChangedHandled) {
-      handleFormChange()
+      updateEditContextData(isServiceChanged())
       setIsFormChangedHandled(true)
     }
   }, [isFormChangedHandled])
 
-  const isServiceChanged = (serviceId?: string): boolean => {
-    return serviceId !== apDetail?.multicastDnsProxyServiceProfileId
-  }
+  const isServiceChanged = (): boolean => {
+    const formData = formRef.current!.getFieldsValue()
+    const serviceId = apDetail!.multicastDnsProxyServiceProfileId
 
-  const isServiceActivationChanged = (serviceEnabled: boolean): boolean => {
-    return !serviceEnabled && !!apDetail?.multicastDnsProxyServiceProfileId
+    return formData.serviceId !== serviceId ||
+      (formData.serviceEnabled && !serviceId)
   }
 
   const isFormInvalid = () => {
-    const isValid = formRef.current
-      ? formRef.current.getFieldsError().map(item => item.errors).flat().length > 0
-      : false
-    return isValid
+    return formRef.current!.getFieldsError().map(item => item.errors).flat().length > 0
   }
 
   const updateEditContextData = (dataChanged: boolean) => {
@@ -114,14 +111,6 @@ export function MdnsProxyTab () {
         dataChanged && formRef.current!.resetFields()
       }
     })
-  }
-
-  const handleFormChange = () => {
-    const formData = formRef.current!.getFieldsValue()
-    // eslint-disable-next-line max-len
-    const dataChanged = isServiceChanged(formData.serviceId) || isServiceActivationChanged(formData.serviceEnabled)
-
-    updateEditContextData(dataChanged)
   }
 
   const resetForm = () => {
@@ -146,7 +135,7 @@ export function MdnsProxyTab () {
       }
     } catch (error) {
       const errorResponse = error as catchErrorResponse
-      const errorMsg = errorResponse.data.errors.map(err => err.message).join('<br />')
+      const errorMsg = errorResponse.data?.errors?.map(err => err.message).join('<br />')
 
       showToast({
         type: 'error',
@@ -161,6 +150,7 @@ export function MdnsProxyTab () {
       isFetching: isDataFetching || isUpdating || isDeleting
     }]}>
       <StepsForm
+        formRef={formRef}
         onCancel={() => navigate(wifiDetailPath)}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply mDNS Proxy' })
@@ -169,7 +159,6 @@ export function MdnsProxyTab () {
       >
         {isSuccess &&
           <StepsForm.StepForm<MdnsProxyTabFormFieldType>
-            formRef={formRef}
             onFinish={onSave}
             layout='horizontal'
           >
