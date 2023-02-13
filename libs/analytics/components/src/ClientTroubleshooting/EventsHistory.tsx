@@ -12,7 +12,6 @@ import {
   eventColorByCategory,
   IncidentDetails
 } from './config'
-import { ConnectionEventPopover }                              from './ConnectionEvent'
 import { ClientInfoData }                                      from './services'
 import * as UI                                                 from './styledComponents'
 import { transformEvents,formatEventDesc, transformIncidents } from './util'
@@ -24,9 +23,15 @@ type HistoryContentProps = {
   historyContentToggle : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
-  filters: Filters | null
+  filters: Filters | null,
+  popoverClick?: (event: DisplayEvent) => void
 }
-const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+const transformData = (
+  clientInfo: ClientInfoData,
+  filters: Filters,
+  intl: IntlShape,
+  popoverClick?: (event: DisplayEvent) => void
+) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
@@ -48,9 +53,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <ConnectionEventPopover event={event}>
-        <UI.EventTypeIcon color={color} />
-      </ConnectionEventPopover>
+      icon: <UI.EventTypeIcon color={color} onClick={() => popoverClick && popoverClick(event)}/>
     }
   }),
   ...incidents
@@ -74,8 +77,8 @@ const renderItem = (item: IncidentDetails) => {
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
-  const { setHistoryContentToggle, historyContentToggle, data, filters } = props
-  const histData = transformData(data!, filters!, intl)
+  const { setHistoryContentToggle, historyContentToggle, data, filters, popoverClick } = props
+  const histData = transformData(data!, filters!, intl, popoverClick)
   return (
     <UI.History>
       <UI.HistoryHeader>
