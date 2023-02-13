@@ -8,7 +8,13 @@ import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-uti
 
 import {
   defaultVlan,
-  lagList, portlist, successResponse, switchDetailHeader, switchVlans, switchVlanUnion, vlansByVenue
+  lagList,
+  portlist,
+  successResponse,
+  switchDetailHeader,
+  switchVlans,
+  switchVlanUnion,
+  vlansByVenue
 } from './__tests__/fixtures'
 import { SwitchLagModal } from './SwitchLagModal'
 
