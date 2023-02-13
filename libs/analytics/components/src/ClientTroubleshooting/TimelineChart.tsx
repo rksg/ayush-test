@@ -305,8 +305,7 @@ export function TimelineChart ({
           data: getSeriesData(data, key, series),
           itemStyle: {
             color: getSeriesItemColor
-          },
-          connectNulls: true
+          }
         } as SeriesOption)
         : ({
           type: 'custom',
@@ -316,7 +315,6 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           data: getSeriesData(data, key, series),
-          connectNulls: true,
           clip: true
         })
     ) as SeriesOption[], [data, mapping])
