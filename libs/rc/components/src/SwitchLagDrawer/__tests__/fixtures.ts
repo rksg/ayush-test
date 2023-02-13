@@ -1,4 +1,4 @@
-import { SwitchViewModel, SWITCH_TYPE, SwitchStatusEnum } from "@acx-ui/rc/utils"
+import { SwitchViewModel, SWITCH_TYPE, SwitchStatusEnum } from '@acx-ui/rc/utils'
 
 export const lagList = [
   {
