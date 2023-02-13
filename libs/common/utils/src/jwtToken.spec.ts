@@ -54,6 +54,30 @@ describe('jwtToken', () => {
     expect(getJwtTokenPayload()).toEqual(token)
   })
 
+  it('token with VAR or REC tenantType to return value REC', () => {
+    const token = {
+      acx_account_regions: ['EU', 'AS', 'NA'],
+      acx_account_tier: 'Gold',
+      tenantType: 'VAR',
+      acx_account_vertical: 'Default'
+    }
+    const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    sessionStorage.setItem('jwt', jwtToken)
+    expect(getJwtTokenPayload().tenantType).toEqual('REC')
+  })
+
+  it('token with MSP/MSP_EC/MSP_NON_VAR/MSP_INTEGRATOR/MSP_INSTALLER tenantType to return value MSP', () => {
+    const token = {
+      acx_account_regions: ['EU', 'AS', 'NA'],
+      acx_account_tier: 'Gold',
+      tenantType: 'MSP_NON_VAR',
+      acx_account_vertical: 'Default'
+    }
+    const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    sessionStorage.setItem('jwt', jwtToken)
+    expect(getJwtTokenPayload().tenantType).toEqual('MSP')
+  })
+  
   it('handle cache', () => {
     const token = {
       acx_account_regions: ['EU', 'AS', 'NA'],

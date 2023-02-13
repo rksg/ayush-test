@@ -29,7 +29,7 @@ export enum AccountType {
 
 interface JwtToken {
   swuId?: string
-  tenantType?: AccountType
+  tenantType?: string
   sub?: string
   lastName: string
   companyName: string
@@ -70,16 +70,16 @@ export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
   if (jwt === null) {
-    const tenantId = getTenantId()
+    const tenantId = getTenantId() // when JWT FF is disabled
     if (isDev) {
       // eslint-disable-next-line no-console
       console.warn('No JWT token found! So setting default JWT values')
     }
     const jwtToken: {
-      acx_account_tier: AccountTier;
-      acx_account_vertical: AccountVertical.DEFAULT;
-      tenantType: AccountType;
-      isBetaFlag: false;
+      acx_account_tier: AccountTier
+      acx_account_vertical: AccountVertical
+      tenantType: AccountType
+      isBetaFlag: false
       tenantId: string | undefined } = {
         acx_account_tier: AccountTier.PLATINUM,
         acx_account_vertical: AccountVertical.DEFAULT,
@@ -96,6 +96,10 @@ export function getJwtTokenPayload () {
     const token = JSON.parse(window.atob(jwt.split('.')[1])) as JwtToken
     cache.clear()
     cache.set(jwt, token)
+
+    if (token?.tenantType === AccountType.REC || token?.tenantType === AccountType.VAR) {
+      token.tenantType = 'REC'
+    } else token.tenantType = 'MSP'
     return token
   } catch {
     throw new Error('Unable to parse JWT Token')
