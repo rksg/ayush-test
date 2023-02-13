@@ -3,11 +3,12 @@ import { rest }         from 'msw'
 import { IntlProvider } from 'react-intl'
 
 import { ApDeviceStatusEnum, CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }              from '@acx-ui/test-utils'
+import { Provider }                                                                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                                                  from '@acx-ui/test-utils'
+
+import { getDeviceColor, getPathColor, switchStatus } from './utils'
 
 import { TopologyGraph } from '.'
-import { getDeviceColor, getPathColor, switchStatus } from './utils'
 
 
 const graphData = {
