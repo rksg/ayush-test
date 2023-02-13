@@ -5,6 +5,7 @@ import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps
 } from 'antd/lib/config-provider'
+import moment                    from 'moment-timezone'
 import { useIntl, IntlProvider } from 'react-intl'
 
 import {
@@ -33,6 +34,7 @@ function AntConfigProviders (props: ConfigProviderProps) {
 }
 
 export function ConfigProvider (props: ConfigProviderProps) {
+  moment.locale(props.lang)
   return (
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>

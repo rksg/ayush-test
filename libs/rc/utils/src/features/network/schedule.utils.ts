@@ -33,7 +33,7 @@ const getCurrentDateWithOffset = (timeOffset: number) => {
   }
 }
 
-const dayList = moment.localeData('en').weekdaysShort() // ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dayList = moment.weekdaysShort() // ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export const getCurrentTimeSlotIndex = (timeZone?: ITimeZone): ISlotIndex => {
   const timeOffset = timeZone ? timeZone.rawOffset + timeZone.dstOffset : 0
