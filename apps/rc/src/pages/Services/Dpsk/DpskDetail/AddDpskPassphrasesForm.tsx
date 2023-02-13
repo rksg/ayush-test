@@ -21,6 +21,8 @@ import {
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import * as UI                          from './styledComponents'
 
+const MAX_PASSPHRASES = 5000
+
 enum DeviceNumberType {
   LIMITED,
   UNLIMITED
@@ -54,13 +56,17 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
       form={form}
     >
       <Form.Item
-        label={$t({ defaultMessage: 'Number of Passphrases' })}
+        label={$t({
+          defaultMessage: 'Number of Passphrases (Up to {maximum} passphrases)'
+        }, {
+          maximum: MAX_PASSPHRASES
+        })}
         name='numberOfPassphrases'
         initialValue={1}
         rules={[
           { required: true }
         ]}
-        children={<InputNumber min={1} max={5000} />}
+        children={<InputNumber min={1} max={MAX_PASSPHRASES} />}
       />
       <Form.Item
         label={
