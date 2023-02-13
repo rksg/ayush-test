@@ -551,7 +551,7 @@ export interface Lag {
   lagId?: number
   name: string
   ports: string[]
-  realRemove?: number
+  realRemove?: boolean
   switchId: string
   taggedVlans: string[]
   type: LAG_TYPE

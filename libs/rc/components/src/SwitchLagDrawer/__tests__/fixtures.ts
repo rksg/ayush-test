@@ -9,7 +9,7 @@ export const lagList = [
       '1/1/5'
     ],
     realRemove: true,
-    switchId: 'c0:c5:20:aa:33:3f',
+    switchId: 'c0:c5:20:aa:32:79',
     taggedVlans: [
       '2',
       '3'
@@ -24,10 +24,10 @@ export const switchDetailData: SwitchViewModel = {
   type: 'device',
   isStack: true,
   rearModule: 'none',
-  switchMac: 'c0:c5:20:98:b9:67',
+  switchMac: 'c0:c5:20:aa:32:79',
   switchName: 'ICX7150-C12 Router',
   model: 'ICX7150-C12P',
-  id: 'c0:c5:20:98:b9:67',
+  id: 'c0:c5:20:aa:32:79',
   syncDataEndTime: '2023-01-16T06:07:09Z',
   firmwareVersion: 'SPR09010e',
   clientCount: 1,
@@ -52,12 +52,6 @@ export const switchDetailData: SwitchViewModel = {
   formStacking: false
 }
 
-
-
-
-
-
-/* eslint-disable max-len */
 export const selectedPorts = [{
   adminStatus: 'Down',
   broadcastIn: '0',
@@ -121,10 +115,10 @@ export const selectedPorts = [{
   signalOut: 0,
   stack: true,
   status: 'Down',
-  switchMac: '58:fb:96:0e:82:8a',
+  switchMac: 'c0:c5:20:aa:32:79',
   switchModel: 'ICX7150-C12P',
   switchName: '7150stack',
-  switchSerial: '58:fb:96:0e:82:8a',
+  switchSerial: 'c0:c5:20:aa:32:79',
   switchUnitId: 'FEK3230S0A0',
   syncedSwitchConfig: true,
   unTaggedVlan: '2',
@@ -220,6 +214,7 @@ export const switchDetailHeader = {
   switchType: 'router',
   syncDataEndTime: 1672685019090,
   syncedSwitchConfig: true,
+  // eslint-disable-next-line max-len
   temperatureGroups: '[{"serialNumber":"FEK3224R0AG","stackId":"C0 C5 20 AA 32 79","temperatureSlotList":[{"slotNumber":3,"temperatureValue":48},{"slotNumber":4,"temperatureValue":49},{"slotNumber":1,"temperatureValue":64},{"slotNumber":2,"temperatureValue":10}]}]',
   tenantId: 'f2e4a77d49914dc7b1bcb0dfc21b9a74',
   timestamp: 1672685019073,
@@ -233,166 +228,298 @@ export const switchDetailHeader = {
   yPercent: 0
 }
 
-export const defaultVlan = [{
-  defaultVlanId: 1,
-  switchId: 'c0:c5:20:aa:32:79'
-}, {
-  defaultVlanId: 2,
-  switchId: '58:fb:96:0e:82:8a'
-}]
+export const defaultVlan = [
+  { switchId: 'c0:c5:20:aa:32:79', defaultVlanId: 1 }]
 
-export const switchVlanUnion = {
-  profileVlan: [
-    { vlanConfigName: 'vlan name', profileLevel: true, defaultVlan: false, vlanId: 6 },
-    { profileLevel: true, defaultVlan: false, vlanId: 2 },
-    { profileLevel: true, defaultVlan: false, vlanId: 3 },
-    { profileLevel: true, defaultVlan: false, vlanId: 5 },
-    { profileLevel: true, defaultVlan: false, vlanId: 4 }
-  ],
-  switchDefaultVlan: [{
-    defaultVlan: true,
-    profileLevel: false,
-    switchId: 'c0:c5:20:aa:32:79',
-    vlanConfigName: 'DEFAULT-VLAN',
-    vlanId: 1
-  }],
-  switchVlan: [
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 99 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 88 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 77 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 66 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 55 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 44 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 33 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 22 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: 'g', profileLevel: false, defaultVlan: false, vlanId: 14 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 13 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 41 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 76 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 32 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 333 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: '1111', profileLevel: false, defaultVlan: false, vlanId: 111 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 1111 },
-    { switchId: 'c0:c5:20:aa:32:79', profileLevel: false, defaultVlan: false, vlanId: 16 },
-    { switchId: 'c0:c5:20:aa:32:79', vlanConfigName: '999', profileLevel: false, defaultVlan: false, vlanId: 999 }
-  ]
+export const switchVlans = []
+
+export const vlansByVenue = []
+
+export const successResponse = {
+  requestId: 'request-id'
 }
 
-export const vlansByVenue = [{
-  arpInspection: true,
-  id: '16dd285eac0d4663aa449b6498f4c075',
-  igmpSnooping: 'passive',
-  ipv4DhcpSnooping: true,
-  multicastVersion: 3,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'stp',
-  vlanId: 6,
-  vlanName: 'vlan name'
-}, {
-  arpInspection: false,
-  id: '52d05e5053404b16883633c88a85e084',
-  igmpSnooping: 'none',
-  ipv4DhcpSnooping: false,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'none',
-  switchFamilyModels: [{
-    id: 'e5d57359201a4fa0b0058c425412596f',
-    model: 'ICX7150-48',
-    slots: [
-      { slotNumber: 3, enable: true, option: '4X1/10G' },
-      { slotNumber: 2, enable: true, option: '2X1G' },
-      { slotNumber: 1, enable: true }],
-    untaggedPorts: '1/1/29,1/1/30'
-  }],
-  vlanId: 1
-}, {
-  arpInspection: false,
-  id: '44d69a27a89a48c582dc554ced7157e4',
-  igmpSnooping: 'none',
-  ipv4DhcpSnooping: false,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'none',
-  switchFamilyModels: [{
-    id: 'e5d57359201a4fa0b0058c425412596f',
-    model: 'ICX7150-C12P',
-    slots: [
-      { slotNumber: 3, enable: true, option: '4X1/10G' },
-      { slotNumber: 2, enable: true, option: '2X1G' },
-      { slotNumber: 1, enable: true }],
-    taggedPorts: '1/1/6,1/1/9,1/1/11',
-    untaggedPorts: '1/1/4'
-  }],
-  vlanId: 2
-}, {
-  arpInspection: false,
-  id: '2a7f2eaa0b914a47bb0b9a90d53ad17d',
-  igmpSnooping: 'none',
-  ipv4DhcpSnooping: false,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'none',
-  switchFamilyModels: [{
-    id: 'e5d57359201a4fa0b0058c425412596f',
-    model: 'ICX7150-C12P',
-    slots: [
-      { slotNumber: 3, enable: true, option: '4X1/10G' },
-      { slotNumber: 2, enable: true, option: '2X1G' },
-      { slotNumber: 1, enable: true }],
-    taggedPorts: '1/1/9,1/1/11',
-    untaggedPorts: '1/1/6,1/1/8,1/1/10'
-  }],
-  vlanId: 3
-}, {
-  arpInspection: false,
-  id: 'f77ac67a88bd41ec82682676489bdcf7',
-  igmpSnooping: 'none',
-  ipv4DhcpSnooping: false,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'none',
-  vlanId: 5
-}, {
-  arpInspection: false,
-  id: '82ec23dd19ce4e089f442c814a11b97a',
-  igmpSnooping: 'none',
-  ipv4DhcpSnooping: false,
-  spanningTreePriority: 32768,
-  spanningTreeProtocol: 'none',
-  vlanId: 4
-}]
-
-export const switchProfile = [{
-  acls: [],
-  id: 'ed9284cc9343484f9eb97addf31c1c5e',
-  name: 'regular',
-  profileType: 'Regular',
-  venues: ['a98653366d2240b9ae370e48fab3a9a1'],
-  vlans: vlansByVenue
-}]
-
-
-export const switchVlans = [{
-  arpInspection: true,
-  id: '524c68bfb9a54391892662a4a5b14755',
-  igmpSnooping: 'passive',
-  ipv4DhcpSnooping: true,
-  multicastVersion: 3,
-  spanningTreeProtocol: 'stp',
-  vlanId: 6,
-  vlanName: 'vlan name'
-}]
-
-export const switchesVlan = {
-  profileVlan: [
-    { profileLevel: true, defaultVlan: false, vlanId: 2 },
-    { profileLevel: true, defaultVlan: false, vlanId: 3 },
-    { profileLevel: true, defaultVlan: false, vlanId: 4 },
-    { profileLevel: true, defaultVlan: false, vlanId: 5 },
-    { vlanConfigName: 'vlan name', profileLevel: true, defaultVlan: false, vlanId: 6 }
+export const portlist = {
+  data: [
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-3f_1-1-1',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/1',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-48_1-1-10',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/10',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-49_1-1-11',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/11',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-4a_1-1-12',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/12',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-40_1-1-2',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/2',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-41_1-1-3',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/3',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-42_1-1-4',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/4',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-43_1-1-5',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/5',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-44_1-1-6',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/6',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-45_1-1-7',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/7',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-46_1-1-8',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/8',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-47_1-1-9',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/1/9',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-4c_1-2-1',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/2/1',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-4d_1-2-2',
+      lagId: '0',
+      opticsType: '1 Gbits per second copper',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/2/2',
+      signalIn: 0,
+      signalOut: 0,
+      stack: false,
+      syncedSwitchConfig: false,
+      usedInFormingStack: false
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-4e_1-3-1',
+      lagId: '0',
+      opticsType: '10 Gbits per second fiber',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/3/1',
+      signalIn: 0,
+      signalOut: 0,
+      stack: true,
+      syncedSwitchConfig: false,
+      usedInFormingStack: true
+    },
+    {
+      cloudPort: false,
+      id: 'c0-c5-20-aa-33-4f_1-3-2',
+      lagId: '0',
+      opticsType: '10 Gbits per second fiber',
+      poeEnabled: false,
+      poeTotal: 0,
+      poeUsed: 0,
+      portIdentifier: '1/3/2',
+      signalIn: 0,
+      signalOut: 0,
+      stack: true,
+      syncedSwitchConfig: false,
+      usedInFormingStack: true
+    }
   ],
-  switchDefaultVlan: [{
-    defaultVlan: true,
-    profileLevel: false,
-    switchId: '58:fb:96:0e:82:8a',
-    vlanConfigName: 'DEFAULT-VLAN',
-    vlanId: 1
-  }]
+  fields: [
+    'portIdentifier',
+    'id',
+    'opticsType',
+    'usedInFormingStack'
+  ],
+  page: 1,
+  totalCount: 16
+}
+
+export const switchVlanUnion = {
+  switchDefaultVlan: [
+    {
+      switchId: 'c0:c5:20:aa:32:79',
+      vlanConfigName: 'DEFAULT-VLAN',
+      profileLevel: false,
+      defaultVlan: true,
+      vlanId: 1
+    }
+  ],
+  switchVlan: [
+    {
+      switchId: 'c0:c5:20:aa:32:79',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 2
+    },
+    {
+      switchId: 'c0:c5:20:aa:32:79',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 3
+    },
+    {
+      switchId: 'c0:c5:20:aa:32:79',
+      profileLevel: false,
+      defaultVlan: false,
+      vlanId: 4
+    }
+  ]
 }

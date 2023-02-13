@@ -17,7 +17,9 @@ import { useIntl }                from 'react-intl'
 
 import { Button, Modal, showActionModal, StepsForm, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
-import { useAddLagMutation, useGetDefaultVlanQuery,
+import {
+  useAddLagMutation,
+  useGetDefaultVlanQuery,
   useGetLagListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetVlansByVenueQuery,
