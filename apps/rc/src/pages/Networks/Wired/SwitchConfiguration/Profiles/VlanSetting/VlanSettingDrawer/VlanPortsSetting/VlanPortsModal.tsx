@@ -7,6 +7,7 @@ import { Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
 import {
   AclExtendedRule,
   AclStandardRule,
+  SwitchModelPortData,
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
@@ -24,6 +25,7 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot2?: string
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
+  switchModelPortData?: SwitchModelPortData
 }
 
 export function VlanPortsModal (props: {

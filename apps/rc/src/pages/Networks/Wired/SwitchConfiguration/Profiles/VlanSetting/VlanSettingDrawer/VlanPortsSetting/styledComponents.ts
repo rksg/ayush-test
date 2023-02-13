@@ -16,3 +16,38 @@ export const GroupListLayout = styled('div')`
     min-height: 320px;
   }
 `
+
+export const Module = styled.div`
+  div.ant-checkbox-group {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+    grid-gap: 5px;
+    grid-auto-flow: column;
+    justify-content: start;
+    > label.ant-checkbox-wrapper {
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      border: 1px solid var(--acx-primary-black);
+      background-color: white;
+      margin-right: 0px;
+      > span:first-child {
+        display: none;
+      }
+    }
+
+    > label.ant-checkbox-wrapper-checked {
+      border: 1px solid var(--acx-primary-black);
+      background-color: var(--acx-primary-black);
+      color: white;
+    }
+
+    > label.ant-checkbox-wrapper:last-child {
+      border-right-width: 1px;
+    }
+  }
+  .ant-checkbox + span {
+    padding: 0;
+  }
+`

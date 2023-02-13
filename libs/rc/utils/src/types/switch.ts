@@ -522,11 +522,17 @@ export interface SwitchDhcpLease {
   leaseExpiration: string
   leaseType: string
 }
+export interface PortStatus{
+  portNumber: number
+  portTagged: string
+}
 
 export interface SwitchSlot {
   slotNumber: number
   enable: boolean
   option: string
+  slotPortInfo?: string
+  portStatus?: PortStatus[]
 }
 
 export interface TrustedPort {
@@ -563,4 +569,12 @@ export interface AclExtendedRule extends AclStandardRule {
   destination?: string
   destinationPort?: string
   specificDestNetwork?: string
+}
+
+export interface SwitchModelPortData {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots: SwitchSlot[]
+  trustPorts: string[]
 }

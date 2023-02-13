@@ -6,14 +6,21 @@ import { CheckboxChangeEvent }                                                  
 
 import { Card, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES }       from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES, SwitchModelPortData }       from '@acx-ui/rc/utils'
 import { getIntl }                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+import _ from 'lodash'
 
 export interface ModelsType {
-  label: string,
+  label: string
   value: string
+}
+
+export interface PortsType {
+  slotNumber: number,
+  portNumber: number
+  portTagged: string
 }
 
 export function SelectModelStep () {
@@ -36,6 +43,10 @@ export function SelectModelStep () {
   const [optionListForSlot2, setOptionListForSlot2] = useState<ModelsType[]>([])
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
+
+  const [switchModelPortData, setSwitchModelPortData] =
+    useState<SwitchModelPortData>({ model: '', trustPorts: [], slots: [] })
+  const [markedPorts, setMarkedPorts] = useState<PortsType[]>([])
 
   const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
@@ -100,7 +111,6 @@ export function SelectModelStep () {
     const modelIndex = selectedModel as keyof typeof familyList
 
     const slots = familyList[modelIndex]
-    console.log(slots)
     setSlots(slots)
     setSlotOptionList(slots, 1, setOptionListForSlot2)
     setSlotOptionList(slots, 2, setOptionListForSlot3)
@@ -135,6 +145,7 @@ export function SelectModelStep () {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
+    form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
     setEnableSlot2(false)
     setEnableSlot3(false)
     setEnableSlot4(false)
@@ -144,6 +155,8 @@ export function SelectModelStep () {
     setModel(e.target.value)
     checkIfModuleFixed(family, e.target.value)
     getSlots(family, e.target.value)
+    setSwitchModelPortData({ ...switchModelPortData, slots: [] })
+    updateModelPortData(family, e.target.value)
   }
 
   const onCheckChange = function (e: CheckboxChangeEvent, slot: string) {
@@ -158,6 +171,124 @@ export function SelectModelStep () {
         setEnableSlot4(e.target.checked)
         break
     }
+  }
+
+  const onModuleChange = (value: string) => {
+    getSlots(family, model)
+    setSwitchModelPortData({ ...switchModelPortData, slots: [] })
+    updateModelPortData(family, model)
+  }
+
+  const updateModelPortData = (selectedFamily: string, selectedModel: string) => {
+    setSwitchModelPortData({ ...switchModelPortData, model: selectedFamily + '-' + selectedModel })
+
+    for (let slotNumber = 1; slotNumber <= 4; slotNumber++) {
+      updateSlotPortData(slotNumber, selectedFamily, selectedModel)
+    }
+  }
+
+  const updateSlotPortData =
+  (slotNumber: number, selectedFamily: string, selectedModel: string) => {
+    if (slotNumber === 1) {
+      generateSlotData(slotNumber, true, [], '', selectedFamily, selectedModel)
+    } else {
+      const enable = form.getFieldValue(`enableSlot${slotNumber}`)
+      let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
+
+      console.log(enable, option)
+
+      let optionList = optionListForSlot2
+      switch (slotNumber) {
+        case 3:
+          optionList = optionListForSlot3
+          break
+        case 4:
+          optionList = optionListForSlot4
+          break
+      }
+
+      if (!enable) {
+        option = ''
+      }
+      else if (enable && !option) {
+        option = optionList[0] ? optionList[0].value : option
+      }
+
+      const index = switchModelPortData?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      if (!enable && index !== -1) {
+        switchModelPortData?.slots?.splice(index, 1)
+      }
+      generateSlotData(slotNumber, enable, optionList, option, selectedFamily, selectedModel)
+    }
+  }
+
+  const generateSlotData =
+  (slotNumber: number, slotEnable: boolean, slotOptions: ModelsType[],
+    slotOption: string, selectedFamily: string, selectedModel: string) => {
+    if (slotEnable) {
+      let totalPortNumber: string = '0'
+      let slotPortInfo: string = ''
+
+      if (slotOptions.length > 1) {
+        if (slotOption === '') {
+          slotOption = slotOptions[0].value
+        }
+        slotPortInfo = slotOption
+        totalPortNumber = slotPortInfo.split('X', 1)[0]
+      }
+      if ((slotOptions.length === 1 || totalPortNumber === '0') &&
+      selectedFamily !== '' && selectedModel !== '') {
+        const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
+        const familyList = ICX_MODELS_MODULES[familyIndex]
+        const modelIndex = selectedModel as keyof typeof familyList
+        slotPortInfo = familyList[modelIndex][slotNumber - 1][0]
+        totalPortNumber = slotPortInfo.split('X')[0]
+      }
+
+      let markedPortsInSameSlot =
+        markedPorts.filter((p: { slotNumber: number }) => p.slotNumber === slotNumber)
+      const slotData = {
+        slotNumber: slotNumber,
+        enable: slotEnable,
+        option: slotOption,
+        slotPortInfo: slotPortInfo,
+        portStatus: generatePortData(totalPortNumber, markedPortsInSameSlot)
+      }
+
+      const slotIndex = switchModelPortData.slots?.findIndex(
+        (s: { slotNumber: number }) => s.slotNumber === slotNumber)
+
+      const tmpModelPortData = { ...switchModelPortData }
+      if (slotIndex === -1) {
+        tmpModelPortData.slots.push(slotData)
+      } else {
+        if(switchModelPortData.slots){
+          tmpModelPortData.slots[slotIndex] = slotData
+        }
+      }
+      tmpModelPortData.slots = tmpModelPortData.slots.sort(
+        function (a: { slotNumber: number }, b: { slotNumber: number }) {
+          return a.slotNumber > b.slotNumber ? 1 : -1
+        })
+      console.log(tmpModelPortData)
+      setSwitchModelPortData(tmpModelPortData)
+
+      form.setFieldValue('switchModelPortData', tmpModelPortData)
+    }
+  }
+
+  const generatePortData = (totalNumber: string, markedPorts: PortsType[]) => {
+    let ports = []
+    for (let i = 1; i <= Number(totalNumber); i++) {
+      let markPortIndex = markedPorts.findIndex((p: { portNumber: number }) => p.portNumber === i)
+      let port = { portNumber: i, portTagged: '' }
+      if (markPortIndex !== -1) {
+        port.portTagged = markedPorts[markPortIndex].portTagged
+      }
+      ports.push(port)
+    }
+    console.log(ports)
+    return ports
   }
 
   return (
@@ -230,10 +361,12 @@ export function SelectModelStep () {
             <Col span={16} >
               <Form.Item
                 name={'selectedOptionOfSlot2'}
+                initialValue={optionListForSlot2[0]?.value}
               >
                 <Select
                   options={optionListForSlot2}
                   disabled={!enableSlot2}
+                  onChange={onModuleChange}
                 />
               </Form.Item>
             </Col>
@@ -255,10 +388,12 @@ export function SelectModelStep () {
             <Col span={16} >
               <Form.Item
                 name={'selectedOptionOfSlot3'}
+                initialValue={optionListForSlot3[0]?.value}
               >
                 <Select
                   options={optionListForSlot3}
                   disabled={!enableSlot3}
+                  onChange={onModuleChange}
                 />
               </Form.Item>
             </Col>
@@ -280,16 +415,19 @@ export function SelectModelStep () {
             <Col span={16} >
               <Form.Item
                 name={'selectedOptionOfSlot4'}
+                initialValue={optionListForSlot4[0]?.value}
               >
                 <Select
                   options={optionListForSlot4}
                   disabled={!enableSlot4}
+                  onChange={onModuleChange}
                 />
               </Form.Item>
             </Col>
           </Row>
         </Col>
       </Row>
+      <Form.Item name={'switchModelPortData'} />
     </>
   )
 }
