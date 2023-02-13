@@ -462,8 +462,10 @@ export function ManageCustomer () {
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
         service_effective_date: today,
-        service_expiration_date: expirationDate,
-        licenses: assignLicense
+        service_expiration_date: expirationDate
+      }
+      if (!isTrialMode) {
+        customer.licenses = assignLicense
       }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
@@ -651,7 +653,7 @@ export function ManageCustomer () {
     })
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
         <Form.Item
           name='wifiLicense'
           label=''
@@ -749,7 +751,7 @@ export function ManageCustomer () {
         >{intl.$t({ defaultMessage: 'Start Subscription' })}
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{assignedWifiLicense}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
@@ -844,7 +846,7 @@ export function ManageCustomer () {
         <Subtitle level={4}>
           { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>

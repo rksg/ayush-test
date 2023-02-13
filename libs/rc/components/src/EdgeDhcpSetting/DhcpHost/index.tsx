@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
@@ -48,10 +48,14 @@ export default function DHCPHostTable ({
   const [form] = Form.useForm<EdgeDhcpHost>()
   const valueMap = useRef<Record<string, EdgeDhcpHost>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
-
   const values = () => Object.values(valueMap.current)
-
   const handleChanged = () => onChange?.(values())
+
+  useEffect(() => {
+    if(value) {
+      valueMap.current = _.keyBy(value, 'id')
+    }
+  }, [value])
 
   const onAddOrEdit = (item?: EdgeDhcpHost) => {
     setVisible(true)
