@@ -75,7 +75,7 @@ RUN tools/docker/locales/generate.sh
 FROM build-base as build
 
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --all
+# RUN node ./node_modules/.bin/nx run-many --target=build --all
 
 ###############################################################
 FROM build-base as acx-ui-tests
