@@ -52,7 +52,6 @@ import {
   VenueRadioCustomization,
   VenueDirectedMulticast,
   VenueLoadBalancing,
-  GraphData,
   TopologyData
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
