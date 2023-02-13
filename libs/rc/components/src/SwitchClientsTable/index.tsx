@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Tooltip } from '@acx-ui/components'
 
 import { ClientsTable }                  from './ClientsTable'
 import { ClientSearchBar, SearchBarDiv } from './styledComponents'
@@ -37,7 +36,7 @@ export function SwitchClientsTable () {
             }
           }}
         />
-        <Tooltip
+        <Tooltip.Question
           title={<FormattedMessage {...getSearchToolTipText()}
             values={{
               div: (contents) => <div>{contents}</div>,
@@ -46,9 +45,7 @@ export function SwitchClientsTable () {
             }}/>}
           placement='bottom'
           style={{ gap: '10px' }}
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        />
       </SearchBarDiv>
       <ClientsTable searchString={searchValue} />
     </div>

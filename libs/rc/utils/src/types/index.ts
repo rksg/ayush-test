@@ -366,6 +366,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
@@ -426,8 +427,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {

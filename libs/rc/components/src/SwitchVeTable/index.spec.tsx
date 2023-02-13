@@ -17,15 +17,6 @@ import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHead
 
 import { SwitchVeTable } from '.'
 
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  SearchOutlined: () => <div data-testid='search-outlined' />,
-  CancelCircle: () => <div data-testid='cancel-circle' />,
-  CloseSymbol: () => <div data-testid='close-symbol' />,
-  SettingsOutlined: (props: {}) => <div data-testid='settings-outlined' {...props} />,
-  QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
-}))
-
 describe('Switch VE Table', () => {
   const params = {
     tenantId: 'tenant-id',

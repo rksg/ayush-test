@@ -343,5 +343,13 @@ export const LayoutUI = {
   Divider: styled(LogoDivider)`
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
+  `,
+  CompanyName: styled.div`
+    text-align: right;
+    margin-right: 5px;
+    max-width: 175px;
+    line-height: var(--acx-body-4-line-height);
+    font-size: var(--acx-body-4-font-size);
+    font-weight: var(--acx-body-font-weight);
   `
 }

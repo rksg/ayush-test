@@ -17,15 +17,6 @@ import { SwitchClientDetails } from './SwitchClientDetails'
 
 import { SwitchClientsTable } from './'
 
-jest.mock('@acx-ui/icons', () => {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map((key) => [
-    key,
-    () => <div data-testid={key} />
-  ])
-  return Object.fromEntries(keys)
-})
-
 const clientList = {
   fields: [
     'clientDesc',

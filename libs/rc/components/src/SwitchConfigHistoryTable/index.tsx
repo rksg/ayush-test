@@ -100,17 +100,17 @@ export function SwitchConfigHistoryTable (props: {
       key: 'configType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'configType',
-      sorter: true
+      sorter: false
     }, {
       key: 'numberOfSwitches',
       title: $t({ defaultMessage: '# of Switches' }),
       dataIndex: 'numberOfSwitches',
-      sorter: true
+      sorter: false
     }, {
       key: 'dispatchStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'dispatchStatus',
-      sorter: true,
+      sorter: false,
       render: (data, row) => isVenueLevel ? getStatusBar(row) : data
     }]
 

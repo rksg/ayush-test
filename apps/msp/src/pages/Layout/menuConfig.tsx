@@ -14,13 +14,20 @@ import {
   UsersThreeOutlined,
   UsersThreeSolid
 } from '@acx-ui/icons'
+import { AccountType } from '@acx-ui/utils'
 
 const MspSubscriptionOutlined =
   styled(MspSubscriptionOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSolidOverride}`
 
-export function useMenuConfig () {
+export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
+  const isVar = tenantType === AccountType.VAR
+  const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
+  const isSupport = tenantType === 'SUPPORT'
+  const isIntegrator =
+  tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+
   const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
@@ -31,11 +38,14 @@ export function useMenuConfig () {
       routes: [
         {
           path: '/dashboard/mspCustomers',
-          name: $t({ defaultMessage: 'MSP Customers' })
+          name: $t({ defaultMessage: 'MSP Customers' }),
+          disabled: isVar
         },
         {
           path: '/dashboard/varCustomers',
-          name: $t({ defaultMessage: 'VAR Customers' })
+          name: isSupport ? $t({ defaultMessage: 'RUCKUS Customers' })
+            : $t({ defaultMessage: 'VAR Customers' }),
+          disabled: isNonVarMSP || isIntegrator
         }
       ]
     },
@@ -44,21 +54,24 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Integrators' }),
       tenantType: 'v',
       inactiveIcon: IntegratorsOutlined,
-      activeIcon: IntegratorsSolid
+      activeIcon: IntegratorsSolid,
+      disabled: isVar || isIntegrator || isSupport
     },
     {
       path: '/deviceInventory',
       name: $t({ defaultMessage: 'Device Inventory' }),
       tenantType: 'v',
       inactiveIcon: DevicesOutlined,
-      activeIcon: DevicesSolid
+      activeIcon: DevicesSolid,
+      disabled: isSupport
     },
     {
       path: '/mspLicenses',
       name: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v',
       inactiveIcon: MspSubscriptionOutlined,
-      activeIcon: MspSubscriptionSolid
+      activeIcon: MspSubscriptionSolid,
+      disabled: isIntegrator || isSupport
     },
     genPlaceholder(),
     {
@@ -66,8 +79,10 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Settings' }),
       tenantType: 'v',
       inactiveIcon: ConfigurationOutlined,
-      activeIcon: ConfigurationSolid
+      activeIcon: ConfigurationSolid,
+      disabled: isVar || isIntegrator || isSupport
     }
   ]
+
   return config
 }
