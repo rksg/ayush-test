@@ -10,9 +10,7 @@ interface TestData { name: string }
 export const testUrl = { method: 'post', url: '/test' }
 
 const baseTestApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'testApi',
   tagTypes: ['Ap'],
   refetchOnMountOrArgChange: true,

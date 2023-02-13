@@ -26,9 +26,7 @@ const RKS_NEW_UI = {
 }
 
 export const baseNetworkApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'networkApi',
   tagTypes: ['Network', 'Venue'],
   refetchOnMountOrArgChange: true,

@@ -12,9 +12,7 @@ import {
 
 
 export const baseUserApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
   tagTypes: ['UserProfile'],
   refetchOnMountOrArgChange: true,

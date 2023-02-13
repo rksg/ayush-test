@@ -26,9 +26,7 @@ import {
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
 export const baseClientApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
   tagTypes: ['Client', 'Guest', 'HistoricalClient'],

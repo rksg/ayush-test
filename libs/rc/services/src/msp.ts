@@ -24,9 +24,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'mspApi',
   tagTypes: ['Msp'],
   refetchOnMountOrArgChange: true,

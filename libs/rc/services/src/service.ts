@@ -69,9 +69,7 @@ const RKS_NEW_UI = {
 }
 
 export const baseServiceApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'serviceApi',
   // eslint-disable-next-line max-len
   tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp', 'WifiCalling', 'DHCP', 'Portal'],

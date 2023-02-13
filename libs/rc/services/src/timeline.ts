@@ -32,9 +32,7 @@ const metaFields = [
 ]
 
 export const baseTimelineApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'timelineApi',
   tagTypes: ['Activity', 'Event', 'AdminLog'],
   refetchOnMountOrArgChange: true,

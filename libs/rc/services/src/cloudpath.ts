@@ -8,9 +8,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseCloudpathApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'cloudpathApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

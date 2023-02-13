@@ -8,9 +8,7 @@ import {
 
 
 export const baseCommonApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'commonApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

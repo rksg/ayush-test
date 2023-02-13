@@ -9,9 +9,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseMfaApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'mfaApi',
   tagTypes: ['Mfa'],
   refetchOnMountOrArgChange: true,

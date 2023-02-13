@@ -13,9 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeDhcpApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'edgeDhcpApi',
   tagTypes: ['EdgeDhcp'],
   refetchOnMountOrArgChange: true,

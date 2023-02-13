@@ -49,9 +49,7 @@ import {
 import { formatter } from '@acx-ui/utils'
 
 export const baseSwitchApi = createApi({
-  baseQuery: fetchBaseQuery({
-    credentials: 'include'
-  }),
+  baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
   tagTypes: ['Switch',
     'SwitchBackup',
