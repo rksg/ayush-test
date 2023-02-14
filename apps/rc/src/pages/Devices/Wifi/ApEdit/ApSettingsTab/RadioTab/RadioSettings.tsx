@@ -33,6 +33,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
+import { FieldLabel }    from '../styledComponents'
 
 import { DisabledDiv } from './styledComponents'
 
@@ -590,16 +591,19 @@ export function RadioSettings () {
             }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable24G']}
-              label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
+              <Form.Item
+                name={['enable24G']}
+                //label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable24g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '2.4 GHz Radio is disabled' })}
@@ -615,16 +619,18 @@ export function RadioSettings () {
             }
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable50G']}
-              label={$t({ defaultMessage: 'Enable 5 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 5 GHz band:' })}
+              <Form.Item
+                name={['enable50G']}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable5g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '5 GHz Radio is disabled' })}
@@ -641,16 +647,18 @@ export function RadioSettings () {
             }
           </div>
           <div style={{ display: currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable6G']}
-              label={$t({ defaultMessage: 'Enable 6 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 6 GHz band:' })}
+              <Form.Item
+                name={['enable6G']}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable6g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '6 GHz Radio is disabled' })}
@@ -668,16 +676,18 @@ export function RadioSettings () {
           {isSupportDual5GAp && (
             <>
               <div style={{ display: currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-                <Form.Item
-                  name={['apRadioParamsDual5G', 'lower5gEnabled']}
-                  label={$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
-                  valuePropName='checked'
-                  style={{ marginTop: '16px' }}
-                  children={isUseVenueSettings ?
-                    <span>{$t({ defaultMessage: 'On' })}</span>
-                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
-                  }
-                />
+                <FieldLabel width='180px'>
+                  {$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
+                  <Form.Item
+                    name={['apRadioParamsDual5G', 'lower5gEnabled']}
+                    valuePropName='checked'
+                    style={{ marginTop: '16px' }}
+                    children={isUseVenueSettings ?
+                      <span>{$t({ defaultMessage: 'On' })}</span>
+                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
+                    }
+                  />
+                </FieldLabel>
                 { (!isEnableLower5g && !isUseVenueSettings) ? (
                   <DisabledDiv>
                     {$t({ defaultMessage: 'Lower 5 GHz Radio is disabled' })}
@@ -694,16 +704,18 @@ export function RadioSettings () {
                 }
               </div>
               <div style={{ display: currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-                <Form.Item
-                  name={['apRadioParamsDual5G', 'upper5gEnabled']}
-                  label={$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
-                  valuePropName='checked'
-                  style={{ marginTop: '16px' }}
-                  children={isUseVenueSettings ?
-                    <span>{$t({ defaultMessage: 'On' })}</span>
-                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
-                  }
-                />
+                <FieldLabel width='180px'>
+                  {$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
+                  <Form.Item
+                    name={['apRadioParamsDual5G', 'upper5gEnabled']}
+                    valuePropName='checked'
+                    style={{ marginTop: '16px' }}
+                    children={isUseVenueSettings ?
+                      <span>{$t({ defaultMessage: 'On' })}</span>
+                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
+                    }
+                  />
+                </FieldLabel>
                 { (!isEnableUpper5g && !isUseVenueSettings) ? (
                   <DisabledDiv>
                     {$t({ defaultMessage: 'Upper 5 GHz Radio is disabled' })}
