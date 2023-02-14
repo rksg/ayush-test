@@ -8,7 +8,7 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { MdnsProxyForwardingRulesTable } from '.'
 
