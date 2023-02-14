@@ -127,13 +127,16 @@ export function RadioSettings () {
 
     if (ap && capabilities && availableChannels) {
       const setData = async () => {
-        const apType = (ap.indoorModel === false)? 'outdoor' : 'indoor'
+
         const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
         const { has160MHzChannelBandwidth = false,
           maxChannelization5G = 160,
           maxChannelization6G = 160,
           supportTriRadio = false,
-          supportDual5gMode = false } = apCapabilities || {}
+          supportDual5gMode = false,
+          isOutdoor = false } = apCapabilities || {}
+
+        const apType = (isOutdoor)? 'outdoor' : 'indoor'
 
         setApModelType(apType)
         const is5GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization5G >= 160)
