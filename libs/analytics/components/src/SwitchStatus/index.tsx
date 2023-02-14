@@ -2,10 +2,11 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesChartData }                                        from '@acx-ui/analytics/utils'
-import { getSeriesData, AnalyticsFilter }                             from '@acx-ui/analytics/utils'
-import { Loader, NoData, MultiBarTimeSeriesChart, GridCol, GridRow  } from '@acx-ui/components'
-import { TimeStamp }                                                  from '@acx-ui/types'
+import { TimeSeriesChartData }                              from '@acx-ui/analytics/utils'
+import { getSeriesData, AnalyticsFilter }                   from '@acx-ui/analytics/utils'
+import { cssStr }                                           from '@acx-ui/components'
+import { Loader, NoData, MultiBarTimeSeriesChart, GridCol } from '@acx-ui/components'
+import { TimeStamp }                                        from '@acx-ui/types'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'
@@ -16,15 +17,13 @@ const secondsToHm = (milliSeconds: number) => {
   let seconds = Math.floor(milliSeconds / 1000)
   const h = Math.floor(seconds / 3600) + 'h'
   const m = Math.floor((seconds % 3600) / 60) + 'm'
-  return h +' '+ m
+  return h + ' ' + m
 }
 
-function getStartAndEndTimes (timeSeries : TimeSeriesChartData[]) {
+function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
   return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
     const [time, value] = dataPoint
-    if (
-      index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]
-    ) {
+    if (index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]) {
       startEndTimes.push([time, 'switchStatus', time, value])
     } else {
       const lastStartEndTime = startEndTimes[startEndTimes.length - 1]
@@ -33,12 +32,11 @@ function getStartAndEndTimes (timeSeries : TimeSeriesChartData[]) {
     return startEndTimes
   }, [] as [TimeStamp, string, TimeStamp, number | null][])
 }
-
 export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'isSwitchUp', name: $t({ defaultMessage: 'SwitchStatus' }) }
-  ] as Array<{ key: Key, name: string }>
+  ] as Array<{ key: Key; name: string }>
   const queryResults = useSwitchStatusQuery(filters, {
     selectFromResult: ({ data, ...rest }) => {
       return {
@@ -51,29 +49,24 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
       }
     }
   })
-  console.log(queryResults)
 
   return (
     <Loader states={[queryResults]}>
-      <GridRow>
+      <UI.Wrapper>
         <UI.SwitchStatusHeader col={{ span: 16 }}>
-          Switch Status
+          {$t({ defaultMessage: 'Switch Status' })}
         </UI.SwitchStatusHeader>
-        <UI.TotalUptime col={{ span: 4 }} style={{ height: '20px' }}>
-          Total Uptime:{' '}
-          <UI.Duration>
-            {secondsToHm(queryResults?.switchTotalUptime || 0)}
-          </UI.Duration>
-        </UI.TotalUptime>
-        <UI.TotalDowntime
-          col={{ span: 4 }}
-          style={{ height: '20px', alignItems: 'end' }}>
-          Total Downtime:{' '}
-          <UI.Duration>
-            {secondsToHm(queryResults?.switchTotalDowntime || 0)}
-          </UI.Duration>
-        </UI.TotalDowntime>
-        <GridCol col={{ span: 24 }} style={{ height: '20px' }}>
+        <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
+          {$t({ defaultMessage: 'Total Uptime' })}
+          {': '}
+          <UI.Duration>{secondsToHm(queryResults?.switchTotalUptime || 0)}</UI.Duration>
+        </UI.Status>
+        <UI.Status col={{ span: 4 }}>
+          {$t({ defaultMessage: 'Total Downtime' })}
+          {': '}
+          <UI.Duration>{secondsToHm(queryResults?.switchTotalDowntime || 0)}</UI.Duration>
+        </UI.Status>
+        <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>
             {({ height, width }) =>
               queryResults.timeSeries.length ? (
@@ -83,7 +76,7 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
                     {
                       key: 'SwitchStatus',
                       name: 'switch',
-                      color: '#23AB36',
+                      color: cssStr('--acx-semantics-green-50'),
                       data: queryResults?.timeSeries as [
                         TimeStamp,
                         string,
@@ -104,7 +97,7 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
             }
           </AutoSizer>
         </GridCol>
-      </GridRow>
+      </UI.Wrapper>
     </Loader>
   )
 }

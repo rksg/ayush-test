@@ -12,10 +12,11 @@ export const getData = () => {
     data.push([
       base + oneDay * i,
       'SwitchStatus',
-      base + oneDay * i + Math.round(Math.random()) * 100000000
+      base + oneDay * i + Math.round(Math.random()) * 100000000,
+      1
     ])
   }
-  return data as [TimeStamp, string, TimeStamp][]
+  return data as [TimeStamp, string, TimeStamp, number | null][]
 }
 const seriesNames = [['New Clients', 'Impacted Clients', 'Connected Clients']]
 export const getSeriesData = (index = 0) => {

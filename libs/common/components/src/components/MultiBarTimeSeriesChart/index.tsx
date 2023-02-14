@@ -1,7 +1,5 @@
 import {
-  Dispatch,
   RefObject,
-  SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -10,18 +8,19 @@ import {
   useImperativeHandle
 } from 'react'
 
-
-import ReactECharts        from 'echarts-for-react'
+import ReactECharts    from 'echarts-for-react'
 import {
   TooltipFormatterCallback,
   TopLevelFormatterParams,
   CustomSeriesRenderItem,
-  LabelFormatterCallback
+  LabelFormatterCallback,
+  CallbackDataParams
 } from 'echarts/types/dist/shared'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import type { TimeStampRange, TimeStamp } from '@acx-ui/types'
-import { formatter }                      from '@acx-ui/utils'
+import { formatter, getIntl }             from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { ResetButton }       from '../Chart'
@@ -59,8 +58,8 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
     key: string;
     name: string;
     show?: boolean;
-    data: [TimeStamp, string, TimeStamp,number | null][];
-  }[]; // https://github.com/microsoft/TypeScript/issues/44373
+    data: [TimeStamp, string, TimeStamp, number | null][];
+  }[];
   chartBoundary: number[];
   zoomEnabled?: boolean;
   selectedData?: number;
@@ -70,12 +69,34 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
   seriesFormatters?: Record<string, ChartFormatterFn>;
   LabelFormatter?: LabelFormatterCallback<unknown>;
+  showToolTip?: boolean;
 }
 export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' }] as {
   key: string;
   series: string;
   color: string;
 }[]
+
+export function defaultLabelFormatter (
+  data: { data: [TimeStamp, string, TimeStamp, number | null][] }[],
+  params: CallbackDataParams
+) {
+  const { $t } = getIntl()
+  let status = $t({ defaultMessage: 'Not Available' })
+  data?.[0].data.forEach((dataPoint: [TimeStamp, string, TimeStamp, number | null]) => {
+    const startTime = moment(dataPoint?.[0])
+    const endTime = moment(dataPoint?.[2])
+    if (moment(params.value as string).isBetween(startTime, endTime, null, '[]'))
+      status = $t({ defaultMessage: 'Connected' })
+  })
+  return (
+    formatter('dateTimeFormat')(params.value) +
+    '\n' +
+    $t({ defaultMessage: 'Status' }) +
+    ': ' +
+    status
+  )
+}
 
 export const tooltipOptions = () =>
   ({
@@ -112,26 +133,6 @@ export const renderCustomItem = (
     },
     style: api?.style?.()
   }
-}
-export const useDataClick = (
-  eChartsRef: RefObject<ReactECharts>,
-  setShowToolTip: Dispatch<SetStateAction<boolean>>
-) => {
-  const handler = useCallback(
-    function () {
-      /* istanbul ignore next */
-      setShowToolTip(true)
-    },
-    [setShowToolTip]
-  )
-  useEffect(() => {
-    if (!eChartsRef || !eChartsRef.current) return
-    const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-    echartInstance.on('click', handler)
-    return () => {
-      echartInstance.off('click', handler)
-    }
-  }, [eChartsRef, handler])
 }
 export const useBarchartZoom = (
   eChartsRef: RefObject<ReactECharts>,
@@ -184,6 +185,7 @@ export function MultiBarTimeSeriesChart ({
   zoomEnabled = false,
   seriesFormatters,
   LabelFormatter,
+  showToolTip,
   ...props
 }: MultiBarTimeSeriesChart) {
   const { $t } = useIntl()
@@ -191,35 +193,12 @@ export function MultiBarTimeSeriesChart ({
   const chartPadding = 10
   const rowHeight = 12
   const xAxisHeight = hasXaxisLabel ? 30 : 0
-  const [showToolTip, setShowToolTip] = useState<boolean>(false)
 
   const eChartsRef = useRef<ReactECharts>(null)
   const chartWrapperRef = useRef(null)
 
   const [canResetZoom, resetZoomCallback] = useBarchartZoom(eChartsRef, zoomEnabled)
-  useDataClick(eChartsRef, setShowToolTip)
 
-  useEffect(() => {
-    document.addEventListener('click', handleClick)
-
-    return () => {
-      document.removeEventListener('click', handleClick)
-    }
-  }, [])
-
-  function handleClick (event: MouseEvent) {
-    if (!(chartWrapperRef.current as unknown as HTMLElement)
-      ?.contains(event.target as unknown as Node)) {
-      /* istanbul ignore next */
-      setShowToolTip(false)
-      /* istanbul ignore next */
-      const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
-      /* istanbul ignore next */
-      echartInstance.dispatchAction({
-        type: 'hideTip'
-      })
-    }
-  }
   const option: EChartsOption = {
     animation: false,
     grid: {
@@ -234,14 +213,7 @@ export function MultiBarTimeSeriesChart ({
       show: showToolTip,
       alwaysShowContent: showToolTip,
       ...tooltipOptions(),
-      formatter: tooltipFormatter
-        ? tooltipFormatter
-        : function (params) {
-          const { data } = params as unknown as {
-            data: [TimeStamp, string, TimeStamp, number | null];
-          }
-          return formatter('dateTimeFormat')(data[0])
-        },
+      formatter: tooltipFormatter,
       position: 'top'
     },
 
@@ -275,11 +247,12 @@ export function MultiBarTimeSeriesChart ({
         triggerTooltip: false,
         label: {
           ...(tooltipOptions() as Object),
+          height: 40,
           show: true,
           formatter: LabelFormatter
             ? LabelFormatter
             : function (params) {
-              return formatter('dateTimeFormat')(params.value)
+              return defaultLabelFormatter(data, params as unknown as CallbackDataParams)
             }
         },
         lineStyle: {
@@ -354,7 +327,7 @@ export function MultiBarTimeSeriesChart ({
             WebkitUserSelect: 'none',
             marginBottom: 0,
             width: props.style?.width as number,
-            height: rowHeight + xAxisHeight
+            height: rowHeight + xAxisHeight + 20
           }
         }}
         ref={eChartsRef}

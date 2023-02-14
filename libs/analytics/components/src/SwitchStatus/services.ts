@@ -4,32 +4,29 @@ import { dataApi }                               from '@acx-ui/analytics/service
 import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
 
 export type SwitchStatusTimeSeries = {
-  time: string[]
-  isSwitchUp :string[],
+  time: string[];
+  isSwitchUp: string[];
 }
 
 export type SwitchStatus = {
-  timeSeries : SwitchStatusTimeSeries,
-  switchTotalDowntime: number,
-  switchTotalUptime: number,
+  timeSeries: SwitchStatusTimeSeries;
+  switchTotalDowntime: number;
+  switchTotalUptime: number;
 }
 
-interface Response <T> {
+interface Response<T> {
   network: {
     hierarchyNode: {
-      switchTotalDowntime: number,
-      switchTotalUptime: number,
-      timeSeries: T
-    }
-  }
+      switchTotalDowntime: number;
+      switchTotalUptime: number;
+      timeSeries: T;
+    };
+  };
 }
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    switchStatus: build.query<
-    SwitchStatus,
-      AnalyticsFilter
-    >({
+    switchStatus: build.query<SwitchStatus, AnalyticsFilter>({
       query: (payload) => ({
         document: gql`
           query switchStatus(
@@ -39,12 +36,12 @@ export const api = dataApi.injectEndpoints({
             $granularity: String
             $filter: FilterInput
           ) {
-            network(start: $start, end: $end, filter : $filter) {
+            network(start: $start, end: $end, filter: $filter) {
               hierarchyNode(path: $path) {
-                switchTotalDowntime 
+                switchTotalDowntime
                 switchTotalUptime
                 timeSeries(granularity: $granularity) {
-                  isSwitchUp 
+                  isSwitchUp
                   time
                 }
               }

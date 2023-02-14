@@ -1,12 +1,13 @@
 import React, { RefObject } from 'react'
 
-import { ECharts }  from 'echarts'
-import ReactECharts from 'echarts-for-react'
+import { ECharts }            from 'echarts'
+import ReactECharts           from 'echarts-for-react'
+import { CallbackDataParams } from 'echarts/types/dist/shared'
 
 import { act, render, waitFor, screen, cleanup, renderHook, fireEvent } from '@acx-ui/test-utils'
 import { TimeStamp }                                                    from '@acx-ui/types'
 
-import { MultiBarTimeSeriesChart, useDataClick, useBarchartZoom } from '.'
+import { MultiBarTimeSeriesChart, useBarchartZoom, defaultLabelFormatter } from '.'
 
 const base = +new Date(2023, 1, 30)
 
@@ -14,13 +15,9 @@ const sampleData = () => {
   const milisInDay = 24 * 3600 * 1000
   const data = [[base, 'SwitchStatus', base + 1000]]
   for (let i = 1; i < 37; i++) {
-    data.push([
-      base + milisInDay * i,
-      'SwitchStatus',
-      base + milisInDay * i + 1000
-    ])
+    data.push([base + milisInDay * i, 'SwitchStatus', base + milisInDay * i + 1000, 1])
   }
-  return data as [TimeStamp, string, TimeStamp][]
+  return data as [TimeStamp, string, TimeStamp, number | null][]
 }
 
 const getData = () => {
@@ -34,23 +31,29 @@ const getData = () => {
   ]
 }
 
-type DispatchAction = ((payload: unknown, opt?: boolean | {
-  silent?: boolean;
-  flush?: boolean | undefined;
-}) => void)
+type DispatchAction = (
+  payload: unknown,
+  opt?:
+    | boolean
+    | {
+        silent?: boolean;
+        flush?: boolean | undefined;
+      }
+) => void
 
 describe('MultiBarTimeSeriesChart', () => {
-
   afterEach(() => cleanup())
 
   it('should render correctly', async () => {
-    render(<MultiBarTimeSeriesChart
-      style={{ width: 504, height: 300 }}
-      data={getData()}
-      chartBoundary={[1595829463000, 1609048663000]}
-      hasXaxisLabel
-      zoomEnabled
-    />)
+    render(
+      <MultiBarTimeSeriesChart
+        style={{ width: 504, height: 300 }}
+        data={getData()}
+        chartBoundary={[1595829463000, 1609048663000]}
+        hasXaxisLabel
+        zoomEnabled
+      />
+    )
     const chart = await screen.findByTestId('MultiBarTimeSeriesChart')
     fireEvent.click(chart)
     expect(chart).not.toBeNull()
@@ -63,11 +66,13 @@ describe('MultiBarTimeSeriesChart', () => {
       expect(ref).toEqual(mockCallbackRef)
       createHandleCallback = callback as () => RefObject<ReactECharts>
     })
-    render(<MultiBarTimeSeriesChart
-      data={getData()}
-      chartBoundary={[1595829463000, 1609048663000]}
-      chartRef={mockCallbackRef}
-    />)
+    render(
+      <MultiBarTimeSeriesChart
+        data={getData()}
+        chartBoundary={[1595829463000, 1609048663000]}
+        chartRef={mockCallbackRef}
+      />
+    )
     await waitFor(() => {
       expect(createHandleCallback()).not.toBeNull()
     })
@@ -78,10 +83,9 @@ describe('MultiBarTimeSeriesChart', () => {
     const mockSetCanResetZoom = jest.fn()
     const useStateSpy = jest.spyOn(React, 'useState')
     useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
-    render(<MultiBarTimeSeriesChart
-      data={getData()}
-      chartBoundary={[1595829463000, 1609048663000]}
-    />)
+    render(
+      <MultiBarTimeSeriesChart data={getData()} chartBoundary={[1595829463000, 1609048663000]} />
+    )
     expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
   })
 
@@ -91,73 +95,44 @@ describe('MultiBarTimeSeriesChart', () => {
     const mockedDispatch = jest.fn(() => true)
     const useStateSpy = jest.spyOn(React, 'useState')
     useStateSpy.mockImplementation(() => [true, mockedDispatch])
-    render(<MultiBarTimeSeriesChart
-      data={getData()}
-      chartBoundary={[1595829463000, 1609048663000]}
-      tooltipFormatter={tooltipFormatter}
-      LabelFormatter={labelFormatter}
-    />)
+    render(
+      <MultiBarTimeSeriesChart
+        data={getData()}
+        chartBoundary={[1595829463000, 1609048663000]}
+        tooltipFormatter={tooltipFormatter}
+        LabelFormatter={labelFormatter}
+      />
+    )
   })
 
-  it('should trigger on click handler', async () => {
-    const tooltipFormatter = jest.fn(() => 'tooltip')
-    const labelFormatter = jest.fn(() => 'label')
-    render(<MultiBarTimeSeriesChart
-      data={getData()}
-      chartBoundary={[1595829463000, 1609048663000]}
-      tooltipFormatter={tooltipFormatter}
-      LabelFormatter={labelFormatter}
-    />)
-
-    const chart = await screen.findByTestId('MultiBarTimeSeriesChart')
-    fireEvent.click(chart)
-    expect(chart).not.toBeNull()
-    // expect(await screen.findByText('tooltip')).toBeInTheDocument()
+  it('should show valid tooltip with status', async () => {
+    const data = [{ data: sampleData() }]
+    const params = { value: 1595829463000 } as CallbackDataParams
+    expect(defaultLabelFormatter(data, params)).toContain('Status: Not Available')
   })
-
-  describe('onDataClick', () => {
-    let onCallbacks: Record<string, (event: unknown) => void>
-    let mockOn: (type: string, callback: ((event: unknown) => void)) => void
-    let mockDispatchAction: DispatchAction
-    let eChartsRef: RefObject<ReactECharts>
-
-    beforeEach(() => {
-      onCallbacks = {}
-      mockOn = jest.fn().mockImplementation((type, callback) => onCallbacks[type] = callback)
-      mockDispatchAction = jest.fn() as DispatchAction
-      eChartsRef = {
-        current: {
-          getEchartsInstance: () => ({
-            dispatchAction: mockDispatchAction,
-            on: mockOn
-          } as unknown as ECharts)
-        }
-      } as RefObject<ReactECharts>
-    })
-
-    it('handles null echart ref', () => {
-      eChartsRef = { current: null } as RefObject<ReactECharts>
-      renderHook(() => useDataClick(eChartsRef, mockDispatchAction))
-      // intentionally no assertion to cover the line where echart ref is null
-    })
+  it('should show valid tooltip with connected status', async () => {
+    const data = [{ data: sampleData() }]
+    const params = { value: new Date(2023, 1, 30) } as CallbackDataParams
+    expect(defaultLabelFormatter(data, params)).toContain('Status: Connected')
   })
 
   describe('useBarchartZoom', () => {
     let onCallbacks: Record<string, (event: unknown) => void>
-    let mockOn: (type: string, callback: ((event: unknown) => void)) => void
+    let mockOn: (type: string, callback: (event: unknown) => void) => void
     let mockDispatchAction: DispatchAction
     let eChartsRef: RefObject<ReactECharts>
 
     beforeEach(() => {
       onCallbacks = {}
-      mockOn = jest.fn().mockImplementation((type, callback) => onCallbacks[type] = callback)
+      mockOn = jest.fn().mockImplementation((type, callback) => (onCallbacks[type] = callback))
       mockDispatchAction = jest.fn() as DispatchAction
       eChartsRef = {
         current: {
-          getEchartsInstance: () => ({
-            dispatchAction: mockDispatchAction,
-            on: mockOn
-          } as unknown as ECharts)
+          getEchartsInstance: () =>
+            ({
+              dispatchAction: mockDispatchAction,
+              on: mockOn
+            } as unknown as ECharts)
         }
       } as RefObject<ReactECharts>
     })
@@ -202,18 +177,22 @@ describe('MultiBarTimeSeriesChart', () => {
         resetZoomCallback = callback
       })
       onCallbacks['datazoom']({
-        batch: [{
-          startValue: +new Date('2020-10-01'),
-          endValue: +new Date('2020-10-02')
-        }]
+        batch: [
+          {
+            startValue: +new Date('2020-10-01'),
+            endValue: +new Date('2020-10-02')
+          }
+        ]
       })
       expect(mockSetCanResetZoom).toHaveBeenCalledWith(true)
       act(() => resetZoomCallback())
-      expect(mockDispatchAction)
-        .toHaveBeenNthCalledWith(2, { type: 'dataZoom', start: 0, end: 100 })
+      expect(mockDispatchAction).toHaveBeenNthCalledWith(2, {
+        type: 'dataZoom',
+        start: 0,
+        end: 100
+      })
       onCallbacks['datazoom']({ start: 0, end: 100 })
       expect(mockSetCanResetZoom).toHaveBeenCalledWith(false)
     })
   })
-
 })
