@@ -37,6 +37,14 @@ describe('DHCP Pool table(Edge)', () => {
     expect(tableRow.length).toBe(2)
   })
 
+  it('should show no data', async () => {
+    render(<DhcpPoolTable />)
+
+    const tbody = await findTBody()
+    const noDataElement = within(tbody).getByRole('row')
+    expect(noDataElement.className).toBe('ant-table-placeholder')
+  })
+
   it('should open drawer', async () => {
     const user = userEvent.setup()
     render(<DhcpPoolTable value={mockData} />)
@@ -45,7 +53,7 @@ describe('DHCP Pool table(Edge)', () => {
     expect(await screen.findByRole('textbox', { name: 'Pool Name' })).toBeVisible()
   })
 
-  it('should show edit pool', async () => {
+  it('should show edit button', async () => {
     render(<DhcpPoolTable value={mockData} />)
 
     const tbody = await findTBody()

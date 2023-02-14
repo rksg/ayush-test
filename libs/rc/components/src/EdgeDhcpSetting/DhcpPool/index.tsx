@@ -16,7 +16,7 @@ export default function DhcpPoolTable ({
   value = [],
   onChange
 }: DhcpPoolTableProps) {
-  const valueMap = useRef<Record<string, EdgeDhcpPool>>(value ? _.keyBy(value, 'id') : {})
+  const valueMap = useRef<Record<string, EdgeDhcpPool>>({})
   const [visible, setVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<EdgeDhcpPool>()
 

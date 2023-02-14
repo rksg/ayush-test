@@ -2,8 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import {
-  findTBody,
-  render, screen, within
+  findTBody, render, screen, within
 } from '@acx-ui/test-utils'
 
 import HostTable from '.'
@@ -29,6 +28,14 @@ describe('Host table(Edge)', () => {
 
     const tableRow = await screen.findAllByRole('row', { name: /TestHost-/i })
     expect(tableRow.length).toBe(2)
+  })
+
+  it('should show no data', async () => {
+    render(<HostTable />)
+
+    const tbody = await findTBody()
+    const noDataElement = within(tbody).getByRole('row')
+    expect(noDataElement.className).toBe('ant-table-placeholder')
   })
 
   it('should open drawer', async () => {
