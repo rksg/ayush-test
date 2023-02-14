@@ -2,8 +2,6 @@
 import {
   ExternalAntenna,
   GuestNetworkTypeEnum,
-  NewTablePageable,
-  NewTableResult,
   PropertyConfigs,
   PropertyConfigStatus,
   PropertyUnit,
@@ -2634,19 +2632,6 @@ export const validChannelsData = {
       '221'
     ]
   }
-}
-
-const propertyPageable: NewTablePageable = {
-  offset: 0,
-  pageNumber: 0,
-  pageSize: 10,
-  paged: true,
-  sort: {
-    unsorted: true,
-    sorted: false,
-    empty: false
-  },
-  unpaged: false
 }
 
 export const mockEnabledPropertyConfig: PropertyConfigs = {
