@@ -1,16 +1,24 @@
+import React from 'react'
+
 import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Button, SelectionControl } from '@acx-ui/components'
-import { ExpirationDateSelector }   from '@acx-ui/rc/components'
-import { useLazyMacRegListsQuery }  from '@acx-ui/rc/services'
-import { checkObjectNotExists }     from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
+import { Button, SelectionControl }                               from '@acx-ui/components'
+import { ExpirationDateSelector }                                 from '@acx-ui/rc/components'
+import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists, useTableQuery }                    from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 
 export function MacRegistrationListSettingForm () {
   const { $t } = useIntl()
   const [ macRegList ] = useLazyMacRegListsQuery()
   const { policyId } = useParams()
+
+  const policySetList = useTableQuery({
+    useQuery: useAdaptivePolicySetListQuery,
+    apiParams: { size: '2147483647', page: '0', sort: 'name,ASC' },
+    defaultPayload: { }
+  })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -58,15 +66,26 @@ export function MacRegistrationListSettingForm () {
         </Form.Item>
       </Col>
       <Col span={24}>
-        <Form.Item name='access_policy_set'
-          label={$t({ defaultMessage: 'Access Policy Set' })}
-          rules={[
-            { required: false,
-              message: $t({ defaultMessage: 'Please choose Access Policy Set' }) }
-          ]}
-        >
+        <Form.Item>
           <Space direction='horizontal'>
-            <Select style={{ width: 200 }} placeholder={$t({ defaultMessage: 'Select...' })}/>
+            <Form.Item name='policySetId'
+              label={$t({ defaultMessage: 'Access Policy Set' })}
+              valuePropName='value'
+              rules={[
+                { required: true,
+                  message: $t({ defaultMessage: 'Please choose a Access Policy Set' }) }
+              ]}
+              children={
+                <Select style={{ width: 200 }}
+                  allowClear
+                  placeholder={$t({ defaultMessage: 'Select...' })}
+                  options={
+                    policySetList.data?.data
+                      .map(set => ({ value: set.id, label: set.name }))
+                  }
+                />
+              }
+            />
             <Button type='link'>
               {$t({ defaultMessage: 'Add Access Policy Set' })}
             </Button>

@@ -39,7 +39,8 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation,
+  RulesManagementUrlsInfo, AdaptivePolicySet
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -51,7 +52,8 @@ const RKS_NEW_UI = {
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
+  // eslint-disable-next-line max-len
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'AdaptivePolicySet'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -648,7 +650,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })
@@ -697,6 +699,31 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    adaptivePolicySetList: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getAdaptivePolicySets,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq
+        }
+      },
+      transformResponse (result: NewTableResult<AdaptivePolicySet>) {
+        return transferToTableResult<AdaptivePolicySet>(result)
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getAdaptivePolicySet, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'DETAIL' }]
     })
   })
 })
@@ -758,5 +785,8 @@ export const {
   useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
-  useGetSyslogPolicyListQuery
+  useGetSyslogPolicyListQuery,
+  useAdaptivePolicySetListQuery,
+  useGetAdaptivePolicySetQuery,
+  useLazyGetAdaptivePolicySetQuery
 } = policyApi

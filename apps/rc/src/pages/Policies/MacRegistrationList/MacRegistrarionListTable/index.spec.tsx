@@ -1,11 +1,17 @@
 import { rest } from 'msw'
 
-import { ExpirationType, MacRegListUrlsInfo }                                       from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }                       from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import MacRegistrationListsTable from './index'
 
+
+const policySet = {
+  id: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
+  name: 'testPolicySet1',
+  description: 'for test'
+}
 
 const list = {
   content: [
@@ -15,7 +21,8 @@ const list = {
       autoCleanup: true,
       enabled: true,
       expirationEnabled: false,
-      registrationCount: 5
+      registrationCount: 5,
+      policySetId: policySet.id
     },
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
@@ -64,6 +71,10 @@ describe('MacRegistrationListsTable', () => {
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPools.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getAdaptivePolicySet.url,
+        (req, res, ctx) => res(ctx.json(policySet))
       )
     )
   })
@@ -85,28 +96,43 @@ describe('MacRegistrationListsTable', () => {
   })
 
   it('should delete selected row', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        MacRegListUrlsInfo.deleteMacRegistrationPool.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        })
+    )
+
     render(<Provider><MacRegistrationListsTable /></Provider>, {
       route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+        policyId: '79c439e1e5474f68acc9da38fa08a37b'
+      }, path: '/:tenantId/:policyId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
+    const row = await screen.findByRole('row', { name: /Registration pool-1/i })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    fireEvent.click(screen.getByRole('button', { name: /delete/i }))
 
     await screen.findByText('Delete "Registration pool-1"?')
 
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })
 
-    const deleteListsButton = await screen.findByText('Delete List')
-    expect(deleteListsButton).toBeInTheDocument()
-    fireEvent.click(deleteListsButton)
+    const deleteListButton = screen.getByRole('button', { name: 'Delete List' })
+    await waitFor(() => expect(deleteListButton).toBeEnabled())
+    fireEvent.click(deleteListButton)
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
   })
 
   it('should edit selected row', async () => {

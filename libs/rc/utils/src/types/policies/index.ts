@@ -4,6 +4,7 @@ export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
+export * from './rulesManagement'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'

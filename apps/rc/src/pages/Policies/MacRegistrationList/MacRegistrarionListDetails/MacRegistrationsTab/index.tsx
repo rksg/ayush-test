@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
-import { useIntl }             from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
@@ -61,19 +60,29 @@ export function MacRegistrationsTab () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: (selectedRows) => selectedRows.length === 1,
-    onClick: (rows, clearSelection) => {
+    onClick: ([{ macAddress, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'MAC Address' }),
-          entityValue: rows.length === 1 ? rows[0].macAddress : undefined,
-          numOfEntities: rows.length
+          entityValue: macAddress
         },
         onOk: () => {
-          // eslint-disable-next-line max-len
-          deleteMacRegistration({ params: { policyId, registrationId: rows[0].id } })
-            .then(clearSelection)
+          deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                // eslint-disable-next-line max-len
+                content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
         }
       })
     }
@@ -173,7 +182,6 @@ export function MacRegistrationsTab () {
         templateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        importError={uploadCsvResult.error as FetchBaseQueryError}
         importRequest={async (formData) => {
           try {
             await uploadCsv({ params: { policyId }, payload: formData }).unwrap()

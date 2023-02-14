@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Card, Loader }          from '@acx-ui/components'
-import { useGetMacRegListQuery } from '@acx-ui/rc/services'
+import { Card, Loader }              from '@acx-ui/components'
+import {
+  useGetMacRegListQuery,
+  useLazyGetAdaptivePolicySetQuery
+} from '@acx-ui/rc/services'
 
 import { returnExpirationString } from '../../MacRegistrationListUtils'
 
@@ -17,6 +20,20 @@ export function MacRegistrationListOverviewTab () {
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
   const data = macRegistrationListQuery.data
   const { Paragraph } = Typography
+  const [ policySetName, setPolicySetName ] = useState('')
+
+  const [ getAdaptivePolicySet ] = useLazyGetAdaptivePolicySetQuery()
+
+  useEffect(() => {
+    if(data?.policySetId) {
+      getAdaptivePolicySet({ params: { policyId: data.policySetId } })
+        .then(result => {
+          if (result.data) {
+            setPolicySetName(result.data.name)
+          }
+        })
+    }
+  }, [data])
 
   return (
     <Space direction={'vertical'}>
@@ -68,7 +85,7 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'Access Policy Set' })}
                 >
-                  <Paragraph>{data?.policyId ?? ''}</Paragraph>
+                  <Paragraph>{policySetName}</Paragraph>
                 </Form.Item>
               </Col>
             </Row>
