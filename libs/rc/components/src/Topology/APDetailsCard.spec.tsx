@@ -1,0 +1,84 @@
+import '@testing-library/jest-dom'
+
+import { APExtended, ApVenueStatusEnum, CelluarInfo } from '@acx-ui/rc/utils'
+import { render }                                     from '@acx-ui/test-utils'
+
+import { APDetailsCard } from './APDetailsCard'
+
+const apDetail = {
+  serialNumber: '132106000082',
+  lastSeenTime: '2023-02-07T08:31:52.927Z',
+  name: 'R760-181-66',
+  model: 'R760',
+  fwVersion: '6.2.1.103.1610',
+  venueId: '1b48f908d285498d98c5a49ce65a8358',
+  venueName: 'ThirdRadio',
+  deviceStatus: '2_00_Operational',
+  deviceStatusSeverity: ApVenueStatusEnum.OPERATIONAL,
+  IP: '192.168.181.66',
+  extIp: '134.242.238.1',
+  apMac: 'B4:79:C8:3E:C8:70',
+  apStatusData: {
+    APRadio: [
+      {
+        txPower: 'max',
+        channel: '0',
+        band: '2.4G',
+        Rssi: '',
+        operativeChannelBandwidth: '20',
+        radioId: 0
+      },
+      {
+        txPower: 'max',
+        channel: '0',
+        band: '5G',
+        Rssi: '',
+        operativeChannelBandwidth: '80',
+        radioId: 1
+      },
+      {
+        txPower: 'max',
+        channel: '0',
+        band: '5G',
+        Rssi: '',
+        operativeChannelBandwidth: '80',
+        radioId: 2
+      }
+    ],
+    cellularInfo: {} as CelluarInfo,
+    APSystem: {
+      uptime: 333842,
+      ipType: 'dynamic',
+      netmask: '255.255.255.0',
+      gateway: '192.168.181.1',
+      primaryDnsServer: '8.8.8.8',
+      secondaryDnsServer: 'null'
+    },
+    lanPortStatus: [
+      {
+        port: '0',
+        phyLink: 'Down  '
+      },
+      {
+        port: '1',
+        phyLink: 'Up 1000Mbps full'
+      }
+    ]
+  },
+  meshRole: 'DISABLED',
+  deviceGroupId: '00dd4e142110489b9c21bcb1a2a5e93e',
+  deviceGroupName: '',
+  deviceModelType: 'Indoor'
+}
+
+
+describe('Topology AP Card', () => {
+  it('should render correctly', async () => {
+    const { asFragment } = render(<APDetailsCard
+      apDetail={apDetail as APExtended}
+      isLoading={false}
+    />)
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+})

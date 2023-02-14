@@ -86,7 +86,7 @@ tooltipNode: Node,
       zIndex: 9999
     }}>
     {
-      tooltipNode.type === (DeviceTypes.Switch || DeviceTypes.SwitchStack)
+      (tooltipNode.type === DeviceTypes.Switch || tooltipNode.type === DeviceTypes.SwitchStack)
         ? <SwitchDetailsCard
           switchDetail={switchDetail as SwitchViewModel}
           isLoading={switchLoading}/>

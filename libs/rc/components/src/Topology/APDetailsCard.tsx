@@ -137,7 +137,7 @@ export function APDetailsCard (props: {
             { $t({ defaultMessage: 'Last Seen' })}:
           </Col>
           <Col span={12} >
-            {apDetail?.lastSeenTime || '--'}
+            {apDetail?.lastSeenTime}
           </Col>
         </Row>
       }

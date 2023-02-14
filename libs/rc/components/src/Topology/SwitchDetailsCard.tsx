@@ -125,7 +125,7 @@ export function SwitchDetailsCard (props: {
             { $t({ defaultMessage: 'Last Seen' })}:
           </Col>
           <Col span={12} >
-            {switchDetail?.lastSeenTime || '--'}
+            {switchDetail?.lastSeenTime}
           </Col>
         </Row>
       }

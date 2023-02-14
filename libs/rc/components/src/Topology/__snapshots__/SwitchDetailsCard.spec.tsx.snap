@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Topology Switch Card should render orrectly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 ebSYxh"
+    type="no-border"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm"
+            style="padding: 0px;"
+            type="button"
+          >
+            <span>
+              test
+            </span>
+          </button>
+        </div>
+        <div
+          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+        >
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              Model:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              ICX7150-C12P
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              mac:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              c0:c5:20:aa:24:7b
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              IP Address:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              10.206.10.16
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              Status:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              <span
+                class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+              >
+                <span
+                  class="ant-badge-status-dot"
+                />
+                <span
+                  class="ant-badge-status-text"
+                >
+                  Operational
+                </span>
+              </span>
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              Uptime:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              1 days, 0:42:16.00
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              Clients Connected:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              1
+            </div>
+          </div>
+          <div
+            class="ant-row"
+            style="margin: -12px -6px -12px -6px; line-height: 24px;"
+          >
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              Last Seen:
+            </div>
+            <div
+              class="ant-col ant-col-12"
+              style="padding: 12px 6px 12px 6px;"
+            >
+              11/12/2022
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
