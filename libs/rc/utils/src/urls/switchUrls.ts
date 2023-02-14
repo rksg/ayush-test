@@ -276,7 +276,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDhcpPools: {
     method: 'post',
-    url: '/switches/dhcpServers/query',
+    url: '/switches/:switchId/dhcpServers/query',
     newApi: true
   },
   addDhcpServer: {

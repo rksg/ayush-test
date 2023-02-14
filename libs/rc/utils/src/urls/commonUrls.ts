@@ -30,23 +30,28 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAlarmsList: {
     method: 'post',
-    url: '/api/eventalarmapi/:tenantId/alarm/alarmlist'
+    url: '/alarms/query',
+    newApi: true
   },
   getAlarmsListMeta: {
     method: 'post',
-    url: '/api/eventalarmapi/:tenantId/alarm/meta'
+    url: '/alarms/metas/query',
+    newApi: true
   },
   getActivityList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/activity/query'
+    url: '/activities/query',
+    newApi: true
   },
   getEventList: {
     method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/eventlist'
+    url: '/events/query',
+    newApi: true
   },
   getEventListMeta: {
     method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/meta'
+    url: '/events/metas/query',
+    newApi: true
   },
   clearAlarm: {
     method: 'delete',
@@ -54,7 +59,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   clearAllAlarm: {
     method: 'delete',
-    url: '/api/eventalarmapi/:tenantId/alarm'
+    url: '/alarms',
+    newApi: true
   },
   getApsList: {
     method: 'post',
@@ -321,7 +327,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueConfigHistoryDetail: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/detail/:transactionId'
+    url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
+    newApi: true
   },
   getSwitchConfigProfile: {
     method: 'get',
@@ -354,15 +361,18 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getClientSessionHistory: {
     method: 'post',
-    url: '/api/reporting/tenant/:tenantId/report/clientSessionHistory'
+    url: '/reports/clients/sessionHistories',
+    newApi: true
   },
   getHistoricalClientList: {
     method: 'post',
-    url: '/api/eventalarmapi/:tenantId/event/hist_client_list'
+    url: '/historicalClients/query',
+    newApi: true
   },
   getHistoricalStatisticsReportsV2: {
     method: 'post',
-    url: '/api/reporting/tenant/:tenantId/report/clientStats/v2'
+    url: '/reports/clients/statistics',
+    newApi: true
   },
   getGuestsList: {
     method: 'post',
@@ -376,11 +386,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApNetworkList: {
     method: 'post',
-    url: '/aps/:serialNumber/networks/query'
+    url: '/aps/:serialNumber/networks/query',
+    newApi: true
   },
   getExternalProviders: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/network/external-providers'
+    url: '/networks/wisprProviders',
+    newApi: true
   },
   getGlobalValues: {
     method: 'get',
