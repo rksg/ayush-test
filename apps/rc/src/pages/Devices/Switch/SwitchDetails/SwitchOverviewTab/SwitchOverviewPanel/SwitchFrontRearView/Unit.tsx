@@ -8,7 +8,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { SwitchDetailsContext } from '../../..'
 import { Slot } from './Slot'
-import * as UI             from '../styledComponents'
+import * as UI             from './styledComponents'
 
 interface SlotMember {
   isStack: boolean

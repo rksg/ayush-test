@@ -13,7 +13,7 @@ export function SwitchOverviewPanel (props:{
   const { filters, stackMember } = props
 
   return <GridRow>
-    <GridCol col={{ span: 24 }} style={{ height: '100px' }}>
+    <GridCol col={{ span: 24 }}>
       <SwitchFrontRearView stackMember={stackMember} />
     </GridCol>
     { filters && <SwitchWidgets filters={{ ...filters }}/> }

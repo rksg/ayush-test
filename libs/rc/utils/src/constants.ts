@@ -785,3 +785,10 @@ export enum ConfigurationBackupStatus {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED'
 }
+
+export enum PortTaggedEnum {
+  EMPTY = '',
+  TAGGED = 'TAGGED',
+  UNTAGGED = 'UNTAGGED',
+  LAG = 'LAG'
+}

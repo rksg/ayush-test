@@ -1,8 +1,27 @@
-import { PortLabelType, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { PortLabelType, PortTaggedEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import * as UI             from '../styledComponents'
 import { Port } from './Port'
+import * as UI             from './styledComponents'
+
+interface portStatus {
+  portNumber: number
+  portnumber: number
+  name: string
+  portIdentifier: string
+  poeEnabled: boolean
+  status: string
+  portStatus: string
+  portSpeed: string
+  portTagged: PortTaggedEnum
+  taggedVlan: string
+  untaggedVlan: string
+  usedInFormingStack: boolean
+  usedInUplink: boolean
+  poeUsed: number
+  neighborName: string
+  poeType: string
+}
 
 export function Slot (props:{
   slot: any, 
@@ -13,7 +32,7 @@ export function Slot (props:{
 }) {
   const { $t } = useIntl()
   const [ isRearView, setIsRearView ] = useState(false)
-  const { slot } = props
+  const { slot, deviceStatus, isStack, portLabel } = props
 
   // useEffect(() => {
   //   if (slot.portStatus !== undefined) {
@@ -21,7 +40,46 @@ export function Slot (props:{
   //   }
   // }, [slot])
 
-  return <div>
-   <Port />
-  </div>
+  const getPortIcon = (port: portStatus) => {
+    if (deviceStatus === SwitchStatusEnum.DISCONNECTED) {
+      return '';
+    }
+    if (port.usedInUplink) {
+      return 'UpLink';
+    }
+    if (isStack && port.usedInFormingStack) {
+      return 'Stack';
+    }
+    if (port.poeUsed) {
+      return 'PoeUsed';
+    }
+    return '';
+  }
+
+  return <UI.SlotWrapper>
+    <UI.SlotVertical>
+    {
+      slot.portStatus
+      .filter((item: portStatus) => item.portnumber%2 == 1)
+      .map((port: portStatus) => (
+        <Port key={port.portIdentifier} 
+          labelText={portLabel + port.portnumber}
+          labelPosition='top' 
+        />
+      ))
+    }
+    </UI.SlotVertical>
+    <UI.SlotVertical>
+    {
+      slot.portStatus
+      .filter((item: portStatus) => item.portnumber%2 == 0)
+      .map((port: portStatus) => (
+        <Port key={port.portIdentifier} 
+          labelText={portLabel + port.portnumber}
+          labelPosition='bottom' 
+        />
+      ))
+    }
+    </UI.SlotVertical>
+  </UI.SlotWrapper>
 }
