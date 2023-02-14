@@ -42,7 +42,12 @@ const { Option } = Select
 const { useWatch } = Form
 
 export interface ApplicationDrawerProps {
-  inputName?: string[]
+  inputName?: string[],
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean
 }
 
 export interface ApplicationsRule {
@@ -131,7 +136,11 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
 const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false
+  } = props
   const [visible, setVisible] = useState(false)
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
@@ -175,9 +184,12 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   const { data: appPolicyInfo } = useGetAppPolicyQuery(
     {
-      params: { ...params, applicationPolicyId: applicationPolicyId }
+      params: {
+        ...params,
+        applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
+      }
     },
-    { skip: applicationPolicyId === '' || applicationPolicyId === undefined }
+    { skip: !isOnlyViewMode && (applicationPolicyId === '' || applicationPolicyId === undefined) }
   )
 
   const [categoryAppMappingObject, setCategoryAppMappingObject] = useState({} as {
@@ -457,7 +469,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'applicationPolicyId']}
@@ -497,7 +509,18 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> : <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          if (isOnlyViewMode) {
+            setVisible(true)
+            setQueryPolicyId(onlyViewMode.id)
+          }
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button> }
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}

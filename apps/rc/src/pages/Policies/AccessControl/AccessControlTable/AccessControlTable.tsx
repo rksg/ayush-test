@@ -1,18 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { usePolicyListQuery }                            from '@acx-ui/rc/services'
+import { Button, PageHeader } from '@acx-ui/components'
 import {
   PolicyType,
-  useTableQuery,
-  getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import AccessControlTabs from './AccessControlTabs';
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import AccessControlTabs from './AccessControlTabs'
 
 export default function AccessControlTable () {
   const { $t } = useIntl()

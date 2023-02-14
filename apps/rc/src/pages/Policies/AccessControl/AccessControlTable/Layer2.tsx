@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                from '@acx-ui/components'
-import { useL2AclPolicyListQuery } from '@acx-ui/rc/services';
-import { getPolicyDetailsLink, L2AclPolicy, Policy, PolicyOperation, PolicyType, useTableQuery } from '@acx-ui/rc/utils';
-import { Path, TenantLink, useTenantLink, useNavigate }                             from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps }                                                     from '@acx-ui/components'
+import { useL2AclPolicyListQuery }                                                       from '@acx-ui/rc/services'
+import { getPolicyDetailsLink, L2AclPolicy, PolicyOperation, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useTenantLink, useNavigate }                                  from '@acx-ui/react-router-dom'
 
 
 const defaultPayload = {

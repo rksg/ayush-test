@@ -16,6 +16,11 @@ const { Option } = Select
 
 export interface Layer2DrawerProps {
   inputName?: string[]
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean
 }
 
 const RuleContentWrapper = styled.div`
@@ -45,7 +50,11 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false
+  } = props
   const inputRef = useRef(null)
   const [visible, setVisible] = useState(false)
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
@@ -90,9 +99,9 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const { data: layer2PolicyInfo } = useGetL2AclPolicyQuery(
     {
-      params: { ...params, l2AclPolicyId: l2AclPolicyId }
+      params: { ...params, l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
     },
-    { skip: l2AclPolicyId === '' || l2AclPolicyId === undefined }
+    { skip: !isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined) }
   )
 
   const isViewMode = () => {
@@ -434,7 +443,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l2AclPolicyId']}
@@ -474,7 +483,18 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> : <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          if (isOnlyViewMode) {
+            setVisible(true)
+            setQueryPolicyId(onlyViewMode.id)
+          }
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button> }
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}

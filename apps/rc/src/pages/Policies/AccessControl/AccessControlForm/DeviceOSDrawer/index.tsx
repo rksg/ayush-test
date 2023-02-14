@@ -39,7 +39,12 @@ export interface DeviceOSRule {
 }
 
 export interface DeviceOSDrawerProps {
-  inputName?: string[]
+  inputName?: string[],
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -79,7 +84,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false
+  } = props
   const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -122,9 +131,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const { data: devicePolicyInfo } = useGetDevicePolicyQuery(
     {
-      params: { ...params, devicePolicyId: devicePolicyId }
+      params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
     },
-    { skip: devicePolicyId === '' || devicePolicyId === undefined }
+    { skip: !isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined) }
   )
 
   const isViewMode = () => {
@@ -401,7 +410,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
@@ -442,7 +451,18 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> : <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          if (isOnlyViewMode) {
+            setVisible(true)
+            setQueryPolicyId(onlyViewMode.id)
+          }
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button> }
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}

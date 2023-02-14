@@ -16,11 +16,7 @@ const defaultPayload = {
     type: [PolicyType.ACCESS_CONTROL]
   },
   fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
+    '*'
   ]
 }
 
