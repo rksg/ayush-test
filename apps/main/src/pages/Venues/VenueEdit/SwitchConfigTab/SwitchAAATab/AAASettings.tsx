@@ -104,7 +104,7 @@ const defaultFormData = {
 }
 
 export function AAASettings () {
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 

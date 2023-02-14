@@ -12,7 +12,7 @@ import ApEditTabs from './ApEditTabs'
 
 function ApEditPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const { data } = useGetApQuery({ params: { serialNumber } })
 
   const navigate = useNavigate()

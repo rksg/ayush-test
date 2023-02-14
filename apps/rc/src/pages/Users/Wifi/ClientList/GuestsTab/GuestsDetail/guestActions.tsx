@@ -30,7 +30,7 @@ export function useGuestActions () {
       })
   }
 
-  const showDeleteGuest = async (guest: Guest, tenantId?: string, callBack?: ()=>void) => {
+  const showDeleteGuest = async (guest: Guest, callBack?: ()=>void) => {
     showActionModal({
       type: 'confirm',
       customContent: {

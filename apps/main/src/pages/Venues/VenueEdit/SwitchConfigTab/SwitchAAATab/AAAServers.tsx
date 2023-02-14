@@ -22,7 +22,7 @@ const PanelHeader = {
 }
 
 export function AAAServers () {
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { $t } = useIntl()
 
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
