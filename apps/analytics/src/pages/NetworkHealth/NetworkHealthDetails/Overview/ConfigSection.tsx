@@ -6,9 +6,8 @@ import { IntlShape, useIntl } from 'react-intl'
 import { DescriptionSection } from '@acx-ui/analytics/components'
 import { formatter }          from '@acx-ui/utils'
 
-import { authMethodsByCode }       from '../../authMethods'
-import { NetworkHealthTestResult } from '../../services'
-
+import { authMethodsByCode } from '../../authMethods'
+import { NetworkHealthTest } from '../../types'
 
 interface Field {
   children: string | React.ReactNode
@@ -16,7 +15,7 @@ interface Field {
 }
 
 type FieldFormatter = (
-  details: NetworkHealthTestResult, $t:IntlShape['$t']
+  details: NetworkHealthTest, $t:IntlShape['$t']
 ) => Field|undefined
 
 const fieldFormatterList: FieldFormatter[] = [
@@ -75,7 +74,7 @@ const fieldFormatterList: FieldFormatter[] = [
   })
 ]
 
-export const ConfigSection: React.FC<{ details: NetworkHealthTestResult }> = props => {
+export const ConfigSection: React.FC<{ details: NetworkHealthTest }> = props => {
   const { $t } = useIntl()
   const fields = fieldFormatterList
     .map(getField => getField(props.details, $t))

@@ -1,15 +1,13 @@
-import React from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { NetworkHealthTestResult } from '../../services'
+import { NetworkHealthTest } from '../../types'
 
 import { ConfigSection }    from './ConfigSection'
 import { ExecutionSection } from './ExecutionSection'
 
-const Overview = ({ details }: { details: NetworkHealthTestResult }) => {
+const Overview = ({ details }: { details: NetworkHealthTest }) => {
   const { $t } = useIntl()
   return <GridRow>
     <GridCol col={{ span: 6 }}>

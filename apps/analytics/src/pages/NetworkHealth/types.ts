@@ -41,12 +41,20 @@ export enum Band {
   Band6 = '6',
 }
 
+type Schedule = {
+  nextExecutionTime: string // timestamp
+}
+
 export type NetworkHealthSpec = {
   id: UUID
   name: string
   type: TestType
+  apsCount: number
+  userId: string
   clientType: ClientType
   configs: NetworkHealthConfig[]
+  tests: { items: NetworkHealthTest[] }
+  schedule: Schedule
 }
 
 export type NetworkHealthConfig = {
@@ -75,13 +83,23 @@ type WlanAuthSettings = {
 
 export type NetworkHealthTest = {
   id: number
-  specId: UUID
-  configId: UUID
   createdAt: string // timestamp
-  timeoutAt: string // timestamp
-  apEventTime: string // timestamp
-  controlMessageIds?: string[]
-  wlanAuthSettings?: WlanAuthSettings
+  spec: NetworkHealthSpec,
+  config: NetworkHealthConfig,
+  summary: {
+    apsTestedCount: number
+    apsSuccessCount: number
+    apsFailureCount: number
+    apsErrorCount: number
+    apsPendingCount: number
+  } & Record<string, number|string>
+  previousTest: NetworkHealthTest
+  wlanAuthSettings: WlanAuthSettings
+}
+
+export type UserErrors = {
+  field: string
+  message: string
 }
 
 export type NetworkHealthFormDto = {

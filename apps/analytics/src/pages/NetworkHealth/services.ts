@@ -15,7 +15,8 @@ import type {
   NetworkPaths,
   MutationResult,
   NetworkHealthConfig,
-  NetworkHealthTest
+  NetworkHealthTest,
+  UserErrors
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -52,8 +53,108 @@ const fetchServiceGuardSpec = gql`
   }
 `
 
+const compareFields = `
+  apsSuccessCount
+  apsTestedCount
+  avgPingTime
+  avgUpload
+  avgDownload
+`
+
+const compareFieldsFn = (stage: string) => `
+  ${stage}Success :apsSuccessCount(stage: ${stage})
+  ${stage}Failure :apsFailureCount(stage: ${stage})
+  ${stage}Error :apsErrorCount(stage: ${stage})
+  ${stage}NA :apsNACount(stage: ${stage})
+  ${stage}Pending :apsPendingCount(stage: ${stage})
+`
+
+const fetchServiceGuardTest = gql`
+  query ServiceGuardTest($testId: Float!) {
+    serviceGuardTest(id: $testId) {
+      id
+      createdAt
+      spec {
+        specId: id
+        name
+        type
+        apsCount
+        clientType
+      }
+      config {
+        wlanName
+        wlanUsername
+        dnsServer
+        pingAddress
+        tracerouteAddress
+        speedTestEnabled
+        radio
+        authenticationMethod
+      }
+      summary {
+        apsFailureCount
+        apsErrorCount
+        apsPendingCount
+        ${compareFields}
+        ${Object.keys(stages).map(stage => compareFieldsFn(stage)).join('\n')}}
+      previousTest {
+        summary {
+          ${compareFields}
+        }
+      }
+      wlanAuthSettings {
+        wpaVersion
+      }
+    }
+  }
+`
+
+const fetchServiceGuardRelatedTests = gql`
+  query ServiceGuardRelatedTests($testId: Float!) {
+    serviceGuardTest(id: $testId) {
+      spec {
+        id
+        tests {
+          items {
+            createdAt
+            id
+            summary {
+              apsTestedCount
+              apsSuccessCount
+              apsFailureCount
+              apsErrorCount
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
+const runServiceGuardTest = gql`
+  mutation RunNetworkHealthTest ($specId: String!){
+    runServiceGuardTest (id: $specId) {
+      userErrors { field message }
+      spec {
+        id name type apsCount userId clientType
+        tests (limit: 1) {
+          items {
+            id createdAt
+            summary { apsTestedCount apsSuccessCount apsPendingCount }
+          }
+        }
+        schedule {
+          nextExecutionTime
+        }
+      }
+    }
+  }
+`
+
 const {
-  useNetworkHealthDetailsQuery
+  useNetworkHealthDetailsQuery,
+  useNetworkHealthTestQuery,
+  useNetworkHealthRelatedTestsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     networkHealthDetails: build.query<NetworkHealthSpec, { id: string }>({
@@ -63,6 +164,21 @@ const {
       }),
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
+    }),
+    networkHealthTest: build.query<NetworkHealthTest, { testId: NetworkHealthTest['id'] }>({
+      query: (variables) => ({ variables, document: fetchServiceGuardTest }),
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) =>
+        result.serviceGuardTest
+    }),
+    networkHealthRelatedTests: build.query<
+      Record<string, number|string>[], { testId: NetworkHealthTest['id'] }
+    >({
+      query: (variables) => ({ variables, document: fetchServiceGuardRelatedTests }),
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) => {
+        if(!result.serviceGuardTest) return []
+        const { id: specId, tests: { items } } = result.serviceGuardTest.spec
+        return items.map(({ id, createdAt, summary }) => ({ specId, id, createdAt, ...summary }))
+      }
     })
   })
 })
@@ -73,6 +189,20 @@ export function useNetworkHealthSpec () {
     { id: String(params.specId) },
     { skip: !Boolean(params.specId) }
   )
+}
+
+export function useNetworkHealthTest () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthTestQuery(
+    { testId: parseInt(params.testId!, 10) },
+    { skip: !Boolean(params.testId) })
+}
+
+export function useNetworkHealthRelatedTests () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthRelatedTestsQuery(
+    { testId: parseInt(params.testId!, 10) },
+    { skip: !Boolean(params.testId) })
 }
 
 function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
@@ -182,9 +312,15 @@ type CreateUpdateMutationResult = MutationResult<{
   spec: Pick<NetworkHealthSpec, 'id'>
 }>
 
-const {
+type RunNetworkHealthTestResult = MutationResult<{
+  spec: NetworkHealthSpec,
+  userErrors: UserErrors
+}>
+
+export const {
   useCreateNetworkHealthSpecMutation,
-  useUpdateNetworkHealthSpecMutation
+  useUpdateNetworkHealthSpecMutation,
+  useRunNetworkHealthTestMutation
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     createNetworkHealthSpec: build.mutation<CreateUpdateMutationResult, NetworkHealthFormDto>({
@@ -214,6 +350,13 @@ const {
       invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
+    }),
+    runNetworkHealthTest: build.mutation<
+      RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
+    >({
+      query: (variables) => ({ variables, document: runServiceGuardTest }),
+      transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
+        response.runServiceGuardTest
     })
   })
 })
@@ -226,92 +369,4 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
-}
-
-const compareFields = `
-  apsSuccessCount
-  apsTestedCount
-  avgPingTime
-  avgUpload
-  avgDownload
-`
-
-const compareFieldsFn = (stage: string) => `
-  ${stage}Success :apsSuccessCount(stage: ${stage})
-  ${stage}Failure :apsFailureCount(stage: ${stage})
-  ${stage}Error :apsErrorCount(stage: ${stage})
-  ${stage}NA :apsNACount(stage: ${stage})
-  ${stage}Pending :apsPendingCount(stage: ${stage})
-`
-
-export interface NetworkHealthTestResult extends NetworkHealthTest {
-  spec: NetworkHealthSpec
-  config: NetworkHealthConfig
-  summary: Record<string, number|string>
-  previousTest: NetworkHealthTestResult
-}
-
-const fetchServiceGuardTest = gql`
-  query ServiceGuardTest($testId: Float!) {
-    serviceGuardTest(id: $testId) {
-      id
-      createdAt
-      spec {
-        specId: id
-        name
-        type
-        apsCount
-        clientType
-      }
-      config {
-        wlanName
-        wlanUsername
-        dnsServer
-        pingAddress
-        tracerouteAddress
-        speedTestEnabled
-        radio
-        authenticationMethod
-      }
-      summary {
-        apsFailureCount
-        apsErrorCount
-        apsPendingCount
-        ${compareFields}
-        ${Object.keys(stages).map(stage => compareFieldsFn(stage)).join('\n')}}
-      previousTest {
-        summary {
-          ${compareFields}
-        }
-      }
-      wlanAuthSettings {
-        wpaVersion
-      }
-    }
-  }
-`
-
-const {
-  useNetworkHealthTestQuery
-} = networkHealthApi.injectEndpoints({
-  endpoints: (build) => ({
-    networkHealthTest: build.query<
-    NetworkHealthTestResult,
-    { testId: NetworkHealthTest['id'] }
-  >({
-    query: (variables) => ({
-      variables,
-      document: fetchServiceGuardTest
-    }),
-    transformResponse: (result: { serviceGuardTest: NetworkHealthTestResult }) =>
-      result.serviceGuardTest
-  })
-  })
-})
-
-export function useNetworkHealthTest () {
-  const params = useParams<{ testId: string }>()
-  return useNetworkHealthTestQuery(
-    { testId: parseInt(params.testId!, 10) },
-    { skip: !Boolean(params.testId) })
 }
