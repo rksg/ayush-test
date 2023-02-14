@@ -182,10 +182,8 @@ describe('MacRegistrationsTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // const importBtn = await screen.findByRole('button', { name: 'Import From File' })
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
-    //
-    // fireEvent.click(importBtn)
+
     const dialog = await screen.findByRole('dialog')
     const csvFile = new File([''], 'mac_registration_import_template.csv', { type: 'text/csv' })
 
@@ -227,10 +225,8 @@ describe('MacRegistrationsTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // const importBtn = await screen.findByRole('button', { name: 'Import From File' })
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
-    //
-    // fireEvent.click(importBtn)
+
     const dialog = await screen.findByRole('dialog')
     const csvFile = new File([''], 'mac_registration_import_template.csv', { type: 'text/csv' })
 
