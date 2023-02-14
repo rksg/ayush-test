@@ -3,39 +3,48 @@ import { ApiInfo } from '../../apiService'
 export const AccessControlUrls: { [key: string]: ApiInfo } = {
   addL2AclPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy'
+    url: '/l2AclPolicies',
+    newApi: true
   },
   getL2AclPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId'
+    url: '/l2AclPolicies/:l2AclPolicyId',
+    newApi: true
   },
   addL3AclPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l3-acl-policy'
+    url: '/l3AclPolicies',
+    newApi: true
   },
   getL3AclPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
+    url: '/l3AclPolicies/:l3AclPolicyId',
+    newApi: true
   },
   addAppPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/application-policy'
+    url: '/applicationPolicies',
+    newApi: true
   },
   getAppPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId'
+    url: '/applicationPolicies/:applicationPolicyId',
+    newApi: true
   },
   getL2AclPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+    url: '/l2AclPolicies/query',
+    newApi: true
   },
   getL3AclPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
+    url: '/l3AclPolicies/query',
+    newApi: true
   },
   getAppPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/application-policy/query'
+    url: '/applicationPolicies/query',
+    newApi: true
   },
   getAvcCategory: {
     method: 'get',
@@ -47,14 +56,17 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   addDevicePolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/device-policy'
+    url: '/devicePolicies',
+    newApi: true
   },
   getDevicePolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
+    url: '/devicePolicies/:devicePolicyId',
+    newApi: true
   },
   getDevicePolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/device-policy/query'
+    url: '/devicePolicies/query',
+    newApi: true
   }
 }

@@ -15,11 +15,17 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteGuests: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/guest-user'
+    url: '/guestUsers',
+    newApi: true
   },
   importGuestPass: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/import'
+  },
+  guestsAction: {
+    method: 'patch',
+    url: '/guestUsers/:guestUserId',
+    newApi: true
   },
   enableGuests: {
     method: 'post',

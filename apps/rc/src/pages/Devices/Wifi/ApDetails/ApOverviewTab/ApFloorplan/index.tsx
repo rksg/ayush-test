@@ -60,8 +60,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
   }, [extendedApList])
 
   const { data: floorplan } =
-   useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
-     floorPlanId: apPosition.floorplanId } })
+   useGetFloorPlanQuery({ params: { venueId, floorPlanId: apPosition.floorplanId } })
 
   function onImageLoad () {
     activeDevice.position = apPosition

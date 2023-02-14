@@ -3,10 +3,8 @@ import { useIntl } from 'react-intl'
 import { showActionModal, showToast } from '@acx-ui/components'
 import {
   useGetGuestsMutation,
-  useEnableGuestsMutation,
-  useDisableGuestsMutation,
-
-  useDeleteGuestsMutation
+  useDeleteGuestsMutation,
+  useGuestActionMutation
 } from '@acx-ui/rc/services'
 import {
   Guest
@@ -16,10 +14,9 @@ export function useGuestActions () {
   const { $t } = useIntl()
   const[ getGuests ] = useGetGuestsMutation()
   const [deleteGuests] = useDeleteGuestsMutation()
-  const [enableGuests] = useEnableGuestsMutation()
-  const [disableGuests] = useDisableGuestsMutation()
+  const [guestsAction] = useGuestActionMutation()
 
-  const showDownloadInformation = (guest: Guest, tenantId?: string) => {
+  const showDownloadInformation = (guest: Guest) => {
     const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const guestIds = [guest.id]
@@ -43,19 +40,19 @@ export function useGuestActions () {
         numOfEntities: 1
       },
       onOk: () => {
-        deleteGuests({ params: { tenantId }, payload: [guest.id] }).then(
+        deleteGuests({ payload: [guest.id] }).then(
           callBack
         )
       }
     })
   }
 
-  const disableGuest = async (guest: Guest, tenantId?: string) => {
-    disableGuests({ params: { tenantId, guestId: guest.id } })
+  const disableGuest = async (guest: Guest) => {
+    guestsAction({ params: { guestId: guest.id }, payload: { action: 'disabled' } })
   }
 
-  const enableGuest = async (guest: Guest, tenantId?: string) => {
-    enableGuests({ params: { tenantId, guestId: guest.id } })
+  const enableGuest = async (guest: Guest) => {
+    guestsAction({ params: { guestId: guest.id }, payload: { action: 'enabled' } })
   }
 
   return {

@@ -7,15 +7,18 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteAdmin: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/admin/:adminId'
+    url: '/admins/:adminId',
+    newApi: true
   },
   deleteAdmins: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/admin'
+    url: '/admins',
+    newApi: true
   },
   addAdmin: {
     method: 'post',
-    url: '/api/tenant/:tenantId/admin'
+    url: '/admins',
+    newApi: true
   },
   // getMfaAdminDetails: {
   //   method: 'get',
@@ -47,15 +50,18 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAdministrators: {
     method: 'get',
-    url: '/api/tenant/:tenantId/admin'
+    url: '/admins',
+    newApi: true
   },
   updateAdmin: {
     method: 'put',
-    url: '/api/tenant/:tenantId/admin'
+    url: '/admins',
+    newApi: true
   },
   getAccountDetails: {
     method: 'get',
-    url: '/api/tenant/:tenantId/account'
+    url: '/tenants/accounts',
+    newApi: true
   },
   getRecoveryPassphrase: {
     method: 'get',
@@ -67,23 +73,28 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getDelegations: {
     method: 'get',
-    url: '/api/tenant/:tenantId/delegation?type=VAR'
+    url: '/tenants/delegations?type=VAR',
+    newApi: true
   },
   getTenantDelegation: {
     method: 'get',
-    url: '/api/tenant/:tenantId/delegation?type=SUPPORT'
+    url: '/tenants/delegations?type=SUPPORT',
+    newApi: true
   },
   getEcTenantDelegation: {
     method: 'get',
-    url: '/api/tenant/:tenantId/delegation?type=SUPPORT_EC'
+    url: '/tenants/delegations?type=SUPPORT_EC',
+    newApi: true
   },
   enableAccessSupport: {
     method: 'post',
-    url: '/api/tenant/:tenantId/delegation/support'
+    url: '/tenants/supportDelegations',
+    newApi: true
   },
   disableAccessSupport: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/delegation/support'
+    url: '/tenants/supportDelegations',
+    newApi: true
   },
   getPreferences: {
     method: 'get',

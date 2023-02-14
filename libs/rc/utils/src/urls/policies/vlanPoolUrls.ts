@@ -3,23 +3,28 @@ import { ApiInfo } from '../../apiService'
 export const VlanPoolUrls: { [key: string]: ApiInfo } = {
   deleteVLANPoolPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    newApi: true
   },
   addVLANPoolPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool'
+    url: '/vlanPools',
+    newApi: true
   },
   getVLANPoolPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    newApi: true
   },
   updateVLANPoolPolicy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/:policyId'
+    url: '/vlanPools/:policyId',
+    newApi: true
   },
   getVLANPoolPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/vlan-pool/query'
+    url: '/vlanPools/query',
+    newApi: true
   },
   getVLANPoolVenues: {
     method: 'post',

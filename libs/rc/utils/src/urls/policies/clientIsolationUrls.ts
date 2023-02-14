@@ -3,22 +3,27 @@ import { ApiInfo } from '../../apiService'
 export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
   addClientIsolation: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist'
+    url: '/isolationAllowlists',
+    newApi: true
   },
   getClientIsolation: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId'
+    url: '/isolationAllowlists/:policyId',
+    newApi: true
   },
   updateClientIsolation: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId'
+    url: '/isolationAllowlists/:policyId',
+    newApi: true
   },
   deleteClientIsolation: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId'
+    url: '/isolationAllowlists/:policyId',
+    newApi: true
   },
   getClientIsolationList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist'
+    url: '/isolationAllowlists',
+    newApi: true
   }
 }

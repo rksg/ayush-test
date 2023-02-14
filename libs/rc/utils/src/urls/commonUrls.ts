@@ -66,23 +66,28 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getL2AclPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+    url: '/l2AclPolicies/query',
+    newApi: true
   },
   getL3AclPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/query'
+    url: '/l3AclPolicies/query',
+    newApi: true
   },
   getDevicePolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/device-policy/query'
+    url: '/devicePolicies/query',
+    newApi: true
   },
   getApplicationPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/application-policy/query'
+    url: '/applicationPolicies/query',
+    newApi: true
   },
   getAccessControlProfileList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+    url: '/accessControlProfiles',
+    newApi: true
   },
   getWifiCallingProfileList: {
     method: 'get',
@@ -144,27 +149,33 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getFloorplan: {
     method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+    url: '/venues/:venueId/floorplans/:floorPlanId',
+    newApi: true
   },
   getVenueFloorplans: {
     method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+    url: '/venues/:venueId/floorplans',
+    newApi: true
   },
   addFloorplan: {
     method: 'post',
-    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan'
+    url: '/venues/:venueId/floorplans',
+    newApi: true
   },
   updateFloorplan: {
     method: 'put',
-    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+    url: '/venues/:venueId/floorplans/:floorPlanId',
+    newApi: true
   },
   deleteFloorPlan: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId'
+    url: '/venues/:venueId/floorplans/:floorPlanId',
+    newApi: true
   },
   getUploadURL: {
     method: 'post',
-    url: '/api/file/tenant/:tenantId/upload-url'
+    url: '/files/uploadurl',
+    newApi: true
   },
   getAllDevices: {
     method: 'post',
@@ -250,7 +261,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getRoguePolicies: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/rogue-policy'
+    url: '/roguePolicies',
+    newApi: true
   },
   getVenueSyslogAp: {
     method: 'get',
@@ -325,7 +337,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addGuestPass: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user'
+    url: '/guestUsers',
+    newApi: true
   },
   getApNetworkList: {
     method: 'post',

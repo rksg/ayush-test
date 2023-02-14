@@ -502,12 +502,12 @@ export function AddGuestDrawer (props: AddGuestProps) {
     const payload = [form.getFieldsValue()]
     if(form.getFieldValue('deliveryMethods').length === 0){
       showNoSendConfirm(()=>{
-        addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        addGuestPass({ payload: payload })
         setVisible(false)
       })
     }
     else{
-      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+      addGuestPass({ payload: payload })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((res: any) => {
           if (res.error &&
