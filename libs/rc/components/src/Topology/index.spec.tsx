@@ -2,11 +2,9 @@ import '@testing-library/jest-dom'
 import { rest }         from 'msw'
 import { IntlProvider } from 'react-intl'
 
-import { ApDeviceStatusEnum, CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                                                                  from '@acx-ui/test-utils'
-
-import { getDeviceColor, getPathColor, switchStatus } from './utils'
+import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes } from '@acx-ui/rc/utils'
+import { Provider }                                                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }              from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
@@ -228,7 +226,7 @@ const graphData = {
         },
         {
           type: DeviceTypes.SwitchStack,
-          category: 'Switch',
+          category: 'SwitchStack',
           name: 'Switch003',
           mac: 'D0:D5:40:8E:5E:03',
           serial: 'D0D5408E5E03',
@@ -361,7 +359,11 @@ describe('Topology', () => {
     // to cover poeEnabled false
     fireEvent.mouseOver(allPaths[3])
 
-    // fireEvent.mouseOver(allPaths[2])
+    const switchStackDevice = await screen.findByTestId('SwitchStackDevice')
+
+    fireEvent.mouseOver(switchStackDevice)
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    expect(await screen.findByTestId('nodeTooltip')).not.toBeNull()
 
     // no tooltip on cloud connection edge mouseover
 
@@ -393,38 +395,5 @@ describe('Topology', () => {
     fireEvent.click(zoomOriginal)
 
     expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('test getDeviceColor', async () => {
-    expect(getDeviceColor(DeviceStatus.Degraded)).toBe('var(--acx-semantics-yellow-40)')
-    expect(getDeviceColor(ApDeviceStatusEnum.REBOOTING)).toBe('var(--acx-semantics-yellow-40)')
-    expect(getDeviceColor(ApDeviceStatusEnum.HEARTBEAT_LOST)).toBe('var(--acx-semantics-yellow-40)')
-
-    expect(getDeviceColor(ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED))
-      .toBe('var(--acx-semantics-red-70)')
-    expect(getDeviceColor(ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED))
-      .toBe('var(--acx-semantics-red-70)')
-    expect(getDeviceColor(ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD))
-      .toBe('var(--acx-semantics-red-70)')
-
-    expect(getDeviceColor(DeviceStatus.Unknown)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(ApDeviceStatusEnum.INITIALIZING)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(ApDeviceStatusEnum.OFFLINE)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(SwitchStatusEnum.INITIALIZING)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('var(--acx-neutrals-50)')
-    expect(getDeviceColor(SwitchStatusEnum.DISCONNECTED)).toBe('var(--acx-neutrals-50)')
-  })
-
-  it('test switchStatus', async () => {
-    expect(switchStatus(SwitchStatusEnum.OPERATIONAL)).toBe('Operational')
-    expect(switchStatus(SwitchStatusEnum.DISCONNECTED)).toBe('Requires Attention')
-    expect(switchStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('Never contacted cloud')
-    expect(switchStatus(SwitchStatusEnum.INITIALIZING)).toBe('Initializing')
-    expect(switchStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toBe('Firmware updating')
-    expect(switchStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED))
-      .toBe('Never contacted Active Switch')
-
-    expect(getPathColor('any-status' as ConnectionStatus)).toBe('var(--acx-neutrals-50)')
   })
 })

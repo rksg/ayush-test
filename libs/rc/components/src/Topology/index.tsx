@@ -355,7 +355,13 @@ export function TopologyGraph () {
       height: 'calc(100% - 80px)'
     }}>{ topologyData?.nodes.length ?
         <UI.Graph ref={graphRef} width='100%' height='100%' />
-        : <Empty />
+        : <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%'
+        }}><Empty /></div>
       }
       {
         showLinkTooltip && <LinkTooltip

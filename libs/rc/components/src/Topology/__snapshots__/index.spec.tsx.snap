@@ -124,7 +124,7 @@ exports[`Topology should render correctly 1`] = `
                     data-testid="topologyEdge"
                     marker-end="url(#Unknownmarker)"
                     marker-start="url(#Unknownmarker)"
-                    style="fill: transparent; stroke: var(--acx-neutrals-50); opacity: 1;"
+                    style="fill: transparent; stroke: var(--acx-neutrals-50); opacity: 0.2;"
                   />
                   <marker
                     id="Unknownmarker"
@@ -840,7 +840,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(175,50)"
                 >
                   <g
@@ -918,7 +918,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 1;"
+                  style="opacity: 0.2;"
                   transform="translate(175,100)"
                 >
                   <g
@@ -1111,7 +1111,7 @@ exports[`Topology should render correctly 1`] = `
                 <g
                   class="node"
                   data-testid="topologyNode"
-                  style="opacity: 0.2;"
+                  style="opacity: 1;"
                   transform="translate(325,50)"
                 >
                   <g
@@ -1345,6 +1345,303 @@ exports[`Topology should render correctly 1`] = `
                   style="padding: 12px 6px 12px 6px;"
                 >
                   1/1/1
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        data-testid="nodeTooltip"
+        style="position: absolute; width: 348px; max-height: 350px; z-index: 9999;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 ebSYxh"
+          type="no-border"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+              >
+                <button
+                  class="ant-btn ant-btn-link ant-btn-sm"
+                  style="padding: 0px;"
+                  type="button"
+                >
+                  <span>
+                    Unknown
+                  </span>
+                </button>
+              </div>
+              <div
+                class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+              >
+                <div
+                  class="ant-row"
+                  style="margin: -12px -6px -12px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    AP Model:
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    --
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin: -12px -6px -12px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    mac:
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    --
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin: -12px -6px -12px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    IP Address:
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    --
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin: -12px -6px -12px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    Status:
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    <span
+                      class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+                    >
+                      <span
+                        class="ant-badge-status-dot"
+                      />
+                      <span
+                        class="ant-badge-status-text"
+                      >
+                        Unknown
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin: -4px -6px -4px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-24"
+                    style="padding: 4px 6px 4px 6px;"
+                  >
+                    Wireless Radio:
+                  </div>
+                  <div
+                    class="ant-col ant-col-24"
+                    style="padding: 4px 6px 4px 6px;"
+                  >
+                    <div
+                      class="sc-ftvSup dEqZDE"
+                    >
+                      <div
+                        class="ant-table-wrapper"
+                      >
+                        <div
+                          class="ant-spin-nested-loading"
+                        >
+                          <div
+                            class="ant-spin-container"
+                          >
+                            <div
+                              class="ant-table ant-table-small ant-table-empty"
+                            >
+                              <div
+                                class="ant-table-container"
+                              >
+                                <div
+                                  class="ant-table-content"
+                                >
+                                  <table
+                                    style="table-layout: auto;"
+                                  >
+                                    <colgroup />
+                                    <thead
+                                      class="ant-table-thead"
+                                    >
+                                      <tr>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        />
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          RF Channel
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          RF Bandwidth
+                                        </th>
+                                        <th
+                                          class="ant-table-cell"
+                                          style="text-align: center;"
+                                        >
+                                          TX Power
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody
+                                      class="ant-table-tbody"
+                                    >
+                                      <tr
+                                        class="ant-table-placeholder"
+                                      >
+                                        <td
+                                          class="ant-table-cell"
+                                          colspan="4"
+                                        >
+                                          <div
+                                            class="ant-empty ant-empty-normal"
+                                          >
+                                            <div
+                                              class="ant-empty-image"
+                                            >
+                                              <svg
+                                                class="ant-empty-img-simple"
+                                                height="41"
+                                                viewBox="0 0 64 41"
+                                                width="64"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                              >
+                                                <g
+                                                  fill="none"
+                                                  fill-rule="evenodd"
+                                                  transform="translate(0 1)"
+                                                >
+                                                  <ellipse
+                                                    class="ant-empty-img-simple-ellipse"
+                                                    cx="32"
+                                                    cy="33"
+                                                    rx="32"
+                                                    ry="7"
+                                                  />
+                                                  <g
+                                                    class="ant-empty-img-simple-g"
+                                                    fill-rule="nonzero"
+                                                  >
+                                                    <path
+                                                      d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
+                                                    />
+                                                    <path
+                                                      class="ant-empty-img-simple-path"
+                                                      d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
+                                                    />
+                                                  </g>
+                                                </g>
+                                              </svg>
+                                            </div>
+                                            <div
+                                              class="ant-empty-description"
+                                            >
+                                              No Data
+                                            </div>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-row"
+                  style="margin: -12px -6px -12px -6px; line-height: 24px;"
+                >
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    Clients Connected:
+                  </div>
+                  <div
+                    class="ant-col ant-col-12"
+                    style="padding: 12px 6px 12px 6px;"
+                  >
+                    --
+                  </div>
                 </div>
               </div>
             </div>
