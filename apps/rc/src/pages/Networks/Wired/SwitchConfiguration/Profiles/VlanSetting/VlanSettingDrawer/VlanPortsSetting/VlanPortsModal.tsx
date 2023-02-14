@@ -11,8 +11,10 @@ import {
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
-import { SelectModelStep } from './SelectModelStep'
+import { SelectModelStep }   from './SelectModelStep'
+import { TaggedPortsStep }   from './TaggedPortsStep'
 import { UntaggedPortsStep } from './UntaggedPortsStep'
+import VlanPortsContext      from './VlanPortsContext'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -25,7 +27,7 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot2?: string
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
-  switchModelPortData?: SwitchModelPortData
+  switchFamilyModels?: SwitchModelPortData
 }
 
 export function VlanPortsModal (props: {
@@ -77,45 +79,48 @@ export function VlanPortsModal (props: {
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
     >
-      <StepsForm
-        onCancel={() => {
-          showToast({ type: 'info', content: 'Cancel' })
-          setVisible(false)
-        }}
-        onFinish={async (data) => {
-          console.log(data)
-          await wait(1000) // mimic external service call
-          showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-          setVisible(false)
-        }}
-      >
-        <StepsForm.StepForm
-          title='Select Model'
+      <VlanPortsContext.Provider value={{ vlanSettingValues, setVlanSettingValues }}>
+        <StepsForm
+          onCancel={() => {
+            showToast({ type: 'info', content: 'Cancel' })
+            setVisible(false)
+          }}
           onFinish={async (data) => {
-            setVlanSettingValues(data)
             console.log(data)
-            return true
+            await wait(1000) // mimic external service call
+            showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+            setVisible(false)
           }}
         >
-          <SelectModelStep />
-        </StepsForm.StepForm>
-        <StepsForm.StepForm title='Untagged Ports'>
-          <UntaggedPortsStep vlanSettings={vlanSettingValues} />
-        </StepsForm.StepForm>
-        <StepsForm.StepForm title='Tagged Ports'>
-          <Row gutter={20}>
-            <Col span={10}>
-              <StepsForm.Title children='Tagged Ports' />
-              <Form.Item name='field8' label='Field 8'>
-                <Input />
-              </Form.Item>
-              <Form.Item name='field9' label='Field 9'>
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
+          <StepsForm.StepForm
+            title='Select Model'
+            onFinish={async (data) => {
+              setVlanSettingValues(data)
+              return true
+            }}
+          >
+            <SelectModelStep />
+          </StepsForm.StepForm>
+          <StepsForm.StepForm
+            title='Untagged Ports'
+            onFinish={async (data) => {
+              setVlanSettingValues({
+                ...vlanSettingValues,
+                switchFamilyModels: {
+                  ...vlanSettingValues.switchFamilyModels,
+                  ...data.switchFamilyModels
+                }
+              })
+              return true
+            }}
+          >
+            <UntaggedPortsStep />
+          </StepsForm.StepForm>
+          <StepsForm.StepForm title='Tagged Ports'>
+            <TaggedPortsStep />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </VlanPortsContext.Provider>
     </Modal>
   )
 }

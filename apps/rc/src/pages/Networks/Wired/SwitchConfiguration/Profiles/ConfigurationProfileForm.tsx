@@ -12,12 +12,15 @@ import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 import { GeneralSetting }              from './GeneralSetting'
 import { VenueSetting }                from './VenueSetting'
 import { VlanSetting }                 from './VlanSetting'
+import { TrustedPorts } from './TrustedPorts'
 
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const editMode = params.action === 'edit'
+  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(true)
+  const [ arpInspection, setArpInspection ] = useState(true)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
@@ -71,6 +74,15 @@ export function ConfigurationProfileForm () {
           >
             <AclSetting />
           </StepsForm.StepForm>
+
+          {(ipv4DhcpSnooping || arpInspection) &&
+            <StepsForm.StepForm
+              title={$t({ defaultMessage: 'Trusted Ports' })}
+              onFinish={updateCurrentData}
+            >
+              <TrustedPorts />
+            </StepsForm.StepForm>
+          }
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Venues' })}

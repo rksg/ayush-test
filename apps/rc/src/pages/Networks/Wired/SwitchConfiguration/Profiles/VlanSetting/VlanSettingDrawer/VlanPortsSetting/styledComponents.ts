@@ -1,5 +1,32 @@
 import styled from 'styled-components/macro'
 
+import {
+  Lightening,
+  RuckusUpload,
+  Stacking
+} from '@acx-ui/icons'
+
+export const LighteningIcon = styled(Lightening)`
+  vertical-align: text-top;
+  path {
+    fill: currentColor;
+  }
+`
+
+export const RuckusUploadIcon = styled(RuckusUpload)`
+  vertical-align: text-top;
+  path {
+    fill: currentColor;
+  }
+`
+
+export const StackingIcon = styled(Stacking)`
+  vertical-align: text-top;
+  path {
+    fill: currentColor;
+  }
+`
+
 export const GroupListLayout = styled('div')`
   display: flex;
   flex-direction: column;
@@ -18,7 +45,10 @@ export const GroupListLayout = styled('div')`
 `
 
 export const Module = styled.div`
-  div.ant-checkbox-group {
+  padding-bottom: 10px;
+  div.lightblue.ant-checkbox-group {
+    padding-top: 10px;
+    padding-bottom: 20px;
     display: grid;
     grid-template-columns: auto auto auto;
     grid-template-rows: auto auto;
@@ -26,28 +56,105 @@ export const Module = styled.div`
     grid-auto-flow: column;
     justify-content: start;
     > label.ant-checkbox-wrapper {
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       align-items: center;
-      border: 1px solid var(--acx-primary-black);
+      border: 1px solid var(--acx-neutrals-60);
       background-color: white;
       margin-right: 0px;
+
       > span:first-child {
         display: none;
       }
     }
 
+    > label.ant-checkbox-wrapper:has(.ant-checkbox-disabled)  {
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      background-color: var(--acx-neutrals-15);
+      border: solid 1px var(--acx-neutrals-25);
+      margin-right: 0px;
+    }
+
     > label.ant-checkbox-wrapper-checked {
-      border: 1px solid var(--acx-primary-black);
-      background-color: var(--acx-primary-black);
-      color: white;
+      background-color: #d7f8fb;
+      border: solid 1px #5de0ec;
     }
 
     > label.ant-checkbox-wrapper:last-child {
       border-right-width: 1px;
     }
+
+    > label:nth-child(even) p {
+      margin-top: 2px;
+      margin-left: -2px;
+      text-align: center;
+    }
+
+    > label:nth-child(odd) p {
+      margin-top: -37px;
+      margin-left: -2px;
+      text-align: center;
+    }
   }
+  
+  div.purple.ant-checkbox-group {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+    grid-gap: 5px;
+    grid-auto-flow: column;
+    justify-content: start;
+    > label.ant-checkbox-wrapper {
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      border: 1px solid var(--acx-neutrals-60);
+      background-color: white;
+      margin-right: 0px;
+
+      > span:first-child {
+        display: none;
+      }
+    }
+    
+    > label.ant-checkbox-wrapper:has(.ant-checkbox-disabled)  {
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      background-color: var(--acx-neutrals-15);
+      border: solid 1px var(--acx-neutrals-25);
+      margin-right: 0px;
+    }
+
+    > label.ant-checkbox-wrapper-checked {
+      background-color: #dcc9ed;
+      border: solid 1px #7025b6;
+    }
+
+    > label.ant-checkbox-wrapper:last-child {
+      border-right-width: 1px;
+    }
+
+    > label:nth-child(even) p {
+      margin-top: 2px;
+      margin-left: -2px;
+      text-align: center;
+    }
+
+    > label:nth-child(odd) p {
+      margin-top: -37px;
+      margin-left: -2px;
+      text-align: center;
+    }
+  }
+
   .ant-checkbox + span {
     padding: 0;
+    width: 20px;
+    height: 20px;
   }
 `

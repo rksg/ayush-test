@@ -14,7 +14,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }              from '@acx-ui/components'
-import { AclExtendedRule, AclStandardRule, Vlan } from '@acx-ui/rc/utils'
+import { AclExtendedRule, AclStandardRule, validateDuplicateVlanName, validateVlanName, validateVlanNameWithoutDVlans, Vlan } from '@acx-ui/rc/utils'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '../../AclSetting'
 
@@ -98,6 +98,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
   const [openModal, setOpenModal] = useState(false)
+  const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
+  const [arpInspection, setArpInspection] = useState(false)
+  const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<AclStandardRule | AclExtendedRule>()
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
@@ -189,14 +192,12 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     setOpenModal(false)
   }
 
-  const onAclTypeChange = (e: RadioChangeEvent) => {
-    if (e.target.value === 'standard') {
-      setRuleList([defaultStandardRuleList])
-    } else {
-      setRuleList([defaultExtendedRuleList])
+  const onIGMPChange = (value: string) => {
+    if(value === 'active' || value === 'passive'){
+      setMulticastVersionDisabled(false)
+    }else{
+      setMulticastVersionDisabled(true)
     }
-    setAclType(e.target.value)
-    form.validateFields()
   }
 
   return (
@@ -214,7 +215,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
           rules={[
-            { required: true }
+            { required: true },
+            { validator: (_, value) => validateVlanName(value) },
+            { validator: (_, value) => validateDuplicateVlanName(value, vlansList) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
@@ -222,9 +225,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
           rules={[
-            { required: true }
+            { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={<Input style={{ width: '400px' }} maxLength={32} />}
         />
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }
@@ -233,8 +236,15 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch onChange={setIpv4DhcpSnooping} />}
           />
+        </UI.FieldLabel>
+        <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
+          {ipv4DhcpSnooping &&
+            <label>{
+              $t({ defaultMessage:
+                'If DHCP Snooping is turned ON, you must select trusted ports' }) }
+            </label>}
         </UI.FieldLabel>
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'ARP Inspection' }) }
@@ -243,18 +253,25 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch onChange={setArpInspection} />}
           />
+        </UI.FieldLabel>
+        <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
+          {arpInspection &&
+            <label>{
+              $t({ defaultMessage:
+                'If ARP Inspection is turned ON, you must select trusted ports' }) }
+            </label>}
         </UI.FieldLabel>
         <Form.Item
           name='igmpSnooping'
           label={$t({ defaultMessage: 'IGMP Snooping' })}
           initialValue={'none'}
           children={
-            <Select>
+            <Select onChange={onIGMPChange}>
               <Option value={'active'}>
                 {$t({ defaultMessage: 'Active' })}</Option>
-              <Option value={'Passive'}>
+              <Option value={'passive'}>
                 {$t({ defaultMessage: 'Passive' })}</Option>
               <Option value={'none'}>
                 {$t({ defaultMessage: 'NONE' })}</Option>
@@ -266,7 +283,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'Multicast Version' })}
           initialValue={2}
           children={
-            <Select>
+            <Select disabled={multicastVersionDisabled}>
               <Option value={2}>
                 {$t({ defaultMessage: 'Version 2' })}</Option>
               <Option value={3}>

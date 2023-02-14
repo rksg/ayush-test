@@ -11,18 +11,19 @@ import _                                        from 'lodash'
 
 import { Card, Tooltip }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { PortStatus }             from '@acx-ui/rc/utils'
 import { getIntl }                from '@acx-ui/utils'
 
-import * as UI          from './styledComponents'
-import VlanPortsContext from './VlanPortsContext'
+import * as UI                  from './styledComponents'
+import VlanPortsContext         from './VlanPortsContext'
+import { VlanSettingInterface } from './VlanPortsModal'
+import { PortStatus } from '@acx-ui/rc/utils'
 
 export interface PortsType {
   label: string,
   value: string
 }
 
-export function UntaggedPortsStep () {
+export function TaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const { vlanSettingValues, setVlanSettingValues } = useContext(VlanPortsContext)
@@ -37,10 +38,8 @@ export function UntaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
-      console.log(vlanSettingValues)
       if(vlanSettingValues.switchFamilyModels?.slots[0] &&
         vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
-          console.log(vlanSettingValues.switchFamilyModels?.slots[0].portStatus)
         const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/1/${item.portNumber.toString()}` }))
@@ -76,7 +75,6 @@ export function UntaggedPortsStep () {
       return true
     },
     onSelectionChange: (box) => {
-      tmpSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,
         top: box.top + window.scrollY,
@@ -84,7 +82,7 @@ export function UntaggedPortsStep () {
       }
 
       Array.from({ length: portsModule1.length }, (_, i) => {
-        const itemKey = `untagged_module1_${i}`
+        const itemKey = `tagged_module1_${i}`
         const item = document.getElementById(itemKey)
         if(item){
           const { left, top, width, height } = item.getBoundingClientRect()
@@ -98,7 +96,7 @@ export function UntaggedPortsStep () {
       })
 
       Array.from({ length: portsModule2.length }, (_, i) => {
-        const itemKey = `untagged_module2_${i}`
+        const itemKey = `tagged_module2_${i}`
         const item = document.getElementById(itemKey)
         if(item){
           const { left, top, width, height } = item.getBoundingClientRect()
@@ -113,7 +111,7 @@ export function UntaggedPortsStep () {
 
 
       Array.from({ length: portsModule3.length }, (_, i) => {
-        const itemKey = `untagged_module3_${i}`
+        const itemKey = `tagged_module3_${i}`
         const item = document.getElementById(itemKey)
         if(item){
           const { left, top, width, height } = item.getBoundingClientRect()
@@ -129,14 +127,25 @@ export function UntaggedPortsStep () {
       tmpSelectedItem = _.uniq(tmpSelectedItem)
     },
     onSelectionEnd: () => {
-      const selectedVlanPort = form.getFieldValue(['switchFamilyModels', 'untaggedPorts']) || []
+      const selectedVlanPort = form.getFieldValue(['switchFamilyModels', 'taggedPorts']) || []
       const vlanPorts = _.xor(selectedVlanPort,tmpSelectedItem)
 
       setSelectedItems1(vlanPorts.filter(item=> item.split('/')[1] === '1'))
       setSelectedItems2(vlanPorts.filter(item=> item.split('/')[1] === '2'))
       setSelectedItems3(vlanPorts.filter(item=> item.split('/')[1] === '3'))
-      form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], vlanPorts)
+      form.setFieldValue(['switchFamilyModels', 'taggedPorts'], vlanPorts)
 
+      setVlanSettingValues({
+        ...vlanSettingValues,
+        switchFamilyModels: {
+          id: vlanSettingValues.switchFamilyModels?.id,
+          model: vlanSettingValues.switchFamilyModels?.model || '',
+          slots: vlanSettingValues.switchFamilyModels?.slots || [],
+          untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
+          trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
+          taggedPorts: vlanPorts
+        }
+      })
       tmpSelectedItem = []
     },
     isEnabled: true
@@ -144,133 +153,64 @@ export function UntaggedPortsStep () {
 
   const handleCheckboxGroupChange =
     (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void) => {
+      console.log(checkedValues)
       setValues(checkedValues)
+      let taggedValues: string[] = []
       switch(moduleName){
         case 'module1':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues]))
+          taggedValues = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
+          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
+
+          setVlanSettingValues({
+            ...vlanSettingValues,
+            switchFamilyModels: {
+              id: vlanSettingValues.switchFamilyModels?.id,
+              model: vlanSettingValues.switchFamilyModels?.model || '',
+              slots: vlanSettingValues.switchFamilyModels?.slots || [],
+              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
+              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
+              taggedPorts: taggedValues
+            }
+          })
           break
         case 'module2':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues]))
+          taggedValues = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
+          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
+
+          console.log(taggedValues)
+          setVlanSettingValues({
+            ...vlanSettingValues,
+            switchFamilyModels: {
+              id: vlanSettingValues.switchFamilyModels?.id,
+              model: vlanSettingValues.switchFamilyModels?.model || '',
+              slots: vlanSettingValues.switchFamilyModels?.slots || [],
+              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
+              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
+              taggedPorts: taggedValues
+            }
+          })
+
           break
         case 'module3':
-          form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
-            _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues]))
+          taggedValues = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
+          form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
+
+          console.log(taggedValues)
+          setVlanSettingValues({
+            ...vlanSettingValues,
+            switchFamilyModels: {
+              id: vlanSettingValues.switchFamilyModels?.id,
+              model: vlanSettingValues.switchFamilyModels?.model || '',
+              slots: vlanSettingValues.switchFamilyModels?.slots || [],
+              untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
+              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
+              taggedPorts: taggedValues
+            }
+          })
+
           break
       }
     }
-
-  const getTooltip = (slotNumber: number, portStr: string) => {
-    // const speedNoData = 'link down or no traffic'
-    // let tooltipText = ''
-    // if (!vlanSettingValues.switchFamilyModels?.untaggedPorts.includes(portStr)) {
-    //   const isUnTaggedVlanValid = port.unTaggedVlan !== '' && port.unTaggedVlan !== undefined
-    //   let UntaggedVlanText
-    //   let taggedVlanText = ''
-
-    //   if (isUnTaggedVlanValid) {
-    //     UntaggedVlanText =
-    //     '<span style="font-family:\'ruckus\';font-size:14px;">&#xe08f; </span>' + port.unTaggedVlan
-    //   } else {
-    //     UntaggedVlanText =
-    //     '<span style="font-family:\'ruckus\';font-size:14px;">&#xe08f; </span>' + '--'
-    //   }
-
-    //   if (port.vlanIds !== '' && port.vlanIds !== undefined) {
-    //     let vlanIdsArray = port.vlanIds.split(' ')
-
-    //     if (isUnTaggedVlanValid) {
-    //       let taggedVlan = '--'
-    //       if (vlanIdsArray.length > 1) {
-    //         vlanIdsArray = _.remove(vlanIdsArray, n => n !== port.unTaggedVlan)
-    //         vlanIdsArray.sort((a, b) => Number(a) - Number(b))
-    //         // CMS-779 PLM feedback: Show up to 15 vlans in tooltip. If more than 15 VLANs, truncate and add an ellipsis
-    //         const ellipsis = (vlanIdsArray.length > 15) ? '...' : ''
-    //         const showVlanIdArray = (vlanIdsArray.length > 15) ? vlanIdsArray.slice(0, 15) : vlanIdsArray
-    //         taggedVlan = showVlanIdArray.join(', ').concat(ellipsis)
-    //       }
-
-    //       taggedVlanText = '<span style="font-family:\'ruckus\';font-size:14px;">  &#xe08e; </span>' + taggedVlan
-    //     } else {
-    //       taggedVlanText = '<span style="font-family:\'ruckus\';font-size:14px;">  &#xe08e; </span>' + vlanIdsArray.join(', ')
-    //     }
-    //   }
-
-    //   const poeUsed = Math.round(port.poeUsed / 1000)
-    //   const poeTotal = Math.round(port.poeTotal / 1000)
-
-    //   // TODO
-    //   // tooltipText =
-    //   //   `<span class="label d-inline-block">Port: </span>` +
-    //   //   `<span class="value d-inline-block">${port.portIdentifier}</span><br/>` +
-    //   //   `<div class="d-flex">` +
-    //   //   `<span class="label d-inline-block">Name: </span>` +
-    //   //   `<span class="value d-inline-block">${port.name === '' ? '--' : port.name}</span></div>` +
-    //   //   `<div class="d-flex">` +
-    //   //   `<div class="label d-inline-block">VLAN: </div>` +
-    //   //   `<span class="value d-inline-block">` +
-    //   //   `${UntaggedVlanText === '' ? '--' : UntaggedVlanText}<br/>` +
-    //   //   `${taggedVlanText === '' ? '--' : taggedVlanText}</span></div>` +
-    //   //   `<span class="label mb-1 d-inline-block">Port Speed: </span>` +
-    //   //   `<span class="value d-inline-block">${port.portSpeed === speedNoData ? '--' : port.portSpeed}</span><br/>` +
-    //   //   `<span class="label mb-1 d-inline-block">Port State: </span>` +
-    //   //   `<span class="value d-inline-block">${port.status}</span><br/>` +
-    //   //   `<div class="d-flex">` +
-    //   //   `<span class="label d-inline-block">Connected Device: </span>` +
-    //   //   `<span class="value d-inline-block">${port.neighborName || port.neighborMacAddress || '--'}</span></div>` +
-    //   //   `<span class="label mb-1 d-inline-block">PoE Usage: </span>` +
-    //   //   `<span class="value d-inline-block">${poeUsed} W/ ${poeTotal} W</span><br/>` +
-    //   //   `<span class="label mb d-inline-block">(Consumed/Allocated)</span><br/>` +
-    //   //   `<span class="label mb-1 d-inline-block">PoE Device Type: </span>` +
-    //   //   `<span class="value d-inline-block">${port.poeType === '' ? '--' : port.poeType}</span><br/>`;
-
-    // } else {
-
-    //   if (!(this.clickAction !== port.portTagged && port.portTagged)) {
-    //     const unitNumber = _.isEmpty(port.unitNumber) ? '1/' : port.unitNumber + '/'
-    //     const portStr = unitNumber + slotNumber + '/' + port.portNumber // ex:1/1/1
-    //     let untaggedVlanMsg = '-'
-    //     let taggedVlansMsg = '-'
-    //     if (this.modelVlanPortStatus && this.modelVlanPortStatus[portStr]) {
-    //       untaggedVlanMsg = this.getUntaggedVlanMessage(this.modelVlanPortStatus, portStr)
-    //       taggedVlansMsg = this.getTaggedVlanMessage(this.modelVlanPortStatus, portStr)
-    //     }
-    //     tooltipText = `<div class="col">Networks on this port:</div>
-    //                    <div class="col align-icon">
-    //                      <span class="icon-untag" style="font-size:18px;"></span>
-    //                      <span>${untaggedVlanMsg}</span>
-    //                    </div>
-    //                    <div class="col align-icon">
-    //                      <span class="icon-tag" style="font-size:18px;"></span>
-    //                      <span>${taggedVlansMsg}</span>
-    //                    </div>`
-    //   } else if (port.portTagged == PortTaggedEnum.LAG) {
-    //     tooltipText = this.LAG_MEMBER_PORT_DISABLE_TOOLTIP
-    //   } else {
-    //     tooltipText = `<span class="col">Port set as ${port.portTagged.toLowerCase()}</span>`
-    //   }
-  //   }
-  //   return tooltipText
-  }
-  
-  // TODO: for switch
-  // const getPortIcon(port: { usedInUplink: boolean; usedInFormingStack: any; poeUsed: any }) {
-  //     if (this.deviceStatus === SwitchStatusEnum.DISCONNECTED) {
-  //       return '';
-  //     }
-  //     if (port.usedInUplink) {
-  //       return 'UpLink';
-  //     }
-  //     if (this.isSwitchStack && port.usedInFormingStack) {
-  //       return 'Stack';
-  //     }
-  //     if (port.poeUsed) {
-  //       return 'PoeUsed';
-  //     }
-  //     return '';
-  //   }
-  //const isUntaggedByOtherVlan = (portStr: string) => {}
 
   return (
     <>
@@ -278,7 +218,7 @@ export function UntaggedPortsStep () {
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
             {$t({ defaultMessage:
-                'Select the untagged ports (access ports) for this model ({family}-{model}):' },
+                'Select the tagged ports (access ports) for this model ({family}-{model}):' },
             { family: vlanSettingValues.family, model: vlanSettingValues.model })}
           </label>
         </Col>
@@ -294,16 +234,16 @@ export function UntaggedPortsStep () {
                   </Typography.Text>
                 </div>
                 { vlanSettingValues.switchFamilyModels?.slots[0] &&
-                  <Typography.Paragraph>
-                    {$t({ defaultMessage: '{module1}' },
-                      { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo
-                        ?.split('X').join(' X ') })}
-                  </Typography.Paragraph>
+                <Typography.Paragraph>
+                  {$t({ defaultMessage: '{module1}' },
+                    { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo
+                      ?.split('X').join(' X ') })}
+                </Typography.Paragraph>
                 }
                 <UI.Module>
                   <Checkbox.Group
                     key='checkboxGroup_module1'
-                    className='lightblue'
+                    className='purple'
                     onChange={(checkedValues) =>
                       handleCheckboxGroupChange('module1',
                         checkedValues as string[], setSelectedItems1)}
@@ -313,25 +253,17 @@ export function UntaggedPortsStep () {
                         title={''}
                       >
                         <div
-                          id={`untagged_module1_${i}`}
+                          id={`tagged_module1_${i}`}
                           data-value={timeslot.value}
-                          data-testid={`untagged_module1_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
+                          data-testid={`tagged_module1_${i}`}
+                          data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
                             .includes(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
-                        >
-                          {
-                            /* TODO for switch
-                            <UI.LighteningIcon />
-                            <UI.StackingIcon />
-                            <UI.RuckusUploadIcon />
-                            */
-                          }
-                        </div>
+                        ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
+                      disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
                         .includes(timeslot.value)
                     }))}
                   />
@@ -354,7 +286,7 @@ export function UntaggedPortsStep () {
                     <UI.Module>
                       <Checkbox.Group
                         key='checkboxGroup_module2'
-                        className='lightblue'
+                        className='purple'
                         onChange={(checkedValues) =>
                           handleCheckboxGroupChange('module2',
                                 checkedValues as string[], setSelectedItems2)}
@@ -364,17 +296,17 @@ export function UntaggedPortsStep () {
                             title={timeslot.value}
                           >
                             <div
-                              id={`untagged_module2_${i}`}
+                              id={`tagged_module2_${i}`}
                               data-value={timeslot.value}
-                              data-testid={`untagged_module2_${i}`}
-                              data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
+                              data-testid={`tagged_module2_${i}`}
+                              data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
                                 .includes(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
                             <p>{i+1}</p>
                           </Tooltip>,
                           value: timeslot.value,
-                          disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
+                          disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
                             .includes(timeslot.value)
                         }))}
                       />
@@ -398,7 +330,7 @@ export function UntaggedPortsStep () {
                 <UI.Module>
                   <Checkbox.Group
                     key='checkboxGroup_module3'
-                    className='lightblue'
+                    className='purple'
                     onChange={(checkedValues) =>
                       handleCheckboxGroupChange('module3',
                             checkedValues as string[], setSelectedItems3)}
@@ -408,17 +340,17 @@ export function UntaggedPortsStep () {
                         title={''}
                       >
                         <div
-                          id={`untagged_module3_${i}`}
+                          id={`tagged_module3_${i}`}
                           data-value={timeslot.value}
-                          data-testid={`untagged_module3_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
+                          data-testid={`tagged_module3_${i}`}
+                          data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
                             .includes(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
+                      disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
                         .includes(timeslot.value)
                     }))}
                   />
@@ -430,7 +362,7 @@ export function UntaggedPortsStep () {
           <DragSelection />
         </Col>
       </Row>
-      <Form.Item name={['switchFamilyModels', 'untaggedPorts']} />
+      <Form.Item name={['switchFamilyModels', 'taggedPorts']} />
     </>
   )
 }

@@ -86,6 +86,7 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
   }, [form, defaultVlan])
 
   const onSaveVlan = (values: Vlan) => {
+    values.title = `Default VLAN (${values.vlanId}) settings`
     setDefaultVlan(values)
   }
 
@@ -134,6 +135,7 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
           </Select>
         }
       />
+      <Form.Item name='vlanName' initialValue={'DEFAULT-VLAN'} />
     </Form>
   )
 }

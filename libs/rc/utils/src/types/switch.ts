@@ -525,6 +525,7 @@ export interface SwitchDhcpLease {
 export interface PortStatus{
   portNumber: number
   portTagged: string
+  unitNumber?: number
 }
 
 export interface SwitchSlot {
@@ -577,4 +578,6 @@ export interface SwitchModelPortData {
   model: string
   slots: SwitchSlot[]
   trustPorts: string[]
+  taggedPorts: string[]
+  untaggedPorts: string[]
 }

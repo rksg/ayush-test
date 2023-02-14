@@ -712,3 +712,13 @@ export function validateRecoveryPassphrasePart (value: string) {
 
   return Promise.resolve()
 }
+
+export function validateVlanNameWithoutDVlans (vlanName: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^((?!^DEFAULT-VLAN$).)*$')
+  if (!re.test(vlanName)) {
+    return Promise.reject($t(validationMessages.vlanNameInvalidWithDefaultVlans))
+  }
+
+  return Promise.resolve()
+}

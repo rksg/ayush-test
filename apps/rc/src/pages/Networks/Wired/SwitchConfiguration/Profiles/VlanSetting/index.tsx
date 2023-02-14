@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Row, Col } from 'antd'
+import { Row, Col, Form } from 'antd'
 
 import { Table, TableProps }           from '@acx-ui/components'
 import { StepsForm }                   from '@acx-ui/components'
@@ -18,6 +18,7 @@ import { VlanSettingDrawer } from './VlanSettingDrawer'
 export function VlanSetting () {
   const { $t } = getIntl()
   const params = useParams()
+  const form = Form.useFormInstance()
   const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
   const [ vlanTable, setvlanTable ] = useState<Vlan[]>([])
   const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
@@ -81,6 +82,8 @@ export function VlanSetting () {
   }
 
   const handleSetDefaultVlan = (data: Vlan) => {
+    const vlans = form.getFieldValue('vlans')
+    form.setFieldValue('vlans', [...vlans, data])
     setDefaultVlan(data)
     return true
   }
@@ -121,6 +124,7 @@ export function VlanSetting () {
         setDefaultVlan={handleSetDefaultVlan}
         vlansList={vlanTable}
       />
+      <Form.Item name='vlans' initialValue={vlanTable} />
     </>
   )
 }

@@ -3,14 +3,14 @@ import { useState, useEffect, SetStateAction } from 'react'
 
 import { Row, Col, Form, Input, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
+import _                                                                                from 'lodash'
 
-import { Card, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, SwitchModelPortData }       from '@acx-ui/rc/utils'
-import { getIntl }                  from '@acx-ui/utils'
+import { Card, StepsForm, Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
+import { getIntl }                                 from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-import _ from 'lodash'
 
 export interface ModelsType {
   label: string
@@ -44,8 +44,14 @@ export function SelectModelStep () {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
-  const [switchModelPortData, setSwitchModelPortData] =
-    useState<SwitchModelPortData>({ model: '', trustPorts: [], slots: [] })
+  const [switchFamilyModels, setSwitchFamilyModels] =
+    useState<SwitchModelPortData>({
+      model: '',
+      trustPorts: [],
+      slots: [],
+      taggedPorts: [],
+      untaggedPorts: []
+    })
   const [markedPorts, setMarkedPorts] = useState<PortsType[]>([])
 
   const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
@@ -155,7 +161,7 @@ export function SelectModelStep () {
     setModel(e.target.value)
     checkIfModuleFixed(family, e.target.value)
     getSlots(family, e.target.value)
-    setSwitchModelPortData({ ...switchModelPortData, slots: [] })
+    setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
     updateModelPortData(family, e.target.value)
   }
 
@@ -175,12 +181,12 @@ export function SelectModelStep () {
 
   const onModuleChange = (value: string) => {
     getSlots(family, model)
-    setSwitchModelPortData({ ...switchModelPortData, slots: [] })
+    setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
     updateModelPortData(family, model)
   }
 
   const updateModelPortData = (selectedFamily: string, selectedModel: string) => {
-    setSwitchModelPortData({ ...switchModelPortData, model: selectedFamily + '-' + selectedModel })
+    setSwitchFamilyModels({ ...switchFamilyModels, model: selectedFamily + '-' + selectedModel })
 
     for (let slotNumber = 1; slotNumber <= 4; slotNumber++) {
       updateSlotPortData(slotNumber, selectedFamily, selectedModel)
@@ -194,8 +200,6 @@ export function SelectModelStep () {
     } else {
       const enable = form.getFieldValue(`enableSlot${slotNumber}`)
       let option = form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-
-      console.log(enable, option)
 
       let optionList = optionListForSlot2
       switch (slotNumber) {
@@ -214,9 +218,9 @@ export function SelectModelStep () {
         option = optionList[0] ? optionList[0].value : option
       }
 
-      const index = switchModelPortData?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      const index = switchFamilyModels?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
       if (!enable && index !== -1) {
-        switchModelPortData?.slots?.splice(index, 1)
+        switchFamilyModels?.slots?.splice(index, 1)
       }
       generateSlotData(slotNumber, enable, optionList, option, selectedFamily, selectedModel)
     }
@@ -255,14 +259,14 @@ export function SelectModelStep () {
         portStatus: generatePortData(totalPortNumber, markedPortsInSameSlot)
       }
 
-      const slotIndex = switchModelPortData.slots?.findIndex(
+      const slotIndex = switchFamilyModels.slots?.findIndex(
         (s: { slotNumber: number }) => s.slotNumber === slotNumber)
 
-      const tmpModelPortData = { ...switchModelPortData }
+      const tmpModelPortData = { ...switchFamilyModels }
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
       } else {
-        if(switchModelPortData.slots){
+        if(switchFamilyModels.slots){
           tmpModelPortData.slots[slotIndex] = slotData
         }
       }
@@ -270,10 +274,9 @@ export function SelectModelStep () {
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
-      console.log(tmpModelPortData)
-      setSwitchModelPortData(tmpModelPortData)
+      setSwitchFamilyModels(tmpModelPortData)
 
-      form.setFieldValue('switchModelPortData', tmpModelPortData)
+      form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }
   }
 
@@ -287,7 +290,6 @@ export function SelectModelStep () {
       }
       ports.push(port)
     }
-    console.log(ports)
     return ports
   }
 
@@ -427,7 +429,7 @@ export function SelectModelStep () {
           </Row>
         </Col>
       </Row>
-      <Form.Item name={'switchModelPortData'} />
+      <Form.Item name={'switchFamilyModels'} />
     </>
   )
 }
