@@ -142,13 +142,13 @@ export function VenueNetworksTab () {
               row.deepNetwork.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+          addNetworkVenue({ payload: newNetworkVenue })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === params.venueId) {
               deleteNetworkVenue({
                 params: {
-                  tenantId: params.tenantId, networkVenueId: networkVenue.id
+                  networkVenueId: networkVenue.id
                 }
               })
             }
@@ -278,7 +278,6 @@ export function VenueNetworksTab () {
       const payload = aggregateApGroupPayload(newData, oldData)
 
       updateNetworkVenue({ params: {
-        tenantId: params.tenantId,
         networkVenueId: payload.id
       }, payload: payload }).then(()=>{
         setApGroupModalState({

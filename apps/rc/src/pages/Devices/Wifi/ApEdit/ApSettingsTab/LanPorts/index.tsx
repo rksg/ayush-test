@@ -47,10 +47,10 @@ export function LanPorts () {
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
   const formRef = useRef<StepsFormInstance<WifiApSetting>>()
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
+  const { data: apDetails } = useGetApQuery({ params: { serialNumber } })
   const { data: apCaps } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const { data: apLanPorts, isLoading: isApLanPortsLoading }
-    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+    = useGetApLanPortsQuery({ params: { serialNumber } })
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -139,13 +139,13 @@ export function LanPorts () {
       setUseVenueSettings(values?.useVenueSettings)
 
       if (values?.useVenueSettings) {
-        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
+        await resetApCustomization({ params: { serialNumber } }).unwrap()
       } else {
         const payload = {
           lanPorts: values?.lan,
           useVenueSettings: false
         }
-        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await updateApCustomization({ params: { serialNumber }, payload }).unwrap()
       }
     } catch {
       showToast({

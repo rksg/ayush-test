@@ -9,13 +9,12 @@ import { RawIntlProvider, useIntl }  from 'react-intl'
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useBlinkLedApMutation,
   useDeleteApMutation,
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
   useLazyApListQuery,
   useLazyGetDhcpApQuery,
-  useRebootApMutation
+  useApActionMutation
 } from '@acx-ui/rc/services'
 import {
   AP,
@@ -36,10 +35,9 @@ export function useApActions () {
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
   const [ getApList ] = useLazyApListQuery()
-  const [ rebootAp ] = useRebootApMutation()
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
-  const [ blinkLedAp ] = useBlinkLedApMutation()
+  const [ apAction ] = useApActionMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
@@ -59,7 +57,7 @@ export function useApActions () {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            rebootAp({ params: { tenantId: tenantId, serialNumber } })
+            apAction({ params: { serialNumber }, payload: { action: 'reboot' } })
             callBack && callBack()
           }
         }]
@@ -82,7 +80,7 @@ export function useApActions () {
       content: $t({ defaultMessage: 'Preparing log ...' })
     })
 
-    downloadApLog({ params: { tenantId, serialNumber } })
+    downloadApLog({ params: { serialNumber } })
       .unwrap().then((result) => {
         showToast({
           key: toastKey,
@@ -146,7 +144,7 @@ export function useApActions () {
   }
 
   const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
+    apAction({ params: { serialNumber }, payload: { action: 'blinkLed' } }).unwrap().then(() => {
       let count = blinkLedCount
       const interval = setInterval(() => {
         if (count <= 0) {

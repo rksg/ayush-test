@@ -13,7 +13,7 @@ import ApEditTabs from './ApEditTabs'
 function ApEditPageHeader () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-  const { data } = useGetApQuery({ params: { tenantId, serialNumber } })
+  const { data } = useGetApQuery({ params: { serialNumber } })
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)

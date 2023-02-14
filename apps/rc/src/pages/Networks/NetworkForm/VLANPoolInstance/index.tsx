@@ -4,7 +4,6 @@ import { Form, Select, Input } from 'antd'
 import { DefaultOptionType }   from 'antd/lib/select'
 import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
 
 import { useVlanPoolListQuery } from '@acx-ui/rc/services'
 
@@ -18,11 +17,9 @@ const listPayload = {
 
 const VLANPoolInstance = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
   // const { data } = useGetVLANPoolPolicyListQuery({ params })
   const { data } = useVlanPoolListQuery({
-    params,
     payload: listPayload
   })
 

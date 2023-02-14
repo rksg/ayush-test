@@ -171,11 +171,11 @@ export function NetworkVenuesTab () {
     }
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+        addNetworkVenue({ payload: newNetworkVenue })
       } else { // deactivate
         deleteNetworkVenue({
           params: {
-            tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
+            networkVenueId: deactivateNetworkVenueId
           }
         })
       }
@@ -383,7 +383,6 @@ export function NetworkVenuesTab () {
       const payload = aggregateApGroupPayload(newData, oldData)
 
       updateNetworkVenue({ params: {
-        tenantId: params.tenantId,
         networkVenueId: payload.id
       }, payload: payload }).then(()=>{
         setApGroupModalState({

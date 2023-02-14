@@ -72,7 +72,7 @@ export function CellularOptionsForm () {
   }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
 
-  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
+  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { venueId } })
   const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const [currentRegion, setCurrentRegion] = useState('')

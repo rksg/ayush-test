@@ -28,7 +28,7 @@ export function DirectedMulticast () {
 
   const { editContextData, setEditContextData } = useContext(ApEditContext)
 
-  const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
+  const { data: apDetails } = useGetApQuery({ params: { serialNumber } })
   const directedMulticast = useGetApDirectedMulticastQuery({ params: { serialNumber } })
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
     useUpdateApDirectedMulticastMutation()

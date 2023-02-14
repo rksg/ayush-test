@@ -7,24 +7,25 @@ import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
-import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
+import { useApActionMutation }                           from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
 
 export function ApTraceRouteForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useApContext()
+  const { serialNumber } = useApContext()
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
-  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()
+  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useApActionMutation()
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: form.getFieldValue('name')
+        targetHost: form.getFieldValue('name'),
+        action: 'traceRoute'
       }
       const traceRouteApResult =
-        await traceRouteAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await traceRouteAp({ params: { serialNumber }, payload }).unwrap()
       if (traceRouteApResult) {
         form.setFieldValue('traceRoute', _.get(traceRouteApResult, 'response.response'))
       }

@@ -26,7 +26,6 @@ import { ApRadioTypeEnum,
 import {
   useLazyApListQuery,
   useGetVenueCapabilitiesQuery,
-  useGetDefaultRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
@@ -119,11 +118,11 @@ export function RadioSettings () {
 
   // default radio data
   const { data: defaultRadioSettingsData } =
-    useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
+    useGetVenueRadioCustomizationQuery({ params: { venueId }, payload: { defaultonly: true } })
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
-    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
+    useGetVenueRadioCustomizationQuery({ params: { venueId } })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] =
     useUpdateVenueRadioCustomizationMutation()
@@ -359,7 +358,7 @@ export function RadioSettings () {
       }).unwrap()
 
       await updateVenueRadioCustomization({
-        params: { tenantId, venueId },
+        params: { venueId },
         payload: formData
       }).unwrap()
     }catch {
