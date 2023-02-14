@@ -1,7 +1,7 @@
+import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
 import { getJwtToken, getTenantId } from '@acx-ui/utils'
-import _ from 'lodash';
 
 export interface ApiInfo {
   url: string;
