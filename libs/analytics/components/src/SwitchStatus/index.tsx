@@ -2,19 +2,17 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { TimeSeriesChartData }                              from '@acx-ui/analytics/utils'
-import { getSeriesData, AnalyticsFilter }                   from '@acx-ui/analytics/utils'
-import { cssStr }                                           from '@acx-ui/components'
-import { Loader, NoData, MultiBarTimeSeriesChart, GridCol } from '@acx-ui/components'
-import { TimeStamp }                                        from '@acx-ui/types'
+import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }      from '@acx-ui/analytics/utils'
+import { Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr } from '@acx-ui/components'
+import { TimeStamp }                                                from '@acx-ui/types'
 
 import { SwitchStatusTimeSeries, useSwitchStatusQuery } from './services'
 import * as UI                                          from './styledComponents'
 
 type Key = keyof Omit<SwitchStatusTimeSeries, 'time'>
 
-const secondsToHm = (milliSeconds: number) => {
-  let seconds = Math.floor(milliSeconds / 1000)
+const milliSecondsToHm = (milliSeconds: number) => {
+  const seconds = Math.floor(milliSeconds / 1000)
   const h = Math.floor(seconds / 3600) + 'h'
   const m = Math.floor((seconds % 3600) / 60) + 'm'
   return h + ' ' + m
@@ -59,12 +57,12 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
         <UI.Status col={{ span: 4 }} style={{ height: '20px' }}>
           {$t({ defaultMessage: 'Total Uptime' })}
           {': '}
-          <UI.Duration>{secondsToHm(queryResults?.switchTotalUptime || 0)}</UI.Duration>
+          <UI.Duration>{milliSecondsToHm(queryResults?.switchTotalUptime || 0)}</UI.Duration>
         </UI.Status>
         <UI.Status col={{ span: 4 }}>
           {$t({ defaultMessage: 'Total Downtime' })}
           {': '}
-          <UI.Duration>{secondsToHm(queryResults?.switchTotalDowntime || 0)}</UI.Duration>
+          <UI.Duration>{milliSecondsToHm(queryResults?.switchTotalDowntime || 0)}</UI.Duration>
         </UI.Status>
         <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>

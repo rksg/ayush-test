@@ -26,7 +26,6 @@ describe('SwitchStatusByTime', () => {
     })
     render(
       <Provider>
-        {' '}
         <SwitchStatusByTime filters={filters} />
       </Provider>
     )
