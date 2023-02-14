@@ -5,7 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { useSwitchPortlistQuery }             from '@acx-ui/rc/services'
+import { useGetSwitchVlanQuery, useSwitchPortlistQuery }             from '@acx-ui/rc/services'
 import {
   getSwitchModel,
   isOperationalSwitch,
@@ -26,10 +26,21 @@ export function SwitchPortTable ({ isVenueLevel }: {
   isVenueLevel: boolean
 }) {
   const { $t } = useIntl()
-  const { serialNumber, venueId } = useParams()
+  const { serialNumber, venueId, tenantId, switchId } = useParams()
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+
+  const { vlanFilterOptions } = useGetSwitchVlanQuery({ params: { tenantId, switchId } }, {
+    selectFromResult: ({ data }) => ({
+      vlanFilterOptions: data?.switchVlan.map(v=>
+        ({ key: v.vlanId.toString(), value: v.vlanId.toString() })) || true
+    })
+  })
+  const statusFilterOptions = [
+    { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
+    { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
+  ]
 
 
   const tableQuery = useTableQuery({
@@ -47,6 +58,9 @@ export function SwitchPortTable ({ isVenueLevel }: {
         'crcErr', 'inDiscard', 'usedInFormingStack'
       ]
     },
+    search: {
+      searchTargetFields: ['name', 'portIdentifier', 'neighborName']
+    },
     sorter: {
       sortField: 'portIdentifierFormatted',
       sortOrder: 'ASC'
@@ -57,6 +71,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'portIdentifierFormatted',
     title: $t({ defaultMessage: 'Port Number' }),
     dataIndex: 'portIdentifierFormatted',
+    searchable: true,
     sorter: true,
     defaultSortOrder: 'ascend',
     render: (data, row) => row['portIdentifier']
@@ -64,6 +79,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'name',
     title: $t({ defaultMessage: 'Port Name' }),
     dataIndex: 'name',
+    searchable: true,
     sorter: true
   }, {
     key: 'switchName',
@@ -74,6 +90,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
+    filterable: statusFilterOptions,
     sorter: true
   }, {
     key: 'adminStatus',
@@ -114,6 +131,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
+    filterable: vlanFilterOptions || false,
     sorter: true,
     render: (data, row) => <Space size={2}>
       <UI.TagsOutlineIcon /> {row.unTaggedVlan || '--'}
@@ -141,6 +159,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'neighborName',
     title: $t({ defaultMessage: 'Neighbor Name' }),
     dataIndex: 'neighborName',
+    searchable: true,
     sorter: true
   }, {
     key: 'opticsType',
@@ -241,6 +260,8 @@ export function SwitchPortTable ({ isVenueLevel }: {
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
       rowKey='portId'
       rowActions={rowActions}
       rowSelection={{
