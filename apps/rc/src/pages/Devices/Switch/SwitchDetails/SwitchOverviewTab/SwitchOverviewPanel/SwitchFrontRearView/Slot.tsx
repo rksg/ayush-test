@@ -1,9 +1,10 @@
 import { PortLabelType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import * as UI             from './styledComponents'
+import * as UI             from '../styledComponents'
+import { Port } from './Port'
 
-export function FrontView (props:{
+export function Slot (props:{
   slot: any, 
   portLabel: string,
   tooltipEnable: boolean,
@@ -21,6 +22,6 @@ export function FrontView (props:{
   // }, [slot])
 
   return <div>
-   Front
+   <Port />
   </div>
 }

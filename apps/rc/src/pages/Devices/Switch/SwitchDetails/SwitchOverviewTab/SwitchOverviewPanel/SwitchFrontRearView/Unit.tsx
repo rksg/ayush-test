@@ -6,9 +6,9 @@ import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
-import { SwitchDetailsContext } from '../..'
-import { FrontView } from './FrontView'
-import * as UI             from './styledComponents'
+import { SwitchDetailsContext } from '../../..'
+import { Slot } from './Slot'
+import * as UI             from '../styledComponents'
 
 interface SlotMember {
   isStack: boolean
@@ -66,7 +66,7 @@ const icxModulesConst : {
   rearSlots: { 745024: [3, 4], 745048: [3, 4], 765048: [3] }
 }
 
-export function PanelSlotview (props:{
+export function Unit (props:{
   member: StackMember,
   index: number,
   isStack: boolean,
@@ -259,7 +259,7 @@ export function PanelSlotview (props:{
       ? <>{
         portView && portView.slots.map((slot, index) => (
           <span key={index}>
-            <FrontView slot={slot} portLabel={getPortLabel(slot) as string}
+            <Slot slot={slot} portLabel={getPortLabel(slot) as string}
               tooltipEnable={isOnline} isStack={isStack} 
               deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
             />
