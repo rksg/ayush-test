@@ -311,7 +311,7 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId } , payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
 
       dataFetchedRef.current = false
 

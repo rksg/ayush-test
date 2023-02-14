@@ -82,7 +82,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateSwitch: {
     method: 'put',
     url: '/switches/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    oldUrl: '/api/switch/tenant/:tenantId/switch'
     newApi: true
   },
   addStackMember: {

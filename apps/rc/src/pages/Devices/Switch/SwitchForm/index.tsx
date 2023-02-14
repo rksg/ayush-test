@@ -251,7 +251,7 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { tenantId } , payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
 
       dataFetchedRef.current = false
 
