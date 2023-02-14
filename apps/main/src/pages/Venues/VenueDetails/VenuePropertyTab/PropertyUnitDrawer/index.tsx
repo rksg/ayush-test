@@ -160,20 +160,25 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const patchPersona = async (id?: string, payload?: UnitPersonaConfig) => {
-    if (id && payload) {
-      await updatePersonaMutation({ params: { groupId: personaGroupId, id }, payload }).unwrap()
-    }
+    return (id && payload)
+      ? await updatePersonaMutation({ params: { groupId: personaGroupId, id }, payload }).unwrap()
+      : Promise.resolve()
   }
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
-    // TODO: handle exception and loading state
+    // TODO: handle exception for more detail information
     const { unitPersona, guestPersona, ...unitPayload } = formValues
     const { personaId, guestPersonaId } = data as PropertyUnitFormFields
 
-    await updateUnitMutation({ params: { venueId, unitId }, payload: unitPayload }).unwrap()
+    const unitUpdateResult = await updateUnitMutation({
+      params: { venueId, unitId },
+      payload: unitPayload
+    }).unwrap()
 
-    await patchPersona(personaId, unitPersona)
-    await patchPersona(guestPersonaId, guestPersona)
+    const personaUpdateResult = await patchPersona(personaId, unitPersona)
+    const guestUpdateResult = await patchPersona(guestPersonaId, guestPersona)
+
+    return Promise.all([unitUpdateResult, personaUpdateResult, guestUpdateResult])
   }
 
   const handleAddUnit = async (formValues: PropertyUnit) => {
