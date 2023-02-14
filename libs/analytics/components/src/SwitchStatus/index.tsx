@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesChartData }                                        from '@acx-ui/analytics/utils'
-import { getSeriesData, AnalyticsFilter, calculateGranularity }       from '@acx-ui/analytics/utils'
+import { getSeriesData, AnalyticsFilter }                             from '@acx-ui/analytics/utils'
 import { Loader, NoData, MultiBarTimeSeriesChart, GridCol, GridRow  } from '@acx-ui/components'
 import { TimeStamp }                                                  from '@acx-ui/types'
 
@@ -18,17 +18,22 @@ const secondsToHm = (milliSeconds: number) => {
   const m = Math.floor((seconds % 3600) / 60) + 'm'
   return h +' '+ m
 }
-const getTimeSeries = (timeSeries : TimeSeriesChartData[], granularity : number) => {
-  return timeSeries?.[0]?.data?.reduce((acc, seriesDatum) => {
-    if(seriesDatum[1] === 1)
-      acc.push([
-        seriesDatum[0] ,
-        'switchStatus' ,
-        moment(seriesDatum[0]).add(granularity, 'seconds').toISOString()
-      ])
-    return acc
-  }, [] as [TimeStamp, string, TimeStamp][])
+
+function getStartAndEndTimes (timeSeries : TimeSeriesChartData[]) {
+  return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
+    const [time, value] = dataPoint
+    if (
+      index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]
+    ) {
+      startEndTimes.push([time, 'switchStatus', time, value])
+    } else {
+      const lastStartEndTime = startEndTimes[startEndTimes.length - 1]
+      lastStartEndTime[2] = time
+    }
+    return startEndTimes
+  }, [] as [TimeStamp, string, TimeStamp, number | null][])
 }
+
 export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
   const { $t } = useIntl()
   const seriesMapping = [
@@ -37,14 +42,9 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
   const queryResults = useSwitchStatusQuery(filters, {
     selectFromResult: ({ data, ...rest }) => {
       return {
-        timeSeries: getTimeSeries(
-          getSeriesData(data?.timeSeries!, seriesMapping) as TimeSeriesChartData[],
-          moment
-            .duration(
-              calculateGranularity(filters.startDate, filters.endDate, 'PT15M')
-            )
-            .asSeconds()
-        ),
+        timeSeries: getStartAndEndTimes(
+          getSeriesData(data?.timeSeries!, seriesMapping) as TimeSeriesChartData[]
+        )?.filter((dataPoint) => dataPoint?.[3] === 1),
         switchTotalUptime: data?.switchTotalUptime,
         switchTotalDowntime: data?.switchTotalDowntime,
         ...rest
@@ -75,8 +75,8 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
         </UI.TotalDowntime>
         <GridCol col={{ span: 24 }} style={{ height: '20px' }}>
           <AutoSizer>
-            {({ height, width }) => (
-              queryResults.timeSeries.length ?
+            {({ height, width }) =>
+              queryResults.timeSeries.length ? (
                 <MultiBarTimeSeriesChart
                   style={{ width, height }}
                   data={[
@@ -84,7 +84,12 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
                       key: 'SwitchStatus',
                       name: 'switch',
                       color: '#23AB36',
-                      data: queryResults?.timeSeries as [TimeStamp, string, TimeStamp][]
+                      data: queryResults?.timeSeries as [
+                        TimeStamp,
+                        string,
+                        TimeStamp,
+                        number | null
+                      ][]
                     }
                   ]}
                   chartBoundary={[
@@ -93,8 +98,10 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
                   ]}
                   hasXaxisLabel
                 />
-                : <NoData/>
-            )}
+              ) : (
+                <NoData />
+              )
+            }
           </AutoSizer>
         </GridCol>
       </GridRow>

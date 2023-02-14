@@ -59,7 +59,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
     key: string;
     name: string;
     show?: boolean;
-    data: [TimeStamp, string, TimeStamp][];
+    data: [TimeStamp, string, TimeStamp,number | null][];
   }[]; // https://github.com/microsoft/TypeScript/issues/44373
   chartBoundary: number[];
   zoomEnabled?: boolean;
@@ -237,7 +237,9 @@ export function MultiBarTimeSeriesChart ({
       formatter: tooltipFormatter
         ? tooltipFormatter
         : function (params) {
-          const { data } = params as unknown as { data: [TimeStamp, string, TimeStamp] }
+          const { data } = params as unknown as {
+            data: [TimeStamp, string, TimeStamp, number | null];
+          }
           return formatter('dateTimeFormat')(data[0])
         },
       position: 'top'
