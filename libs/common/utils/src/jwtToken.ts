@@ -29,7 +29,7 @@ export enum AccountType {
 
 interface JwtToken {
   swuId?: string
-  tenantType?: string
+  tenantType?: AccountType
   sub?: string
   lastName: string
   companyName: string
@@ -96,10 +96,6 @@ export function getJwtTokenPayload () {
     const token = JSON.parse(window.atob(jwt.split('.')[1])) as JwtToken
     cache.clear()
     cache.set(jwt, token)
-
-    if (token?.tenantType === AccountType.REC || token?.tenantType === AccountType.VAR) {
-      token.tenantType = 'REC'
-    } else token.tenantType = 'MSP'
     return token
   } catch {
     throw new Error('Unable to parse JWT Token')
