@@ -550,7 +550,6 @@ export function EditPortDrawer ({
       setDrawerVisible(false)
 
     } catch (err) {
-      console.log(err) // eslint-disable-line no-console
       showGeneralError(err)
     }
   }
@@ -679,7 +678,7 @@ export function EditPortDrawer ({
       width: 450,
       title: $t({ defaultMessage: 'Modify Uplink Port?' }),
       content: $t({
-        defaultMessage: `Modifying the uplink port may result in connectivity issues. 
+        defaultMessage: `Modifying the uplink port may result in connectivity issues.
       Are you sure you want to apply these changes?` }),
       okText: $t({ defaultMessage: 'Apply Changes' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),

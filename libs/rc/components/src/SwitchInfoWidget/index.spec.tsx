@@ -20,14 +20,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
     <div data-testid={'analytics-IncidentBySeverityDonutChart'} title='IncidentBySeverityDonutChart' />
 }))
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  CheckMarkCircleSolid: () => <span data-testid='CheckMarkCircleSolid' />,
-  CloseSymbol: () => <div data-testid='close-symbol' />,
-  Client: () => <span data-testid='Client' />,
-  PoeUsage: () => <span data-testid='PoeUsage' />
-}))
-
 const alarmList = {
   data: [
     {
