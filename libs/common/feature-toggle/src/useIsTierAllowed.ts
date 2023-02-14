@@ -23,7 +23,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
   if (jwtPayload?.tenantType === AccountType.REC || jwtPayload?.tenantType === AccountType.VAR) {
     jwtPayload.tenantType = 'REC'
   } else jwtPayload.tenantType = 'MSP'
-  
+
   const treatment = useTreatments([Features.PLM_FF], {
     tier: jwtPayload?.acx_account_tier,
     vertical: jwtPayload?.acx_account_vertical,
