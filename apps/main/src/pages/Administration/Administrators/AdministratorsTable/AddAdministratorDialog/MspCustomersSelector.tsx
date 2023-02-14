@@ -28,8 +28,6 @@ export const GetEcTypeString = (type: ECCustomerRadioButtonEnum) => {
       return defineMessage({ defaultMessage: 'All Customers' })
     case ECCustomerRadioButtonEnum.specific:
       return defineMessage({ defaultMessage: 'Specific Customers' })
-    default:
-      return defineMessage({ defaultMessage: 'Known' })
   }
 }
 

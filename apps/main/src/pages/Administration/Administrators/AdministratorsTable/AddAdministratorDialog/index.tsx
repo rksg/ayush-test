@@ -11,6 +11,7 @@ import {
   Input,
   Tooltip
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Modal, showActionModal/*, showToast */ } from '@acx-ui/components'
@@ -65,15 +66,8 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   } = useGetRegisteredUsersListQuery({ params })
 
   const isRegisteredUser = (email: string): boolean => {
-    let isExisted = false
-    if (!registerUsersList) return isExisted
-
-    for (let i = 0; i < registerUsersList.length; i++) {
-      isExisted = registerUsersList[i].email === email
-      if (isExisted) break
-    }
-
-    return isExisted
+    if (!registerUsersList) return false
+    return Boolean(_.find(registerUsersList, { email }))
   }
 
   const handleSubmitFailed = (error: CommonErrorsResult<catchErrorDetails>) => {
@@ -148,8 +142,8 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
       if (userType === 'new') {
         payload.email = formValues.newEmail
       } else {
-        payload.email = formValues.email.email
-        payload.externalId = formValues.email.externalId
+        payload.email = formValues.email
+        payload.externalId = _.find(registerUsersList, { email: formValues.email })?.externalId
       }
 
       await addAdmin({ params, payload }).unwrap()
@@ -173,10 +167,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
 
   const registerUsersSelectOpts = registerUsersList ? registerUsersList.map((item) => ({
     label: item.email,
-    value: {
-      externalId: item.externalId,
-      email: item.email
-    }
+    value: item.email
   })): []
 
   const isLoading = isAddAdminUpdating
@@ -226,7 +217,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                         noStyle
                       >
                         <Select
-                          options={registerUsersList}
+                          options={registerUsersSelectOpts}
                           disabled={isNoExistingUser}
                           placeholder={$t({ defaultMessage: 'Select admin...' })}
                         />
@@ -255,7 +246,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                         { validator: (_, value) => emailRegExp(value) }
                       ]}
                       noStyle
-                    // initialValue=''
+                      initialValue=''
                     >
                       <Input
                         placeholder={$t({ defaultMessage: 'Enter email address' })}
