@@ -87,8 +87,8 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
+    // await userEvent.click(await screen.findByRole('checkbox',
+    //   { name: /Enable Ruckus DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
     await userEvent.click(await screen.findByText('Next'))
