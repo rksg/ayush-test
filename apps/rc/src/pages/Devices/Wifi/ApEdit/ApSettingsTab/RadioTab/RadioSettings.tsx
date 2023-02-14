@@ -294,63 +294,90 @@ export function RadioSettings () {
         }
 
         const { method, allowedChannels, channelBandwidth } = radioParams
+        const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
+
         if (method === 'MANUAL') {
-          const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
           radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
           radioParams.allowedChannels = supportCh[bandwidth]
         } else {
           radioParams.manualChannel = 0
+          if (allowedChannels || allowedChannels.length === 0) {
+            radioParams.allowedChannels = supportCh[bandwidth]
+          }
         }
       }
 
       if (isUseVenueSettings) {
         await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
       } else {
-        formData.useVenueSettings = false
+        const payload = { ...formData }
+        payload.useVenueSettings = false
         const {
-          apRadioParams24G,
-          apRadioParams50G,
-          apRadioParams6G,
+          enable24G,
+          enable50G,
+          enable6G,
           apRadioParamsDual5G
-        } = formData
+        } = payload
 
         const hasRadio5G = (!isSupportTriBandRadioAp || !isDual5gMode) && bandwidth5GOptions.length > 0
         const hasRadioDual5G = (isSupportDual5GAp && isDual5gMode)
         const hasRadio6G = (isSupportTriBandRadioAp && !isDual5gMode) && bandwidth6GOptions.length > 0
 
-        updateRadioParams(apRadioParams24G, support24GChannels)
+        if (!enable24G) {
+          payload.apRadioParams24G = initData.apRadioParams24G
+        }
+        updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
         if (hasRadio5G) {
-          updateRadioParams(apRadioParams50G, support5GChannels)
+          if (!enable50G) {
+            payload.apRadioParams50G = initData.apRadioParams50G
+          }
+          updateRadioParams(payload.apRadioParams50G, support5GChannels)
         } else {
-          delete formData.apRadioParams50G
+          delete payload.apRadioParams50G
         }
 
         if (hasRadio6G) {
-          updateRadioParams(apRadioParams6G, support6GChannels)
+          if (!enable6G) {
+            payload.apRadioParams6G = initData.apRadioParams6G
+          }
+          updateRadioParams(payload.apRadioParams6G, support6GChannels)
         } else {
-          delete formData.apRadioParams6G
+          delete payload.apRadioParams6G
         }
 
         if (hasRadioDual5G) {
-          const { radioParamsLower5G, radioParamsUpper5G } = apRadioParamsDual5G || {}
-          updateRadioParams(radioParamsLower5G, supportLower5GChannels)
-          updateRadioParams(radioParamsUpper5G, supportUpper5GChannels)
+          const radioDual5G = apRadioParamsDual5G || new ApRadioParamsDual5G()
+
+          const { lower5gEnabled, upper5gEnabled } = radioDual5G
+
+          if (!lower5gEnabled) {
+            radioDual5G.radioParamsLower5G = initData?.apRadioParamsDual5G?.radioParamsLower5G
+          }
+
+          if (!upper5gEnabled) {
+            radioDual5G.radioParamsUpper5G = initData?.apRadioParamsDual5G?.radioParamsUpper5G
+          }
+
+          updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
+          updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
+
+          payload.apRadioParamsDual5G = radioDual5G
         } else if (isSupportDual5GAp) {
           if (!apRadioParamsDual5G) {
             const radioDual5G = new ApRadioParamsDual5G()
             radioDual5G.enabled = false
             radioDual5G.radioParamsLower5G = undefined
             radioDual5G.radioParamsUpper5G = undefined
-            formData.apRadioParamsDual5G = radioDual5G
+            payload.apRadioParamsDual5G = radioDual5G
           }
         } else {
-          delete formData.apRadioParamsDual5G
+          delete payload.apRadioParamsDual5G
         }
 
         await updateApRadio({
           params: { tenantId, serialNumber },
-          payload: formData
+          payload: payload
         }).unwrap()
       }
     } catch(error) {
