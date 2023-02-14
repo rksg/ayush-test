@@ -12,6 +12,10 @@ import {
   WarningCircle
 }                          from '@acx-ui/icons'
 
+export const Home = styled(LayoutUI.DropdownText)`
+  color: var(--acx-primary-white);
+`
+
 export const SearchBar = styled.div`
   display: flex;
   flex-direction: row;

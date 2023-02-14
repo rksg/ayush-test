@@ -14,6 +14,9 @@ storiesOf('Tooltip', module)
           <Button>top</Button>
         </Tooltip>
       </div>
+      <div style={{ paddingTop: '100px' }}>
+        Tooltip with question mark <Tooltip.Question title={'This is a tooltip'} />
+      </div>
     </div>
   })
 
