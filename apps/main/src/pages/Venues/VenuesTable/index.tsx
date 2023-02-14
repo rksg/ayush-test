@@ -25,6 +25,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
+import { useHasRoles } from '@acx-ui/rbac'
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -302,7 +303,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Venues' })}
-        extra={[
+        extra={useHasRoles('READ_ONLY')? [] : [
           <TenantLink to='/venues/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
           </TenantLink>
