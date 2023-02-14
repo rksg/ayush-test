@@ -365,7 +365,32 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.devicePolicyId = null
   }
 
+  if (!get(data, 'wlan.advancedCustomization.applicationPolicyEnable')) {
+    advancedCustomization.applicationPolicyId = null
+  }
 
+  if (!get(data, 'accessControlProfileEnable')) {
+    advancedCustomization.accessControlProfileId = null
+  }
+
+  if (get(data, 'accessControlProfileEnable')
+    && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
+    advancedCustomization.l2AclEnable = false
+    advancedCustomization.l2AclPolicyId = null
+    advancedCustomization.l3AclEnable = false
+    advancedCustomization.l3AclPolicyId = null
+    advancedCustomization.applicationPolicyEnable = false
+    advancedCustomization.applicationPolicyId = null
+    advancedCustomization.devicePolicyId = null
+
+    advancedCustomization.accessControlEnable = true
+    // eslint-disable-next-line max-len
+    advancedCustomization.accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
+  }
+
+  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
+    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
+  }
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
     advancedCustomization.userUplinkRateLimiting = 0
