@@ -22,14 +22,14 @@ export type KPITimeseriesResponse = {
 }
 
 interface TimeseriesResponse <TimeSeriesData> {
-  timeSeries: TimeSeriesData
+  network: { timeSeries: TimeSeriesData }
 }
 export type KPIHistogramResponse = {
   data: number []
 }
 
 interface HistogramResponse <HistogramData> {
-  histogram: HistogramData
+  network: { histogram: HistogramData }
 }
 
 export type KpiPayload = AnalyticsFilter & {
@@ -79,9 +79,13 @@ const getHistogramQuery = (kpi: string) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
   return `
-    query histogramKPI($path: [HierarchyNodeInput], $start: DateTime, $end: DateTime) {
-      histogram: histogram(path: $path, start: $start, end: $end) {
-        data: ${apiMetric}(splits: [${splits.join(', ')}])
+    query histogramKPI(
+      $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $filter: FilterInput
+    ) {
+      network(filter: $filter) { 
+        histogram: histogram(path: $path, start: $start, end: $end) {
+          data: ${apiMetric}(splits: [${splits.join(', ')}])
+        }
       }
     }
   `
@@ -111,16 +115,19 @@ export const healthApi = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query timeseriesKPI(
-          $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $granularity: String
+          $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $granularity: String,
+          $filter: FilterInput
         ) {
-          timeSeries: timeSeries(
-            path: $path
-            start: $start
-            end: $end
-            granularity: $granularity
-          ) {
-            time
-            data: ${getKPIMetric(payload.kpi, payload.threshold)}
+          network(filter: $filter) {
+            timeSeries: timeSeries(
+              path: $path
+              start: $start
+              end: $end
+              granularity: $granularity
+            ) {
+              time
+              data: ${getKPIMetric(payload.kpi, payload.threshold)}
+            }
           }
         }
       `,
@@ -129,13 +136,14 @@ export const healthApi = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-           getGranularity(payload.startDate, payload.endDate, payload.kpi)
+           getGranularity(payload.startDate, payload.endDate, payload.kpi),
+          filter: payload.filter ?? {}
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
       transformResponse: (
         response: TimeseriesResponse<KPITimeseriesResponse>
-      ) => response.timeSeries
+      ) => response.network.timeSeries
     }),
     kpiHistogram: build.query<
       KPIHistogramResponse,
@@ -146,12 +154,13 @@ export const healthApi = dataApi.injectEndpoints({
         variables: {
           path: payload.path,
           start: payload.startDate,
-          end: payload.endDate
+          end: payload.endDate,
+          filter: payload.filter ?? {}
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'HISTOGRAM_PILL' }],
       transformResponse: (response: HistogramResponse<KPIHistogramResponse>) =>
-        response.histogram
+        response.network.histogram
     }),
     getKpiThresholds: build.query<
       ThresholdsApiResponse,
