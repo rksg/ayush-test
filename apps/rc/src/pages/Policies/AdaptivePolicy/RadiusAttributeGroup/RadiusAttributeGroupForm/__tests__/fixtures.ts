@@ -79,144 +79,56 @@ export const attributeList = {
       name: 'Foundry-Privilege-Level',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910001'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910002,
       name: 'Foundry-Command-String',
       vendorName: 'Foundry',
       dataType: 'STRING',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910002'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910003,
       name: 'Foundry-Command-Exception-Flag',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910003'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910004,
       name: 'Foundry-INM-Privilege',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910004'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910005,
       name: 'Foundry-Access-List',
       vendorName: 'Foundry',
       dataType: 'STRING',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910005'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910006,
       name: 'Foundry-MAC-Authent-needs-802.1x',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910006'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910007,
       name: 'Foundry-802.1x-Valid-Lookup',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910007'
-        }
-      ]
+      showOnDefault: true
     },
     {
       id: 19910008,
       name: 'Foundry-MAC-Based-Vlan-QoS',
       vendorName: 'Foundry',
       dataType: 'INTEGER',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910008'
-        }
-      ]
-    },
-    {
-      id: 19910009,
-      name: 'Foundry-INM-Role-Aor-List',
-      vendorName: 'Foundry',
-      dataType: 'STRING',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910009'
-        }
-      ]
-    },
-    {
-      id: 19910010,
-      name: 'Foundry-RADIUS-COA-Command',
-      vendorName: 'Foundry',
-      dataType: 'STRING',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910010'
-        }
-      ]
-    },
-    {
-      id: 19910011,
-      name: 'Foundry-Voice-Phone-Config',
-      vendorName: 'Foundry',
-      dataType: 'STRING',
-      showOnDefault: true,
-      links: [
-        {
-          rel: 'self',
-          href: 'https://api.devalto.ruckuswireless.com/radiusAttributes/19910011'
-        }
-      ]
+      showOnDefault: true
     }
   ]
 }
-

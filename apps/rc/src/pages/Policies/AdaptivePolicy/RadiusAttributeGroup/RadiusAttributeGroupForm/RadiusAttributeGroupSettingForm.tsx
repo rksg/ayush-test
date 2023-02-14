@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
-import { v4 as uuidv4 }          from 'uuid'
+import { showActionModal, Table, TableProps }        from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListQuery }      from '@acx-ui/rc/services'
+import { AttributeAssignment, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
-import { showActionModal, Table, TableProps }                                      from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists, OperatorType }                 from '@acx-ui/rc/utils'
-import { useParams }                                                               from '@acx-ui/react-router-dom'
-
-import { RadiusAttributeDrawer } from './RadiusAttributeDrawer'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -31,24 +27,18 @@ function useColumns () {
   return columns
 }
 
-export function RadiusAttributeGroupSettingForm () {
+interface RadiusAttributeGroupSettingFormProps {
+  onAddClick: () => void,
+  onEditClick: (attribute: AttributeAssignment) => void
+}
+
+export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSettingFormProps) {
   const { $t } = useIntl()
   const [attributeGroup] = useLazyRadiusAttributeGroupListQuery()
   const { policyId } = useParams()
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
-  const [visible, setVisible] = useState(false)
-  const [editAttributeMode, setEditAttributeMode] = useState(false)
-  const [editAttribute, setEditAttribute] = useState<AttributeAssignment>()
-  const [radiusVendors, setRadiusVendors] = useState([] as string [])
-
-  const radiusAttributeVendorListQuery = useRadiusAttributeVendorListQuery({ params: {} })
-
-  useEffect(()=>{
-    if(radiusAttributeVendorListQuery.data) {
-      setRadiusVendors(radiusAttributeVendorListQuery.data.supportedVendors ?? [])
-    }
-  }, [radiusAttributeVendorListQuery.data])
+  const { onEditClick, onAddClick } = props
 
   const handleAttributeAssignments = (attribute: AttributeAssignment[]) => {
     form.setFieldValue('attributeAssignments', attribute)
@@ -66,27 +56,12 @@ export function RadiusAttributeGroupSettingForm () {
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'RADIUS Attribute Group' }))
   }
 
-  const setAttributeAssignments = (attribute: AttributeAssignment) => {
-    // eslint-disable-next-line max-len
-    const newAttribute: AttributeAssignment[] = attributeAssignments ? attributeAssignments.slice() : []
-    if (editAttributeMode) {
-      const targetIdx = newAttribute.findIndex((r: AttributeAssignment) => r.id === attribute.id)
-      newAttribute.splice(targetIdx, 1, attribute)
-    } else {
-      attribute.id = uuidv4()
-      newAttribute.push(attribute)
-    }
-    form.setFieldValue('attributeAssignments', newAttribute)
-  }
-
   const rowActions: TableProps<AttributeAssignment>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows, clearSelection) => {
-        setEditAttributeMode(true)
-        setVisible(true)
-        setEditAttribute(selectedRows[0])
+        onEditClick(selectedRows[0])
         clearSelection()
       }
     },
@@ -113,61 +88,43 @@ export function RadiusAttributeGroupSettingForm () {
   ]
 
   return (
-    <Row>
-      <Col span={6}>
-        <Form.Item name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => nameValidator(value) }
-          ]}
-          validateFirst
-          hasFeedback
-          children={<Input/>}
-        />
-      </Col>
-      <Col span={24}/>
-      <Col span={8}>
-        <Form.Item
-          name='attributeAssignments'
-          label={$t({ defaultMessage: 'RADIUS Attributes' })}
-          rules={[
-            {
-              required: true,
-              message: $t({ defaultMessage: 'Please create RADIUS Attributes' })
+    <>
+      <Form.Item name='name'
+        label={$t({ defaultMessage: 'Policy Name' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => nameValidator(value) }
+        ]}
+        validateFirst
+        hasFeedback
+        children={<Input/>}
+      />
+      <Form.Item
+        name='attributeAssignments'
+        label={$t({ defaultMessage: 'RADIUS Attributes' })}
+        rules={[
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please create RADIUS Attributes' })
+          }]}
+      >
+        <>
+          {$t({ defaultMessage: 'These attributes will be returned when a client connects...' })}
+          <Table
+            rowKey='id'
+            columns={useColumns()}
+            dataSource={attributeAssignments}
+            rowActions={rowActions}
+            rowSelection={{ type: 'radio' }}
+            actions={[{
+              label: $t({ defaultMessage: 'Add' }),
+              onClick: () => {
+                onAddClick()
+              }
             }]}
-        >
-          <>
-            {$t({ defaultMessage: 'These attributes will be returned when a client connects...' })}
-            <Table
-              rowKey='id'
-              columns={useColumns()}
-              dataSource={attributeAssignments}
-              rowActions={rowActions}
-              rowSelection={{ type: 'radio' }}
-              actions={[{
-                label: $t({ defaultMessage: 'Add' }),
-                onClick: () => {
-                  setEditAttributeMode(false)
-                  setEditAttribute({
-                    attributeName: '' ,
-                    operator: OperatorType.ADD,
-                    attributeValue: ''
-                  } as AttributeAssignment)
-                  setVisible(true)
-                }
-              }]}
-            />
-            <RadiusAttributeDrawer
-              visible={visible}
-              setVisible={setVisible}
-              isEdit={editAttributeMode}
-              editAttribute={editAttribute}
-              vendorList={radiusVendors}
-              setAttributeAssignments={setAttributeAssignments}/>
-          </>
-        </Form.Item>
-      </Col>
-    </Row>
+          />
+        </>
+      </Form.Item>
+    </>
   )
 }

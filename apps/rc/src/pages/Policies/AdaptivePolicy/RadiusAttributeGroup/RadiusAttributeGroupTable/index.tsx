@@ -91,26 +91,30 @@ export default function RadiusAttributeGroupTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
+      onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'group' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length,
+            entityValue: name,
             confirmationText: 'Delete'
           },
           onOk: async () => {
-            try {
-              await deleteGroup({ params: { policyId: rows[0].id } }).unwrap()
-              clearSelection()
-            } catch (error) {
-              showToast({
-                type: 'error',
-                content: $t({ defaultMessage: 'An error occurred' })
+            deleteGroup({ params: { policyId: id } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Group {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                showToast({
+                  type: 'error',
+                  content: error.data.message
+                })
               })
-            }
           }
         })
       }

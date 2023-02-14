@@ -10,6 +10,15 @@ import { RadiusAttributeDrawer }     from './RadiusAttributeDrawer'
 
 
 describe('RadiusAttributeDrawer', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(
+        RadiusAttributeGroupUrlsInfo.getAttributeVendors.url,
+        (req, res, ctx) => res(ctx.json(vendorList))
+      )
+    )
+  })
+
   it('should render form successfully', async () => {
     render(
       <Provider>
@@ -19,7 +28,6 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={false}
           editAttribute={undefined}
           setAttributeAssignments={jest.fn()}
-          vendorList={vendorList.supportedVendors}
         />
       </Provider>,
       {
@@ -29,6 +37,10 @@ describe('RadiusAttributeDrawer', () => {
         }, path: '/:tenantId/:policyId' }
       }
     )
+
+    const addButton = screen.getByText('Add')
+    expect(addButton).toBeInTheDocument()
+    await userEvent.click(addButton)
 
     const cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeInTheDocument()
@@ -58,7 +70,6 @@ describe('RadiusAttributeDrawer', () => {
           isEdit={true}
           editAttribute={editAttribute}
           setAttributeAssignments={jest.fn()}
-          vendorList={vendorList.supportedVendors}
         />
       </Provider>,
       {

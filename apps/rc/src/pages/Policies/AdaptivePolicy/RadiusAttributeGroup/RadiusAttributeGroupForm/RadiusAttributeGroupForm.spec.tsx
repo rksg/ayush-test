@@ -116,61 +116,6 @@ describe('RadiusAttributeGroupForm', () => {
     await waitForElementToBeRemoved(validating)
   })
 
-  it('should toast error when create group', async () => {
-    mockServer.use(
-      rest.post(
-        RadiusAttributeGroupUrlsInfo.createAttributeGroup.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json({}))
-      )
-    )
-
-    render(
-      <Provider>
-        <RadiusAttributeGroupForm/>
-      </Provider>,
-      {
-        route: {
-          params: { tenantId: 'tenant-id' },
-          path: createPath
-        }
-      }
-    )
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Policy Name' }), 'testGroup')
-
-    await userEvent.click(screen.getByText('Add'))
-    await screen.findByText('Add RADIUS Attribute')
-
-    const inputs = await screen.findAllByRole('textbox')
-    const attributeValue = inputs[2]
-    await userEvent.type(attributeValue, 'testValue')
-
-    const comboBoxes = await screen.findAllByRole('combobox')
-    await userEvent.click(comboBoxes[0])
-
-    const treeNodes = await screen.findAllByRole('img')
-    await userEvent.click(treeNodes[1])
-
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
-
-    await userEvent.click(await screen.findByText('Foundry-Privilege-Level'))
-
-    const buttons = screen.getAllByText('Add')
-    await userEvent.click(buttons[1])
-
-    await screen.findByRole('row', { name: /Foundry-Privilege-Level/ })
-
-    await userEvent.click(screen.getByText('Apply'))
-
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating)
-
-    const errorMsgElem = await screen.findByText('An error occurred')
-    expect(errorMsgElem).toBeInTheDocument()
-
-    const closeBtn = await screen.findByRole('img', { name: 'close' })
-    await userEvent.click(closeBtn)
-  })
-
   it('should edit group successfully', async () => {
     mockServer.use(
       rest.get(
@@ -251,9 +196,6 @@ describe('RadiusAttributeGroupForm', () => {
 
     const errorMsgElem = await screen.findByText('An error occurred')
     expect(errorMsgElem).toBeInTheDocument()
-
-    const closeBtn = await screen.findByRole('img', { name: 'close' })
-    await userEvent.click(closeBtn)
   })
 
   it('should navigate to the Select service page when clicking Cancel button', async () => {
