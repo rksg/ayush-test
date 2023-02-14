@@ -4,8 +4,8 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { useGetSwitchVlanQuery, useSwitchPortlistQuery }             from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader }            from '@acx-ui/components'
+import { useGetSwitchVlanQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
   isOperationalSwitch,
