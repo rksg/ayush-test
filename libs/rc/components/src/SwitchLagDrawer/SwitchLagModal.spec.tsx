@@ -98,7 +98,7 @@ describe('SwitchLagModal', () => {
     fireEvent.change(screen.getByLabelText(/LAG Name/i), { target: { value: 'lag1' } })
     await user.click(await screen.findByText(/select ports type.../i))
     const portsTypeOption = await screen.findAllByText('1 Gbits per second copper')
-    await user.click(portsTypeOption[1])
+    await user.click(portsTypeOption[portsTypeOption.length-1])
     await waitFor(() => screen.findByText('1/1/10'))
     await user.click(screen.getByText('1/1/10'))
     await user.click(screen.getByText('1/1/11'))
