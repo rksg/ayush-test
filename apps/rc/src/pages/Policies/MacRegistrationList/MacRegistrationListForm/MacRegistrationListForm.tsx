@@ -60,7 +60,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         defaultAccess: data.defaultAccess
         // policyId
       }
-      await addMacRegList({ payload: saveData })
+      await addMacRegList({ payload: saveData }).unwrap()
 
       showToast({
         type: 'success',
@@ -91,7 +91,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
       await updateMacRegList({
         params: { policyId },
         payload: saveData
-      })
+      }).unwrap()
 
       showToast({
         type: 'success',
