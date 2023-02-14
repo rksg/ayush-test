@@ -8,8 +8,7 @@ import { EdgeDhcpPool } from '@acx-ui/rc/utils'
 
 export function PoolTable (props:{
   data: EdgeDhcpPool[]
-  onAdd?: () => void
-  onEdit?: (data?: EdgeDhcpPool) => void
+  openDrawer: (data?: EdgeDhcpPool) => void
   onDelete?: (data:EdgeDhcpPool[]) => void
   isDefaultService?: Boolean
 }) {
@@ -21,7 +20,7 @@ export function PoolTable (props:{
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpPool[]) => {
-        props.onEdit?.(rows[0])
+        props.openDrawer(rows[0])
       }
     },
     {
@@ -67,7 +66,7 @@ export function PoolTable (props:{
   ]
   let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
-    onClick: () => props.onAdd?.()
+    onClick: () => props.openDrawer()
   }]
   return (
     <Table

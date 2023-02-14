@@ -8,8 +8,7 @@ import { EdgeDhcpHost } from '@acx-ui/rc/utils'
 
 export function HostTable (props:{
   data: EdgeDhcpHost[]
-  onAdd?: () => void
-  onEdit?: (data?: EdgeDhcpHost) => void
+  openDrawer: (data?: EdgeDhcpHost) => void
   onDelete?: (data:EdgeDhcpHost[]) => void
   isDefaultService?: Boolean
 }) {
@@ -21,7 +20,7 @@ export function HostTable (props:{
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (rows: EdgeDhcpHost[]) => {
-        props.onEdit?.(rows[0])
+        props.openDrawer(rows[0])
       }
     },
     {
@@ -55,7 +54,7 @@ export function HostTable (props:{
   ]
   let actions = [{
     label: $t({ defaultMessage: 'Add Host' }),
-    onClick: () => props.onAdd?.()
+    onClick: () => props.openDrawer()
   }]
   return (
     <Table
