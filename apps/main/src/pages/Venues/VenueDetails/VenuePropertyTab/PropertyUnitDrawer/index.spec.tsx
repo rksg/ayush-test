@@ -2,11 +2,11 @@ import { waitFor } from '@storybook/testing-library'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { CommonUrlsInfo, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
-import { mockServer, render, screen }       from '@acx-ui/test-utils'
+import { CommonUrlsInfo, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { mockServer, render, screen }                    from '@acx-ui/test-utils'
 
-import { venueLanPorts } from '../../../__tests__/fixtures'
+import { mockPersonaGroupWithoutNSG, mockEnabledPropertyConfig, mockPropertyUnit, venueLanPorts } from '../../../__tests__/fixtures'
 
 import { PropertyUnitDrawer } from './index'
 
@@ -16,6 +16,7 @@ const params = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   venueId: 'f892848466d047798430de7ac234e940'
 }
+const unitId = 'c59f537f-2257-4fa6-934b-69f787e686fb'
 
 
 describe('Property Unit Drawer', () => {
@@ -23,9 +24,25 @@ describe('Property Unit Drawer', () => {
     closeFn.mockClear()
 
     mockServer.use(
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (_, res, ctx) => res(ctx.json(mockEnabledPropertyConfig))
+      ),
       rest.post(
         PropertyUrlsInfo.addPropertyUnit.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.patch(
+        PropertyUrlsInfo.updatePropertyUnit.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getUnitById.url,
+        (_, res, ctx) => res(ctx.json(mockPropertyUnit))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaGroupById.url,
+        (_, res, ctx) => res(ctx.json(mockPersonaGroupWithoutNSG))
       ),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
@@ -81,6 +98,7 @@ describe('Property Unit Drawer', () => {
       <Provider>
         <PropertyUnitDrawer
           venueId={params.venueId}
+          unitId={unitId}
           visible
           isEdit
           onClose={closeFn}

@@ -15,7 +15,8 @@ import {
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  TableResult
+  TableResult,
+  PersonaGroup
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2668,6 +2669,15 @@ export const mockEnabledPropertyConfig: PropertyConfigs = {
 //     }
 //   ]
 // }
+
+export const mockPersonaGroupWithoutNSG: PersonaGroup = {
+  id: 'persona-group-id-1',
+  name: 'Class A',
+  description: '',
+  macRegistrationPoolId: 'mac-id-1',
+  dpskPoolId: 'dpsk-pool-2',
+  propertyId: 'propertyId-100'
+}
 
 export const mockPropertyUnitList: TableResult<PropertyUnit> = {
   totalCount: 1,
