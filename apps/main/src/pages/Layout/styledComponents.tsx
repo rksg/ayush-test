@@ -1,5 +1,5 @@
-import { Input as AntInput } from 'antd'
-import styled                from 'styled-components/macro'
+import { Input as AntInput, ButtonProps } from 'antd'
+import styled                             from 'styled-components/macro'
 
 import {
   LayoutUI,
@@ -14,6 +14,7 @@ import {
 
 export const Home = styled(LayoutUI.DropdownText)`
   color: var(--acx-primary-white);
+  margin-right:10px;
 `
 
 export const SearchBar = styled.div`
@@ -78,15 +79,21 @@ export const Close = styled(Button)`
     }
   }
 `
-export const LicenseContainer = styled.div`
+
+export const LeftHeaderWrapper = styled.div`
   display: flex;
-  background-color: var(--acx-neutrals-90);
+  align-items: center;
+`
+
+
+export const LicenseContainer = styled.div.attrs((props: { expired: boolean }) => props)`
+  display: flex;
+  background-color: ${props => props.expired ?
+    'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);' }
   height: 45px;
   align-items: center;
   border-radius: 4px;
-  margin-left: 15px;
   padding-left: 5px;
-  padding-right: 5px;
 `
 export const LicenseIconWrapper = styled.div`
   width: 10%;
@@ -102,11 +109,29 @@ export const TipsWrapper = styled.div`
   line-height: 20px;
   align-items: start;
   white-space: nowrap;
+  margin-right: 10px;
 `
-export const ActiveBtn = styled(Button).attrs({ type: 'link' })`
+
+
+export const MainTips = styled.div.attrs((props: { expired: boolean }) => props)`
   height: 20px;
-  color: var(--acx-accents-orange-50);
-  font-weight: var(--acx-subtitle-4-font-weight);
+  color: var(--acx-primary-white);
+  font-weight: ${props => props.expired ?
+    'var(--acx-subtitle-5-font-weight);':'var(--acx-headline-5-font-weight);' }
+`
+export const SubTips = styled.div.attrs((props: { expired: boolean }) => props)`
+  color: ${props => props.expired ? 'var(--acx-primary-white);':'var(--acx-accents-orange-50);'}
+  font-weight: ${props => props.expired ?
+    'var(--acx-headline-5-font-weight);':'var(--acx-subtitle-5-font-weight);' }
+`
+
+export const ActiveBtn = styled(Button).attrs({ type: 'link' })<
+ButtonProps & { expired?: boolean }
+>`
+  height: 20px;
+  color: ${props => props.expired ?
+    'var(--acx-primary-white);':'var(--acx-accents-orange-50);' }
+  font-weight: var(--acx-subtitle-5-font-weight);
 `
 
 export const LayoutIcon = styled(LayoutUI.Icon)`
@@ -114,7 +139,7 @@ export const LayoutIcon = styled(LayoutUI.Icon)`
     display: flex;
 `
 
-export const BulbLesser60 = styled(BulbOffSolid)`
+export const BulbLesserInitial = styled(BulbOffSolid)`
   width: 16px;
   height: 16px;
   path {

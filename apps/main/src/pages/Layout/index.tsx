@@ -1,3 +1,5 @@
+import { useIntl } from 'react-intl'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -21,12 +23,13 @@ import LicenseBar        from './LicenseBar'
 import { useMenuConfig } from './menuConfig'
 import RegionButton      from './RegionButton'
 import SearchBar         from './SearchBar'
-import { Home }          from './styledComponents'
+import * as UI           from './styledComponents'
 
 function Layout () {
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
+  const { $t } = useIntl()
 
   return (
     <LayoutComponent
@@ -38,12 +41,15 @@ function Layout () {
         </>
       }
       leftHeaderContent={
-        showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-          <Home>
-            <LayoutUI.Icon children={<HomeSolid />} />
-            Home
-          </Home>
-        </Link>
+        <UI.LeftHeaderWrapper>
+          { showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </Link> }
+          <LicenseBar/>
+        </UI.LeftHeaderWrapper>
       }
 
       rightHeaderContent={<>
