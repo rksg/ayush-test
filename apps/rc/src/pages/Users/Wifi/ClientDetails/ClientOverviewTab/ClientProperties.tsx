@@ -378,7 +378,7 @@ function WiFiCallingDetails ({ client }: { client: ClientExtended }) {
 
   return <>
     <Subtitle level={4}>
-      {$t({ defaultMessage: 'WiFi Calling Details' })}
+      {$t({ defaultMessage: 'Wi-Fi Calling Details' })}
     </Subtitle>
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item

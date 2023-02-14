@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/components'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, convertDateTimeToSqlFormat }                       from '@acx-ui/utils'
+import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
 
 interface ReportProps {
   embedDashboardName: string
@@ -79,6 +79,7 @@ export function EmbeddedReport (props: ReportProps) {
   useEffect(()=> {
     let timer: ReturnType<typeof setInterval>
     let embeddedObj :Promise<EmbeddedDashboard>
+    const jwtToken = getJwtToken()
     if (dashboardEmbeddedId && dashboardEmbeddedId.length > 0) {
       embeddedObj = embedDashboard({
         id: dashboardEmbeddedId,
@@ -88,10 +89,11 @@ export function EmbeddedReport (props: ReportProps) {
         dashboardUiConfig: {
           hideChartControls: true,
           hideTitle: hideHeader ?? true
-        }
+        },
         // debug: true
+        authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
       })
-      embeddedObj.then( async embObj =>{
+      embeddedObj.then(async embObj =>{
         timer = setInterval(async () => {
           const { height } = await embObj.getScrollSize()
           if (height > 0) {
@@ -116,4 +118,3 @@ export function EmbeddedReport (props: ReportProps) {
     </Loader>
   )
 }
-
