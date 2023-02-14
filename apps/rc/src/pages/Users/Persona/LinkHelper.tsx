@@ -11,6 +11,17 @@ import {
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 
+export function VenueLink (props: { venueId?: string, name?: string }) {
+  const { venueId, name } = props
+  // FIXME: After the property id does not present in UUID format, I will remove .replace()
+  const id = venueId?.replaceAll('-', '')
+  return (
+    <TenantLink to={`venues/${id}/venue-details/overview`}>
+      {name ?? id}
+    </TenantLink>
+  )
+}
+
 export function PersonaGroupLink (props: { personaGroupId?: string, name?: string }) {
   const { personaGroupId, name } = props
   return (

@@ -33,6 +33,7 @@ export default function WifiCallingTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteWifiCallingServiceMutation()
+  const WIFICALLING_LIMIT_NUMBER = 5
 
   const tableQuery = useTableQuery({
     useQuery: useServiceListQuery,
@@ -88,7 +89,13 @@ export default function WifiCallingTable () {
         extra={[
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}</Button>
+            <Button
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= WIFICALLING_LIMIT_NUMBER
+                : false}
+              type='primary'>
+              {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
+            </Button>
           </TenantLink>
         ]}
       />
