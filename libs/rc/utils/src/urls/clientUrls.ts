@@ -31,7 +31,8 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGuests: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    url: '/guestUsers/query/csvFiles',
+    newApi: true
   },
   generateGuestPassword: {
     method: 'post',

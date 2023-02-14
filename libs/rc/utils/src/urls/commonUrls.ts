@@ -53,7 +53,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApsList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/aps'
+    url: '/aps/query',
+    newApi: true
   },
   getApGroupList: {
     method: 'get',
@@ -134,7 +135,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMeshAps: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/aps/mesh'
+    url: '/aps/query',
+    newApi: true
   },
   getService: {
     method: 'get',
@@ -186,7 +188,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApModels: {
     method: 'get',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models'
+    url: '/venues/:venueId/apModels',
+    newApi: true
   },
   getVenueLedOn: {
     method: 'get',
@@ -238,7 +241,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getOldVenueRogueAp: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap'
+    url: '/venues/:venueId/rogueAps/query',
+    newApi: true
   },
   updateVenueRogueAp: {
     method: 'put',
@@ -316,7 +320,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGuestsList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guests'
+    url: '/guestUsers/query',
+    newApi: true
   },
   addGuestPass: {
     method: 'post',

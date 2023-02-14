@@ -253,7 +253,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchClientList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/client/clientlist'
+    url: '/switches/clients/query',
+    newApi: true
   },
   getSwitchClientDetail: {
     method: 'get',

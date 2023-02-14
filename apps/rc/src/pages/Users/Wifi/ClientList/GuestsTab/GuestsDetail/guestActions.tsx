@@ -24,7 +24,7 @@ export function useGuestActions () {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const guestIds = [guest.id]
 
-    getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
+    getGuests({ payload: { dateFormat, timezone, guestIds } })
       .catch(() => {
         showToast({
           type: 'error',

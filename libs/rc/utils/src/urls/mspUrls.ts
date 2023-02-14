@@ -7,7 +7,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspDeviceInventory: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ec-inventory'
+    url: '/msps/:mspTenantId/ecInventories/query',
+    newApi: true
   },
   getIntegratorDeviceInventory: {
     method: 'post',
@@ -15,7 +16,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVarDelegations: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/delegations'
+    url: '/delegations',
+    newApi: true
   },
   deleteMspEcAccount: {
     method: 'delete',
@@ -67,11 +69,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   resendEcInvitation: {
     method: 'post',
-    url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
+    url: '/mspCustomers/:customerId/invitations',
+    newApi: true
   },
   getMspProfile: {
     method: 'get',
-    url: '/api/mspservice/tenant/:tenantId/msplabel'
+    url: '/mspLabels',
+    newApi: true
   },
   getMspEcProfile: {
     method: 'get',
@@ -87,7 +91,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addMspEcAccount: {
     method: 'post',
-    url: '/api/mspservice/tenant/:tenantId/mspecaccounts'
+    url: '/mspCustomers',
+    newApi: true
   },
   updateMspEcAccount: {
     method: 'put',
@@ -127,7 +132,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   exportMspEcDeviceInventory: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/ec-inventory/export'
+    url: '/msps/:mspTenantId/ecInventories/query/csvFiles',
+    newApi: true
   },
   deactivateMspEcAccount: {
     method: 'post',
