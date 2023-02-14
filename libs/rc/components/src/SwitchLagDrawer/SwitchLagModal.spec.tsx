@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { LAG_TYPE, SwitchUrlsInfo }                       from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { LAG_TYPE, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   defaultVlan,
