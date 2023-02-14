@@ -13,7 +13,8 @@ import {
   successResponse,
   networkDeepResponse,
   dhcpResponse,
-  portalList
+  portalList,
+  externalProviders
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -56,8 +57,13 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json(clickThroughData))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
+      rest.get(CommonUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json(externalProviders))),
       rest.get(PortalUrlsInfo.getPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
+        res(ctx.json([]))
       ),
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({
