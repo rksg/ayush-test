@@ -74,19 +74,22 @@ export function NetworkHealthTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       onClick: (selectedRow, clearSelection) => {
-        if(selectedRow[0].apsCount > 0) {
+        const selectedAP = selectedRow[0]
+        const pendingAP = selectedAP.tests.items[0].summary.apsPendingCount
+        const canRunTest = !pendingAP && selectedAP.apsCount
+        const cannotRunReason = pendingAP ? 'TEST_IN_PROGRESS' : 'RUN_TEST_NO_APS'
+        if (canRunTest) {
           showToast({
             type: 'success',
             content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
           })
-          clearSelection()
         } else {
           showToast({
             type: 'error',
-            content: $t(contents.messageMapping.RUN_TEST_NO_APS)
+            content: $t(contents.messageMapping[cannotRunReason])
           })
-          clearSelection()
         }
+        clearSelection()
       },
       disabled: (selectedRow) => (
         selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount === 0
