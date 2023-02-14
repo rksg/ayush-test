@@ -25,12 +25,6 @@ export function MacRegistrationsTab () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
-  useEffect(()=>{
-    if (uploadCsvResult.isSuccess) {
-      setUploadCsvDrawerVisible(false)
-    }
-  },[uploadCsvResult])
-
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
     defaultPayload: {},
@@ -39,6 +33,12 @@ export function MacRegistrationsTab () {
       sortOrder: 'asc'
     }
   })
+
+  useEffect(()=>{
+    if (uploadCsvResult.isSuccess) {
+      setUploadCsvDrawerVisible(false)
+    }
+  },[uploadCsvResult])
 
   const [
     deleteMacRegistration,
@@ -164,6 +164,16 @@ export function MacRegistrationsTab () {
     }
   ]
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toastDetailErrorMessage = (error: any) => {
+    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+    })
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -188,12 +198,7 @@ export function MacRegistrationsTab () {
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            if (error.data?.message) {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
-            }
+            toastDetailErrorMessage(error)
           }
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />

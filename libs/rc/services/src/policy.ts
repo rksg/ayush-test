@@ -270,9 +270,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, {
-          'content-type': 'application/json; charset=UTF-8'
-        })
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params)
         return {
           ...req,
           body: payload
