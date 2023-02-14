@@ -46,11 +46,11 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization', 'wifiCallingEnabled'])
   ]
 
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const params = useParams()
   const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
-  const wlanData = (editMode || cloneMode) ? data : form.getFieldsValue()
+  const wlanData = (editMode) ? data : form.getFieldsValue()
   const providerData = useExternalProvidersQuery({ params })
 
   useEffect(() => {

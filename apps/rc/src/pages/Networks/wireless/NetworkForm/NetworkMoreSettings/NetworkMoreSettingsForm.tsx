@@ -58,7 +58,7 @@ export function NetworkMoreSettingsForm (props: {
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const wlanData = (editMode || cloneMode) ? props.wlanData : form.getFieldsValue()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
   useEffect(() => {
     if ((editMode || cloneMode) && data) {
@@ -111,7 +111,7 @@ export function MoreSettingsForm (props: {
   wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, data } = useContext(NetworkFormContext)
   const [
     enableOfdmOnly,
     enableFastRoaming,
@@ -134,7 +134,7 @@ export function MoreSettingsForm (props: {
   ]
 
   const form = Form.useFormInstance()
-  const wlanData = (editMode || cloneMode) ? props.wlanData : form.getFieldsValue()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
 
   const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
