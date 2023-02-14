@@ -81,7 +81,7 @@ export const api = networkHealthApi.injectEndpoints({
     >({
       query: (payload) => ({
         document: gql`
-          mutation ($id: String!) {
+          mutation DeleteServiceGuardSpec ($id: String!) {
             deleteServiceGuardSpec (id: $id) {
               deletedSpecId
               userErrors {

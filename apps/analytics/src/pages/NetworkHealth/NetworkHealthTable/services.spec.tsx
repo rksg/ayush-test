@@ -1,10 +1,10 @@
-import { networkhealthURL } from '@acx-ui/analytics/services'
-import { store }            from '@acx-ui/store'
-import { mockGraphqlQuery } from '@acx-ui/test-utils'
+import { networkHealthApiURL }                   from '@acx-ui/analytics/services'
+import { store }                                 from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation } from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { api  } from './services'
 
-describe('networkHealthApi', () => {
+describe('networkHealth query', () => {
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
@@ -32,7 +32,7 @@ describe('networkHealthApi', () => {
   }
 
   it('should return empty data', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
     const { status, data, error } = await store.dispatch(
       api.endpoints.networkHealth.initiate({})
     )
@@ -41,12 +41,34 @@ describe('networkHealthApi', () => {
     expect(error).toBe(undefined)
   })
   it('should return correct data', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', { data: expectedResult })
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', { data: expectedResult })
     const { status, data, error } = await store.dispatch(
       api.endpoints.networkHealth.initiate({})
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.allServiceGuardSpecs)
     expect(error).toBe(undefined)
+  })
+})
+
+describe('networkHealthDelete mutation', () => {
+  afterEach(() =>
+    store.dispatch(api.util.resetApiState())
+  )
+  it('handles delete mutation', async () => {
+    const data = {
+      deletedSpecId: 'spec-id',
+      userErrors: null
+    }
+    const expected = {
+      data: data
+    }
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
+      data: { deleteServiceGuardSpec: data }
+    })
+    const result = await store.dispatch(
+      api.endpoints.networkHealthDelete.initiate({ id: 'spec-id' })
+    )
+    expect(result).toEqual(expected)
   })
 })
