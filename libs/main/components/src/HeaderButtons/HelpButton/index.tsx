@@ -34,6 +34,12 @@ const HelpButton = (props:HelpButtonProps) => {
       case 'disabled':
         setIsChatDisabled(true)
         break
+      case 'chatting':
+        setIsChatDisabled(true)
+        break
+      case 'error':
+        setIsChatDisabled(true)
+        break
       default:
         break
     }

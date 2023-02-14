@@ -6,9 +6,7 @@ import {
 import { CustomerServiceFilled } from '@ant-design/icons'
 import { Button }                from 'antd'
 
-
-import { get } from '@acx-ui/config'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 
@@ -74,12 +72,12 @@ export function FetchBot (props:FetchBotProps) {
           // eslint-disable-next-line no-console
           console.log('Chatbot Chatting')
           statusCallback && statusCallback('chatting')
-          setIsDisabled(false)
+          setIsDisabled(true)
         },
         error: function (event: { data: { error: unknown; }; }) {
           // eslint-disable-next-line no-console
           console.error(event.data.error)
-          statusCallback && statusCallback('chatting')
+          statusCallback && statusCallback('error')
           setIsDisabled(true)
         }
       }
@@ -119,6 +117,10 @@ export function FetchBot (props:FetchBotProps) {
           })
 
         })
+      }).catch((error)=>{
+        // eslint-disable-next-line no-console
+        console.error(error)
+        callback('',error.message,{})
       })
     }
     return ()=>{

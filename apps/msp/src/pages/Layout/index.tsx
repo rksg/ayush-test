@@ -1,3 +1,4 @@
+import { useState } from 'react'
 
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -15,6 +16,7 @@ import {
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton
 } from '@acx-ui/main/components'
@@ -26,6 +28,7 @@ import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const { $t } = useIntl()
+  const [supportStatus,setSupportStatus] = useState('')
   const regionMenu = <Menu
     selectable
     defaultSelectedKeys={['US']}
@@ -57,8 +60,9 @@ function Layout () {
         <LayoutUI.Divider />
         <AlarmsButton/>
         <ActivityButton/>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <HelpButton/>
+          <HelpButton supportStatus={supportStatus}/>
         </Tooltip>
         <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
           <UserButton/>

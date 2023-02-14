@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { FetchBot, Tooltip } from '@acx-ui/components'
+import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -11,6 +11,7 @@ import { SplitProvider } from '@acx-ui/feature-toggle'
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton
 } from '@acx-ui/main/components'
