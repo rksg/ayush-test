@@ -80,7 +80,7 @@ export function LanPorts () {
         const venue = (await getVenue({
           params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())
         const venueLanPorts = (await getVenueLanPorts({
-          params: { tenantId, venueId: apDetails?.venueId }
+          params: { venueId: apDetails?.venueId }
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
         const venueSettings = (await getVenueSettings({
           params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap())

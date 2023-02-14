@@ -15,7 +15,8 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEdgeList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/edges'
+    url: '/edgeProfiles/query',
+    newApi: true
   },
   deleteEdge: {
     method: 'delete',

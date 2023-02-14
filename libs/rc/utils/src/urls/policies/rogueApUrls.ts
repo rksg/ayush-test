@@ -27,6 +27,7 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
   },
   getVenueRoguePolicy: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue'
+    url: '/venues/query',
+    newApi: true
   }
 }
