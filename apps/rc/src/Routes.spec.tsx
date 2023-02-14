@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -11,7 +11,8 @@ import {
   PolicyType,
   getPolicyRoutePath,
   PolicyOperation,
-  getServiceCatalogRoutePath
+  getServiceCatalogRoutePath,
+  getPolicyDetailsLink
 } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
@@ -30,15 +31,15 @@ jest.mock('./pages/Devices/Switch/SwitchesTable', () => () => {
   return <div data-testid='SwitchesTable' />
 })
 
-jest.mock('./pages/Networks/NetworksTable', () => () => {
+jest.mock('./pages/Networks/wireless/NetworksTable', () => () => {
   return <div data-testid='NetworksTable' />
 })
 
-jest.mock('./pages/Networks/NetworkForm/NetworkForm', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkForm/NetworkForm', () => () => {
   return <div data-testid='NetworkForm' />
 })
 
-jest.mock('./pages/Networks/NetworkDetails/NetworkDetails', () => () => {
+jest.mock('./pages/Networks/wireless/NetworkDetails/NetworkDetails', () => () => {
   return <div data-testid='NetworkDetails' />
 })
 
@@ -108,6 +109,10 @@ jest.mock('./pages/Devices/Edge/EdgeDetails/EditEdge', () => () => {
 
 jest.mock('./pages/Timeline', () => () => {
   return <div data-testid='Timeline' />
+})
+
+jest.mock('./pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail', () => () => {
+  return <div data-testid='ClientIsolationDetail' />
 })
 
 jest.mock('./pages/Users/Persona', () => () => {
@@ -343,8 +348,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit WIFI_CALLING page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -355,8 +359,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to WIFI_CALLING details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -377,8 +380,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit DHCP page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -389,8 +391,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to DHCP details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -411,8 +412,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to edit Portal page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -423,8 +423,7 @@ describe('RcRoutes: Services', () => {
   })
 
   test('should navigate to Portal details page', async () => {
-    let path = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })
-    path = path.replace(':serviceId', 'serviceId')
+    const path = getServiceDetailsLink({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,
@@ -560,10 +559,22 @@ describe('RcRoutes: Policies', () => {
     })
     expect(await screen.findByRole('heading', { level: 1, name: 'VLAN Pools' })).toBeVisible()
   })
-  test('should navigate to edit ACCESS_CONTROL page', async () => {
+  test('should navigate to Client Isolation details page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
-        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT }),
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
+  })
+
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
         wrapRoutes: false
       }
     })

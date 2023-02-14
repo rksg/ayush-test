@@ -7,8 +7,7 @@ import {
   ServiceType,
   websocketServerUrl,
   getServiceRoutePath,
-  ServiceOperation,
-  getServiceListRoutePath
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -139,9 +138,11 @@ describe('MdnsProxyForm', () => {
     await screen.findByDisplayValue(mockedGetApiResponse.serviceName)
   })
 
-  it('should navigate to the Select service page when clicking Cancel button', async () => {
+  it('should navigate to the table view when clicking Cancel button', async () => {
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getServiceListRoutePath(true))
+      return useTenantLink(getServiceRoutePath({
+        type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
+      }))
     })
 
     render(

@@ -175,6 +175,7 @@ export function Integrators () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowSelection={{ type: 'radio' }}
         />

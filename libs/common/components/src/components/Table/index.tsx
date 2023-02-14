@@ -8,7 +8,8 @@ import Highlighter                                                    from 'reac
 import { useIntl }                                                    from 'react-intl'
 import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
-import { SettingsOutlined } from '@acx-ui/icons'
+import { SettingsOutlined }        from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { Button, DisabledButton } from '../Button'
 import { Dropdown }               from '../Dropdown'
@@ -86,7 +87,7 @@ export interface TableHighlightFnArgs {
 
 const defaultPagination = {
   mini: true,
-  defaultPageSize: 10,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
   showTotal: false,

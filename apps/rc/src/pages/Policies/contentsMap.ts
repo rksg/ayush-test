@@ -5,10 +5,10 @@ import {
   PolicyType,
   RogueRuleType,
   Layer3ProtocolType,
-  ApplicationAclType,
-  ApplicationRuleType,
   OsVendorEnum,
-  DeviceTypeEnum
+  DeviceTypeEnum,
+  ApplicationAclType,
+  ApplicationRuleType
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
