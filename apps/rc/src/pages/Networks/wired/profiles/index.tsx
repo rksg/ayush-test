@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
-import { useGetProfilesQuery }                      from '@acx-ui/rc/services'
-import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useGetProfilesQuery }                                 from '@acx-ui/rc/services'
+import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -47,8 +47,21 @@ export function ProfilesTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: true, //Waiting for support
-      onClick: () => {}
+      onClick: (selectedRows) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: selectedRows.length > 1 ?
+              $t({ defaultMessage: 'Profiles' }) : $t({ defaultMessage: 'Profile' }),
+            entityValue: selectedRows[0].name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: () => {
+            // deleteGuests({ params: { tenantId }, payload: [guest.id] })
+          }
+        })
+      }
     }
   ]
 
