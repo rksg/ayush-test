@@ -216,20 +216,6 @@ export function CliStepConfiguration (props: {
         />
 
         <Form.Item
-          children={<>
-            <Form.Item
-              noStyle
-              name='applyLater'
-              valuePropName='checked'
-              children={<Switch />}
-            />
-            <Typography.Text style={{ fontSize: '12px' }}>
-              {$t({ defaultMessage: 'Apply the CLI template after adding it' })}
-            </Typography.Text>
-          </>}
-        />
-
-        <Form.Item
           hidden={true}
           name='cli'
           children={<Input />}

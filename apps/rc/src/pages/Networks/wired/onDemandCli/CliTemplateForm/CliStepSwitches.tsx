@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { Col, Collapse, Form, Input, Row, Space, Typography } from 'antd'
-import { useIntl, FormattedMessage }                          from 'react-intl'
+import { Col, Collapse, Form, Input, Row, Space, Switch, Typography } from 'antd'
+import { useIntl, FormattedMessage }                                  from 'react-intl'
 
 import { cssStr, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
 import { PlusSquareOutlined, MinusSquareOutlined }      from '@acx-ui/icons'
@@ -53,7 +53,10 @@ export function CliStepSwitches () {
       }), {})
 
       setSelectedSwitches(selected as Map<React.Key, React.Key[]>[])
-      form?.setFieldValue('venueSwitches', selected)
+      form?.setFieldsValue({
+        venueSwitches: selected,
+        applyLater: data?.applyLater
+      })
     }
   }, [data])
 
@@ -103,11 +106,29 @@ export function CliStepSwitches () {
           }}
         />}
       </Typography.Text>
+
+      <Form.Item
+        children={<>
+          <Form.Item
+            noStyle
+            name='applyLater'
+            valuePropName='checked'
+            children={<Switch />}
+          />
+          <Typography.Text style={{ fontSize: '12px' }}>
+            {$t({ defaultMessage: 'Apply the CLI template after {action} it' }, {
+              action: editMode ? $t({ defaultMessage: 'saving' }) : $t({ defaultMessage: 'adding' })
+            })}
+          </Typography.Text>
+        </>}
+      />
+
       <Form.Item
         hidden={true}
         name='venueSwitches'
         children={<Input />}
       />
+
       <UI.Collapse
         bordered={false}
         expandIcon={(panelProps) => panelProps?.isActive
