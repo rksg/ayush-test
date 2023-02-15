@@ -18,8 +18,7 @@ import {
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  WlanSecurityEnum,
-  NetworkSaveData
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
 import AAAInstance        from '../AAAInstance'

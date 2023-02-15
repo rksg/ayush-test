@@ -17,7 +17,7 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { InformationSolid }               from '@acx-ui/icons'
+import { InformationSolid } from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
