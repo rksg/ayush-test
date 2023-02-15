@@ -7,6 +7,7 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
 import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
@@ -18,6 +19,7 @@ interface ReportProps {
 
 export function EmbeddedReport (props: ReportProps) {
   const { embedDashboardName, rlsClause } = props
+  const params = useParams()
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
   const { startDate, endDate } = useDateFilter()
@@ -53,7 +55,8 @@ export function EmbeddedReport (props: ReportProps) {
     rls: [{
       clause: `
         "__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
-        "__time" < '${convertDateTimeToSqlFormat(endDate)}'
+        "__time" < '${convertDateTimeToSqlFormat(endDate)}' AND
+        '${params?.tenantId}' = '${params?.tenantId}'
         ${networkClause}
         ${radioBandClause}
         ${rlsClause? ' AND ' + rlsClause: ''}
