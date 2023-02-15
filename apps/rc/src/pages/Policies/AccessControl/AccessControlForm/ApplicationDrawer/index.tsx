@@ -39,6 +39,11 @@ import ApplicationRuleContent, {
 
 const { Option } = Select
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
 const { useWatch } = Form
 
 export interface ApplicationDrawerProps {
@@ -47,7 +52,9 @@ export interface ApplicationDrawerProps {
     id: string,
     viewText: string
   },
-  isOnlyViewMode?: boolean
+  isOnlyViewMode?: boolean,
+  editMode?: editModeProps,
+  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
 }
 
 export interface ApplicationsRule {
@@ -139,7 +146,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
-    isOnlyViewMode = false
+    isOnlyViewMode = false,
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {}
   } = props
   const [visible, setVisible] = useState(false)
   const form = Form.useFormInstance()
@@ -250,11 +259,22 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       return false
     }
 
+    if (editMode) {
+      return !editMode.isEdit
+    }
+
     return !_.isNil(appPolicyInfo)
   }
 
   useEffect(() => {
-    if (isViewMode() && appPolicyInfo) {
+    if (editMode.isEdit && editMode.id !== '') {
+      setVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (appPolicyInfo) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
@@ -341,6 +361,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     setVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
   const handleAddApplicationsRule = () => {
@@ -565,6 +590,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

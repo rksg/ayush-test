@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useApplicationPolicyListQuery,
+  useApplicationPolicyListQuery, useDeleteAccessControlProfileMutation,
   useDevicePolicyListQuery, useGetAccessControlProfileListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
@@ -31,7 +31,11 @@ const defaultPayload = {
     type: [PolicyType.ACCESS_CONTROL]
   },
   fields: [
-    '*'
+    'id',
+    'name',
+    'type',
+    'scope',
+    'cog'
   ]
 }
 
@@ -44,18 +48,21 @@ const AccessControlSet = () => {
   const { $t } = useIntl()
   const tenantBasePath: Path = useTenantLink('')
   const navigate = useNavigate()
+  const params = useParams()
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
     defaultPayload
   })
 
+  const [ delAccessControl ] = useDeleteAccessControlProfileMutation()
+
   const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: useParams()
+    params: params
   })
 
   const { selectedLayer2 } = useL2AclPolicyListQuery({
-    params: useParams(),
+    params: params,
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
@@ -66,7 +73,7 @@ const AccessControlSet = () => {
   })
 
   const { selectedLayer3 } = useL3AclPolicyListQuery({
-    params: useParams(),
+    params: params,
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
@@ -77,7 +84,7 @@ const AccessControlSet = () => {
   })
 
   const { selectedDevicePolicy } = useDevicePolicyListQuery({
-    params: useParams(),
+    params: params,
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
@@ -88,7 +95,7 @@ const AccessControlSet = () => {
   })
 
   const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
-    params: useParams(),
+    params: params,
     payload: listPayload
   }, {
     selectFromResult ({ data }) {
@@ -98,27 +105,23 @@ const AccessControlSet = () => {
     }
   })
 
-  // console.log(selectedLayer3, selectedLayer2, selectedApplicationPolicy, selectedDevicePolicy)
-  // console.log(accessControlList)
-
   const rowActions: TableProps<AccessControlProfile>['rowActions'] = [
-    // TODO Need to implement delete function
-    // {
-    //   label: $t({ defaultMessage: 'Delete' }),
-    //   onClick: ([{ name }], clearSelection) => {
-    //     showActionModal({
-    //       type: 'confirm',
-    //       customContent: {
-    //         action: 'DELETE',
-    //         entityName: $t({ defaultMessage: 'Policy' }),
-    //         entityValue: name
-    //       },
-    //       onOk: () => {
-    //         clearSelection()
-    //       }
-    //     })
-    //   }
-    // },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ name, id }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Policy' }),
+            entityValue: name
+          },
+          onOk: () => {
+            delAccessControl({ params: { ...params, policyId: id } }).then(clearSelection)
+          }
+        })
+      }
+    },
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -146,6 +149,7 @@ const AccessControlSet = () => {
       dataSource={tableQuery?.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
@@ -168,6 +172,7 @@ function useColumns (
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (

@@ -6,8 +6,11 @@ import { Tabs }                      from '@acx-ui/components'
 import { usePolicyListQuery }        from '@acx-ui/rc/services'
 import { PolicyType, useTableQuery } from '@acx-ui/rc/utils'
 
-import AccessControlSet from './AccessControlSet'
-import Layer2           from './Layer2'
+import AccessControlSet           from './AccessControlSet'
+import ApplicationPolicyComponent from './ApplicationPolicyComponent'
+import DevicePolicyComponent      from './DevicePolicyComponent'
+import Layer2Component            from './Layer2Component'
+import Layer3Component            from './Layer3Component'
 
 
 const defaultPayload = {
@@ -16,7 +19,11 @@ const defaultPayload = {
     type: [PolicyType.ACCESS_CONTROL]
   },
   fields: [
-    '*'
+    'id',
+    'name',
+    'type',
+    'scope',
+    'cog'
   ]
 }
 
@@ -48,20 +55,26 @@ function AccessControlTabs () {
         tab={$t({ defaultMessage: 'Layer 2' })}
         key='layer2'
       >
-        <Layer2 />
+        <Layer2Component />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Layer 3' })}
         key='layer3'
-      />
+      >
+        <Layer3Component />
+      </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Device & OS' })}
         key='device'
-      />
+      >
+        <DevicePolicyComponent />
+      </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Applications' })}
         key='application'
-      />
+      >
+        <ApplicationPolicyComponent />
+      </Tabs.TabPane>
     </Tabs>
   )
 }

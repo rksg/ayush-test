@@ -26,6 +26,11 @@ const { Option } = Select
 
 const { useWatch } = Form
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
 export interface DeviceOSRule {
   ruleName: string,
   deviceType: string,
@@ -44,7 +49,9 @@ export interface DeviceOSDrawerProps {
     id: string,
     viewText: string
   },
-  isOnlyViewMode?: boolean
+  isOnlyViewMode?: boolean,
+  editMode?: editModeProps,
+  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -87,7 +94,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
-    isOnlyViewMode = false
+    isOnlyViewMode = false,
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {}
   } = props
   const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
@@ -141,11 +150,22 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
+    if (editMode) {
+      return !editMode.isEdit
+    }
+
     return !_.isNil(devicePolicyInfo)
   }
 
   useEffect(() => {
-    if (isViewMode() && devicePolicyInfo) {
+    if (editMode.isEdit && editMode.id !== '') {
+      setVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (devicePolicyInfo) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
@@ -238,6 +258,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     setVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
 
@@ -505,6 +530,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
