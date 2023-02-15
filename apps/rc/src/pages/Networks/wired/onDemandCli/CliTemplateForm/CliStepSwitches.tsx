@@ -68,26 +68,28 @@ export function CliStepSwitches () {
     }
   }, [venues])
 
-  const columns: TableProps<SwitchViewModel>['columns'] = [
-    {
-      key: 'name',
-      title: $t({ defaultMessage: 'Switch' }),
-      dataIndex: 'name',
-      sorter: true
-    },
-    {
-      key: 'model',
-      title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'model',
-      sorter: true
-    },
-    {
-      key: 'uptime',
-      title: $t({ defaultMessage: 'Uptime' }),
-      dataIndex: 'uptime',
-      sorter: true
-    }
-  ]
+  const checkToggleDisabled = (selectedSwitches: Map<React.Key, React.Key[]>[]) => {
+    return !Object.values(selectedSwitches ?? {}).flat().length
+  }
+
+  const columns: TableProps<SwitchViewModel>['columns'] = [{
+    key: 'name',
+    title: $t({ defaultMessage: 'Switch' }),
+    dataIndex: 'name',
+    sorter: true
+  },
+  {
+    key: 'model',
+    title: $t({ defaultMessage: 'Model' }),
+    dataIndex: 'model',
+    sorter: true
+  },
+  {
+    key: 'uptime',
+    title: $t({ defaultMessage: 'Uptime' }),
+    dataIndex: 'uptime',
+    sorter: true
+  }]
 
   return <Row gutter={24}>
     <Col span={18}>
@@ -113,7 +115,7 @@ export function CliStepSwitches () {
             noStyle
             name='applyLater'
             valuePropName='checked'
-            children={<Switch />}
+            children={<Switch disabled={checkToggleDisabled(selectedSwitches)} />}
           />
           <Typography.Text style={{ fontSize: '12px' }}>
             {$t({ defaultMessage: 'Apply the CLI template after {action} it' }, {
@@ -143,11 +145,9 @@ export function CliStepSwitches () {
               params: { tenantId: tenantId }, payload: getSwitchListPayload(expandRow.id)
             }, false)).data?.data || []
 
-            const switches = venueSwitches.map(v => {
-              return v.id === expandRowKey
-                ? { id: expandRowKey, switches: list }
-                : v
-            })
+            const switches = venueSwitches.map(v =>
+              v.id === expandRowKey ? { id: expandRowKey, switches: list } : v
+            )
 
             setVenueSwitches(switches as CliTemplateVenueSwitches[])
           }
@@ -196,6 +196,10 @@ export function CliStepSwitches () {
                       setApplySwitches?.(applySwitch)
                       setSelectedSwitches(venueSwitch)
                       form?.setFieldValue('venueSwitches', venueSwitch)
+
+                      if (checkToggleDisabled(venueSwitch)) {
+                        form?.setFieldValue('applyLater', false)
+                      }
                     }
                   }}
                   tableAlertRender={false}
