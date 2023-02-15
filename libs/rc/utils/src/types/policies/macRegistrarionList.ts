@@ -15,6 +15,7 @@ export interface MacRegistrationPool {
   expirationDate?: string
   defaultAccess : string
   networkIds: string []
+  associationIds: string []
 }
 
 export interface MacRegistrationPoolFormFields {

@@ -180,6 +180,10 @@ export default function MacRegistrationListsTable () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    disabled: (([selectedItem]) =>
+      (selectedItem && selectedItem.associationIds)
+        ? selectedItem.associationIds.length > 0 : false
+    ),
     onClick: ([{ name, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
