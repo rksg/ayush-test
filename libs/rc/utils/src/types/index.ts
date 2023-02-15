@@ -115,8 +115,7 @@ export interface Venue {
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  deepVenue?: any
+  deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
@@ -374,6 +373,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
@@ -434,8 +434,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {

@@ -132,7 +132,7 @@ export function HistoricalClientsTable
       if (tableQuery.data?.data) {
         setHistoricalClientCount(tableQuery.data?.totalCount)
       }
-    }, [])
+    }, [tableQuery])
 
     return (
       <div id={id}>

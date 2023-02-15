@@ -14,6 +14,11 @@ export interface PathNode {
   name: string
 }
 
+export interface APListNode {
+  type: 'apMac'
+  list: string[]
+}
+
 export interface NetworkPath extends Array<PathNode> {}
 
 export type NetworkNode = {

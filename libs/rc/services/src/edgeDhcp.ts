@@ -3,8 +3,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonResult,
   createHttpRequest,
+  DhcpPoolStats,
+  DhcpStats,
   EdgeDhcpSetting,
   EdgeDhcpUrls,
+  PaginationQueryResult,
   RequestPayload,
   TableResult
 } from '@acx-ui/rc/utils'
@@ -39,6 +42,16 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
+    patchEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.patchDhcpService, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
     deleteEdgeDhcpServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         if(payload){ //delete multiple rows
@@ -65,9 +78,39 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
-    getEdgeDhcpList: build.query<TableResult<EdgeDhcpSetting>, RequestPayload>({
+    getEdgeDhcpList: build.query<PaginationQueryResult<EdgeDhcpSetting>, RequestPayload>({
       query: ({ payload, params }) => {
+        const { page, pageSize } = payload as { page: number, pageSize: number }
         const req = createHttpRequest(EdgeDhcpUrls.getDhcpList, params)
+        return {
+          ...req,
+          params: { page, pageSize }
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    getDhcpByEdgeId: build.query<EdgeDhcpSetting, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpByEdgeId, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
+    getDhcpPoolStats: build.query<TableResult<DhcpPoolStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpPoolStats, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    getDhcpStats: build.query<TableResult<DhcpStats>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpStats, params)
         return {
           ...req,
           body: payload
@@ -81,7 +124,11 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
 export const {
   useAddEdgeDhcpServiceMutation,
   useUpdateEdgeDhcpServiceMutation,
+  usePatchEdgeDhcpServiceMutation,
   useDeleteEdgeDhcpServicesMutation,
   useGetEdgeDhcpServiceQuery,
-  useGetEdgeDhcpListQuery
+  useGetEdgeDhcpListQuery,
+  useGetDhcpByEdgeIdQuery,
+  useGetDhcpPoolStatsQuery,
+  useGetDhcpStatsQuery
 } = edgeDhcpApi
