@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Row, Col }               from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
@@ -6,11 +6,12 @@ import { useIntl, defineMessage } from 'react-intl'
 import { Select, Button, Loader }             from '@acx-ui/components'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
-import { ClientTroubleShootingConfig } from './config'
-import { History }                     from './EventsHistory'
-import { TimeLine }                    from './EventsTimeline'
-import { useClientInfoQuery }          from './services'
-import * as UI                         from './styledComponents'
+import { ClientTroubleShootingConfig, DisplayEvent } from './config'
+import { ConnectionEventPopover }                    from './ConnectionEvent'
+import { History }                                   from './EventsHistory'
+import { TimeLine }                                  from './EventsTimeline'
+import { useClientInfoQuery }                        from './services'
+import * as UI                                       from './styledComponents'
 
 export type Filters = {
   category?: [];
@@ -27,6 +28,16 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { startDate, endDate, range } = useDateFilter()
   const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
   const filters = read()
+  const [eventState, setEventState] = useState({} as DisplayEvent)
+  const [visible, setVisible] = useState(false)
+
+  const Chart = useMemo(() => () => <TimeLine
+    data={results.data}
+    filters={filters}
+    setEventState={setEventState}
+    setVisible={setVisible}
+  />, [results.data, filters])
+
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
@@ -78,9 +89,19 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
               <Loader states={[results]}>
-                <TimeLine
-                  data={results.data}
-                  filters={filters}/>
+                <Chart />
+                <ConnectionEventPopover
+                  key={Number(visible)}
+                  arrowPointAtCenter
+                  autoAdjustOverflow={false}
+                  event={eventState}
+                  visible={visible}
+                  onVisibleChange={setVisible}
+                  trigger='click'
+                  placement='bottom'
+                >
+                  <div/>
+                </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>
           </Col>
@@ -94,6 +115,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               historyContentToggle
               data={results.data}
               filters={filters}
+              setEventState={setEventState}
+              setVisible={setVisible}
             />
           </Loader>
         </Col>

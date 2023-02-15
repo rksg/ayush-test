@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { RefCallback, useEffect, useState } from 'react'
 
 import { Row, Col }                   from 'antd'
 import { connect }                    from 'echarts'
@@ -22,9 +22,10 @@ import {
   RoamingConfigParam,
   RoamingTimeSeriesData,
   DisplayEvent,
-  ALL
+  ALL,
+  LabelledQuality,
+  IncidentDetails
 } from './config'
-import { ConnectionEventPopover }          from './ConnectionEvent'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart }                   from './TimelineChart'
@@ -46,6 +47,8 @@ import { Filters } from '.'
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
+  setEventState: (event: DisplayEvent) => void,
+  setVisible: (visible: boolean) => void
 }
 
 type CoordDisplayEvent = DisplayEvent & {
@@ -60,7 +63,7 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const qualties = transformConnectionQualities(data?.connectionQualities)
+  const qualities = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
     types,
@@ -129,9 +132,10 @@ export function TimeLine (props: TimeLineProps) {
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
-  // Event Popover Controls
-  const [ eventState, setEventState ] = useState({} as CoordDisplayEvent)
-  const [ visible, setVisible ] = useState(false)
+  const { setEventState, setVisible } = props
+  const handleVisible = (val: boolean) => {
+    setVisible(val)
+  }
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
@@ -211,65 +215,112 @@ export function TimeLine (props: TimeLineProps) {
         </Row>
       </Col>
       <Col flex='auto'>
-        <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <Col span={24} key={config.value}>
-              <ConnectionEventPopover
-                arrowPointAtCenter
-                destroyTooltipOnHide
-                event={eventState}
-                visible={visible}
-                onVisibleChange={setVisible}
-                trigger='click'
-                align={{
-                  points: ['tc', 'bc']
-                }}
-              >
-                <TimelineChart
-                  key={index}
-                  index={index}
-                  style={{ width: 'auto', marginBottom: 8 }}
-                  data={getChartData(
-                  config?.value as keyof TimelineData,
-                  events,
-                  expandObj[config?.value as keyof TimelineData],
-                  !Array.isArray(qualties) ? qualties.all : [],
-                  Array.isArray(incidents) ? incidents : [],
-                  {
-                    ...roamingEventsTimeSeries,
-                    [ALL]: TimelineData.roaming.all
-                  } as RoamingTimeSeriesData[]
-                  )}
-                  showResetZoom={config?.showResetZoom}
-                  chartBoundary={chartBoundary}
-                  hasXaxisLabel={config?.hasXaxisLabel}
-                  tooltipFormatter={useLabelFormatter}
-                  mapping={
-                    expandObj[config?.value as keyof TimelineData]
-                      ? config.value === TYPES.ROAMING
-                        ? config.chartMapping.concat(
-                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
-                        ).reverse()
-                        : config.chartMapping.slice().reverse()
-                      : [config.chartMapping[0]]
-                  }
-                  onDotClick={(params) => {
-                    setEventState(params as CoordDisplayEvent)
-                    setVisible(true)
-                  }}
-                  onClick={() => {
-                    if (config.value === TYPES.CONNECTION_EVENTS) {
-                      setVisible(prev => !prev)
-                    }
-                  }}
-                  chartRef={connectChart}
-                  sharedChartName={sharedChartName}
-                />
-              </ConnectionEventPopover>
-            </Col>
-          ))}
-        </Row>
+        <TimelineSeriesCharts
+          events={events}
+          qualities={qualities}
+          incidents={incidents}
+          expandObj={expandObj}
+          roamingEventsTimeSeries={roamingEventsTimeSeries}
+          roamingEventsAps={roamingEventsAps}
+          TimelineData={TimelineData}
+          chartBoundary={chartBoundary}
+          connectChart={connectChart}
+          sharedChartName={sharedChartName}
+          setEventState={setEventState}
+          handleVisible={handleVisible}
+        />
       </Col>
     </Row>
   )
+}
+
+type TimelineSeriesChartsProps = {
+  events: Event[],
+  qualities: never[] | {
+    all: LabelledQuality[];
+    rss: LabelledQuality[];
+    snr: LabelledQuality[];
+    throughput: LabelledQuality[];
+    avgTxMCS: LabelledQuality[];
+  },
+  incidents: IncidentDetails[],
+  expandObj: {
+    connectionEvents: boolean;
+    roaming: boolean;
+    connectionQuality: boolean;
+    networkIncidents: boolean;
+  },
+  roamingEventsTimeSeries: RoamingTimeSeriesData[],
+  TimelineData: {
+    connectionEvents: EventsCategoryMap;
+    roaming: EventsCategoryMap;
+    connectionQuality: EventsCategoryMap;
+    networkIncidents: NetworkIncidentCategoryMap;
+  },
+  chartBoundary: number[],
+  roamingEventsAps: {
+    [key: string]: object;
+  },
+  setEventState: (event: DisplayEvent) => void,
+  handleVisible: (visible: boolean) => void,
+  connectChart: RefCallback<ReactECharts>,
+  sharedChartName: string
+}
+
+const TimelineSeriesCharts = ({
+  events,
+  qualities,
+  incidents,
+  expandObj,
+  roamingEventsTimeSeries,
+  TimelineData,
+  chartBoundary,
+  roamingEventsAps,
+  setEventState,
+  handleVisible,
+  connectChart,
+  sharedChartName
+}: TimelineSeriesChartsProps) => {
+
+  return <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
+    {ClientTroubleShootingConfig.timeLine.map((config, index) => (
+      <Col span={24} key={config.value}>
+        <TimelineChart
+          key={index}
+          index={index}
+          style={{ width: 'auto', marginBottom: 8 }}
+          data={getChartData(
+        config?.value as keyof TimelineData,
+        events,
+        expandObj[config?.value as keyof TimelineData],
+        !Array.isArray(qualities) ? qualities.all : [],
+        Array.isArray(incidents) ? incidents : [],
+        {
+          ...roamingEventsTimeSeries,
+          [ALL]: TimelineData.roaming.all
+        } as RoamingTimeSeriesData[]
+          )}
+          showResetZoom={config?.showResetZoom}
+          chartBoundary={chartBoundary}
+          hasXaxisLabel={config?.hasXaxisLabel}
+          tooltipFormatter={useLabelFormatter}
+          mapping={
+            expandObj[config?.value as keyof TimelineData]
+              ? config.value === TYPES.ROAMING
+                ? config.chartMapping.concat(
+                  getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                ).reverse()
+                : config.chartMapping.slice().reverse()
+              : [config.chartMapping[0]]
+          }
+          onDotClick={(params) => {
+            setEventState(params as CoordDisplayEvent)
+            handleVisible(true)
+          }}
+          chartRef={connectChart}
+          sharedChartName={sharedChartName}
+        />
+      </Col>
+    ))}
+  </Row>
 }

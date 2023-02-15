@@ -9,7 +9,6 @@ import {
   useMemo
 } from 'react'
 
-
 import {
   ECharts,
   EChartsOption,
@@ -169,21 +168,20 @@ export const useDotClick = (
   const basePath = currentPath.pathname
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
+      const typedParams = (params as
+        { componentSubType: string; data: unknown, seriesName: string })
+
       if (params.componentSubType === 'scatter') {
         const data = params.data as [number, string, Event]
         setSelected && setSelected(data[2] as unknown as number)
-        const { clientX, clientY, currentTarget } = (params as unknown as
+        const { clientX, clientY } = (params as unknown as
           { event: { event: PointerEvent } }).event.event
-        const { top, left } = (currentTarget as HTMLElement).getBoundingClientRect()
         onDotClick && onDotClick(({
           ...data[2],
-          x: clientX - left,
-          y: clientY - top
+          x: clientX,
+          y: clientY
         }))
       }
-
-      const typedParams = (params as
-        { componentSubType: string; data: unknown, seriesName: string })
 
       if (params.componentSubType === 'custom' && typedParams.seriesName === 'incidents') {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
@@ -198,6 +196,7 @@ export const useDotClick = (
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', handler)
+
     return () => {
       if (echartInstance && echartInstance.off) {
         echartInstance.off('click', handler)
@@ -334,7 +333,7 @@ export function TimelineChart ({
           itemStyle: {
             color: getSeriesItemColor
           }
-        } as SeriesOption)
+        })
         : ({
           type: 'custom',
           name: series,
@@ -383,7 +382,12 @@ export function TimelineChart ({
         }
       },
       // use this formatter to add popover content
-      formatter: /* istanbul ignore next */ () => '',
+      /* istanbul ignore next */
+      formatter: (params: unknown) => {
+        const typedParams = params as { componentSubType: string, marker: string }
+        if (typedParams.componentSubType === 'custom') return ''
+        return typedParams.marker
+      },
       ...tooltipOptions(),
       // Need to address test coverage for the postion
       position: /* istanbul ignore next */ (point: [number, number]) =>
@@ -510,6 +514,7 @@ export function TimelineChart ({
         }}
         ref={eChartsRef}
         option={option}
+        opts={{ renderer: 'svg' }}
         key={index}
       />
       {canResetZoom && showResetZoom && (

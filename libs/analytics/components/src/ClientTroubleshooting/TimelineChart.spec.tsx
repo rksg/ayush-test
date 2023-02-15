@@ -12,7 +12,7 @@ import {
   getSeriesItemColor,
   getSeriesData,
   getBarColor,
-  renderCustomItem
+  renderBarItem
 } from './TimelineChart'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
@@ -209,7 +209,7 @@ describe('TimelineChartComponent', () => {
   describe('renderCustomItem', () => {
     it('show return the shape obj', () => {
       expect(
-        renderCustomItem(
+        renderBarItem(
           {} as unknown as CustomSeriesRenderItemParams,
           {} as unknown as CustomSeriesRenderItemAPI
         )

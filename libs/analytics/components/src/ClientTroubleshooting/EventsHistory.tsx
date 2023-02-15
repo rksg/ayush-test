@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { List }               from 'antd'
 import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
@@ -18,20 +20,25 @@ import { transformEvents,formatEventDesc, transformIncidents } from './util'
 
 import { Filters } from '.'
 
-
 type HistoryContentProps = {
   historyContentToggle : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
   filters: Filters | null,
-  popoverClick?: (event: DisplayEvent) => void
+  setEventState: (event: DisplayEvent) => void,
+  setVisible: (visible: boolean) => void
 }
-const transformData = (
-  clientInfo: ClientInfoData,
-  filters: Filters,
-  intl: IntlShape,
-  popoverClick?: (event: DisplayEvent) => void
-) => {
+
+type FormattedEvent = {
+  start: number,
+  date: string,
+  description: string,
+  title: string,
+  icon: ReactNode,
+  id: string
+}
+
+const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
@@ -53,15 +60,24 @@ const transformData = (
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color} onClick={() => popoverClick && popoverClick(event)}/>
+      icon: <UI.EventTypeIcon color={color}/>
     }
   }),
   ...incidents
   ].sort((a,b) => a.start - b.start)
 }
 
-
-const renderItem = (item: IncidentDetails) => {
+const renderItem = (
+  item: IncidentDetails | FormattedEvent,
+  handler: CallableFunction,
+  setVisible: CallableFunction
+) => {
+  const onClick = () => {
+    if (item && !item.id) {
+      handler(item)
+      setVisible((prev: boolean) => !prev)
+    }
+  }
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
       avatar={item.icon}
@@ -71,14 +87,21 @@ const renderItem = (item: IncidentDetails) => {
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : Item
+    : <div onClick={onClick}>{Item}</div>
 }
 
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
-  const { setHistoryContentToggle, historyContentToggle, data, filters, popoverClick } = props
-  const histData = transformData(data!, filters!, intl, popoverClick)
+  const {
+    setHistoryContentToggle,
+    historyContentToggle,
+    data,
+    filters,
+    setEventState,
+    setVisible
+  } = props
+  const histData = transformData(data!, filters!, intl)
   return (
     <UI.History>
       <UI.HistoryHeader>
@@ -100,7 +123,7 @@ export function History (props : HistoryContentProps) {
             <List
               itemLayout='horizontal'
               dataSource={histData}
-              renderItem={renderItem}
+              renderItem={(item) => renderItem(item, setEventState, setVisible)}
             />
           </UI.HistoryContent>
         )}

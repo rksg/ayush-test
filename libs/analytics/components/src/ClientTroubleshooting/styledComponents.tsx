@@ -22,6 +22,8 @@ export const HistoryContent = styled.div`
   .ant-list-item {
     border-bottom: none;
     padding: 0 0 8px 0;
+    cursor: pointer;
+    pointer-events: auto;
   }
   padding: 0 16px 0px 16px;
   .ant-list-item-meta-title {
@@ -39,6 +41,10 @@ export const HistoryContent = styled.div`
     margin-right: 5px;
   }
   overflow: auto;
+  .ant-list-item-meta {
+    cursor: pointer;
+    pointer-events: auto;
+  }
 `
 export const HistoryContentTitle = styled.span`
   font-weight: 600;
