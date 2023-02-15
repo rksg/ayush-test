@@ -265,9 +265,14 @@ const portlistData_7150 = {
   totalCount: 2
 }
 
+jest.mock('./SwitchLagDrawer', () => ({
+  SwitchLagDrawer: () => <div data-testid='SwitchLagDrawer' />
+}))
+
 jest.mock('./editPortDrawer', () => ({
   EditPortDrawer: () => <div data-testid='editPortDrawer' />
 }))
+
 
 describe('SwitchPortTable', () => {
   beforeEach(() => {

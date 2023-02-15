@@ -7,13 +7,14 @@ import { Drawer }  from 'antd'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Alert, cssStr } from '@acx-ui/components'
+import { Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
   Button,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -32,9 +33,10 @@ import {
   RequestPayload,
   GuestErrorRes
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }               from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                                           from '@acx-ui/utils'
 
+import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 
 import {
@@ -74,7 +76,7 @@ export default function GuestsTable () {
     useQuery: useNetworkListQuery,
     defaultPayload: defaultGuestNetworkPayload
   })
-
+  const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const notificationMessage =
     <span style={{
       display: 'grid',
@@ -85,7 +87,8 @@ export default function GuestsTable () {
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
       <Button type='link'
-        disabled={true} //TODO: Need guest service support
+        onClick={()=> setNetworkModalVisible(true)}
+        disabled={!useIsSplitOn(Features.SERVICES)}
         size='small'>
         {$t({ defaultMessage: 'Add Guest Pass Network' })}
       </Button>
@@ -108,6 +111,17 @@ export default function GuestsTable () {
   const networkFilterOptions = allowedNetworkList.map(network=>({
     key: network.id, value: network.name
   }))
+
+  const navigate = useNavigate()
+  const linkToUser = useTenantLink('/users/wifi/guests')
+  const getNetworkForm = <NetworkForm modalMode={true}
+    modalCallBack={()=>{
+      setNetworkModalVisible(false)
+      networkListQuery.refetch()
+      navigate(linkToUser)
+    }}
+    createType={NetworkTypeEnum.CAPTIVEPORTAL}
+  />
 
   useEffect(() => {
     if (networkListQuery.data?.data) {
@@ -256,8 +270,8 @@ export default function GuestsTable () {
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-          onClick: () => { },
-          disabled: true //TODO: Need guest service support
+          onClick: () => {setNetworkModalVisible(true) },
+          disabled: !useIsSplitOn(Features.SERVICES)
         },
         {
           label: $t({ defaultMessage: 'Import from file' }),
@@ -306,6 +320,13 @@ export default function GuestsTable () {
         onClose={()=>setImportVisible(false)} >
         <GuestFields withBasicFields={false} />
       </ImportCsvDrawer>
+      <Modal
+        title={$t({ defaultMessage: 'Add Guest Pass Network' })}
+        type={ModalType.ModalStepsForm}
+        visible={networkModalVisible}
+        mask={true}
+        children={getNetworkForm}
+      />
     </Loader>
   )
 }

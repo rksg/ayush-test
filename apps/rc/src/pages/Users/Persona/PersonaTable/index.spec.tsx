@@ -2,9 +2,9 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { PersonaUrls }                                                      from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
+import { PersonaUrls }                                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
 
 import { mockPersonaGroupList, mockPersonaTableResult } from '../__tests__/fixtures'
 
@@ -14,7 +14,7 @@ import { PersonaTable } from '.'
 
 describe('Persona Table', () => {
   const searchPersonaApi = jest.fn()
-  let params: { tenantId: string }
+  let params: { tenantId: string, personaGroupId?: string }
 
   beforeEach( () => {
     mockServer.use(
@@ -77,5 +77,73 @@ describe('Persona Table', () => {
 
     const cancelButton = await screen.findByRole('button', { name: /Cancel/i })
     fireEvent.click(cancelButton)
+  })
+
+  it('should show error message when import CSV file failed', async () => {
+    mockServer.use(
+      rest.post(
+        PersonaUrls.importPersonas.url,
+        (req, res, ctx) => {
+          return res(ctx.status(400), ctx.json({
+            message: 'An error occurred'
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider><PersonaTable /></Provider>,
+      { route: {
+        params: { ...params, personaGroupId: mockPersonaGroupList.content[0].id },
+        path: '/:tenantId/users/persona-management/persona-group/:personaGroupId'
+      } }
+    )
+    await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    const csvFile = new File([''], 'persona_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
+
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should export persona to CSV', async () => {
+    const exportFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        PersonaUrls.exportPersona.url,
+        (req, res, ctx) => {
+          const headers = req['headers']
+
+          if (headers.get('accept') === 'application/json') {
+            return res(ctx.json(mockPersonaTableResult))
+          } else {
+            exportFn()
+
+            return res(ctx.set({
+              'content-disposition': 'attachment; filename=Personas_20230118100829.csv',
+              'content-type': 'text/csv;charset=ISO-8859-1'
+            }), ctx.text('Persona'))
+          }
+        }
+      )
+    )
+
+    render(
+      <Provider><PersonaTable /></Provider>,
+      { route: { params, path: '/:tenantId/users/persona-management/persona-group' } }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/i }))
+
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
   })
 })

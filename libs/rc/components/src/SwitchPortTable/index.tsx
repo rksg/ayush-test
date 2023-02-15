@@ -33,7 +33,10 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   const { vlanFilterOptions } = useGetSwitchVlanQuery({ params: { tenantId, switchId } }, {
     selectFromResult: ({ data }) => ({
-      vlanFilterOptions: data?.switchVlan.map(v=>
+      vlanFilterOptions: ([
+        ...(data?.switchVlan ? data.switchVlan : []),
+        ...(data?.profileVlan ? data.profileVlan : [])
+      ]).map(v=>
         ({ key: v.vlanId.toString(), value: v.vlanId.toString() })) || true
     })
   })
@@ -90,6 +93,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
     dataIndex: 'status',
+    filterMultiple: false,
     filterable: statusFilterOptions,
     sorter: true
   }, {
