@@ -693,6 +693,16 @@ export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
   }
 }
 
+export function validateDuplicateVlanId (vlanId: number, vlanList: Vlan[]) {
+  const { $t } = getIntl()
+  const index = vlanList.filter(item => item.vlanId === vlanId)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.vlanIdInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
 export function validateRecoveryPassphrasePart (value: string) {
   const { $t } = getIntl()
 

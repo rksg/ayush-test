@@ -1,14 +1,14 @@
 
 import { useState, useEffect, SetStateAction } from 'react'
 
-import { Row, Col, Form, Input, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
-import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
-import _                                                                                from 'lodash'
+import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
+import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
+import _                                                                         from 'lodash'
 
-import { Card, StepsForm, Tooltip }                from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
-import { getIntl }                                 from '@acx-ui/utils'
+import { Card, Tooltip }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { ICX_MODELS_MODULES, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -44,14 +44,13 @@ export function SelectModelStep () {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
-  const [switchFamilyModels, setSwitchFamilyModels] =
-    useState<SwitchModelPortData>({
+  const [trustedPorts, setTrustedPorts] =
+    useState<TrustedPort>({
       id: '',
       model: '',
       trustPorts: [],
       slots: [],
-      taggedPorts: [],
-      untaggedPorts: []
+      trustedPortType: TrustedPortTypeEnum.ALL
     })
   const [markedPorts, setMarkedPorts] = useState<PortsType[]>([])
 
@@ -162,7 +161,7 @@ export function SelectModelStep () {
     setModel(e.target.value)
     checkIfModuleFixed(family, e.target.value)
     getSlots(family, e.target.value)
-    setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
+    setTrustedPorts({ ...trustedPorts, slots: [] })
     updateModelPortData(family, e.target.value)
   }
 
@@ -182,7 +181,7 @@ export function SelectModelStep () {
 
   const onModuleChange = (value: string) => {
     getSlots(family, model)
-    setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
+    setTrustedPorts({ ...trustedPorts, slots: [] })
     updateModelPortData(family, model)
   }
 
@@ -217,9 +216,9 @@ export function SelectModelStep () {
         option = optionList[0] ? optionList[0].value : option
       }
 
-      const index = switchFamilyModels?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
+      const index = trustedPorts?.slots?.findIndex(s => s.slotNumber === slotNumber) || -1
       if (!enable && index !== -1) {
-        switchFamilyModels?.slots?.splice(index, 1)
+        trustedPorts?.slots?.splice(index, 1)
       }
       generateSlotData(slotNumber, enable, optionList, option, selectedFamily, selectedModel)
     }
@@ -258,23 +257,23 @@ export function SelectModelStep () {
         portStatus: generatePortData(totalPortNumber, markedPortsInSameSlot)
       }
 
-      const slotIndex = switchFamilyModels.slots?.findIndex(
+      const slotIndex = trustedPorts.slots?.findIndex(
         (s: { slotNumber: number }) => s.slotNumber === slotNumber)
 
-      const tmpModelPortData = { ...switchFamilyModels }
+      const tmpModelPortData = { ...trustedPorts }
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
       } else {
-        if(switchFamilyModels.slots){
+        if(trustedPorts.slots){
           tmpModelPortData.slots[slotIndex] = slotData
         }
       }
-      tmpModelPortData.slots = tmpModelPortData.slots.sort(
+      tmpModelPortData.slots = tmpModelPortData.slots && tmpModelPortData.slots.sort(
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
       tmpModelPortData.model = family + '-' + selectedModel
-      setSwitchFamilyModels(tmpModelPortData)
+      setTrustedPorts(tmpModelPortData)
 
       form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }

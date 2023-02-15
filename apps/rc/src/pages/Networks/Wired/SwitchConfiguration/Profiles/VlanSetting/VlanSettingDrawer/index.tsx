@@ -7,34 +7,38 @@ import {
   Button,
   Col,
   Row,
-  RadioChangeEvent,
   Select,
   Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }              from '@acx-ui/components'
-import { AclExtendedRule, AclStandardRule, validateDuplicateVlanName, validateVlanName, validateVlanNameWithoutDVlans, Vlan } from '@acx-ui/rc/utils'
+import { Drawer, Table, TableProps } from '@acx-ui/components'
+import {
+  SwitchModel,
+  SwitchModelPortData,
+  validateDuplicateVlanId,
+  validateVlanName,
+  validateVlanNameWithoutDVlans,
+  Vlan
+} from '@acx-ui/rc/utils'
 
-import { defaultExtendedRuleList, defaultStandardRuleList } from '../../AclSetting'
 
 import * as UI            from './styledComponents'
 import { VlanPortsModal } from './VlanPortsSetting/VlanPortsModal'
 
 export interface VlanSettingDrawerProps {
-  rule?: Vlan
+  vlan?: Vlan
   setVlan: (r: Vlan) => void
   editMode: boolean
   visible: boolean
   setVisible: (v: boolean) => void
-  isRuleUnique?: (r: Vlan) => boolean
   vlansList: Vlan[]
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const [aclType, setAclType] = useState('standard')
-  const { rule, setVlan, visible, setVisible, editMode, vlansList } = props
+  const { vlan, setVlan, visible, setVisible, editMode, vlansList } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -54,7 +58,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
       children={
         <VlanSettingForm
           form={form}
-          rule={rule}
+          vlan={vlan}
           setVlan={setVlan}
           aclType={aclType}
           setAclType={setAclType}
@@ -87,7 +91,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
 
 interface VlanSettingFormProps {
   form: FormInstance<Vlan>
-  rule?: Vlan
+  vlan?: Vlan
   setVlan: (r: Vlan) => void
   aclType: string
   setAclType: (r: string) => void
@@ -101,49 +105,64 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
   const [arpInspection, setArpInspection] = useState(false)
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
-  const [selected, setSelected] = useState<AclStandardRule | AclExtendedRule>()
-  const [ruleList, setRuleList] = useState<
-    AclStandardRule[] | AclExtendedRule[]
-  >([defaultStandardRuleList])
-  const { form, rule, setVlan, aclType, setAclType, vlansList } = props
+  const [selected, setSelected] = useState<SwitchModelPortData>()
+  const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
+  const { form, vlan, setVlan, aclType, setAclType, vlansList } = props
 
   useEffect(() => {
-    if(rule){
-      form.setFieldsValue(rule)
-    //   setRuleList(rule.aclRules as AclStandardRule[] | AclExtendedRule[])
+    if(vlan){
+      console.log(vlan)
+      form.setFieldsValue(vlan)
+      const vlanPortsData = vlan.switchFamilyModels?.map(item => {
+        return {
+          id: item.id,
+          model: item.model,
+          slots: item.slots,
+          untaggedPorts: item.untaggedPorts,
+          taggedPorts: item.taggedPorts
+        }
+      }) as unknown
+      setRuleList(vlanPortsData as SwitchModelPortData[])
+    //   setRuleList(vlan.aclRules as AclStandardRule[] | AclExtendedRule[])
     }
-  }, [form, rule])
+  }, [form, vlan])
 
-  const columns: TableProps<AclStandardRule | AclExtendedRule>['columns'] = [
+  const columns: TableProps<SwitchModelPortData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'sequence',
-      key: 'sequence',
+      dataIndex: 'model',
+      key: 'model',
       width: 100
     },
     {
       title: $t({ defaultMessage: 'Untagged Port' }),
-      dataIndex: 'action',
-      key: 'action',
-      width: 180
+      dataIndex: 'untaggedPorts',
+      key: 'untaggedPorts',
+      width: 180,
+      render: (data) => {
+        const untaggedPorts = (data as string[])?.join(', ')
+        return untaggedPorts.substring(0 , 20) + '...'
+      }
     },
     {
       title: $t({ defaultMessage: 'Tagged Ports' }),
-      dataIndex: 'source',
-      key: 'source',
-      width: 180
+      dataIndex: 'taggedPorts',
+      key: 'taggedPorts',
+      width: 180,
+      render: (data) => {
+        const taggedPorts = (data as string[])?.join(', ')
+        return taggedPorts.substring(0 , 20) + '...'
+      }
     }
   ]
 
-  const rowActions: TableProps<
-    AclStandardRule | AclExtendedRule
-  >['rowActions'] = [
+  const rowActions: TableProps<SwitchModelPortData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setSelected({
-          ...selectedRows[0],
-          source: selectedRows[0].source === 'any' ? 'any' : 'specific'
+          ...selectedRows[0]
+          // source: selectedRows[0].source === 'any' ? 'any' : 'specific'
         })
         setOpenModal(true)
       }
@@ -152,45 +171,16 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
         setRuleList(
-          ruleList?.filter((option: { sequence: number }) => {
+          ruleList?.filter((option: { model: string }) => {
             return !selectedRows
-              .map((r) => r.sequence)
-              .includes(option.sequence)
+              .map((r) => r.model)
+              .includes(option.model)
           })
         )
         setSelected(undefined)
       }
     }
   ]
-
-  const onSaveRule = (values: AclExtendedRule) => {
-    const newList = ruleList || []
-    if (values.source === 'specific') {
-      values.source = values.specificSrcNetwork
-      values.specificSrcNetwork = ''
-    }
-    if (values.destination === 'specific') {
-      values.destination = values.specificDestNetwork
-      values.specificDestNetwork = ''
-    }
-    if (!selected) {
-      // Add
-      setRuleList([...ruleList, values])
-      form.setFieldValue('aclRules', [...ruleList, values])
-    } else {
-      // edit
-      const editedRecord = newList.map((option) => {
-        if (selected.sequence === option.sequence) {
-          return { ...selected, ...values }
-        }
-        return option
-      })
-      setRuleList(editedRecord)
-      form.setFieldValue('aclRules', editedRecord)
-    }
-    setSelected(undefined)
-    setOpenModal(false)
-  }
 
   const onIGMPChange = (value: string) => {
     if(value === 'active' || value === 'passive'){
@@ -200,13 +190,24 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     }
   }
 
+  const onSaveVlan = (values: SwitchModelPortData) => {
+    console.log(values)
+    setRuleList([...ruleList, values])
+    setSelected(undefined)
+    setOpenModal(false)
+  }
+
   return (
     <>
       <Form
         layout='vertical'
         form={form}
         onFinish={(data: Vlan) => {
-          setVlan(data)
+          console.log(ruleList)
+          setVlan({
+            ...data,
+            switchFamilyModels: ruleList as unknown as SwitchModel[]
+          })
           form.resetFields()
         }}
       >
@@ -217,7 +218,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanName(value, vlansList) }
+            { validator: (_, value) => validateDuplicateVlanId(value, vlansList) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
@@ -324,15 +325,15 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         </Col>
       </Row>
       <Table
-        rowKey='sequence'
+        rowKey='model'
         rowActions={rowActions}
         columns={columns}
         rowSelection={{
           type: 'radio',
-          selectedRowKeys: selected ? [selected.sequence] : [],
+          selectedRowKeys: selected ? [selected.model] : [],
           onChange: (keys: React.Key[]) => {
             setSelected(
-              ruleList?.find((i: { sequence: Key }) => i.sequence === keys[0])
+              ruleList?.find((i: { model: Key }) => i.model === keys[0])
             )
           }
         }}
@@ -344,7 +345,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         editRecord={selected}
         currrentRecords={ruleList}
         onCancel={() => setOpenModal(false)}
-        onSave={onSaveRule}
+        onSave={onSaveVlan}
       />
     </>
   )

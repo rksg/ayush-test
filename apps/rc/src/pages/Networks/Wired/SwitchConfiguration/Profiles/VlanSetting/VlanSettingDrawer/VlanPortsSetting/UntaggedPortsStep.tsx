@@ -37,10 +37,8 @@ export function UntaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
-      console.log(vlanSettingValues)
       if(vlanSettingValues.switchFamilyModels?.slots[0] &&
         vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
-          console.log(vlanSettingValues.switchFamilyModels?.slots[0].portStatus)
         const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/1/${item.portNumber.toString()}` }))

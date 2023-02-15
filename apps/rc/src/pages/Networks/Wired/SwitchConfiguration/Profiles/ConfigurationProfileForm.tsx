@@ -4,27 +4,44 @@ import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
-import { SwitchConfigurationProfile }                          from '@acx-ui/rc/utils'
+import { SwitchConfigurationProfile, Vlan }                    from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
 
 import { AclSetting }                  from './AclSetting'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 import { GeneralSetting }              from './GeneralSetting'
+import { TrustedPorts }                from './TrustedPorts'
 import { VenueSetting }                from './VenueSetting'
 import { VlanSetting }                 from './VlanSetting'
-import { TrustedPorts } from './TrustedPorts'
 
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const editMode = params.action === 'edit'
-  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(true)
-  const [ arpInspection, setArpInspection ] = useState(true)
+  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
+  const [ arpInspection, setArpInspection ] = useState(false)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
   const formRef = useRef<StepsFormInstance<SwitchConfigurationProfile>>()
+
+  const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
+    const ipv4DhcpSnoopingValue =
+      data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
+    const arpInspectionValue =
+      data.vlans?.filter((item: Partial<Vlan>) => item.ipv4DhcpSnooping === true) || []
+
+    setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
+    setArpInspection(arpInspectionValue.length > 0)
+
+    setCurrentData({
+      ...currentData,
+      ...data
+    })
+
+    return true
+  }
 
   const updateCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
     setCurrentData({
@@ -63,7 +80,7 @@ export function ConfigurationProfileForm () {
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'VLANs' })}
-            onFinish={updateCurrentData}
+            onFinish={updateVlanCurrentData}
           >
             <VlanSetting />
           </StepsForm.StepForm>

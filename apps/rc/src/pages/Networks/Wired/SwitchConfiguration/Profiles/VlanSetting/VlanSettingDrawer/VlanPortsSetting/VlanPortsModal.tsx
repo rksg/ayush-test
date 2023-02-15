@@ -8,6 +8,7 @@ import {
   AclExtendedRule,
   AclStandardRule,
   SwitchModelPortData,
+  TrustedPort,
   validateSwitchStaticRouteIp
 } from '@acx-ui/rc/utils'
 
@@ -28,25 +29,27 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot3?: string
   selectedOptionOfSlot4?: string
   switchFamilyModels?: SwitchModelPortData
+  trustedPorts: TrustedPort[]
 }
 
 export function VlanPortsModal (props: {
   open: boolean,
   aclType: string,
-  onSave?:(values: AclStandardRule | AclExtendedRule)=>void,
+  onSave:(values: SwitchModelPortData)=>void,
   onCancel?: ()=>void,
-  editRecord?: AclStandardRule | AclExtendedRule
-  currrentRecords?: AclStandardRule[] | AclExtendedRule[]
+  editRecord?: SwitchModelPortData
+  currrentRecords?: SwitchModelPortData[]
 }) {
   const { Option } = Select
   const { $t } = useIntl()
+  const { onSave } = props
   const [form] = Form.useForm()
   const [sourceSpecific, setSourceSpecific] = useState(false)
   const [destinationSpecific, setDestinationSpecific] = useState(false)
   const [disabledField, setDisabledField] = useState(true)
   const [visible, setVisible] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
-    useState<VlanSettingInterface>({ family: '', model: '' })
+    useState<VlanSettingInterface>({ family: '', model: '', trustedPorts: [] })
 
   useEffect(()=>{
     form.resetFields()
@@ -87,6 +90,8 @@ export function VlanPortsModal (props: {
           }}
           onFinish={async (data) => {
             console.log(data)
+            const switchFamilyModelsData = data.switchFamilyModels
+            onSave(switchFamilyModelsData)
             await wait(1000) // mimic external service call
             showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
             setVisible(false)
@@ -95,6 +100,7 @@ export function VlanPortsModal (props: {
           <StepsForm.StepForm
             title='Select Model'
             onFinish={async (data) => {
+              console.log(vlanSettingValues, data)
               setVlanSettingValues(data)
               return true
             }}

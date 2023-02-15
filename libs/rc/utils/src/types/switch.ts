@@ -540,7 +540,7 @@ export interface TrustedPort {
   id?: string
   vlanDemand?: boolean
   model: string
-  slots?: SwitchSlot[]
+  slots: SwitchSlot[]
   trustPorts: string[]
   trustedPortType: TrustedPortTypeEnum
 }

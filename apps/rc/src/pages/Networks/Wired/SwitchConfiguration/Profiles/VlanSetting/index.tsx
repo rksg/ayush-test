@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { Table, TableProps }           from '@acx-ui/components'
+import { showActionModal, Table, TableProps }           from '@acx-ui/components'
 import { StepsForm }                   from '@acx-ui/components'
 import { useSwitchConfigProfileQuery } from '@acx-ui/rc/services'
 import {
@@ -20,7 +20,7 @@ export function VlanSetting () {
   const params = useParams()
   const form = Form.useFormInstance()
   const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
-  const [ vlanTable, setvlanTable ] = useState<Vlan[]>([])
+  const [ vlanTable, setVlanTable ] = useState<Vlan[]>([])
   const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
   const [ drawerFormRule, setDrawerFormRule ] = useState<Vlan>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
@@ -57,8 +57,8 @@ export function VlanSetting () {
     render: (data) => {
       return data
         ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
-          const taggedPortsCount = row.taggedPorts?.split(',').length ?? 0
-          const untaggedPortsCount = row?.untaggedPorts?.split(',').length ?? 0
+          const taggedPortsCount = row.taggedPorts?.length ?? 0
+          const untaggedPortsCount = row.untaggedPorts?.length ?? 0
           return result + taggedPortsCount + untaggedPortsCount
         }, 0)
         : 0
@@ -74,10 +74,11 @@ export function VlanSetting () {
         }
         return item
       })
-      setvlanTable(vlans as Vlan[])
+      setVlanTable(vlans as Vlan[])
     }else{
-      setvlanTable([...vlanTable, data])
+      setVlanTable([...vlanTable, data])
     }
+    form.setFieldValue('vlans', [...vlanTable, data])
     return true
   }
 
@@ -88,15 +89,58 @@ export function VlanSetting () {
     return true
   }
 
+
+  const rowActions: TableProps<Vlan>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        setDrawerFormRule(selectedRows[0])
+        setVlanDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (selectedRows) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Vlan' }),
+            entityValue: selectedRows[0].vlanId.toString()
+          },
+          onOk: () => {
+            setVlanTable(
+              vlanTable?.filter((option: { vlanId: number }) => {
+                return !selectedRows
+                  .map((r) => r.vlanId)
+                  .includes(option.vlanId)
+              })
+            )
+          }
+        })
+      }
+    }
+  ]
+
   return (
     <>
       <Row gutter={20}>
         <Col span={20}>
           <StepsForm.Title children={$t({ defaultMessage: 'VLANs' })} />
           <Table
-            rowKey='id'
+            rowKey='vlanId'
             columns={vlansColumns}
+            rowActions={rowActions}
             dataSource={vlanTable}
+            rowSelection={{
+              type: 'radio',
+              selectedRowKeys: drawerFormRule ? [drawerFormRule.vlanId] : [],
+              onChange: (keys: React.Key[]) => {
+                setDrawerFormRule(
+                  vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])
+                )
+              }
+            }}
             actions={[{
               label: $t({ defaultMessage: 'Add VLAN' }),
               onClick: () => { setVlanDrawerVisible(true) }
@@ -111,9 +155,9 @@ export function VlanSetting () {
       </Row>
       <VlanSettingDrawer
         editMode={drawerEditMode}
-        rule={(drawerFormRule)}
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
+        vlan={(drawerFormRule)}
         setVlan={handleSetVlan}
         vlansList={vlanTable}
       />

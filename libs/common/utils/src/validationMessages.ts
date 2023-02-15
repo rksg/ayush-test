@@ -273,6 +273,10 @@ export const validationMessages = {
     defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090-4094',
     description: 'Validation - validate vlan name'
   }),
+  vlanIdInvalid: defineMessage({
+    defaultMessage: 'The VLAN ID already exists',
+    description: 'Validation - validate vlan id'
+  }),
   vlanNameInvalidWithDefaultVlans: defineMessage({
     defaultMessage: 'DEFAULT-VLAN is reserved word',
     description: 'Validation - DEFAULT-VLAN is reserved word'
