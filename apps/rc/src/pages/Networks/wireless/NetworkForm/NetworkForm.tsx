@@ -24,7 +24,8 @@ import {
   RadiusValidate,
   RadiusValidateErrors,
   GuestNetworkTypeEnum,
-  Demo
+  Demo,
+  GuestPortal
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -78,12 +79,24 @@ const onboardingTitle = defineMessage({
     other {Onboarding}
   }`
 })
+const minutesMapping: { [key:string]:number }={
+  hours: 60,
+  days: 1440,
+  minutes: 1
+}
+interface GuestMore {
+  guestPortal?: GuestPortal,
+  userSessionTimeoutUnit?: string,
+  macCredentialsDurationUnit?: string,
+  lockoutPeriodUnit?: string
+
+}
 export default function NetworkForm (props:{
-  isFromUser?: boolean,
+  modalMode?: boolean,
   createType?: NetworkTypeEnum,
-  backToUser?: ()=>void
+  modalCallBack?: ()=>void
 }) {
-  const { isFromUser, createType, backToUser } = props
+  const { modalMode, createType, modalCallBack } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
@@ -128,6 +141,32 @@ export default function NetworkForm (props:{
     }
   }, [data])
 
+  const handleGuestMoreSetting = (data:GuestMore)=>{
+    if(data.guestPortal){
+      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit)
+        data.guestPortal={
+          ...data.guestPortal,
+          userSessionTimeout: data.guestPortal.userSessionTimeout*
+          minutesMapping[data.userSessionTimeoutUnit]
+        }
+      if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
+        data.guestPortal={
+          ...data.guestPortal,
+          lockoutPeriod: data.guestPortal.lockoutPeriod*
+          minutesMapping[data.lockoutPeriodUnit]
+        }
+      }
+      if(data.macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
+        data.guestPortal={
+          ...data.guestPortal,
+          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
+          minutesMapping[data.macCredentialsDurationUnit]
+        }
+      }
+    }
+    return data
+  }
+
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     if(!data.guestPortal?.socialIdentities?.facebook){
       delete data.guestPortal?.socialIdentities?.facebook
@@ -144,8 +183,6 @@ export default function NetworkForm (props:{
     const tmpGuestPageState = {
       enableDhcp: _.isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
       guestPortal: {
-        ...saveState?.guestPortal,
-        ...data.guestPortal,
         //other properties value
         enableSelfService: true,
         endOfDayReauthDelay: false,
@@ -154,7 +191,9 @@ export default function NetworkForm (props:{
         macCredentialsDuration: 240,
         maxDevices: 1,
         userSessionGracePeriod: 60,
-        userSessionTimeout: 1440
+        userSessionTimeout: 1440,
+        ...saveState?.guestPortal,
+        ...data.guestPortal
       },
       wlan: {
         ...saveState.wlan,
@@ -176,7 +215,7 @@ export default function NetworkForm (props:{
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
-      isFromUser? backToUser?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -189,7 +228,7 @@ export default function NetworkForm (props:{
     try {
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
-      isFromUser? backToUser?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -288,7 +327,7 @@ export default function NetworkForm (props:{
   }
   return (
     <>
-      {!isFromUser && <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
@@ -297,7 +336,7 @@ export default function NetworkForm (props:{
         ]}
       />}
       <NetworkFormContext.Provider value={{
-        isFromUser,
+        modalMode,
         createType,
         editMode,
         cloneMode,
@@ -307,7 +346,7 @@ export default function NetworkForm (props:{
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => isFromUser? backToUser?.() : navigate(linkToNetworks)}
+          onCancel={() => modalMode? modalCallBack?.() : navigate(linkToNetworks)}
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
           <StepsForm.StepForm
@@ -315,7 +354,7 @@ export default function NetworkForm (props:{
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
               const detailsSaveData = transferDetailToSave(data)
-              if(isFromUser&&createType){
+              if(modalMode&&createType){
                 detailsSaveData.type = createType
               }
               if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
@@ -370,7 +409,8 @@ export default function NetworkForm (props:{
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
-                  handlePortalWebPage(data)
+                  const dataMore = handleGuestMoreSetting(data)
+                  handlePortalWebPage(dataMore)
                   return true
                 }}
               >
@@ -393,7 +433,8 @@ export default function NetworkForm (props:{
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
-                const settingSaveData = transferMoreSettingsToSave(data, saveState)
+                const dataMore = handleGuestMoreSetting(data)
+                const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
 
                 updateSaveData(settingSaveData)
                 return true

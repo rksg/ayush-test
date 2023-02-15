@@ -2,7 +2,7 @@ import { createContext } from 'react'
 
 import { NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 export interface NetworkFormContextType {
-  isFromUser?: boolean,
+  modalMode?: boolean,
   createType?: NetworkTypeEnum,
   editMode: boolean,
   cloneMode: boolean,

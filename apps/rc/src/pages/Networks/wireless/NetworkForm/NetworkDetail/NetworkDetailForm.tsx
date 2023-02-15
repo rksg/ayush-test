@@ -35,7 +35,7 @@ export function NetworkDetailForm () {
     cloneMode,
     data,
     setData,
-    isFromUser,
+    modalMode,
     createType
   } = useContext(NetworkFormContext)
 
@@ -208,7 +208,7 @@ export function NetworkDetailForm () {
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
-          {( !editMode && !cloneMode && !isFromUser ) &&
+          {( !editMode && !cloneMode && !modalMode ) &&
             <Form.Item
               name='type'
               label={intl.$t({ defaultMessage: 'Network Type' })}
@@ -239,7 +239,7 @@ export function NetworkDetailForm () {
               </>
             </Form.Item>
           }
-          {isFromUser &&
+          {modalMode &&
             <Form.Item name='type' label='Network Type'>
               <>
                 <h4 className='ant-typography'>

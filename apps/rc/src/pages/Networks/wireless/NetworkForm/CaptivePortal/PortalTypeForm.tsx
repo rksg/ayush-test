@@ -42,7 +42,7 @@ function TypesForm () {
     setData,
     editMode,
     cloneMode,
-    isFromUser,
+    modalMode,
     createType
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
@@ -71,7 +71,7 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange} disabled={editMode || cloneMode || isFromUser}>
+        <Radio.Group onChange={onChange} disabled={editMode || cloneMode || modalMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}

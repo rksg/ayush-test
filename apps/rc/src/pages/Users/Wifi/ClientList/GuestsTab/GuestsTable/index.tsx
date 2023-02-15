@@ -133,8 +133,8 @@ export default function GuestsTable () {
     }
     const navigate = useNavigate()
     const linkToUser = useTenantLink('/users/wifi/guests')
-    const getNetworkForm = <NetworkForm isFromUser={true}
-      backToUser={()=>{
+    const getNetworkForm = <NetworkForm modalMode={true}
+      modalCallBack={()=>{
         setNetworkModalVisible(false)
         getAllowedNetworkList()
         navigate(linkToUser)
