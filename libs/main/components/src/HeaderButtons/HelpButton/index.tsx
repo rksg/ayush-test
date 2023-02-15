@@ -31,16 +31,11 @@ const HelpButton = (props:HelpButtonProps) => {
       case 'ready':
         setIsChatDisabled(false)
         break
-      case 'disabled':
-        setIsChatDisabled(true)
-        break
       case 'chatting':
-        setIsChatDisabled(true)
-        break
-      case 'error':
-        setIsChatDisabled(true)
+        setIsChatDisabled(false)
         break
       default:
+        setIsChatDisabled(true)
         break
     }
   },[supportStatus])
@@ -75,7 +70,7 @@ const HelpButton = (props:HelpButtonProps) => {
 
       <Menu.Item disabled={isChatDisabled}
         onClick={()=>{
-          if(window.tdi.chat){
+          if(supportStatus === 'ready' && window.tdi.chat){
             window.tdi.chat()
           }
         }}
