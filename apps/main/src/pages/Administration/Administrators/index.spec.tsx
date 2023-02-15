@@ -7,8 +7,7 @@ import { Provider }                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import { fakeUserProfile, fakeMspEcProfile, fakeTenantDetails } from './__tests__/fixtures'
@@ -21,11 +20,11 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
-jest.mock('./AdministrationDelegationsTable', () => ({
-  ...jest.requireActual('./AdministrationDelegationsTable'),
+jest.mock('./DelegationsTable', () => ({
+  ...jest.requireActual('./DelegationsTable'),
   __esModule: true,
-  AdministrationDelegationsTable: () => {
-    return <div data-testid='mocked-AdministrationDelegationsTable'></div>
+  default: () => {
+    return <div data-testid='mocked-DelegationsTable'></div>
   }
 }))
 jest.mock('./AdministratorsTable', () => ({
@@ -68,7 +67,7 @@ describe('Administrators', () => {
       })
 
     await screen.findByTestId('mocked-AdministratorsTable')
-    await screen.findByTestId('mocked-AdministrationDelegationsTable')
+    await screen.findByTestId('mocked-DelegationsTable')
   })
 
   it('should correctly render when delegation not ready', async () => {
@@ -90,6 +89,6 @@ describe('Administrators', () => {
       })
 
     await screen.findByTestId('mocked-AdministratorsTable')
-    expect(screen.queryByTestId('mocked-AdministrationDelegationsTable')).toBeNull()
+    expect(screen.queryByTestId('mocked-DelegationsTable')).toBeNull()
   })
 })

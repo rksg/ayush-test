@@ -1,15 +1,13 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
 
 import { UserProfile } from '@acx-ui/rc/utils'
 import { Provider }    from '@acx-ui/store'
 import {
   render,
-  screen,
-  within
+  screen
 } from '@acx-ui/test-utils'
 
-import { fakeUserProfile, fakeNonPrimeAdminUserProfile } from '../__tests__/fixtures'
+import { fakeUserProfile } from '../__tests__/fixtures'
 
 import AdminDelegationsTable from './index'
 

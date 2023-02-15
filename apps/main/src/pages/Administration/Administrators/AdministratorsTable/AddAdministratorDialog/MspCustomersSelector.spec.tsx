@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import { fireEvent } from '@storybook/testing-library'
-import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
-import { rest }      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }    from '@acx-ui/store'

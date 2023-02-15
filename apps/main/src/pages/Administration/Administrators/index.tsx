@@ -6,9 +6,9 @@ import {
 import { MSPUtils, TenantType } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
-import AdministrationDelegationsTable from './AdministrationDelegationsTable'
-import AdministratorsTable            from './AdministratorsTable'
-import * as UI                        from './styledComponents'
+import AdministratorsTable from './AdministratorsTable'
+import DelegationsTable    from './DelegationsTable'
+import * as UI             from './styledComponents'
 
 const Administrators = () => {
   const params = useParams()
@@ -48,7 +48,7 @@ const Administrators = () => {
         isMspEc={isMspEc}
       />
       {isDelegationReady &&
-        <AdministrationDelegationsTable
+        <DelegationsTable
           isMspEc={isMspEc}
           userProfileData={userProfileData}/>
       }

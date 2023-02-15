@@ -11,7 +11,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import DelegationInviteDialog from './'
+import DelegationInviteDialog from '.'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
