@@ -10,7 +10,6 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -37,6 +36,10 @@ describe('Guest Table', () => {
         (req, res, ctx) => res(ctx.json(GuestClient))
       ),
       rest.post(
+        ClientUrlsInfo.getGuests.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(AllowedNetworkList))
       ),
@@ -44,6 +47,7 @@ describe('Guest Table', () => {
         ClientUrlsInfo.generateGuestPassword.url,
         (req, res, ctx) => res(ctx.json(RegenerateGuestPassword))
       )
+
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -60,9 +64,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await screen.findByText('test1')
     jest.useRealTimers()
@@ -78,8 +82,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     fireEvent.click(await screen.findByText('test1'))
     await screen.findByText('Guest Details')
 
@@ -93,7 +98,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')
   })
@@ -106,7 +113,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test2'))
     await screen.findByText('Guest Details')
@@ -123,7 +132,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -139,7 +150,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('disable_client'))
     await screen.findByText('Guest Details')
@@ -156,8 +169,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
     await fireEvent.mouseEnter(await screen.findByText(/actions/i))
@@ -173,7 +187,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -193,7 +209,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -211,7 +229,7 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('checkbox', {
       name: /print guest pass/i
     }))
-    const generateButton = screen.getByRole('button', { name: /generate/i })
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
 
   })
@@ -228,9 +246,9 @@ describe('Guest Table', () => {
         notes: '',
         email: 'test@commscope.com',
         mobilePhoneNumber: '+886988000000',
-        macAddresses: [ ],
+        macAddresses: [],
         ssid: 'test guest',
-        deliveryMethods: [ 'PRINT' ],
+        deliveryMethods: ['PRINT'],
         guestUserType: 'GuestPass',
         expiration: {
           activationType: 'Creation',
@@ -256,7 +274,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -265,7 +285,7 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('checkbox', {
       name: /print guest pass/i
     }))
-    const generateButton = screen.getByRole('button', { name: /generate/i })
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
   })
 
@@ -281,9 +301,9 @@ describe('Guest Table', () => {
         notes: '',
         email: 'test@commscope.com',
         mobilePhoneNumber: '+886988000000',
-        macAddresses: [ ],
+        macAddresses: [],
         ssid: 'test guest',
-        deliveryMethods: [ 'PRINT' ],
+        deliveryMethods: ['PRINT'],
         guestUserType: 'GuestPass',
         expiration: {
           activationType: 'Creation',
@@ -309,7 +329,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -318,7 +340,7 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('checkbox', {
       name: /print guest pass/i
     }))
-    const generateButton = screen.getByRole('button', { name: /generate/i })
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
   })
 
@@ -331,7 +353,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -348,7 +372,9 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -375,7 +401,10 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
     await fireEvent.mouseEnter(await screen.findByText(/actions/i))
@@ -383,7 +412,7 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('checkbox', {
       name: /print guest pass/i
     }))
-    const generateButton = screen.getByRole('button', { name: /generate/i })
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })
@@ -398,11 +427,11 @@ describe('Guest Table', () => {
         (req, res, ctx) => res(ctx.status(400), ctx.json({
           requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
           error: {
-            rootCauseErrors: [ {
+            rootCauseErrors: [{
               code: 'GUEST-400002',
               message: 'File does not contain any entries'
-            } ],
-            request: { },
+            }],
+            request: {},
             status: 400
           }
         }))
