@@ -46,31 +46,32 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization', 'wifiCallingEnabled'])
   ]
 
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const params = useParams()
   const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
+  const wlanData = (editMode) ? data : form.getFieldsValue()
   const providerData = useExternalProvidersQuery({ params })
 
   useEffect(() => {
-    if (data && providerData.data) {
+    if (wlanData && data && providerData.data) {
       const isProviderHasAccountingService = function () {
         const providers = providerData?.data?.providers
-        const providerName = data?.guestPortal?.wisprPage?.externalProviderName
+        const providerName = wlanData?.guestPortal?.wisprPage?.externalProviderName
         const selectedProvider = _.find(providers, p => p.name === providerName)
         const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null
         return !!(region && region.accountingRadius)
       }
 
       const showFlag =
-        (data?.accountingRadius && data.type === NetworkTypeEnum.AAA) || (
+        (wlanData?.enableAccountingService && data.type === NetworkTypeEnum.AAA) || (
           data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-          data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+          wlanData?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
           isProviderHasAccountingService()
         )
       setShowSingleSessionIdAccounting(showFlag)
     }
-  }, [data, providerData])
+  }, [wlanData, data, providerData])
 
   useEffect(() => {
     if (data) {
