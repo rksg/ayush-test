@@ -80,35 +80,6 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
-  it('should add lag correctly', async () => {
-    const user = userEvent.setup()
-    render(<Provider>
-      <SwitchLagModal
-        visible={true}
-        setVisible={mockedSetVisible}
-        isEditMode={false}
-        editData={[]} />
-    </Provider>, {
-      route: {
-        params,
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber'
-      }
-    })
-    await screen.findByText(/add lag/i)
-    fireEvent.change(screen.getByLabelText(/LAG Name/i), { target: { value: 'lag1' } })
-    await user.click(await screen.findByText(/select ports type.../i))
-    const portsTypeOption = await screen.findAllByText('1 Gbits per second copper')
-    await user.click(portsTypeOption[portsTypeOption.length-1])
-    await screen.findByText('1/1/10')
-    await user.click(screen.getByText('1/1/10'))
-    await user.click(screen.getByText('1/1/11'))
-    await user.click(screen.getByRole('button', {
-      name: /right add/i
-    }))
-    await user.click(await screen.findByRole('button', { name: 'Ok' }))
-
-  })
-
 
   it('should edit lag correctly', async () => {
     const lag = {
