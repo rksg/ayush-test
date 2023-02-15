@@ -36,7 +36,7 @@ interface ImportCsvDrawerProps extends DrawerProps {
   isLoading?: boolean
   importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object)=>void
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona'
 }
 
 export const CsvSize = {
