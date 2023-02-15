@@ -53,7 +53,7 @@ export function TimeLine (props: TimeLineProps) {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const qualties = transformConnectionQualities(data?.connectionQualities)
+  const qualities = transformConnectionQualities(data?.connectionQualities)
   const events = transformEvents(
     data?.connectionEvents as ConnectionEvent[],
     types,
@@ -221,7 +221,7 @@ export function TimeLine (props: TimeLineProps) {
                   config?.value as keyof TimelineData,
                   events,
                   expandObj[config?.value as keyof TimelineData],
-                  !Array.isArray(qualties) ? qualties.all : [],
+                  !Array.isArray(qualities) ? qualities.all : [],
                   Array.isArray(incidents) ? incidents : [],
                   {
                     ...roamingEventsTimeSeries,
