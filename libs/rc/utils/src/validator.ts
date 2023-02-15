@@ -661,9 +661,15 @@ export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
   }
 
   let result = false
-
-  const firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
-  const secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+  let firstSubnetInfo
+  let secondSubnetInfo
+  try {
+    firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
+    secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+  } catch (error) {
+    // ignore invalid case
+    return Promise.resolve()
+  }
 
   const firstStartLong = convertIpToLong(firstSubnetInfo.first)
   const firstEndLong = convertIpToLong(firstSubnetInfo.last)

@@ -93,6 +93,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='ip'
             label={$t({ defaultMessage: 'IP Address' })}
+            validateFirst
             rules={[
               { required: true },
               { validator: (_, value) => serverIpAddressRegExp(value) },
@@ -106,6 +107,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='subnet'
             label={$t({ defaultMessage: 'Subnet Mask' })}
+            validateFirst
             rules={[
               { required: true },
               { validator: (_, value) => subnetMaskIpRegExp(value) }
@@ -120,6 +122,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='ipMode'
             label={$t({ defaultMessage: 'IP Assignment' })}
+            validateFirst
             rules={[{
               required: true
             }]}
@@ -141,6 +144,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='ip'
                 label={$t({ defaultMessage: 'IP Address' })}
+                validateFirst
                 rules={[
                   { required: true },
                   { validator: (_, value) => serverIpAddressRegExp(value) }
@@ -150,6 +154,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='subnet'
                 label={$t({ defaultMessage: 'Subnet Mask' })}
+                validateFirst
                 rules={[
                   { required: true },
                   { validator: (_, value) => subnetMaskIpRegExp(value) }
@@ -159,6 +164,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='gateway'
                 label={$t({ defaultMessage: 'Gateway' })}
+                validateFirst
                 rules={[
                   { required: true },
                   { validator: (_, value) => serverIpAddressRegExp(value) }
