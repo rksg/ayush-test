@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
 import { switchApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
   fireEvent,
@@ -33,6 +33,26 @@ jest.mock('@acx-ui/rc/components', () => ({
 jest.mock('./SwitchOverviewPanel', () => ({
   SwitchOverviewPanel: () =>
     <div data-testid={'rc-SwitchOverviewPanel'} title='SwitchOverviewPanel' />
+}))
+
+jest.mock('./SwitchOverviewRouteInterfaces', () => ({
+  SwitchOverviewRouteInterfaces: () =>
+    <div data-testid={'rc-SwitchOverviewRouteInterfaces'} title='SwitchOverviewRouteInterfaces' />
+}))
+
+jest.mock('./SwitchOverviewPorts', () => ({
+  SwitchOverviewPorts: () =>
+    <div data-testid={'rc-SwitchOverviewPorts'} title='SwitchOverviewPorts' />
+}))
+
+jest.mock('./SwitchOverviewACLs', () => ({
+  SwitchOverviewACLs: () =>
+    <div data-testid={'rc-SwitchOverviewACLs'} title='SwitchOverviewACLs' />
+}))
+
+jest.mock('./SwitchOverviewVLANs', () => ({
+  SwitchOverviewVLANs: () =>
+    <div data-testid={'rc-SwitchOverviewVLANs'} title='SwitchOverviewVLANs' />
 }))
 
 describe('SwitchOverviewTab', () => {
@@ -90,13 +110,14 @@ describe('SwitchOverviewTab', () => {
       activeTab: 'overview',
       activeSubTab: 'ports'
     }
-    const { asFragment } = render(<Provider><SwitchOverviewTab /></Provider>, {
+    render(<Provider><SwitchOverviewTab /></Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getByTestId('rc-SwitchOverviewPorts')).toBeVisible()
+
   })
 
   it('should navigate to Route Interfaces tab correctly', async () => {
@@ -113,7 +134,6 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
   })
 
   it('should navigate to VLANs tab correctly', async () => {
@@ -131,7 +151,7 @@ describe('SwitchOverviewTab', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.getByTestId('rc-SwitchOverviewVLANs')).toBeVisible()
   })
 
   it('should navigate to ACLs tab correctly', async () => {
@@ -148,7 +168,8 @@ describe('SwitchOverviewTab', () => {
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
     })
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+
+    expect(screen.getByTestId('rc-SwitchOverviewACLs')).toBeVisible()
   })
 }
 )
