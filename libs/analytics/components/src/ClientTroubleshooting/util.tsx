@@ -596,7 +596,8 @@ export const getChartData = (
   return []
 }
 
-export const useLabelFormatter = (params: { value:number, seriesData: Object }) => {
+export const labelFormatter = (input: unknown) => {
+  const params = input as { value:number, seriesData: Object }
   const intl = getIntl()
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData

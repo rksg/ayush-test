@@ -23,8 +23,9 @@ import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment             from 'moment-timezone'
+import { renderToString } from 'react-dom/server'
+import { useIntl }        from 'react-intl'
 
 import { categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
 import {
@@ -51,7 +52,7 @@ import {
   INCIDENTS,
   ALL
 } from './config'
-import { getQualityColor, useLabelFormatter } from './util'
+import { getQualityColor, labelFormatter } from './util'
 
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -388,9 +389,12 @@ export function TimelineChart ({
       // use this formatter to add popover content
       /* istanbul ignore next */
       formatter: (params: unknown) => {
-        const typedParams = params as { componentSubType: string, marker: string }
+        const typedParams = params as { componentSubType: string, name: string }
         if (typedParams.componentSubType === 'custom') return ''
-        return typedParams.marker
+        const test = renderToString(<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
+          <circle cx='50' cy='50' r='50' />
+        </svg>)
+        return test
       },
       ...tooltipOptions(),
       // Need to address test coverage for the postion
@@ -432,7 +436,7 @@ export function TimelineChart ({
         label: {
           ...tooltipOptions() as Object,
           show: true,
-          formatter: useLabelFormatter as unknown as string,
+          formatter: labelFormatter as unknown as string,
           margin: -35
         },
         type: 'line',

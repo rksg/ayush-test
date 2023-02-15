@@ -38,7 +38,7 @@ import {
   getRoamingSubtitleConfig,
   getTimelineData,
   getChartData,
-  useLabelFormatter,
+  labelFormatter,
   transformIncidents
 } from './util'
 
@@ -309,7 +309,7 @@ const TimelineSeriesCharts = ({
           showResetZoom={config?.showResetZoom}
           chartBoundary={chartBoundary}
           hasXaxisLabel={config?.hasXaxisLabel}
-          tooltipFormatter={useLabelFormatter}
+          tooltipFormatter={labelFormatter}
           mapping={
             expandObj[config?.value as keyof TimelineData]
               ? config.value === TYPES.ROAMING

@@ -41,7 +41,7 @@ import {
   getRoamingChartConfig,
   getRoamingSubtitleConfig,
   getChartData,
-  useLabelFormatter
+  labelFormatter
 } from './util'
 
 
@@ -676,46 +676,46 @@ describe('util', () => {
     })
 
     it('tooltipFormatter should return correct Html string for events', async () => {
-      expect(useLabelFormatter(useTooltipParameters('events', eventDataObj)))
+      expect(labelFormatter(useTooltipParameters('events', eventDataObj)))
         .toMatch(
           'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
         )
 
-      expect(useLabelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper)).toMatch('')
+      expect(labelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper)).toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
-      expect(useLabelFormatter(useTooltipParameters('quality', qualityDataObj)))
+      expect(labelFormatter(useTooltipParameters('quality', qualityDataObj)))
         .toContain('-74 dBm / 15 dB / 3.07 Mbps / 37.9 Mbps')
 
-      expect(useLabelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
+      expect(labelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for incidents', async () => {
-      expect(useLabelFormatter(useTooltipParameters('incidents', incidentDataObj)))
+      expect(labelFormatter(useTooltipParameters('incidents', incidentDataObj)))
         .toContain('AP service is affected due to high number of AP reboots')
 
-      expect(useLabelFormatter([{ seriesName: 'incidents' }] as unknown as TooltipHelper))
+      expect(labelFormatter([{ seriesName: 'incidents' }] as unknown as TooltipHelper))
         .toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for roaming', async () => {
       expect(
-        useLabelFormatter(useTooltipParameters('roaming', roamingDataObj, 'custom'))
+        labelFormatter(useTooltipParameters('roaming', roamingDataObj, 'custom'))
       ).toContain('-73 dBm / 18:4B:0D:5C:A2:4C / 144 / 11ac / 2 SS / 80 MHz')
 
-      expect(useLabelFormatter(useTooltipParameters('roaming', eventDataObj, 'scatter')))
+      expect(labelFormatter(useTooltipParameters('roaming', eventDataObj, 'scatter')))
         .toMatch(
           'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
         )
 
-      expect(useLabelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper)).toMatch('')
+      expect(labelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper)).toMatch('')
     })
 
     it('tooltipFormatter should empty Html string for invalid value', async () => {
-      expect(useLabelFormatter([{}] as unknown as TooltipHelper)).toEqual('')
+      expect(labelFormatter([{}] as unknown as TooltipHelper)).toEqual('')
 
-      expect(useLabelFormatter({} as unknown as TooltipHelper)).toEqual('')
+      expect(labelFormatter({} as unknown as TooltipHelper)).toEqual('')
     })
   })
 })
