@@ -21,6 +21,7 @@ export function getDeviceColor (deviceStatus: DeviceStatus
     case ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED:
     case ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED:
     case ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD:
+    case DeviceStatus.Disconnected:
       return 'var(--acx-semantics-red-70)'
     case DeviceStatus.Unknown:
     case ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD:
@@ -74,17 +75,17 @@ export const wirelessRadioColumns: ColumnsType<RadioProperties> = [
     align: 'center'
   },
   {
-    title: 'RF Channel',
+    title: getIntl().$t({ defaultMessage: 'RF Channel' }),
     dataIndex: 'channel',
     align: 'center'
   },
   {
-    title: 'RF Bandwidth',
+    title: getIntl().$t({ defaultMessage: 'RF Bandwidth' }),
     dataIndex: 'operativeChannelBandwidth',
     align: 'center'
   },
   {
-    title: 'TX Power',
+    title: getIntl().$t({ defaultMessage: 'TX Power' }),
     dataIndex: 'txPower',
     align: 'center'
   }

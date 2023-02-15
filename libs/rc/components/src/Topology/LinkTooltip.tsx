@@ -25,8 +25,8 @@ tooltipEdge: Link
       width: '280px',
       minHeight: '350px',
       zIndex: 9999,
-      top: tooltipPosition.y,
-      left: tooltipPosition.x + 5
+      top: tooltipPosition.y + 80,
+      left: tooltipPosition.x + 15
     }}>
     <Card
       type='no-border'
@@ -88,7 +88,7 @@ tooltipEdge: Link
         /* TODO: does we get PoE usage if poe disabled?
         How to calculate and set unit for PoE? */
       }
-      { tooltipEdge?.poeUsed && tooltipEdge?.poeTotal && <Row
+      { !!(tooltipEdge?.poeUsed && tooltipEdge?.poeTotal) && <Row
         gutter={[12, 24]}
         style={{
           lineHeight: '24px'
