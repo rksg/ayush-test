@@ -9,7 +9,8 @@ import { useParams }      from 'react-router-dom'
 import { Button, Loader, showToast }    from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
-  useTroubleshootingMutation,
+  useIpRouteMutation,
+  // useTroubleshootingMutation,
   useLazyGetTroubleshootingCleanQuery
 } from '@acx-ui/rc/services'
 import {
@@ -31,7 +32,8 @@ export function SwitchIpRouteForm () {
     troubleshootingType: TroubleshootingType.ROUTE_TABLE
   }
 
-  const [runMutation] = useTroubleshootingMutation()
+  // Pinky: need to add feature flag
+  const [runMutation] = useIpRouteMutation()//useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -66,7 +68,7 @@ export function SwitchIpRouteForm () {
   const onSubmit = async () => {
     setIsLoading(true)
     try {
-      const result = await runMutation({ params: { switchId },
+      const result = await runMutation({ params: { tenantId, switchId },
         payload: { debugType: 'route-table' } }).unwrap()
       if (result) {
         refetchResult()

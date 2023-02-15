@@ -37,12 +37,12 @@ export function ApPacketCaptureForm () {
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
-  const packetCaptureState = useGetPacketCaptureStateQuery({ params: { serialNumber } })
-  const getAp = useGetApQuery({ params: { serialNumber } })
+  const packetCaptureState = useGetPacketCaptureStateQuery({ params: { tenantId, serialNumber } })
+  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
   const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
-  const getApLanPorts = useGetApLanPortsQuery({ params: { serialNumber } })
+  const getApLanPorts = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
   const getApRadioCustomization =
-    useGetApRadioCustomizationQuery({ params: { serialNumber } })
+    useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
 
   const [interfaceOptions, setInterfaceOptions] = useState([] as SelectOption[])
   const [lanPortOptions, setLanPortOptions] = useState([] as SelectOption[])

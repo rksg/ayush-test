@@ -24,7 +24,7 @@ export function SwitchDhcpTab () {
   const { activeTab, activeSubTab, serialNumber, switchId, tenantId } = useParams()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/${activeTab}`)
 
-  const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId } })
+  const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
   const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { switchId, tenantId } })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 

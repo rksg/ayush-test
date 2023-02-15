@@ -153,7 +153,7 @@ export function ApForm () {
         ...omit(values, 'deviceGps'),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }]
-      await addAp({ payload }).unwrap()
+      await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as catchErrorResponse)
@@ -167,7 +167,7 @@ export function ApForm () {
         ...omit(values, 'deviceGps'),
         ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) })
       }
-      await updateAp({ params: { serialNumber }, payload }).unwrap()
+      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       setEditContextData && setEditContextData({
         ...editContextData,
         isDirty: false,

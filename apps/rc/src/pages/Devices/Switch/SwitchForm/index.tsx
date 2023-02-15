@@ -78,7 +78,7 @@ export function SwitchForm () {
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
   const { data: switchData, isLoading: isSwitchDataLoading } =
-    useGetSwitchQuery({ params: { switchId } }, { skip: action === 'add' })
+    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
   const { data: switchDetail, isLoading: isSwitchDetailLoading } =
     useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
 
@@ -198,7 +198,7 @@ export function SwitchForm () {
           ...defaultAddSwitchPayload,
           ...values
         }
-        await addSwitch({ payload }).unwrap()
+        await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch {
         showToast({
@@ -252,7 +252,7 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { switchId } , payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
 
       dataFetchedRef.current = false
 

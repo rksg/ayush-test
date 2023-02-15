@@ -10,7 +10,8 @@ import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useTroubleshootingMutation }                             from '@acx-ui/rc/services'
+  // useTroubleshootingMutation,
+  usePingMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp,
   TroubleshootingType,
   WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
@@ -31,7 +32,8 @@ export function SwitchPingForm () {
     troubleshootingType: TroubleshootingType.PING
   }
 
-  const [runMutation] = useTroubleshootingMutation()
+  // Pinky: need to add feature flag
+  const [runMutation] = usePingMutation()//useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -76,7 +78,7 @@ export function SwitchPingForm () {
         targetHost: pingForm.getFieldValue('targetHost'),
         debugType: 'ping'
       }
-      const result = await runMutation({ params: { switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }

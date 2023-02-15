@@ -104,7 +104,7 @@ const defaultFormData = {
 }
 
 export function AAASettings () {
-  const { venueId } = useParams()
+  const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
@@ -148,7 +148,7 @@ export function AAASettings () {
     }
   })
 
-  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { venueId } })
+  const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)
   const [ availableCommandAuthOrder, setAvailableCommandAuthOrder] = useState(defaultAvailableCommandAuthOrder)

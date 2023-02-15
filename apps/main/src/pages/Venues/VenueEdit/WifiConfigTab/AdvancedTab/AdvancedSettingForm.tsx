@@ -38,8 +38,8 @@ export function AdvancedSettingForm () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
-  const venueLed = useGetVenueLedOnQuery({ params: { venueId } })
-  const venueApModels = useGetVenueApModelsQuery({ params: { venueId } })
+  const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
+  const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
@@ -192,7 +192,7 @@ export function AdvancedSettingForm () {
         isDirty: false
       })
       await updateVenueLedOn({
-        params: { venueId },
+        params: { tenantId, venueId },
         payload: tableData.filter(data => data.model)
       })
     } catch {

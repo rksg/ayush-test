@@ -50,7 +50,7 @@ export function RadioSettings () {
   const { tenantId, serialNumber } = useParams()
   const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
   const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
-  const getApAvailableChannels = useGetApValidChannelQuery({ params: { serialNumber } })
+  const getApAvailableChannels = useGetApValidChannelQuery({ params: { tenantId, serialNumber } })
 
   const formRef = useRef<StepsFormInstance<ApRadioCustomization>>()
 
@@ -90,7 +90,7 @@ export function RadioSettings () {
 
 
   const { data: apRadioSavedData } =
-    useGetApRadioCustomizationQuery({ params: { serialNumber } })
+    useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
 
   const [ updateApRadio, { isLoading: isUpdatingApRadio } ] =
     useUpdateApRadioCustomizationMutation()
@@ -183,7 +183,7 @@ export function RadioSettings () {
           params: { tenantId, venueId: ap?.venueId } }, true).unwrap())
 
         const venueRadioData = (await getVenueCustomization({
-          params: { venueId: ap?.venueId } }, true).unwrap())
+          params: { tenantId, venueId: ap?.venueId } }, true).unwrap())
 
         setVenue(venue)
         const apVenueData = convertVenueRadioSetingsToApRadioSettings(venueRadioData)
@@ -302,7 +302,7 @@ export function RadioSettings () {
       }
 
       if (isUseVenueSettings) {
-        await deleteApRadio({ params: { serialNumber } }).unwrap()
+        await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
       } else {
         formData.useVenueSettings = false
         const {

@@ -41,7 +41,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   })
 
   const { data: radioSetting } = useGetApRadioCustomizationQuery({
-    params: { serialNumber }
+    params: { tenantId, serialNumber }
   },
   {
     skip: currentAP?.deviceStatusSeverity !== ApVenueStatusEnum.OPERATIONAL

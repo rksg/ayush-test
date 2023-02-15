@@ -39,7 +39,7 @@ export function LanPorts () {
   } = useContext(VenueEditContext)
 
   const venueSettings = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
-  const venueLanPorts = useGetVenueLanPortsQuery({ params: { venueId } })
+  const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
   const venueCaps = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
   const [updateVenueLanPorts, {
     isLoading: isUpdatingVenueLanPorts }] = useUpdateVenueLanPortsMutation()
@@ -154,7 +154,7 @@ export function LanPorts () {
         setLanPortData(payload)
         setLanPortOrinData(payload)
         await updateVenueLanPorts({
-          params: { venueId },
+          params: { tenantId, venueId },
           payload
         }).unwrap()
       }

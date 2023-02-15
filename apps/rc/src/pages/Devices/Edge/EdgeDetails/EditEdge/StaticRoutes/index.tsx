@@ -101,10 +101,7 @@ const StaticRoutes = () => {
       const payload = {
         routes: routesData
       }
-      await updateStaticRoutes({
-        params: { staticRouteId: currentEditData?.id },
-        payload: payload
-      }).unwrap()
+      await updateStaticRoutes({ params: params, payload: payload }).unwrap()
     } catch {
       showToast({
         type: 'error',

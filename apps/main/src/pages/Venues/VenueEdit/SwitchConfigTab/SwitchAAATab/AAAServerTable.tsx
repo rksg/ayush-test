@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/components'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
+import { useParams }                                                            from '@acx-ui/react-router-dom'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -140,6 +141,7 @@ export const AAAServerTable = (props: {
   const [editData, setEditData] = useState({} as RadiusServer | TacacsServer | LocalUser)
   const [disabledDelete, setDisabledDelete] = useState(false)
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
+  const { tenantId } = useParams()
   const [
     deleteAAAServer,
     { isLoading: isDeleting }
@@ -263,9 +265,9 @@ export const AAAServerTable = (props: {
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
-              deleteAAAServer({ params: { aaaServerId: rows[0].id } })
+              deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
                 .then(clearSelection) :
-              bulkDeleteAAAServer({ payload: rows.map(item => item.id) })
+              bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
                 .then(clearSelection)
             }
           })

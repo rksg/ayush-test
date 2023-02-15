@@ -118,11 +118,13 @@ export function RadioSettings () {
 
   // default radio data
   const { data: defaultRadioSettingsData } =
+    // Pinky: need to add feature flag
+    // useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
     useGetVenueRadioCustomizationQuery({ params: { venueId }, payload: { defaultonly: true } })
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
-    useGetVenueRadioCustomizationQuery({ params: { venueId } })
+    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] =
     useUpdateVenueRadioCustomizationMutation()
@@ -358,7 +360,7 @@ export function RadioSettings () {
       }).unwrap()
 
       await updateVenueRadioCustomization({
-        params: { venueId },
+        params: { tenantId, venueId },
         payload: formData
       }).unwrap()
     }catch {

@@ -5,19 +5,20 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
-import { useApActionMutation }                           from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
+import { Button, Loader, showToast, Tooltip }               from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
+import { useTraceRouteApMutation/*, useApActionMutation*/ } from '@acx-ui/rc/services'
+import { targetHostRegExp, WifiTroubleshootingMessages }    from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
 
 export function ApTraceRouteForm () {
   const { $t } = useIntl()
-  const { serialNumber } = useApContext()
+  const { tenantId, serialNumber } = useApContext()
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
-  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useApActionMutation()
+  // Pinky: need to add feature flag
+  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()//useApActionMutation()
   const handlePingAp = async () => {
     try {
       const payload = {
@@ -25,7 +26,7 @@ export function ApTraceRouteForm () {
         action: 'traceRoute'
       }
       const traceRouteApResult =
-        await traceRouteAp({ params: { serialNumber }, payload }).unwrap()
+        await traceRouteAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (traceRouteApResult) {
         form.setFieldValue('traceRoute', _.get(traceRouteApResult, 'response.response'))
       }

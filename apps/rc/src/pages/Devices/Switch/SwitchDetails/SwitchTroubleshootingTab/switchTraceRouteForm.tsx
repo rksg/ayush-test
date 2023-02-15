@@ -11,7 +11,8 @@ import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useTroubleshootingMutation
+  // useTroubleshootingMutation,
+  useTraceRouteMutation
 } from '@acx-ui/rc/services'
 import {
   targetHostRegExp,
@@ -35,7 +36,8 @@ export function SwitchTraceRouteForm () {
     troubleshootingType: TroubleshootingType.TRACE_ROUTE
   }
 
-  const [runMutation] = useTroubleshootingMutation()
+  // Pinky: need to add feature flag
+  const [runMutation] = useTraceRouteMutation()//useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -88,7 +90,7 @@ export function SwitchTraceRouteForm () {
         targetHost: form.getFieldValue('targetHost'),
         debugType: 'trace-route'
       }
-      const result = await runMutation({ params: { switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }

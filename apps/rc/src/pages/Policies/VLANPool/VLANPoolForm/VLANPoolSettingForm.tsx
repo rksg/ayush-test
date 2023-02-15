@@ -8,6 +8,7 @@ import { useVlanPoolListQuery }        from '@acx-ui/rc/services'
 import {
   checkVlanPoolMembers
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 
 type VLANPoolSettingFormProps = {
@@ -17,7 +18,9 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
+  const params = useParams()
   const { data } = useVlanPoolListQuery({
+    params,
     payload: {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000

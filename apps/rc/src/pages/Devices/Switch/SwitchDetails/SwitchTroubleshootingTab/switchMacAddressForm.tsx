@@ -12,7 +12,8 @@ import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
   useLazyGetTroubleshootingCleanQuery,
-  useTroubleshootingMutation,
+  useMacAddressTableMutation,
+  // useTroubleshootingMutation,
   useSwitchPortlistQuery
 } from '@acx-ui/rc/services'
 import {
@@ -49,7 +50,7 @@ export function SwitchMacAddressForm () {
     pageSize: 10000
   }
   const vlanList = useGetVlanListBySwitchLevelQuery({
-    params: { switchId },
+    params: { tenantId, switchId },
     payload: vlanPayload
   })
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
@@ -78,7 +79,8 @@ export function SwitchMacAddressForm () {
     troubleshootingType: TroubleshootingType.MAC_ADDRESS_TABLE
   }
 
-  const [runMutation] = useTroubleshootingMutation()
+  // Pinky: need to add feature flag
+  const [runMutation] = useMacAddressTableMutation()//useTroubleshootingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -193,7 +195,7 @@ export function SwitchMacAddressForm () {
           break
       }
 
-      const result = await runMutation({ params: { switchId }, payload }).unwrap()
+      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }

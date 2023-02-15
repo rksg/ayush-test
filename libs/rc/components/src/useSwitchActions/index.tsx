@@ -40,7 +40,7 @@ export function useSwitchActions () {
       },
       onOk: () => {
         const switchIdList = rows.map(item => item.id || item.serialNumber)
-        deleteSwitches({ payload: switchIdList })
+        deleteSwitches({ params: { tenantId }, payload: switchIdList })
           .then(callBack)
       }
     })
@@ -58,7 +58,7 @@ export function useSwitchActions () {
       },
       onOk: () => {
         const switchIdList = [data.serialNumber]
-        deleteSwitches({ payload: switchIdList })
+        deleteSwitches({ params: { tenantId }, payload: switchIdList })
           .then(callBack)
       }
     })

@@ -7,24 +7,25 @@ import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
-import { useApActionMutation }                           from '@acx-ui/rc/services'
+import { usePingApMutation/*, useApActionMutation*/ }    from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
 
 export function ApPingForm () {
   const { $t } = useIntl()
-  const { serialNumber } = useApContext()
+  const { tenantId, serialNumber } = useApContext()
   const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
-  const [pingAp, { isLoading: isPingingAp }] = useApActionMutation()
+  // Pinky: need to add feature flag
+  const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()//useApActionMutation()
   const handlePingAp = async () => {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
         action: 'ping'
       }
-      const pingApResult = await pingAp({ params: { serialNumber }, payload }).unwrap()
+      const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingApResult) {
 
         pingForm.setFieldValue('result', _.get(pingApResult, 'response.response'))

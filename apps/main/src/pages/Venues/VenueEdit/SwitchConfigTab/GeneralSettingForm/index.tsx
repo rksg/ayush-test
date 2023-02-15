@@ -60,7 +60,7 @@ export function GeneralSettingForm () {
 
   const formRef = useRef<StepsFormInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
-  const configProfiles = useConfigProfilesQuery({ payload: {} })
+  const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
   const [updateVenueSwitchSetting, {
     isLoading: isUpdatingVenueSwitchSetting }] = useUpdateVenueSwitchSettingMutation()
 

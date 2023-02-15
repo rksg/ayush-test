@@ -196,9 +196,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
-      query: ({ payload }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getDefaultVlan
+          SwitchUrlsInfo.getDefaultVlan,
+          params
         )
         return {
           ...req,
@@ -540,8 +541,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     deleteSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes, params)
         return {
           ...req,
           body: payload
@@ -614,6 +615,41 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     troubleshooting: build.mutation<TroubleshootingResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.troubleshooting, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    ping: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
         return {
           ...req,
           body: payload
@@ -860,6 +896,10 @@ export const {
   useGetSwitchClientDetailsQuery,
   useGetTroubleshootingQuery,
   useTroubleshootingMutation,
+  usePingMutation,
+  useTraceRouteMutation,
+  useIpRouteMutation,
+  useMacAddressTableMutation,
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,

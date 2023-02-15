@@ -39,7 +39,7 @@ const defaultPayload = {
 
 export function ApGroupForm () {
   const { $t } = useIntl()
-  const { tenantId, venueId, action } = useParams()
+  const { tenantId, action } = useParams()
   const navigate = useNavigate()
   const params = useParams()
   const formRef = useRef<StepsFormInstance<ApDeep>>()
@@ -87,7 +87,7 @@ export function ApGroupForm () {
       const payload = {
         ...values
       }
-      await addApGroup({ params: { venueId: venueId }, payload }).unwrap()
+      await addApGroup({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch {
       showToast({

@@ -187,16 +187,16 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch (e.key) {
       case 'deleteGuest':
-        guestAction.showDeleteGuest(guestDetail, props.triggerClose)
+        guestAction.showDeleteGuest(guestDetail, tenantId, props.triggerClose)
         break
       case 'enableGuest':
-        guestAction.enableGuest(guestDetail)
+        guestAction.enableGuest(guestDetail, tenantId)
         break
       case 'disableGuest':
-        guestAction.disableGuest(guestDetail)
+        guestAction.disableGuest(guestDetail, tenantId)
         break
       case 'downloadInformation':
-        guestAction.showDownloadInformation(guestDetail)
+        guestAction.showDownloadInformation(guestDetail, tenantId)
         break
       case 'generatePassword':
         setGenerateModalVisible(true)
