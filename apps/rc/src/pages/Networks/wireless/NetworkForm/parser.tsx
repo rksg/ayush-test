@@ -411,7 +411,15 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       advancedCustomization
     }
   }
-
+  if(data.guestPortal){
+    saveData = {
+      ...saveData,
+      guestPortal: {
+        ...originalData.guestPortal,
+        ...data.guestPortal
+      }
+    }
+  }
   return saveData
 }
 
