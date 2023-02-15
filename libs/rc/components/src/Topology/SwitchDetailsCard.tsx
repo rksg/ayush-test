@@ -3,9 +3,9 @@ import { useIntl }       from 'react-intl'
 
 import { Card, Descriptions, Loader }        from '@acx-ui/components'
 import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { formatter }                         from '@acx-ui/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
-import { formatter } from '@acx-ui/utils'
 
 
 export function SwitchDetailsCard (props: {
