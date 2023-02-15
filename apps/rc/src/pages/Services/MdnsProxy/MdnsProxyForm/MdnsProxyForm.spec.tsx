@@ -15,8 +15,7 @@ import {
   mockServer,
   render,
   renderHook,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import {
@@ -43,6 +42,29 @@ jest.mock('@acx-ui/react-router-dom', () => ({
     return { ...mockedTenantPath, pathname: mockedTenantPath.pathname + to }
   }
 }))
+
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+
+  // @ts-ignore
+  const Select = ({ children, onChange, ...otherProps }) => {
+    return (
+      <select
+        role='combobox'
+        onChange={e => onChange(e.target.value)}
+        {...otherProps}>
+        {children}
+      </select>
+    )
+  }
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) => {
+    return <option {...otherProps}>{children}</option>
+  }
+
+  return { ...antd, Select }
+})
 
 describe('MdnsProxyForm', () => {
   const params = {
@@ -89,10 +111,19 @@ describe('MdnsProxyForm', () => {
     )
 
     await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/ }), 'My mDNS')
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    const validating = await screen.findByRole('img', { name: 'loading' })
-    await waitForElementToBeRemoved(validating, { timeout: 2000 })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
+
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Type' }),
+      await screen.findByRole('option', { name: 'AirDisk' })
+    )
+    await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), '1')
+    await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), '2')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
@@ -102,10 +133,20 @@ describe('MdnsProxyForm', () => {
   })
 
   it('should show toast when edit service profile failed', async () => {
+    const targetErrorMessage = 'Profile not found'
+
     mockServer.use(
       rest.put(
         MdnsProxyUrls.updateMdnsProxy.url,
-        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+        (req, res, ctx) => {
+          return res(ctx.status(404), ctx.json({
+            requestId: 'fa60fbba-529f-4206-a131-3fe778a4202f',
+            errors: [{
+              code: 'WIFI-10000',
+              message: targetErrorMessage
+            }]
+          }))
+        }
       )
     )
 
@@ -123,7 +164,7 @@ describe('MdnsProxyForm', () => {
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
-    await screen.findByText('An error occurred')
+    await screen.findByText(targetErrorMessage)
   })
 
   it('should render edit form', async () => {
