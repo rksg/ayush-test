@@ -18,7 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/NetworkForm/contentsMap'
+import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/wireless/NetworkForm/contentsMap'
 
 import AAASettingForm from './AAASettingForm'
 

@@ -6,16 +6,17 @@ import { useIntl }              from 'react-intl'
 import { Button, Modal } from '@acx-ui/components'
 import { GuestPortal }   from '@acx-ui/rc/utils'
 
-import appPhoto           from '../../../../assets/images/network-wizard-diagrams/linkedin-sample-customised.png'
+import appPhoto           from '../../../../../assets/images/network-wizard-diagrams/google-sample-customised.png'
 import NetworkFormContext from '../NetworkFormContext'
 import * as UI            from '../styledComponents'
 
 import PreviewApp    from './PreviewApp'
 import SocialAuthURL from './SocialAuthURL'
+
 type DataType = {
   guestPortal: GuestPortal
 }
-export default function LinkedInSetting (props:{
+export default function GoogleSetting (props:{
   redirectURL: string
 }) {
   const {
@@ -32,40 +33,39 @@ export default function LinkedInSetting (props:{
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appId'],
-      data.guestPortal?.socialIdentities?.linkedin?.config?.appId)
+        'google','config','appId'],
+      data.guestPortal?.socialIdentities?.google?.config?.appId)
       form.setFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appSecret'],
-      data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
-      setAppIDValue(data.guestPortal?.socialIdentities?.linkedin?.config?.appId||'')
-      setAppSecretValue(data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret||'')
-      formParent.setFieldValue(['guestPortal','socialIdentities','linkedin','source'], 'CUSTOM')
+        'google','config','appSecret'],
+      data.guestPortal?.socialIdentities?.google?.config?.appSecret)
+      setAppIDValue(data.guestPortal?.socialIdentities?.google?.config?.appId||'')
+      setAppSecretValue(data.guestPortal?.socialIdentities?.google?.config?.appSecret||'')
       formParent.setFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appId'],
-      data.guestPortal?.socialIdentities?.linkedin?.config?.appId)
+        'google','config','appId'],
+      data.guestPortal?.socialIdentities?.google?.config?.appId)
       formParent.setFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appSecret'],
-      data.guestPortal?.socialIdentities?.linkedin?.config?.appSecret)
+        'google','config','appSecret'],
+      data.guestPortal?.socialIdentities?.google?.config?.appSecret)
     }
   }, [data])
   const getContent = <Form<DataType> layout='vertical'
     form={form}
     onFinish={()=>{
       setAppIDValue(form.getFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appId']))
+        'google','config','appId']))
       setAppSecretValue(form.getFieldValue(['guestPortal','socialIdentities',
-        'linkedin','config','appSecret']))
-      formParent.setFieldValue(['guestPortal','socialIdentities','linkedin','source'], 'CUSTOM')
+        'google','config','appSecret']))
+      formParent.setFieldValue(['guestPortal','socialIdentities','google','source'], 'CUSTOM')
       formParent.setFieldsValue({ ...form.getFieldsValue() })
       setVisible(false)
     }}
   >
-    <Form.Item label={$t({ defaultMessage: 'Select LinkedIn app to be used for sign in' })}
+    <Form.Item label={$t({ defaultMessage: 'Select Google app to be used for sign in' })}
       extra={<div style={{ textAlign: 'right', marginTop: -60 }}>
-        <PreviewApp type='linkedin' appPhoto={appPhoto}/></div>}
+        <PreviewApp type='google' appPhoto={appPhoto}/></div>}
     />
     <Form.Item
-      name={['guestPortal','socialIdentities','linkedin','config','appId']}
+      name={['guestPortal','socialIdentities','google','config','appId']}
       rules={[
         { required: true }
       ]}
@@ -76,7 +76,7 @@ export default function LinkedInSetting (props:{
       }
     />
     <Form.Item
-      name={['guestPortal','socialIdentities','linkedin','config','appSecret']}
+      name={['guestPortal','socialIdentities','google','config','appSecret']}
       rules={[
         { required: true }
       ]}
@@ -88,33 +88,33 @@ export default function LinkedInSetting (props:{
     />
     <Form.Item><>
       <label>{$t({ defaultMessage: 'You also need to go to your' })}&nbsp;&nbsp;
-        <a href='https://developer.linkedin.com/'
+        <a href='https://console.cloud.google.com/apis/dashboard'
           target='_blank'
           rel='noreferrer'>
-          {$t({ defaultMessage: 'LinkedIn Developer Console' })}</a>&nbsp;&nbsp;
+          {$t({ defaultMessage: 'Google Developer Console' })}</a>&nbsp;&nbsp;
         {$t({ defaultMessage: 'and paste the following URI in the app settings under:' })}
       </label><br/>
-      <label>{$t({ defaultMessage: 'Authentication > OAuth 2.0 > '+
-      'Authorized Redirect URLs' })}</label>
+      <label>{$t({ defaultMessage: 'Credentials > OAuth 2.0 client IDs > '+
+      'Click on client name > Authorized redirect URIs' })}</label>
       <SocialAuthURL redirectURL={props.redirectURL}/></>
     </Form.Item>
   </Form>
   return (
     <>
-      <Tooltip title={$t({ defaultMessage: 'Edit LinkedIn app' })}
+      <Tooltip title={$t({ defaultMessage: 'Edit Google app' })}
         placement='bottom'><Button onClick={() => {setVisible(true)}}
           title='settingicon'
           type='link'><UI.ConfigurationSolid/></Button></Tooltip>
       <Modal
-        title={$t({ defaultMessage: 'Edit LinkedIn App' })}
+        title={$t({ defaultMessage: 'Edit Google App' })}
         visible={visible}
         width={600}
         okText={$t({ defaultMessage: 'Save' })}
         onCancel={()=>{
           form.setFieldValue(['guestPortal','socialIdentities',
-            'linkedin','config','appId'], appIDValue)
+            'google','config','appId'], appIDValue)
           form.setFieldValue(['guestPortal','socialIdentities',
-            'linkedin','config','appSecret'], appSecretValue)
+            'google','config','appSecret'], appSecretValue)
           setVisible(false)
         }}
         onOk={()=>{

@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  portalListWithPhoto
+  portalList
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -23,7 +23,7 @@ describe('Portal Instance Page', () => {
     mockServer.use(
       rest.get(
         PortalUrlsInfo.getPortalProfileList.url,
-        (req, res, ctx) => res(ctx.json({ content: portalListWithPhoto }))
+        (req, res, ctx) => res(ctx.json({ content: portalList }))
       ),
       rest.post(
         PortalUrlsInfo.getPortalProfileList.url,
@@ -41,8 +41,7 @@ describe('Portal Instance Page', () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
-        { enableSmsLogin: true, socialIdentities: {
-          facebook: {}, google: {}, twitter: {}, linkedin: {} } }, portalServiceProfileId: '2' }
+        { enableSmsLogin: true, socialIdentities: {} }, portalServiceProfileId: '2' }
     }}><Form><PortalInstance />
       </Form></NetworkFormContext.Provider></Provider>,
     {
@@ -56,6 +55,6 @@ describe('Portal Instance Page', () => {
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
     await userEvent.click((await screen.findAllByRole('combobox'))[0])
-    await userEvent.click(await screen.findByTitle('test2'))
+    await userEvent.click((await screen.findAllByTitle('test2'))[0])
   })
 })

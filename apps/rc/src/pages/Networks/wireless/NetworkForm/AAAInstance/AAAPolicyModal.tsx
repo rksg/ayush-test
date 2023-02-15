@@ -6,7 +6,7 @@ import { Button, Modal, ModalType } from '@acx-ui/components'
 import { AAAPolicyType }            from '@acx-ui/rc/utils'
 
 
-import AAAForm from '../../../Policies/AAA/AAAForm/AAAForm'
+import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
 
 export default function AAAPolicyModal (props:{
