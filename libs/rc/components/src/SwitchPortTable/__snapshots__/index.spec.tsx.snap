@@ -1099,6 +1099,9 @@ exports[`SwitchPortTable should render ports of switch ICX7150 correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      data-testid="SwitchLagDrawer"
+    />
   </div>
 </DocumentFragment>
 `;
@@ -2516,6 +2519,9 @@ exports[`SwitchPortTable should render ports of switch ICX7650 correctly 1`] = `
         </div>
       </div>
     </div>
+    <div
+      data-testid="SwitchLagDrawer"
+    />
     <div
       data-testid="editPortDrawer"
     />

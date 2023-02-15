@@ -47,6 +47,27 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
+    }
+  ]
+}
+
+
 describe('ClientIsolationForm', () => {
   beforeEach(async () => {
     mockServer.use(
@@ -57,6 +78,9 @@ describe('ClientIsolationForm', () => {
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json(clientMeta))
       )
     )
   })
