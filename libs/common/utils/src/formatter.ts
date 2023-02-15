@@ -159,8 +159,6 @@ export const formats = {
   radioFormat: (value: string|number) => `${value} GHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
-  enabledFormat: (value: boolean, { $t }: IntlShape) =>
-    (value ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value),
@@ -185,6 +183,10 @@ export const dateTimeFormats = {
   sqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss'
 } as const
 
+const enabledFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, select, true {Enabled} other {Disabled}}'
+})
+
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
@@ -199,6 +201,7 @@ const scaleFormatRound: MessageDescriptor = defineMessage({
 })
 
 export const intlFormats = {
+  enabledFormat,
   countFormat,
   percentFormat,
   percentFormatRound,

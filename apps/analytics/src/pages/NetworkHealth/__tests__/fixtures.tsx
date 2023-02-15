@@ -7,13 +7,14 @@ import { createStepsFormContext } from '@acx-ui/components'
 import { Provider }               from '@acx-ui/store'
 import { render, screen, within } from '@acx-ui/test-utils'
 
+import { stages }        from '../contents'
 import {
   Band,
   ClientType,
   TestType,
-  NetworkPaths
+  NetworkPaths,
+  NetworkHealthFormDto
 } from '../types'
-import { NetworkHealthFormDto } from '../types'
 
 export const serviceGuardSpecNames = {
   allServiceGuardSpecs: [
@@ -46,6 +47,51 @@ export const fetchServiceGuardSpec = {
         ]] as NetworkPaths
       }
     }]
+  }
+}
+
+export const fetchServiceGuardTest = {
+  serviceGuardTest: {
+    id: 1,
+    createdAt: '2023-02-03T11:00:00.000Z',
+    previousTest: null,
+    spec: {
+      specId: 'specId',
+      name: 'name',
+      type: 'on-demand',
+      clientType: 'virtual-client',
+      apsCount: 0
+    },
+    config: {
+      authenticationMethod: 'WPA2_PERSONAL',
+      dnsServer: '',
+      pingAddress: '',
+      radio: '5',
+      speedTestEnabled: false,
+      tracerouteAddress: '',
+      wlanName: 'wlanName',
+      wlanUsername: ''
+    },
+    summary: {
+      apsErrorCount: 0,
+      apsFailureCount: 0,
+      apsPendingCount: 0,
+      apsSuccessCount: 0,
+      apsTestedCount: 0,
+      ...Object.keys(stages).reduce((acc, stage) => {
+        return {
+          ...acc,
+          [`${stage}Error`]: 0,
+          [`${stage}Failure`]: 0,
+          [`${stage}NA`]: 0,
+          [`${stage}Pending`]: 0,
+          [`${stage}Success`]: 0
+        }
+      },{})
+    }
+  },
+  wlanAuthSettings: {
+    wpaVersion: 'WPA2'
   }
 }
 

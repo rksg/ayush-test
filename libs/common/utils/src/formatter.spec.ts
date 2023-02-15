@@ -96,10 +96,6 @@ describe('formatter', () => {
     0.05004: '0.05',
     0.05006: '0.05'
   }))
-  it('enabledFormat', () => {
-    expect(formatter('enabledFormat')(true)).toEqual('Enabled')
-    expect(formatter('enabledFormat')(false)).toEqual('Disabled')
-  })
   it('ratioFormat', () => {
     expect(formatter('ratioFormat')([1, 2])).toBe('1 / 2')
     expect(formatter('ratioFormat')([2, 2])).toBe('2 / 2')
@@ -290,7 +286,7 @@ describe('formatter', () => {
     })
   })
   describe('intlFormats', () => {
-    type TestSet = [number | undefined, string | null]
+    type TestSet = [number | undefined | boolean, string | null]
     const testFormat = (
       format: Parameters<typeof formatter>[0],
       sets: TestSet[]
@@ -299,6 +295,12 @@ describe('formatter', () => {
         const result = formatter(format)(value)
         expect(result).toEqual(expected)
       })
+    })
+    describe('enabledFormat', () => {
+      testFormat('enabledFormat', [
+        [true,'Enabled'],
+        [false,'Disabled']
+      ])
     })
     describe('countFormat', () => {
       testFormat('countFormat', [

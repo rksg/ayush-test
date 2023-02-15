@@ -70,7 +70,7 @@ const compareFieldsFn = (stage: string) => `
 `
 
 const fetchServiceGuardTest = gql`
-  query ServiceGuardTest($testId: Float!) {
+  query FetchServiceGuardTest($testId: Float!) {
     serviceGuardTest(id: $testId) {
       id
       createdAt
@@ -110,7 +110,7 @@ const fetchServiceGuardTest = gql`
 `
 
 const fetchServiceGuardRelatedTests = gql`
-  query ServiceGuardRelatedTests($testId: Float!) {
+  query FetchServiceGuardRelatedTests($testId: Float!) {
     serviceGuardTest(id: $testId) {
       spec {
         id
