@@ -29,12 +29,15 @@ import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/NetworksTable'
+import Wired                       from './pages/Networks/wired'
+import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
+import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
+import NetworksTable               from './pages/Networks/wireless/NetworksTable'
 import AAATable                    from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlTable          from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
+import ClientIsolationDetail       from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import ClientIsolationTable        from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import MacRegistrationListDetails
@@ -57,6 +60,7 @@ import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail           from './pages/Services/DHCP/Edge/DHCPDetail'
 import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                 from './pages/Services/DHCP/Edge/EditDHCP'
 import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
 import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
 import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
@@ -172,6 +176,8 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
       />
+      <Route path='networks/wired' element={<Wired />} />
+      <Route path='networks/wired/:activeTab' element={<Wired />} />
     </Route>
   )
 }
@@ -304,6 +310,10 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.DETAIL })}
         element={<EdgeDHCPDetail/>}
       />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.EDIT })}
+        element={<EditDhcp />}
+      />
     </Route>
   )
 }
@@ -379,7 +389,17 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm edit={false}/>}
+        element={<AccessControlForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={<AccessControlForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
@@ -401,7 +421,13 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />} />
+        element={<AAATable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
+        element={<ClientIsolationDetail />}
+      />
     </Route>
   )
 }

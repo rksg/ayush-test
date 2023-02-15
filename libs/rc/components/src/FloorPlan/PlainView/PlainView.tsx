@@ -1,16 +1,15 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Col, Divider, Row, Space, Tooltip, Typography } from 'antd'
-import { DropTargetMonitor, useDrop, XYCoord }           from 'react-dnd'
-import { useIntl }                                       from 'react-intl'
+import { Col, Divider, Row, Space, Typography } from 'antd'
+import { DropTargetMonitor, useDrop, XYCoord }  from 'react-dnd'
+import { useIntl }                              from 'react-intl'
 
-import { Button, Loader } from '@acx-ui/components'
+import { Button, Loader, Tooltip } from '@acx-ui/components'
 import {
   AccessPointWiFiOutlined,
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
-  QuestionMarkCircleOutlined,
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
@@ -251,12 +250,10 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       <Divider style={{ margin: '0' }} />
       <UI.ImageContainerWrapper>
         { showRogueAp && <UI.RogueAPHelpIcon className='rogue-help-info'>
-          <Tooltip
+          <Tooltip.Question
             trigger='click'
             placement='right'
-            title={<RogueAPHelpTooltip/>}>
-            <QuestionMarkCircleOutlined />
-          </Tooltip>
+            title={<RogueAPHelpTooltip/>} />
         </UI.RogueAPHelpIcon> }
         <UI.ImageContainer imageMode={imageMode}
           ref={imageContainerRef}

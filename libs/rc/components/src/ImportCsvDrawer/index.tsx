@@ -30,13 +30,13 @@ type importErrorRes = {
 } | GuestErrorRes
 
 interface ImportCsvDrawerProps extends DrawerProps {
-  temlateLink: string
+  templateLink: string
   maxSize: number
   maxEntries: number
   isLoading?: boolean
   importError?: FetchBaseQueryError
   importRequest: (formData: FormData, values: object)=>void
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona'
 }
 
 export const CsvSize = {
@@ -48,7 +48,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
 
-  const { maxSize, maxEntries, isLoading, temlateLink, importError, importRequest } = props
+  const { maxSize, maxEntries, isLoading, templateLink, importError, importRequest } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -98,7 +98,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
 
   const beforeUpload = (file: File) => {
     let errorMsg = ''
-    if (file.type !== 'text/csv') {
+    if (file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
       errorMsg = $t({ defaultMessage: 'Invalid file type.' })
     }
     if (file.size > maxSize) {
@@ -166,7 +166,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
       </Space>
     </Upload.Dragger>
     <ul>
-      <li><a href={temlateLink}>{$t({ defaultMessage: 'Download template' })}</a></li>
+      <li><a href={templateLink} download>{$t({ defaultMessage: 'Download template' })}</a></li>
       <li>{$t({ defaultMessage: 'File format must be csv' })}</li>
       <li>{$t(
         { defaultMessage: 'File may contain up to {maxEntries} entries' },

@@ -1,22 +1,24 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Menu, MenuProps, Space }                      from 'antd'
-import _                                               from 'lodash'
-import Highlighter                                     from 'react-highlight-words'
-import { useIntl }                                     from 'react-intl'
-import AutoSizer                                       from 'react-virtualized-auto-sizer'
+import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
+import { Menu, MenuProps, Space }                                     from 'antd'
+import escapeStringRegexp                                             from 'escape-string-regexp'
+import _                                                              from 'lodash'
+import Highlighter                                                    from 'react-highlight-words'
+import { useIntl }                                                    from 'react-intl'
+import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
-import { SettingsOutlined } from '@acx-ui/icons'
+import { SettingsOutlined }        from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { Button, DisabledButton } from '../Button'
 import { Dropdown }               from '../Dropdown'
 import { Tooltip }                from '../Tooltip'
 
-import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                          from './ResizableColumn'
-import * as UI                                                      from './styledComponents'
-import { settingsKey, useColumnsState }                             from './useColumnsState'
+import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                                     from './ResizableColumn'
+import * as UI                                                 from './styledComponents'
+import { settingsKey, useColumnsState }                        from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -69,11 +71,23 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
+    enableApiFilter?: boolean
+    onFilterChange?: (
+      filters: Filter,
+      search: { searchString?: string, searchTargetFields?: string[] }
+    ) => void
   }
+
+export interface TableHighlightFnArgs {
+  (
+    textToHighlight: string,
+    formatFn?: (keyword: string) => React.ReactNode
+  ): string | React.ReactNode
+}
 
 const defaultPagination = {
   mini: true,
-  defaultPageSize: 10,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
   showTotal: false,
@@ -95,18 +109,35 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+const MIN_SEARCH_LENGTH = 2
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
-) {
+function Table <RecordType extends Record<string, any>> ({
+  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
+}: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
+  const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
+  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
+    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+
+  useEffect(() => {
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
+      debounced(filterValues, searchValue)
+    }
+    return () => debounced.cancel()
+  }, [searchValue, debounced])
+
+  useEffect(() => {
+    debounced(filterValues, searchValue)
+    return () => debounced.cancel()
+  }, [filterValues, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -194,26 +225,25 @@ function Table <RecordType extends Record<string, any>> (
     setSelectedRowKeys(newKeys)
     props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
-  columns = columns.map(column => column.searchable && searchValue
-    ? {
-      ...column,
-      render: (_, value) => <Highlighter
-        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
-        searchWords={[searchValue]}
-        textToHighlight={value[column.dataIndex as keyof RecordType] as unknown as string}
-        autoEscape
-      />
-    }
-    : column
-  )
 
-  const filterables = columns.filter(column => {
-    return column.filterable
-  })
-  const searchables = columns.filter(column => column.searchable)
+  const aggregator = (
+    columns: TableColumn<RecordType, 'text'>[],
+    field: keyof TableColumn<RecordType, 'text'>
+  ) => Object.values(columns.reduce((all, column) => {
+    if(column[field]) { all[column.key] = column }
+    if(isGroupColumn(column) && column.children?.length > 0)
+      column.children.forEach((child) => {
+        if(child[field]) { all[child.key] = child }
+      })
+    return all
+  }, {} as Record<string, TableColumn<RecordType, 'text'>>))
+
+  const filterables = aggregator(columns, 'filterable')
+  const searchables = aggregator(columns, 'searchable')
+
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
-    const filteredValue = filterValues[key as keyof FilterValue]
+    const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
 
@@ -255,18 +285,52 @@ function Table <RecordType extends Record<string, any>> (
     }
   }
 
-  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+  const columnResize = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) =>
+    (type === 'tall')
+      ? ({
+        ...col,
+        width: (col.key === settingsKey)
+          ? col.width
+          : colWidth[col.key as keyof typeof colWidth] || col.width,
+        onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+          hasEllipsisColumn,
+          width: colWidth[column.key],
+          definedWidth: col.width
+        })
+      })
+      : col
+
+  const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
-    width: (col.key === settingsKey)
-      ? col.width
-      : colWidth[col.key as keyof typeof colWidth] || col.width,
-    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
-      hasEllipsisColumn,
-      width: colWidth[column.key],
-      definedWidth: col.width
+    ...( col.searchable && {
+      render: ((dom, entity, index, action, schema) => {
+        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
+          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+            ? formatFn
+              ? textToHighlight.replace(
+                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+              : <Highlighter
+                highlightStyle={{
+                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+                searchWords={[searchValue]}
+                textToHighlight={textToHighlight}
+                autoEscape
+              />
+            : textToHighlight
+        return col.render
+          ? col.render(dom, entity, index, highlightFn, action, schema)
+          : highlightFn(_.get(entity, col.dataIndex))
+      }) as ProColumnType<RecordType, 'text'>['render']
     })
   })
+
+  const finalColumns = columns.map(column => ({
+    ..._.flow([columnResize, columnRender])(column),
+    ...(column.children && {
+      children: column.children.map(child => _.flow([columnRender, columnResize])(child))
+    })
+  }))
 
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
@@ -314,17 +378,19 @@ function Table <RecordType extends Record<string, any>> (
               renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
             }
             {filterables.map((column, i) =>
-              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+              renderFilter<RecordType>(
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
           </Space>
         </div>
         <UI.HeaderRight>
-          {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
-            onClick={() => {
-              setFilterValues({} as FilterValue)
-              setSearchValue('')
-            }}
-          >
+          {(
+            Boolean(activeFilters.length) ||
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
+          ) && <Button onClick={() => {
+            setFilterValues({} as Filter)
+            setSearchValue('')
+          }}>
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
@@ -332,16 +398,15 @@ function Table <RecordType extends Record<string, any>> (
     )}
     <ProTable<RecordType>
       {...props}
-      dataSource={getFilteredData<RecordType>(
-        dataSource, filterValues, activeFilters, searchables, searchValue
-      )}
+      dataSource={enableApiFilter
+        ? dataSource
+        : getFilteredData<RecordType>(
+          dataSource, filterValues, activeFilters, searchables, searchValue)
+      }
       sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
-      columns={(type === 'tall' ? columns.map(col=>({
-        ...getResizeProps(col),
-        children: col.children?.map(getResizeProps)
-      })): columns) as typeof columns}
+      columns={finalColumns}
       components={_.isEmpty(components) ? undefined : components}
       options={{ setting, reload: false, density: false }}
       columnsState={{
@@ -408,5 +473,6 @@ function Table <RecordType extends Record<string, any>> (
 }
 
 Table.SubTitle = UI.SubTitle
+Table.Highlighter = UI.Highlighter
 
 export { Table }

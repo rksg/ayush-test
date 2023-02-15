@@ -1,5 +1,6 @@
-import { SortOrder }          from 'antd/lib/table/interface'
-import { IntlShape, useIntl } from 'react-intl'
+import { SortOrder }                         from 'antd/lib/table/interface'
+import _                                     from 'lodash'
+import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
@@ -21,6 +22,11 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+export const deviceTypeMapping = {
+  DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
+  DVCNWTYPE_SWITCH: defineMessage({ defaultMessage: 'Switch' })
+}
 
 const transformDeviceTypeString = (row: EcDeviceInventory, { $t }: IntlShape) => {
   switch (row.deviceType) {
@@ -68,6 +74,33 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
 
+  const filterPayload = {
+    searchString: '',
+    fields: [
+      'venueName',
+      'serialNumber',
+      'tenantId',
+      'model',
+      'customerName' ]
+  }
+
+  const filterResults = useTableQuery({
+    useQuery: useDeviceInventoryListQuery,
+    pagination: {
+      pageSize: 10000
+    },
+    sorter: {
+      sortField: 'tenantId',
+      sortOrder: 'ASC'
+    },
+    defaultPayload: filterPayload
+  })
+
+  const list = filterResults.data
+  const customerName = _.uniq(list?.data.map(c=>c.customerName))
+  const customerVenue = _.uniq(list?.data.map(c=>c.venueName))
+  const model = _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model))
+
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -87,7 +120,8 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Device Type' }),
       dataIndex: 'deviceType',
       sorter: true,
-      filterable: true,
+      filterable: Object.entries(deviceTypeMapping)
+        .map(([key, value])=>({ key, value: $t(value) })),
       key: 'deviceType',
       render: function (data, row) {
         return transformDeviceTypeString(row, intl)
@@ -97,7 +131,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Device Model' }),
       dataIndex: 'model',
       sorter: true,
-      filterable: true,
+      filterable: model?.map(inv => ({ key: inv, value: inv })),
       key: 'model'
     },
     {
@@ -110,7 +144,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: 'Customer Name' }),
       dataIndex: 'customerName',
       sorter: true,
-      filterable: true,
+      filterable: customerName?.map(inv => ({ key: inv, value: inv })),
       key: 'customerName'
     },
     {
@@ -126,7 +160,7 @@ export function DeviceInventory () {
       title: $t({ defaultMessage: "Customer'sVenue" }),
       dataIndex: 'venueName',
       sorter: true,
-      filterable: true,
+      filterable: customerVenue?.map(inv => ({ key: inv, value: inv })),
       key: 'venueName'
     },
     {
@@ -171,6 +205,7 @@ export function DeviceInventory () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='name'
         />
       </Loader>

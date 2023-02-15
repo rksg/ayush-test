@@ -6,18 +6,20 @@ import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps } from '@acx-ui/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
-import { DEFAULT_PAGINATION, EdgePort, EdgeSubInterface, useTableQuery }                             from '@acx-ui/rc/utils'
+import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
+import * as UI                from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
 
 interface SubInterfaceProps {
-  data: EdgePort[]
+  data: EdgePortWithStatus[]
 }
 
 interface SubInterfaceTableProps {
   index: number
+  ip: string
   mac: string
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -48,7 +50,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       dataIndex: 'index',
       render: (dom, entity, index) => {
         const pagination = tableQuery.pagination
-        return ++index + (pagination.current - 1) * pagination.pageSize
+        return ++index + (pagination.page - 1) * pagination.pageSize
       }
     },
     {
@@ -125,7 +127,7 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
         {
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: '', mac: props.mac }
+            { ip: props.ip || 'N/A', mac: props.mac }
           )
         }
       </UI.IpAndMac>
@@ -176,6 +178,7 @@ const SubInterface = (props: SubInterfaceProps) => {
           value: 'port_' + (index + 1),
           children: <SubInterfaceTable
             index={index}
+            ip={item.statusIp}
             mac={item.mac}
             setIsFetching={setIsFetching} />
         }

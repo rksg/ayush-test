@@ -12,18 +12,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
+import { useUserProfileContext }   from '@acx-ui/rc/components'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
   useReactivateMspEcMutation,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  useSupportMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -64,18 +65,6 @@ const transformApUtilization = (row: MspEc) => {
 
 const transformSwitchEntitlement = (row: MspEc) => {
   return row.switchLicenses ? row.switchLicenses : 0
-  // const entitlements = row.entitlements
-  // let totalCount = 0
-  // const switchEntitlements: DelegationEntitlementRecord[] = []
-  // entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-  //   if (entitlement.entitlementDeviceType !== EntitlementNetworkDeviceType.SWITCH) {
-  //     return
-  //   }
-  //   switchEntitlements.push(entitlement)
-  // })
-  // totalCount = switchEntitlements.reduce((total, current) =>
-  //   total + parseInt(current.quantity, 10), 0)
-  // return totalCount
 }
 
 const transformCreationDate = (row: MspEc) => {
@@ -106,32 +95,57 @@ const transformExpirationDate = (row: MspEc) => {
   return expirationDate
 }
 
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: ['MSP_EC'] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'status',
-    'alarmCount',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'creationDate',
-    'expirationDate',
-    'wifiLicense',
-    'switchLicens',
-    'streetAddress'
-  ]
-}
-
 export function MspCustomers () {
   const { $t } = useIntl()
-  const isEdaEcCreateEnabled = true//useIsSplitOn(Features.MSP_EC_CREATE_EDA)
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [tenantId, setTenantId] = useState('')
+  const [ecTenantId, setTenantId] = useState('')
+
+  const { data: userProfile } = useUserProfileContext()
+
+  const mspPayload = {
+    searchString: '',
+    filters: { tenantType: ['MSP_EC'] },
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ]
+  }
+
+  const supportPayload = {
+    searchString: '',
+    fields: [
+      'check-all',
+      'id',
+      'mspName',
+      'name',
+      'tenantType',
+      'status',
+      'alarmCount',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'creationDate',
+      'expirationDate',
+      'wifiLicense',
+      'switchLicens',
+      'streetAddress'
+    ],
+    searchTargetFields: ['name'],
+    filters: {
+      includeExpired: [false]
+    }
+  }
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -141,10 +155,10 @@ export function MspCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -254,7 +268,7 @@ export function MspCustomers () {
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload: mspPayload
     })
     const [
       deleteMspEc,
@@ -272,7 +286,6 @@ export function MspCustomers () {
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
         label: $t({ defaultMessage: 'Edit' }),
-        disabled: !isEdaEcCreateEnabled,
         onClick: (selectedRows) => {
           setTenantId(selectedRows[0].id)
           const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
@@ -371,9 +384,32 @@ export function MspCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
+    )
+  }
+
+  const SupportEcTable = () => {
+    const tableQuery = useTableQuery({
+      useQuery: useSupportMspCustomerListQuery,
+      defaultPayload: supportPayload
+    })
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          rowKey='id'
         />
       </Loader>
     )
@@ -388,17 +424,19 @@ export function MspCustomers () {
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
-            <Button disabled={!isEdaEcCreateEnabled}
+            <Button
+              hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
           <DisabledButton key='download' icon={<DownloadOutlined />} />
         ]}
       />
-      <MspEcTable />
+      {userProfile?.support && <SupportEcTable />}
+      {!userProfile?.support && <MspEcTable />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}
-        tenantId={tenantId}
+        tenantId={ecTenantId}
       />
     </>
   )
