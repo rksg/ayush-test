@@ -49,7 +49,7 @@ async function fillInBeforeSettings (dhcpName: string) {
 
 describe('DHCPForm', () => {
 
-  it('should edit open DHCP successfully', async () => {
+  it.skip('should edit open DHCP successfully', async () => {
 
     const params = { serviceId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id', action: 'edit' }

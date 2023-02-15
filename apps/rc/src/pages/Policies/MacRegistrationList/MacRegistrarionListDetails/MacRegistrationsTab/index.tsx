@@ -170,7 +170,7 @@ export function MacRegistrationsTab () {
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        temlateLink='assets/templates/mac_registration_import_template.csv'
+        templateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         importError={uploadCsvResult.error as FetchBaseQueryError}

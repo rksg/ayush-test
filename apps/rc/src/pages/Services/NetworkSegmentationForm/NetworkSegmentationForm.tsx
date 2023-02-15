@@ -57,7 +57,7 @@ export default function NetworkSegmentationForm () {
 
           <StepsForm.StepForm
             name='smartEdge'
-            title={$t({ defaultMessage: 'Smart Edge' })}
+            title={$t({ defaultMessage: 'SmartEdge' })}
           >
 
           </StepsForm.StepForm>

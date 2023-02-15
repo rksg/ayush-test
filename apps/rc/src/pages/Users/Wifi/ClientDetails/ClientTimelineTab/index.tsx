@@ -29,14 +29,16 @@ const Events = () => {
     useQuery: useEventsQuery,
     defaultPayload: {
       ...eventDefaultPayload,
-      filters: { entity_type: ['CLIENT'], fromTime, toTime },
+      filters: { entity_type: ['CLIENT'], fromTime, toTime }
+    },
+    search: {
       searchTargetFields: ['clientMac'],
       searchString: clientId
     },
     sorter: eventDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
-  return <EventTable tableQuery={tableQuery}/>
+  return <EventTable tableQuery={tableQuery} searchables={false} filterables={['severity']}/>
 }
 
 const tabs : {

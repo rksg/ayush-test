@@ -11,3 +11,21 @@ export interface ClientIsolationSaveData {
   tenantId?: string
   venueId?: string
 }
+
+export interface ClientIsolationListUsageByVenue {
+  id: string
+  name: string
+  description: string
+  clientCount: number
+  clientMacs: string[]
+  networkCount: number
+  networkNames: string[]
+}
+
+export interface VenueUsageByClientIsolation {
+  venueId: string
+  venueName: string
+  address: string
+  networkCount: number
+  networkNames: string[]
+}

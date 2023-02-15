@@ -10,7 +10,8 @@ export interface PersonaGroup {
   nsgId?: string,
   createdAt?: string,
   updatedAt?: string,
-  personas?: Persona[]
+  personas?: Persona[],
+  personaCount?: number
 }
 
 export interface Persona {
@@ -45,6 +46,6 @@ export interface PersonaEthernetPort {
   macAddress: string,
   personaId: string,
   portIndex: number,
-  name: string,
+  name?: string,
   createdAt?: string
 }

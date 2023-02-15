@@ -2,6 +2,7 @@
 import { ConfigurationBackupStatus } from '../constants'
 import { PortSettingModel }          from '../models/PortSetting'
 
+import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
 
 import { GridDataRow } from './'
@@ -326,6 +327,23 @@ export interface SwitchTable {
   disabled: boolean
 }
 
+export interface SwitchProfileModel {
+  id: string,
+  name: string,
+  profileType: ProfileTypeEnum,
+  venues: string[],
+  vlans: SwitchVlans[]
+}
+
+export interface SwitchCliTemplateModel{
+  applyLater: boolean,
+  cli: string,
+  id: string,
+  name: string,
+  reload: boolean,
+  switches?: string[]
+}
+
 export interface SwitchPortViewModel extends GridDataRow {
   cloudPort: boolean;
   name?: string;
@@ -523,47 +541,19 @@ export interface SwitchDhcpLease {
   leaseType: string
 }
 
-export interface SwitchPortViewModel {
-  cloudPort: boolean
-  name?: string
-  portId: string
-  portIdentifier: string
-  status?: string
+export enum LAG_TYPE {
+  STATIC = 'static',
+  DYNAMIC = 'dynamic'
+}
+
+export interface Lag {
+  id?: string
+  lagId?: number
+  name: string
+  ports: string[]
+  realRemove?: boolean
   switchId: string
-  switchUnitId: string
-  switchSerial: string
-  switchName: string
-  switchMac: string
-  stack: boolean
-  deviceStatus: SwitchStatusEnum
-  syncedSwitchConfig: boolean
-  adminStatus?: string
-  portSpeed?: string
-  poeType: string
-  poeEnabled: boolean
-  poeTotal: number
-  poeUsed: number
-  vlanIds?: string
-  unTaggedVlan: string
-  rx?: string
-  tx?: string
-  signalIn?: number
-  signalOut?: number
-  lagName?: string
-  lagId: string
-  neighborName?: string
-  opticsType?: string
-  multicastIn?: string
-  multicastOut?: string
-  broadcastIn?: string
-  broadcastOut?: string
-  inErr?: string
-  outErr?: string
-  crcErr?: string
-  inDiscard?: string
-  acl?: string
-  tag?: string
-  usedInFormingStack: boolean
-  unitStatus: string // stack unit role (Standalone/Member...etc)
-  unitState: SwitchStatusEnum // stack unit status (Online/Offline)
+  taggedVlans: string[]
+  type: LAG_TYPE
+  untaggedVlan: string
 }

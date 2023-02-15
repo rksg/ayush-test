@@ -18,7 +18,8 @@ export {
   EventTable,
   useEventTableFilter,
   defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter
+  defaultSorter as eventDefaultSorter,
+  defaultSearch as eventDefaultSearch
 } from './EventTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'

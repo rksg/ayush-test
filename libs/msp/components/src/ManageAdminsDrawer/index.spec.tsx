@@ -75,8 +75,13 @@ describe('ManageAdminsDrawer', () => {
       await screen.findByPlaceholderText('Search Email')
 
     fireEvent.change(input, { target: { value: 'm' } })
-    expect(await screen.findByText('yreadonly@')).toBeVisible()
-    expect(await screen.findByText('sp.eleu1658@rwbigdog.co')).toBeVisible()
+    expect(await screen.findByText('myreadonly@my.com')).toBeVisible()
+    expect(await screen.findByText('msp.eleu1658@rwbigdog.com')).toBeVisible()
+
+    fireEvent.change(input, { target: { value: 'com' } })
+    expect(await screen.findByText('myreadonly@my.')).toBeVisible()
+    expect(await screen.findByText('msp.eleu1658@rwbigdog.')).toBeVisible()
+    expect(await screen.findAllByText('com')).toHaveLength(2)
 
     fireEvent.change(input, { target: { value: 'mm' } })
     expect(screen.queryByText('mm')).toBeNull()

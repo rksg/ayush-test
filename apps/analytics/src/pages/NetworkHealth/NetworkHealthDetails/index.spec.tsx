@@ -7,7 +7,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import NetworkHealthDetails from '.'
 
-const params = { tenantId: 'tenant-id' }
+const params = { tenantId: 'tenant-id', specId: 'spec-id', testId: 'test-id' }
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -23,8 +23,7 @@ describe('Network Health', () => {
       </Provider>,
       { route: { params } }
     )
-    expect(await screen.findByText('Service Validation')).toBeVisible()
-
+    expect(await screen.findByText('Network Health')).toBeVisible()
   })
 
   it('should change to details tab correctly', async () => {
@@ -36,7 +35,8 @@ describe('Network Health', () => {
     )
     await userEvent.click(screen.getByText('Details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/serviceValidation/networkHealth/:id/tab/details`,
+      // eslint-disable-next-line max-len
+      pathname: `/t/${params.tenantId}/serviceValidation/networkHealth/spec-id/tests/test-id/tab/details`,
       hash: '',
       search: ''
     })

@@ -115,7 +115,7 @@ function DistributionSwitchDrawer (props: {
           label={$t({ defaultMessage: 'Distribution Switch' })}
           rules={[{ required: true }]} >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitches?.switchViewList.map(item => ({
+            options={availableSwitches?.switchViewList?.map(item => ({
               value: item.id,
               label: item.name
             }))

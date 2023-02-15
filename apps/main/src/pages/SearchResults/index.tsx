@@ -1,7 +1,7 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader }         from '@acx-ui/components'
+import { PageHeader, Loader } from '@acx-ui/components'
 import {
   ApTable,
   defaultApPayload,
@@ -14,7 +14,8 @@ import {
   defaultClientPayload,
   ConnectedClientsTable,
   defaultSwitchClientPayload,
-  ClientsTable as SwitchClientTable
+  ClientsTable as SwitchClientTable,
+  eventDefaultSearch
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
@@ -52,23 +53,27 @@ const searches = [
     const result = useTableQuery<Venue, RequestPayload<unknown>, unknown>({
       useQuery: useVenuesListQuery,
       defaultPayload: {
-        ...venuePayload,
+        ...venuePayload
+      },
+      search: {
         searchString,
-        searchTargetFields: ['name', 'description']
+        searchTargetFields: venuePayload.searchTargetFields as string[]
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'Venues' }),
-      component: <VenueTable tableQuery={result} />
+      component: <VenueTable tableQuery={result} searchable={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
       defaultPayload: {
-        ...defaultNetworkPayload,
+        ...defaultNetworkPayload
+      },
+      search: {
         searchString,
         searchTargetFields: ['name', 'description']
       },
@@ -84,16 +89,18 @@ const searches = [
     const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
       useQuery: useApListQuery,
       defaultPayload: {
-        ...defaultApPayload,
+        ...defaultApPayload
+      },
+      search: {
         searchString,
-        searchTargetFields: ['name', 'model', 'IP', 'apMac', 'tags', 'serialNumber']
+        searchTargetFields: defaultApPayload.searchTargetFields
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'APs' }),
-      component: <ApTable tableQuery={result} />
+      component: <ApTable tableQuery={result} searchable={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
@@ -101,11 +108,13 @@ const searches = [
       useQuery: useEventsQuery,
       defaultPayload: {
         ...eventDefaultPayload,
-        filters: {},
-        searchString,
-        searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+        filters: {}
       },
       pagination,
+      search: {
+        searchString,
+        searchTargetFields: eventDefaultSearch.searchTargetFields
+      },
       sorter: {
         sortField: 'event_datetime',
         sortOrder: 'DESC'
@@ -114,7 +123,7 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
-      component: <EventTable tableQuery={result} />
+      component: <EventTable tableQuery={result} searchables={false} filterables={false} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

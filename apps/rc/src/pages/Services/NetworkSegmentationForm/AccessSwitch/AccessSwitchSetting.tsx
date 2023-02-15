@@ -26,10 +26,10 @@ import {
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useSwitchPortlistQuery,
-  useGetSwitchLagsQuery,
   useGetSwitchVlansQuery,
   useLazyGetWebAuthTemplateQuery,
-  useWebAuthTemplateListQuery
+  useWebAuthTemplateListQuery,
+  useGetLagListQuery
 } from '@acx-ui/rc/services'
 import { AccessSwitch, WebAuthTemplate } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
@@ -88,10 +88,10 @@ function AccessSwitchDrawer (props: {
       portList: data?.data?.map(port => ({ label: port.portIdentifier, value: port.portId }))
     })
   })
-  const { lagList } = useGetSwitchLagsQuery({ params: { tenantId, switchId } }, {
+  const { lagList } = useGetLagListQuery({ params: { tenantId, switchId } }, {
     skip: !switchId,
     selectFromResult: ({ data }) => ({
-      lagList: data?.map(port => ({ label: port.name, value: port.lagId }))
+      lagList: data?.map(lag => ({ label: lag.name, value: lag.lagId }))
     })
   })
   const { data: templateListResult } = useWebAuthTemplateListQuery({
@@ -128,7 +128,7 @@ function AccessSwitchDrawer (props: {
 
   const UplinkRadio = (props: {
     value: AccessSwitch['uplinkInfo']['uplinkType'],
-    options?: { value: string, label?: string }[]
+    options?: { value?: string | number, label?: string }[]
   }) => {
     const { value: radioValue, options } = props
     const uplinkTypeMap = {
@@ -238,7 +238,8 @@ function AccessSwitchDrawer (props: {
           </Form.Item>
           <Form.Item name='webAuthCustomLoginButton'
             label={$t({ defaultMessage: 'Button Text' })} >
-            <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomLoginButton'])}/>
+            <Input.TextArea autoSize
+              placeholder={$t(defaultTemplateData['webAuthCustomLoginButton'])}/>
           </Form.Item>
           <Form.Item name='webAuthCustomBottom'
             label={$t({ defaultMessage: 'Footer' })} >

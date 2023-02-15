@@ -13,7 +13,7 @@ import { getIntl, notAvailableMsg }                                          fro
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
@@ -27,7 +27,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
               {data}
               {data !== row.ssid &&
                 <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
@@ -100,7 +100,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Services' }),
       dataIndex: 'services',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      show: isServicesEnabled
     },
     {
       key: 'vlan',
@@ -178,9 +179,7 @@ interface NetworkTableProps {
 }
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
-  if(!useIsSplitOn(Features.SERVICES)){
-    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
-  }
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
@@ -190,6 +189,10 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const [
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
+
+  if(!isServicesEnabled){
+    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
+  }
 
   const rowActions: TableProps<Network>['rowActions'] = [
     {
@@ -227,7 +230,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        columns={getCols(intl)}
+        columns={getCols(intl, isServicesEnabled)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
