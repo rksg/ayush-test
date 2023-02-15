@@ -106,7 +106,7 @@ describe('Add administrator dialog component', () => {
     await userEvent.type(emailInput, 'c123@email.com')
 
     await userEvent.click(await screen.findByRole('combobox', { name: 'Role' }))
-    await userEvent.click(await screen.findByText( 'Administrator' ))
+    await userEvent.click(await screen.findByText('Administrator'))
     await userEvent.click(await screen.findByText('Send Invitation'))
     await waitFor(() => {
       expect(mockedAddAdminFn).toBeCalledWith({

@@ -58,6 +58,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
+  const userType = Form.useWatch('userType', form)
   const [addAdmin, { isLoading: isAddAdminUpdating }] = useAddAdminMutation()
 
   const {
@@ -170,7 +171,6 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
     value: item.email
   })): []
 
-  const isLoading = isAddAdminUpdating
   const isNoExistingUser = registerUsersSelectOpts.length === 0
 
   return (
@@ -181,14 +181,15 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
       maskClosable={false}
       keyboard={false}
       width={500}
-      onOk={handleSubmit}
+      onOk={() => form.submit()}
       onCancel={handleCancel}
-      okButtonProps={{ disabled: isLoading }}
-      cancelButtonProps={{ disabled: isLoading }}
+      okButtonProps={{ disabled: isAddAdminUpdating }}
+      cancelButtonProps={{ disabled: isAddAdminUpdating }}
     >
       <Form
         form={form}
         layout='horizontal'
+        onFinish={handleSubmit}
       >
         <Space direction='vertical' style={{ width: '100%' }} >
           <Form.Item name='userType' initialValue='new'>
@@ -215,6 +216,9 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                       <Form.Item
                         name='email'
                         noStyle
+                        rules={[
+                          { required: userType === 'existing' }
+                        ]}
                       >
                         <Select
                           options={registerUsersSelectOpts}
@@ -243,6 +247,10 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
                     <Form.Item
                       name='newEmail'
                       rules={[
+                        {
+                          required: userType === 'new',
+                          message: $t({ defaultMessage: 'Please enter email' })
+                        },
                         { validator: (_, value) => emailRegExp(value) }
                       ]}
                       noStyle

@@ -2,29 +2,24 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo, AdministrationUrlsInfo, Administrator, RolesEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
+import { MspUrlsInfo, AdministrationUrlsInfo, Administrator, DetailLevel } from '@acx-ui/rc/utils'
+import { Provider }                                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
-import { fakeMSPECAdmin } from '../../__tests__/fixtures'
+import { fakedAdminLsit, fakeMSPECAdminList, fakeMSPECAdmin } from '../../__tests__/fixtures'
 
 import EditAdministratorDialog from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
 const mockedEditAdmin = {
-  id: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
-  email: 'dog1551@email.com',
-  name: 'FisrtName 1551',
-  lastName: 'LastName 1551',
-  role: RolesEnum.PRIME_ADMIN,
-  delegateToAllECs: true,
-  detailLevel: 'debug',
+  ...fakedAdminLsit[0],
   newEmail: ''
 } as Administrator
 
@@ -66,7 +61,7 @@ describe('Edit administrator dialog component', () => {
           editData={mockedEditAdmin}
           editNameOnly={false}
           isMspEc={false}
-          currentUserDetailLevel='debug'
+          currentUserDetailLevel={DetailLevel.DEBUGGING}
         />
       </Provider>, {
         route: { params }
@@ -78,49 +73,9 @@ describe('Edit administrator dialog component', () => {
     await userEvent.click(await screen.findByText('OK'))
     await waitFor(() => {
       expect(mockedUpdateAdminFn).toBeCalledWith({
-        email: 'c123@email.com',
+        ...mockedEditAdmin,
         role: 'ADMIN',
-        detailLevel: 'debug',
-        delegateToAllECs: true
-      })
-    })
-  })
-
-  it('should MSP EC submit correctly', async () => {
-    const mockedMSPECAdmin = { ...fakeMSPECAdmin } as Administrator
-
-    render(
-      <Provider>
-        <EditAdministratorDialog
-          visible={true}
-          setVisible={mockedCloseDialog}
-          editData={mockedMSPECAdmin}
-          editNameOnly={false}
-          isMspEc={true}
-          currentUserDetailLevel='debug'
-        />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByText('Last Name')
-    await userEvent.type(await screen.findByText('Last Name'), '{delete}EFG')
-    await userEvent.click(await screen.findByText('OK'))
-    await waitFor(() => {
-      expect(mockedUpdateAdminFn).toBeCalledWith({
-        email: 'c123@email.com',
-        role: 'ADMIN',
-        detailLevel: 'debug',
-        delegateToAllECs: true
-      })
-    })
-
-    await waitFor(() => {
-      expect(mockedUpdateMspEcAdminFn).toBeCalledWith({
-        email: 'aaa.chengi@gmail.com',
-        user_name: 'aaa.cheng@gmail.com',
-        first_name: 'Hey',
-        last_name: 'ABEFG'
+        detailLevel: 'debug'
       })
     })
   })
@@ -134,11 +89,120 @@ describe('Edit administrator dialog component', () => {
           editData={mockedEditAdmin}
           editNameOnly={true}
           isMspEc={false}
-          currentUserDetailLevel='debug'
+          currentUserDetailLevel={DetailLevel.DEBUGGING}
         />
       </Provider>, {
         route: { params }
       })
 
+    await screen.findByText('Role')
+    expect(await screen.findByRole('combobox', { name: 'Role' })).toBeDisabled()
+  })
+
+  it('should MSP EC submit correctly', async () => {
+    const mockedMSPECAdmin = { ...fakeMSPECAdminList[1], newEmail: '' } as Administrator
+
+    render(
+      <Provider>
+        <EditAdministratorDialog
+          visible={true}
+          setVisible={mockedCloseDialog}
+          editData={mockedMSPECAdmin}
+          editNameOnly={false}
+          isMspEc={true}
+          currentUserDetailLevel={DetailLevel.DEBUGGING}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Last Name')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Last Name' }), '{backspace}EFG')
+    await userEvent.click(await screen.findByText('OK'))
+    await waitFor(() => {
+      expect(mockedUpdateAdminFn).toBeCalledWith({
+        ...mockedMSPECAdmin,
+        role: 'PRIME_ADMIN',
+        detailLevel: 'debug'
+      })
+    })
+
+    await waitFor(() => {
+      expect(mockedUpdateMspEcAdminFn).toBeCalledWith({
+        email: 'aaa.chengi@gmail.com',
+        user_name: 'aaa.cheng@gmail.com',
+        first_name: 'Hi',
+        last_name: 'ABEFG'
+      })
+    })
+  })
+
+  it('should correctly display error message', async () => {
+    mockServer.use(
+      rest.put(
+        AdministrationUrlsInfo.updateAdmin.url,
+        (req, res, ctx) => {
+          mockedUpdateAdminFn(req.body)
+          return res(ctx.status(400), ctx.json({}))
+        }
+      )
+    )
+    const mockedMSPECAdmin = { ...fakeMSPECAdminList[1], newEmail: '' } as Administrator
+
+    render(
+      <Provider>
+        <EditAdministratorDialog
+          visible={true}
+          setVisible={mockedCloseDialog}
+          editData={mockedMSPECAdmin}
+          editNameOnly={false}
+          isMspEc={true}
+          currentUserDetailLevel={DetailLevel.DEBUGGING}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Last Name')
+    await userEvent.click(await screen.findByText('OK'))
+    await waitFor(async () => {
+      expect(await screen.findByText('Update User Failed')).toBeVisible()
+    })
+    const errorDialog = await (await screen.findAllByRole('dialog'))
+      .filter(o => o.classList.contains('ant-modal-confirm-error'))[0]
+    await userEvent.click(await within(errorDialog).findByText('OK'))
+  })
+
+  it('should correctly display update name error message', async () => {
+    mockServer.use(
+      rest.put(
+        MspUrlsInfo.updateMspEcAdmin.url,
+        (req, res, ctx) => {
+          return res(ctx.status(400), ctx.json({}))
+        }
+      )
+    )
+    const mockedMSPECAdmin = { ...fakeMSPECAdminList[1], newEmail: '' } as Administrator
+
+    render(
+      <Provider>
+        <EditAdministratorDialog
+          visible={true}
+          setVisible={mockedCloseDialog}
+          editData={mockedMSPECAdmin}
+          editNameOnly={false}
+          isMspEc={true}
+          currentUserDetailLevel={DetailLevel.DEBUGGING}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Last Name')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'Last Name' }), '{backspace}EFG')
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+    await waitFor(async () => {
+      expect(await screen.findByText('Update User Name Failed')).toBeVisible()
+    })
   })
 })

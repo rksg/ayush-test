@@ -22,7 +22,8 @@ import {
   ClientConfig,
   RadiusClientConfigUrlsInfo,
   RadiusServerSetting,
-  AdministrationDelegationStatus
+  AdministrationDelegationStatus,
+  TenantDetails
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -35,6 +36,14 @@ export const baseAdministrationApi = createApi({
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
+    getTenantDetails: build.query<TenantDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTenantDetails, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountDetails, params)
@@ -442,6 +451,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 }
 
 export const {
+  useGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
   useUpdateRecoveryPassphraseMutation,

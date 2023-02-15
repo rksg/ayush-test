@@ -25,16 +25,10 @@ const RoleSelector = (props: RoleSelectorProps) => {
       rules={[{ required: true }]}
     >
       <Select
-        // options={rolesList}
+        options={rolesList}
         disabled={disabled}
         placeholder={$t({ defaultMessage: 'Select Role' })}
-      >
-        {rolesList.map((role) => (
-          <Select.Option key={role.value} value={role.value}>
-            {role.label}
-          </Select.Option>
-        ))}
-      </Select>
+      />
     </Form.Item>
   )
 }

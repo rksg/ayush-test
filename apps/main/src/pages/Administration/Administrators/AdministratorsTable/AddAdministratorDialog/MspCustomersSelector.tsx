@@ -83,6 +83,7 @@ const MspCustomerSelector = () => {
       name='ecType'
       label={$t({ defaultMessage: 'Managed Customers' })}
       initialValue={ECCustomerRadioButtonEnum.all}
+      rules={[{ required: true }]}
     >
       <Radio.Group style={{ width: '100%' }}>
         <SpaceWrapper direction='vertical' size='middle'>
@@ -98,6 +99,10 @@ const MspCustomerSelector = () => {
                   <Form.Item
                     name='delegatedEcs'
                     noStyle
+                    rules={[{
+                      required: true,
+                      message: $t({ defaultMessage: 'Please select customer(s) to manage' })
+                    }]}
                   >
                     <Select
                       mode='multiple'

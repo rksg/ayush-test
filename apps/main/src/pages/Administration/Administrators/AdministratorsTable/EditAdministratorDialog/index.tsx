@@ -102,7 +102,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
       const respData = error as { status: number, data: { [key: string]: string } }
       showActionModal({
         type: 'error',
-        title: $t({ defaultMessage: 'Update User Name Failed' }),
+        title: $t({ defaultMessage: 'Update User Failed' }),
         // eslint-disable-next-line max-len
         content: $t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
@@ -132,7 +132,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
       maskClosable={false}
       keyboard={false}
       width={500}
-      onOk={handleSubmit}
+      onOk={() => form.submit()}
       onCancel={handleCancel}
       okButtonProps={{ disabled: isLoading }}
       cancelButtonProps={{ disabled: isLoading }}
@@ -140,6 +140,7 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
       <Form
         form={form}
         layout='horizontal'
+        onFinish={handleSubmit}
       >
         {isNameEditable ? (
           <>

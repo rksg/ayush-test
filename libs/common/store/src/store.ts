@@ -19,7 +19,6 @@ import {
   baseSwitchApi as switchApi,
   baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
-  baseTenantApi as tenantApi,
   baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
@@ -80,7 +79,6 @@ export const store = configureStore({
     [switchApi.reducerPath]: switchApi.reducer,
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
-    [tenantApi.reducerPath]: tenantApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer
   },
@@ -109,7 +107,6 @@ export const store = configureStore({
       switchApi.middleware,
       mfaApi.middleware,
       administrationApi.middleware,
-      tenantApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware
     ])

@@ -90,17 +90,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     return isSelected
   }
 
-  const columns: TableProps<Administrator>['columns'] = [
+  const columns:TableProps<Administrator>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       dataIndex: 'id',
-      sorter: (a, b) => {
-        if (!a.fullName || !b.fullName) {
-          return !a.fullName ? -1 :1
-        }
-        return a.fullName > b.fullName ? 1 : -1
-      },
       render: (data, row) => {
         return row.fullName
       }
@@ -108,18 +102,12 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
-      dataIndex: 'email',
-      sorter: (a, b) => {
-        return a.email > b.email ? -1 : 1
-      }
+      dataIndex: 'email'
     },
     {
       title: $t({ defaultMessage: 'Role' }),
       key: 'roleDsc',
-      dataIndex: 'roleDsc',
-      sorter: (a, b) => {
-        return a.role > b.role ? -1 : 1
-      }
+      dataIndex: 'roleDsc'
     }
   ]
 
@@ -133,15 +121,12 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         if (selectedRows.length === 1) {
           const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
           const selfSelected = isSelfSelected(selectedRows)
-          const selectedRow = selectedRows[0]
 
           // name is the only editable field:
-          // - himself/herself
           // - the only one prime admin
-          setEditNameOnly(selfSelected ||
-            (allPrimeAdminSelected && selectedRow.role === RolesEnum.PRIME_ADMIN))
+          setEditNameOnly(selfSelected || allPrimeAdminSelected)
 
-          return selfSelected === false || isPrimeAdminUser === false
+          return selfSelected === false
         } else {
           return false
         }
@@ -163,15 +148,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         const allPrimeAdminSelected = isAllPrimeAdminSelected(selectedRows)
         const selfSelected = isSelfSelected(selectedRows)
         if (selfSelected) return false
-
-        if (selectedRows.length === 1) {
-          const selectedRow = selectedRows[0]
-
-          // the selected row is NOT the only one prime admin in list?
-          return (allPrimeAdminSelected === false || selectedRow.role !== RolesEnum.PRIME_ADMIN)
-        } else {
-          return allPrimeAdminSelected === false
-        }
+        return allPrimeAdminSelected === false
       },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -226,7 +203,8 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         rowSelection={{
           type: isPrimeAdminUser ? 'checkbox' : 'radio',
           getCheckboxProps: (record: Administrator) => ({
-            disabled: record.email === currentUserMail,
+            // only prime-admin cannot edit/delete itself
+            disabled: record.email === currentUserMail && isPrimeAdminUser,
             name: record.fullName
 
           })

@@ -18,7 +18,6 @@ const Administrators = () => {
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
 
-
   const isVAR = userProfileData?.var && !userProfileData?.support
   const isNonVarMsp = (tenantDetailsData.data?.tenantType === TenantType.MSP_NON_VAR)
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)

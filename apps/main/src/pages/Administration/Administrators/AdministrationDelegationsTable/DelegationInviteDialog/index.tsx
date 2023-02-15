@@ -28,35 +28,6 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
   const params = useParams()
   const [form] = Form.useForm()
   const [findVARDelegation, { isLoading: isFindLoading }] = useLazyFindVARDelegationQuery()
-
-  const formContent = <Form
-    form={form}
-    layout='vertical'
-    onFieldsChange={(changedFields: FieldData[]) => {
-      const value = changedFields[0].value
-      const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
-      setIsValid(value && !hasErrors)
-    }}
-  >
-    <Form.Item
-      label={$t({ defaultMessage: 'Administrator Email' })}
-      name='email'
-      rules={[
-        { validator: (_, value) => emailRegExp(value) }
-      ]}
-    >
-      <Input placeholder={$t({ defaultMessage: 'Enter email address' })} />
-    </Form.Item>
-
-    <Typography.Paragraph className='greyText'>
-      {
-
-        // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'An invitation will be sent to the entered email address. Once accepted, any person that has access to the email will gain administration rights to your system.' })
-      }
-    </Typography.Paragraph>
-  </Form>
-
   const [ inviteDelegation ] = useInviteDelegationMutation()
 
   const handleOk = async () => {
@@ -90,7 +61,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
               payload: { username: email }
             }).unwrap()
 
-            setVisible(false)
+            handleCancel()
           } catch(error) {
             const respData = error as CommonErrorsResult<catchErrorDetails>
             const errors = respData.data.errors
@@ -128,11 +99,11 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
       message = $t({ defaultMessage: 'Non valid email format' })
     } else {
       if (errorMsgs.length > 0) {
-        message = $t({ defaultMessage: 'An error occurred' })
-      } else {
         message = $t({ defaultMessage: 'An error occurred: {error}' }, {
           error: errorMsgs[0]
         })
+      } else {
+        message = $t({ defaultMessage: 'An error occurred' })
       }
     }
 
@@ -141,6 +112,12 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
       title,
       content: message
     })
+  }
+
+  const handleFieldsChange = (changedFields: FieldData[]) => {
+    const value = changedFields[0].value
+    const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
+    setIsValid(value && !hasErrors)
   }
 
   const handleCancel = () => {
@@ -163,7 +140,29 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
         disabled: disabledOkButton
       }}
     >
-      {formContent}
+      <Form
+        form={form}
+        layout='vertical'
+        onFieldsChange={handleFieldsChange}
+      >
+        <Form.Item
+          label={$t({ defaultMessage: 'Administrator Email' })}
+          name='email'
+          rules={[
+            { validator: (_, value) => emailRegExp(value) }
+          ]}
+        >
+          <Input placeholder={$t({ defaultMessage: 'Enter email address' })} />
+        </Form.Item>
+
+        <Typography.Paragraph className='greyText'>
+          {
+
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'An invitation will be sent to the entered email address. Once accepted, any person that has access to the email will gain administration rights to your system.' })
+          }
+        </Typography.Paragraph>
+      </Form>
     </Modal>
   )
 }
