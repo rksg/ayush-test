@@ -11,7 +11,14 @@ import {
   RecoveryPassphrase,
   TenantPreferenceSettings,
   onActivityMessageReceived,
-  onSocketActivityChanged, ClientConfig, RadiusClientConfigUrlsInfo, RadiusServerSetting
+  onSocketActivityChanged,
+  NotificationRecipientUIModel,
+  NotificationRecipientResponse,
+  NotificationEndpointType,
+  NotificationEndpoint,
+  ClientConfig,
+  RadiusClientConfigUrlsInfo,
+  RadiusServerSetting
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -153,6 +160,95 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
+    getNotificationRecipients: build.query<NotificationRecipientUIModel[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getNotificationRecipients, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: NotificationRecipientResponse[]) => {
+        // flat endpoint into individual fields
+        return response.map((data: NotificationRecipientResponse) => {
+          const result = {
+            id: data.id,
+            description: data.description,
+            endpoints: data.endpoints
+          } as NotificationRecipientUIModel
+
+          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+            switch (endpoint.type) {
+              case (NotificationEndpointType.email):
+                result.email = endpoint.destination
+                result.emailEnabled = endpoint.active
+                break
+              case (NotificationEndpointType.sms):
+              case (NotificationEndpointType.mobile_push):
+                result.mobile = endpoint.destination
+                result.mobileEnabled = endpoint.active
+                break
+            }
+          })
+
+          return result
+        })
+      },
+      providesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddNotificationRecipient',
+            'UpdateNotificationRecipient',
+            'DeleteNotificationRecipient'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'NOTIFICATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    updateRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    deleteNotificationRecipients: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipients, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    deleteNotificationRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
     // TODO: backend is not support activity message now, and will add if function be completed.
     UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
       query: ({ payload }) => {
@@ -194,6 +290,11 @@ export const {
   useDisableAccessSupportMutation,
   useGetPreferencesQuery,
   useUpdatePreferenceMutation,
+  useGetNotificationRecipientsQuery,
+  useAddRecipientMutation,
+  useUpdateRecipientMutation,
+  useDeleteNotificationRecipientsMutation,
+  useDeleteNotificationRecipientMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery
