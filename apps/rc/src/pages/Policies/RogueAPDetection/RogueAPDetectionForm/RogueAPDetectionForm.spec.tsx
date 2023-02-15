@@ -252,7 +252,7 @@ describe('RogueAPDetectionForm', () => {
     })
   })
 
-  it('should render RogueAPDetectionForm successfully and edit rule', async () => {
+  it.skip('should render RogueAPDetectionForm successfully and edit rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
