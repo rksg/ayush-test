@@ -296,7 +296,23 @@ describe('Topology', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTopology.url,
-        (req, res, ctx) => res(ctx.json(graphData))
+        (req, res, ctx) => {
+          const scaleData = { ...graphData }
+          if (expect.getState().currentTestName === 'Topology test scale')
+            for (let i=0; i<100; i++) {
+              scaleData.data[0].nodes.push({
+                type: DeviceTypes.Ap,
+                category: 'Ap',
+                name: 'ApName',
+                mac: '',
+                serial: '534689211603',
+                id: '5C:DF:89:2A:AF:06' + i,
+                states: DeviceStates.Regular,
+                childCount: 0
+              })
+            }
+          return res(ctx.json(scaleData))
+        }
       )
     )
     params = {
@@ -390,10 +406,12 @@ describe('Topology', () => {
 
     fireEvent.click(zoomFit)
 
-    const zoomOriginal = await screen.findByTestId('graph-zoom-original')
-
-    fireEvent.click(zoomOriginal)
-
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('test scale', async () => {
+    await render(<Provider><IntlProvider locale='en'>
+      <TopologyGraph /></IntlProvider></Provider>,{
+      route: { params }
+    })
   })
 })

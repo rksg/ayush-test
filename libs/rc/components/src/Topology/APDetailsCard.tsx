@@ -1,11 +1,13 @@
-import { Badge, Button, Col, Row, Table } from 'antd'
-import { useIntl }                        from 'react-intl'
+import { Badge, Button, Table } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { Card, Loader }                                                                                 from '@acx-ui/components'
+import { Card, Descriptions, Loader }                                                                   from '@acx-ui/components'
 import { ApDeviceStatusEnum, APExtended, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { formatter }                                                                                    from '@acx-ui/utils'
 
 import * as UI                                  from './styledComponents'
 import { getDeviceColor, wirelessRadioColumns } from './utils'
+
 
 
 export function APDetailsCard (props: {
@@ -36,111 +38,72 @@ export function APDetailsCard (props: {
     <Loader states={[
       { isLoading }
     ]}>
-      {/* model  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'AP Model' })}:
-        </Col>
-        <Col span={12} >
-          {apDetail?.model || '--'}
-        </Col>
-      </Row>
-      {/* mac address  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'mac' })}:
-        </Col>
-        <Col span={12} >
-          {apDetail?.apMac || '--'}
-        </Col>
-      </Row>
-      {/* IP Address  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'IP Address' })}:
-        </Col>
-        <Col span={12} >
-          {apDetail?.IP || '--'}
-        </Col>
-      </Row>
-      {/* Status  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          {$t({ defaultMessage: 'Status' })}:
-        </Col>
-        <Col span={12} >
-          <Badge
-            key={apDetail?.apMac + 'status'}
-            color={getDeviceColor(apDetail?.deviceStatus as SwitchStatusEnum)}
-            text={transformApStatus(useIntl(),
+      <Descriptions labelWidthPercent={40}>
+        {/* model  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'AP Model' })}
+          children={apDetail?.model || '--'} />
+
+        {/* MAC address  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'MAC Address' })}
+          children={apDetail?.apMac || '--'} />
+
+        {/* IP Address  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'IP Address' })}
+          children={apDetail?.IP || '--'} />
+
+        {/* Status  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Status' })}
+          children={
+            <Badge
+              key={apDetail?.apMac + 'status'}
+              color={getDeviceColor(apDetail?.deviceStatus as SwitchStatusEnum)}
+              text={transformApStatus(useIntl(),
                 apDetail?.deviceStatus as ApDeviceStatusEnum,
                 APView.AP_OVERVIEW_PAGE).message} // passing AP_OVERVIEW_PAGE to get single AP status message
-          />
-        </Col>
-      </Row>
-      {/* Wireless Radio  */}
-      <Row
-        gutter={[12, 8]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={24} >
-          {$t({ defaultMessage: 'Wireless Radio' })}:
-        </Col>
-        <Col span={24} >
-          <UI.WirelessRadioTableContainer>
-            <Table
-              columns={wirelessRadioColumns}
-              dataSource={wirelessRadioDetails}
-              size='small'
-              pagination={false} />
-          </UI.WirelessRadioTableContainer>
-        </Col>
-      </Row>
-      {/* Clients count  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'Clients Connected' })}:
-        </Col>
-        <Col span={12} >
-          {apDetail?.clients || '--'}
-        </Col>
-      </Row>
-      {/* Last seen for offline devices */
-        apDetail?.lastSeenTime &&
-        <Row
-          gutter={[12, 24]}
-          style={{
-            lineHeight: '24px'
-          }}>
-          <Col span={12} >
-            { $t({ defaultMessage: 'Last Seen' })}:
-          </Col>
-          <Col span={12} >
-            {apDetail?.lastSeenTime}
-          </Col>
-        </Row>
-      }
+            />
+          } />
+
+        {/* Health  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Health' })}
+          children={apDetail?.healthStatus || '--'} />
+
+        {/* Wireless Radio  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Wireless Radio' })}
+          children={''} />
+        <Descriptions.Item
+          labelStyle={{
+            width: 0
+          }}
+          label={''}
+          children={
+            <UI.WirelessRadioTableContainer>
+              <Table
+                columns={wirelessRadioColumns}
+                dataSource={wirelessRadioDetails}
+                size='small'
+                pagination={false} />
+            </UI.WirelessRadioTableContainer>
+          } />
+
+        {/* Clients count  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Clients Connected' })}
+          children={apDetail?.clients || '--'} />
+
+        {/* Last seen for offline devices */
+          apDetail?.lastSeenTime &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Last Seen' })}
+          children={formatter('dateTimeFormat')(apDetail?.lastSeenTime)} />
+        }
+      </Descriptions>
+
     </Loader>
   </Card>
 }

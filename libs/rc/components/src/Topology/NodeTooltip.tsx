@@ -81,7 +81,7 @@ tooltipNode: Node,
       position: 'absolute',
       width: '348px',
       maxHeight: '350px',
-      top: tooltipPosition.y,
+      top: tooltipPosition.y - 100,
       left: tooltipPosition.x + 5,
       zIndex: 9999
     }}>

@@ -10,10 +10,10 @@ import { renderToString } from 'react-dom/server'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Loader }                                                                                                                                                                                                                                 from '@acx-ui/components'
-import { CloudIconSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, MeshAPDevice, MeshRootAPDevice, SearchFitOutlined, SearchFullOutlined, SwitchStackDevice, TopologyAPIcon, TopologySwitchSolid, UnKnownDevice, WiredAPDevice } from '@acx-ui/icons'
-import { useGetTopologyQuery }                                                                                                                                                                                                                    from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, UINode }                                                                                                                             from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                                                                                             from '@acx-ui/components'
+import { CloudIconSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, MeshAPDevice, MeshRootAPDevice, SearchFitOutlined, SwitchStackDevice, TopologyAPIcon, TopologySwitchSolid, UnKnownDevice, WiredAPDevice } from '@acx-ui/icons'
+import { useGetTopologyQuery }                                                                                                                                                                                                from '@acx-ui/rc/services'
+import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, UINode }                                                                                                         from '@acx-ui/rc/utils'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -137,7 +137,7 @@ export function TopologyGraph () {
 
         graph.setEdge(edge.from, edge.to, {
           // curveBumpY, curveMonotoneY, curveStepBefore
-          curve: d3.curveBumpY,
+          curve: d3.curveMonotoneY,
           SVGAnimatedAngle: true,
           angle: 15,
           style: `fill:transparent;
@@ -182,7 +182,8 @@ export function TopologyGraph () {
         .attr('transform', 'translate(0,16)')
 
       // default Center the graph and fit to container
-      fitToScreen(graph, svg, zoom)
+
+      defaultScreenFit(nodes.length, graph, svg, zoom)
 
       d3.select('#graph-zoom-in').on('click', function () {
         zoom.scaleBy(svg.transition().duration(750), 1.2)
@@ -192,12 +193,8 @@ export function TopologyGraph () {
         zoom.scaleBy(svg.transition().duration(750), 0.8)
       })
 
-      d3.select('#graph-zoom-original').on('click', function () {
-        originalGraphScale(graph, svg, zoom)
-      })
-
       d3.select('#graph-zoom-fit').on('click', function () {
-        fitToScreen(graph, svg, zoom)
+        defaultScreenFit(nodes.length, graph, svg, zoom)
       })
 
       highlightPath(svg)
@@ -252,7 +249,8 @@ export function TopologyGraph () {
     zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]).scale(zoomScale))
   }
 
-  // original graph scale
+  // original graph scale in case of large scale it will persist device icons
+  // and label size so that user can see. in this case user need to drag / zoom out to fit entire hierarchy.
   function originalGraphScale (graph: any,
     svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
     zoom: any) {
@@ -264,7 +262,13 @@ export function TopologyGraph () {
     zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
   }
 
-
+  function defaultScreenFit (nodeCount: number, graph: any,
+    svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+    zoom: any) {
+    nodeCount < 20
+      ? fitToScreen(graph, svg, zoom)
+      : originalGraphScale(graph, svg, zoom)
+  }
 
   // Highlight path and show tooltip for connection on link mouseover
   function highlightPath (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>) {
@@ -390,12 +394,6 @@ export function TopologyGraph () {
             type='link'
             size='middle'
             icon={<MagnifyingGlassMinusOutlined />} />
-          <Button
-            data-testid='graph-zoom-original'
-            id='graph-zoom-original'
-            size='middle'
-            type='link'
-            icon={<SearchFullOutlined />} />
           <Button
             data-testid='graph-zoom-fit'
             id='graph-zoom-fit'

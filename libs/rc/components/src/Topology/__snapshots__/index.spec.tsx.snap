@@ -16,7 +16,7 @@ exports[`Topology should render correctly 1`] = `
       >
         <g>
           <g
-            transform="translate(NaN,NaN) scale(1)"
+            transform="translate(NaN,NaN) scale(NaN)"
           >
             <g
               class="output"
@@ -33,7 +33,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M75,50C75,62.5,50,62.5,50,75C50,87.5,50,87.5,50,100"
+                    d="M75,50C62.5,58.333333333333336,50,66.66666666666667,50,75C50,83.33333333333333,50,91.66666666666667,50,100"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -62,7 +62,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M0,50C0,62.5,0,62.5,0,75C0,87.5,0,87.5,0,100"
+                    d="M0,50C0,58.333333333333336,0,66.66666666666667,0,75C0,83.33333333333333,0,91.66666666666667,0,100"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -91,7 +91,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M75,50C75,62.5,100,62.5,100,75C100,87.5,100,87.5,100,100"
+                    d="M75,50C87.5,58.333333333333336,100,66.66666666666667,100,75C100,83.33333333333333,100,91.66666666666667,100,100"
                     data-testid="topologyEdge"
                     marker-end="url(#Degradedmarker)"
                     marker-start="url(#Degradedmarker)"
@@ -120,7 +120,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,50C175,62.5,175,62.5,175,75C175,87.5,175,87.5,175,100"
+                    d="M175,50C175,58.333333333333336,175,66.66666666666667,175,75C175,83.33333333333333,175,91.66666666666667,175,100"
                     data-testid="topologyEdge"
                     marker-end="url(#Unknownmarker)"
                     marker-start="url(#Unknownmarker)"
@@ -149,7 +149,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M100,100C100,112.5,100,112.5,100,125C100,137.5,100,137.5,100,150"
+                    d="M100,100C100,108.33333333333333,100,116.66666666666667,100,125C100,133.33333333333334,100,141.66666666666666,100,150"
                     data-testid="topologyEdge"
                     marker-end="url(#Unknownmarker)"
                     marker-start="url(#Unknownmarker)"
@@ -178,7 +178,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M100,150C100,162.5,100,162.5,100,175C100,187.5,100,187.5,100,200"
+                    d="M100,150C100,158.33333333333334,100,166.66666666666666,100,175C100,183.33333333333334,100,191.66666666666666,100,200"
                     data-testid="topologyEdge"
                     marker-end="url(#Degradedmarker)"
                     marker-start="url(#Degradedmarker)"
@@ -207,7 +207,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,0,12.5,0,25C0,37.5,0,37.5,0,50"
+                    d="M175,0C87.5,8.333333333333334,0,16.666666666666664,0,25C0,33.333333333333336,0,41.666666666666664,0,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -236,7 +236,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,75,12.5,75,25C75,37.5,75,37.5,75,50"
+                    d="M175,0C125,8.333333333333334,75,16.666666666666664,75,25C75,33.333333333333336,75,41.666666666666664,75,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -265,7 +265,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,125,12.5,125,25C125,37.5,125,37.5,125,50"
+                    d="M175,0C150,8.333333333333334,125,16.666666666666664,125,25C125,33.333333333333336,125,41.666666666666664,125,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -294,7 +294,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,175,12.5,175,25C175,37.5,175,37.5,175,50"
+                    d="M175,0C175,8.333333333333334,175,16.666666666666664,175,25C175,33.333333333333336,175,41.666666666666664,175,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -323,7 +323,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,225,12.5,225,25C225,37.5,225,37.5,225,50"
+                    d="M175,0C200,8.333333333333334,225,16.666666666666664,225,25C225,33.333333333333336,225,41.666666666666664,225,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -352,7 +352,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,275,12.5,275,25C275,37.5,275,37.5,275,50"
+                    d="M175,0C225,8.333333333333334,275,16.666666666666664,275,25C275,33.333333333333336,275,41.666666666666664,275,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -381,7 +381,7 @@ exports[`Topology should render correctly 1`] = `
                 >
                   <path
                     class="path"
-                    d="M175,0C175,12.5,325,12.5,325,25C325,37.5,325,37.5,325,50"
+                    d="M175,0C250,8.333333333333334,325,16.666666666666664,325,25C325,33.333333333333336,325,41.666666666666664,325,50"
                     data-testid="topologyEdge"
                     marker-end="url(#Goodmarker)"
                     marker-start="url(#Goodmarker)"
@@ -1487,31 +1487,6 @@ exports[`Topology should render correctly 1`] = `
           >
             <svg
               data-testid="MagnifyingGlassMinusOutlined"
-            />
-          </button>
-        </div>
-        <span
-          class="ant-space-item-split"
-          style="margin-bottom: 0px;"
-        >
-          <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="line-height: 0px; margin: 0px;"
-          />
-        </span>
-        <div
-          class="ant-space-item"
-          style="margin-bottom: 0px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-icon-only"
-            data-testid="graph-zoom-original"
-            id="graph-zoom-original"
-            type="button"
-          >
-            <svg
-              data-testid="SearchFullOutlined"
             />
           </button>
         </div>

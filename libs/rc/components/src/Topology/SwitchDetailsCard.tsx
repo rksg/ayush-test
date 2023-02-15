@@ -1,10 +1,11 @@
-import { Badge, Button, Col, Row } from 'antd'
-import { useIntl }                 from 'react-intl'
+import { Badge, Button } from 'antd'
+import { useIntl }       from 'react-intl'
 
-import { Card, Loader }                      from '@acx-ui/components'
+import { Card, Descriptions, Loader }        from '@acx-ui/components'
 import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
+import { formatter } from '@acx-ui/utils'
 
 
 export function SwitchDetailsCard (props: {
@@ -33,102 +34,47 @@ export function SwitchDetailsCard (props: {
     <Loader states={[
       { isLoading }
     ]}>
-      {/* model  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'Model' })}:
-        </Col>
-        <Col span={12} >
-          {switchDetail?.model || '--'}
-        </Col>
-      </Row>
-      {/* mac address  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'mac' })}:
-        </Col>
-        <Col span={12} >
-          {switchDetail?.switchMac || '--'}
-        </Col>
-      </Row>
-      {/* IP Address  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'IP Address' })}:
-        </Col>
-        <Col span={12} >
-          {switchDetail?.ipAddress || '--'}
-        </Col>
-      </Row>
-      {/* Status  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          {$t({ defaultMessage: 'Status' })}:
-        </Col>
-        <Col span={12} >
-          <Badge
+      <Descriptions labelWidthPercent={40}>
+        {/* model  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Model' })}
+          children={switchDetail?.model || '--'} />
+
+        {/* MAC address  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'MAC Address' })}
+          children={switchDetail?.switchMac || '--'} />
+
+        {/* IP Address  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'IP Address' })}
+          children={switchDetail?.ipAddress || '--'} />
+
+        {/* Status  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Status' })}
+          children={<Badge
             key={switchDetail?.id + 'status'}
             color={getDeviceColor(switchDetail?.deviceStatus as SwitchStatusEnum)}
-            text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />
-        </Col>
-      </Row>
-      {/* Uptime  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'Uptime' })}:
-        </Col>
-        <Col span={12} >
-          {switchDetail?.uptime || '--'}
-        </Col>
-      </Row>
-      {/* Clients count  */}
-      <Row
-        gutter={[12, 24]}
-        style={{
-          lineHeight: '24px'
-        }}>
-        <Col span={12} >
-          { $t({ defaultMessage: 'Clients Connected' })}:
-        </Col>
-        <Col span={12} >
-          {switchDetail?.clientCount || '--'}
-        </Col>
-      </Row>
-      {/* Last seen for offline devices */
-        switchDetail?.lastSeenTime &&
-        <Row
-          gutter={[12, 24]}
-          style={{
-            lineHeight: '24px'
-          }}>
-          <Col span={12} >
-            { $t({ defaultMessage: 'Last Seen' })}:
-          </Col>
-          <Col span={12} >
-            {switchDetail?.lastSeenTime}
-          </Col>
-        </Row>
-      }
+            text={switchStatus(switchDetail?.deviceStatus as SwitchStatusEnum)} />} />
+
+        {/* Uptime  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Uptime' })}
+          children={switchDetail?.uptime || '--'} />
+
+        {/* Clients count  */}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Clients Connected' })}
+          children={switchDetail?.clientCount || '--'} />
+
+        {/* Last seen for offline devices */
+          switchDetail?.lastSeenTime &&
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Last Seen' })}
+          children={formatter('dateTimeFormat')(switchDetail?.lastSeenTime)} />
+        }
+      </Descriptions>
     </Loader>
   </Card>
 }
