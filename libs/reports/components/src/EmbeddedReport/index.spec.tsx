@@ -11,10 +11,15 @@ import { ReportType, reportTypeDataStudioMapping } from '../mapping/reportsMappi
 
 import { EmbeddedReport } from '.'
 
-
 const mockEmbedDashboard = jest.fn()
 jest.mock('@superset-ui/embedded-sdk', () => ({
   embedDashboard: () => mockEmbedDashboard
+}))
+jest.mock('@acx-ui/analytics/components', () => ({
+  getSupersetRlsClause: () => ({
+    networkClause: 'network clause',
+    radioBandClause: 'radio band clause'
+  })
 }))
 
 const guestTokenReponse = {
@@ -69,8 +74,7 @@ describe('EmbeddedDashboard', () => {
     process.env = { NODE_ENV: 'development' }
     render(<Provider>
       <EmbeddedReport
-        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]}
-        rlsClause={'something'}/>
+        embedDashboardName={reportTypeDataStudioMapping[ReportType.AP_DETAIL]} />
     </Provider>, { route: { params } })
   })
   it('should render the dashboard rls clause', async () => {
