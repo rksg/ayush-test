@@ -28,7 +28,12 @@ export function OpenSettingsForm (props: {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled
+        isCloudpathEnabled: data.isCloudpathEnabled,
+        enableAccountingService: data.accountingRadius,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])

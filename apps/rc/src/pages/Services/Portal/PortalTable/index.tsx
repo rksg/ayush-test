@@ -31,7 +31,14 @@ export default function PortalTable () {
   const [getPortalLang] = useGetPortalLangMutation()
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
-    defaultPayload: {}
+    defaultPayload: {
+      fields: ['name', 'id', 'content', 'networkCount'],
+      filters: {
+        id: ['none']
+      },
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
   const params = useParams()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })

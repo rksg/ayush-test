@@ -95,7 +95,7 @@ export default function NetworkForm () {
     }else{
       delete saveState.cloudpathServerId
     }
-    if(!saveState.enableAccountingService){
+    if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
     const newSavedata = { ...saveState, ...saveData }
@@ -164,10 +164,12 @@ export default function NetworkForm () {
         tmpGuestPageState.guestPortal.wisprPage.accountingRadius = { ...data.accountingRadius }
       }
     }
-    delete data.authRadius
-    delete data.accountingRadius
-    delete data.enableAccountingService
-    updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath){
+      delete data.authRadius
+      delete data.accountingRadius
+      delete data.enableAccountingService
+    }
+    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
@@ -260,6 +262,7 @@ export default function NetworkForm () {
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
+                  delete data.walledGardensString
                   handlePortalWebPage(data)
                   return true
                 }}

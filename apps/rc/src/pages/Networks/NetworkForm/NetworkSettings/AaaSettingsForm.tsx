@@ -47,7 +47,9 @@ export function AaaSettingsForm (props: {
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        wlanSecurity: data?.wlan?.wlanSecurity
+        wlanSecurity: data?.wlan?.wlanSecurity,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])

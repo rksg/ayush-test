@@ -19,8 +19,8 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
   let saveData = {
     enableAccountingService: data.enableAccountingService,
     isCloudpathEnabled: data.isCloudpathEnabled,
-    accountingPolicyProfileId: data.accountingPolicyProfileId,
-    authenticationPolicyProfileId: data.authenticationPolicyProfileId
+    accountingRadiusId: data.accountingRadiusId,
+    authRadiusId: data.authRadiusId
   }
 
   if (data.isCloudpathEnabled) {
@@ -173,8 +173,8 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
 const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
-    accountingPolicyProfileId: data.accountingPolicyProfileId,
-    authenticationPolicyProfileId: data.authenticationPolicyProfileId
+    accountingRadiusId: data.accountingRadiusId,
+    authRadiusId: data.authRadiusId
   }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {

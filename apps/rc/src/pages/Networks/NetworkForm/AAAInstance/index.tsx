@@ -35,7 +35,7 @@ const AAAInstance = (props:{
     <>
       <Form.Item label={props.serverLabel}><Space>
         <Form.Item
-          name={props.type+'PolicyProfileId'}
+          name={props.type+'Id'}
           noStyle
           rules={[
             { required: true }
@@ -58,7 +58,7 @@ const AAAInstance = (props:{
             setAaaList([...aaaList])
             aaaData.push({ ...data })
             setAaaData([...aaaData])
-            form.setFieldValue(props.type+'PolicyProfileId', data.id)
+            form.setFieldValue(props.type+'Id', data.id)
             form.setFieldValue(props.type, data)
           }}/>
         </Tooltip></Space>

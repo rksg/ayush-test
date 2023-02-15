@@ -66,7 +66,9 @@ export function PskSettingsForm (props: {
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
-        accountingRadius: data.accountingRadius
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])

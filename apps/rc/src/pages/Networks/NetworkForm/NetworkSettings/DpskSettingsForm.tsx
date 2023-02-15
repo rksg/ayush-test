@@ -41,7 +41,12 @@ export function DpskSettingsForm (props: {
       form.setFieldsValue({
         isCloudpathEnabled: data.isCloudpathEnabled,
         dpskServiceProfileId: data?.dpskServiceProfileId,
-        dpskWlanSecurity: data?.wlan?.wlanSecurity
+        dpskWlanSecurity: data?.wlan?.wlanSecurity,
+        enableAccountingService: data.accountingRadius,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])
