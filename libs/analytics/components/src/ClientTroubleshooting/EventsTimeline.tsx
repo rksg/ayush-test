@@ -219,7 +219,7 @@ export function TimeLine (props: TimeLineProps) {
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
                   config?.value as keyof TimelineData,
-                  events,
+                  TimelineData.connectionEvents.all,
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualities) ? qualities.all : [],
                   Array.isArray(incidents) ? incidents : [],
