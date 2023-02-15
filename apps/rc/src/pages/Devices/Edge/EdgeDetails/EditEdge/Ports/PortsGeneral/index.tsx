@@ -10,7 +10,7 @@ import { useUpdatePortConfigMutation }                                          
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }          from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                          from '@acx-ui/react-router-dom'
 
-import { EdgePortWithStatus, PortConfigForm } from './PortConfigForm'
+import { EdgePortWithStatus, lanPortsubnetValidator, PortConfigForm } from './PortConfigForm'
 
 interface PortsGeneralProps {
   data: EdgePortWithStatus[]
@@ -54,6 +54,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const handleTabChange = (value: string) => {
     setCurrentTab(value)
   }
+
   const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
     const changedField = formInfo.changedFields[0]
     if(changedField) {
@@ -74,11 +75,13 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
           return index
         }
-        const ipList = formData.map((data, idx) => ({ ip: data.ip, index: idx }))
-          .filter(data => data.index !== index)
-        const duplicateIp = ipList.find(element => element.ip === item.ip)
-        if(duplicateIp) {
-          return duplicateIp.index
+        const listWithoutCurrent = Object.values<EdgePort>(formRef.current?.getFieldsValue(true))
+          .filter((element, idx) => idx !== index)
+          .map(element => ({ ip: element.ip, subnetMask: element.subnet }))
+        try {
+          await lanPortsubnetValidator({ ip: item.ip, subnetMask: item.subnet }, listWithoutCurrent)
+        } catch (error) {
+          return index
         }
       }
       if(item.portType === EdgePortTypeEnum.WAN &&

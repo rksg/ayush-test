@@ -652,3 +652,31 @@ export function validateRecoveryPassphrasePart (value: string) {
 
   return Promise.resolve()
 }
+
+export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
+  secondIpAddress: string, secondSubnetMask:string ) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  let result = false
+
+  const firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
+  const secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+
+  const firstStartLong = convertIpToLong(firstSubnetInfo.first)
+  const firstEndLong = convertIpToLong(firstSubnetInfo.last)
+  const secondStartLong = convertIpToLong(secondSubnetInfo.first)
+  const secondEndLong = convertIpToLong(secondSubnetInfo.last)
+
+  if(secondStartLong < firstStartLong) {
+    result = secondEndLong > firstStartLong
+  } else {
+    result = secondStartLong < firstEndLong
+  }
+
+  return result ? Promise.reject($t(validationMessages.subnetOverlapping))
+    : Promise.resolve()
+
+}

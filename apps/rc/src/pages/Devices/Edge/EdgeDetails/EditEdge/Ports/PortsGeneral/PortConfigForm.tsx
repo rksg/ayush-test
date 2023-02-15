@@ -3,9 +3,8 @@ import { useLayoutEffect } from 'react'
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsForm }                                                                             from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
-import { getIntl, validationMessages }                                                           from '@acx-ui/utils'
+import { StepsForm }                                                                                              from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
@@ -19,19 +18,23 @@ interface ConfigFormProps {
   index: number
 }
 
-async function lanPortIpValidator (
-  value: string,
-  lanPorts: string[]
+export async function lanPortsubnetValidator (
+  currentSubnet: { ip: string, subnetMask: string },
+  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
 ) {
-  const { $t } = getIntl()
-  if (!lanPorts.includes(value)) return
+  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
+    return
+  }
 
-  const entityName = $t({ defaultMessage: 'Lan Port' })
-  return Promise.reject($t(validationMessages.duplication, {
-    entityName: entityName,
-    key: $t({ defaultMessage: 'ip' }),
-    extra: ''
-  }))
+  for(let item of allSubnetWithoutCurrent) {
+    try {
+      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
+        item.ip, item.subnetMask)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  return Promise.resolve()
 }
 
 const { useWatch, useFormInstance } = Form
@@ -67,10 +70,20 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     }
   ]
 
-  const getLanPortIpsWithoutCurrent = () => {
+  const getCurrentSubnetInfo = () => {
+    return {
+      ip: form.getFieldValue([`port_${index}`, 'ip']),
+      subnetMask: form.getFieldValue([`port_${index}`, 'subnet'])
+    }
+  }
+
+  const getSubnetInfoWithoutCurrent = () => {
     return Object.entries<EdgePortWithStatus>(form.getFieldsValue(true))
-      .filter(item => item[0] !== `port_${index}` && item[1].portType === EdgePortTypeEnum.LAN)
-      .map(item => item[1].ip)
+      .filter(item => item[0] !== `port_${index}`
+        && item[1].portType === EdgePortTypeEnum.LAN
+        && !!item[1].ip
+        && !!item[1].subnet)
+      .map(item => ({ ip: item[1].ip, subnetMask: item[1].subnet }))
   }
 
   const getFieldsByPortType = (portType: EdgePortTypeEnum) => {
@@ -83,7 +96,10 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             rules={[
               { required: true },
               { validator: (_, value) => serverIpAddressRegExp(value) },
-              { validator: (_, value) => lanPortIpValidator(value, getLanPortIpsWithoutCurrent()) }
+              {
+                validator: () =>
+                  lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+              }
             ]}
             children={<Input />}
           />
