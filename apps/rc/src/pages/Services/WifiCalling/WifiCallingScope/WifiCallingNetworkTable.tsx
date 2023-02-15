@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { Table, TableProps }                                  from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  Network,
+  Network, NetworkTypeEnum, networkTypes,
   useTableQuery,
   WifiCallingActionPayload,
   WifiCallingActionTypes
@@ -41,7 +41,10 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
-      key: 'nwSubType'
+      key: 'nwSubType',
+      render: (data, row) => {
+        return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
+      }
     },
     {
       title: $t({ defaultMessage: 'Venues' }),

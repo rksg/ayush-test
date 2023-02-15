@@ -78,7 +78,7 @@ export function renderFilter <RecordType> (
   setFilterValues: Function,
   enableApiFilter: boolean
 ): React.ReactNode {
-  const key = column.dataIndex as keyof RecordType
+  const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (!data.includes(value)) {
       data.push(value)

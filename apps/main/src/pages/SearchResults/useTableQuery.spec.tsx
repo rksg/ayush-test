@@ -94,6 +94,7 @@ describe('useTableQuery', () => {
       page: 1,
       current: 1,
       pageSize: 5,
+      defaultPageSize: 5,
       total: 0
     })
 

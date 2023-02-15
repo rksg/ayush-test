@@ -22,12 +22,11 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     })
 
   const data = props.venueDetail
-  const [clientsCount, devicesCount, networksCount, unitCount, servicesCount] = [
+  const [clientsCount, devicesCount, networksCount, unitCount] = [
     (data?.totalClientCount ? Number(data.totalClientCount) : 0) +
       (data?.switchClients?.totalCount ?? 0),
     (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),
     data?.activeNetworkCount ?? 0,
-    0,
     0
   ]
 
@@ -64,7 +63,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       <Tabs.TabPane
         disabled={!enabledServices}
         tab={enabledServices
-          ? $t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })
+          ? $t({ defaultMessage: 'Services' })
           : <Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Services' })}</Tooltip>}
         key='services'
       />
