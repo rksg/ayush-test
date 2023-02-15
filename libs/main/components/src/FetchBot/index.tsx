@@ -3,9 +3,12 @@ import {
   useState
 } from 'react'
 
+
 import { CustomerServiceFilled } from '@ant-design/icons'
 import { Button }                from 'antd'
+import { useIntl }               from 'react-intl'
 
+import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
@@ -14,9 +17,18 @@ import { useParams }                         from '@acx-ui/react-router-dom'
 declare global {
   interface Window {
     generateToken?: (callback:CallableFunction) => void
-    tdiConfig: unknown,
+    tdiConfig: {
+      displayButton: boolean,
+      events: {
+        start: (event?:unknown) => void,
+        ready: (event?:unknown) => void,
+        disabled: (event?:unknown) => void,
+        chatting: (event?:unknown) => void,
+        error: (event: { data: { error: unknown } }) => void,
+      }
+    },
     tdi: {
-      chat: () => void
+      chat?: () => void
     }
   }
 }
@@ -28,7 +40,7 @@ function initializeChat () {
     window.tdi.chat()
   } else {
     // eslint-disable-next-line no-console
-    console.log('Chat not yet ready..')
+    console.log('Chatbot is not yet ready..')
   }
 }
 
@@ -37,6 +49,7 @@ export interface FetchBotProps{
   showFloatingButton?:boolean
 }
 export function FetchBot (props:FetchBotProps) {
+  const { $t } = useIntl()
   const { statusCallback, showFloatingButton=true } = props
   const [isLoading,setIsLoading] = useState(true)
   const [isDisabled,setIsDisabled] = useState(true)
@@ -62,16 +75,17 @@ export function FetchBot (props:FetchBotProps) {
           setIsLoading(false)
           setIsDisabled(false)
         },
-        disabled: function () {
-          // eslint-disable-next-line no-console
-          console.log('Chatbot Disabled')
-          statusCallback && statusCallback('disabled')
-          setIsDisabled(true)
-        },
         chatting: function () {
           // eslint-disable-next-line no-console
           console.log('Chatbot Chatting')
           statusCallback && statusCallback('chatting')
+          setIsLoading(false)
+          setIsDisabled(false)
+        },
+        disabled: function () {
+          // eslint-disable-next-line no-console
+          console.log('Chatbot Disabled')
+          statusCallback && statusCallback('disabled')
           setIsDisabled(true)
         },
         error: function (event: { data: { error: unknown; }; }) {
@@ -87,13 +101,14 @@ export function FetchBot (props:FetchBotProps) {
   useEffect(()=>{
     // eslint-disable-next-line no-console
     console.log('Attaching generateToken method to window')
-    window.generateToken = function (callback){
+    window.generateToken = async function (callback){
       const userUrl = createHttpRequest (
         CommonUrlsInfo.getUserProfile,
         { ...params }
       )
       fetch(userUrl.url).then((res)=>{
         res.json().then((userInfo)=>{
+          statusCallback && statusCallback('user-profile-success')
           const { externalId: swuId } = userInfo
           const authUrl = createHttpRequest (
             CommonUrlsInfo.fetchBotAuth,
@@ -110,10 +125,12 @@ export function FetchBot (props:FetchBotProps) {
             callback(idToken,null,{
               contactId: swuId
             })
+            statusCallback && statusCallback('token-success')
           }).catch((error)=>{
             // eslint-disable-next-line no-console
             console.error(error)
             callback('',error.message,{})
+            statusCallback && statusCallback('token-error')
           })
 
         })
@@ -121,6 +138,7 @@ export function FetchBot (props:FetchBotProps) {
         // eslint-disable-next-line no-console
         console.error(error)
         callback('',error.message,{})
+        statusCallback && statusCallback('user-profile-error')
       })
     }
     return ()=>{
@@ -149,17 +167,18 @@ export function FetchBot (props:FetchBotProps) {
   }, [])
 
   return ( <Button
-    title='Chat with Support'
+    title={$t({ defaultMessage: 'Chat with Support' })}
     shape='circle'
     size='large'
     disabled={isDisabled}
     loading={isLoading}
     icon={<CustomerServiceFilled style={{ color: 'white' }} />}
-    onClick={()=>{initializeChat()}}
+    onClick={()=>{
+      initializeChat()}}
     style={
       {
         display: showFloatingButton ? 'block' : 'none',
-        backgroundColor: '#ea7600',
+        backgroundColor: cssStr('--acx-accents-orange-50'),
         position: 'fixed',
         right: '30px',
         bottom: '30px',
