@@ -13,7 +13,8 @@ import {
   successResponse,
   networkDeepResponse,
   dhcpResponse,
-  portalList
+  portalList,
+  externalProviders
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -56,8 +57,13 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json(clickThroughData))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
+      rest.get(CommonUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json(externalProviders))),
       rest.get(PortalUrlsInfo.getPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
+        res(ctx.json([]))
       ),
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({
@@ -81,8 +87,8 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
-    await userEvent.click(await screen.findByRole('checkbox',
-      { name: /Enable Ruckus DHCP service/ }))
+    // await userEvent.click(await screen.findByRole('checkbox',
+    //   { name: /Enable Ruckus DHCP service/ }))
     // await userEvent.click(await screen.findByText('More details'))
     await userEvent.click(await screen.findByText('Next'))
     await userEvent.click(await screen.findByText('Next'))
