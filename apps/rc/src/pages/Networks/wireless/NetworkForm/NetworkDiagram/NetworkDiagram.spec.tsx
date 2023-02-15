@@ -19,6 +19,10 @@ const cloudpathResponse = [{
   id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
   name: 'cloud_01'
 }]
+
+const params = {
+  tenantId: 'tenant-id'
+}
 describe('NetworkDiagram', () => {
 
   beforeEach(() => {
@@ -38,7 +42,13 @@ describe('NetworkDiagram', () => {
         }}>
           <NetworkDiagram />
         </NetworkFormContext.Provider>
-      </Provider>)
+      </Provider>,
+      {
+        route: {
+          params
+        }
+      }
+    )
     const diagram = screen.getByRole('img') as HTMLImageElement
     expect(diagram.src).toContain('none.png')
     expect(asFragment()).toMatchSnapshot()
@@ -57,7 +67,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram />
           </NetworkFormContext.Provider>
-        </Provider>)
+        </Provider>,{
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('psk.png')
       expect(asFragment()).toMatchSnapshot()
@@ -74,7 +88,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram enableMACAuth={true} />
           </NetworkFormContext.Provider>
-        </Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        }
       )
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa.png')
@@ -95,7 +113,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram />
           </NetworkFormContext.Provider>
-        </Provider>)
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('dpsk.png')
       expect(asFragment()).toMatchSnapshot()
@@ -111,8 +133,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram cloudpathType={CloudpathDeploymentTypeEnum.Cloud} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('dpsk-cloudpath-cloud-deployment.png')
       expect(asFragment()).toMatchSnapshot()
@@ -129,8 +154,11 @@ describe('NetworkDiagram', () => {
             <NetworkDiagram cloudpathType={CloudpathDeploymentTypeEnum.OnPremise}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('dpsk-cloudpath-on-prem-deployment')
       expect(asFragment()).toMatchSnapshot()
@@ -150,8 +178,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('open.png')
       expect(asFragment()).toMatchSnapshot()
@@ -169,8 +200,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.Cloud}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('open-cloudpath-cloud-deployment.png')
       expect(asFragment()).toMatchSnapshot()
@@ -188,8 +222,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.OnPremise}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('open-cloudpath-on-prem-deployment')
       expect(asFragment()).toMatchSnapshot()
@@ -215,8 +252,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram enableAuthProxy={true} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa-proxy.png')
       expect(asFragment()).toMatchSnapshot()
@@ -238,8 +278,11 @@ describe('NetworkDiagram', () => {
               showButtons={true}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa-proxy.png')
       expect(asFragment()).toMatchSnapshot()
@@ -261,8 +304,11 @@ describe('NetworkDiagram', () => {
               showButtons={true}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa.png')
       expect(asFragment()).toMatchSnapshot()
@@ -281,8 +327,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.Cloud}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa-cloudpath-cloud-deployment.png')
       expect(asFragment()).toMatchSnapshot()
@@ -300,8 +349,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.OnPremise}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('aaa-cloudpath-on-prem-deployment')
       expect(asFragment()).toMatchSnapshot()
@@ -318,7 +370,11 @@ describe('NetworkDiagram', () => {
           data: { type },
           setData: jest.fn()
         }}><NetworkDiagram /></NetworkFormContext.Provider>
-      </Provider>)
+      </Provider>, {
+        route: {
+          params
+        }
+      })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('click-through.png')
       expect(asFragment()).toMatchSnapshot()
@@ -337,8 +393,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram networkPortalType={portalType} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('click-through.png')
       expect(asFragment()).toMatchSnapshot()
@@ -357,8 +416,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram networkPortalType={portalType} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('self-sign-in.png')
       expect(asFragment()).toMatchSnapshot()
@@ -375,8 +437,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram networkPortalType={portalType} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('host-approval.png')
       expect(asFragment()).toMatchSnapshot()
@@ -393,8 +458,11 @@ describe('NetworkDiagram', () => {
           }}>
             <NetworkDiagram networkPortalType={portalType} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('guest-pass.png')
       expect(asFragment()).toMatchSnapshot()
@@ -409,10 +477,14 @@ describe('NetworkDiagram', () => {
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} />
+            <NetworkDiagram networkPortalType={portalType}
+              cloudpathType={undefined} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('wispr.png')
       expect(asFragment()).toMatchSnapshot()
@@ -427,10 +499,15 @@ describe('NetworkDiagram', () => {
             data: { type, cloudpathServerId: '6edb22ef74b143f280f2eb3105053840' },
             setData: jest.fn()
           }}>
-            <NetworkDiagram networkPortalType={portalType} wisprWithPsk={true} />
+            <NetworkDiagram networkPortalType={portalType}
+              wisprWithPsk={true}
+              cloudpathType={undefined} />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('wispr-psk.png')
       expect(asFragment()).toMatchSnapshot()
@@ -450,8 +527,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.Cloud}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('captive-portal-cloudpath-cloud-deployment.png')
       expect(asFragment()).toMatchSnapshot()
@@ -471,8 +551,11 @@ describe('NetworkDiagram', () => {
               cloudpathType={CloudpathDeploymentTypeEnum.OnPremise}
             />
           </NetworkFormContext.Provider>
-        </Provider>
-      )
+        </Provider>, {
+          route: {
+            params
+          }
+        })
       const diagram = screen.getByRole('img') as HTMLImageElement
       expect(diagram.src).toContain('captive-portal-cloudpath-on-prem-deployment.png')
       expect(asFragment()).toMatchSnapshot()

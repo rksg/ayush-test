@@ -89,7 +89,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const row1 = await screen.findByRole('row', { name: /network-venue-1/i })
     expect(within(row1).queryAllByRole('button')).toHaveLength(4)
@@ -109,7 +111,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const newApGroup2 = {
       ...networkVenue_apgroup,
@@ -148,7 +152,9 @@ describe('NetworkVenuesTab', () => {
     const toogleButton = await screen.findByRole('switch', { checked: false })
     fireEvent.click(toogleButton)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -193,7 +199,9 @@ describe('NetworkVenuesTab', () => {
     const toogleButton = await screen.findByRole('switch', { checked: true })
     fireEvent.click(toogleButton)
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -257,7 +265,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     mockServer.use(
       rest.get(
@@ -297,7 +307,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     mockServer.use(
       rest.get(
@@ -418,7 +430,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(2))
 
@@ -477,7 +491,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
 
@@ -513,7 +529,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
 
@@ -560,7 +578,9 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/:networkId' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
 
