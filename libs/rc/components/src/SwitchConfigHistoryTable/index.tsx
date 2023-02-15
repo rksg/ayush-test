@@ -9,9 +9,9 @@ import {
   useGetVenueConfigHistoryQuery,
   useLazyGetVenueConfigHistoryDetailQuery
 } from '@acx-ui/rc/services'
-import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                 from '@acx-ui/react-router-dom'
-import { getIntl }                                                   from '@acx-ui/utils'
+import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, FILTER, transformConfigType, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                                                              from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../CodeMirrorWidget'
 
@@ -83,6 +83,10 @@ export function SwitchConfigHistoryTable (props: {
 
   const tableData = tableQuery.data?.data ?? []
 
+  const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
+    key: ctype, value: transformConfigType(ctype)
+  }))
+
   const getCols = () => {
     const columns: TableProps<ConfigurationHistory>['columns'] = [{
       key: 'startTime',
@@ -100,6 +104,8 @@ export function SwitchConfigHistoryTable (props: {
       key: 'configType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'configType',
+      filterable: configTypeFilterOptions,
+      filterMultiple: false,
       sorter: false
     }, {
       key: 'numberOfSwitches',
@@ -164,8 +170,14 @@ export function SwitchConfigHistoryTable (props: {
     }
   }, [dispatchFailedReason, codeMirrorEl])
 
-  // TODO: add search string and filter to retrieve data
-  // const retrieveData () => {}
+  const handleFilterChange = (customFilters: FILTER) => {
+    const payload = {
+      ...tableQuery.payload,
+      filterByConfigType: customFilters?.configType
+    }
+
+    tableQuery.setPayload(payload)
+  }
 
   return <>
     <Loader states={[tableQuery]}>
@@ -175,6 +187,8 @@ export function SwitchConfigHistoryTable (props: {
         dataSource={tableData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
     { visible &&

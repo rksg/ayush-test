@@ -251,9 +251,6 @@ export function SwitchPortTable ({ isVenueLevel }: {
     }
   }]
 
-  // TODO: add search string and filter to retrieve data
-  // const retrieveData () => {}
-
   return <Loader states={[tableQuery]}>
     <Table
       columns={getColumns()}
