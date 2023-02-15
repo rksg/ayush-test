@@ -66,7 +66,7 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
-type ConnectionEventPopoverProps = PopoverProps & {
+type ConnectionEventPopoverProps = Omit<PopoverProps, 'content'> & {
   children?: React.ReactNode,
   event: DisplayEvent
 }
@@ -92,11 +92,11 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
   return (
     <UI.PopoverWrapper>
       <Popover
-        {...rest}
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
         visible={open}
         onVisibleChange={visibleHandle}
+        {...rest}
       >
         {children}
       </Popover>

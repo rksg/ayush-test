@@ -89,7 +89,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
               <Loader states={[results]}>
-                <Chart />
+                <Chart key='timeline-chart'/>
                 <ConnectionEventPopover
                   key={Number(visible)}
                   arrowPointAtCenter
@@ -100,7 +100,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   trigger='click'
                   placement='bottom'
                 >
-                  <div/>
+                  <div key='popover-child'/>
                 </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>
@@ -111,6 +111,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         <Col span={6}>
           <Loader states={[results]} >
             <History
+              key='event-history'
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
               data={results.data}
