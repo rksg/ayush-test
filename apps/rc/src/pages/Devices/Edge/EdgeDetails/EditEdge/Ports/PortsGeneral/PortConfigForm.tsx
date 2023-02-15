@@ -5,8 +5,11 @@ import { useIntl }                                             from 'react-intl'
 
 import { StepsForm }                                                                             from '@acx-ui/components'
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }                                                           from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
+
+import { PortConfigFormType } from '.'
 
 export interface EdgePortWithStatus extends EdgePort {
   statusIp: string
@@ -16,6 +19,21 @@ interface ConfigFormProps {
   index: number
 }
 
+async function lanPortIpValidator (
+  value: string,
+  lanPorts: string[]
+) {
+  const { $t } = getIntl()
+  if (!lanPorts.includes(value)) return
+
+  const entityName = $t({ defaultMessage: 'Lan Port' })
+  return Promise.reject($t(validationMessages.duplication, {
+    entityName: entityName,
+    key: $t({ defaultMessage: 'ip' }),
+    extra: ''
+  }))
+}
+
 const { useWatch, useFormInstance } = Form
 
 export const PortConfigForm = (props: ConfigFormProps) => {
@@ -23,7 +41,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const { index } = props
 
   const { $t } = useIntl()
-  const form = useFormInstance()
+  const form = useFormInstance<PortConfigFormType>()
   const mac = useWatch([`port_${index}`, 'mac'])
   const portType = useWatch([`port_${index}`, 'portType'])
   const enabled = useWatch([`port_${index}`, 'enabled'])
@@ -49,6 +67,12 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     }
   ]
 
+  const getLanPortIpsWithoutCurrent = () => {
+    return Object.entries<EdgePortWithStatus>(form.getFieldsValue(true))
+      .filter(item => item[0] !== `port_${index}` && item[1].portType === EdgePortTypeEnum.LAN)
+      .map(item => item[1].ip)
+  }
+
   const getFieldsByPortType = (portType: EdgePortTypeEnum) => {
     if(portType === EdgePortTypeEnum.LAN) {
       return (
@@ -58,7 +82,8 @@ export const PortConfigForm = (props: ConfigFormProps) => {
             label={$t({ defaultMessage: 'IP Address' })}
             rules={[
               { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) }
+              { validator: (_, value) => serverIpAddressRegExp(value) },
+              { validator: (_, value) => lanPortIpValidator(value, getLanPortIpsWithoutCurrent()) }
             ]}
             children={<Input />}
           />
@@ -156,6 +181,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='name'
             label={$t({ defaultMessage: 'Port Name' })}
+            rules={[
+              { max: 64 }
+            ]}
             children={<Input />}
           />
           <Form.Item

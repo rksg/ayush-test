@@ -16,7 +16,7 @@ interface PortsGeneralProps {
   data: EdgePortWithStatus[]
 }
 
-interface PortConfigFormType {
+export interface PortConfigFormType {
   [key: string]: EdgePortWithStatus
 }
 
@@ -73,6 +73,12 @@ const PortsGeneral = (props: PortsGeneralProps) => {
       if(item.portType === EdgePortTypeEnum.LAN) {
         if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
           return index
+        }
+        const ipList = formData.map((data, idx) => ({ ip: data.ip, index: idx }))
+          .filter(data => data.index !== index)
+        const duplicateIp = ipList.find(element => element.ip === item.ip)
+        if(duplicateIp) {
+          return duplicateIp.index
         }
       }
       if(item.portType === EdgePortTypeEnum.WAN &&
