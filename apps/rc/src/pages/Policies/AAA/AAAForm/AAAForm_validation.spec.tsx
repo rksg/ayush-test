@@ -9,7 +9,7 @@ import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 
-import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/NetworkForm/contentsMap'
+import { multipleConflictMessage, radiusErrorMessage } from '../../../Networks/wireless/NetworkForm/contentsMap'
 
 import AAAForm from './AAAForm'
 
