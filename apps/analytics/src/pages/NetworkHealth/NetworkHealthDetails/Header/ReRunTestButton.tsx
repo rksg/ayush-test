@@ -6,15 +6,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, Loader, showToast } from '@acx-ui/components'
 import { useTenantLink }             from '@acx-ui/react-router-dom'
 
-import * as contents                       from '../../contents'
-import { useRunNetworkHealthTestMutation } from '../../services'
+import * as contents                    from '../../contents'
+import { useNetworkHealthTestMutation } from '../../services'
 
 export const ReRunButton = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/serviceValidation/networkHealth')
   const params = useParams<{ specId: string }>()
-  const [runTest, response] = useRunNetworkHealthTestMutation()
+  const { runTest, response } = useNetworkHealthTestMutation()
 
   useEffect(() => {
     if (!response.data) return

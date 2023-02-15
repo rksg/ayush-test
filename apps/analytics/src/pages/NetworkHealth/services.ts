@@ -75,7 +75,7 @@ const fetchServiceGuardTest = gql`
       id
       createdAt
       spec {
-        specId: id
+        id
         name
         type
         apsCount
@@ -317,7 +317,7 @@ type RunNetworkHealthTestResult = MutationResult<{
   userErrors: UserErrors
 }>
 
-export const {
+const {
   useCreateNetworkHealthSpecMutation,
   useUpdateNetworkHealthSpecMutation,
   useRunNetworkHealthTestMutation
@@ -369,4 +369,9 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
+}
+
+export function useNetworkHealthTestMutation () {
+  const [runTest, response] = useRunNetworkHealthTestMutation()
+  return { runTest, response }
 }

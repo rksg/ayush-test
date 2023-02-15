@@ -56,7 +56,7 @@ export const fetchServiceGuardTest = {
     createdAt: '2023-02-03T11:00:00.000Z',
     previousTest: null,
     spec: {
-      specId: 'specId',
+      id: 'specId',
       name: 'name',
       type: 'on-demand',
       clientType: 'virtual-client',
@@ -88,13 +88,56 @@ export const fetchServiceGuardTest = {
           [`${stage}Success`]: 0
         }
       },{})
+    },
+    wlanAuthSettings: {
+      wpaVersion: 'WPA2'
     }
-  },
-  wlanAuthSettings: {
-    wpaVersion: 'WPA2'
   }
 }
 
+export const fetchServiceGuardRelatedTests = {
+  serviceGuardTest: {
+    spec: {
+      id: 'specId',
+      tests: {
+        items: [
+          {
+            id: 2,
+            createdAt: '2023-02-14T00:00:01.000Z',
+            summary: { apsErrorCount: 0, apsFailureCount: 0, apsSuccessCount: 0, apsTestedCount: 0 }
+          },
+          {
+            id: 1,
+            createdAt: '2023-02-14T00:00:00.000Z',
+            summary: { apsErrorCount: 0, apsFailureCount: 0, apsSuccessCount: 0, apsTestedCount: 0 }
+          }
+        ]
+      }
+    }
+  }
+}
+
+export const runServiceGuardTest = {
+  runServiceGuardTest: {
+    spec: {
+      id: 'spec-id',
+      clientType: ClientType.VirtualWirelessClient,
+      type: TestType.OnDemand,
+      name: 'Test Name',
+      apsCount: 0,
+      userId: 'userId',
+      schedule: null,
+      tests: {
+        items: [{
+          id: 3,
+          createdAt: '2023-02-14T00:00:02.000Z',
+          summary: { apsTestedCount: 0, apsSuccessCount: 0, apsPendingCount: 0 }
+        }]
+      }
+    },
+    userErrors: null
+  }
+}
 const Context = createStepsFormContext()
 
 export const withinField = () => within(screen.getByTestId('field'))
