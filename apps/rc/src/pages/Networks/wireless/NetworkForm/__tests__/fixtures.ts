@@ -1231,3 +1231,100 @@ export const apGroupsResponse = {
     }
   ]
 }
+export const mockGuestMoreData = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'WISPr',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 1666,
+    userSessionTimeout: 6660
+  }
+}
+
+export const mockGuestMoreDataMinutes = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 66
+  }
+}
+export const mockGuestMoreDataDays = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 2422,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 1440
+  }
+}
+export const mockGuestMoreDataDaysLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 1440,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 2,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 1440
+  }
+}
+export const mockGuestMoreDataMinutesLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 1222,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 6666
+  }
+}
+export const mockGuestMoreDataLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 1666,
+    userSessionTimeout: 6660
+  }
+}
