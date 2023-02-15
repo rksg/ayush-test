@@ -22,8 +22,7 @@ import { ToggleButton, IpPortSecretForm } from '@acx-ui/rc/components'
 import {
   WlanSecurityEnum,
   AaaServerTypeEnum,
-  AaaServerOrderEnum,
-  NetworkSaveData
+  AaaServerOrderEnum
 } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
@@ -36,9 +35,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function AaaSettingsForm (props: {
-  saveState: NetworkSaveData
-}) {
+export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -69,7 +66,6 @@ export function AaaSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -82,6 +78,7 @@ function SettingsForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
+  const { editMode } = useContext(NetworkFormContext)
   const [
     isCloudpathEnabled,
     wlanSecurity,
@@ -134,10 +131,11 @@ function SettingsForm () {
   }
 
   return (
-    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <div>
-        <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
-        {triBandRadioFeatureFlag &&
+    <>
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <div>
+          <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
+          {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
@@ -155,18 +153,20 @@ function SettingsForm () {
               <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
             </Select>
           </Form.Item>
-        }
-        <Form.Item>
-          <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-            <Switch onChange={onCloudPathChange}/>
+          }
+          <Form.Item>
+            <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
+              <Switch onChange={onCloudPathChange}/>
+            </Form.Item>
+            <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
           </Form.Item>
-          <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
-        </Form.Item>
-      </div>
-      <div>
-        {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
-      </div>
-    </Space>
+        </div>
+        <div>
+          {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
+        </div>
+      </Space>
+      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
+    </>
   )
 
   function AaaService () {
