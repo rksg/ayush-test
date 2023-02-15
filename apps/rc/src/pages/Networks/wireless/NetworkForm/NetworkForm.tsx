@@ -404,12 +404,11 @@ export default function NetworkForm (props:{
               return false
             }}
           >
-            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
-            {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
-              <DpskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+            {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
             {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
-            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
           </StepsForm.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&

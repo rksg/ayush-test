@@ -55,10 +55,11 @@ enum MgmtTxRateEnum {
 }
 
 export function NetworkMoreSettingsForm (props: {
-  wlanData: NetworkSaveData
+  wlanData: NetworkSaveData | null
 }) {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
   useEffect(() => {
     if ((editMode || cloneMode) && data) {
@@ -87,7 +88,7 @@ export function NetworkMoreSettingsForm (props: {
   const { $t } = useIntl()
   const [enableMoreSettings, setEnabled] = useState(false)
   if (data && editMode) {
-    return <MoreSettingsForm wlanData={props.wlanData} />
+    return <MoreSettingsForm wlanData={wlanData} />
   } else {
     return <div>
       <Button
@@ -101,17 +102,17 @@ export function NetworkMoreSettingsForm (props: {
           $t({ defaultMessage: 'Show more settings' })}
       </Button>
       {enableMoreSettings &&
-        <MoreSettingsForm wlanData={props.wlanData} />}
+        <MoreSettingsForm wlanData={wlanData} />}
     </div>
   }
 }
 
 
 export function MoreSettingsForm (props: {
-  wlanData: NetworkSaveData
+  wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
+  const { editMode, data } = useContext(NetworkFormContext)
   const [
     enableOfdmOnly,
     enableFastRoaming,
@@ -133,18 +134,20 @@ export function MoreSettingsForm (props: {
     useWatch<string>('bssMinimumPhyRate')
   ]
 
-  const { wlanData } = props
+  const form = Form.useFormInstance()
+  const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
-  const isNetworkWPASecured = wlanData.wlan?.wlanSecurity ? [
+
+  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ? [
     WlanSecurityEnum.WPA2Personal,
     WlanSecurityEnum.WPAPersonal,
-    WlanSecurityEnum.WPA2Enterprise].includes(wlanData.wlan.wlanSecurity) : false
+    WlanSecurityEnum.WPA2Enterprise].includes(wlanData?.wlan.wlanSecurity) : false
 
-  const isFastBssVisible = (isNetworkWPASecured || wlanData.type === NetworkTypeEnum.AAA) &&
-    wlanData.type !== NetworkTypeEnum.DPSK
+  const isFastBssVisible = (isNetworkWPASecured || data?.type === NetworkTypeEnum.AAA) &&
+    data?.type !== NetworkTypeEnum.DPSK
 
-  const showDynamicWlan = wlanData.type === NetworkTypeEnum.AAA ||
-    wlanData.type === NetworkTypeEnum.DPSK
+  const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
+    data?.type === NetworkTypeEnum.DPSK
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {
