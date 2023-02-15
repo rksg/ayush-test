@@ -661,6 +661,99 @@ export const policyListResponse = {
   totalPages: 0,
   page: 1
 }
+
+export const devicePolicyListResponse = {
+  data: [
+    {
+      id: '361a8e49222a4cbeae2bc6c7f0127dca',
+      name: 'device1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const applicationPolicyListResponse = {
+  data: [
+    {
+      id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
+      name: 'application1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const layer2PolicyListResponse = {
+  data: [
+    {
+      id: 'dee8918e1c40474a9f779b39ee672c5b',
+      name: 'layer2policy1',
+      macAddressesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const layer3PolicyListResponse = {
+  data: [
+    {
+      id: '4dee545ff0e04100b13774aa0ba6fc57',
+      name: 'layer3policy1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const accessControlListResponse = [
+  {
+    l2AclPolicy: {
+      id: 'dee8918e1c40474a9f779b39ee672c5b',
+      enabled: true
+    },
+    l3AclPolicy: {
+      id: '4dee545ff0e04100b13774aa0ba6fc57',
+      enabled: true
+    },
+    name: 'acl-1',
+    rateLimiting: {
+      uplinkLimit: 0,
+      downlinkLimit: 0,
+      enabled: false
+    },
+    id: '2918e310075a4f5bb1b0d161769f6f64'
+  }
+]
+
 export const dhcpResponse = {
   id: '6cf550cdb67641d798d804793aaa82db',
   name: 'My-DHCP',

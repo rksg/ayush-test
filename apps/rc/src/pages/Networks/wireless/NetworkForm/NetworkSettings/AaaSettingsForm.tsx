@@ -8,6 +8,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -46,15 +47,23 @@ export function AaaSettingsForm (props: {
         isCloudpathEnabled: data.isCloudpathEnabled,
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.accountingRadius,
-        enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
-        enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
+        enableAccountingService: checkIsUndefined(data.enableAccountingService,
+          data.accountingRadius),
+        enableSecondaryAuthServer: checkIsUndefined(data.enableSecondaryAuthServer,
+          (data.authRadius?.secondary !== undefined)),
+        enableSecondaryAcctServer: checkIsUndefined(data.enableSecondaryAcctServer,
+          (data.accountingRadius?.secondary !== undefined)),
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         wlanSecurity: data?.wlan?.wlanSecurity
       })
     }
   }, [data])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const checkIsUndefined = function (currentValue: any, defaultValue: any) {
+    return _.isUndefined(currentValue) ? defaultValue : currentValue
+  }
 
   return (
     <Row gutter={20}>

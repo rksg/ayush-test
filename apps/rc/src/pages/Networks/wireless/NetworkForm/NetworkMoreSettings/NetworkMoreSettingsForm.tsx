@@ -135,25 +135,16 @@ export function MoreSettingsForm (props: {
 
   const { wlanData } = props
 
-  const isNetworkWPASecured = props.wlanData.wlanSecurity === WlanSecurityEnum.WPA2Personal ||
-    props.wlanData.wlanSecurity === WlanSecurityEnum.WPAPersonal ||
-    props.wlanData.wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+  const isNetworkWPASecured = wlanData.wlan?.wlanSecurity ? [
+    WlanSecurityEnum.WPA2Personal,
+    WlanSecurityEnum.WPAPersonal,
+    WlanSecurityEnum.WPA2Enterprise].includes(wlanData.wlan.wlanSecurity) : false
+
   const isFastBssVisible = (isNetworkWPASecured || wlanData.type === NetworkTypeEnum.AAA) &&
     wlanData.type !== NetworkTypeEnum.DPSK
 
-  // TODO: Wait for captivePortal
-  // const showSingleSessionIdAccounting = (wlanData.accountingRadius && (wlanData.type === NetworkTypeEnum.AAA)) ||
-  // (wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-  //   wlanData.type.guestPortal.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-  //   this.networkService.isProviderHasAccountingService(this.network));
-
   const showDynamicWlan = wlanData.type === NetworkTypeEnum.AAA ||
     wlanData.type === NetworkTypeEnum.DPSK
-
-  // TODO: Wait for captivePortal
-  // this.showMaxDevices = networkType === NetworkTypeEnum.CAPTIVEPORTAL &&
-  // (guestPortal.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn ||
-  //   guestPortal.guestNetworkType === GuestNetworkTypeEnum.HostApproval);
 
   const onBbsMinRateChange = function (value: BssMinRateEnum) {
     if (value === BssMinRateEnum.VALUE_NONE) {

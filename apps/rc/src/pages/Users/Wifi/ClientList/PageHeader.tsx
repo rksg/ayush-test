@@ -23,7 +23,7 @@ function Header () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Wi-Fi' })}
-      footer={<Tabs clientCount={data?.data ? data.data.length : 0}/>}
+      footer={<Tabs clientCount={data?.totalCount ? data.totalCount : 0}/>}
     />
   )
 }
