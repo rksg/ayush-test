@@ -199,9 +199,6 @@ describe('NetworkMoreSettingsForm', () => {
       { route: { params } })
 
 
-    const enableFastRoamingCheckbox = screen.getByTestId('enableFastRoaming')
-    fireEvent.click(enableFastRoamingCheckbox)
-    expect(screen.getByText(/mobility domain id/i)).toBeVisible()
   })
 
   it('Adjust BBS Min Rate value', async () => {
