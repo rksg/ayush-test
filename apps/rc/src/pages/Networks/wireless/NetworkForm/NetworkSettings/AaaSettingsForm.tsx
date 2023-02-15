@@ -33,9 +33,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function AaaSettingsForm (props: {
-  saveState: NetworkSaveData
-}) {
+export function AaaSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -58,7 +56,7 @@ export function AaaSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
