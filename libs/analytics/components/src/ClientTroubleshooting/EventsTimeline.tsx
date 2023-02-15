@@ -145,9 +145,6 @@ export function TimeLine (props: TimeLineProps) {
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
 
   const { setEventState, setVisible } = props
-  const handleVisible = (val: boolean) => {
-    setVisible(val)
-  }
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
@@ -228,7 +225,6 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <TimelineSeriesCharts
-          events={events}
           qualities={qualities}
           incidents={incidents}
           expandObj={expandObj}
@@ -239,7 +235,7 @@ export function TimeLine (props: TimeLineProps) {
           connectChart={connectChart}
           sharedChartName={sharedChartName}
           setEventState={setEventState}
-          handleVisible={handleVisible}
+          setVisible={setVisible}
         />
       </Col>
     </Row>
@@ -247,7 +243,6 @@ export function TimeLine (props: TimeLineProps) {
 }
 
 type TimelineSeriesChartsProps = {
-  events: Event[],
   qualities: never[] | {
     all: LabelledQuality[];
     rss: LabelledQuality[];
@@ -274,13 +269,12 @@ type TimelineSeriesChartsProps = {
     [key: string]: object;
   },
   setEventState: (event: DisplayEvent) => void,
-  handleVisible: (visible: boolean) => void,
+  setVisible: (visible: boolean) => void,
   connectChart: RefCallback<ReactECharts>,
   sharedChartName: string
 }
 
 const TimelineSeriesCharts = ({
-  events,
   qualities,
   incidents,
   expandObj,
@@ -289,7 +283,7 @@ const TimelineSeriesCharts = ({
   chartBoundary,
   roamingEventsAps,
   setEventState,
-  handleVisible,
+  setVisible,
   connectChart,
   sharedChartName
 }: TimelineSeriesChartsProps) => {
@@ -303,7 +297,7 @@ const TimelineSeriesCharts = ({
           style={{ width: 'auto', marginBottom: 8 }}
           data={getChartData(
         config?.value as keyof TimelineData,
-        events,
+        TimelineData.connectionEvents.all,
         expandObj[config?.value as keyof TimelineData],
         !Array.isArray(qualities) ? qualities.all : [],
         Array.isArray(incidents) ? incidents : [],
@@ -327,7 +321,7 @@ const TimelineSeriesCharts = ({
           }
           onDotClick={(params) => {
             setEventState(params as CoordDisplayEvent)
-            handleVisible(true)
+            setVisible(true)
           }}
           chartRef={connectChart}
           sharedChartName={sharedChartName}
