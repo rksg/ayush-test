@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { Row, Col }                   from 'antd'
-import { connect }                    from 'echarts'
+import { connect, EChartsType }       from 'echarts'
 import ReactECharts                   from 'echarts-for-react'
 import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
@@ -108,15 +108,26 @@ export function TimeLine (props: TimeLineProps) {
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
+
   const sharedChartName = 'eventTimeSeriesGroup'
+  const chartsRef = useRef<EChartsType[]>([])
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = sharedChartName
+      chartsRef.current.push(instance)
     }
   }
   useEffect(() => {
+    const isChartActive = (chart: EChartsType) => chart && chart.isDisposed && !chart.isDisposed()
     connect(sharedChartName)
+    const charts = chartsRef.current
+
+    return () => {
+      const remainingCharts = charts.filter(isChartActive)
+      remainingCharts.forEach(chart => chart.dispose())
+      chartsRef.current = []
+    }
   }, [])
 
   const { startDate, endDate } = useDateFilter()
