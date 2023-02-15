@@ -20,14 +20,12 @@ const defaultConfig: Partial<Record<TierKey, string[]>> = {
 
 export function useFFList (): { featureList?: string[], betaList?: string[] } {
   const jwtPayload = getJwtTokenPayload()
-  if (jwtPayload?.tenantType === AccountType.REC || jwtPayload?.tenantType === AccountType.VAR) {
-    jwtPayload.tenantType = 'REC'
-  } else jwtPayload.tenantType = 'MSP'
-
+  const tenantType = (jwtPayload?.tenantType === AccountType.REC || jwtPayload?.tenantType === AccountType.VAR) ? 'REC' : 'MSP'
+  useDebugValue(`JWT tenantType: ${jwtPayload?.tenantType}, Tenant type: ${tenantType}`)
   const treatment = useTreatments([Features.PLM_FF], {
     tier: jwtPayload?.acx_account_tier,
     vertical: jwtPayload?.acx_account_vertical,
-    tenantType: jwtPayload?.tenantType,
+    tenantType: tenantType,
     tenantId: jwtPayload?.tenantId,
     isBetaFlag: jwtPayload?.isBetaFlag
   })[Features.PLM_FF]
@@ -39,7 +37,7 @@ export function useFFList (): { featureList?: string[], betaList?: string[] } {
 
   const featureKey = [
     'feature',
-    jwtPayload?.tenantType,
+    tenantType,
     jwtPayload?.acx_account_vertical
   ].join('-') as keyof typeof defaultConfig
 
