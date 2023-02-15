@@ -1,13 +1,12 @@
 import { useState } from 'react'
 
-import { Form, Input, Select, Tooltip } from 'antd'
-import TextArea                         from 'antd/lib/input/TextArea'
-import { useIntl }                      from 'react-intl'
+import { Form, Input, Select } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
+import { useIntl }             from 'react-intl'
 
-import { Alert, Loader }              from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { Alert, Loader, Tooltip } from '@acx-ui/components'
+import { useVenuesListQuery }     from '@acx-ui/rc/services'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -71,12 +70,10 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         name='serialNumber'
         label={<>
           { $t({ defaultMessage: 'Serial Number' }) }
-          <Tooltip
+          <Tooltip.Question
             title={$t({ defaultMessage: 'Serial Number' })}
             placement='bottom'
-          >
-            <QuestionMarkCircleOutlined />
-          </Tooltip>
+          />
         </>}
         rules={[
           {

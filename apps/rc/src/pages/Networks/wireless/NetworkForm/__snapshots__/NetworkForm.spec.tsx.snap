@@ -435,7 +435,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   <span>
                                                     Pre-Shared Key (PSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Require users to enter a passphrase (that you have defined for the network) to connect
                                                     </div>
@@ -466,7 +466,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   <span>
                                                     Dynamic Pre-Shared Key (DPSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Require users to enter a passphrase to connect. The passphrase is unique per device
                                                     </div>
@@ -497,7 +497,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   <span>
                                                     Enterprise AAA (802.1X)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
                                                     </div>
@@ -528,7 +528,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   <span>
                                                     Captive Portal
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Users are authorized through a captive portal in various methods
                                                     </div>
@@ -558,7 +558,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                   <span>
                                                     Open Network
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Allow users to access the network without any authentication/security (not recommended)
                                                     </div>
@@ -590,7 +590,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Pre-Shared Key (PSK)"
@@ -1014,7 +1014,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Pre-Shared Key (PSK)"
@@ -1420,6 +1420,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
+                                                        style="text-align: center;"
                                                       >
                                                         <div
                                                           class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -1431,6 +1432,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </th>
                                                       <th
                                                         class="ant-table-cell react-resizable"
+                                                        style="text-align: center;"
                                                       >
                                                         <div
                                                           class="styledComponents__ResizableHover-sc-1abm7iv-8"
@@ -1646,11 +1648,13 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         4
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         0
                                                       </td>
@@ -1726,11 +1730,13 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         1
                                                       </td>
                                                       <td
                                                         class="ant-table-cell"
+                                                        style="text-align: center;"
                                                       >
                                                         1
                                                       </td>
@@ -2701,7 +2707,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Pre-Shared Key (PSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Require users to enter a passphrase (that you have defined for the network) to connect
                                                     </div>
@@ -2732,7 +2738,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Dynamic Pre-Shared Key (DPSK)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Require users to enter a passphrase to connect. The passphrase is unique per device
                                                     </div>
@@ -2763,7 +2769,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Enterprise AAA (802.1X)
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
                                                     </div>
@@ -2794,7 +2800,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Captive Portal
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Users are authorized through a captive portal in various methods
                                                     </div>
@@ -2824,7 +2830,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                   <span>
                                                     Open Network
                                                     <div
-                                                      class="styledComponents__RadioDescription-sc-p8nkv6-2 ctNiPe"
+                                                      class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
                                                       Allow users to access the network without any authentication/security (not recommended)
                                                     </div>
@@ -2856,7 +2862,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Open Network"
@@ -2953,7 +2959,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Open Network"

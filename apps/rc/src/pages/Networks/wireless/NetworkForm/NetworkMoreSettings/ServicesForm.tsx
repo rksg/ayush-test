@@ -5,11 +5,16 @@ import {
   Checkbox,
   Form,
   InputNumber,
-  Switch
+  Switch,
+  Tooltip
 } from 'antd'
-import { useIntl } from 'react-intl'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting } from '@acx-ui/rc/utils'
+import { QuestionMarkCircleOutlined }                                                                                                  from '@acx-ui/icons'
+import { useExternalProvidersQuery }                                                                                                   from '@acx-ui/rc/services'
+import { DnsProxyRule, DnsProxyContextType, WifiCallingSettingContextType, WifiCallingSetting, NetworkTypeEnum, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -41,8 +46,32 @@ export function ServicesForm () {
     useWatch<boolean>(['wlan','advancedCustomization', 'wifiCallingEnabled'])
   ]
 
-  const { data } = useContext(NetworkFormContext)
+  const { editMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
+  const params = useParams()
+  const [showSingleSessionIdAccounting, setShowSingleSessionIdAccounting]=useState(false)
+  const wlanData = (editMode) ? data : form.getFieldsValue()
+  const providerData = useExternalProvidersQuery({ params })
+
+  useEffect(() => {
+    if (wlanData && data && providerData.data) {
+      const isProviderHasAccountingService = function () {
+        const providers = providerData?.data?.providers
+        const providerName = wlanData?.guestPortal?.wisprPage?.externalProviderName
+        const selectedProvider = _.find(providers, p => p.name === providerName)
+        const region = (selectedProvider?.regions) ? selectedProvider.regions[0] : null
+        return !!(region && region.accountingRadius)
+      }
+
+      const showFlag =
+        (wlanData?.enableAccountingService && data.type === NetworkTypeEnum.AAA) || (
+          data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+          wlanData?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+          isProviderHasAccountingService()
+        )
+      setShowSingleSessionIdAccounting(showFlag)
+    }
+  }, [wlanData, data, providerData])
 
   useEffect(() => {
     if (data) {
@@ -58,6 +87,9 @@ export function ServicesForm () {
   }, [data])
 
   const [dnsProxyList, setDnsProxyList] = useState([] as DnsProxyRule[])
+  const setEnableDnsProxy = (enable: boolean) => {
+    form.setFieldValue(['wlan', 'advancedCustomization', 'dnsProxyEnabled'], enable)
+  }
 
   const [wifiCallingSettingList, setWifiCallingSettingList] = useState([] as WifiCallingSetting[])
 
@@ -88,7 +120,8 @@ export function ServicesForm () {
             valuePropName='checked'
             initialValue={false}
           >
-            <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+            <DnsProxyContext.Provider
+              value={{ dnsProxyList, setDnsProxyList, setEnableDnsProxy }}>
               {enableDnsProxy && <DnsProxyModal />}
             </DnsProxyContext.Provider>
           </Form.Item>
@@ -191,6 +224,27 @@ export function ServicesForm () {
         </>
         }
       </>
+
+      {showSingleSessionIdAccounting &&
+        <UI.FormItemNoLabel
+          name={['wlan', 'advancedCustomization', 'singleSessionIdAccounting']}
+          valuePropName='checked'
+          children={
+            <Checkbox disabled={enableAntiSpoofing}
+              children={
+                <>
+                  {$t({ defaultMessage: 'Single session ID Accounting' })}
+                  <Tooltip
+                    // eslint-disable-next-line max-len
+                    title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
+                    placement='bottom'>
+                    <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
+                  </Tooltip>
+                </>
+              } />}
+        />
+
+      }
 
       <UI.FormItemNoLabel
         name={['wlan', 'advancedCustomization', 'forceMobileDeviceDhcp']}

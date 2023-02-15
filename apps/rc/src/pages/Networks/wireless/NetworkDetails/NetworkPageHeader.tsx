@@ -1,13 +1,17 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { Button, DisabledButton, PageHeader } from '@acx-ui/components'
-import { ArrowExpand, ClockOutlined }         from '@acx-ui/icons'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
+
+import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
+import { ArrowExpand }                                     from '@acx-ui/icons'
+import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { dateRangeForLast, useDateFilter }                 from '@acx-ui/utils'
 
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
 
 function NetworkPageHeader () {
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const network = useGetNetwork()
   const { networkId } = useParams()
   const { $t } = useIntl()
@@ -20,8 +24,14 @@ function NetworkPageHeader () {
       extra={[
         <DisabledButton key='hierarchy-filter'>
           {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
-        <DisabledButton key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}</DisabledButton>,
+        <RangePicker
+          key='date-filter'
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          enableDates={dateRangeForLast(3,'months')}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />,
         <TenantLink to={`/networks/wireless/${networkId}/edit`} key='edit'>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>

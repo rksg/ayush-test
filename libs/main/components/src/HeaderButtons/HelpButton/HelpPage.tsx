@@ -10,27 +10,33 @@ import { useLocation } from '@acx-ui/react-router-dom'
 
 import { EmptyDescription } from './styledComponents'
 
-//for Local test, use '/docs/r1/mapfile/doc-mapper.json'
-// TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
-export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
 
-// for local test, use '/docs/alto/latest/'
+//for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+// TODO: change to use '/docs/ruckusone/userguide/mapfile/doc-mapper.json' for local and prod after gateway adds route
+export const getMappingURL = () => process.env['NODE_ENV'] === 'development'
+  ? '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
+  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
+
+// for local test, use '/docs/ruckusone/userguide/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
+export const getDocsURL = () => process.env['NODE_ENV'] === 'development'
+  ? '/docs/ruckusone/userguide/'
+  : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
 const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
 const useBasePath = () => {
   const location = useLocation()
-  return _.replace(location.pathname, reg, (matchStr)=>{
+  const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
+  return _.replace(basePath, reg, (matchStr)=>{
     const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
     return matchStr.replaceAll(paramReg,'*')
   })
 }
 
 const getMapping = async (basePath: string, showError: () => void) => {
-  let result = await fetch(MAPPING_URL, {
+  let result = await fetch(getMappingURL(), {
     method: 'GET',
     headers: {
       Accept: 'application/json'
@@ -52,7 +58,7 @@ const updateDesc = async (
   onComplete: (content: string) => void,
   onError: () => void
 ) => {
-  const result = await fetch(DOCS_URL + destFile)
+  const result = await fetch(getDocsURL() + destFile)
   if(!result.ok){
     onError()
     return
@@ -92,7 +98,7 @@ export default function HelpPage (props: {
         mappingRs as string,
         (content) => {
           setHelpDesc(content)
-          setHelpUrl(DOCS_URL + mappingRs)
+          setHelpUrl(getDocsURL() + mappingRs)
         },
         showError
       )
@@ -115,11 +121,11 @@ export default function HelpPage (props: {
         {' '}
         <Button
           onClick={()=>{
-            window.open(DOCS_HOME_URL+'/alto/latest/index.html', '_blank')
+            window.open(DOCS_HOME_URL+'/ruckusone/userguide/index.html', '_blank')
           }}
           type='link'
           size='small'>
-          {$t({ defaultMessage: 'Ruckus ONE User Guide' })}
+          {$t({ defaultMessage: 'RUCKUS One User Guide' })}
         </Button>
       </p>}
 

@@ -6,7 +6,7 @@ import { Button }             from '@acx-ui/components'
 import { VLANPoolPolicyType } from '@acx-ui/rc/utils'
 
 
-import VLANPoolForm from '../../../Policies/VLANPool/VLANPoolForm/VLANPoolForm'
+import VLANPoolForm from '../../../../Policies/VLANPool/VLANPoolForm/VLANPoolForm'
 import * as UI      from '../styledComponents'
 
 export default function VLANPoolModal (props:{

@@ -412,7 +412,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Open Network"
@@ -500,7 +500,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         class="ant-col"
                       >
                         <div
-                          class="styledComponents__Diagram-sc-p8nkv6-0 hhEOEG"
+                          class="styledComponents__Diagram-sc-1mpg945-0 bGQlIU"
                         >
                           <img
                             alt="Open Network"
@@ -526,7 +526,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   type="text"
                 />
                 <div
-                  class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-lhsic1-3 bvaGkz"
+                  class="ant-collapse ant-collapse-icon-position-end ant-collapse-borderless ant-collapse-ghost styledComponents__CollapsePanel-sc-ijp2z4-3 elQjfU"
                   style="width: 100%; max-width: 600px;"
                 >
                   <div
@@ -575,7 +575,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         class="ant-collapse-content-box"
                       >
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 hfynvr"
                           width="90px"
                         >
                           VLAN Pooling:
@@ -727,7 +727,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 INHbI"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 hfynvr"
                           width="90px"
                         >
                           Proxy ARP:
@@ -816,12 +816,12 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         class="ant-collapse-content-box"
                       >
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
                           width="125px"
                         >
                           DNS Proxy:
                           <div
-                            class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iXJZpZ"
                             width="30px"
                           >
                             <div
@@ -882,12 +882,12 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
                           width="125px"
                         >
                           Wi-Fi Calling:
                           <div
-                            class="styledComponents__FieldLabel-sc-lhsic1-0 bbwIyS"
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iXJZpZ"
                             width="30px"
                           >
                             <div
@@ -947,7 +947,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
                           width="125px"
                         >
                           Client Isolation:
@@ -988,7 +988,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 iRFQBD"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 zFFEs"
                           width="125px"
                         >
                           Anti-spoofing:
@@ -1029,7 +1029,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                         >
                           <div
                             class="ant-row ant-form-item-row"
@@ -1069,7 +1069,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                         >
                           <div
                             class="ant-row ant-form-item-row"
@@ -1157,7 +1157,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                         class="ant-collapse-content-box"
                       >
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                         >
                           <div
                             class="ant-row ant-form-item-row"
@@ -1197,7 +1197,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <h4
-                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
                         >
                           Load Control
                         </h4>
@@ -1375,7 +1375,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                         >
                           <div
                             class="ant-row ant-form-item-row"
@@ -1416,7 +1416,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                         >
                           <div
                             class="ant-row ant-form-item-row"
@@ -1457,36 +1457,258 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          style="margin-bottom: 30px; display: grid; grid-template-columns: 120px 30px;"
+                          style="margin-bottom: 30px;"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
-                          >
-                            Access Control
-                          </h4>
                           <span
-                            class="ant-tooltip-disabled-compatible-wrapper"
-                            style="display: inline-block; cursor: not-allowed;"
+                            style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
                           >
+                            <h4
+                              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
+                            >
+                              Access Control
+                            </h4>
                             <button
-                              aria-checked="false"
-                              class="ant-switch ant-switch-disabled"
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                               disabled=""
-                              role="switch"
-                              style="pointer-events: none;"
                               type="button"
                             >
-                              <div
-                                class="ant-switch-handle"
-                              />
-                              <span
-                                class="ant-switch-inner"
-                              />
+                              <span>
+                                Save as AC Profile
+                              </span>
+                            </button>
+                            <button
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                              type="button"
+                            >
+                              <span>
+                                Select Access Control profile
+                              </span>
                             </button>
                           </span>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Layer 2
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l2AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Layer 3
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l3AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Device & OS
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_enableDeviceOs"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Applications
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_applicationPolicyEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Client Rate Limit
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="moreSettings_enableClientRateLimit"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb ant-form-item-has-success"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA ant-form-item-has-success"
                           style="margin-bottom: 15px;"
                         >
                           <div
@@ -1528,7 +1750,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <h4
-                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-lhsic1-6 fPbHyn jjZOaR"
+                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
                         >
                           Data Rate Control (2.4 GHz & 5 GHz)
                         </h4>
@@ -1726,7 +1948,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="ant-form-item styledComponents__FormItemNoLabel-sc-lhsic1-1 dLCGVb"
+                          class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA"
                           style="margin-bottom: 15px;"
                         >
                           <div
@@ -1771,7 +1993,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           style="display: grid; grid-template-columns: 0px 1fr;"
                         >
                           <span
-                            class="styledComponents__LabelOfInput-sc-lhsic1-4 iTJkTb"
+                            class="styledComponents__LabelOfInput-sc-ijp2z4-4 kaRqXV"
                             style="left: 165px;"
                           >
                             Seconds
@@ -1999,7 +2221,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 fRJoHG"
                           width="190px"
                         >
                           Airtime Decongestion:
@@ -2040,7 +2262,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 fRJoHG"
                           width="190px"
                         >
                           Join RSSI Threshold:
@@ -2085,7 +2307,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 fmAAEF"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 fRJoHG"
                           width="190px"
                         >
                           Transient Client Management:
@@ -2126,7 +2348,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          class="styledComponents__FieldLabel-sc-lhsic1-0 dKJWxS"
+                          class="styledComponents__FieldLabel-sc-ijp2z4-0 bnZbRV"
                           width="250px"
                         >
                           Optimized Connectivity Experience (OCE):

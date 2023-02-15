@@ -1,60 +1,47 @@
-import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                from '@acx-ui/components'
-import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink }                                                                        from '@acx-ui/react-router-dom'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
+import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery }                                                                      from '@acx-ui/rc/services'
+import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
-
-export const useMockData = () => {
-  const [data, setData] = useState<DhcpStats[]>()
-  const [isLoading, setIsloading] = useState(true)
-
-  useEffect(() => {
-    setData([
-      {
-        id: '1',
-        name: 'DHCP-1',
-        pools: 3,
-        edges: 3,
-        venues: 3,
-        health: 'Good',
-        updateAvailable: false,
-        serviceVersion: 'v100.10.10',
-        tags: ['Tag1', 'Tag2']
-      },
-      {
-        id: '2',
-        name: 'DHCP-2',
-        pools: 4,
-        edges: 3,
-        venues: 3,
-        health: 'Unknown',
-        updateAvailable: true,
-        serviceVersion: 'v200.10.10',
-        tags: []
-      }
-    ])
-    setIsloading(false)
-  }, [])
-
-  return { isLoading, data, total: data?.length }
-}
 
 const EdgeDhcpTable = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { data, total, isLoading } = useMockData()
+
+  const getDhcpStatsPayload = {
+    fields: [
+      'id',
+      'serviceName',
+      'dhcpPoolNum',
+      'edgeNum',
+      'venueNum',
+      'health',
+      'updateAvailable',
+      'serviceVersion',
+      'tags'
+    ],
+    filters: {},
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useGetDhcpStatsQuery,
+    defaultPayload: getDhcpStatsPayload
+  })
+  const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
 
   const columns: TableProps<DhcpStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'serviceName',
+      dataIndex: 'serviceName',
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
@@ -73,20 +60,20 @@ const EdgeDhcpTable = () => {
     {
       title: $t({ defaultMessage: 'DHCP Pools' }),
       align: 'center',
-      key: 'pools',
-      dataIndex: 'pools'
+      key: 'dhcpPoolNum',
+      dataIndex: 'dhcpPoolNum'
     },
     {
       title: $t({ defaultMessage: 'SmartEdges' }),
       align: 'center',
-      key: 'edges',
-      dataIndex: 'edges'
+      key: 'edgeNum',
+      dataIndex: 'edgeNum'
     },
     {
       title: $t({ defaultMessage: 'Venues' }),
       align: 'center',
-      key: 'venues',
-      dataIndex: 'venues'
+      key: 'venueNum',
+      dataIndex: 'venueNum'
     },
     {
       title: $t({ defaultMessage: 'Health' }),
@@ -145,12 +132,15 @@ const EdgeDhcpTable = () => {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'DHCP' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
+            entityValue: rows.length === 1 ? rows[0].serviceName : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
-            // TODO API not ready
-            clearSelection()
+            rows.length === 1 ?
+              deleteDhcp({ params: { id: rows[0].id } })
+                .then(clearSelection) :
+              deleteDhcp({ payload: rows.map(item => item.id) })
+                .then(clearSelection)
           }
         })
       }
@@ -180,7 +170,7 @@ const EdgeDhcpTable = () => {
       <PageHeader
         title={
           $t({ defaultMessage: 'DHCP for SmartEdge ({count})' },
-            { count: total })
+            { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
@@ -193,11 +183,14 @@ const EdgeDhcpTable = () => {
         ]}
       />
       <Loader states={[
-        { isFetching: isLoading, isLoading: false }
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteDhcpUpdating }
       ]}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'checkbox' }}

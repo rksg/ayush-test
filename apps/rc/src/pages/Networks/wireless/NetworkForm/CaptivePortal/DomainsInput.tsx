@@ -2,13 +2,12 @@
 
 import {
   Form,
-  Input,
-  Tooltip
+  Input
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { domainsNameRegExp }          from '@acx-ui/rc/utils'
+import { Tooltip }           from '@acx-ui/components'
+import { domainsNameRegExp } from '@acx-ui/rc/utils'
 
 export function DomainsInput (props:{
   label?:string,
@@ -23,11 +22,9 @@ export function DomainsInput (props:{
       name={['guestPortal','hostGuestConfig', props.name||'hostDomains']}
       label={<>
         {$t({ defaultMessage: 'Host Domains' })}
-        <Tooltip title={$t({ defaultMessage:
+        <Tooltip.Question title={$t({ defaultMessage:
          'Only hosts from these domains will be allowed to approve guest requests' })}
-        placement='bottom'>
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        placement='bottom' />
       </>}
       rules={[
         { required: props.required },

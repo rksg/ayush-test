@@ -2,19 +2,16 @@ import { useEffect, useState } from 'react'
 
 import {
   Checkbox,
-  Form,
-  Tooltip
+  Form
 } from 'antd'
 import { useWatch } from 'antd/lib/form/Form'
 import { useIntl }  from 'react-intl'
 
-// import { Button }              from '@acx-ui/components'
-import {
-  QuestionMarkCircleOutlined
-} from '@acx-ui/icons'
-import { useVenuesListQuery } from '@acx-ui/rc/services'
-import { Venue }              from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { Tooltip }                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useVenuesListQuery }         from '@acx-ui/rc/services'
+import { Venue }                      from '@acx-ui/rc/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
 
 
 export function DhcpCheckbox () {

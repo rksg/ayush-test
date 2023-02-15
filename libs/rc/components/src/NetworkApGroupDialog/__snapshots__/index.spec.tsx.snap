@@ -24,8 +24,8 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       <span
         class="ant-modal-close-x"
       >
-        <div
-          data-testid="close-symbol"
+        <svg
+          data-testid="CloseSymbol"
         />
       </span>
     </button>

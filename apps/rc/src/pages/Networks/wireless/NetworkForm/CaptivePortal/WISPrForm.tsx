@@ -3,17 +3,16 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import {
   Form,
   Select,
-  Tooltip,
   Checkbox,
   Space,
   Input,
   InputRef
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import _                             from 'lodash'
+import { FormattedMessage, useIntl } from 'react-intl'
+import { useParams }                 from 'react-router-dom'
 
-import { Button, GridCol, GridRow, StepsForm } from '@acx-ui/components'
+import { Button, GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
 import {
   InformationSolid,
   QuestionMarkCircleOutlined
@@ -227,10 +226,9 @@ export function WISPrForm () {
           }
           label={<>
             {$t({ defaultMessage: 'Captive Portal URL' })}
-            <Tooltip title={$t({ defaultMessage: 'Copy this from your vendor\'s configuration' })}
-              placement='bottom'>
-              <QuestionMarkCircleOutlined/>
-            </Tooltip>
+            <Tooltip.Question
+              title={$t({ defaultMessage: 'Copy this from your vendor\'s configuration' })}
+              placement='bottom' />
           </>}
           children={<Input placeholder={$t({ defaultMessage:
           'Tip: Copy this from your vendor\'s configuration' })}
@@ -244,11 +242,10 @@ export function WISPrForm () {
         <Form.Item
           name={['guestPortal','wisprPage','integrationKey']}
           label={<>{$t({ defaultMessage: 'Integration Key' })}
-            <Tooltip title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
+            <Tooltip.Question
+              title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
             +' configuration, to allow it to connect to Ruckus Cloud' })}
-            placement='bottom'>
-              <QuestionMarkCircleOutlined/>
-            </Tooltip>
+              placement='bottom' />
           </>}
           extra={
             <div style={{ marginLeft: 210, marginTop: -30 }}>
@@ -361,20 +358,24 @@ export function WISPrForm () {
           ]}
           initialValue={[]}
           label={<>{$t({ defaultMessage: 'Walled Garden' })}
-            <Tooltip title={$t({ defaultMessage: 'Unauthenticated users will be allowed '
-            +'to access these destinations(i.e., without redirection to captive '+
-            'portal).' })+'\n'+
-             $t({ defaultMessage: 'Each destination should be entered in a new line.' })+'\n'+
-             $t({ defaultMessage: 'Accepted formats for destinations are:' })+'\n\n'+
-             $t({ defaultMessage: '-IP address(e.g. 10.11.12.13)' })+'\n\n'+
-             $t({ defaultMessage: '-IP address range(e.g. 10.11.12.13-10.11.12.15)' })+'\n\n'+
-             $t({ defaultMessage: '-CIDR(e.g. 10.11.12.13/28)' })+'\n\n'+
-             $t({ defaultMessage: '-IP address and mask(e.g. 10.11.12.13 255.255.255.0)' })+'\n\n'+
-             $t({ defaultMessage: '-Website FQDN(e.g. www.ruckus.com)' })+'\n\n'+
-             $t({ defaultMessage: '-Website FQDN with a wildcard(e.g. *.amazon.com; *.com)' })+'\n'}
-            placement='bottom'>
-              <QuestionMarkCircleOutlined/>
-            </Tooltip>
+            <Tooltip.Question
+              placement='bottom'
+              title={<FormattedMessage
+                values={{ br: (chunks) => <>{chunks}<br /></> }}
+                /* eslint-disable max-len */
+                defaultMessage={`
+                  Unauthenticated users will be allowed to access these destinations(i.e., without redirection to captive portal).<br></br><br></br>
+                  Each destination should be entered in a new line. Accepted formats for destinations are:<br></br><br></br>
+                  - IP address(e.g. 10.11.12.13)<br></br>
+                  - IP address range(e.g. 10.11.12.13-10.11.12.15)<br></br>
+                  - CIDR(e.g. 10.11.12.13/28)<br></br>
+                  - IP address and mask(e.g. 10.11.12.13 255.255.255.0)<br></br>
+                  - Website FQDN(e.g. www.ruckus.com)<br></br>
+                  - Website FQDN with a wildcard(e.g. *.amazon.com; *.com)
+                `}
+                /* eslint-enable */
+              />}
+            />
           </>}
           children={
             <Input.TextArea rows={15}

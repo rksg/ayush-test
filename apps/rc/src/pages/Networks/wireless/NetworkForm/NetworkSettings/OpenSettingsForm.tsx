@@ -8,8 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }       from '@acx-ui/components'
-import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { StepsForm } from '@acx-ui/components'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -19,9 +18,7 @@ import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm (props: {
-  saveState: NetworkSaveData
-}) {
+export function OpenSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
@@ -42,7 +39,6 @@ export function OpenSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -82,6 +78,7 @@ function SettingsForm () {
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}
+      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
     </>
   )
 }

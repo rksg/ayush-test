@@ -204,14 +204,14 @@ export function SwitchVeTable ( { isVenueLevel } : {
       }]
       }
     />
-
-    { visible && <SwitchVeDrawer
+    {visible && <SwitchVeDrawer
       visible={visible}
       setVisible={setVisible}
       isEditMode={isEditMode}
       isVenueLevel={isVenueLevel}
       editData={editData}
-    /> }
+    />}
+
   </Loader>
 
 }

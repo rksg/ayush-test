@@ -16,8 +16,8 @@ function NetworkTabs () {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-
-  const { data } = useNetworkDetailHeaderQuery({ params })
+  const { tenantId, networkId } = params
+  const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
 
   const [apsCount, venuesCount, servicesCount] = [
     data?.aps.totalApCount ?? 0,
@@ -28,8 +28,7 @@ function NetworkTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Overview' })}</Tooltip>}
+        tab={$t({ defaultMessage: 'Overview' })}
         key='overview'
       />
       <Tabs.TabPane tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })} key='aps' />
@@ -44,8 +43,7 @@ function NetworkTabs () {
         key='services' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Incidents' })}</Tooltip>}
+        tab={$t({ defaultMessage: 'Incidents' })}
         key='incidents'
       />
     </Tabs>

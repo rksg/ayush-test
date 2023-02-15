@@ -40,7 +40,7 @@ const Ports = () => {
     },
     'sub-interface': {
       title: $t({ defaultMessage: 'Sub-interface' }),
-      content: <SubInterface data={portData} />
+      content: <SubInterface data={portDataWithStatusIp} />
     }
   }
 

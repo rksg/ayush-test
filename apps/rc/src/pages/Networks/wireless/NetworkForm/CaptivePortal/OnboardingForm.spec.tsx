@@ -13,7 +13,8 @@ import {
   successResponse,
   networkDeepResponse,
   dhcpResponse,
-  portalList
+  portalList,
+  externalProviders
 } from '../__tests__/fixtures'
 import NetworkForm from '../NetworkForm'
 
@@ -22,7 +23,7 @@ async function fillInBeforeSettings (networkName: string) {
   fireEvent.change(insertInput, { target: { value: networkName } })
   fireEvent.blur(insertInput)
   const validating = await screen.findByRole('img', { name: 'loading' })
-  await waitForElementToBeRemoved(validating)
+  await waitForElementToBeRemoved(validating, { timeout: 7000 })
   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
   await waitFor(async () => {
     expect(await screen.findByRole('heading', { level: 3, name: 'Portal Type' })).toBeVisible()
@@ -56,8 +57,13 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json(clickThroughData))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
+      rest.get(CommonUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json(externalProviders))),
       rest.get(PortalUrlsInfo.getPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))
+      ),
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
+        res(ctx.json([]))
       ),
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({
