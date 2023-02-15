@@ -1,6 +1,6 @@
 import { Button } from '@acx-ui/components'
 import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
+import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
@@ -102,7 +102,7 @@ export function Unit (props:{
         { portIdentifier: '' }
       ]
     }]
-  })
+  } as SwitchFrontView)
   const [ rearView, setRearView ] = useState({
     slots: []
   })
@@ -127,7 +127,23 @@ export function Unit (props:{
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
     const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
-    const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
+    const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })  
+    const tmpPortView = JSON.parse(JSON.stringify(portStatus)) 
+    tmpPortView.slots.forEach((slot:SwitchSlot) => {
+      if (slot.portStatus !== undefined) {
+        slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
+        const { cloudPort } = switchDetail
+        if (cloudPort) {
+          slot.portStatus.forEach(port => {
+            if (port.portIdentifier === cloudPort) {
+              port.usedInUplink = true
+            }
+          })
+        }
+      }
+    })
+    
+    setPortView(tmpPortView as SwitchFrontView)
   }
 
   const getOfflineSwitchPort = (member: StackMember) => {
@@ -167,7 +183,7 @@ export function Unit (props:{
         portStatus
       }]
     }
-    setPortView(tmpPort)
+    setPortView(tmpPort as unknown as SwitchFrontView)
   }
 
   const genUnit = (switchMember: StackMember) => {
@@ -256,16 +272,16 @@ export function Unit (props:{
       </UI.TitleBar>
     }
     { !isRearView 
-      ? <>{
+      ? <UI.UnitWrapper>{
         portView && portView.slots.map((slot, index) => (
           <span key={index}>
             <Slot slot={slot} portLabel={getPortLabel(slot) as string}
-              tooltipEnable={isOnline} isStack={isStack} 
+              isOnline={isOnline} isStack={isStack} 
               deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
             />
           </span>  
         ))
-      }</>
+      }</UI.UnitWrapper>
       : $t({ defaultMessage: 'Rear' }) 
     }
   </div>

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { ConfigurationBackupStatus } from '../constants'
+import { ConfigurationBackupStatus, PortTaggedEnum } from '../constants'
 import { PortSettingModel }          from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
@@ -218,6 +218,7 @@ export class SwitchViewModel extends Switch {
   firmware?: string
   activeSerial?: string
   syncDataId?: string
+  cloudPort?: string
 }
 
 export interface SwitchRow {
@@ -393,6 +394,48 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitStatus: string; // stack unit role (Standalone/Member...etc)
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
+}
+
+export interface SwitchPortStatus {
+  portnumber: number
+  name: string
+  portIdentifier: string
+  poeEnabled: boolean
+  status: string
+  portStatus: string
+  portSpeed: string
+  portTagged: PortTaggedEnum
+  taggedVlan: string
+  untaggedVlan: string
+  usedInFormingStack: boolean
+  usedInUplink: boolean
+  poeUsed: number
+  neighborName: string
+  poeType: string
+  unTaggedVlan: string
+  vlanIds: string
+  poeTotal: number
+  neighborMacAddress: string
+}
+
+export interface SwitchSlot {
+  portStatus: SwitchPortStatus[]
+  portCount?: number
+  slotNumber?: number
+  isDataPort?: boolean
+  fanStatus?: {
+    type: string
+    status: string
+  }
+  powerStatus?: {
+    type: string
+    status: string
+  }
+}
+
+export interface SwitchFrontView {
+  slots: SwitchSlot[]
+  unitNumber?: number
 }
 
 export enum PORT_SPEED {

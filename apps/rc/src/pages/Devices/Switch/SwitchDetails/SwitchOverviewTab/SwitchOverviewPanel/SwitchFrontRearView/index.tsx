@@ -3,11 +3,22 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { SwitchDetailsContext } from '../../..'
 import { Unit } from './Unit'
+import * as UI             from './styledComponents'
 
 interface SlotMember {
   isStack: boolean
   data: StackMember[]
 }
+
+/** 
+ * GUI:
+ *    _______________________________________
+ *   |  slot 1         slot 2   slot 3       |  
+ *   |  [][][][][][]   [][][]   [][]         |
+ *   |  [][][][][][]   [][][]   [][]-> port  |
+ *   |_______________________________________|-> unit
+ *   
+*/
 
 export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
@@ -55,10 +66,10 @@ export function SwitchFrontRearView (props:{
   return <>
     {
       slotMember && slotMember.data.map((member, index) => (
-        <span key={index}>
+        <UI.SwitchFrontRearViewWrapper key={index}>
           <Unit member={member} index={index}
             isStack={slotMember.isStack} isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL}/>
-        </span>  
+        </UI.SwitchFrontRearViewWrapper>  
       ))
     }
   </>

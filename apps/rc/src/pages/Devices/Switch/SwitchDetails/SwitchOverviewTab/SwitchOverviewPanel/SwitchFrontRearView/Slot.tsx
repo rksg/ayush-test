@@ -1,46 +1,27 @@
-import { PortLabelType, PortTaggedEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { PortLabelType, SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { Port } from './Port'
 import * as UI             from './styledComponents'
 
-interface portStatus {
-  portNumber: number
-  portnumber: number
-  name: string
-  portIdentifier: string
-  poeEnabled: boolean
-  status: string
-  portStatus: string
-  portSpeed: string
-  portTagged: PortTaggedEnum
-  taggedVlan: string
-  untaggedVlan: string
-  usedInFormingStack: boolean
-  usedInUplink: boolean
-  poeUsed: number
-  neighborName: string
-  poeType: string
-}
-
 export function Slot (props:{
-  slot: any, 
+  slot: SwitchSlot, 
   portLabel: string,
-  tooltipEnable: boolean,
+  isOnline: boolean,
   isStack: boolean,
   deviceStatus: SwitchStatusEnum
 }) {
   const { $t } = useIntl()
-  const [ isRearView, setIsRearView ] = useState(false)
-  const { slot, deviceStatus, isStack, portLabel } = props
+  const { slot, deviceStatus, isStack, portLabel, isOnline } = props
+  const [ handledSlot, setHandledSlot ] = useState(slot)
 
   // useEffect(() => {
   //   if (slot.portStatus !== undefined) {
-      
   //   }
   // }, [slot])
 
-  const getPortIcon = (port: portStatus) => {
+  const getPortIcon = (port: SwitchPortStatus) => {
     if (deviceStatus === SwitchStatusEnum.DISCONNECTED) {
       return '';
     }
@@ -56,15 +37,36 @@ export function Slot (props:{
     return '';
   }
 
+  const getPortColor = (port: SwitchPortStatus) => {
+    const { status } = port
+    if (deviceStatus === SwitchStatusEnum.DISCONNECTED) { 
+      return 'lightgray';
+    }
+
+    if (status === 'Up') {
+      return 'green';
+    } else if (status === 'Down') {
+      return 'gray';
+    } else if (status === 'Offline') {
+      return 'lightgray';
+    } 
+    return 'gray';
+  }
+
   return <UI.SlotWrapper>
     <UI.SlotVertical>
     {
       slot.portStatus
-      .filter((item: portStatus) => item.portnumber%2 == 1)
-      .map((port: portStatus) => (
+      .filter((item: SwitchPortStatus) => item.portnumber%2 == 1)
+      .map((port: SwitchPortStatus) => (
         <Port key={port.portIdentifier} 
           labelText={portLabel + port.portnumber}
           labelPosition='top' 
+          portColor={getPortColor(port)}
+          portIcon={getPortIcon(port)}
+          tooltipEnable={isOnline}
+          portData={port}
+          // tooltipText={getTooltip(port)}
         />
       ))
     }
@@ -72,11 +74,16 @@ export function Slot (props:{
     <UI.SlotVertical>
     {
       slot.portStatus
-      .filter((item: portStatus) => item.portnumber%2 == 0)
-      .map((port: portStatus) => (
+      .filter((item: SwitchPortStatus) => item.portnumber%2 == 0)
+      .map((port: SwitchPortStatus) => (
         <Port key={port.portIdentifier} 
           labelText={portLabel + port.portnumber}
           labelPosition='bottom' 
+          portColor={getPortColor(port)}
+          portIcon={getPortIcon(port)}
+          tooltipEnable={isOnline}
+          portData={port}
+          // tooltipText={getTooltip(port)}
         />
       ))
     }
