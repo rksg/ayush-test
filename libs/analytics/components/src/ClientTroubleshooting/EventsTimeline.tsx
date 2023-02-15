@@ -125,6 +125,7 @@ export function TimeLine (props: TimeLineProps) {
 
     return () => {
       const remainingCharts = charts.filter(isChartActive)
+      /* istanbul ignore next */
       remainingCharts.forEach(chart => chart.dispose())
       chartsRef.current = []
     }
