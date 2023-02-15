@@ -97,7 +97,7 @@ export function SwitchTable (props : {
     disable: true,
     render: (data, row) => {
       return row.isFirstLevel ?
-        <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/overview`}>
+        <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}>
           {getSwitchName(row)}
         </TenantLink> :
         <Space>
@@ -158,7 +158,7 @@ export function SwitchTable (props : {
     dataIndex: 'clientCount',
     sorter: true,
     render: (data, row) => (
-      <TenantLink to={`/devices/switch/${row.id}/${row.serialNumber}/details/clients`}>{data ? data : ((row.unitStatus === undefined) ? 0 : '') }</TenantLink>
+      <TenantLink to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/clients`}>{data || 0}</TenantLink>
     )
   }
   // { // TODO: Waiting for TAG feature support

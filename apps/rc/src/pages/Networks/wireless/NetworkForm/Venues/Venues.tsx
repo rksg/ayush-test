@@ -21,11 +21,11 @@ import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
-  NetworkVenue, RadioEnum,
-  SchedulerTypeEnum,
+  NetworkVenue,
   useTableQuery,
   Venue,
-  useScheduleSlotIndexMap
+  useScheduleSlotIndexMap,
+  generateDefaultNetworkVenue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -33,7 +33,6 @@ import {
   SchedulingModalState,
   NetworkVenueScheduleDialog
 } from '../../NetworkDetails/NetworkVenuesTab/NetworkVenueScheduleDialog'
-import { useGetNetwork }  from '../../NetworkDetails/services'
 import NetworkFormContext from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -69,8 +68,6 @@ const defaultPayload = {
   ]
 }
 
-const defaultArray: Venue[] = []
-
 const getNetworkId = () => {
   //  Identify tenantId in browser URL
   // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
@@ -87,9 +84,9 @@ interface schedule {
 
 export function Venues () {
   const form = Form.useFormInstance()
-  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
-  const venues = Form.useWatch('venues')
+  const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
 
   const { $t } = useIntl()
@@ -98,10 +95,8 @@ export function Venues () {
     apiParams: { networkId: getNetworkId() },
     defaultPayload
   })
-  const networkQuery = useGetNetwork()
 
-  const [tableData, setTableData] = useState(defaultArray)
-  const [activateVenues, setActivateVenues] = useState(defaultArray)
+  const [tableData, setTableData] = useState<Venue[]>([])
 
   // AP group form
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -112,64 +107,30 @@ export function Venues () {
     visible: false
   })
 
-  const handleVenueSaveData = (selectedRows: Venue[]) => {
-    const defaultSetup = {
-      apGroups: [],
-      scheduler: { type: SchedulerTypeEnum.ALWAYS_ON },
-      isAllApGroups: true,
-      allApGroupsRadio: RadioEnum.Both
-    }
-    const selected = selectedRows.map((row) => {
-      const existsVenue = (data?.venues?.find(venue => venue.venueId === row.id))
-      if (existsVenue) {
-        return existsVenue
-      } else {
-        return ({
-          ...defaultSetup,
-          venueId: row.id,
-          name: row.name
-        })
-      }
-    })
-
-    setData && setData({ ...data, venues: selected })
-    form.setFieldsValue({ venues: selected })
+  const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
+    setData && setData({ ...data, venues: newSelectedNetworkVenues })
+    form.setFieldsValue({ venues: newSelectedNetworkVenues })
   }
 
-  const handleActivateVenue = (isActivate:boolean, row:Venue | Venue[]) => {
-    let selectedVenues = [...activateVenues]
+  const handleActivateVenue = (isActivate: boolean, rows: Venue[]) => {
+    let newSelectedNetworkVenues: NetworkVenue[] = [...activatedNetworkVenues]
     if (isActivate) {
-      if (Array.isArray(row)) {
-        selectedVenues = [...selectedVenues, ...row]
-      } else {
-        selectedVenues = [...selectedVenues, row]
-      }
+      const newActivatedNetworkVenues: NetworkVenue[] =
+        rows.map(row => generateDefaultNetworkVenue(row.id, row.networkId as string))
+      newSelectedNetworkVenues = _.uniq([...newSelectedNetworkVenues, ...newActivatedNetworkVenues])
     } else {
-      if (Array.isArray(row)) {
-        row.forEach(item => {
-          const index = selectedVenues.findIndex(i => i.id === item.id)
-          if (index !== -1) {
-            selectedVenues.splice(index, 1)
-          }
-        })
-      } else {
-        const index = selectedVenues.findIndex(i => i.id === row.id)
-        if (index !== -1) {
-          selectedVenues.splice(index, 1)
-        }
-      }
+      const handleVenuesIds = rows.map(row => row.id)
+      _.remove(newSelectedNetworkVenues, v => handleVenuesIds.includes(v.venueId as string))
     }
-    selectedVenues = _.uniq(selectedVenues)
-    setActivateVenues(selectedVenues)
-    handleVenueSaveData(selectedVenues)
-    setTableDataActivate(tableData ,selectedVenues)
+    handleVenueSaveData(newSelectedNetworkVenues)
+    setTableDataActivate(tableData, newSelectedNetworkVenues.map(i=>i.venueId))
   }
 
-  const setTableDataActivate = (dataOfTable:Venue[], selectedVenues:Venue[]) => {
+  const setTableDataActivate = (dataOfTable: Venue[], selectedVenueIds: (string|undefined)[]) => {
     const data:Venue[] = []
     dataOfTable.forEach(item => {
       let activated = { isActivated: false }
-      if(selectedVenues.find(i => i.id === item.id)) {
+      if(selectedVenueIds.find(id => id === item.id)) {
         activated.isActivated = true
       }
       item.activated = activated
@@ -194,49 +155,26 @@ export function Venues () {
   ]
 
   useEffect(()=>{
-    if(editMode || cloneMode){
-      if(tableQuery.data && activateVenues.length === 0){
-        const selected: Venue[] = []
-        const tableData = tableQuery.data.data.map((item: Venue) =>
-        {
-          item = cloneMode ? _.omit(item, 'networkId') : item
-          const isActivated = venues &&
-            venues.filter((venue: Venue) => venue.venueId === item.id).length > 0
-          if(isActivated){
-            selected.push(item)
-          }
-          const activatedVenue = item.deepVenue || networkQuery.data?.venues?.find(
-            i => i.venueId === item.id
-          )
-          return {
-            ...item,
-            deepVenue: activatedVenue,
-            // work around of read-only records from RTKQ
-            activated: { isActivated }
-          }
-        })
-        setTableData(tableData)
-        setTableDataActivate(tableData, selected)
-        setActivateVenues(selected)
-      }
-    }else{
-      if(tableQuery.data && tableData.length === 0){
-        const tableData = tableQuery.data.data.map((item: Venue) =>
-        {
-          const activatedVenue = item.deepVenue || networkQuery.data?.venues?.find(
-            i => i.venueId === item.id
-          )
-          return {
-            ...item,
-            deepVenue: activatedVenue,
-            // work around of read-only records from RTKQ
-            activated: { ...item.activated }
-          }
-        })
-        setTableData(tableData)
-      }
+    if(tableQuery.data && activatedNetworkVenues){
+
+      const currentTableData = tableQuery.data.data.map(item => {
+        item = cloneMode ? _.omit(item, 'networkId') : item
+
+        const targetNetworkVenue = activatedNetworkVenues.find(nv => nv.venueId === item.id)
+
+        return {
+          ...item,
+          deepVenue: targetNetworkVenue,
+          // work around of read-only records from RTKQ
+          activated: targetNetworkVenue ? { isActivated: true } : { ...item.activated }
+        }
+      })
+      setTableDataActivate(currentTableData, activatedNetworkVenues.map(v=>v.venueId))
     }
-    if(data && (venues === undefined || venues?.length === 0)) {
+  }, [tableQuery.data, activatedNetworkVenues])
+
+  useEffect(()=>{
+    if(data && (activatedNetworkVenues === undefined || activatedNetworkVenues?.length === 0)) {
       if(cloneMode){
         const venuesData = data?.venues?.map(item => {
           return { ...item, networkId: null, id: null }
@@ -246,7 +184,7 @@ export function Venues () {
         form.setFieldsValue({ venues: data.venues })
       }
     }
-  }, [venues, tableQuery.data, editMode, data])
+  }, [data])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData)
 
@@ -272,12 +210,14 @@ export function Venues () {
     {
       key: 'network',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: ['networks', 'count']
+      dataIndex: ['networks', 'count'],
+      align: 'center'
     },
     {
       key: 'aggregatedApStatus',
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       dataIndex: 'aggregatedApStatus',
+      align: 'center',
       render: function (data, row) {
         if (!row.aggregatedApStatus) { return 0 }
         return Object
@@ -294,7 +234,7 @@ export function Venues () {
           checked={Boolean(data)}
           onClick={(checked, event) => {
             event.stopPropagation()
-            handleActivateVenue(checked, row)
+            handleActivateVenue(checked, [row])
           }}
         />
       }
@@ -332,13 +272,9 @@ export function Venues () {
     if (!row.activated.isActivated) {
       return
     }
-    const network = data
     const venueId = row.id
-    let venue = row.deepVenue
-    if (!venue) {
-      venue = network?.venues?.find(v => v.venueId === venueId)
-    }
-    return venue
+    // Need to get deepVenue from data(NetworkFormContext) since this table doesn't post data immediately
+    return data?.venues?.find(v => v.venueId === venueId)
   }
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -372,23 +308,8 @@ export function Venues () {
       })
 
       if(selectedVenues) {
-        setData && setData({ ...data, venues: selectedVenues })
-        form.setFieldsValue({ venues: selectedVenues })
+        handleVenueSaveData(selectedVenues)
       }
-
-      let currentTableData: Venue[] = []
-      const currentIndex = tableData.findIndex(item => item.id === payload.venueId)
-      tableData.forEach((item, index)=>{
-        if (index === currentIndex) {
-          currentTableData.push(
-            { ...item, deepVenue: payload }
-          )
-        } else {
-          currentTableData.push(item)
-        }
-      })
-
-      setTableData(currentTableData)
       setApGroupModalState({
         visible: false
       })
@@ -420,7 +341,7 @@ export function Venues () {
         for(let i = 0; i < 96; i++){
           scheduleList.push('0')
         }
-        map[key].map((item: string) => {
+        map[key].forEach((item: string) => {
           const value = parseInt(item.split('_')[1], 10)
           scheduleList[value] = '1'
         })
@@ -437,23 +358,8 @@ export function Venues () {
     })
 
     if(selectedVenues) {
-      setData && setData({ ...data, venues: selectedVenues })
-      form.setFieldsValue({ venues: selectedVenues })
+      handleVenueSaveData(selectedVenues)
     }
-
-    let currentTableData: Venue[] = []
-    const currentIndex = tableData.findIndex(item => item.id === payload.venueId)
-    tableData.forEach((item, index)=>{
-      if (index === currentIndex) {
-        currentTableData.push(
-          { ...item, deepVenue: payload }
-        )
-      } else {
-        currentTableData.push(item)
-      }
-    })
-
-    setTableData(currentTableData)
     setScheduleModalState({
       visible: false
     })
@@ -472,8 +378,7 @@ export function Venues () {
               type: 'checkbox'
             }}
             columns={columns}
-            dataSource={[...tableData]}
-
+            dataSource={tableData}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />
@@ -493,7 +398,7 @@ export function Venues () {
             <NetworkVenueScheduleDialog
               {...scheduleModalState}
               formName='networkVenueScheduleForm'
-              network={networkQuery.data}
+              network={data}
               onCancel={handleCancel}
             />
           </Form.Provider>
