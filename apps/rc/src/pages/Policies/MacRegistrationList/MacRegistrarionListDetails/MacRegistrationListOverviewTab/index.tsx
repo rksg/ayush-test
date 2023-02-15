@@ -92,7 +92,7 @@ export function MacRegistrationListOverviewTab () {
           </Form>
         </Loader>
       </Card>
-      <NetworkTable/>
+      <NetworkTable networkIds={data?.networkIds}/>
     </Space>
   )
 }

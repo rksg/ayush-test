@@ -13,6 +13,7 @@ import {
 import {
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
+  useLazyNetworkListQuery,
   useMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
@@ -20,17 +21,17 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
-  MacRegistrationPool,
+  MacRegistrationPool, Network,
   PolicyOperation,
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
 
-function useColumns (policySets: Map<string, string>) {
+function useColumns (policySets: Map<string, string>, venueCountMap: Map<string, string>) {
   const { $t } = useIntl()
   const columns: TableProps<MacRegistrationPool>['columns'] = [
     {
@@ -91,6 +92,15 @@ function useColumns (policySets: Map<string, string>) {
           >{row.registrationCount ?? 0}</TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Venues' }),
+      key: 'venueCount',
+      dataIndex: 'venueCount',
+      align: 'center',
+      render: function (data, row) {
+        return venueCountMap.get(row.id!) ?? 0
+      }
     }
   ]
   return columns
@@ -101,6 +111,8 @@ export default function MacRegistrationListsTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
+  const [venueCountMap, setVenueCountMap] = useState(new Map())
+  const params = useParams()
 
   const tableQuery = useTableQuery({
     useQuery: useMacRegListsQuery,
@@ -113,13 +125,17 @@ export default function MacRegistrationListsTable () {
   ] = useDeleteMacRegListMutation()
 
   const [getAdaptivePolicySet] = useLazyGetAdaptivePolicySetQuery()
+  const [getNetworkList] = useLazyNetworkListQuery()
 
   useEffect(() => {
     if (tableQuery.isLoading)
       return
+
     const policySets = new Map()
+    const venueCountMap = new Map()
+
     tableQuery.data?.data.forEach(macPools => {
-      const { policySetId } = macPools
+      const { id, policySetId, networkIds } = macPools
       if (policySetId) {
         getAdaptivePolicySet({ params: { policyId: policySetId } })
           .then(result => {
@@ -128,8 +144,24 @@ export default function MacRegistrationListsTable () {
             }
           })
       }
+
+      if(networkIds && networkIds.length > 0) {
+        getNetworkList({
+          params,
+          payload: {
+            fields: [ 'venues', 'id' ],
+            filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
+          } }).then(result => {
+          if (result.data?.data) {
+            // eslint-disable-next-line max-len
+            const count = result.data.data.reduce((accumulator: number, currentValue:Network) => accumulator + currentValue.venues.count, 0)
+            venueCountMap.set(id, count)
+          }
+        })
+      }
     })
     setPolicySetMap(policySets)
+    setVenueCountMap(venueCountMap)
   }, [tableQuery.data])
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
@@ -201,7 +233,7 @@ export default function MacRegistrationListsTable () {
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
         <Table
-          columns={useColumns(policySetMap)}
+          columns={useColumns(policySetMap, venueCountMap)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
