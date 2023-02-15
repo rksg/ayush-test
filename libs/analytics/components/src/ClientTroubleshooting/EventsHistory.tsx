@@ -35,7 +35,8 @@ type FormattedEvent = {
   description: string,
   title: string,
   icon: ReactNode,
-  id: string
+  id: string,
+  event: DisplayEvent
 }
 
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
@@ -60,7 +61,8 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color}/>
+      icon: <UI.EventTypeIcon color={color}/>,
+      event
     }
   }),
   ...incidents
@@ -73,8 +75,8 @@ const renderItem = (
   setVisible: CallableFunction
 ) => {
   const onClick = () => {
-    if (item && !item.id) {
-      handler(item)
+    if (item && (item as FormattedEvent).event) {
+      handler((item as FormattedEvent).event)
       setVisible((prev: boolean) => !prev)
     }
   }
