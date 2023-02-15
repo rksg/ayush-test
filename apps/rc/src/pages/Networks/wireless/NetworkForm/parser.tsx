@@ -399,6 +399,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.userDownlinkRateLimiting = 0
   }
 
+  if (!get(data, 'wlan.advancedCustomization.clientIsolation')) {
+    advancedCustomization.clientIsolationOptions = { autoVrrp: false }
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
