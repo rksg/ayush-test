@@ -10,14 +10,14 @@ import { SwitchOverviewPanel } from '.'
 
 jest.mock('@acx-ui/analytics/components', () => ({
   SwitchesTrafficByVolume: () =>
-    <div data-testid={'rc-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />
+    <div data-testid={'rc-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
+  SwitchStatusByTime: () =>
+    <div data-testid={'rc-SwitchStatusByTime'} title='SwitchStatusByTime' />
 }))
-
 jest.mock('./ResourceUtilization', () => ({
   ResourceUtilization: () =>
     <div data-testid={'rc-ResourceUtilization'} title='ResourceUtilization' />
 }))
-
 jest.mock('./TopPorts', () => ({
   TopPorts: () =>
     <div data-testid={'rc-TopPorts'} title='TopPorts' />
@@ -47,6 +47,7 @@ describe('SwitchOverviewTab', () => {
     })
     expect(await screen.findByTestId('rc-SwitchesTrafficByVolume')).toBeVisible()
     expect(await screen.findByTestId('rc-ResourceUtilization')).toBeVisible()
+    expect(await screen.findByTestId('rc-SwitchStatusByTime')).toBeVisible()
     expect(await screen.findAllByTestId('rc-TopPorts')).toHaveLength(4)
   })
 
