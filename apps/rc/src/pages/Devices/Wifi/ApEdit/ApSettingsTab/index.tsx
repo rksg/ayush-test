@@ -13,6 +13,7 @@ import { ApEditContext } from '../index'
 import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
+import { MdnsProxyTab }      from './MdnsProxyTab/MdnsProxyTab'
 import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
@@ -23,7 +24,7 @@ export function ApSettingsTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
-  const releaseTag = useIsSplitOn(Features.DEVICES)
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
 
@@ -74,11 +75,14 @@ export function ApSettingsTab () {
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {tabTitleMap('proxy')}</Tooltip>}
+      <TabPane disabled={!isServicesEnabled}
+        tab={
+          <Tooltip title={isServicesEnabled ? '' : $t(notAvailableMsg)}>
+            {tabTitleMap('proxy')}
+          </Tooltip>
+        }
         key='proxy'>
-        {$t({ defaultMessage: 'mDNS Proxy' })}
+        <MdnsProxyTab />
       </TabPane>
       {supportDirectedMulticast &&
         <TabPane tab={<>
