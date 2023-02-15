@@ -11,6 +11,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useHasRoles }            from '@acx-ui/rbac'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -25,7 +26,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { useHasRoles } from '@acx-ui/rbac'
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }

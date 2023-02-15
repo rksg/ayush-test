@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Button }                  from '@acx-ui/components'
+import { useHasRoles }                         from '@acx-ui/rbac'
 import { NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
 import { useNetworkListQuery }                 from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }       from '@acx-ui/rc/utils'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
-import { useHasRoles }                         from '@acx-ui/rbac'
 
 export default function NetworksTable () {
   const { $t } = useIntl()
