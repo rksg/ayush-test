@@ -59,7 +59,7 @@ export function DhcpOptionModal (props: {
         label: <><b>{idx}</b> {item.label}</>,
         forSearch: `${idx} ${item.label}`,
         value: item.value,
-        disabled: currrentSeqs.includes(item.value) && !props.editRecord
+        disabled: currrentSeqs.includes(item.value) && props.editRecord?.seq !== item.value
       }))
   }, [props.currrentRecords, props.editRecord])
 

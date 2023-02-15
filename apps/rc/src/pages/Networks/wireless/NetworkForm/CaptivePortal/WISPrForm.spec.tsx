@@ -48,6 +48,9 @@ describe('CaptiveNetworkForm-WISPr', () => {
         (_, res, ctx) => res(ctx.json( externalProviders ))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
+      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
+        res(ctx.json([]))
+      ),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
     )

@@ -155,4 +155,39 @@ describe('Persona Group Table', () => {
     fireEvent.click(cancelButton)
 
   })
+
+  it('should export persona group to CSV', async () => {
+    const exportFn = jest.fn()
+
+    mockServer.use(
+      rest.post(PersonaUrls.exportPersonaGroup.url,(req, res, ctx) => {
+        const headers = req.headers['headers']
+
+        // Get List API: 'Content-Type': 'application/json'
+        if (headers['accept'] === 'application/json') {
+          return res(ctx.json(mockPersonaGroupTableResult))
+        } else {
+          exportFn()
+
+          return res(ctx.set({
+            'content-disposition': 'attachment; filename=PersonaGroups_20230118100829.csv',
+            'content-type': 'text/csv;charset=ISO-8859-1'
+          }), ctx.text('PersonaGroup'))
+        }
+      })
+    )
+
+    render(
+      <Provider>
+        <PersonaGroupTable />
+      </Provider>,{
+        route: { params, path: '/:tenantId/users/persona-management/persona-group' }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/i }))
+
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
+  })
 })
