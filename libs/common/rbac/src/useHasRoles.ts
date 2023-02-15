@@ -19,9 +19,6 @@ export function useHasRoles (userRole: string): boolean {
   if (!role && !roles) {
     roles = data?.roles
     role = data?.role
-
-    console.log(`user role: ${role}`)
   }
-  console.log(userRole === role && role === RolesEnum.READ_ONLY)
   return ((userRole === role && role === RolesEnum.READ_ONLY)? true : false)
 }

@@ -5,6 +5,7 @@ import { NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
 import { useNetworkListQuery }                 from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }       from '@acx-ui/rc/utils'
 import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { useHasRoles }                         from '@acx-ui/rbac'
 
 export default function NetworksTable () {
   const { $t } = useIntl()
@@ -17,7 +18,7 @@ export default function NetworksTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Networks' })}
-        extra={[
+        extra={useHasRoles('READ_ONLY')? [] : [
           <TenantLink to='/networks/wireless/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
           </TenantLink>
