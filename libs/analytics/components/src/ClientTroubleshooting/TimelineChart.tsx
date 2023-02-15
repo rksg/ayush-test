@@ -6,7 +6,8 @@ import {
   useState,
   RefCallback,
   useImperativeHandle,
-  useMemo
+  useMemo,
+  ReactNode
 } from 'react'
 
 import {
@@ -76,6 +77,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   showResetZoom?: boolean;
   onClick?: Function
   index?: React.Attributes['key'];
+  popoverNode?: ReactNode;
 }
 
 export const getSeriesData = (
@@ -256,7 +258,9 @@ export const useDataZoom = (
     })
     echartInstance.on('datazoom', onDatazoomCallback)
     return () => {
-      echartInstance.off('datazoom', onDatazoomCallback)
+      if (echartInstance && echartInstance.off) {
+        echartInstance.off('datazoom', onDatazoomCallback)
+      }
     }
   })
 

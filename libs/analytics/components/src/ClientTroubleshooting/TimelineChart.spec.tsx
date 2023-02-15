@@ -3,6 +3,7 @@ import React, { RefObject } from 'react'
 import { renderHook, act } from '@testing-library/react'
 import { ECharts }         from 'echarts'
 import ReactECharts        from 'echarts-for-react'
+import { BrowserRouter }   from 'react-router-dom'
 
 import { qualityDataObj, incidentDataObj, roamingDataObj }                from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData } from './config'
@@ -12,7 +13,7 @@ import {
   getSeriesItemColor,
   getSeriesData,
   getBarColor,
-  renderBarItem
+  renderCustomItem
 } from './TimelineChart'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
@@ -55,7 +56,7 @@ describe('TimelineChartComponent', () => {
       const eChartsRef = {} as RefObject<ReactECharts>
       const onDotClick = jest.fn()
       const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
       expect(onDotClick).not.toBeCalled()
       expect(setSelected).not.toBeCalled()
     })
@@ -96,10 +97,10 @@ describe('TimelineChartComponent', () => {
       } as RefObject<ReactECharts>
       const onDotClick = jest.fn()
       const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
-      expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 0, y: 10 })
+      expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 10, y: 20 })
       expect(setSelected).toBeCalledTimes(1)
       expect(setSelected).toBeCalledWith(testParams.data[2])
     })
@@ -120,7 +121,7 @@ describe('TimelineChartComponent', () => {
       } as RefObject<ReactECharts>
       const onDotClick = jest.fn()
       const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected))
+      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).not.toBeCalled()
       expect(setSelected).not.toBeCalled()
@@ -209,7 +210,7 @@ describe('TimelineChartComponent', () => {
   describe('renderCustomItem', () => {
     it('show return the shape obj', () => {
       expect(
-        renderBarItem(
+        renderCustomItem(
           {} as unknown as CustomSeriesRenderItemParams,
           {} as unknown as CustomSeriesRenderItemAPI
         )
