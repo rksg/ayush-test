@@ -104,11 +104,12 @@ export function renderFilter <RecordType> (
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
-    mode='multiple'
+    mode={column.filterMultiple === false ? undefined : 'multiple'}
     value={filterValues[key as keyof Filter]}
-    onChange={(value: unknown) =>
-      setFilterValues({ ...filterValues, [key]: (value as string[]).length ? value: undefined })
-    }
+    onChange={(value: unknown) => {
+      const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+      setFilterValues({ ...filterValues, [key]: isValidValue ? value: undefined })
+    }}
     placeholder={column.title as string}
     showArrow
     allowClear
