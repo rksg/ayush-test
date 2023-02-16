@@ -65,23 +65,33 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   getAccessControlProfile: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+    url: '/accessControlProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
+    newApi: true
   },
   getAccessControlProfileList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+    url: '/accessControlProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
+    newApi: true
   },
   addAccessControlProfile: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+    url: '/accessControlProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
+    newApi: true
   },
   updateAccessControlProfile: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+    url: '/accessControlProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
+    newApi: true
   },
   deleteAccessControlProfile: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+    url: '/accessControlProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
+    newApi: true
   },
   addDevicePolicy: {
     method: 'post',

@@ -671,10 +671,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),

@@ -388,26 +388,38 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getProfiles: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/profiles/query'
+    url: '/switchProfiles/query',
+    oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
+    newApi: true
   },
   getCliTemplates: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/cli-template/query'
+    url: '/cliTemplates/query',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template/query',
+    newApi: true
   },
   getLagList: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'
+    url: '/switches/:switchId/lags',
+    oldUrl: '/api/switch/tenant/:tenantId/lag/switch/:switchId',
+    newApi: true
   },
   updateLag: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/lag'
+    url: '/switches/lags/:lagId',
+    oldUrl: '/api/switch/tenant/:tenantId/lag',
+    newApi: true
   },
   addLag: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'
+    url: '/switches/:switchId/lags',
+    oldUrl: '/api/switch/tenant/:tenantId/lag/switch/:switchId',
+    newApi: true
   },
   deleteLag: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/lag/:lagId'
+    url: '/switches/lags/:lagId',
+    oldUrl: '/api/switch/tenant/:tenantId/lag/:lagId',
+    newApi: true
   }
 }

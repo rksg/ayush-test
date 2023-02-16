@@ -160,35 +160,29 @@ export function SwitchMacAddressForm () {
         portIdentify?: string,
         vlanId?: string,
         macAddress?: string,
-        debugType?: string
+        debugType: string
       }
 
       switch(macAddressTableType) {
         case TroubleshootingMacAddressOptionsEnum.PORT:
           const portIdentify = form.getFieldValue('portIdentify')
           if (!_.isEmpty(portIdentify)) {
-            payload = {
-              portIdentify,
-              macAddressTableType
-            }
+            payload.portIdentify = portIdentify
+            payload.macAddressTableType = macAddressTableType
           }
           break
         case TroubleshootingMacAddressOptionsEnum.VLAN:
           const vlanId = form.getFieldValue('vlanId')
           if (!_.isEmpty(vlanId) || Number(vlanId) > 0) {
-            payload = {
-              vlanId,
-              macAddressTableType
-            }
+            payload.vlanId = vlanId
+            payload.macAddressTableType = macAddressTableType
           }
           break
         case TroubleshootingMacAddressOptionsEnum.MAC:
           const macAddress = form.getFieldValue('macAddress')
           if (!_.isEmpty(macAddress)) {
-            payload = {
-              macAddress,
-              macAddressTableType
-            }
+            payload.macAddress = macAddress
+            payload.macAddressTableType = macAddressTableType
           }
           break
       }
