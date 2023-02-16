@@ -9,7 +9,6 @@ import { RawIntlProvider, useIntl }  from 'react-intl'
 import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useApActionMutation,
   useBlinkLedApMutation,
   useDeleteApMutation,
   useDeleteSoloApMutation,
@@ -41,7 +40,6 @@ export function useApActions () {
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
-  const [ apAction ] = useApActionMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
@@ -61,9 +59,10 @@ export function useApActions () {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            // Pinky: need to add feature flag
-            rebootAp({ params: { tenantId: tenantId, serialNumber } })
-            apAction({ params: { serialNumber }, payload: { action: 'reboot' } })
+            rebootAp({
+              params: { tenantId: tenantId, serialNumber },
+              payload: { action: 'reboot' }
+            })
             callBack && callBack()
           }
         }]
@@ -150,29 +149,18 @@ export function useApActions () {
   }
 
   const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    // Pinky: need to add feature flag
-    blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
-      let count = blinkLedCount
-      const interval = setInterval(() => {
-        if (count <= 0) {
-          clearInterval(interval)
-          callBack && callBack()
-        } else {
-          genBlinkLedToast(count--, interval)
-        }
-      }, 1000)
-    })
-    apAction({ params: { serialNumber }, payload: { action: 'blinkLed' } }).unwrap().then(() => {
-      let count = blinkLedCount
-      const interval = setInterval(() => {
-        if (count <= 0) {
-          clearInterval(interval)
-          callBack && callBack()
-        } else {
-          genBlinkLedToast(count--, interval)
-        }
-      }, 1000)
-    })
+    blinkLedAp({ params: { tenantId, serialNumber }, payload: { action: 'blinkLed' } })
+      .unwrap().then(() => {
+        let count = blinkLedCount
+        const interval = setInterval(() => {
+          if (count <= 0) {
+            clearInterval(interval)
+            callBack && callBack()
+          } else {
+            genBlinkLedToast(count--, interval)
+          }
+        }, 1000)
+      })
   }
 
   return {

@@ -5,8 +5,7 @@ import {
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
-  useDisableGuestsMutation,
-  useGuestActionMutation
+  useDisableGuestsMutation
 } from '@acx-ui/rc/services'
 import {
   Guest
@@ -18,7 +17,6 @@ export function useGuestActions () {
   const [deleteGuests] = useDeleteGuestsMutation()
   const [enableGuests] = useEnableGuestsMutation()
   const [disableGuests] = useDisableGuestsMutation()
-  const [guestsAction] = useGuestActionMutation()
 
   const showDownloadInformation = (guest: Guest, tenantId?: string) => {
     const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
@@ -52,15 +50,11 @@ export function useGuestActions () {
   }
 
   const disableGuest = async (guest: Guest, tenantId?: string) => {
-    // Pinky: need to add feature flag
-    disableGuests({ params: { tenantId, guestId: guest.id } })
-    guestsAction({ params: { guestId: guest.id }, payload: { action: 'disabled' } })
+    disableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'disabled' } })
   }
 
   const enableGuest = async (guest: Guest, tenantId?: string) => {
-    // Pinky: need to add feature flag
-    enableGuests({ params: { tenantId, guestId: guest.id } })
-    guestsAction({ params: { guestId: guest.id }, payload: { action: 'enabled' } })
+    enableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'enabled' } })
   }
 
   return {

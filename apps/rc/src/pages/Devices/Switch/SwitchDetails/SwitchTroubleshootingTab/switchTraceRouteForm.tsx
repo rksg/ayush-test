@@ -10,7 +10,6 @@ import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  // useTroubleshootingMutation,
   useTraceRouteMutation
 } from '@acx-ui/rc/services'
 import {
@@ -35,8 +34,7 @@ export function SwitchTraceRouteForm () {
     troubleshootingType: TroubleshootingType.TRACE_ROUTE
   }
 
-  // Pinky: need to add feature flag
-  const [runMutation] = useTraceRouteMutation()//useTroubleshootingMutation()
+  const [runMutation] = useTraceRouteMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

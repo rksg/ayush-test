@@ -30,11 +30,15 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   enableGuests: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
+    url: '/guestUsers/:guestUserId',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    newApi: true
   },
   disableGuests: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
+    url: '/guestUsers/:guestUserId',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    newApi: true
   },
   getGuests: {
     method: 'post',

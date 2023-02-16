@@ -6,7 +6,7 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { usePingApMutation/*, useApActionMutation*/ }    from '@acx-ui/rc/services'
+import { usePingApMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
@@ -16,8 +16,7 @@ export function ApPingForm () {
   const { tenantId, serialNumber } = useApContext()
   const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
-  // Pinky: need to add feature flag
-  const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()//useApActionMutation()
+  const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()
   const handlePingAp = async () => {
     try {
       const payload = {

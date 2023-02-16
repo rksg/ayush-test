@@ -250,14 +250,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    apAction: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.apAction, params)
-        return {
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
@@ -562,7 +554,6 @@ export const {
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
   useRebootApMutation,
-  useApActionMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
   useImportApMutation,

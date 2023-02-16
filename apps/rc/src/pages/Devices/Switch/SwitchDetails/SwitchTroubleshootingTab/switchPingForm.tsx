@@ -9,7 +9,6 @@ import { useParams }             from 'react-router-dom'
 import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  // useTroubleshootingMutation,
   usePingMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp,
   TroubleshootingType,
@@ -31,8 +30,7 @@ export function SwitchPingForm () {
     troubleshootingType: TroubleshootingType.PING
   }
 
-  // Pinky: need to add feature flag
-  const [runMutation] = usePingMutation()//useTroubleshootingMutation()
+  const [runMutation] = usePingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

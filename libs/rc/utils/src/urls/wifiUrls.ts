@@ -205,8 +205,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   rebootAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot'
+    method: 'patch',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot',
+    newApi: true
   },
   factoryResetAp: {
     method: 'post',
@@ -247,12 +250,18 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   pingAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
+    method: 'patch',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping',
+    newApi: true
   },
   traceRouteAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
+    method: 'patch',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route',
+    newApi: true
   },
   startPacketCapture: {
     method: 'post',
@@ -269,8 +278,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   blinkLedAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
+    method: 'patch',
+    url: '/venues/aps/:serialNumber',
+    oldMethod: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led',
+    newApi: true
   },
   updateApLanPorts: {
     method: 'put',

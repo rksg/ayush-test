@@ -386,7 +386,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueConfigHistoryDetail: {
     method: 'post',
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/detail/:transactionId',
+    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
+      'configurationHistory/detail/:transactionId',
     newApi: true
   },
   getSwitchConfigProfile: {

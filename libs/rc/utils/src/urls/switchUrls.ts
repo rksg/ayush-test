@@ -76,10 +76,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/import'
   },
   getPortSetting: {
-    method: 'get',
-    oldUrl: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier',
-    // method: 'post',
+    method: 'post',
     url: '/switches/:switchId/ports',
+    oldMethod: 'get',
+    oldUrl: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier',
     newApi: true
   },
   getPortsSetting: {
@@ -282,7 +282,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   reboot: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/reboot'
+    url: '/switches/:switchId/debugRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/reboot',
+    newApi: true
   },
   syncData: {
     method: 'post',
@@ -313,26 +315,29 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
   },
-  troubleshooting: {
-    method: 'post',
-    url: '/switches/:switchId/debugRequests',
-    newApi: true
-  },
   ping: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/ping'
+    url: '/switches/:switchId/debugRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/ping',
+    newApi: true
   },
   traceRoute: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/trace-route'
+    url: '/switches/:switchId/debugRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/trace-route',
+    newApi: true
   },
   ipRoute: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/route-table'
+    url: '/switches/:switchId/debugRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/route-table',
+    newApi: true
   },
   macAddressTable: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table'
+    url: '/switches/:switchId/debugRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/mac-address-table',
+    newApi: true
   },
   getDhcpPools: {
     method: 'post',

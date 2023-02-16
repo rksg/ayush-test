@@ -10,7 +10,6 @@ import { Button, Loader, showToast }    from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
   useIpRouteMutation,
-  // useTroubleshootingMutation,
   useLazyGetTroubleshootingCleanQuery
 } from '@acx-ui/rc/services'
 import {
@@ -32,8 +31,7 @@ export function SwitchIpRouteForm () {
     troubleshootingType: TroubleshootingType.ROUTE_TABLE
   }
 
-  // Pinky: need to add feature flag
-  const [runMutation] = useIpRouteMutation()//useTroubleshootingMutation()
+  const [runMutation] = useIpRouteMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({

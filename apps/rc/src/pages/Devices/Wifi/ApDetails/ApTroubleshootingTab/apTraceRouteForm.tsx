@@ -6,7 +6,7 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { useTraceRouteApMutation/*, useApActionMutation*/ } from '@acx-ui/rc/services'
+import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
@@ -16,8 +16,7 @@ export function ApTraceRouteForm () {
   const { tenantId, serialNumber } = useApContext()
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
-  // Pinky: need to add feature flag
-  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()//useApActionMutation()
+  const [traceRouteAp, { isLoading: isTraceRouteAp }] = useTraceRouteApMutation()
   const handlePingAp = async () => {
     try {
       const payload = {

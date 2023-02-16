@@ -24,6 +24,7 @@ import { ApRadioTypeEnum,
 import {
   useLazyApListQuery,
   useGetVenueCapabilitiesQuery,
+  useGetDefaultRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
@@ -116,9 +117,10 @@ export function RadioSettings () {
 
   // default radio data
   const { data: defaultRadioSettingsData } =
-    // Pinky: need to add feature flag
-    // useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
-    useGetVenueRadioCustomizationQuery({ params: { venueId }, payload: { defaultonly: true } })
+    useGetDefaultRadioCustomizationQuery({
+      params: { tenantId, venueId },
+      payload: { defaultonly: true }
+    })
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
