@@ -260,8 +260,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'License', id: 'LIST' }],
-      transformResponse: (response: NewEntitlementSummary) => {
-        return response.summary
+      transformResponse: (response) => {
+        return AdministrationUrlsInfo.getEntitlementSummary.newApi ?
+          (response as NewEntitlementSummary).summary : response as EntitlementSummary[]
       }
     }),
     getEntitlementsList: build.query<Entitlement[], RequestPayload>({

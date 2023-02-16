@@ -23,16 +23,21 @@ describe('Subscriptions', () => {
 
     mockServer.use(
       rest.get(
-        AdministrationUrlsInfo.getEntitlementsList.url,
+        AdministrationUrlsInfo.getEntitlementsList.newApi
+          ? AdministrationUrlsInfo.getEntitlementsList.url
+          : AdministrationUrlsInfo.getEntitlementsList.oldUrl as string,
         (req, res, ctx) => res(ctx.json(mockedEtitlementsList))
       ),
       rest.get(
-        AdministrationUrlsInfo.getEntitlementSummary.url,
-        (req, res, ctx) => res(ctx.json({
-          banners: [],
-          entitlements: mockedEtitlementsList,
-          summary: mockedSummary
-        }))
+        AdministrationUrlsInfo.getEntitlementSummary.newApi
+          ? AdministrationUrlsInfo.getEntitlementSummary.url
+          : AdministrationUrlsInfo.getEntitlementSummary.oldUrl as string,
+        (req, res, ctx) => res(
+          ctx.json(AdministrationUrlsInfo.getEntitlementSummary.newApi ? {
+            banners: [],
+            entitlements: mockedEtitlementsList,
+            summary: mockedSummary
+          } : mockedSummary))
       ),
       rest.post(
         AdministrationUrlsInfo.refreshLicensesData.url,

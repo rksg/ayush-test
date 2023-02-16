@@ -115,13 +115,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEntitlementSummary: {
     method: 'get',
-    newApi: true,
+    newApi: false,
     url: '/entitlements/summaries',
     oldUrl: '/api/tenant/:tenantId/entitlement/summary'
   },
   getEntitlementsList: {
     method: 'get',
-    newApi: true,
+    newApi: false,
     url: '/entitlements',
     oldUrl: '/api/tenant/:tenantId/entitlement'
   },
