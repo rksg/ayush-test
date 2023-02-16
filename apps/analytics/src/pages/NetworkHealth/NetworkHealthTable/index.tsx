@@ -13,7 +13,7 @@ import { formatter }                                             from '@acx-ui/u
 import * as contents                                              from '../contents'
 import { ClientType as ClientTypeEnum, TestType as TestTypeEnum } from '../types'
 
-import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
+import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery, useNetworkHealthRunMutation } from './services'
 
 export const getLastRun = (result: string) => {
   if (result) {
@@ -46,12 +46,13 @@ export function NetworkHealthTable () {
   const navigate = useNavigate()
   const navigateToList = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
-  const [deleteMutation, response] = useNetworkHealthDeleteMutation()
+  const [deleteMutation, deleteResponse] = useNetworkHealthDeleteMutation()
+  const [runMutation, runResponse] = useNetworkHealthRunMutation()
 
   useEffect(() => {
-    if (!response.data) return
+    if (!deleteResponse.data) return
 
-    if (!response.data.userErrors) {
+    if (!deleteResponse.data.userErrors) {
       showToast({
         type: 'success',
         content: $t(contents.messageMapping.TEST_DELETED)
@@ -62,32 +63,33 @@ export function NetworkHealthTable () {
         content: $t(contents.messageMapping.SPEC_NOT_FOUND)
       })
     }
-  }, [$t, response])
+  }, [$t, deleteResponse])
+
+  useEffect(() => {
+    if (!runResponse.data) return
+
+    if (!runResponse.data.userErrors) {
+      showToast({
+        type: 'success',
+        content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
+      })
+    } else {
+      const key = runResponse.data.userErrors[0].message as keyof typeof contents.messageMapping
+      const errorMessage = $t(contents.messageMapping[key])
+      showToast({ type: 'error', content: errorMessage })
+    }
+  }, [$t, runResponse])
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
-      onClick: (selectedRow, clearSelection) => {
-        const selectedAP = selectedRow[0]
-        const pendingAP = selectedAP.tests.items[0].summary.apsPendingCount
-        const canRunTest = !pendingAP && selectedAP.apsCount
-        const cannotRunReason = pendingAP ? 'TEST_IN_PROGRESS' : 'RUN_TEST_NO_APS'
-        if (canRunTest) {
-          showToast({
-            type: 'success',
-            content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
-          })
-        } else {
-          showToast({
-            type: 'error',
-            content: $t(contents.messageMapping[cannotRunReason])
-          })
-        }
+      onClick: async ([{ id }], clearSelection) => {
+        await runMutation({ params: { id } })
         clearSelection()
       },
       disabled: (selectedRow) => (
-        selectedRow[0]?.apsCount > 0 && selectedRow[0]?.tests.items[0].summary.apsPendingCount === 0
-      ) ? false : true
+        selectedRow[0]?.apsCount == 0 || selectedRow[0]?.tests.items[0].summary.apsPendingCount > 0
+      )
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),

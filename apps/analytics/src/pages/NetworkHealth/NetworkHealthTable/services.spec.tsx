@@ -74,3 +74,25 @@ describe('networkHealthDelete mutation', () => {
     expect(result).toEqual(expected)
   })
 })
+
+describe('networkHealthRun mutation', () => {
+  afterEach(() =>
+    store.dispatch(api.util.resetApiState())
+  )
+  it('handles run mutation', async () => {
+    const data = {
+      deletedSpecId: 'spec-id',
+      userErrors: null
+    }
+    const expected = {
+      data: data
+    }
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', {
+      data: { runServiceGuardTest: data }
+    })
+    const result = await store.dispatch(
+      api.endpoints.networkHealthRun.initiate({ id: 'spec-id' })
+    )
+    expect(result).toEqual(expected)
+  })
+})

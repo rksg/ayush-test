@@ -2,15 +2,16 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { networkhealthURL }        from '@acx-ui/analytics/services'
-import { noDataSymbol }            from '@acx-ui/analytics/utils'
-import { UserProfileProvider }     from '@acx-ui/rc/components'
-import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { Provider, store }         from '@acx-ui/store'
+import { networkHealthApi, networkHealthApiURL } from '@acx-ui/analytics/services'
+import { noDataSymbol }                          from '@acx-ui/analytics/utils'
+import { UserProfileProvider }                   from '@acx-ui/rc/components'
+import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { BrowserRouter as Router }               from '@acx-ui/react-router-dom'
+import { Provider, store }                       from '@acx-ui/store'
 import {
   mockGraphqlQuery,
-  render, screen,
+  render,
+  screen,
   fireEvent,
   waitForElementToBeRemoved,
   mockServer,
@@ -35,7 +36,7 @@ const fakeUserProfile = {
   lastName: 'LastName 1093'
 }
 
-const fakeUserProfile2 = {
+const fakeDisabledUserProfile = {
   tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
   externalId: '0032h00000LUqUKAA2',
   firstName: 'FisrtName 1093',
@@ -72,29 +73,9 @@ const networkHealthTests = [
     id: '3d51e2f0-6a1f-4641-94a4-9feb3803edfg',
     name: 'testCase 2',
     type: 'on-demand',
-    apsCount: 20,
-    userId: '0032h00000LUqUKAA1',
-    clientType: 'virtual-wireless-client',
-    schedule: null,
-    tests: {
-      items: [{
-        id: 2,
-        createdAt: '2023-02-06T21:00:00.000Z',
-        summary: {
-          apsTestedCount: 15,
-          apsSuccessCount: 0,
-          apsPendingCount: 1
-        }
-      }]
-    }
-  },
-  {
-    id: '3d51e2f0-6a1f-4641-94a4-9feb3803edfh',
-    name: 'testCase 3',
-    type: 'on-demand',
     apsCount: 0,
     userId: '0032h00000LUqUKAA1',
-    clientType: 'virtual-client',
+    clientType: 'virtual-wireless-client',
     schedule: null,
     tests: {
       items: [{
@@ -113,10 +94,11 @@ const networkHealthTests = [
 describe('Network Health Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
+    store.dispatch(networkHealthApi.util.resetApiState())
   })
 
   it('should render loader', () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: []
       }
@@ -130,7 +112,7 @@ describe('Network Health Table', () => {
   })
 
   it('should render table with valid input', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -162,7 +144,7 @@ describe('Network Health Table', () => {
   ]
 
   it('should render column header', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -187,7 +169,11 @@ describe('Network Health Table', () => {
   })
 
   it('should click run now', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    const expected = {
+      selectedId: '3d51e2f0-6a1f-4641-94a4-9feb3803edff',
+      userErrors: null
+    }
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -204,11 +190,22 @@ describe('Network Health Table', () => {
 
     const radio = await screen.findAllByRole('radio')
     fireEvent.click(radio[0])
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', {
+      data: { runServiceGuardTest: expected }
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
     fireEvent.click(await screen.findByRole('button', { name: /run now/i }))
+    expect(await screen.findByText('Network Health test running')).toBeVisible()
   })
 
-  it('should disable run now button', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+  it('should not run test when apsPendingCount is more than 0', async () => {
+    const expected = {
+      selectedId: null,
+      userErrors: [{ field: 'spec', message: 'TEST_IN_PROGRESS' }]
+    }
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -224,7 +221,67 @@ describe('Network Health Table', () => {
     })
 
     const radio = await screen.findAllByRole('radio')
-    fireEvent.click(radio[2])
+    fireEvent.click(radio[0])
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', {
+      data: { runServiceGuardTest: expected }
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    fireEvent.click(await screen.findByRole('button', { name: /run now/i }))
+    expect(await screen.findByText('Test is in progress')).toBeVisible()
+  })
+
+  it('should not run test when apsCount is 0', async () => {
+    const expected = {
+      selectedId: null,
+      userErrors: [{ field: 'spec', message: 'RUN_TEST_NO_APS' }]
+    }
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
+    })
+
+    render(<Provider><NetworkHealthTable/></Provider>, {
+      route: {
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
+      }
+    })
+
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[0])
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', {
+      data: { runServiceGuardTest: expected }
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    fireEvent.click(await screen.findByRole('button', { name: /run now/i }))
+    expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
+  })
+
+  it('should disable run now button', async () => {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
+      data: {
+        allServiceGuardSpecs: networkHealthTests
+      }
+    })
+
+    render(<Provider><NetworkHealthTable/></Provider>, {
+      route: {
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
+      }
+    })
+
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[1])
     const runNowButton = await screen.findByRole('button', { name: /run now/i })
     expect(runNowButton).toBeDisabled()
   })
@@ -233,7 +290,7 @@ describe('Network Health Table', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile)))
     )
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -265,9 +322,10 @@ describe('Network Health Table', () => {
   it('should disable edit button', async () => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(ctx.json(fakeUserProfile2)))
+        CommonUrlsInfo.getUserProfile.url, (req, res, ctx) => res(
+          ctx.json(fakeDisabledUserProfile)))
     )
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -280,7 +338,7 @@ describe('Network Health Table', () => {
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
-          tenantId: fakeUserProfile2.tenantId
+          tenantId: fakeDisabledUserProfile.tenantId
         }
       }
     })
@@ -293,8 +351,12 @@ describe('Network Health Table', () => {
     expect(editButton).toBeDisabled()
   })
 
-  it('should delete test properly', async () => {
-    mockGraphqlQuery(networkhealthURL, 'ServiceGuardSpecs', {
+  it('should throw error when deleting test which does not exist', async () => {
+    const expected = {
+      deletedSpecId: null,
+      userErrors: [{ field: 'spec', message: 'SPEC_NOT_FOUND' }]
+    }
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
@@ -311,15 +373,48 @@ describe('Network Health Table', () => {
     const radio = await screen.findAllByRole('radio')
     fireEvent.click(radio[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-    fireEvent.click(await screen.findByRole('button', { name: 'Delete test' }))
+
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
+      data: { deleteServiceGuardSpec: expected }
+    })
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000))
     })
-    mockGraphqlMutation(networkhealthURL, 'deleteServiceGuardSpec', {
+    fireEvent.click(screen.getByText(/delete test/i))
+    expect(await screen.findByText('Network Health test does not exist')).toBeVisible()
+  })
+
+  it('should delete test properly', async () => {
+    const expected = {
+      deletedSpecId: '3d51e2f0-6a1f-4641-94a4-9feb3803edff',
+      userErrors: null
+    }
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
-        id: networkHealthTests[0].id
+        allServiceGuardSpecs: networkHealthTests
       }
     })
+
+    render(<Provider><NetworkHealthTable/></Provider>, {
+      route: {
+        path: '/t/:tenantId/serviceValidation/networkHealth',
+        params: {
+          tenantId: fakeUserProfile.tenantId
+        }
+      }
+    })
+    const radio = await screen.findAllByRole('radio')
+    fireEvent.click(radio[0])
+    fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
+      data: { deleteServiceGuardSpec: expected }
+    })
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+    fireEvent.click(screen.getByText(/delete test/i))
+    expect(await screen.findByText('Network Health test deleted')).toBeVisible()
   })
 
   it('should return getLastRun results correctly', () => {

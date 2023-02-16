@@ -38,6 +38,10 @@ type DeleteMutationResult = MutationResult<{
   deletedSpecId: string
 }>
 
+type RunNetworkHealthTestResult = MutationResult<{
+  selectedId: string
+}>
+
 export const api = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     networkHealth: build.query<
@@ -99,8 +103,52 @@ export const api = networkHealthApi.injectEndpoints({
       ],
       transformResponse: (response: { deleteServiceGuardSpec: DeleteMutationResult }) =>
         response.deleteServiceGuardSpec
+    }),
+    networkHealthRun: build.mutation<
+      RunNetworkHealthTestResult, RequestPayload
+    >({
+      query: (payload) => ({
+        document: gql`
+          mutation RunNetworkHealthTest ($id: String!) {
+            runServiceGuardTest (id: $id) {
+              userErrors { field message }
+              spec {
+                id
+                name
+                type
+                apsCount
+                userId
+                clientType
+                tests (limit: 1) {
+                  items {
+                    id
+                    createdAt
+                    summary {
+                      apsTestedCount
+                      apsSuccessCount
+                      apsPendingCount
+                    }
+                  }
+                }
+                schedule {
+                  nextExecutionTime
+                }
+              }
+            }
+          }
+        `,
+        variables: {
+          id: payload.params?.id
+        }
+      }),
+      transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
+        response.runServiceGuardTest
     })
   })
 })
 
-export const { useNetworkHealthQuery, useNetworkHealthDeleteMutation } = api
+export const {
+  useNetworkHealthQuery,
+  useNetworkHealthDeleteMutation,
+  useNetworkHealthRunMutation
+} = api
