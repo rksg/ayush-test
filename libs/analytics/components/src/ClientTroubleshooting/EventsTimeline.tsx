@@ -153,7 +153,7 @@ export function TimeLine (props: TimeLineProps) {
   return (
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
-        <Row gutter={[16, 16]} style={{ rowGap: '3px' }}>
+        <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
           {ClientTroubleShootingConfig.timeLine.map((config, index) => (
             <React.Fragment key={index}>
               <Col span={3}>
