@@ -30,7 +30,7 @@ import { ApForm }                   from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }              from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                     from './pages/Devices/Wifi/ApsTable'
 import Wired                        from './pages/Networks/wired'
-import { ConfigurationProfileForm } from './pages/Networks/Wired/SwitchConfiguration/Profiles/ConfigurationProfileForm'
+import { ConfigurationProfileForm } from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import NetworkDetails               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable                from './pages/Networks/wireless/NetworksTable'
@@ -174,7 +174,7 @@ function NetworkRoutes () {
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab' element={<Wired />} />
       <Route
-        path='networks/wired/switch/configuration/profiles/:action'
+        path='networks/wired/profiles/:action'
         element={<ConfigurationProfileForm />}
       />
     </Route>
