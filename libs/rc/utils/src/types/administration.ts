@@ -17,13 +17,13 @@ export enum TenantDelegationType {
 
 export interface TenantDelegation {
   id: string
-  delegatedTo: string
   type: TenantDelegationType
   status: TenantDelegationStatus
+  delegatedTo: string
   delegatedBy: string
+  delegatedToName: string
   expiryDate: string
   createdDate: string
-  delegatedToName: string
 }
 
 export interface TenantDelegationResponse {
@@ -44,4 +44,38 @@ export interface TenantPreferenceSettingValue {
 
 export interface TenantPreferenceSettings {
   global: TenantPreferenceSettingValue;
+}
+
+export enum NotificationEndpointType {
+  email = 'EMAIL',
+  sms = 'SMS',
+  mobile_push = 'MOBILE_PUSH'
+}
+
+export interface NotificationRecipientUIModel {
+  id: string;
+  description: string;
+  endpoints: NotificationEndpoint[];
+  email: string;
+  emailEnabled: boolean;
+  mobile: string;
+  mobileEnabled: boolean;
+}
+
+export interface NotificationEndpoint {
+  id: string;
+  active: boolean;
+  destination: string;
+  status: string;
+  type: NotificationEndpointType;
+  createdDate: string;
+  updatedDate: string;
+}
+
+export interface NotificationRecipientResponse {
+  id: string;
+  description: string;
+  endpoints: NotificationEndpoint[];
+  createdDate: string;
+  updatedDate: string;
 }
