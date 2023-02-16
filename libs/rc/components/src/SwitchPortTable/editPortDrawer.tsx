@@ -322,12 +322,10 @@ export function EditPortDrawer ({
       tenantId, venueId: vid,
       model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
     }
-    const payload = {
-      model: selectedPorts?.[0]?.switchModel,
-      port: `1/${requestPort}`
-    }
-    const taggedVlansByVenue = await getTaggedVlansByVenue({ params, payload }, true).unwrap()
-    const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params, payload }, true).unwrap()
+    // eslint-disable-next-line max-len
+    const taggedVlansByVenue = await getTaggedVlansByVenue({ params, payload: params }, true).unwrap()
+    // eslint-disable-next-line max-len
+    const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params, payload: params }, true).unwrap()
 
     const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
     const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()

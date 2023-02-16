@@ -278,18 +278,20 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
     getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),

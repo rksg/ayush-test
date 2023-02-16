@@ -171,9 +171,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchVlanUnion: {
     method: 'get',
-    url: '/switches/:switchId/vlanUnion',
-    oldUrl: '/api/switch/tenant/:tenantId/vlanUnion/switch/:switchId',
-    newApi: true
+    // new api not found
+    // url: '/switches/:switchId/vlanUnion',
+    // newApi: true,
+    url: '/api/switch/tenant/:tenantId/vlanUnion/switch/:switchId'
   },
   getSwitchVlans: {
     method: 'get',
@@ -213,9 +214,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getFreeVePortVlans: {
     method: 'get',
-    url: '/venues/:venueId/switch/:switchId/vlans',
-    oldUrl: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId',
-    newApi: true
+    // new api not found
+    // url: '/venues/:venueId/switch/:switchId/vlans',
+    // newApi: true,
+    url: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId'
   },
   getAclUnion: {
     method: 'get',
