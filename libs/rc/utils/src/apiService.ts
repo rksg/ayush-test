@@ -5,7 +5,8 @@ import { getJwtToken, getTenantId } from '@acx-ui/utils'
 export interface ApiInfo {
   url: string;
   method: string;
-  newApi?: boolean
+  newApi?: boolean;
+  oldUrl?: string;
 }
 
 export const TenantIdFromJwt = () => {

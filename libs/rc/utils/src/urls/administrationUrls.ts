@@ -8,16 +8,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAdmin: {
     method: 'delete',
     url: '/admins/:adminId',
+    oldUrl: '/api/tenant/:tenantId/admin/:adminId',
     newApi: true
   },
   deleteAdmins: {
     method: 'delete',
     url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
     newApi: true
   },
   addAdmin: {
     method: 'post',
     url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
     newApi: true
   },
   // getMfaAdminDetails: {
@@ -51,16 +54,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getAdministrators: {
     method: 'get',
     url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
     newApi: true
   },
   updateAdmin: {
     method: 'put',
     url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
     newApi: true
   },
   getAccountDetails: {
     method: 'get',
     url: '/tenants/accounts',
+    oldUrl: '/api/tenant/:tenantId/account',
     newApi: true
   },
   getRecoveryPassphrase: {
@@ -74,26 +80,31 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getDelegations: {
     method: 'get',
     url: '/tenants/delegations?type=VAR',
+    oldUrl: '/api/tenant/:tenantId/delegation?type=VAR',
     newApi: true
   },
   getTenantDelegation: {
     method: 'get',
     url: '/tenants/delegations?type=SUPPORT',
+    oldUrl: '/api/tenant/:tenantId/delegation?type=SUPPORT',
     newApi: true
   },
   getEcTenantDelegation: {
     method: 'get',
     url: '/tenants/delegations?type=SUPPORT_EC',
+    oldUrl: '/api/tenant/:tenantId/delegation?type=SUPPORT_EC',
     newApi: true
   },
   enableAccessSupport: {
     method: 'post',
     url: '/tenants/supportDelegations',
+    oldUrl: '/api/tenant/:tenantId/delegation/support',
     newApi: true
   },
   disableAccessSupport: {
     method: 'delete',
     url: '/tenants/supportDelegations',
+    oldUrl: '/api/tenant/:tenantId/delegation/support',
     newApi: true
   },
   getPreferences: {

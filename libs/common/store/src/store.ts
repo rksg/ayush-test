@@ -50,7 +50,7 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       status === 401 || status === 403
     ) {
       sessionStorage.removeItem('jwt')
-      // window.location.href = '/logout'
+      window.location.href = '/logout'
     }
   }
   return next(action)

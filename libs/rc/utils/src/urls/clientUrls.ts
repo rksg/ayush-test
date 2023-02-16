@@ -16,6 +16,7 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   deleteGuests: {
     method: 'delete',
     url: '/guestUsers',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
     newApi: true
   },
   importGuestPass: {
@@ -38,6 +39,7 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   getGuests: {
     method: 'post',
     url: '/guestUsers/query/csvFiles',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
     newApi: true
   },
   generateGuestPassword: {
