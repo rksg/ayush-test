@@ -163,8 +163,7 @@ export function getBarColor (params: {
 }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
-  onDotClick: ((param: unknown) => void) | undefined,
-  setSelected?: Function
+  onDotClick: ((param: unknown) => void) | undefined
 ) => {
   const navigate = useNavigate()
   const currentPath = useTenantLink('/')
@@ -176,7 +175,6 @@ export const useDotClick = (
 
       if (params.componentSubType === 'scatter') {
         const data = params.data as [number, string, Event]
-        setSelected && setSelected(data[2] as unknown as number)
         const { clientX, clientY } = (params as unknown as
           { event: { event: PointerEvent } }).event.event
         onDotClick && onDotClick(({
@@ -193,7 +191,7 @@ export const useDotClick = (
         navigate(`${basePath}/analytics/incidents/${id}`)
       }
     },
-    [setSelected, onDotClick, navigate, basePath]
+    [onDotClick, navigate, basePath]
   )
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
@@ -318,10 +316,7 @@ export function TimelineChart ({
 
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
 
-  // use selected event on dot click to show popover
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selected, setSelected] = useState<number | undefined>(selectedData)
-  useDotClick(eChartsRef, onDotClick, setSelected)
+  useDotClick(eChartsRef, onDotClick)
 
   const mappedData = useMemo(() => mapping
     .slice()
