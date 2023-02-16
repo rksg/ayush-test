@@ -34,6 +34,7 @@ export const LabelOfInput = styled.span`
     margin: 22px 0px 10px;
     position: relative;
     left: 80px;
+    word-wrap: normal;
 `
 
 export const RateLimitBlock = styled.div`

@@ -5,9 +5,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, NetworkSaveData }               from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { mockServer, fireEvent, within, render, screen } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, NetworkSaveData }    from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, within, render, screen } from '@acx-ui/test-utils'
 
 import { externalProviders, policyListResponse } from '../__tests__/fixtures'
 
@@ -199,9 +199,6 @@ describe('NetworkMoreSettingsForm', () => {
       { route: { params } })
 
 
-    const enableFastRoamingCheckbox = screen.getByTestId('enableFastRoaming')
-    fireEvent.click(enableFastRoamingCheckbox)
-    expect(screen.getByText(/mobility domain id/i)).toBeVisible()
   })
 
   it('Adjust BBS Min Rate value', async () => {

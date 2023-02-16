@@ -1,3 +1,4 @@
+import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
 import { getJwtToken, getTenantId } from '@acx-ui/utils'
@@ -5,6 +6,8 @@ import { getJwtToken, getTenantId } from '@acx-ui/utils'
 export interface ApiInfo {
   url: string;
   method: string;
+  newApi?: boolean;
+  oldUrl?: string;
 }
 
 export const TenantIdFromJwt = () => {
@@ -18,6 +21,14 @@ export const isDelegationMode = () => {
   const jwtToken = getJwtToken()
 
   return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
+}
+
+export const isLocalHost = () => {
+  return window.location.hostname === 'localhost'
+}
+
+export const isDev = () => {
+  return window.location.origin === 'devalto.ruckuswireless.com'
 }
 
 const getTenantIdFromJwt = (jwt: string) => {
@@ -47,6 +58,16 @@ export const createHttpRequest = (
   const tokenHeader = {
     Authorization: ''
   }
+
+  const enableNewApi = function () {
+    const hasOldUrl = !_.isEmpty(apiInfo.oldUrl)
+    if(apiInfo.newApi) {
+      return !hasOldUrl || isDev() || isLocalHost()
+    } else {
+      return false
+    }
+  }
+
   const jwtToken = getJwtToken()
   const tenantId = getTenantId()
   if (jwtToken !== null) {
@@ -60,11 +81,16 @@ export const createHttpRequest = (
       : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
   }
   const headers = { ...defaultHeaders, ...customHeaders }
-  const url = generatePath(`${apiInfo.url}`, paramValues)
+  const domain = (enableNewApi() && !isLocalHost()) ?
+    window.location.origin.replace('//', '//api.') :
+    window.location.origin
+  const url = enableNewApi() ? generatePath(`${apiInfo.url}`, paramValues) :
+    generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   return {
     headers,
+    credentials: 'include' as RequestCredentials,
     method: apiInfo.method,
-    url: `${window.location.origin}${url}`
+    url: `${domain}${url}`
   }
 }
 
