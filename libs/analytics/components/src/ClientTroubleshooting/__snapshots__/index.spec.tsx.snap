@@ -327,7 +327,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
                     <div
                       class="ant-col ant-col-3"
@@ -994,7 +994,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
                     <div
                       class="ant-col ant-col-3"
