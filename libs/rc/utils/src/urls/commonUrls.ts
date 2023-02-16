@@ -11,9 +11,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetworksDetailHeader: {
     method: 'get',
-    url: '/networks/:networkId/headerDetails',
-    oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
-    newApi: true
+    // new api not found
+    // url: '/networks/:networkId/headerDetails',
+    // newApi: true,
+    url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
   },
   getNetworksVenuesList: {
     method: 'post',
@@ -416,9 +417,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApDetailHeader: {
     method: 'get',
-    url: '/aps/:serialNumber/headerDetails',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
-    newApi: true
+    // new api not found
+    // url: '/aps/:serialNumber/headerDetails',
+    // newApi: true,
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
   getCloudVersion: {
     method: 'get',

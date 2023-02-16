@@ -73,7 +73,10 @@ export function SwitchPingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('targetHost'),
-        debugType: 'ping'
+        troubleshootingPayload: {
+          targetHost: pingForm.getFieldValue('targetHost')
+        },
+        troubleshootingType: 'ping'
       }
       const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {

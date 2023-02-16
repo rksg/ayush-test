@@ -67,7 +67,7 @@ export function SwitchIpRouteForm () {
     setIsLoading(true)
     try {
       const result = await runMutation({ params: { tenantId, switchId },
-        payload: { debugType: 'route-table' } }).unwrap()
+        payload: { troubleshootingType: 'route-table' } }).unwrap()
       if (result) {
         refetchResult()
       }

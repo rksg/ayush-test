@@ -63,9 +63,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitch: {
     method: 'get',
-    url: 'switches/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId',
-    newApi: true
+    // not working
+    // url: 'switches/:switchId',
+    // newApi: true,
+    url: '/api/switch/tenant/:tenantId/switch/:switchId'
   },
   getSwitchPortlist: {
     method: 'post',
@@ -254,7 +255,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVlanByUuid: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/vlan/:vlanUuid'
+    url: '/switches/vlans/:vlanUuid',
+    oldUrl: '/api/switch/tenant/:tenantId/vlan/:vlanUuid',
+    newApi: true
   },
   getStaticRoutes: {
     method: 'get',
