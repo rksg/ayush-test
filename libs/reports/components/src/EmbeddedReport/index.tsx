@@ -15,10 +15,11 @@ import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from 
 interface ReportProps {
   embedDashboardName: string
   rlsClause?: string
+  hideHeader?: boolean
 }
 
 export function EmbeddedReport (props: ReportProps) {
-  const { embedDashboardName, rlsClause } = props
+  const { embedDashboardName, rlsClause, hideHeader } = props
   const params = useParams()
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
@@ -52,16 +53,24 @@ export function EmbeddedReport (props: ReportProps) {
       type: 'dashboard',
       id: dashboardEmbeddedId
     }],
-    rls: [{
-      clause: `
-        "__time" >= '${convertDateTimeToSqlFormat(startDate)}' AND
-        "__time" < '${convertDateTimeToSqlFormat(endDate)}' AND
-        '${params?.tenantId}' = '${params?.tenantId}'
-        ${networkClause}
-        ${radioBandClause}
-        ${rlsClause? ' AND ' + rlsClause: ''}
-      `
-    }]
+    rls: [
+      {
+        clause: ['"__time"', '>=', `'${convertDateTimeToSqlFormat(startDate)}'`, 'AND',
+          '"__time"', '<', `'${convertDateTimeToSqlFormat(endDate)}'`, 'AND',
+          `'${params?.tenantId}' = '${params?.tenantId}'`
+        ].join(' ')
+      },
+      ...((networkClause || radioBandClause || rlsClause)
+        ? [{
+          clause: rlsClause
+            ? rlsClause
+            : [networkClause.trim(),
+              networkClause && radioBandClause
+                ? ' AND ' + radioBandClause.trim()
+                : radioBandClause].join('')
+        }]
+        : [])
+    ]
   }
 
   const fetchGuestTokenFromBackend = async () => {
@@ -81,8 +90,11 @@ export function EmbeddedReport (props: ReportProps) {
         supersetDomain: `${HOST_NAME}${BASE_RELATIVE_URL}`,
         mountPoint: document.getElementById(`acx-report-${embedDashboardName}`)!,
         fetchGuestToken: () => fetchGuestTokenFromBackend(),
-        dashboardUiConfig: { hideChartControls: true, hideTitle: true },
-        // debug: true,
+        dashboardUiConfig: {
+          hideChartControls: true,
+          hideTitle: hideHeader ?? true
+        },
+        // debug: true
         authToken: jwtToken ? `Bearer ${jwtToken}` : undefined
       })
       embeddedObj.then(async embObj =>{
