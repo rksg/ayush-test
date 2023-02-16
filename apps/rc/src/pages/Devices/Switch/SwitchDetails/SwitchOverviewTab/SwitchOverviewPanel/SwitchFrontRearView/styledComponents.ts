@@ -11,6 +11,7 @@ export const TitleBar = styled.div`
 
 export const SwitchFrontRearViewWrapper = styled.div`
   margin: 10px 0;
+  min-height: 115px;
 `
 
 export const UnitWrapper = styled.div`
@@ -36,6 +37,22 @@ export const PortLabel = styled.div`
 
 export const PortWrapper = styled.div`
   float:left;
+`
+
+export const RearViewWrapper = styled.div`
+  float:left;
+`
+
+export const Rear = styled.div<{ rearColor: string }>`
+  border-width: '2px';
+  border-style: solid;
+  border-color: ${(props) => getPortColor(props.rearColor)};
+  height: 30px;
+  width: 120px;
+  margin: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const getPortColor = (portColor: string) => {

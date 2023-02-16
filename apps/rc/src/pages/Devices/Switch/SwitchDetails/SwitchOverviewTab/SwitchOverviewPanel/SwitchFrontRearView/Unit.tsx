@@ -1,13 +1,14 @@
 import { Button } from '@acx-ui/components'
 import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
+import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { SwitchDetailsContext } from '../../..'
-import { Slot } from './Slot'
+import { FrontViewSlot } from './FrontViewSlot'
+import { RearView } from './RearView'
 import * as UI             from './styledComponents'
 
 interface SlotMember {
@@ -66,6 +67,24 @@ const icxModulesConst : {
   rearSlots: { 745024: [3, 4], 745048: [3, 4], 765048: [3] }
 }
 
+/** 
+ * GUI: Front View
+ *    _______________________________________
+ *   |  slot 1         slot 2   slot 3       |  
+ *   |  [][][][][][]   [][][]   [][]         |
+ *   |  [][][][][][]   [][][]   [][]-> port  |
+ *   |_______________________________________|-> unit
+ *   
+ * 
+ * GUI: Rear View
+ *    _______________________________________
+ *   |                                       |  
+ *   |  [Power]                              |
+ *   |  [Fan]                                |
+ *   |_______________________________________|-> unit
+ *   
+*/
+
 export function Unit (props:{
   member: StackMember,
   index: number,
@@ -82,7 +101,7 @@ export function Unit (props:{
 
   const { $t } = useIntl()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
-  const [ isRearView, setIsRearView ] = useState(false)
+  const [ isRearView, setIsRearView ] = useState(true)
   const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
   const [ rearSlots, setRearSlots ] = useState(null as unknown as number[])
   const [ unit, setUnit ] = useState(defaultUnit)
@@ -103,13 +122,12 @@ export function Unit (props:{
       ]
     }]
   } as SwitchFrontView)
-  const [ rearView, setRearView ] = useState({
-    slots: []
-  })
+  const [ rearView, setRearView ] = useState(null as unknown as SwitchRearViewUISlot)
   
   const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
   const { tenantId } = useParams()
+  
 
   useEffect(() => {
     if (member) {
@@ -125,9 +143,16 @@ export function Unit (props:{
     }
   }, [member])
 
+  
+  const getUnitSwitchModel = (switchMember: StackMember) => {
+    return !isEmpty(switchMember.model) ? switchMember.model : getSwitchModel(switchMember.serialNumber)
+  }
+  const model = getUnitSwitchModel(member) as string
+
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
     const { data: portStatus } = await switchFrontView({ params: { tenantId, switchId: switchMac || serialNumber, unitId } })
     const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })  
+    // handle front view data
     const tmpPortView = JSON.parse(JSON.stringify(portStatus)) 
     tmpPortView.slots.forEach((slot:SwitchSlot) => {
       if (slot.portStatus !== undefined) {
@@ -142,8 +167,35 @@ export function Unit (props:{
         }
       }
     })
-    
     setPortView(tmpPortView as SwitchFrontView)
+    
+    // handle rear view data
+    const fanRearStatus = _.isEmpty(rearStatus?.fanStatus) ? [] : rearStatus?.fanStatus;
+    const powerRearStatus = _.isEmpty(rearStatus?.powerStatus) ? [] : rearStatus?.powerStatus;
+    const switchModelInfo = getSwitchModelInfo(model);
+    const slotsCount = Math.max(switchModelInfo?.powerSlots as number, switchModelInfo?.fanSlots as number);
+
+    // The backend is not sort by slotNumber, so we need to sort it.
+    fanRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber);
+    powerRearStatus?.sort((a, b) => a.slotNumber - b.slotNumber);
+
+    const tmpRearView = {
+      slots: []
+    } as SwitchRearViewUISlot
+    for (let i = 0 ; i < slotsCount ; i++) {
+      const notPrsesentSlotObj = {
+        slotNumber : i + 1 ,
+        type: '',
+        status: 'NOT_PRESENT'
+      };
+
+      tmpRearView.slots.push({
+        slotNumber : i + 1,
+        fanStatus: fanRearStatus && !_.isEmpty(fanRearStatus[i]) ? fanRearStatus[i]: notPrsesentSlotObj,
+        powerStatus: powerRearStatus && !_.isEmpty(powerRearStatus[i]) ? powerRearStatus[i]: notPrsesentSlotObj
+      });
+    }
+    setRearView(tmpRearView)
   }
 
   const getOfflineSwitchPort = (member: StackMember) => {
@@ -157,16 +209,6 @@ export function Unit (props:{
         status : 'Offline'
       });
     }
-
-    const tmpRear = {
-      ...rearView,
-      slots: [{
-        slotNumber: 1,
-        fanStatus: '',
-        powerStatus: ''
-      }]
-    }
-    setRearView(tmpRear as any)
 
     const tmpPort = {
       slots: [{
@@ -184,6 +226,13 @@ export function Unit (props:{
       }]
     }
     setPortView(tmpPort as unknown as SwitchFrontView)
+
+    const tmpRear = {
+      slots: [{
+        slotNumber: 1
+      }]
+    }
+    setRearView(tmpRear)
   }
 
   const genUnit = (switchMember: StackMember) => {
@@ -192,7 +241,7 @@ export function Unit (props:{
 
     return {
       switchUnit: switchMember.unitId,
-      model: !isEmpty(switchMember.model) ? switchMember.model : getSwitchModel(switchMember.serialNumber),
+      model: getUnitSwitchModel(switchMember),
       serialNumber: switchMember.serialNumber,
       stackId: switchMember.id,
       poeUsage: getPoeUsage(switchMember as unknown as SwitchViewModel),
@@ -247,42 +296,44 @@ export function Unit (props:{
   const ViewModeButton = <Button 
     type='link' 
     size='small'
-    disabled={!isStack && !isSwitchOperational}
+    disabled={!isSwitchOperational}
     onClick={onClickViewMode}
   >
   { isRearView ? $t({ defaultMessage: 'Front View' }) : $t({ defaultMessage: 'Rear View' }) }
   </Button>
 
   return <div>
-    {
-      isStack &&  
-      <UI.TitleBar>
-        {ViewModeButton}
-      </UI.TitleBar>
-    }
-    {
-      !isStack && 
-      <UI.TitleBar>
-        {!isSwitchOperational && !isRearView ? 
-          <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
-            <span>{ViewModeButton}</span>
-          </Tooltip> :
-          ViewModeButton
-        }
-      </UI.TitleBar>
-    }
-    { !isRearView 
-      ? <UI.UnitWrapper>{
-        portView && portView.slots.map((slot, index) => (
-          <span key={index}>
-            <Slot slot={slot} portLabel={getPortLabel(slot) as string}
-              isOnline={isOnline} isStack={isStack} 
-              deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
-            />
-          </span>  
-        ))
-      }</UI.UnitWrapper>
-      : $t({ defaultMessage: 'Rear' }) 
-    }
+    <UI.TitleBar>
+      {!isSwitchOperational && !isRearView ? 
+        <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
+          <span>{ViewModeButton}</span>
+        </Tooltip> :
+        ViewModeButton
+      }
+    </UI.TitleBar>
+    <UI.UnitWrapper>
+      { !isRearView 
+        ? <>
+            {
+              portView && portView.slots.map((slot, index) => (
+                <FrontViewSlot key={index} slot={slot} 
+                  isOnline={isOnline} isStack={isStack} 
+                  deviceStatus={switchDetail.deviceStatus as SwitchStatusEnum}
+                  portLabel={getPortLabel(slot) as string}
+                />
+              ))
+            }
+          </>
+        : <>
+            {
+              rearView && rearView.slots.map((slot, index) => (
+                <RearView key={index} slot={slot} 
+                  switchModelInfo={getSwitchModelInfo(model) as SwitchModelInfo} 
+                />
+              ))
+            }
+          </>
+      }
+    </UI.UnitWrapper>
   </div>
 }

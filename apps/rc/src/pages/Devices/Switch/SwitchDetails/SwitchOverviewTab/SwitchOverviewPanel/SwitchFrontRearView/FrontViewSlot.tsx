@@ -1,9 +1,9 @@
 import { SwitchPortStatus, SwitchSlot, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import _ from 'lodash'
-import { Port } from './Port'
+import { FrontViewPort } from './FrontViewPort'
 import * as UI             from './styledComponents'
 
-export function Slot (props:{
+export function FrontViewSlot (props:{
   slot: SwitchSlot, 
   portLabel: string,
   isOnline: boolean,
@@ -50,7 +50,7 @@ export function Slot (props:{
       slot.portStatus
       .filter((item: SwitchPortStatus) => item.portnumber%2 == 1)
       .map((port: SwitchPortStatus) => (
-        <Port key={port.portIdentifier} 
+        <FrontViewPort key={port.portIdentifier} 
           labelText={portLabel + port.portnumber}
           labelPosition='top' 
           portColor={getPortColor(port)}
@@ -66,7 +66,7 @@ export function Slot (props:{
       slot.portStatus
       .filter((item: SwitchPortStatus) => item.portnumber%2 == 0)
       .map((port: SwitchPortStatus) => (
-        <Port key={port.portIdentifier} 
+        <FrontViewPort key={port.portIdentifier} 
           labelText={portLabel + port.portnumber}
           labelPosition='bottom' 
           portColor={getPortColor(port)}

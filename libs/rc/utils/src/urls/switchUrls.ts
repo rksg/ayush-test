@@ -280,7 +280,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchRearView: {
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId:/rear?unitid=:unitId'
+    url: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId'
   },
   getProfiles: {
     method: 'post',

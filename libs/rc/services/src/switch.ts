@@ -45,7 +45,8 @@ import {
   CommonResult,
   SwitchProfileModel,
   SwitchCliTemplateModel,
-  SwitchFrontView
+  SwitchFrontView,
+  SwitchRearView
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -167,7 +168,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    switchRearView: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
+    switchRearView: build.query<SwitchRearView, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getSwitchRearView,

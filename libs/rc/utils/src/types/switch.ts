@@ -438,6 +438,29 @@ export interface SwitchFrontView {
   unitNumber?: number
 }
 
+export interface SwitchRearViewStatus {
+  slotNumber: number
+  status: string
+  type: string
+  unit?: number
+}
+
+export interface SwitchRearView {
+  slotNumber?: number
+  fanStatus?: SwitchRearViewStatus[]
+  powerStatus?: SwitchRearViewStatus[]
+}
+
+export interface SwitchRearViewUI {
+  slotNumber?: number
+  fanStatus?: SwitchRearViewStatus
+  powerStatus?: SwitchRearViewStatus
+}
+
+export interface SwitchRearViewUISlot {
+  slots: SwitchRearViewUI[]
+}
+
 export enum PORT_SPEED {
   NONE = 'None',
   AUTO = 'Auto',

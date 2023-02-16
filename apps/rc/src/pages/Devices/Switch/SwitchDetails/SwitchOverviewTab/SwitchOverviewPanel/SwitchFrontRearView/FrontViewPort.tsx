@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { useIntl } from 'react-intl';
 import * as UI             from './styledComponents'
 
-export function Port (props:{
+export function FrontViewPort (props:{
   portData: SwitchPortStatus
   portColor: string, 
   portIcon: string,

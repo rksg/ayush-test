@@ -10,16 +10,6 @@ interface SlotMember {
   data: StackMember[]
 }
 
-/** 
- * GUI:
- *    _______________________________________
- *   |  slot 1         slot 2   slot 3       |  
- *   |  [][][][][][]   [][][]   [][]         |
- *   |  [][][][][][]   [][][]   [][]-> port  |
- *   |_______________________________________|-> unit
- *   
-*/
-
 export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
 }) {
