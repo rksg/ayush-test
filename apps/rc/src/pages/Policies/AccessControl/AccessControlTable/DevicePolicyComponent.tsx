@@ -3,8 +3,12 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps }           from '@acx-ui/components'
-import { useDelDevicePolicyMutation, useDevicePolicyListQuery } from '@acx-ui/rc/services'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  useDelDevicePolicyMutation,
+  useDevicePolicyListQuery,
+  useGetAccessControlProfileListQuery
+} from '@acx-ui/rc/services'
 import {
   DevicePolicy,
   PolicyType,
@@ -34,6 +38,17 @@ const DevicePolicyComponent = () => {
 
   const [ delDevicePolicy ] = useDelDevicePolicyMutation()
 
+  const { data: accessControlList } = useGetAccessControlProfileListQuery({
+    params: params
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        data: data?.map(accessControl => accessControl?.devicePolicy?.id)
+      }
+    }
+  })
+
+
   const [editMode, setEditMode] = useState({
     id: '', isEdit: false
   })
@@ -46,18 +61,28 @@ const DevicePolicyComponent = () => {
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            delDevicePolicy({ params: { ...params, devicePolicyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ name, id, networksCount }], clearSelection) => {
+        if (networksCount !== 0 || accessControlList?.includes(id)) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
+            })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              delDevicePolicy({ params: { ...params, devicePolicyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {

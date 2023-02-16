@@ -3,9 +3,13 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps }         from '@acx-ui/components'
-import { useDelL2AclPolicyMutation, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
-import { L2AclPolicy, PolicyType, useTableQuery }             from '@acx-ui/rc/utils'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  useDelL2AclPolicyMutation,
+  useGetAccessControlProfileListQuery,
+  useL2AclPolicyListQuery
+} from '@acx-ui/rc/services'
+import { L2AclPolicy, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
@@ -30,6 +34,16 @@ const Layer2Component = () => {
 
   const [ delL2AclPolicy ] = useDelL2AclPolicyMutation()
 
+  const { data: accessControlList } = useGetAccessControlProfileListQuery({
+    params: params
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        data: data?.map(accessControl => accessControl?.l2AclPolicy?.id)
+      }
+    }
+  })
+
   const [editMode, setEditMode] = useState({
     id: '', isEdit: false
   })
@@ -42,18 +56,28 @@ const Layer2Component = () => {
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            delL2AclPolicy({ params: { ...params, l2AclPolicyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ name, id, networksCount }], clearSelection) => {
+        if (networksCount !== 0 || accessControlList?.includes(id)) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
+            })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              delL2AclPolicy({ params: { ...params, l2AclPolicyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {
@@ -95,7 +119,7 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
-          onlyViewMode={{ id: row.id ?? '', viewText: row.name }}
+          onlyViewMode={{ id: row.id, viewText: row.name }}
         />
       }
     },

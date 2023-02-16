@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AccessControlInfoType,
-  AccessControlProfile, ApplicationPolicy, DevicePolicy,
+  ApplicationPolicy, DevicePolicy,
   getPolicyDetailsLink, L2AclPolicy, L3AclPolicy,
   Policy,
   PolicyOperation,
@@ -105,21 +105,30 @@ const AccessControlSet = () => {
     }
   })
 
-  const rowActions: TableProps<AccessControlProfile>['rowActions'] = [
+  const rowActions: TableProps<Policy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            delAccessControl({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ name, id, scope }], clearSelection) => {
+        if (scope !== 0) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              defaultMessage: 'This policy has been applied in network'
+            })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              delAccessControl({ params: { ...params, policyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {

@@ -5,11 +5,23 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
 
-import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps }             from '@acx-ui/components'
+import {
+  Button,
+  ContentSwitcher,
+  ContentSwitcherProps,
+  Drawer,
+  GridCol,
+  GridRow,
+  showToast,
+  Table,
+  TableProps
+} from '@acx-ui/components';
 import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import PoolTable from '../../../../../../main/src/pages/Venues/VenueDetails/VenueServicesTab/DHCPInstance/PoolTable';
+import LeaseTable from '../../../../../../main/src/pages/Venues/VenueDetails/VenueServicesTab/DHCPInstance/LeaseTable';
 
 const { useWatch } = Form
 const { Option } = Select
@@ -329,6 +341,21 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     }
   }
 
+  const tabDetails: ContentSwitcherProps['tabDetails'] = [
+    {
+      label: $t({ defaultMessage: 'Pools ({count})' },
+        { count: 0 }),
+      value: 'pools',
+      children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
+    },
+    {
+      label: $t({ defaultMessage: 'Lease Table ({count} Online)' },
+        { count: 0 }),
+      value: 'lease',
+      children: <GridCol col={{ span: 24 }}><LeaseTable /></GridCol>
+    }
+  ]
+
   const content = <>
     <Form layout='horizontal' form={contentForm}>
       <DrawerFormItem
@@ -356,6 +383,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       >
         {/*TODO: use toggle bottom with subtitle when the component ready in DS */}
         <div style={{ width: '100%' }}>
+          <ContentSwitcher tabDetails={tabDetails} />
           <Button
             onClick={() => {
               contentForm.setFieldValue('layer2Access', AccessStatus.ALLOW)

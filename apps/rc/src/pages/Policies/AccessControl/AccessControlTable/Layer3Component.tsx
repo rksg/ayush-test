@@ -3,8 +3,12 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps }         from '@acx-ui/components'
-import { useDelL3AclPolicyMutation, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  useDelL3AclPolicyMutation,
+  useGetAccessControlProfileListQuery,
+  useL3AclPolicyListQuery
+} from '@acx-ui/rc/services'
 import {
   L2AclPolicy,
   L3AclPolicy,
@@ -35,6 +39,16 @@ const Layer3Component = () => {
 
   const [ delL3AclPolicy ] = useDelL3AclPolicyMutation()
 
+  const { data: accessControlList } = useGetAccessControlProfileListQuery({
+    params: params
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        data: data?.map(accessControl => accessControl?.l3AclPolicy?.id)
+      }
+    }
+  })
+
   const [editMode, setEditMode] = useState({
     id: '', isEdit: false
   })
@@ -47,18 +61,28 @@ const Layer3Component = () => {
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            delL3AclPolicy({ params: { ...params, l3AclPolicyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ name, id, networksCount }], clearSelection) => {
+        if (networksCount !== 0 || accessControlList?.includes(id)) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
+            })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              delL3AclPolicy({ params: { ...params, l3AclPolicyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {
@@ -100,7 +124,7 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
           editMode={row.id === editMode.id ? editMode : { id: '', isEdit: false }}
           setEditMode={setEditMode}
           isOnlyViewMode={true}
-          onlyViewMode={{ id: row.id ?? '', viewText: row.name }}
+          onlyViewMode={{ id: row.id, viewText: row.name }}
         />
       }
     },

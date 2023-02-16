@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps }            from '@acx-ui/components'
 import {
   useApplicationPolicyListQuery,
-  useDelAppPolicyMutation
+  useDelAppPolicyMutation, useGetAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -36,6 +36,17 @@ const ApplicationPolicyComponent = () => {
 
   const [ delAppPolicy ] = useDelAppPolicyMutation()
 
+  const { data: accessControlList } = useGetAccessControlProfileListQuery({
+    params: params
+  }, {
+    selectFromResult ({ data }) {
+      return {
+        data: data?.map(accessControl => accessControl?.applicationPolicy?.id)
+      }
+    }
+  })
+
+
   const [editMode, setEditMode] = useState({
     id: '', isEdit: false
   })
@@ -48,18 +59,28 @@ const ApplicationPolicyComponent = () => {
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            delAppPolicy({ params: { ...params, applicationPolicyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ name, id, networksCount }], clearSelection) => {
+        if (networksCount !== 0 || accessControlList?.includes(id)) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
+            })
+          })
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              delAppPolicy({ params: { ...params, applicationPolicyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {
