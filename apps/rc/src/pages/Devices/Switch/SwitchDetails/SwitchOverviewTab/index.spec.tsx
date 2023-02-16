@@ -7,8 +7,7 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import { switchDetailData, venueData, vlanList } from '../__tests__/fixtures'
