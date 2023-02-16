@@ -75,7 +75,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
           return index
         }
-        if(await validateSubnetOverlapping(index, item)) {
+        if(!await validateSubnetOverlapping(index, item)) {
           return index
         }
       }
@@ -85,7 +85,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
           !await isIpSubnetValid(item.ip, item.subnet, item.gateway)) {
           return index
         }
-        if(await validateSubnetOverlapping(index, item)) {
+        if(!await validateSubnetOverlapping(index, item)) {
           return index
         }
       }
@@ -100,9 +100,9 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     try {
       await lanPortsubnetValidator({ ip: item.ip, subnetMask: item.subnet }, listWithoutCurrent)
     } catch (error) {
-      return true
+      return false
     }
-    return false
+    return true
   }
 
   const isIpSubnetValid = async (ip:string, subnet:string, gateway?: string) => {
