@@ -1993,7 +1993,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           style="display: grid; grid-template-columns: 0px 1fr;"
                         >
                           <span
-                            class="styledComponents__LabelOfInput-sc-ijp2z4-4 lbOdSM"
+                            class="styledComponents__LabelOfInput-sc-ijp2z4-4 kaRqXV"
                             style="left: 165px;"
                           >
                             Seconds
