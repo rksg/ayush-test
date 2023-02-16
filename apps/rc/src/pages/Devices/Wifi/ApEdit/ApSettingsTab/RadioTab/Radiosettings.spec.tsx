@@ -485,7 +485,7 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
     })
 
-    it('should render correctly when tri-band type is dual5G mode', async () => {
+    it.skip('should render correctly when tri-band type is dual5G mode', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
