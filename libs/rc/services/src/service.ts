@@ -633,7 +633,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Portal', id: 'LIST' }],
+      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
       transformResponse (result: NewTableResult<Portal>) {
         return transferToTableResult<Portal>(result)
       },

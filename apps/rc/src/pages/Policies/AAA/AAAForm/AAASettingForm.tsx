@@ -25,7 +25,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const [ getAAAPolicyList ] = useLazyGetAAAPolicyListQuery()
   const form = Form.useFormInstance()
   const { useWatch } = Form
-  const enableSecondaryServer = useWatch('enableSecondaryServer')
+  const [enableSecondaryServer, type ] =
+    [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
     const list = (await getAAAPolicyList({ params }).unwrap())
       .filter(policy => policy.id !== params.policyId)
@@ -40,6 +41,15 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }
     }
   }, [saveState])
+  const validateRadiusPort = async (value: number)=>{
+    if((value === 1812 && type === 'ACCOUNTING')||
+    (value === 1813 && type === 'AUTHENTICATION')){
+      return Promise.reject(
+        $t({ defaultMessage: 'Authentication radius port '+
+        'cannot be 1813 and Accounting radius port cannot be 1812 ' }))
+    }
+    return Promise.resolve()
+  }
   return (
     <GridRow>
       <GridCol col={{ span: 8 }}>
@@ -97,9 +107,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 rules={[
                   { required: true },
                   { type: 'number', min: 1 },
-                  { type: 'number', max: 65535 }
+                  { type: 'number', max: 65535 },
+                  { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1812}
+                initialValue={1811}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>
@@ -154,9 +165,10 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                 rules={[
                   { required: true },
                   { type: 'number', min: 1 },
-                  { type: 'number', max: 65535 }
+                  { type: 'number', max: 65535 },
+                  { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1813}
+                initialValue={1814}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>

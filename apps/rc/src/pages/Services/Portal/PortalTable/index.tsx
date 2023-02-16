@@ -29,6 +29,7 @@ export default function PortalTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deletePortal ] = useDeletePortalMutation()
   const [getPortalLang] = useGetPortalLangMutation()
+  const PORTAL_LIMIT_NUMBER = 256
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
     defaultPayload: {
@@ -149,7 +150,10 @@ export default function PortalTable () {
         extra={[
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })} key='add'>
-            <Button type='primary'>{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= PORTAL_LIMIT_NUMBER
+                : false} >{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
           </TenantLink>
         ]}
       />
