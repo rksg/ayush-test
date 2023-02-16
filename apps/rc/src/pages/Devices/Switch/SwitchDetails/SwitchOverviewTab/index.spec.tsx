@@ -1,14 +1,13 @@
 import { rest } from 'msw'
 
 import { switchApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo, SWITCH_TYPE } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import { switchDetailData, venueData, vlanList } from '../__tests__/fixtures'

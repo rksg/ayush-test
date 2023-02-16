@@ -278,9 +278,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
   },
+  deleteProfiles: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/profiles'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  deleteCliTemplates: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getLagList: {
     method: 'get',

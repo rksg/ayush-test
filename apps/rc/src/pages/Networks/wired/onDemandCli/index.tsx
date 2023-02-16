@@ -1,11 +1,14 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }           from '@acx-ui/components'
-import { useGetCliTemplatesQuery }                      from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
+import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
+import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
 
 export function OnDemandCliTab () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
@@ -42,8 +45,24 @@ export function OnDemandCliTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: true, //Waiting for support
-      onClick: () => {}
+      onClick: (selectedRows) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: selectedRows.length > 1 ?
+              $t({ defaultMessage: 'CLI templates' }) : $t({ defaultMessage: 'CLI template' }),
+            entityValue: selectedRows[0].name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: () => {
+            deleteCliTemplates({
+              params: { tenantId },
+              payload: selectedRows.map(r => r.id)
+            })
+          }
+        })
+      }
     }
   ]
 

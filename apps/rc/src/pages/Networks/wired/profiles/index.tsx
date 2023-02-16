@@ -1,11 +1,15 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useGetProfilesQuery }                                 from '@acx-ui/rc/services'
+import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
+import { useParams }                                           from '@acx-ui/react-router-dom'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+
+  const [deleteProfiles] = useDeleteProfilesMutation()
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
@@ -58,7 +62,10 @@ export function ProfilesTab () {
             numOfEntities: selectedRows.length
           },
           onOk: () => {
-            // deleteGuests({ params: { tenantId }, payload: [guest.id] })
+            deleteProfiles({
+              params: { tenantId },
+              payload: selectedRows.map(r => r.id)
+            })
           }
         })
       }
