@@ -31,6 +31,10 @@ export const isDev = () => {
   return window.location.hostname === 'devalto.ruckuswireless.com'
 }
 
+export const isInt = () => {
+  return window.location.hostname === 'intalto.ruckuswireless.com'
+}
+
 const getTenantIdFromJwt = (jwt: string) => {
   if (jwt) {
     let tokens = jwt.split('.')

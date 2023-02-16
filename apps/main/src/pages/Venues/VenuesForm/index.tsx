@@ -19,7 +19,8 @@ import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
   useGetVenueQuery,
-  useUpdateVenueMutation
+  useUpdateVenueMutation,
+  useNewAddVenueMutation
 } from '@acx-ui/rc/services'
 import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
 import {
@@ -120,12 +121,14 @@ const defaultAddress: Address = {
 export function VenuesForm () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isNewApi = useIsSplitOn(Features.NEW_API)
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<VenueExtended>>()
   const params = useParams()
 
   const linkToVenues = useTenantLink('/venues')
   const [addVenue] = useAddVenueMutation()
+  const [newAddVenue] = useNewAddVenueMutation()
   const [updateVenue] = useUpdateVenueMutation()
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
@@ -225,7 +228,12 @@ export function VenuesForm () {
     try {
       const formData = { ...values }
       formData.address = address
-      await addVenue({ params, payload: formData }).unwrap()
+      if (isNewApi) {
+        await newAddVenue({ params, payload: formData }).unwrap()
+      } else {
+        await addVenue({ params, payload: formData }).unwrap()
+      }
+
       navigate(linkToVenues, { replace: true })
     } catch {
       showToast({
