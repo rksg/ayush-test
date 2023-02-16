@@ -12,6 +12,10 @@ import {
 
 import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
+import { RULES_MAX_COUNT } from './constants'
+
+export * from './constants'
+
 interface MdnsProxyForwardingRulesTableProps {
   readonly?: boolean;
   rules?: MdnsProxyForwardingRule[];
@@ -40,6 +44,10 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     } else {
       data.id = uuidv4()
       newRules.push(data)
+
+      if (hasReachedMaxLimit(newRules)) {
+        setDrawerVisible(false)
+      }
     }
 
     setRules(newRules)
@@ -51,6 +59,10 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       return `_${rule.mdnsName}._${rule.mdnsProtocol?.toLowerCase()} (${$t(mdnsProxyRuleTypeLabelMapping[rule.service])})`
     }
     return $t(mdnsProxyRuleTypeLabelMapping[rule.service])
+  }
+
+  const hasReachedMaxLimit = (rules: MdnsProxyForwardingRule[]) => {
+    return rules.length >= RULES_MAX_COUNT
   }
 
   const columns: TableProps<MdnsProxyForwardingRule>['columns'] = [
@@ -106,6 +118,16 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     }
   }]
 
+  const actions = [{
+    label: $t({ defaultMessage: 'Add Rule' }),
+    onClick: handleAddAction,
+    disabled: hasReachedMaxLimit(rules),
+    tooltip: hasReachedMaxLimit(rules)
+      // eslint-disable-next-line max-len
+      ? $t({ defaultMessage: 'The rule has reached the limit ({maxCount}).' }, { maxCount: RULES_MAX_COUNT })
+      : undefined
+  }]
+
   return (
     <>
       {!readonly &&
@@ -129,12 +151,7 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         columns={columns}
         dataSource={rules}
         rowKey='id'
-        actions={readonly
-          ? []
-          : [{
-            label: $t({ defaultMessage: 'Add Rule' }),
-            onClick: handleAddAction
-          }]}
+        actions={readonly ? [] : actions}
         rowActions={rowActions}
         rowSelection={readonly ? false : { type: 'radio' }}
       />

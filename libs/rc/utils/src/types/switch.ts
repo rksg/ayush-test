@@ -540,3 +540,20 @@ export interface SwitchDhcpLease {
   leaseExpiration: string
   leaseType: string
 }
+
+export enum LAG_TYPE {
+  STATIC = 'static',
+  DYNAMIC = 'dynamic'
+}
+
+export interface Lag {
+  id?: string
+  lagId?: number
+  name: string
+  ports: string[]
+  realRemove?: boolean
+  switchId: string
+  taggedVlans: string[]
+  type: LAG_TYPE
+  untaggedVlan: string
+}
