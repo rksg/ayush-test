@@ -102,26 +102,26 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   addVenue: {
     method: 'post',
     // newApi: true,
-    url: '/venues',
-    oldUrl: '/api/tenant/:tenantId/venue'
+    // url: '/venues',
+    url: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
     // newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    // url: '/venues/:venueId',
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
     // newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    // url: '/venues/:venueId',
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
-    url: '/venues/:venueId',
+    // url: '/venues/:venueId',
     // newApi: true,
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
     method: 'delete',

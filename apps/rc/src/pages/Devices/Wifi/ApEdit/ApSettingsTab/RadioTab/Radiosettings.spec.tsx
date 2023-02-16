@@ -43,7 +43,7 @@ describe('RadioSettingsTab', ()=> {
           CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
-          WifiUrlsInfo.getAp.url,
+          WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json(r560Ap))),
         rest.get(
           WifiUrlsInfo.getApCapabilities.url,
