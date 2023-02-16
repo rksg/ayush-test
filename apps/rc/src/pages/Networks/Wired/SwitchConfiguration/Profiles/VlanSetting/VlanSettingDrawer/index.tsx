@@ -190,7 +190,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     const tmpRuleList = ruleList !== undefined ?
       ruleList.filter(item => item.model !== values.model):
       ruleList || []
-    console.log(values, ruleList, tmpRuleList)
     const mergedRuleList = [
       ...tmpRuleList,
       values

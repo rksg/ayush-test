@@ -64,7 +64,6 @@ export function TrustedPorts () {
   ]
 
   const onSaveVlan = (values: VlanSettingInterface) => {
-    console.log(values)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const proceedData = { ...values } as any
     proceedData.trustedPorts.id = ''

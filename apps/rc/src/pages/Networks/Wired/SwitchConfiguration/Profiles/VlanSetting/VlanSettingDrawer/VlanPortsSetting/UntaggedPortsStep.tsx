@@ -37,7 +37,6 @@ export function UntaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
-      console.log(vlanList)
       if(vlanSettingValues.switchFamilyModels?.slots[0] &&
         vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
         const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
@@ -76,7 +75,6 @@ export function UntaggedPortsStep () {
       return true
     },
     onSelectionChange: (box) => {
-      console.log(box)
       tmpUntaggedSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,

@@ -71,7 +71,6 @@ export function VlanSetting () {
         }
         return item
       })
-      console.log(vlans)
       setVlanTable(vlans as Vlan[])
     }else{
       setVlanTable([...vlanTable, data])

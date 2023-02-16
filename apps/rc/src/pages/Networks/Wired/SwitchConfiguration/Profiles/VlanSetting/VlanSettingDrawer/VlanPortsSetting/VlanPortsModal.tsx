@@ -85,7 +85,6 @@ export function VlanPortsModal (props: {
               data.switchFamilyModels.taggedPorts.length
             switchFamilyModelsData.untaggedPorts = switchFamilyModelsData.untaggedPorts.join(',')
             switchFamilyModelsData.taggedPorts = switchFamilyModelsData.taggedPorts.join(',')
-            console.log(switchFamilyModelsData)
             onSave(switchFamilyModelsData)
             setVisible(false)
           }}

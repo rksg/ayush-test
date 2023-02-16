@@ -73,9 +73,8 @@ export function ConfigurationProfileForm () {
 
   const handleAddProfile = async (data: SwitchConfigurationProfile) => {
     try {
-      console.log(proceedData(data))
-      // await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
-      // navigate(linkToProfiles, { replace: true })
+      await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      navigate(linkToProfiles, { replace: true })
     } catch {
       showToast({
         type: 'error',
