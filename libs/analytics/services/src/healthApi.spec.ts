@@ -166,7 +166,7 @@ describe('Services for health kpis', () => {
   describe('Histogram', () => {
     const expectedResult = {
       network: {
-          histogram: {
+        histogram: {
           data: [10, 10]
         }
       }
