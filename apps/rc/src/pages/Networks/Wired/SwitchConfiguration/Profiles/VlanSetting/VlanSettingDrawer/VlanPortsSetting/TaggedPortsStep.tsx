@@ -139,7 +139,6 @@ export function TaggedPortsStep () {
           model: vlanSettingValues.switchFamilyModels?.model || '',
           slots: vlanSettingValues.switchFamilyModels?.slots || [],
           untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-          trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
           taggedPorts: vlanPorts
         }
       })
@@ -164,7 +163,6 @@ export function TaggedPortsStep () {
               model: vlanSettingValues.switchFamilyModels?.model || '',
               slots: vlanSettingValues.switchFamilyModels?.slots || [],
               untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
               taggedPorts: taggedValues
             }
           })
@@ -180,7 +178,6 @@ export function TaggedPortsStep () {
               model: vlanSettingValues.switchFamilyModels?.model || '',
               slots: vlanSettingValues.switchFamilyModels?.slots || [],
               untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
               taggedPorts: taggedValues
             }
           })
@@ -197,7 +194,6 @@ export function TaggedPortsStep () {
               model: vlanSettingValues.switchFamilyModels?.model || '',
               slots: vlanSettingValues.switchFamilyModels?.slots || [],
               untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || [],
-              trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
               taggedPorts: taggedValues
             }
           })

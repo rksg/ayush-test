@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Select } from 'antd'
+import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 
 import { Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
@@ -69,7 +70,22 @@ export function VlanPortsModal (props: {
             setVisible(false)
           }}
           onFinish={async (data) => {
-            const switchFamilyModelsData = data.switchFamilyModels
+            const switchFamilyModelsData = {
+              ...data.switchFamilyModels,
+              title: '',
+              vlanConfigName: ''
+            }
+            switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
+              (slot: { slotNumber: number; enable: boolean }) => ({
+                slotNumber: slot.slotNumber,
+                enable: slot.enable,
+                option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
+              }))
+            switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
+              data.switchFamilyModels.taggedPorts.length
+            switchFamilyModelsData.untaggedPorts = switchFamilyModelsData.untaggedPorts.join(',')
+            switchFamilyModelsData.taggedPorts = switchFamilyModelsData.taggedPorts.join(',')
+            console.log(switchFamilyModelsData)
             onSave(switchFamilyModelsData)
             setVisible(false)
           }}

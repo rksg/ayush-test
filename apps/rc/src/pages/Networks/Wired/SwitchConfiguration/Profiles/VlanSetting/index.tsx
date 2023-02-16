@@ -62,20 +62,22 @@ export function VlanSetting () {
   }]
 
   const handleSetVlan = (data: Vlan) => {
-    const isExist = vlanTable.filter((item: { vlanId: number }) => item.vlanId === data.vlanId)
+    const isExist = vlanTable.filter(
+      (item: { vlanId: number }) => item.vlanId.toString() === data.vlanId.toString())
     if(drawerEditMode && isExist.length > 0){
       const vlans = vlanTable.map((item: { vlanId: number }) => {
-        if(item.vlanId === data.vlanId){
+        if(item.vlanId.toString() === data.vlanId.toString()){
           return { ...data }
         }
         return item
       })
+      console.log(vlans)
       setVlanTable(vlans as Vlan[])
     }else{
       setVlanTable([...vlanTable, data])
     }
 
-    form.setFieldValue('vlans', [...vlanTable, data])
+    form.setFieldValue('vlans', vlanTable)
     setDrawerEditMode(false)
     return true
   }

@@ -52,6 +52,7 @@ export function GeneralSetting () {
         <Form.Item
           name='description'
           label='Profile Description'
+          initialValue={''}
         >
           <TextArea rows={4} maxLength={64} />
         </Form.Item>

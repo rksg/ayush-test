@@ -1,29 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
+import _                  from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { TrustedPort }                                   from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import { VlanSettingInterface } from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
 
 import { TrustedPortsModal } from './TrustedPortsModal'
 
-export interface TrustPortInterface {
-  model: string,
-  trustedPortType: string,
-  trustPorts: string[],
-  vlanDemand: boolean
-}
-
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const [openModal, setOpenModal] = useState(false)
-  const [selected, setSelected] = useState<TrustPortInterface>()
-  const [ruleList, setRuleList] = useState<TrustPortInterface[]>([])
+  const [selected, setSelected] = useState<TrustedPort>()
+  const [ruleList, setRuleList] = useState<TrustedPort[]>([])
 
-  const aclsColumns: TableProps<TrustPortInterface>['columns']= [{
+  const aclsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
     key: 'model'
@@ -37,7 +32,7 @@ export function TrustedPorts () {
     }
   }]
 
-  const rowActions: TableProps<TrustPortInterface>['rowActions'] = [
+  const rowActions: TableProps<TrustedPort>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -69,9 +64,26 @@ export function TrustedPorts () {
   ]
 
   const onSaveVlan = (values: VlanSettingInterface) => {
+    console.log(values)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const proceedData = { ...values } as any
+    proceedData.trustedPorts.id = ''
+    proceedData.trustedPorts.slots = proceedData.trustedPorts.slots.map(
+      (slot: { slotNumber: number; enable: boolean }) => ({
+        slotNumber: slot.slotNumber,
+        enable: slot.enable,
+        option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
+      }))
+    // values.trustedPorts = values.trustedPorts.map(
+    //   port => port.slots.map((slot: { slotNumber: number; enable: boolean }) => ({
+    //     slotNumber: slot.slotNumber,
+    //     enable: slot.enable,
+    //     option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
+    //   })))
+
     const mergedRuleList = [
       ...ruleList.filter(item => item.model !== values.switchFamilyModels?.model),
-      values.trustedPorts as unknown as TrustPortInterface
+      proceedData.trustedPorts as unknown as TrustedPort
     ]
     setRuleList(mergedRuleList)
     form.setFieldValue('trustedPorts', mergedRuleList)

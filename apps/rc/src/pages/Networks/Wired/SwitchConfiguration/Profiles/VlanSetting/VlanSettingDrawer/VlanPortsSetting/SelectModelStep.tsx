@@ -48,7 +48,6 @@ export function SelectModelStep () {
     useState<SwitchModelPortData>({
       id: '',
       model: '',
-      trustPorts: [],
       slots: [],
       taggedPorts: [],
       untaggedPorts: []

@@ -4,20 +4,19 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
+import { TrustedPort }                            from '@acx-ui/rc/utils'
 
 import { VlanSettingInterface } from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
 
 import { SelectModelStep }  from './SelectModelStep'
 import { TrustedPortsStep } from './TrustedPortsStep'
 
-import { TrustPortInterface } from './index'
-
 export function TrustedPortsModal (props: {
   open: boolean,
   onSave:(values: VlanSettingInterface)=>void,
   onCancel?: ()=>void,
-  editRecord?: TrustPortInterface
-  currrentRecords?: TrustPortInterface[]
+  editRecord?: TrustedPort
+  currrentRecords?: TrustedPort[]
 }) {
   const { $t } = useIntl()
   const { onSave } = props

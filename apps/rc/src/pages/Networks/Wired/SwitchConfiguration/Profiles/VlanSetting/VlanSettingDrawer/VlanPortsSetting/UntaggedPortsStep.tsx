@@ -145,7 +145,6 @@ export function UntaggedPortsStep () {
           model: vlanSettingValues.switchFamilyModels?.model || '',
           slots: vlanSettingValues.switchFamilyModels?.slots || [],
           untaggedPorts: vlanPorts,
-          trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
           taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
         }
       })

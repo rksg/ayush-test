@@ -277,5 +277,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchProfileList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/switch/profilelist'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
   }
 }

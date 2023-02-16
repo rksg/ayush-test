@@ -102,7 +102,7 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
       </Row>
       <Form.Item name={['trustedPorts', 'trustedPortType']} initialValue={'all'} />
       <Form.Item name={['trustedPorts', 'model']} />
-      <Form.Item name={['trustedPorts', 'vlanDemand']} initialValue={true} />
+      <Form.Item name={['trustedPorts', 'vlanDemand']} initialValue={false} />
       <Form.Item name={['trustedPorts', 'slots']} />
     </>
   )

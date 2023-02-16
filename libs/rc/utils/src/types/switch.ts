@@ -577,7 +577,6 @@ export interface SwitchModelPortData {
   vlanDemand?: boolean
   model: string
   slots: SwitchSlot[]
-  trustPorts: string[]
   taggedPorts: string[]
   untaggedPorts: string[]
 }

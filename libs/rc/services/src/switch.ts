@@ -49,7 +49,7 @@ import { formatter } from '@acx-ui/utils'
 export const baseSwitchApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'switchApi',
-  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort'],
+  tagTypes: ['Switch', 'SwitchBackup', 'SwitchClient', 'SwitchPort', 'SwitchProfiles'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -743,6 +743,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    addSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     })
   })
 })
@@ -908,5 +918,6 @@ export const {
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
-  useLazyValidateUniqueProfileNameQuery
+  useLazyValidateUniqueProfileNameQuery,
+  useAddSwitchConfigProfileMutation
 } = switchApi

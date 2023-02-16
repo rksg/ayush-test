@@ -136,8 +136,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'untaggedPorts',
       width: 180,
       render: (data) => {
-        const untaggedPorts = (data as string[])?.join(', ').substring(0, 20)
-        return untaggedPorts + (untaggedPorts.length === 20 ? '...' : '')
+        const untaggedPorts = data?.toString().substring(0, 20)
+        return untaggedPorts + (untaggedPorts?.length === 20 ? '...' : '')
       }
     },
     {
@@ -146,8 +146,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'taggedPorts',
       width: 180,
       render: (data) => {
-        const taggedPorts = (data as string[])?.join(', ').substring(0, 20)
-        return taggedPorts + (taggedPorts.length === 20 ? '...' : '')
+        const taggedPorts = data?.toString().substring(0, 20)
+        return taggedPorts + (taggedPorts?.length === 20 ? '...' : '')
       }
     }
   ]
@@ -190,6 +190,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     const tmpRuleList = ruleList !== undefined ?
       ruleList.filter(item => item.model !== values.model):
       ruleList || []
+    console.log(values, ruleList, tmpRuleList)
     const mergedRuleList = [
       ...tmpRuleList,
       values
@@ -207,12 +208,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         onFinish={(data: Vlan) => {
           setVlan({
             ...data,
-            switchFamilyModels: ruleList as unknown as SwitchModel[]
+            switchFamilyModels: ruleList as unknown as SwitchModel[] || []
           })
           form.resetFields()
         }}
       >
-        <Form.Item name='id' initialValue='' noStyle children={<Input type='hidden' />} />
         <Form.Item
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
@@ -223,11 +223,12 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               validateDuplicateVlanId(value, vlansList.filter(item => item.vlanId !== value)) :
               validateDuplicateVlanId(value, vlansList) }
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={<Input style={{ width: '400px' }} type='number' />}
         />
         <Form.Item
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
+          initialValue={''}
           rules={[
             { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
@@ -285,7 +286,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         <Form.Item
           name='multicastVersion'
           label={$t({ defaultMessage: 'Multicast Version' })}
-          initialValue={2}
+          initialValue={null}
           children={
             <Select disabled={multicastVersionDisabled}>
               <Option value={2}>
@@ -298,7 +299,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         <Form.Item
           name='spanningTreeProtocol'
           label={$t({ defaultMessage: 'Spanning tree protocol' })}
-          initialValue={'stp'}
+          initialValue={'none'}
           children={
             <Select>
               <Option value={'rstp'}>
@@ -309,6 +310,14 @@ function VlanSettingForm (props: VlanSettingFormProps) {
                 {$t({ defaultMessage: 'NONE' })}</Option>
             </Select>
           }
+        />
+        <Form.Item name='ports' initialValue={0} noStyle children={<Input type='hidden' />}/>
+        <Form.Item name='title' initialValue={''} noStyle children={<Input type='hidden' />}/>
+        <Form.Item
+          name='vlanConfigName'
+          initialValue={''}
+          noStyle
+          children={<Input type='hidden' />}
         />
       </Form>
       <Row justify='space-between' style={{ margin: '25px 0 10px' }}>

@@ -1,10 +1,12 @@
 import { useRef, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
+import { useAddSwitchConfigProfileMutation }                   from '@acx-ui/rc/services'
 import { SwitchConfigurationProfile, Vlan }                    from '@acx-ui/rc/utils'
-import { useParams }                                           from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
 
 import { AclSetting }                  from './AclSetting'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
@@ -14,10 +16,14 @@ import { TrustedPorts }                from './TrustedPorts'
 import { VenueSetting }                from './VenueSetting'
 import { VlanSetting }                 from './VlanSetting'
 
-
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
   const params = useParams()
+  const linkToProfiles = useTenantLink('/networks/wired')
+
+  const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
+
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
   const [ arpInspection, setArpInspection ] = useState(false)
@@ -52,6 +58,32 @@ export function ConfigurationProfileForm () {
     return true
   }
 
+  const proceedData = (data: SwitchConfigurationProfile) => {
+    if(data.trustedPorts){
+      const vlanModels = data.vlans.map(
+        item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+      data.trustedPorts = data.trustedPorts.map(
+        item => { return {
+          ...item,
+          ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+        }})
+    }
+    return data
+  }
+
+  const handleAddProfile = async (data: SwitchConfigurationProfile) => {
+    try {
+      console.log(proceedData(data))
+      // await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      // navigate(linkToProfiles, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -67,8 +99,7 @@ export function ConfigurationProfileForm () {
           formRef={formRef}
           onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
           onFinish={async (data) => {
-            console.log(data); // eslint-disable-line
-            showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+            handleAddProfile(data)
           }}
         >
           <StepsForm.StepForm
