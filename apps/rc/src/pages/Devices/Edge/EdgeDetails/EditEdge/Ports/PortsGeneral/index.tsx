@@ -75,12 +75,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
           return index
         }
-        const listWithoutCurrent = Object.values<EdgePort>(formRef.current?.getFieldsValue(true))
-          .filter((element, idx) => idx !== index)
-          .map(element => ({ ip: element.ip, subnetMask: element.subnet }))
-        try {
-          await lanPortsubnetValidator({ ip: item.ip, subnetMask: item.subnet }, listWithoutCurrent)
-        } catch (error) {
+        if(await validateSubnetOverlapping(index, item)) {
           return index
         }
       }
@@ -90,9 +85,24 @@ const PortsGeneral = (props: PortsGeneralProps) => {
           !await isIpSubnetValid(item.ip, item.subnet, item.gateway)) {
           return index
         }
+        if(await validateSubnetOverlapping(index, item)) {
+          return index
+        }
       }
     }
     return -1
+  }
+
+  const validateSubnetOverlapping = async (index: number, item: EdgePort) => {
+    const listWithoutCurrent = Object.values<EdgePort>(formRef.current?.getFieldsValue(true))
+      .filter((element, idx) => idx !== index)
+      .map(element => ({ ip: element.ip, subnetMask: element.subnet }))
+    try {
+      await lanPortsubnetValidator({ ip: item.ip, subnetMask: item.subnet }, listWithoutCurrent)
+    } catch (error) {
+      return true
+    }
+    return false
   }
 
   const isIpSubnetValid = async (ip:string, subnet:string, gateway?: string) => {

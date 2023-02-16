@@ -262,7 +262,7 @@ export const validationMessages = {
     description: 'Validation - switch static route admin distance'
   }),
   subnetOverlapping: defineMessage({
-    defaultMessage: 'The LAN ports have overlapping subnets',
+    defaultMessage: 'The ports have overlapping subnets',
     description: 'Validation - subnet range'
   })
 

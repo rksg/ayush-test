@@ -80,7 +80,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const getSubnetInfoWithoutCurrent = () => {
     return Object.entries<EdgePortWithStatus>(form.getFieldsValue(true))
       .filter(item => item[0] !== `port_${index}`
-        && item[1].portType === EdgePortTypeEnum.LAN
+        && item[1].enabled
         && !!item[1].ip
         && !!item[1].subnet)
       .map(item => ({ ip: item[1].ip, subnetMask: item[1].subnet }))
@@ -147,7 +147,11 @@ export const PortConfigForm = (props: ConfigFormProps) => {
                 validateFirst
                 rules={[
                   { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  {
+                    validator: () =>
+                      lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  }
                 ]}
                 children={<Input />}
               />
