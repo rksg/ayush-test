@@ -4,7 +4,6 @@ import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, showToast, Tooltip }                  from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import { useAddAAAServerMutation, useUpdateAAAServerMutation } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum,
   excludeExclamationRegExp,
@@ -231,7 +230,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
       name='password'
       label={<>
         { $t({ defaultMessage: 'Password' }) }
-        <Tooltip
+        <Tooltip.Question
           title={<FormattedMessage
             {...LOCAL_USER_PASSWORD_TOOLTIP}
             values={{
@@ -241,9 +240,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
             }}
           />}
           placement='bottom'
-        >
-          <QuestionMarkCircleOutlined />
-        </Tooltip>
+        />
       </>}
       rules={[
         { required: true },

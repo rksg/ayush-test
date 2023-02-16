@@ -63,6 +63,26 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-app'
   },
+  getAccessControlProfile: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+  },
+  getAccessControlProfileList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+  },
+  addAccessControlProfile: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile'
+  },
+  updateAccessControlProfile: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+  },
+  deleteAccessControlProfile: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId'
+  },
   addDevicePolicy: {
     method: 'post',
     url: '/devicePolicies',

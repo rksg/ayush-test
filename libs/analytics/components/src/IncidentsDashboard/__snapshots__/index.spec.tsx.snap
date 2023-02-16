@@ -37,7 +37,8 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                 <div
                   class="ant-space-item"
                 >
-                  <div
+                  <svg
+                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
@@ -57,7 +58,8 @@ exports[`IncidentDashboard renders incident and category data 1`] = `
                     title="Expand"
                     type="button"
                   >
-                    <div
+                    <svg
+                      class="styledComponents__ArrowChevronRightIcon-sc-13w5wfx-0 bIuzgA"
                       data-testid="ArrowChevronRight"
                     />
                   </button>

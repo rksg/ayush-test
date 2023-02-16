@@ -41,6 +41,7 @@ describe('AddEdgeDhcp', () => {
       })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Service Name')
+    await screen.findByText('Please create DHCP pools')
   })
 
   it('should add edge dhcp successfully', async () => {
@@ -53,6 +54,18 @@ describe('AddEdgeDhcp', () => {
       })
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
+    fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
+    fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
+    fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
     await user.click(screen.getByRole('button', { name: 'Add' }))
   })
 
@@ -70,6 +83,22 @@ describe('AddEdgeDhcp', () => {
     expect(toggle).toBeChecked()
 
     await screen.findByText('FQDN Name or IP Address')
+  })
+
+  it('cancel and go back to my service', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddDhcp />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/dhcp/create' }
+      })
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/services`,
+      hash: '',
+      search: ''
+    })
   })
 })
 
@@ -98,6 +127,18 @@ describe('AddEdgeDhcp api fail', () => {
       })
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    fireEvent.change(poolNameInput, { target: { value: 'Pool1' } })
+    fireEvent.change(subnetMaskInput, { target: { value: '255.255.255.0' } })
+    fireEvent.change(startIpInput, { target: { value: '1.1.1.1' } })
+    fireEvent.change(endIpInput, { target: { value: '1.1.1.5' } })
+    fireEvent.change(gatewayInput, { target: { value: '1.2.3.4' } })
+    await user.click(screen.getAllByRole('button', { name: 'Add' })[1])
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('An error occurred')
   })

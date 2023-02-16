@@ -5,10 +5,9 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, showToast, Tooltip }               from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
+import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
 import { useTraceRouteApMutation/*, useApActionMutation*/ } from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages }    from '@acx-ui/rc/utils'
+import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
 
@@ -58,11 +57,9 @@ export function ApTraceRouteForm () {
           name='name'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
-              placement='bottom'>
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+              placement='bottom' />
           </>}
           rules={[
             { required: true },

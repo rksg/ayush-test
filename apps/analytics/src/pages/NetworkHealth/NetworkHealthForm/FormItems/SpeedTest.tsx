@@ -1,0 +1,36 @@
+import { Checkbox, Form }         from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { StepsFormNew, Tooltip } from '@acx-ui/components'
+
+const name = 'speedTestEnabled' as const
+const label = defineMessage({ defaultMessage: 'Speed Test' })
+
+export function SpeedTest () {
+  const { $t } = useIntl()
+  return <Form.Item
+    name={name}
+    label={<>
+      {$t(label)}
+      <Tooltip.Question title={$t({ defaultMessage: 'Using speedtest.net servers' })} />
+    </>}
+    valuePropName='checked'
+    children={<Checkbox children={$t({ defaultMessage: 'Enable' })} />}
+  />
+}
+
+SpeedTest.fieldName = name
+SpeedTest.label = label
+
+SpeedTest.FieldSummary = function SpeedTestFieldSummary () {
+  const { $t } = useIntl()
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    children={<StepsFormNew.FieldSummary<boolean>
+      convert={(value) => value
+        ? $t({ defaultMessage: 'Enabled' })
+        : $t({ defaultMessage: 'Disabled' })}
+    />}
+  />
+}

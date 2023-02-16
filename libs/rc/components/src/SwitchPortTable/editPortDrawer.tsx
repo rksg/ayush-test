@@ -557,7 +557,6 @@ export function EditPortDrawer ({
       setDrawerVisible(false)
 
     } catch (err) {
-      console.log(err) // eslint-disable-line no-console
       showGeneralError(err)
     }
   }

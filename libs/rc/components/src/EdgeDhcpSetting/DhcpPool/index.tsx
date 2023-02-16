@@ -1,15 +1,15 @@
-import { useState, useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import { Col, Form, Input, Row } from 'antd'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Drawer }   from '@acx-ui/components'
+import { Drawer }      from '@acx-ui/components'
 import {
-  EdgeDhcpPool,
+  countIpMaxRange, EdgeDhcpPool,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp,
-  countIpMaxRange } from '@acx-ui/rc/utils'
+  subnetMaskIpRegExp
+} from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PoolTable } from './PoolTable'

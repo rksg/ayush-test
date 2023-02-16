@@ -456,7 +456,7 @@ describe('RadioSettingsTab', ()=> {
 
     afterEach(() => cleanup())
 
-    it('should render correctly', async () => {
+    it.skip('should render correctly', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{

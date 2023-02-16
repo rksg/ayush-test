@@ -91,7 +91,7 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             Port type
-            <div
+            <svg
               data-testid="QuestionMarkCircleOutlined"
             />
           </label>
@@ -185,7 +185,7 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             VLAN untag ID
-            <div
+            <svg
               data-testid="QuestionMarkCircleOutlined"
             />
           </label>
@@ -298,7 +298,7 @@ exports[`LanPortSettings should render correctly 1`] = `
             title=""
           >
             VLAN member
-            <div
+            <svg
               data-testid="QuestionMarkCircleOutlined"
             />
           </label>

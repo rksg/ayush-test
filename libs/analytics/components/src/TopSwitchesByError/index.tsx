@@ -6,6 +6,7 @@ import {
   HistoricalCard,
   Loader,
   Table,
+  TableProps,
   NoData } from '@acx-ui/components'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -22,19 +23,15 @@ function TopSwitchesByErrorWidget ({
   const { $t } = useIntl()
   const queryResults = useTopSwitchesByErrorQuery(filters)
 
-  const columns=[
+  const columns: TableProps<TopSwitchesByErrorData>['columns']=[
     {
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'name',
       key: 'name',
-      render: (name: unknown) => {
-        // TODO Actual path to be updated later
-        return (
-          <TenantLink to={'/switches'}>
-            { name as string }
-          </TenantLink>
-        )
-      }
+      render: (_, { name, mac, serial }) => <TenantLink
+        to={`/devices/switch/${mac?.toLowerCase()}/${serial}/details/overview`}>
+        { name }
+      </TenantLink>
     },
     {
       title: $t({ defaultMessage: 'Switch Id' }),

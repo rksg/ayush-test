@@ -145,27 +145,27 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addVenue: {
     method: 'post',
+    newApi: true,
     url: '/venues',
-    oldUrl: '/api/tenant/:tenantId/venue',
-    newApi: true
+    oldUrl: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
+    newApi: true,
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
-    newApi: true
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
+    newApi: true,
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
-    newApi: true
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
-    newApi: true
+    newApi: true,
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
     method: 'delete',
@@ -176,6 +176,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/detailHeaders',
     oldUrl: '/api/viewmodel/:tenantId/venue/:venueId/detailheader',
     newApi: true
+  },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venue/citylist'
   },
   getVenueSettings: {
     method: 'get',
