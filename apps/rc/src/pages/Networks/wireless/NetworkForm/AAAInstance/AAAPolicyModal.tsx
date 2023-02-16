@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { AAAPolicyType }            from '@acx-ui/rc/utils'
-
+import { notAvailableMsg }          from '@acx-ui/utils'
 
 import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
@@ -27,7 +28,10 @@ export default function AAAPolicyModal (props:{
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)}>
+      <Button type='link'
+        title={!useIsSplitOn(Features.POLICIES)?$t(notAvailableMsg):''}
+        onClick={()=>setVisible(true)}
+        disabled={!useIsSplitOn(Features.POLICIES)}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal
