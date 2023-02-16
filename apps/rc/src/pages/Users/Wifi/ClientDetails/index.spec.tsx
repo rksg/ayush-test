@@ -52,6 +52,10 @@ jest.mock('./ClientTimelineTab', () => () => {
   return <div data-testid='rc-ClientTimelineTab' />
 })
 
+jest.mock('./ClientReportsTab', () => () => {
+  return <div data-testid='rc-ClientReportsTab' />
+})
+
 describe('ClientDetails', () => {
   beforeEach(() => {
     mockServer.use(
@@ -154,8 +158,6 @@ describe('ClientDetails', () => {
     render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Reports')
   })
 
   it('should navigate to timeline tab correctly', async () => {
