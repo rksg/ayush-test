@@ -1,60 +1,122 @@
+
+import { useEffect } from 'react'
+
 import { Form, Select, Space } from 'antd'
+import { useForm, useWatch }   from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
-import { DhcpPoolStats }                             from '@acx-ui/rc/utils'
-
-import { useMockData } from './Pools'
+import { Drawer, Loader, Table, TableProps }                        from '@acx-ui/components'
+import { useGetEdgeDhcpListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import { EdgeDhcpPool, EdgeDhcpSetting }                            from '@acx-ui/rc/utils'
 
 interface ManageDhcpDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  inUseService: string | undefined
 }
 
 const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
 
   const { visible, setVisible } = props
   const { $t } = useIntl()
-  const { data, isLoading } = useMockData()
-
-  const columns: TableProps<DhcpPoolStats>['columns'] = [
+  const [form] = useForm()
+  const dhcpId = useWatch('dhcpId', form)
+  const params = useParams()
+  const {
+    data: edgeDhcpData,
+    edgeDhcpOptions,
+    isLoading: isEdgeDhcpDataFetching
+  } = useGetEdgeDhcpListQuery(
+    { params, payload: { page: 1, pageSize: 10000 } },
     {
-      title: $t({ defaultMessage: 'Pool' }),
-      key: 'name',
-      dataIndex: 'name'
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          data: data?.content.reduce((acc, item) => ({
+            ...acc,
+            [item.id]: item
+          }), {}) as { [key: string]: EdgeDhcpSetting },
+          edgeDhcpOptions: data?.content.map(item => ({ label: item.serviceName, value: item.id })),
+          isLoading
+        }
+      }
+    })
+  const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
+
+  useEffect(() => {
+    if(props.inUseService) {
+      form.setFieldValue('dhcpId', props.inUseService)
+    }
+  }, [props.inUseService])
+
+  const columns: TableProps<EdgeDhcpPool>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Pool Name' }),
+      key: 'poolName',
+      dataIndex: 'poolName'
     },
     {
       title: $t({ defaultMessage: 'Pool Range' }),
-      key: 'range',
-      dataIndex: 'range'
+      key: 'poolStartIp',
+      dataIndex: 'poolStartIp',
+      render (data, item) {
+        return `${item.poolStartIp} - ${item.poolEndIp}`
+      }
     },
     {
       title: $t({ defaultMessage: 'Gateway' }),
-      key: 'gateway',
-      dataIndex: 'gateway'
+      key: 'gatewayIp',
+      dataIndex: 'gatewayIp'
     }
   ]
 
+  const handleFinish = async () => {
+    const pathParams = { id: dhcpId }
+    const payload = { edgeIds: [...edgeDhcpData[dhcpId].edgeIds, params.serialNumber] }
+    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+    handleClose()
+  }
+
   const drawerContent = <>
     <Form
+      form={form}
+      onFinish={handleFinish}
       layout='vertical'
     >
       <Form.Item label={$t({ defaultMessage: 'DHCP Service' })}>
         <Space>
-          <Form.Item noStyle>
-            <Select style={{ width: '200px' }} options={[]} />
+          <Form.Item
+            name='dhcpId'
+            rules={[
+              {
+                required: true,
+                message: $t({ defaultMessage: 'Please select a DHCP Service' })
+              }
+            ]}
+            noStyle
+          >
+            <Select
+              style={{ width: '200px' }}
+              defaultValue={null}
+              options={[
+                { label: $t({ defaultMessage: 'Select...' }), value: null },
+                ...(edgeDhcpOptions || [])
+              ]}
+              loading={isEdgeDhcpDataFetching}
+            />
           </Form.Item>
-          <Button type='link' children={$t({ defaultMessage: 'Add' })} />
+          {/* TODO Add button not ready for test */}
+          {/* <Button type='link' children={$t({ defaultMessage: 'Add' })} /> */}
         </Space>
       </Form.Item>
     </Form>
     <Loader states={[
-      { isFetching: isLoading, isLoading: false }
+      { isFetching: isEdgeDhcpDataFetching, isLoading: false }
     ]}>
       <Table
         type='form'
         columns={columns}
-        dataSource={data}
+        dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
       />
     </Loader>
   </>
@@ -63,13 +125,29 @@ const ManageDhcpDrawer = (props: ManageDhcpDrawerProps) => {
     setVisible(false)
   }
 
+  const handleSave = async () => {
+    form.submit()
+  }
+
+  const footer = (
+    <Drawer.FormFooter
+      buttonLabel={{
+        save: $t({ defaultMessage: 'Apply' })
+      }}
+      onCancel={handleClose}
+      onSave={handleSave}
+    />
+  )
+
+
   return (
     <Drawer
       title={$t({ defaultMessage: 'Manage DHCP for SmartEdge Service' })}
-      width='500'
+      width='600'
       visible={visible}
       onClose={handleClose}
       children={drawerContent}
+      footer={footer}
     />
   )
 }

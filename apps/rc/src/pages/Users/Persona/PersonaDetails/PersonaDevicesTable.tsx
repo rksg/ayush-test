@@ -14,12 +14,11 @@ import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportD
 
 
 export function PersonaDevicesTable (props: {
-  hasMacPool: boolean
   persona?: Persona,
   title?: string
 }) {
   const { $t } = useIntl()
-  const { persona, title, hasMacPool } = props
+  const { persona, title } = props
   const [modelVisible, setModelVisible] = useState(false)
 
   const [
@@ -117,8 +116,7 @@ export function PersonaDevicesTable (props: {
   const actions: TableProps<PersonaDevice>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)},
-      disabled: !hasMacPool
+      onClick: () => {setModelVisible(true)}
     }
   ]
 

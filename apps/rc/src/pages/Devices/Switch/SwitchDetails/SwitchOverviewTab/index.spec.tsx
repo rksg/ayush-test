@@ -30,6 +30,11 @@ jest.mock('@acx-ui/rc/components', () => ({
     <div data-testid={'rc-SwitchVeTable'} title='SwitchVeTable' />
 }))
 
+jest.mock('./SwitchOverviewPanel', () => ({
+  SwitchOverviewPanel: () =>
+    <div data-testid={'rc-SwitchOverviewPanel'} title='SwitchOverviewPanel' />
+}))
+
 describe('SwitchOverviewTab', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -49,7 +54,6 @@ describe('SwitchOverviewTab', () => {
 
       rest.post(SwitchUrlsInfo.getVlanListBySwitchLevel.url,
         (_, res, ctx) => res(ctx.json(vlanList)))
-
     )
   })
 
@@ -67,6 +71,7 @@ describe('SwitchOverviewTab', () => {
       }
     })
     expect(await screen.findByTestId('rc-SwitchInfoWidget')).toBeVisible()
+    expect(await screen.findByTestId('rc-SwitchOverviewPanel')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(5)
     fireEvent.click(await screen.findByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

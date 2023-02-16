@@ -137,9 +137,12 @@ function PersonaDetails () {
           nsgId={personaGroupData?.nsgId}
         />
     },
-    // TODO: API Integration - Fetch AP
+    // TODO: API Integration - Fetch AP(get AP by port.macAddress?)
     { label: $t({ defaultMessage: 'Assigned AP' }),
-      value: 'AP 1'
+      value:
+        personaDetailsQuery.data?.ethernetPorts?.length !== 0
+          ? personaDetailsQuery.data?.ethernetPorts?.map(port => port.name)
+          : undefined
     },
     { label: $t({ defaultMessage: 'Ethernet Ports Assigned' }),
       value:
@@ -203,7 +206,6 @@ function PersonaDetails () {
         <PersonaDevicesTable
           title={$t({ defaultMessage: 'Devices ({deviceCount})' }, { deviceCount })}
           persona={personaDetailsQuery.data}
-          hasMacPool={!!personaGroupData?.macRegistrationPoolId}
         />
       </Space>
 

@@ -81,7 +81,7 @@ export function SwitchOverviewTab () {
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
-        <SwitchOverviewPanel />
+        <SwitchOverviewPanel filters={switchFilter} />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
         <SwitchOverviewPorts />

@@ -34,6 +34,10 @@ const EditDhcp = () => {
     if(edgeDhcpData) {
       formRef.current?.resetFields()
       formRef.current?.setFieldsValue(edgeDhcpData)
+      formRef.current?.setFieldValue(
+        'enableSecondaryDNSServer',
+        !!formRef.current?.getFieldValue('secondaryDnsIp')
+      )
     }
   }, [edgeDhcpData])
 

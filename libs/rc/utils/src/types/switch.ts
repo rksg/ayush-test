@@ -2,6 +2,7 @@
 import { ConfigurationBackupStatus } from '../constants'
 import { PortSettingModel }          from '../models/PortSetting'
 
+import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
 
 import { GridDataRow } from './'
@@ -326,6 +327,23 @@ export interface SwitchTable {
   disabled: boolean
 }
 
+export interface SwitchProfileModel {
+  id: string,
+  name: string,
+  profileType: ProfileTypeEnum,
+  venues: string[],
+  vlans: SwitchVlans[]
+}
+
+export interface SwitchCliTemplateModel{
+  applyLater: boolean,
+  cli: string,
+  id: string,
+  name: string,
+  reload: boolean,
+  switches?: string[]
+}
+
 export interface SwitchPortViewModel extends GridDataRow {
   cloudPort: boolean;
   name?: string;
@@ -521,4 +539,21 @@ export interface SwitchDhcpLease {
   clientIp: string
   leaseExpiration: string
   leaseType: string
+}
+
+export enum LAG_TYPE {
+  STATIC = 'static',
+  DYNAMIC = 'dynamic'
+}
+
+export interface Lag {
+  id?: string
+  lagId?: number
+  name: string
+  ports: string[]
+  realRemove?: boolean
+  switchId: string
+  taggedVlans: string[]
+  type: LAG_TYPE
+  untaggedVlan: string
 }

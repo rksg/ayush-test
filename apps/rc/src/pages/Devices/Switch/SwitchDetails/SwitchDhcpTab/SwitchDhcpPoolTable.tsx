@@ -106,6 +106,7 @@ export function SwitchDhcpPoolTable () {
 
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       setSelected(selectedRows[0].id)
       setDrawerVisible(true)
@@ -146,7 +147,7 @@ export function SwitchDhcpPoolTable () {
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
-          type: 'radio',
+          type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[],
           onChange: (keys: React.Key[]) => {
             setSelected(keys[0] as string)
