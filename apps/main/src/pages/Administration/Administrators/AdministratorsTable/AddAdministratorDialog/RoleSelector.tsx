@@ -4,7 +4,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { getRoles } from '@acx-ui/rc/services'
+import { getRoles } from '@acx-ui/rc/utils'
 
 export interface RoleSelectorProps {
   disabled?: boolean;

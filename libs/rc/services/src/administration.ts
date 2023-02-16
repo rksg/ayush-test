@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { defineMessage }             from 'react-intl'
 
 import {
   CommonResult,
@@ -15,7 +14,6 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   Delegation,
-  RolesEnum,
   VARTenantDetail,
   RegisteredUserSelectOption,
   ApiInfo,
@@ -26,8 +24,8 @@ import {
   ClientConfig,
   RadiusClientConfigUrlsInfo,
   RadiusServerSetting,
-  AdministrationDelegationStatus,
-  TenantDetails
+  TenantDetails,
+  GetRoleStr
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
@@ -466,77 +464,12 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
   })
 })
 
-export const GetRoleIntlString = ( role: RolesEnum ) => {
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return defineMessage({ defaultMessage: 'Prime Admin' })
-    case RolesEnum.ADMINISTRATOR:
-      return defineMessage({ defaultMessage: 'Administrator' })
-    case RolesEnum.GUEST_MANAGER:
-      return defineMessage({ defaultMessage: 'Guest Manager' })
-    case RolesEnum.READ_ONLY:
-      return defineMessage({ defaultMessage: 'Read Only' })
-    default:
-      return defineMessage({ defaultMessage: 'Known' })
-  }
-}
-
-
-export const GetRoleStr = ( role: RolesEnum ) => {
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return 'Prime Admin'
-    case RolesEnum.ADMINISTRATOR:
-      return 'Administrator'
-    case RolesEnum.GUEST_MANAGER:
-      return 'Guest Manager'
-    case RolesEnum.READ_ONLY:
-      return 'Read Only'
-    default:
-      return 'Unknown'
-  }
-}
-
-export const getRoles = () => {
-  return [
-    {
-      label: GetRoleIntlString(RolesEnum.PRIME_ADMIN),
-      value: RolesEnum.PRIME_ADMIN
-    },
-    {
-      label: GetRoleIntlString(RolesEnum.ADMINISTRATOR),
-      value: RolesEnum.ADMINISTRATOR
-    },
-    {
-      label: GetRoleIntlString(RolesEnum.GUEST_MANAGER),
-      value: RolesEnum.GUEST_MANAGER
-    },
-    {
-      label: GetRoleIntlString(RolesEnum.READ_ONLY),
-      value: RolesEnum.READ_ONLY
-    }]
-}
-
-export const getDelegetionStatusIntlString = (status: AdministrationDelegationStatus) => {
-  switch (status) {
-    case AdministrationDelegationStatus.INVITED :
-      return defineMessage({ defaultMessage: 'Invitation sent' })
-    case AdministrationDelegationStatus.ACCEPTED :
-      return defineMessage({ defaultMessage: 'Access granted' })
-    case AdministrationDelegationStatus.REJECTED :
-      return defineMessage({ defaultMessage: 'Invitation declined' })
-    case AdministrationDelegationStatus.REVOKED :
-      return defineMessage({ defaultMessage: 'revoked' })
-    default:
-      return defineMessage({ defaultMessage: 'Unknown' })
-  }
-}
-
 const transformAdministratorList = (data: Administrator[]) => {
   return data.map(item => {
     item.name = (item.name && item.name !== 'first') ? item.name : ''
     item.lastName = (item.lastName && item.lastName !== 'last') ? item.lastName : ''
     item.fullName = item.name + ' ' + item.lastName
+    // FIXME: might be removed because of Tenant.roleDsc is UI used only
     item.roleDsc = GetRoleStr(item.role)
 
     return item

@@ -14,12 +14,12 @@ import {
 } from '@acx-ui/components'
 import {
   useGetDelegationsQuery,
-  useRevokeInvitationMutation,
-  getDelegetionStatusIntlString
+  useRevokeInvitationMutation
 } from '@acx-ui/rc/services'
 import {
   AdministrationDelegationStatus,
-  Delegation
+  Delegation,
+  getDelegetionStatusIntlString
 } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
