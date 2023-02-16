@@ -1,4 +1,5 @@
-import { PoeUsage, StackingPortSolid, UplinkPortSolid } from '@acx-ui/icons'
+import { Descriptions } from '@acx-ui/components'
+import { PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
 import styled from 'styled-components/macro'
 
 export const TitleBar = styled.div`
@@ -59,15 +60,41 @@ export const Port = styled.div<{ portColor: string }>`
 `
 
 export const StackingPortIcon = styled(StackingPortSolid)`
-height: 16px;
-width: 16px;
+  height: 16px;
+  width: 16px;
 `
 
 export const UplinkPortIcon = styled(UplinkPortSolid)`
-height: 16px;
-width: 16px;
+  height: 16px;
+  width: 16px;
 `
 
 export const PoeUsageIcon = styled(PoeUsage)`
-height: 10px;
+  height: 10px;
+`
+
+export const TooltipStyle = styled(Descriptions)`
+  .ant-descriptions-item-content, 
+  .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+    color: #fff;
+  }
+`
+
+export const TagsOutlineIcon = styled(TagsOutline)`
+  width: 12px;
+  height: 14px;
+  vertical-align: middle;
+  path {
+    fill: #fff;
+  }
+`
+
+export const TagsSolidIcon = styled(TagsSolid)`
+  width: 12px;
+  height: 14px;
+  vertical-align: middle;
+  margin-top: 5px;
+  path {
+    fill: #fff;
+  }
 `
