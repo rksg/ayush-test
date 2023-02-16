@@ -28,7 +28,7 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return window.location.origin === 'devalto.ruckuswireless.com'
+  return window.location.hostname === 'devalto.ruckuswireless.com'
 }
 
 const getTenantIdFromJwt = (jwt: string) => {
