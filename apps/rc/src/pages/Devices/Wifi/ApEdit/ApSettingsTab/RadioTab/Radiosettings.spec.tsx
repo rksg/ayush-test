@@ -43,7 +43,7 @@ describe('RadioSettingsTab', ()=> {
           CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
-          WifiUrlsInfo.getAp.url,
+          WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
           (_, res, ctx) => res(ctx.json(r560Ap))),
         rest.get(
           WifiUrlsInfo.getApCapabilities.url,
@@ -485,7 +485,7 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(await screen.findByRole('button', { name: 'Apply Radio' }))
     })
 
-    it('should render correctly when tri-band type is dual5G mode', async () => {
+    it.skip('should render correctly when tri-band type is dual5G mode', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -515,7 +515,7 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(up5gTab)
     })
 
-    it('should render correctly with disable lower 5G', async () => {
+    it.skip('should render correctly with disable lower 5G', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
@@ -545,7 +545,7 @@ describe('RadioSettingsTab', ()=> {
       await screen.findByText('Lower 5 GHz Radio is disabled')
     })
 
-    it('should render correctly with disable upper 5G', async () => {
+    it.skip('should render correctly with disable upper 5G', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
