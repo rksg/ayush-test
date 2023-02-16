@@ -8,7 +8,6 @@ export interface ApiInfo {
   method: string;
   newApi?: boolean;
   oldUrl?: string;
-  oldMethod?: string;
 }
 
 export const TenantIdFromJwt = () => {

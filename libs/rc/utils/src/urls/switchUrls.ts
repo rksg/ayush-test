@@ -77,11 +77,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/import'
   },
   getPortSetting: {
-    method: 'post',
-    url: '/switches/:switchId/ports',
-    oldMethod: 'get',
-    oldUrl: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier',
-    newApi: true
+    // method: 'post',
+    // url: '/switches/:switchId/ports',
+    // newApi: true,
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'
   },
   getPortsSetting: {
     method: 'post',
