@@ -188,7 +188,7 @@ export default function DpskPassphraseManagement () {
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}
       maxEntries={512}
-      temlateLink='assets/templates/DPSK_import_template_expiration.csv'
+      templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
       isLoading={uploadCsvResult.isLoading}
       importRequest={async (formData, values) => {

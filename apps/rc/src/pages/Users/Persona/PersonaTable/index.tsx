@@ -7,7 +7,6 @@ export function PersonaTable () {
     <BasePersonaTable
       colProps={{
         name: { searchable: true },
-        groupId: { filterable: true },
         vni: { show: false }
       }}
     />

@@ -9,12 +9,6 @@ import { api }                     from './services'
 
 import { TopSwitchModels } from './index'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',

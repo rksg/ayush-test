@@ -13,11 +13,6 @@ import { aclList } from '../__tests__/fixtures'
 
 import { SwitchOverviewACLs } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
-}))
-
 describe('Switch Overview ACLs', () => {
   const params = {
     tenantId: 'tenant-id',

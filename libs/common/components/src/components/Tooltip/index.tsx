@@ -1,5 +1,7 @@
 import { Tooltip as AntTooltip } from 'antd'
 
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+
 import type { TooltipProps } from 'antd'
 
 Tooltip.defaultProps = {
@@ -12,3 +14,11 @@ function Tooltip ({ ...props }: TooltipProps) {
 }
 
 export { Tooltip, TooltipProps }
+
+type PredefinedTooltipProps = Omit<TooltipProps, 'children'>
+
+Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
+  return <Tooltip {...props}>
+    <QuestionMarkCircleOutlined />
+  </Tooltip>
+}

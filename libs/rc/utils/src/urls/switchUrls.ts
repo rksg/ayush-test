@@ -75,11 +75,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   updateSwitch: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches/:switchId',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   addStackMember: {
     method: 'post',
@@ -285,5 +289,29 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateSwitchConfigProfile: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getProfiles: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getCliTemplates: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  getLagList: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'
+  },
+  updateLag: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/lag'
+  },
+  addLag: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/lag/switch/:switchId'
+  },
+  deleteLag: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/lag/:lagId'
   }
 }

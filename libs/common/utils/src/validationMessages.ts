@@ -63,6 +63,22 @@ export const validationMessages = {
     defaultMessage: "This value should be lower than or equal to $'{max'}",
     description: 'Validation - max checks'
   }),
+  minStr: defineMessage({
+    defaultMessage: "Field must be at least $'{min'} characters",
+    description: 'Validation - string min checks'
+  }),
+  maxStr: defineMessage({
+    defaultMessage: "Field exceeds $'{max'} characters",
+    description: 'Validation - string max checks'
+  }),
+  lenStr: defineMessage({
+    defaultMessage: "Field must be exactly $'{len'} characters",
+    description: 'Validation - string len checks'
+  }),
+  rangeStr: defineMessage({
+    defaultMessage: "Field must be between $'{min'} and $'{max'} characters",
+    description: 'Validation - string range checks'
+  }),
   hasGraveAccentAndDollarSign: defineMessage({
     defaultMessage: '"`" and "$(" are not allowed',
     description: 'Validation - grave accent and dollar sign checks'
@@ -137,7 +153,7 @@ export const validationMessages = {
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
-      be moved to the venue which doesn\'t enable DHCP service`,
+      be moved to the venue which doesn’t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({
@@ -289,6 +305,12 @@ export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessage
     number: {
       min: $t(validationMessages.min),
       max: $t(validationMessages.max)
+    },
+    string: {
+      len: $t(validationMessages.lenStr),
+      min: $t(validationMessages.minStr),
+      max: $t(validationMessages.maxStr),
+      range: $t(validationMessages.rangeStr)
     }
   }
 }

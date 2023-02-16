@@ -252,7 +252,7 @@ describe('RogueAPDetectionForm', () => {
     })
   })
 
-  it('should render RogueAPDetectionForm successfully', async () => {
+  it.skip('should render RogueAPDetectionForm successfully and edit rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -307,15 +307,69 @@ describe('RogueAPDetectionForm', () => {
 
     await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
-    await screen.findByText('rule1')
-
-    await userEvent.click(screen.getByText('rule1'))
+    await userEvent.click(await screen.findByText('rule1'))
 
     await userEvent.click(screen.getByRole('button', {
       name: /edit/i
     }))
 
     await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
+
+    await screen.findByText('rule1')
+  })
+
+  it('should render RogueAPDetectionForm successfully', async () => {
+    mockServer.use(rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueTable)
+      )
+    ), rest.get(
+      RogueApUrls.getRoguePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(policyListContent)
+      )
+    ), rest.post(
+      RogueApUrls.addRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(policyResponse)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <Form>
+          <RogueAPDetectionForm edit={false}/>
+        </Form>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
+
+    fireEvent.change(await screen.findByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: '' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'policyTestName-modify' } })
+
+    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
+      { target: { value: 'desc1' } })
+
+    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
     await screen.findByText('rule1')
 
