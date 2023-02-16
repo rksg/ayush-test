@@ -110,7 +110,8 @@ export function CliStepConfiguration (props: {
 
   const { editMode, data, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
-  const { data: cliTemplates } = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload })
+  const { data: cliTemplates }
+    = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
