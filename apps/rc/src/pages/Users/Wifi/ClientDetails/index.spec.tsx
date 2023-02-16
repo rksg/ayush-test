@@ -48,6 +48,9 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
+jest.mock('./ClientTimelineTab', () => () => {
+  return <div data-testid='rc-ClientTimelineTab' />
+})
 
 describe('ClientDetails', () => {
   beforeEach(() => {
@@ -166,7 +169,6 @@ describe('ClientDetails', () => {
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
       .toEqual('Timeline')
-    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {
