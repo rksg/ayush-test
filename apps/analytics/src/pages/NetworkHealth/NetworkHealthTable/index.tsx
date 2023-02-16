@@ -13,7 +13,6 @@ import { formatter }                                             from '@acx-ui/u
 import * as contents                                              from '../contents'
 import { ClientType as ClientTypeEnum, TestType as TestTypeEnum } from '../types'
 
-
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
 
 export const getLastRun = (result: string) => {
@@ -140,7 +139,8 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Client Type' })),
       dataIndex: 'clientType',
       sorter: { compare: sortProp('clientType', defaultSort) },
-      filterable: true,
+      filterable: Object.entries(contents.clientTypes).map(
+        ([key, value])=>({ key, value: $t(value) })),
       render: (value) => $t(contents.clientTypes[value as ClientTypeEnum])
     },
     {
@@ -148,7 +148,8 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Test Type' })),
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
-      filterable: true,
+      filterable: Object.entries(contents.testTypes).map(
+        ([key, value])=>({ key, value: $t(value) })),
       render: (value) => $t(contents.testTypes[value as TestTypeEnum])
     },
     {
