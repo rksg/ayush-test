@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 import { Row, Col, Form } from 'antd'
 import _                  from 'lodash'
@@ -7,16 +7,25 @@ import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/component
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
-import { VlanSettingInterface } from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
+import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
+import { VlanSettingInterface }        from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
 
 import { TrustedPortsModal } from './TrustedPortsModal'
 
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<TrustedPort>()
   const [ruleList, setRuleList] = useState<TrustedPort[]>([])
+
+  useEffect(() => {
+    if(currentData){
+      form.setFieldsValue(currentData)
+      setRuleList(currentData.trustedPorts)
+    }
+  }, [currentData])
 
   const aclsColumns: TableProps<TrustedPort>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),

@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
-import { useSwitchConfigProfileQuery }                   from '@acx-ui/rc/services'
 import {
   Acl,
   AclRule,
@@ -11,6 +10,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
+
+import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 
@@ -40,20 +41,21 @@ export function AclSetting () {
   const { $t } = getIntl()
   const params = useParams()
   const form = Form.useFormInstance()
-  const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ aclsTable, setAclsTable ] = useState<Acl[]>([])
   const [ drawerFormRule, setDrawerFormRule ] = useState<Acl>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(data?.acls){
-      setAclsTable(data?.acls)
+    if(currentData){
+      form.setFieldsValue(currentData)
+      setAclsTable(currentData.acls)
     }
     if(aclsTable){
       form.setFieldValue('acls', aclsTable)
     }
-  }, [data?.acls, aclsTable])
+  }, [currentData, aclsTable])
 
   const aclsColumns: TableProps<Acl>['columns']= [{
     title: $t({ defaultMessage: 'ACL Name' }),

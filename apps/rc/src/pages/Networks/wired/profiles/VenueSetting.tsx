@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 
 import { Switch, Row, Col, Form } from 'antd'
 import _                          from 'lodash'
@@ -16,6 +16,8 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
+
+import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 
 const defaultPayload = {
   searchString: '',
@@ -57,6 +59,7 @@ const getNetworkId = () => {
 export function VenueSetting () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
@@ -80,7 +83,11 @@ export function VenueSetting () {
       })
       setTableData(data)
     }
-  }, [tableQuery.data])
+    if(currentData){
+      form.setFieldsValue(currentData)
+      setVenueList(currentData.venues)
+    }
+  }, [tableQuery.data, currentData])
 
   const rowActions: TableProps<Venue>['rowActions'] = [
     {

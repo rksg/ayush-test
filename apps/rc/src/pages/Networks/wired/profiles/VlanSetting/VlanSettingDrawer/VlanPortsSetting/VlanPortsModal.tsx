@@ -59,16 +59,14 @@ export function VlanPortsModal (props: {
       onOk={()=>form.submit()}
       onCancel={props.onCancel}
       destroyOnClose={true}
+      closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
     >
       <VlanPortsContext.Provider value={{ vlanSettingValues, setVlanSettingValues, vlanList }}>
         <StepsForm
           editMode={editMode}
-          onCancel={() => {
-            showToast({ type: 'info', content: 'Cancel' })
-            setVisible(false)
-          }}
+          onCancel={props.onCancel}
           onFinish={async (data) => {
             const switchFamilyModelsData = {
               ...data.switchFamilyModels,

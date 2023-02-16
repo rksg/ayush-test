@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
@@ -10,18 +10,28 @@ import {
   SpanningTreeProtocolName } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
+import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
+
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ vlanTable, setVlanTable ] = useState<Vlan[]>([])
   const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
   const [ drawerFormRule, setDrawerFormRule ] = useState<Vlan>()
   const [ drawerEditMode, setDrawerEditMode ] = useState(false)
   const [ vlanDrawerVisible, setVlanDrawerVisible ] = useState(false)
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
+
+  useEffect(() => {
+    if(currentData){
+      form.setFieldsValue(currentData)
+      setVlanTable(currentData.vlans)
+    }
+  }, [currentData])
 
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),

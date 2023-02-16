@@ -38,13 +38,12 @@ export function TrustedPortsModal (props: {
       onOk={()=>form.submit()}
       onCancel={props.onCancel}
       destroyOnClose={true}
+      closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
     >
       <StepsForm
-        onCancel={() => {
-          showToast({ type: 'info', content: 'Cancel' })
-        }}
+        onCancel={props.onCancel}
         onFinish={async (data) => {
           // const switchFamilyModelsData = data.switchFamilyModels
           onSave(data)

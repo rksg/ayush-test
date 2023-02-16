@@ -1,12 +1,15 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
-import { useAddSwitchConfigProfileMutation }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, Vlan }                    from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
+import {
+  useAddSwitchConfigProfileMutation,
+  useSwitchConfigProfileQuery
+}                   from '@acx-ui/rc/services'
+import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AclSetting }                  from './AclSetting'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
@@ -20,7 +23,9 @@ export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const linkToProfiles = useTenantLink('/networks/wired')
+  const linkToProfiles = useTenantLink('/networks/wired/profiles')
+
+  const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
 
   const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
 
@@ -31,6 +36,12 @@ export function ConfigurationProfileForm () {
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
   const formRef = useRef<StepsFormInstance<SwitchConfigurationProfile>>()
+
+  useEffect(() => {
+    if(data){
+      setCurrentData(data as SwitchConfigurationProfile)
+    }
+  }, [data])
 
   const updateVlanCurrentData = async (data: Partial<SwitchConfigurationProfile>) => {
     const ipv4DhcpSnoopingValue =
@@ -96,7 +107,8 @@ export function ConfigurationProfileForm () {
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm
           formRef={formRef}
-          onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+          editMode={editMode}
+          onCancel={() => navigate(linkToProfiles, { replace: true })}
           onFinish={async (data) => {
             handleAddProfile(data)
           }}

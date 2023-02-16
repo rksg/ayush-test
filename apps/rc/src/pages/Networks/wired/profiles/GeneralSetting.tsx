@@ -7,6 +7,9 @@ import { useLazyValidateUniqueProfileNameQuery }    from '@acx-ui/rc/services'
 import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 
+import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
+import { useContext, useEffect } from 'react'
+
 const profileListPayload = {
   url: '/api/viewmodel/{tenantId}/switch/profilelist',
   searchString: '',
@@ -19,6 +22,8 @@ const profileListPayload = {
 export function GeneralSetting () {
   const { $t } = useIntl()
   const params = useParams()
+  const form = Form.useFormInstance()
+  const { currentData } = useContext(ConfigurationProfileFormContext)
   const [validateUniqueProfileName] = useLazyValidateUniqueProfileNameQuery()
   const nameValidator = async (value: string) => {
     const payload = { ...profileListPayload, searchString: value }
@@ -28,6 +33,12 @@ export function GeneralSetting () {
 
     return checkObjectNotExists(list, value, $t({ defaultMessage: 'Configuration Profile' }))
   }
+
+  useEffect(() => {
+    if(currentData){
+      form.setFieldsValue(currentData)
+    }
+  }, [currentData])
 
   return (
     <Row gutter={20}>
@@ -56,6 +67,7 @@ export function GeneralSetting () {
         >
           <TextArea rows={4} maxLength={64} />
         </Form.Item>
+        <Form.Item name='id' initialValue={null} />
       </Col>
     </Row>
   )

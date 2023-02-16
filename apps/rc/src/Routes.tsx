@@ -174,7 +174,11 @@ function NetworkRoutes () {
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab' element={<Wired />} />
       <Route
-        path='networks/wired/profiles/:action'
+        path='networks/wired/profiles/add'
+        element={<ConfigurationProfileForm />}
+      />
+      <Route
+        path='networks/wired/profiles/:profileId/:action'
         element={<ConfigurationProfileForm />}
       />
     </Route>
