@@ -10,7 +10,7 @@ import { ConnectionSequenceDiagram }               from './ConnectionSequenceDia
 import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
-const useConnectionDetail = (event: DisplayEvent) => {
+export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
   const { mac, apName, ssid, radio, code, ttc, state } = event
@@ -66,6 +66,15 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
+export const getFailureExtra = (event: DisplayEvent) => {
+  return (event.category === FAILURE)
+    ? <ConnectionSequenceDiagram
+      failedMsgId={event.failedMsgId ?? ''}
+      messageIds={event.messageIds ?? []}
+      apMac={event.mac} />
+    : null
+}
+
 type ConnectionEventPopoverProps = Omit<PopoverProps, 'content'> & {
   children?: React.ReactNode,
   event: DisplayEvent
@@ -77,14 +86,8 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
     setOpen(false)
     rest.onVisibleChange && rest.onVisibleChange(false)
   }
-  const rowData = useConnectionDetail(event)
-  const failureExtra: ReactNode = (event.category === FAILURE)
-    ? <ConnectionSequenceDiagram
-      failedMsgId={event.failedMsgId ?? ''}
-      messageIds={event.messageIds ?? []}
-      apMac={event.mac}
-    />
-    : null
+  const rowData = getConnectionDetails(event)
+  const failureExtra: ReactNode = getFailureExtra(event)
   const visibleHandle = (val: boolean) => {
     rest.onVisibleChange && rest.onVisibleChange(val)
     setOpen(val)
