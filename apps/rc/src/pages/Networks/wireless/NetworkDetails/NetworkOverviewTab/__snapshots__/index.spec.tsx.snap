@@ -18,10 +18,10 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
         >
           <div
             class="Grid__Container-sc-5irhjd-1 zzbxI"
-            style="height: 142px;"
+            style="height: 152px;"
           >
             <div
-              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
               type="default"
             >
               <div
@@ -41,9 +41,20 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                       >
                         <div
                           class="ant-space-item"
+                          style="margin-right: 4px;"
                         >
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          >
+                            Pre-Shared Key (PSK)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <svg
+                            class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
+                            data-testid="HistoricalOutlined"
                           />
                         </div>
                       </div>
@@ -61,29 +72,16 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                   class="ant-card-body"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                  >
-                    Pre-Shared Key (PSK)
-                  </div>
-                  <div
                     class="ant-row Grid__GridRow-sc-5irhjd-2"
-                    style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
                   >
                     <div
-                      class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                      style="padding: 10px 10px 10px 10px;"
-                    >
-                      <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
-                        style="margin: auto;"
+                        style="margin: auto; align-items: center;"
                       >
                         <div />
                       </div>
@@ -195,10 +193,10 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
         >
           <div
             class="Grid__Container-sc-5irhjd-1 zzbxI"
-            style="height: 142px;"
+            style="height: 152px;"
           >
             <div
-              class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
               type="default"
             >
               <div
@@ -218,11 +216,15 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                       >
                         <div
                           class="ant-space-item"
+                          style="margin-right: 4px;"
                         >
                           <div
                             class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                           />
                         </div>
+                        <div
+                          class="ant-space-item"
+                        />
                       </div>
                     </div>
                     <div
@@ -238,27 +240,16 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                   class="ant-card-body"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                  />
-                  <div
                     class="ant-row Grid__GridRow-sc-5irhjd-2"
-                    style="margin: -10px -10px -10px -10px; flex-grow: 1;"
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
                   >
                     <div
-                      class="ant-col ant-col-2 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
                         class="Grid__Container-sc-5irhjd-1 zzbxI"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
-                      style="padding: 10px 10px 10px 10px;"
-                    >
-                      <div
-                        class="Grid__Container-sc-5irhjd-1 zzbxI"
-                        style="margin: auto;"
+                        style="margin: auto; align-items: center;"
                       >
                         <div />
                       </div>
