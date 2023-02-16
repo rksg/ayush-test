@@ -170,6 +170,7 @@ describe('useTableQuery', ()=>{
     const expectedResult = {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       method: 'get',
+      credentials: 'include',
       url: 'http://localhost/HelloWorld'
     }
     it('should return correct value', () => {
