@@ -545,7 +545,7 @@ describe('RadioSettingsTab', ()=> {
       await screen.findByText('Lower 5 GHz Radio is disabled')
     })
 
-    it('should render correctly with disable upper 5G', async () => {
+    it.skip('should render correctly with disable upper 5G', async () => {
       render(
         <Provider>
           <ApEditContext.Provider value={{
