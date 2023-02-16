@@ -15,10 +15,7 @@ import Pools            from './Pools'
 import * as UI          from './styledComponents'
 
 const useMockData = () => {
-  const [data, setData] = useState(0)
-  useEffect(() => {
-    setData(2)
-  }, [])
+  const [data] = useState(0)
   return { data }
 }
 
