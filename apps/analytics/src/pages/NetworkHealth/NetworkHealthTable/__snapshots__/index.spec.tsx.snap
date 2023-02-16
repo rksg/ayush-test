@@ -714,7 +714,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                On Demand
+                                On-Demand
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -782,7 +782,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                On Demand
+                                On-Demand
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -850,7 +850,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                On Demand
+                                On-Demand
                               </td>
                               <td
                                 class="ant-table-cell"
