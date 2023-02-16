@@ -21,6 +21,8 @@ export interface CliTemplateFormContextType {
   setData?: (data?: CliConfiguration) => void
   applySwitches?: Record<string, ApplySwitches[]>
   setApplySwitches?: (data: Record<string, ApplySwitches[]>) => void
+  applyModels?: string[]
+  setApplyModels?: (data: string[]) => void
 }
 
 const CliTemplateFormContext = createContext({} as CliTemplateFormContextType)

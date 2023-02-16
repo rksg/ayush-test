@@ -3,9 +3,11 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
 import { useGetProfilesQuery }                      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate }                              from '@acx-ui/react-router-dom'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
+  const navigate = useNavigate()
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
@@ -41,9 +43,11 @@ export function ProfilesTab () {
   const rowActions: TableProps<SwitchProfileModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      disabled: true, //Waiting for support
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => {}
+      onClick: (selectedRows) => {
+        const row = selectedRows?.[0]
+        navigate(`${row?.profileType?.toLowerCase()}/${row?.id}/edit`, { replace: false })
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -71,8 +75,9 @@ export function ProfilesTab () {
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => {
+            navigate('cli/add', { replace: false })
+          }
         }]}
       />
     </Loader></>

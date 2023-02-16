@@ -561,16 +561,38 @@ export interface CliTemplateVenueSwitches {
 }
 
 export interface CliConfiguration {
-  id: string
-  name: string
-  cli: string
+  id?: string
+  name?: string
+  cli?: string
   reload?: boolean
   applyLater?: boolean
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
 
   // profile
-  overwrite?: boolean  //For profiles
-  // venues = []; //For profiles
-  // models = []; //For profiles
+  overwrite?: boolean
+  venues?: string[]
+  models?: string[]
+  venueCliTemplate?: { //
+		cli?: string,
+		id?: string,
+		name?: string,
+		overwrite?: boolean
+    switchModels?: string
+    variables?: CliTemplateVariable[]
+	}
+}
+
+export interface FamilyModels {
+  family: string,
+  models: {
+    model: string
+    checked: boolean
+  }[]
+}
+
+export interface CliFamilyModels {
+  familyModels: FamilyModels[]
+  venueId: string
+  venueName: string
 }
