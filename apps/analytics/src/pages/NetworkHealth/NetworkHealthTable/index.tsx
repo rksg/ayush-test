@@ -10,16 +10,11 @@ import { useUserProfileContext }                                 from '@acx-ui/r
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
 import { formatter }                                             from '@acx-ui/utils'
 
-import * as contents from '../contents'
+import * as contents                                              from '../contents'
+import { ClientType as ClientTypeEnum, TestType as TestTypeEnum } from '../types'
+
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery } from './services'
-
-const networkHealthMapping = {
-  'virtual-client': 'Virtual Client',
-  'virtual-wireless-client': 'Virtual Wireless Client',
-  'on-demand': 'On Demand',
-  'scheduled': 'Scheduled'
-}
 
 export const getLastRun = (result: string) => {
   if (result) {
@@ -146,7 +141,7 @@ export function NetworkHealthTable () {
       dataIndex: 'clientType',
       sorter: { compare: sortProp('clientType', defaultSort) },
       filterable: true,
-      render: (value) => networkHealthMapping[value as keyof typeof networkHealthMapping]
+      render: (value) => $t(contents.clientTypes[value as ClientTypeEnum])
     },
     {
       key: 'type',
@@ -154,7 +149,7 @@ export function NetworkHealthTable () {
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
       filterable: true,
-      render: (value) => networkHealthMapping[value as keyof typeof networkHealthMapping]
+      render: (value) => $t(contents.testTypes[value as TestTypeEnum])
     },
     {
       key: 'apsCount',
