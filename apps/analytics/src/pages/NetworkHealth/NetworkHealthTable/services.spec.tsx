@@ -32,7 +32,9 @@ describe('networkHealth query', () => {
   }
 
   it('should return empty data', async () => {
-    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
+      data: { allServiceGuardSpecs: [] }
+    })
     const { status, data, error } = await store.dispatch(
       api.endpoints.networkHealth.initiate({})
     )
