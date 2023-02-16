@@ -18,9 +18,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetworksVenuesList: {
     method: 'post',
-    url: '/networks/:networkId/venues',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
-    newApi: true
+    // url: '/networks/:networkId/venues',
+    // newApi: true,
+    url: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues'
   },
   getCloudpathList: {
     method: 'get',
@@ -458,9 +458,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApNetworkList: {
     method: 'post',
-    url: '/aps/:serialNumber/networks/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
-    newApi: true
+    // url: '/aps/:serialNumber/networks/query',
+    // newApi: true,
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
   },
   getExternalProviders: {
     method: 'get',

@@ -566,6 +566,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
+        if (req.url.includes('staticRoutes')) {
+          payload = [payload]
+        }
         return {
           ...req,
           body: payload

@@ -273,7 +273,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateStaticRoute: {
     method: 'put',
-    url: '/switches/:switchId/staticRoutes/:staticRouteId',
+    url: '/switches/staticRoutes/:staticRouteId',
     oldUrl: '/api/switch/tenant/:tenantId/staticRoute',
     newApi: true
   },
