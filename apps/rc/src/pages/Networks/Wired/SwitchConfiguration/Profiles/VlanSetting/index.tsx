@@ -2,24 +2,20 @@ import { useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { showActionModal, Table, TableProps }           from '@acx-ui/components'
-import { StepsForm }                   from '@acx-ui/components'
-import { useSwitchConfigProfileQuery } from '@acx-ui/rc/services'
+import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { StepsForm }                          from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
   SpanningTreeProtocolName } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import { VlanSettingDrawer } from './VlanSettingDrawer'
 
 export function VlanSetting () {
   const { $t } = getIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
-  const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
   const [ vlanTable, setVlanTable ] = useState<Vlan[]>([])
   const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
   const [ drawerFormRule, setDrawerFormRule ] = useState<Vlan>()
@@ -78,7 +74,9 @@ export function VlanSetting () {
     }else{
       setVlanTable([...vlanTable, data])
     }
+
     form.setFieldValue('vlans', [...vlanTable, data])
+    setDrawerEditMode(false)
     return true
   }
 
@@ -95,12 +93,13 @@ export function VlanSetting () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setDrawerFormRule(selectedRows[0])
+        setDrawerEditMode(true)
         setVlanDrawerVisible(true)
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -116,6 +115,7 @@ export function VlanSetting () {
                   .includes(option.vlanId)
               })
             )
+            clearSelection()
           }
         })
       }
@@ -134,7 +134,6 @@ export function VlanSetting () {
             dataSource={vlanTable}
             rowSelection={{
               type: 'radio',
-              selectedRowKeys: drawerFormRule ? [drawerFormRule.vlanId] : [],
               onChange: (keys: React.Key[]) => {
                 setDrawerFormRule(
                   vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])
@@ -143,7 +142,12 @@ export function VlanSetting () {
             }}
             actions={[{
               label: $t({ defaultMessage: 'Add VLAN' }),
-              onClick: () => { setVlanDrawerVisible(true) }
+              onClick: () => {
+                form.resetFields()
+                setDrawerFormRule({} as Vlan)
+                setDrawerEditMode(false)
+                setVlanDrawerVisible(true)
+              }
             }, {
               label: defaultVlan?.vlanId ?
                 $t({ defaultMessage: 'Default ({vlanId}) VLAN settings' },

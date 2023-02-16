@@ -22,6 +22,7 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
   const [portsModule3, setPortsModule3] = useState<PortsType[]>([])
+  const [selected, setSelected] = useState<string[]>([])
 
   useEffect(() => {
     if(vlanSettingValues){
@@ -68,9 +69,12 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
           <Card type='solid-bg'>
             <Row gutter={20}>
               <Col>
+                <label style={{ color: 'var(--acx-neutrals-60)' }}>
+                  {$t({ defaultMessage: 'Trusted Ports:' })}
+                </label>
                 <Form.Item
                   name={['trustedPorts', 'trustPorts']}
-                  label={<label>{$t({ defaultMessage: 'Trusted Ports:' })}</label>}
+                  label={<label>{$t({ defaultMessage: 'You may select up to 4 ports' })}</label>}
                   children={
                     <Select
                       mode='multiple'
@@ -83,13 +87,13 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
                         form.setFieldValue(['trustedPorts', 'trustPorts'],
                           form.getFieldValue(['trustedPorts', 'trustPorts']).slice(0, 4)
                         )
+                        setSelected(form.getFieldValue(['trustedPorts', 'trustPorts']).slice(0, 4))
                       }}
                       style={{ width: '400px' }}
                     />}
                 />
                 {
-                  $t({ defaultMessage: 'Selected Ports:' }) + ' ' +
-                  form.getFieldValue(['trustedPorts', 'trustPorts'])
+                  $t({ defaultMessage: 'Selected Ports:' }) + ' ' + selected
                 }
               </Col>
             </Row>

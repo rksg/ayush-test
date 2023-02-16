@@ -33,14 +33,30 @@ export const GroupListLayout = styled('div')`
   margin: 10px 0;
   max-height: calc( 100vh - 450px);
   min-height: 350px;
+
+  div.ant-radio-group{
+    width: 100%
+  }
+
   label {
     display: flex;
+    width: 100%;
     margin: 4px 0;
+    padding: 2px;
     font-size: var(--acx-body-4-font-size);
     color: var(--acx-primary-black);
   }
+  
+  label:has(.ant-radio-checked) {
+    background: var(--acx-accents-orange-20)
+  }
+
   .ant-card{
     min-height: 320px;
+  }
+  
+  .ant-radio-inner{
+    display: none;
   }
 `
 

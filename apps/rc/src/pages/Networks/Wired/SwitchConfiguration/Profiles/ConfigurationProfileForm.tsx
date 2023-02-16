@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { Row, Col } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
 import { SwitchConfigurationProfile, Vlan }                    from '@acx-ui/rc/utils'
@@ -10,6 +9,7 @@ import { useParams }                                           from '@acx-ui/rea
 import { AclSetting }                  from './AclSetting'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 import { GeneralSetting }              from './GeneralSetting'
+import { Summary }                     from './Summary'
 import { TrustedPorts }                from './TrustedPorts'
 import { VenueSetting }                from './VenueSetting'
 import { VlanSetting }                 from './VlanSetting'
@@ -110,13 +110,8 @@ export function ConfigurationProfileForm () {
 
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Summary' })}
-            onFinish={updateCurrentData}
           >
-            <Row gutter={20}>
-              <Col span={10}>
-                <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
-              </Col>
-            </Row>
+            <Summary />
           </StepsForm.StepForm>
         </StepsForm>
       </ConfigurationProfileFormContext.Provider>

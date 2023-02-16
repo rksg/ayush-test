@@ -25,7 +25,7 @@ export interface PortsType {
 export function UntaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues } = useContext(VlanPortsContext)
+  const { vlanSettingValues, setVlanSettingValues, vlanList } = useContext(VlanPortsContext)
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -37,6 +37,7 @@ export function UntaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
+      console.log(vlanList)
       if(vlanSettingValues.switchFamilyModels?.slots[0] &&
         vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
         const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
@@ -61,8 +62,9 @@ export function UntaggedPortsStep () {
     }
   }, [vlanSettingValues])
 
-  let tmpSelectedItem: string[] = []
-  const { DragSelection } = useSelectionContainer({
+  let tmpUntaggedSelectedItem: string[] = []
+  const { DragSelection: DragSelectionUntaggedPorts } = useSelectionContainer({
+    eventsElement: document.getElementById('unTaggedContainer'),
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
         let el = target
@@ -74,7 +76,8 @@ export function UntaggedPortsStep () {
       return true
     },
     onSelectionChange: (box) => {
-      tmpSelectedItem = []
+      console.log(box)
+      tmpUntaggedSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,
         top: box.top + window.scrollY,
@@ -89,7 +92,7 @@ export function UntaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpUntaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
@@ -103,7 +106,7 @@ export function UntaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpUntaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
@@ -118,24 +121,35 @@ export function UntaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpUntaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
       })
 
-      tmpSelectedItem = _.uniq(tmpSelectedItem)
+      tmpUntaggedSelectedItem = _.uniq(tmpUntaggedSelectedItem)
     },
     onSelectionEnd: () => {
       const selectedVlanPort = form.getFieldValue(['switchFamilyModels', 'untaggedPorts']) || []
-      const vlanPorts = _.xor(selectedVlanPort,tmpSelectedItem)
+      const vlanPorts = _.xor(selectedVlanPort,tmpUntaggedSelectedItem)
 
       setSelectedItems1(vlanPorts.filter(item=> item.split('/')[1] === '1'))
       setSelectedItems2(vlanPorts.filter(item=> item.split('/')[1] === '2'))
       setSelectedItems3(vlanPorts.filter(item=> item.split('/')[1] === '3'))
       form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], vlanPorts)
 
-      tmpSelectedItem = []
+      setVlanSettingValues({
+        ...vlanSettingValues,
+        switchFamilyModels: {
+          id: vlanSettingValues.switchFamilyModels?.id,
+          model: vlanSettingValues.switchFamilyModels?.model || '',
+          slots: vlanSettingValues.switchFamilyModels?.slots || [],
+          untaggedPorts: vlanPorts,
+          trustPorts: vlanSettingValues.switchFamilyModels?.trustPorts || [],
+          taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
+        }
+      })
+      tmpUntaggedSelectedItem = []
     },
     isEnabled: true
   })
@@ -158,6 +172,17 @@ export function UntaggedPortsStep () {
           break
       }
     }
+
+  const getDisabledPorts = (timeslot: string) => {
+    const vlanSelectedPorts = vlanList.map(item => item.switchFamilyModels?.
+      filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model))
+    const portExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
+
+    const disabledPorts = vlanSettingValues.switchFamilyModels?.taggedPorts.includes(timeslot)
+    || (portExists && portExists[0]) || false
+    return disabledPorts
+  }
 
   const getTooltip = (slotNumber: number, portStr: string) => {
     // const speedNoData = 'link down or no traffic'
@@ -284,7 +309,7 @@ export function UntaggedPortsStep () {
       <Row gutter={20} style={{ marginTop: '20px' }}>
         <Col>
           <Card type='solid-bg'>
-            <Row gutter={20}>
+            <Row gutter={20} id='unTaggedContainer'>
               <Col>
                 <div>
                   <Typography.Text style={{ fontWeight: 'bold' }}>
@@ -314,8 +339,7 @@ export function UntaggedPortsStep () {
                           id={`untagged_module1_${i}`}
                           data-value={timeslot.value}
                           data-testid={`untagged_module1_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
-                            .includes(timeslot.value)}
+                          data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         >
                           {
@@ -329,8 +353,7 @@ export function UntaggedPortsStep () {
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
-                        .includes(timeslot.value)
+                      disabled: getDisabledPorts(timeslot.value)
                     }))}
                   />
                 </UI.Module>
@@ -365,15 +388,13 @@ export function UntaggedPortsStep () {
                               id={`untagged_module2_${i}`}
                               data-value={timeslot.value}
                               data-testid={`untagged_module2_${i}`}
-                              data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
-                                .includes(timeslot.value)}
+                              data-disabled={getDisabledPorts(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
                             <p>{i+1}</p>
                           </Tooltip>,
                           value: timeslot.value,
-                          disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
-                            .includes(timeslot.value)
+                          disabled: getDisabledPorts(timeslot.value)
                         }))}
                       />
                     </UI.Module>
@@ -409,15 +430,13 @@ export function UntaggedPortsStep () {
                           id={`untagged_module3_${i}`}
                           data-value={timeslot.value}
                           data-testid={`untagged_module3_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.taggedPorts
-                            .includes(timeslot.value)}
+                          data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.taggedPorts
-                        .includes(timeslot.value)
+                      disabled: getDisabledPorts(timeslot.value)
                     }))}
                   />
                 </UI.Module>
@@ -425,7 +444,7 @@ export function UntaggedPortsStep () {
               }
             </Row>
           </Card>
-          <DragSelection />
+          <DragSelectionUntaggedPorts />
         </Col>
       </Row>
       <Form.Item name={['switchFamilyModels', 'untaggedPorts']} />

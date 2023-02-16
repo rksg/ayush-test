@@ -9,14 +9,11 @@ import {
 import { Row, Col, Form, Typography, Checkbox } from 'antd'
 import _                                        from 'lodash'
 
-import { Card, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { getIntl }                from '@acx-ui/utils'
+import { Card, Tooltip } from '@acx-ui/components'
+import { getIntl }       from '@acx-ui/utils'
 
-import * as UI                  from './styledComponents'
-import VlanPortsContext         from './VlanPortsContext'
-import { VlanSettingInterface } from './VlanPortsModal'
-import { PortStatus } from '@acx-ui/rc/utils'
+import * as UI          from './styledComponents'
+import VlanPortsContext from './VlanPortsContext'
 
 export interface PortsType {
   label: string,
@@ -62,8 +59,8 @@ export function TaggedPortsStep () {
     }
   }, [vlanSettingValues])
 
-  let tmpSelectedItem: string[] = []
-  const { DragSelection } = useSelectionContainer({
+  let tmpTaggedSelectedItem: string[] = []
+  const { DragSelection: DragSelectionTaggedPorts } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
         let el = target
@@ -75,6 +72,7 @@ export function TaggedPortsStep () {
       return true
     },
     onSelectionChange: (box) => {
+      tmpTaggedSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,
         top: box.top + window.scrollY,
@@ -89,7 +87,7 @@ export function TaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpTaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
@@ -103,7 +101,7 @@ export function TaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpTaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
@@ -118,18 +116,17 @@ export function TaggedPortsStep () {
           const boxItem = { left, top, width, height }
           if (boxesIntersect(scrollAwareBox, boxItem)) {
             if(item.dataset.value !== undefined && item.dataset.disabled === 'false'){
-              tmpSelectedItem.push(item.dataset.value)
+              tmpTaggedSelectedItem.push(item.dataset.value)
             }
           }
         }
       })
 
-      tmpSelectedItem = _.uniq(tmpSelectedItem)
+      tmpTaggedSelectedItem = _.uniq(tmpTaggedSelectedItem)
     },
     onSelectionEnd: () => {
       const selectedVlanPort = form.getFieldValue(['switchFamilyModels', 'taggedPorts']) || []
-      const vlanPorts = _.xor(selectedVlanPort,tmpSelectedItem)
-
+      const vlanPorts = _.xor(selectedVlanPort,tmpTaggedSelectedItem)
       setSelectedItems1(vlanPorts.filter(item=> item.split('/')[1] === '1'))
       setSelectedItems2(vlanPorts.filter(item=> item.split('/')[1] === '2'))
       setSelectedItems3(vlanPorts.filter(item=> item.split('/')[1] === '3'))
@@ -146,14 +143,13 @@ export function TaggedPortsStep () {
           taggedPorts: vlanPorts
         }
       })
-      tmpSelectedItem = []
+      tmpTaggedSelectedItem = []
     },
     isEnabled: true
   })
 
   const handleCheckboxGroupChange =
     (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void) => {
-      console.log(checkedValues)
       setValues(checkedValues)
       let taggedValues: string[] = []
       switch(moduleName){
@@ -177,7 +173,6 @@ export function TaggedPortsStep () {
           taggedValues = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
           form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
 
-          console.log(taggedValues)
           setVlanSettingValues({
             ...vlanSettingValues,
             switchFamilyModels: {
@@ -195,7 +190,6 @@ export function TaggedPortsStep () {
           taggedValues = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
           form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedValues)
 
-          console.log(taggedValues)
           setVlanSettingValues({
             ...vlanSettingValues,
             switchFamilyModels: {
@@ -359,7 +353,7 @@ export function TaggedPortsStep () {
               }
             </Row>
           </Card>
-          <DragSelection />
+          <DragSelectionTaggedPorts />
         </Col>
       </Row>
       <Form.Item name={['switchFamilyModels', 'taggedPorts']} />

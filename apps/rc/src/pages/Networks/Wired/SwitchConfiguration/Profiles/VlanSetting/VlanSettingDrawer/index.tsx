@@ -37,7 +37,6 @@ export interface VlanSettingDrawerProps {
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
-  const [aclType, setAclType] = useState('standard')
   const { vlan, setVlan, visible, setVisible, editMode, vlansList } = props
   const [form] = Form.useForm<Vlan>()
 
@@ -58,10 +57,9 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
       children={
         <VlanSettingForm
           form={form}
+          editMode={editMode}
           vlan={vlan}
           setVlan={setVlan}
-          aclType={aclType}
-          setAclType={setAclType}
           vlansList={vlansList}
         />
       }
@@ -91,10 +89,9 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
 
 interface VlanSettingFormProps {
   form: FormInstance<Vlan>
+  editMode: boolean
   vlan?: Vlan
   setVlan: (r: Vlan) => void
-  aclType: string
-  setAclType: (r: string) => void
   vlansList: Vlan[]
 }
 
@@ -107,11 +104,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, aclType, setAclType, vlansList } = props
+  const { form, editMode, vlan, setVlan, vlansList } = props
 
   useEffect(() => {
     if(vlan){
-      console.log(vlan)
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {
@@ -140,8 +136,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'untaggedPorts',
       width: 180,
       render: (data) => {
-        const untaggedPorts = (data as string[])?.join(', ')
-        return untaggedPorts.substring(0 , 20) + '...'
+        const untaggedPorts = (data as string[])?.join(', ').substring(0, 20)
+        return untaggedPorts + (untaggedPorts.length === 20 ? '...' : '')
       }
     },
     {
@@ -150,8 +146,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'taggedPorts',
       width: 180,
       render: (data) => {
-        const taggedPorts = (data as string[])?.join(', ')
-        return taggedPorts.substring(0 , 20) + '...'
+        const taggedPorts = (data as string[])?.join(', ').substring(0, 20)
+        return taggedPorts + (taggedPorts.length === 20 ? '...' : '')
       }
     }
   ]
@@ -191,8 +187,14 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }
 
   const onSaveVlan = (values: SwitchModelPortData) => {
-    console.log(values)
-    setRuleList([...ruleList, values])
+    const tmpRuleList = ruleList !== undefined ?
+      ruleList.filter(item => item.model !== values.model):
+      ruleList || []
+    const mergedRuleList = [
+      ...tmpRuleList,
+      values
+    ]
+    setRuleList(mergedRuleList)
     setSelected(undefined)
     setOpenModal(false)
   }
@@ -203,7 +205,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         layout='vertical'
         form={form}
         onFinish={(data: Vlan) => {
-          console.log(ruleList)
           setVlan({
             ...data,
             switchFamilyModels: ruleList as unknown as SwitchModel[]
@@ -218,7 +219,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(value, vlansList) }
+            { validator: (_, value) => editMode ?
+              validateDuplicateVlanId(value, vlansList.filter(item => item.vlanId !== value)) :
+              validateDuplicateVlanId(value, vlansList) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
@@ -341,11 +344,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       />
       <VlanPortsModal
         open={openModal}
-        aclType={aclType}
         editRecord={selected}
         currrentRecords={ruleList}
         onCancel={() => setOpenModal(false)}
         onSave={onSaveVlan}
+        vlanList={vlansList}
       />
     </>
   )

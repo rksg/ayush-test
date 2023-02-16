@@ -12,8 +12,6 @@ import { TrustedPortsStep } from './TrustedPortsStep'
 
 import { TrustPortInterface } from './index'
 
-function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
-
 export function TrustedPortsModal (props: {
   open: boolean,
   onSave:(values: VlanSettingInterface)=>void,
@@ -51,8 +49,6 @@ export function TrustedPortsModal (props: {
         onFinish={async (data) => {
           // const switchFamilyModelsData = data.switchFamilyModels
           onSave(data)
-          await wait(1000) // mimic external service call
-          showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
         }}
       >
         <StepsForm.StepForm
@@ -66,8 +62,6 @@ export function TrustedPortsModal (props: {
         </StepsForm.StepForm>
         <StepsForm.StepForm
           title='Trusted Ports'
-          onFinish={async (data) => {
-          }}
         >
           <TrustedPortsStep vlanSettingValues={vlanSettingValues} />
         </StepsForm.StepForm>

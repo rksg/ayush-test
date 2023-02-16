@@ -53,6 +53,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
       children={
         <ACLSettingForm
           form={form}
+          editMode={editMode}
           rule={rule}
           setRule={setRule}
           aclType={aclType}
@@ -86,6 +87,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
 
 interface ACLSettingFormProps {
   form: FormInstance<Acl>
+  editMode: boolean
   rule?: Acl
   setRule: (r: Acl) => void
   aclType: string
@@ -100,7 +102,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
   >([defaultStandardRuleList])
-  const { form, rule, setRule, aclType, setAclType, aclsTable } = props
+  const { form, editMode, rule, setRule, aclType, setAclType, aclsTable } = props
 
   useEffect(() => {
     if(rule){
@@ -247,7 +249,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) },
-            { validator: (_, value) =>
+            { validator: (_, value) => editMode ?
+              validateDuplicateAclName(value, aclsTable.filter(item => item.aclRules === value)) :
               validateDuplicateAclName(value, aclsTable) }
           ]}
           children={<Input style={{ width: '400px' }} />}
