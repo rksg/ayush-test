@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { LAG_TYPE, SwitchUrlsInfo }   from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
