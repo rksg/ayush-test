@@ -23,47 +23,45 @@ const params = {
   switchId: 'switch-id',
   serialNumber: 'serialNumber-id'
 }
+const mockServerQuery = () => mockServer.use(
+  rest.get(
+    SwitchUrlsInfo.getLagList.url,
+    (req, res, ctx) => res(ctx.json(lagList))
+  ),
+  rest.post(
+    SwitchUrlsInfo.addLag.url,
+    (_, res, ctx) => { return res(ctx.json(successResponse)) }
+  ),
+  rest.put(
+    SwitchUrlsInfo.updateLag.url,
+    (_, res, ctx) => { return res(ctx.json(successResponse)) }
+  ),
+  rest.post(SwitchUrlsInfo.getDefaultVlan.url,
+    (_, res, ctx) => res(ctx.json(defaultVlan))
+  ),
+  rest.get(SwitchUrlsInfo.getSwitchVlans.url,
+    (_, res, ctx) => res(ctx.json(switchVlans))
+  ),
+  rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
+    (_, res, ctx) => res(ctx.json(switchVlanUnion))
+  ),
+  rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+    (_, res, ctx) => res(ctx.json(vlansByVenue))
+  ),
+  rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+    (_, res, ctx) => res(ctx.json(switchDetailHeader))
+  ),
+  rest.post(
+    SwitchUrlsInfo.getSwitchPortlist.url,
+    (req, res, ctx) => res(ctx.json(portlist))
+  )
+)
 
 describe('SwitchLagModal', () => {
   const mockedSetVisible = jest.fn()
 
-  beforeEach(() => {
-    mockServer.use(
-      rest.get(
-        SwitchUrlsInfo.getLagList.url,
-        (req, res, ctx) => res(ctx.json(lagList))
-      ),
-      rest.post(
-        SwitchUrlsInfo.addLag.url,
-        (_, res, ctx) => { return res(ctx.json(successResponse)) }
-      ),
-      rest.put(
-        SwitchUrlsInfo.updateLag.url,
-        (_, res, ctx) => { return res(ctx.json(successResponse)) }
-      ),
-      rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-        (_, res, ctx) => res(ctx.json(defaultVlan))
-      ),
-      rest.get(SwitchUrlsInfo.getSwitchVlans.url,
-        (_, res, ctx) => res(ctx.json(switchVlans))
-      ),
-      rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-        (_, res, ctx) => res(ctx.json(switchVlanUnion))
-      ),
-      rest.get(SwitchUrlsInfo.getVlansByVenue.url,
-        (_, res, ctx) => res(ctx.json(vlansByVenue))
-      ),
-      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailHeader))
-      ),
-      rest.post(
-        SwitchUrlsInfo.getSwitchPortlist.url,
-        (req, res, ctx) => res(ctx.json(portlist))
-      )
-    )
-  })
-
   it('should render lag list correctly', async () => {
+    mockServerQuery()
     const user = userEvent.setup()
     render(<Provider>
       <SwitchLagModal
@@ -80,8 +78,44 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
+  it('should edit lag click cancel correctly', async () => {
+    mockServerQuery()
+    const lag = {
+      id: '75145abea1e74f5e8019725444a0ef9f',
+      lagId: 2,
+      name: 'lag-static',
+      type: LAG_TYPE.STATIC,
+      ports: [
+        '1/1/6'
+      ],
+      taggedVlans: [
+        ''
+      ],
+      untaggedVlan: '1',
+      switchId: 'c0:c5:20:aa:32:79',
+      realRemove: true
+    }
+
+    render(<Provider>
+      <SwitchLagModal
+        visible={true}
+        setVisible={mockedSetVisible}
+        isEditMode={true}
+        editData={[lag]} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber'
+      }
+    })
+    await screen.findByText(/edit lag/i)
+    await screen.findByText(/1 item/i)
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
+
 
   it('should edit lag correctly', async () => {
+    mockServerQuery()
     const lag = {
       id: '75145abea1e74f5e8019725444a0ef9f',
       lagId: 2,
@@ -115,7 +149,8 @@ describe('SwitchLagModal', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
   })
 
-  it.skip('should edit lag change port type correctly', async () => {
+  it('should edit lag change port type correctly', async () => {
+    mockServerQuery()
     const user = userEvent.setup()
     const lag = {
       id: '75145abea1e74f5e8019725444a0ef9f',
@@ -152,40 +187,4 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByText('10 Gbits per second fiber'))
     await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
-
-  it('should edit lag click cancel correctly', async () => {
-    const lag = {
-      id: '75145abea1e74f5e8019725444a0ef9f',
-      lagId: 2,
-      name: 'lag-static',
-      type: LAG_TYPE.STATIC,
-      ports: [
-        '1/1/6'
-      ],
-      taggedVlans: [
-        ''
-      ],
-      untaggedVlan: '1',
-      switchId: 'c0:c5:20:aa:32:79',
-      realRemove: true
-    }
-
-    render(<Provider>
-      <SwitchLagModal
-        visible={true}
-        setVisible={mockedSetVisible}
-        isEditMode={true}
-        editData={[lag]} />
-    </Provider>, {
-      route: {
-        params,
-        path: '/:tenantId/devices/switch/:switchId/:serialNumber'
-      }
-    })
-    await screen.findByText(/edit lag/i)
-    await screen.findByText(/1 item/i)
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-  })
-
-
 })
