@@ -195,14 +195,18 @@ export function SingleRadioSettings (props:{
           setOldBandwidth(bandwidth)
         }
 
-        if (context === 'ap') {
-          if (oldChannelMethod && isManualSelect) {
-            form.setFieldValue(allowedChannelsFieldName, [])
+        if (oldChannelMethod !== channelMethod) {
+          if (oldChannelMethod) {
+            if (isManualSelect) {
+              const allowChannels = form.getFieldValue(allowedChannelsFieldName)
+              if (allowChannels.length !== 1) {
+                form.setFieldValue(allowedChannelsFieldName, [])
+              }
+            } else {
+              form.setFieldValue(allowedChannelsFieldName, availableCannels)
+            }
           }
-
-          if (oldChannelMethod !== channelMethod) {
-            setOldChannelMethod(channelMethod)
-          }
+          setOldChannelMethod(channelMethod)
         }
 
       } else {
@@ -284,7 +288,7 @@ export function SingleRadioSettings (props:{
       ...editContextData,
       hasError: hasErrors
     })
-  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels])
+  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
