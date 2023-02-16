@@ -400,6 +400,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.userDownlinkRateLimiting = 0
   }
 
+  if (!get(data, 'wlan.advancedCustomization.clientIsolation')) {
+    advancedCustomization.clientIsolationOptions = { autoVrrp: false }
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
@@ -408,7 +412,15 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
       advancedCustomization
     }
   }
-
+  if(data.guestPortal){
+    saveData = {
+      ...saveData,
+      guestPortal: {
+        ...originalData.guestPortal,
+        ...data.guestPortal
+      }
+    }
+  }
   return saveData
 }
 
