@@ -4,6 +4,7 @@ import {
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react'
 import { Drawer }  from 'antd'
+import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -378,12 +379,12 @@ export default function GuestsTable () {
             importRequestHandler(formData, formValues)
           }
         }}
-        onClose={()=>setImportVisible(false)} >
+        onClose={() => setImportVisible(false)} >
         <GuestFields withBasicFields={false} />
-        <GenerateNewPasswordModal {...{
-          generateModalVisible, setGenerateModalVisible, guestDetail, tenantId: params.tenantId
-        }} />
       </ImportCsvDrawer>
+      <GenerateNewPasswordModal {...{
+        generateModalVisible, setGenerateModalVisible, guestDetail, tenantId: params.tenantId
+      }} />
       <Modal
         title={$t({ defaultMessage: 'Add Guest Pass Network' })}
         type={ModalType.ModalStepsForm}
