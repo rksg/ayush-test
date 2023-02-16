@@ -12,7 +12,7 @@ import AAAForm from './AAAForm'
 const aaaData={
   id: 'policy-id',
   name: 'test2',
-  isAuth: true,
+  type: 'AUTHENTICATION',
   primary: {
     ip: '2.3.3.4',
     port: 101,

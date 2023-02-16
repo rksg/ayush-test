@@ -36,6 +36,7 @@ export default function AAAPolicyModal (props:{
         visible={visible}
         mask={true}
         children={getContent}
+        destroyOnClose={true}
       />
     </>
   )

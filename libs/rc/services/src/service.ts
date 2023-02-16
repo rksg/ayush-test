@@ -621,9 +621,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
-        return{
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PortalUrlsInfo.getPortalProfileList,
+          params,
+          payload: { ...((payload as TableChangePayload) ?? defaultNewTablePaginationParams),
+            pageStartZero: false }
+        })
+
+        return {
           ...req
         }
       },

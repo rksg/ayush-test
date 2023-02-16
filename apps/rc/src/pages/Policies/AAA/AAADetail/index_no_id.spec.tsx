@@ -58,7 +58,7 @@ const detailResult = {
   id: 1,
   networkIds: [] as string[],
   name: 'test',
-  isAuth: true,
+  type: 'AUTHENTICATION',
   primary: {
     ip: '2.2.2.2',
     port: 101,

@@ -103,8 +103,10 @@ const PortalInstance = (props:{
             rules={[
               { required: true }
             ]}
+            initialValue={''}
             children={<Select
               options={[
+                { label: $t({ defaultMessage: 'Select Portal' }), value: '' },
                 ...portalList
               ]}
               onChange={(v)=>{

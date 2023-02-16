@@ -32,12 +32,7 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'content', 'networkCount'],
-      filters: {
-        id: ['none']
-      },
-      sortField: 'name',
-      sortOrder: 'ASC'
+
     }
   })
   const params = useParams()

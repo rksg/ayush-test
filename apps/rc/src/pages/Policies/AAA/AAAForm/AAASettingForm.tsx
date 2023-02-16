@@ -59,15 +59,15 @@ const AAASettingForm = (props: AAASettingFormProps) => {
           children={<Input/>}
         />
         <Form.Item
-          name='isAuth'
+          name='type'
           label={$t({ defaultMessage: 'Type' })}
-          initialValue={true}
+          initialValue='AUTHENTICATION'
           children={<Radio.Group>
             <Space direction='vertical'>
-              <Radio key='authentication' value={true}>
+              <Radio key='authentication' value={'AUTHENTICATION'}>
                 {$t({ defaultMessage: 'Authentication RADIUS Server' })}
               </Radio>
-              <Radio key='accounting' value={false}>
+              <Radio key='accounting' value={'ACCOUNTING'}>
                 {$t({ defaultMessage: 'Accounting RADIUS Server' })}
               </Radio>
             </Space>

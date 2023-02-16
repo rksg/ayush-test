@@ -33,6 +33,7 @@ export default function PortalServiceModal (props:{
         type={ModalType.ModalStepsForm}
         mask={true}
         children={getContent}
+        destroyOnClose={true}
       />
     </>
   )

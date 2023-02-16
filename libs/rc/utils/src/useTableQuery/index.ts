@@ -246,6 +246,7 @@ export interface TableChangePayload {
   sortOrder: 'ASC' | 'DESC'
   page: number
   pageSize: number
+  pageStartZero?: boolean
 }
 
 export interface NewTableResult<T> {
@@ -288,7 +289,7 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
 
   return {
     pageSize: pagination.pageSize.toString(),
-    page: (pagination.page - 1).toString(),
+    page: (payload?.pageStartZero === false? pagination.page : (pagination.page - 1)).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 }

@@ -37,9 +37,11 @@ const AAAInstance = (props:{
         <Form.Item
           name={props.type+'Id'}
           noStyle
+          label={props.serverLabel}
           rules={[
             { required: true }
           ]}
+          initialValue={''}
           children={<Select
             style={{ width: 210 }}
             onChange={(value)=>{
@@ -47,6 +49,7 @@ const AAAInstance = (props:{
                 aaaData?.filter(d => d.id === value)[0])
             }}
             options={[
+              { label: $t({ defaultMessage: 'Select Radius' }), value: '' },
               ...aaaList
             ]}
           />}

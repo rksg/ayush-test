@@ -58,7 +58,7 @@ const detailResult = {
   id: 1,
   networkIds: [] as string[],
   name: 'test',
-  isAuth: true,
+  type: 'AUTHENTICATION',
   primary: {
     ip: '2.2.2.2',
     port: 101,
@@ -85,7 +85,8 @@ describe('AAA Detail Page', () => {
       ),
       rest.get(
         AaaUrls.getAAAProfileDetail.url,
-        (req, res, ctx) => res(ctx.json({ ...detailResult, isAuth: false, networkIds: ['1','2'] }))
+        (req, res, ctx) => res(ctx.json({ ...detailResult, type: 'AUTHENTICATION',
+          networkIds: ['1','2'] }))
       )
     )
     render(<Provider><AAAPolicyDetail /></Provider>, {
