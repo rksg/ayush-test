@@ -4,10 +4,8 @@ import { switchApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
-  fireEvent,
   mockServer,
-  render,
-  screen
+  render
 } from '@acx-ui/test-utils'
 
 import { switchDetailData, venueData, vlanList } from '../__tests__/fixtures'
