@@ -12,6 +12,9 @@ import { render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { MdnsProxyForwardingRulesTable } from '.'
 
+jest.mock('./constants', () => {
+  return { RULES_MAX_COUNT: 3 }
+})
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
@@ -60,7 +63,9 @@ describe('MdnsProxyForwardingRulesTable', () => {
       return $t(mdnsProxyRuleTypeLabelMapping[mockedRules[0].service])
     })
 
-    await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })
+    // Verify the given data has been displayed
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('row', { name: new RegExp(targetTypeLabel.current) })).toBeVisible()
   })
 
   it('should render the readonly table', async () => {
@@ -206,5 +211,38 @@ describe('MdnsProxyForwardingRulesTable', () => {
     // eslint-disable-next-line max-len
     const targetAfterDelete = screen.queryByRole('cell', { name: targetRuleTypeLabel.current })
     expect(targetAfterDelete).toBeNull()
+  })
+
+  it('should behave that the rules have reached the max limit', async () => {
+    const Component = () => {
+      const [ rules, setRules ] = useState<MdnsProxyForwardingRule[]>([...mockedRules])
+
+      return (
+        <MdnsProxyForwardingRulesTable
+          rules={rules}
+          setRules={setRules}
+        />
+      )
+    }
+
+    render(<Component/>)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
+
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: /Type/ }),
+      await screen.findByRole('option', { name: 'Other' })
+    )
+    await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/i }), 'S1')
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: /Transport Protocol/ }),
+      await screen.findByRole('option', { name: 'TCP' })
+    )
+    await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), '111')
+    await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), '222')
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    // Verify the warning message of the rules maximum limit
+    expect(await screen.findByTitle('The rule has reached the limit (3).')).toBeInTheDocument()
   })
 })

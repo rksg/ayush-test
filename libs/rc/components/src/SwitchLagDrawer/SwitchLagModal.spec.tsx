@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { LAG_TYPE, SwitchUrlsInfo }                       from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { LAG_TYPE, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   defaultVlan,
@@ -99,7 +99,7 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByText(/select ports type.../i))
     const portsTypeOption = await screen.findAllByText('1 Gbits per second copper')
     await user.click(portsTypeOption[portsTypeOption.length-1])
-    await waitFor(() => screen.findByText('1/1/10'))
+    await screen.findByText('1/1/10')
     await user.click(screen.getByText('1/1/10'))
     await user.click(screen.getByText('1/1/11'))
     await user.click(screen.getByRole('button', {

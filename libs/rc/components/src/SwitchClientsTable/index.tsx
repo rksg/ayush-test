@@ -15,12 +15,12 @@ export function SwitchClientsTable () {
   const getSearchToolTipText = () => {
     return defineMessage({ defaultMessage: `
         <div>You can search for clients by the following properties *:
-          <ul><li>- MAC Address</li>
-          <li>- Description</li>
-          <li>- Device Type</li>
-          <li>- Venue</li>
-          <li>- Switch</li>
-          <li>- VLAN</li></ul>
+          <ul><li>MAC Address</li>
+          <li>Description</li>
+          <li>Device Type</li>
+          <li>Venue</li>
+          <li>Switch</li>
+          <li>VLAN</li></ul>
         <div>* Search ignores columns that you chose to hide</div></div>` })
   }
 
