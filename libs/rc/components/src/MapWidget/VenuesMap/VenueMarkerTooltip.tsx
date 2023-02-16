@@ -73,7 +73,7 @@ export function VenueMarkerTooltip (
             data={apStat}
             {...commonProps}/>
           <UI.TotalCount onClick={
-            () => onNavigate && onNavigate({ path: 'devices/wifi' })}>
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices' })}>
             {apsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -83,7 +83,7 @@ export function VenueMarkerTooltip (
       clients: clientsCount && clientsCount > 0
         ? <UI.CellWrapper>
           <UI.TotalCount onClick={
-            () => onNavigate && onNavigate({ path: 'users/wifi/clients' })}>
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/wifi' })}>
             {clientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -100,7 +100,7 @@ export function VenueMarkerTooltip (
             data={switchStat}
             {...commonProps} />
           <UI.TotalCount onClick={
-            () => onNavigate && onNavigate({ path: 'devices/switch' })}>
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/devices/switch' })}>
             {switchesCount}
           </UI.TotalCount>
         </UI.CellWrapper>
@@ -110,7 +110,7 @@ export function VenueMarkerTooltip (
       clients: switchClientsCount && switchClientsCount > 0
         ? <UI.CellWrapper>
           <UI.TotalCount onClick={
-            () => onNavigate && onNavigate({ path: 'users/switch/clients' })}>
+            () => onNavigate && onNavigate({ venueId, path: 'venue-details/clients/switch' })}>
             {switchClientsCount}
           </UI.TotalCount>
         </UI.CellWrapper>
