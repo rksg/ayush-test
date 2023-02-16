@@ -54,7 +54,6 @@ function useColumns (
       dataIndex: 'city',
       sorter: true,
       filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
       width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
