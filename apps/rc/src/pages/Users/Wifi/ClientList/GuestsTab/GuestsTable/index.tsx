@@ -8,18 +8,18 @@ import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Alert, cssStr } from '@acx-ui/components'
+import { Alert, cssStr, Modal, ModalType } from '@acx-ui/components'
 import {
   Button,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
-  useLazyGetGuestNetworkListQuery,
   useImportGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
@@ -34,9 +34,10 @@ import {
   RequestPayload,
   GuestErrorRes
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }               from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getIntl }                                           from '@acx-ui/utils'
 
+import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -50,7 +51,7 @@ import {
   useHandleGuestPassResponse
 } from './addGuestDrawer'
 
-const payload = {
+const defaultGuestNetworkPayload = {
   fields: ['name', 'defaultGuestCountry', 'id'],
   sortField: 'name',
   sortOrder: 'ASC',
@@ -63,32 +64,8 @@ const payload = {
 }
 
 export default function GuestsTable () {
-  const defaultGuestNetworkPayload = {
-    searchString: '',
-    fields: [
-      'check-all',
-      'name',
-      'description',
-      'nwSubType',
-      'venues',
-      'aps',
-      'clients',
-      'vlan',
-      'cog',
-      'ssid',
-      'vlanPool',
-      'captiveType',
-      'id'
-    ],
-    filters: {
-      nwSubType: ['guest'],
-      captiveType: ['GuestPass']
-    }
-  }
-
   const { $t } = useIntl()
   const params = useParams()
-
   const GuestsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useGetGuestsListQuery,
@@ -99,28 +76,27 @@ export default function GuestsTable () {
       useQuery: useNetworkListQuery,
       defaultPayload: defaultGuestNetworkPayload
     })
-
+    const [networkModalVisible, setNetworkModalVisible] = useState(false)
     const notificationMessage =
-      <span style={{
-        display: 'grid',
-        gridTemplateColumns: '400px 100px',
-        paddingTop: '2px'
-      }}>
-        <span>
-          {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
-        </span>
-        <Button type='link'
-          disabled={true} //TODO: Need guest service support
-          size='small'>
-          {$t({ defaultMessage: 'Add Guest Pass Network' })}
-        </Button>
+    <span style={{
+      display: 'grid',
+      gridTemplateColumns: '400px 100px',
+      paddingTop: '2px'
+    }}>
+      <span>
+        {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
+      <Button type='link'
+        onClick={()=> setNetworkModalVisible(true)}
+        disabled={!useIsSplitOn(Features.SERVICES)}
+        size='small'>
+        {$t({ defaultMessage: 'Add Guest Pass Network' })}
+      </Button>
+    </span>
 
     const guestAction = useGuestActions()
 
     const [importCsv, importResult] = useImportGuestPassMutation()
-    const [getNetworkList] = useLazyGetGuestNetworkListQuery()
-
     const [currentGuest, setCurrentGuest] = useState({} as Guest)
     const [guestDetail, setGuestDetail] = useState({} as Guest)
 
@@ -130,16 +106,34 @@ export default function GuestsTable () {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [generateModalVisible, setGenerateModalVisible] = useState(false)
 
+
     const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
 
-    const getAllowedNetworkList = async () => {
-      const list = await (getNetworkList({ params, payload }, true).unwrap())
-      setAllowedNetworkList(list.data)
-    }
+    const guestTypeFilterOptions = Object.values(GuestTypesEnum)
+      .filter(gtype => gtype!==GuestTypesEnum.HOST_GUEST)
+      .map(gtype => ({ key: gtype, value: renderGuestType(gtype) }))
+
+    const networkFilterOptions = allowedNetworkList.map(network=>({
+      key: network.id, value: network.name
+    }))
+
+
+    const navigate = useNavigate()
+    const linkToUser = useTenantLink('/users/wifi/guests')
+    const getNetworkForm = <NetworkForm modalMode={true}
+      modalCallBack={()=>{
+        setNetworkModalVisible(false)
+        networkListQuery.refetch()
+        navigate(linkToUser)
+      }}
+      createType={NetworkTypeEnum.CAPTIVEPORTAL}
+    />
 
     useEffect(() => {
-      getAllowedNetworkList()
-    }, [])
+      if (networkListQuery.data?.data) {
+        setAllowedNetworkList(networkListQuery.data?.data)
+      }
+    }, [networkListQuery.data])
 
     useEffect(()=>{
       if (importResult.isSuccess) {
@@ -152,7 +146,7 @@ export default function GuestsTable () {
     },[importResult])
 
     const importRequestHandler = (formData: FormData, values: Guest) => {
-      // flat object (2 level)
+    // flat object (2 level)
       Object.entries(values).forEach(([key, value])=>{
         if (Array.isArray(value)) {
           formData.append(key, value.join(','))
@@ -191,9 +185,10 @@ export default function GuestsTable () {
         key: 'name',
         title: $t({ defaultMessage: 'Name' }),
         dataIndex: 'name',
+        searchable: true,
         sorter: true,
         defaultSortOrder: 'ascend',
-        render: (data, row) =>
+        render: (data, row, __, highlightFn) =>
           <Button
             type='link'
             size='small'
@@ -202,22 +197,25 @@ export default function GuestsTable () {
               setVisible(true)
             }}
           >
-            {data}
+            {highlightFn(row.name as string)}
           </Button>
       }, {
         key: 'mobilePhoneNumber',
         title: $t({ defaultMessage: 'Phone' }),
         dataIndex: 'mobilePhoneNumber',
+        searchable: true,
         sorter: true
       }, {
         key: 'emailAddress',
         title: $t({ defaultMessage: 'E-mail' }),
         dataIndex: 'emailAddress',
+        searchable: true,
         sorter: true
       }, {
         key: 'guestType',
         title: $t({ defaultMessage: 'Type' }),
         dataIndex: 'guestType',
+        filterable: guestTypeFilterOptions,
         sorter: true,
         render: function (data, row) {
           return renderGuestType(row.guestType)
@@ -226,6 +224,8 @@ export default function GuestsTable () {
         key: 'ssid',
         title: $t({ defaultMessage: 'Allowed Network' }),
         dataIndex: 'ssid',
+        filterKey: 'networkId',
+        filterable: networkFilterOptions || true,
         sorter: true,
         render: function (data, row) {
           return renderAllowedNetwork(row)
@@ -309,14 +309,16 @@ export default function GuestsTable () {
         tableQuery
       ]}>
         {
-          !networkListQuery.data?.data?.length &&
-          <Alert message={notificationMessage} type='info' showIcon ></Alert>
+          allowedNetworkList.length === 0 &&
+        <Alert message={notificationMessage} type='info' showIcon ></Alert>
         }
         <Table
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{
@@ -328,8 +330,8 @@ export default function GuestsTable () {
             disabled: allowedNetworkList.length === 0 ? true : false
           }, {
             label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-            onClick: () => { },
-            disabled: true //TODO: Need guest service support
+            onClick: () => {setNetworkModalVisible(true) },
+            disabled: !useIsSplitOn(Features.SERVICES)
           },
           {
             label: $t({ defaultMessage: 'Import from file' }),
@@ -381,6 +383,13 @@ export default function GuestsTable () {
           onClose={()=>setImportVisible(false)} >
           <GuestFields withBasicFields={false} />
         </ImportCsvDrawer>
+        <Modal
+          title={$t({ defaultMessage: 'Add Guest Pass Network' })}
+          type={ModalType.ModalStepsForm}
+          visible={networkModalVisible}
+          mask={true}
+          children={getNetworkForm}
+        />
       </Loader>
     )
   }
