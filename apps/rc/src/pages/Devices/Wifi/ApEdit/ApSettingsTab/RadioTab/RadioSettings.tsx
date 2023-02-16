@@ -2,12 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch, Tooltip } from 'antd'
-import { cloneDeep, includes }                                             from 'lodash'
-import { FormattedMessage, useIntl }                                       from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space, Switch } from 'antd'
+import { cloneDeep, includes }                                    from 'lodash'
+import { FormattedMessage, useIntl }                              from 'react-intl'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                    from '@acx-ui/icons'
+import { Button, Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -34,6 +33,7 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
+import { FieldLabel }    from '../styledComponents'
 
 import { DisabledDiv } from './styledComponents'
 
@@ -128,13 +128,16 @@ export function RadioSettings () {
 
     if (ap && capabilities && availableChannels) {
       const setData = async () => {
-        const apType = (ap.indoorModel === false)? 'outdoor' : 'indoor'
+
         const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
         const { has160MHzChannelBandwidth = false,
           maxChannelization5G = 160,
           maxChannelization6G = 160,
           supportTriRadio = false,
-          supportDual5gMode = false } = apCapabilities || {}
+          supportDual5gMode = false,
+          isOutdoor = false } = apCapabilities || {}
+
+        const apType = (isOutdoor)? 'outdoor' : 'indoor'
 
         setApModelType(apType)
         const is5GHas160Mhz = (has160MHzChannelBandwidth && maxChannelization5G >= 160)
@@ -292,63 +295,90 @@ export function RadioSettings () {
         }
 
         const { method, allowedChannels, channelBandwidth } = radioParams
+        const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
+
         if (method === 'MANUAL') {
-          const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
           radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
           radioParams.allowedChannels = supportCh[bandwidth]
         } else {
           radioParams.manualChannel = 0
+          if (allowedChannels || allowedChannels.length === 0) {
+            radioParams.allowedChannels = supportCh[bandwidth]
+          }
         }
       }
 
       if (isUseVenueSettings) {
         await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
       } else {
-        formData.useVenueSettings = false
+        const payload = { ...formData }
+        payload.useVenueSettings = false
         const {
-          apRadioParams24G,
-          apRadioParams50G,
-          apRadioParams6G,
+          enable24G,
+          enable50G,
+          enable6G,
           apRadioParamsDual5G
-        } = formData
+        } = payload
 
         const hasRadio5G = (!isSupportTriBandRadioAp || !isDual5gMode) && bandwidth5GOptions.length > 0
         const hasRadioDual5G = (isSupportDual5GAp && isDual5gMode)
         const hasRadio6G = (isSupportTriBandRadioAp && !isDual5gMode) && bandwidth6GOptions.length > 0
 
-        updateRadioParams(apRadioParams24G, support24GChannels)
+        if (!enable24G) {
+          payload.apRadioParams24G = initData.apRadioParams24G
+        }
+        updateRadioParams(payload.apRadioParams24G, support24GChannels)
 
         if (hasRadio5G) {
-          updateRadioParams(apRadioParams50G, support5GChannels)
+          if (!enable50G) {
+            payload.apRadioParams50G = initData.apRadioParams50G
+          }
+          updateRadioParams(payload.apRadioParams50G, support5GChannels)
         } else {
-          delete formData.apRadioParams50G
+          delete payload.apRadioParams50G
         }
 
         if (hasRadio6G) {
-          updateRadioParams(apRadioParams6G, support6GChannels)
+          if (!enable6G) {
+            payload.apRadioParams6G = initData.apRadioParams6G
+          }
+          updateRadioParams(payload.apRadioParams6G, support6GChannels)
         } else {
-          delete formData.apRadioParams6G
+          delete payload.apRadioParams6G
         }
 
         if (hasRadioDual5G) {
-          const { radioParamsLower5G, radioParamsUpper5G } = apRadioParamsDual5G || {}
-          updateRadioParams(radioParamsLower5G, supportLower5GChannels)
-          updateRadioParams(radioParamsUpper5G, supportUpper5GChannels)
+          const radioDual5G = apRadioParamsDual5G || new ApRadioParamsDual5G()
+
+          const { lower5gEnabled, upper5gEnabled } = radioDual5G
+
+          if (!lower5gEnabled) {
+            radioDual5G.radioParamsLower5G = initData?.apRadioParamsDual5G?.radioParamsLower5G
+          }
+
+          if (!upper5gEnabled) {
+            radioDual5G.radioParamsUpper5G = initData?.apRadioParamsDual5G?.radioParamsUpper5G
+          }
+
+          updateRadioParams(radioDual5G.radioParamsLower5G, supportLower5GChannels)
+          updateRadioParams(radioDual5G.radioParamsUpper5G, supportUpper5GChannels)
+
+          payload.apRadioParamsDual5G = radioDual5G
         } else if (isSupportDual5GAp) {
           if (!apRadioParamsDual5G) {
             const radioDual5G = new ApRadioParamsDual5G()
             radioDual5G.enabled = false
             radioDual5G.radioParamsLower5G = undefined
             radioDual5G.radioParamsUpper5G = undefined
-            formData.apRadioParamsDual5G = radioDual5G
+            payload.apRadioParamsDual5G = radioDual5G
           }
         } else {
-          delete formData.apRadioParamsDual5G
+          delete payload.apRadioParamsDual5G
         }
 
         await updateApRadio({
           params: { tenantId, serialNumber },
-          payload: formData
+          payload: payload
         }).unwrap()
       }
     } catch(error) {
@@ -517,12 +547,10 @@ export function RadioSettings () {
                 <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
               </Col>
               <Col span={2}>
-                <Tooltip
+                <Tooltip.Question
                   title={$t({ defaultMessage: 'This applies only to AP models that support tri-band, such as the R760' })}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </Col>
             </Row>
             <Form.Item
@@ -563,16 +591,19 @@ export function RadioSettings () {
             }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable24G']}
-              label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
+              <Form.Item
+                name={['enable24G']}
+                //label={$t({ defaultMessage: 'Enable 2.4 GHz band:' })}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable24G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable24g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '2.4 GHz Radio is disabled' })}
@@ -588,16 +619,18 @@ export function RadioSettings () {
             }
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable50G']}
-              label={$t({ defaultMessage: 'Enable 5 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 5 GHz band:' })}
+              <Form.Item
+                name={['enable50G']}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable5G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable5g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '5 GHz Radio is disabled' })}
@@ -614,16 +647,18 @@ export function RadioSettings () {
             }
           </div>
           <div style={{ display: currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
-            <Form.Item
-              name={['enable6G']}
-              label={$t({ defaultMessage: 'Enable 6 GHz band:' })}
-              valuePropName='checked'
-              style={{ marginTop: '16px' }}
-              children={isUseVenueSettings ?
-                <span>{$t({ defaultMessage: 'On' })}</span>
-                :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
-              }
-            />
+            <FieldLabel width='180px'>
+              {$t({ defaultMessage: 'Enable 6 GHz band:' })}
+              <Form.Item
+                name={['enable6G']}
+                valuePropName='checked'
+                style={{ marginTop: '16px' }}
+                children={isUseVenueSettings ?
+                  <span>{$t({ defaultMessage: 'On' })}</span>
+                  :<Switch onChange={(checked)=>onEnableChanged(checked, 'enable6G')} />
+                }
+              />
+            </FieldLabel>
             { (!isEnable6g && !isUseVenueSettings) ? (
               <DisabledDiv>
                 {$t({ defaultMessage: '6 GHz Radio is disabled' })}
@@ -641,16 +676,18 @@ export function RadioSettings () {
           {isSupportDual5GAp && (
             <>
               <div style={{ display: currentTab === 'Lower5GHz' ? 'block' : 'none' }}>
-                <Form.Item
-                  name={['apRadioParamsDual5G', 'lower5gEnabled']}
-                  label={$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
-                  valuePropName='checked'
-                  style={{ marginTop: '16px' }}
-                  children={isUseVenueSettings ?
-                    <span>{$t({ defaultMessage: 'On' })}</span>
-                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
-                  }
-                />
+                <FieldLabel width='180px'>
+                  {$t({ defaultMessage: 'Enable Lower 5 GHz band:' })}
+                  <Form.Item
+                    name={['apRadioParamsDual5G', 'lower5gEnabled']}
+                    valuePropName='checked'
+                    style={{ marginTop: '16px' }}
+                    children={isUseVenueSettings ?
+                      <span>{$t({ defaultMessage: 'On' })}</span>
+                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableLower5G')} />
+                    }
+                  />
+                </FieldLabel>
                 { (!isEnableLower5g && !isUseVenueSettings) ? (
                   <DisabledDiv>
                     {$t({ defaultMessage: 'Lower 5 GHz Radio is disabled' })}
@@ -667,16 +704,18 @@ export function RadioSettings () {
                 }
               </div>
               <div style={{ display: currentTab === 'Upper5GHz' ? 'block' : 'none' }}>
-                <Form.Item
-                  name={['apRadioParamsDual5G', 'upper5gEnabled']}
-                  label={$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
-                  valuePropName='checked'
-                  style={{ marginTop: '16px' }}
-                  children={isUseVenueSettings ?
-                    <span>{$t({ defaultMessage: 'On' })}</span>
-                    :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
-                  }
-                />
+                <FieldLabel width='180px'>
+                  {$t({ defaultMessage: 'Enable Upper 5 GHz band:' })}
+                  <Form.Item
+                    name={['apRadioParamsDual5G', 'upper5gEnabled']}
+                    valuePropName='checked'
+                    style={{ marginTop: '16px' }}
+                    children={isUseVenueSettings ?
+                      <span>{$t({ defaultMessage: 'On' })}</span>
+                      :<Switch onChange={(checked)=>onEnableChanged(checked, 'enableUpper5G')} />
+                    }
+                  />
+                </FieldLabel>
                 { (!isEnableUpper5g && !isUseVenueSettings) ? (
                   <DisabledDiv>
                     {$t({ defaultMessage: 'Upper 5 GHz Radio is disabled' })}

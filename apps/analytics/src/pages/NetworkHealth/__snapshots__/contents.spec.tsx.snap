@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`formatValues renders elements 1`] = `
+<DocumentFragment>
+  <p>
+    paragraph
+  </p>
+   
+  <ul>
+     
+    <li>
+      item 1
+    </li>
+     
+    <li>
+      item 2
+    </li>
+     
+  </ul>
+</DocumentFragment>
+`;

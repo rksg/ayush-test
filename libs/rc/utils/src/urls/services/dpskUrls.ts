@@ -37,10 +37,14 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   uploadPassphrases: {
     method: 'post',
-    url: DpskPassphraseBaseUrl + '/upload'
+    url: DpskPassphraseBaseUrl
   },
   deletePassphrase: {
     method: 'delete',
     url: DpskPassphraseBaseUrl
+  },
+  exportPassphrases: {
+    method: 'get',
+    url: DpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat'
   }
 }

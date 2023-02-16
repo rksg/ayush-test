@@ -18,7 +18,8 @@ import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   mockedTenantId,
   mockedServiceId,
-  mockedDpskPassphrase
+  mockedDpskPassphrase,
+  mockedSingleDpskPassphrase
 } from './__tests__/fixtures'
 import DpskPassphraseDrawer from './DpskPassphraseDrawer'
 
@@ -58,8 +59,6 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
-
     await populateValues(mockedDpskPassphrase)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
@@ -93,8 +92,6 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
-
     await populateValues(mockedDpskPassphrase)
 
     await userEvent.click(await screen.findByRole('button', { name: /Add/ }))
@@ -127,13 +124,11 @@ describe('DpskPassphraseDrawer', () => {
       }
     )
 
-    // await userEvent.click(await screen.findByLabelText('Add manually'))
-
     const byDateEntity = new ExpirationDateEntity()
     byDateEntity.setToByDate('2022-11-25')
 
     const valuesWithByDate = {
-      ...mockedDpskPassphrase,
+      ...mockedSingleDpskPassphrase,
       expiration: byDateEntity
     }
     await populateValues(valuesWithByDate)
@@ -147,18 +142,31 @@ describe('DpskPassphraseDrawer', () => {
 })
 
 async function populateValues (values: Partial<CreateDpskPassphrasesFormFields>) {
-  await userEvent.type(await screen.findByLabelText('Number of Passphrases'), '5')
+  const numberOfPassphrases = values.numberOfPassphrases!
+  const numberOfDevices = values.numberOfDevices!
 
-  await userEvent.click(await screen.findByLabelText('Set number'))
-  const spinbuttons = await screen.findAllByRole('spinbutton')
-  const numberOfDevicesElem = spinbuttons[1]
-  await userEvent.type(numberOfDevicesElem, values.numberOfDevices!.toString())
+  // eslint-disable-next-line max-len
+  const numberOfPassphrasesElem = await screen.findByLabelText('Number of Passphrases (Up to 5000 passphrases)')
+  await userEvent.clear(numberOfPassphrasesElem)
+  await userEvent.type(numberOfPassphrasesElem, numberOfPassphrases.toString())
 
-  await userEvent.type(await screen.findByLabelText('Passphrase'), values.passphrase!)
-  await userEvent.type(await screen.findByLabelText('User Name'), values.username!)
+  await userEvent.click(await screen.findByLabelText('Set number (1-50)'))
+  const numberOfDevicesElem = (await screen.findAllByRole('spinbutton'))[1]
+  await userEvent.clear(numberOfDevicesElem)
+  await userEvent.type(numberOfDevicesElem, numberOfDevices.toString())
 
-  await userEvent.type(await screen.findByLabelText('MAC Address'), values.mac!)
-  await userEvent.type(await screen.findByLabelText('VLAN ID'), values.vlanId!)
+  if (numberOfPassphrases === 1) {
+    await userEvent.type(await screen.findByLabelText('Passphrase'), values.passphrase!)
+    await userEvent.type(await screen.findByLabelText('User Name'), values.username!)
+  } else {
+    await userEvent.type(await screen.findByLabelText('User Name Prefix'), values.username!)
+  }
+
+  if (numberOfDevices === 1 && numberOfPassphrases === 1) {
+    await userEvent.type(await screen.findByLabelText('MAC Address'), values.mac!)
+  }
+
+  await userEvent.type(await screen.findByLabelText('VLAN ID'), values.vlanId!.toString())
 
   if (values.expiration && values.expiration.mode === ExpirationMode.BY_DATE) {
     const targetDate = moment(values.expiration.date, 'YYYY-MM-DD')
@@ -173,6 +181,6 @@ async function populateValues (values: Partial<CreateDpskPassphrasesFormFields>)
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('cell', { name: new RegExp(targetDate.date().toString()) }))
   } else {
-    await userEvent.click(await screen.findByLabelText('Never expires (Same as pool)'))
+    await userEvent.click(await screen.findByLabelText('Same as pool'))
   }
 }

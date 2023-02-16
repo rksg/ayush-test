@@ -16,9 +16,16 @@ export const mockedDpsk = {
 export const mockedDpskPassphrase: Partial<CreateDpskPassphrasesFormFields> = {
   numberOfPassphrases: 5,
   numberOfDevices: 1,
+  username: 'User 1',
+  vlanId: 123
+}
+
+export const mockedSingleDpskPassphrase: Partial<CreateDpskPassphrasesFormFields> = {
+  numberOfPassphrases: 1,
+  numberOfDevices: 1,
   passphrase: '12345678',
   username: 'User 1',
-  vlanId: 'vlan 123',
+  vlanId: 123,
   mac: 'aa:bb:cc:dd:ee:ff'
 }
 
@@ -28,7 +35,7 @@ export const mockedDpskPassphraseList = {
       id: '__PASSPHRASE_ID_1__',
       passphrase: 'abced12345',
       username: 'DPSK_USER_1',
-      vlanId: 'VLAN-1',
+      vlanId: 1,
       mac: null,
       numberOfDevices: 3,
       createdDate: '2022-12-07T21:39:00',
@@ -38,7 +45,7 @@ export const mockedDpskPassphraseList = {
       id: '__PASSPHRASE_ID_2__',
       passphrase: 'zxcvb!@#$%',
       username: 'DPSK_USER_2',
-      vlanId: 'VLAN-2',
+      vlanId: 2,
       mac: 'AA:BB:CC:11:22:33',
       numberOfDevices: 1,
       createdDate: '2022-12-08T09:00:00',
@@ -48,7 +55,7 @@ export const mockedDpskPassphraseList = {
       id: '__PASSPHRASE_ID_3__',
       passphrase: 'JjCc87!!!!!',
       username: 'DPSK_USER_3',
-      vlanId: 'VLAN-3',
+      vlanId: 3,
       mac: null,
       numberOfDevices: 2,
       createdDate: '2022-12-22T14:20:00'

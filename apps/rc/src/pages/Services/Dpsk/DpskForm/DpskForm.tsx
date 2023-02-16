@@ -76,7 +76,10 @@ export default function DpskForm (props: DpskFormProps) {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add DPSK service' })}
+        title={editMode
+          ? $t({ defaultMessage: 'Edit DPSK service' })
+          : $t({ defaultMessage: 'Add DPSK service' })
+        }
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Services' }),

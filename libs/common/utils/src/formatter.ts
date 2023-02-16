@@ -175,6 +175,7 @@ export const dateTimeFormats = {
   monthDateFormat: 'MMM DD',
   shortDateTimeFormat: 'MMM DD HH:mm',
   dateTimeFormat: 'MMM DD YYYY HH:mm',
+  dateTimeFormatWithTimezone: 'MM/DD/YYYY - HH:mm z',
   dateTimeFormatWithSeconds: 'MMM DD YYYY HH:mm:ss',
   hourFormat: 'HH',
   timeFormat: 'HH:mm',

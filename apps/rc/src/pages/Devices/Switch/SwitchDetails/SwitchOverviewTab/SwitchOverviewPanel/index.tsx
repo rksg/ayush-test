@@ -1,8 +1,41 @@
-import { useIntl } from 'react-intl'
+import { SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
+import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }        from '@acx-ui/components'
 
-export function SwitchOverviewPanel () {
-  const { $t } = useIntl()
-  return <>{
-    $t({ defaultMessage: 'SwitchOverviewPanel' })
-  }</>
+import { ResourceUtilization } from './ResourceUtilization'
+import { TopPorts }            from './TopPorts'
+
+export function SwitchOverviewPanel (props:{
+  filters: AnalyticsFilter
+}) {
+  const { filters } = props
+  return <GridRow>
+    { filters && <SwitchWidgets filters={{ ...filters }}/> }
+  </GridRow>
+}
+
+function SwitchWidgets (props: { filters: AnalyticsFilter }) {
+  const filters = props.filters
+  return (
+    <>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <SwitchesTrafficByVolume filters={filters} />
+      </GridCol>
+      <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
+        <ResourceUtilization filters={filters} />
+      </GridCol>
+      <GridCol col={{ span: 8 }} style={{ height: '280px' }}>
+        <TopPorts filters={{ ...filters, by: 'traffic' }} type='donut' />
+      </GridCol>
+      <GridCol col={{ span: 16 }} style={{ height: '280px' }}>
+        <TopPorts filters={{ ...filters, by: 'traffic' }} type='line' />
+      </GridCol>
+      <GridCol col={{ span: 8 }} style={{ height: '280px' }}>
+        <TopPorts filters={{ ...filters, by: 'error' }} type='donut' />
+      </GridCol>
+      <GridCol col={{ span: 16 }} style={{ height: '280px' }}>
+        <TopPorts filters={{ ...filters, by: 'error' }} type='line' />
+      </GridCol>
+    </>
+  )
 }

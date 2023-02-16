@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import _                                            from 'lodash'
 import moment                                       from 'moment'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, Table, TableProps, Button, Tooltip }                                       from '@acx-ui/components'
+import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
@@ -73,8 +73,14 @@ export const defaultSorter = {
   sortOrder: 'DESC'
 }
 
+export const defaultSearch = {
+  searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
+}
+
 interface EventTableProps {
-  tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>
+  tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
+  searchables?: boolean | string[]
+  filterables?: boolean | string[]
 }
 
 type EntityType = typeof entityTypes[number]
@@ -82,7 +88,9 @@ type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes =
   ['ap', 'client', 'network', 'switch', 'venue', 'adminName'] as const
 
-function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event }) {
+function EntityLink ({ entityKey, data, highlightFn = val => val }: {
+  entityKey: keyof Event, data: Event, highlightFn?: TableHighlightFnArgs
+}) {
   const pathSpecs: Partial<Record<
   typeof entityTypes[number],
   { path: string, params: Array<keyof Event>, disabled?: boolean }
@@ -113,7 +121,7 @@ function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event 
 }
 
   const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
-  const name = <>{String(data[entityKey])}</>
+  const name = <>{highlightFn(String(data[entityKey]))}</>
 
   if (!entityTypes.includes(entity)) return name
 
@@ -138,7 +146,7 @@ function EntityLink ({ entityKey, data }: { entityKey: keyof Event, data: Event 
   />
 }
 
-const getSource = (data: Event) => {
+const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   const sourceMapping = {
     AP: 'apName',
     CLIENT: 'clientName',
@@ -150,24 +158,29 @@ const getSource = (data: Event) => {
     NOTIFICATION: 'adminName'
   } as const
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
-  return <EntityLink {...{ entityKey, data }} />
+  return <EntityLink {...{ entityKey, data, highlightFn }} />
 }
 
-const getDescription = (data: Event) => {
+const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
   try {
     let message = data.message && JSON.parse(data.message).message_template
 
     const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+    const highlighted = (highlightFn
+      ? highlightFn(template, (key) => `<b>${key}</b>`)
+      : template) as string
 
     return <FormatMessage
       id='events-description-template'
       // escape ' by replacing with '' as it is special character of formatjs
-      defaultMessage={template.replaceAll("'", "''")}
+      defaultMessage={highlighted.replaceAll("'", "''")}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
           data={data}
-        />
+          highlightFn={highlightFn}
+        />,
+        b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
@@ -175,7 +188,9 @@ const getDescription = (data: Event) => {
   }
 }
 
-export const EventTable = ({ tableQuery }: EventTableProps) => {
+export const EventTable = ({
+  tableQuery, searchables = true, filterables = true
+}: EventTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
@@ -206,7 +221,9 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       render: function (_, row) {
         const msg = severityMapping[row.severity as keyof typeof severityMapping]
         return $t(msg)
-      }
+      },
+      filterable: (Array.isArray(filterables) ? filterables.includes('severity') : filterables)
+        && Object.entries(severityMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'entity_type',
@@ -217,7 +234,9 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
         const msg = eventTypeMapping[
           row.entity_type as keyof typeof eventTypeMapping] ?? row.entity_type
         return $t(msg)
-      }
+      },
+      filterable: (Array.isArray(filterables) ? filterables.includes('entity_type') : filterables)
+        && Object.entries(eventTypeMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'product',
@@ -227,25 +246,33 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return (row.product && msg) ? $t(msg) : row.product ?? noDataDisplay
-      }
+      },
+      filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
+        && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: 'source',
+      dataIndex: 'entity_type',
       sorter: true,
-      render: function (_, row) {
-        return getSource(row)
-      }
+      render: function (_, row, __, highlightFn) {
+        const searchable = Array.isArray(searchables)
+          ? searchables.includes('entity_type') : searchables
+        return getSource(row, searchable ? highlightFn : v => v)
+      },
+      searchable: Array.isArray(searchables) ? searchables.includes('entity_type') : searchables
     },
     {
       key: 'message',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: true,
-      render: function (_, row) {
-        return getDescription(row)
-      }
+      render: function (_, row, __, highlightFn) {
+        const searchable = Array.isArray(searchables)
+          ? searchables.includes('message') : searchables
+        return getDescription(row, searchable ? highlightFn : v => v)
+      },
+      searchable: Array.isArray(searchables) ? searchables.includes('message') : searchables
     }
   ]
   const getDrawerData = (data: Event) => [
@@ -285,6 +312,8 @@ export const EventTable = ({ tableQuery }: EventTableProps) => {
       dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

@@ -14,6 +14,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -37,9 +38,7 @@ describe('DpskPassphraseManagement', () => {
     mockServer.use(
       rest.get(
         DpskPassphraseBaseUrl,
-        (req, res, ctx) => {
-          return res(ctx.json(mockedDpskPassphraseList))
-        }
+        (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
       )
     )
   })
@@ -131,5 +130,46 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
 
     expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should export the passphrases', async () => {
+    const exportFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        DpskPassphraseBaseUrl,
+        (req, res, ctx) => {
+
+          const headers = req.headers['headers']
+
+          // Get List API: 'Content-Type': 'application/json'
+          if (headers['content-type'] === 'application/json') {
+            return res(ctx.json(mockedDpskPassphraseList))
+          }
+
+          // Export to file API: 'Content-Type': 'text/csv'
+          exportFn()
+
+          return res(ctx.set({
+            'content-disposition': 'attachment; filename=DPSK_export_20230118100829.csv',
+            'content-type': 'text/csv;charset=ISO-8859-1'
+          }), ctx.text('passphrase'))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: /Export To File/ }))
+
+    await waitFor(() => {
+      expect(exportFn).toHaveBeenCalled()
+    })
   })
 })

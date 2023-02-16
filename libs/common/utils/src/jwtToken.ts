@@ -28,41 +28,37 @@ export enum AccountType {
 }
 
 interface JwtToken {
-  acx_account_activation_date: string
-  acx_account_activation_flag: boolean
-  acx_account_regions: AccountRegion[]
-  acx_account_tier: AccountTier
-  acx_account_type: AccountType
-  acx_account_vertical: AccountVertical
-  acx_trial_in_progress: boolean
-  companyName: string
-  email: string
-  exp: number
-  firstName: string
-  flexera_alm_account_id: string
-  iat: number
-  isAuthOnlyUser: boolean
-  isMobileAppUser: boolean
-  isRuckusSupport: boolean
-  isRuckusUser: boolean
-  iss: string
-  isVar: boolean
+  swuId?: string
+  tenantType?: AccountType
+  sub?: string
   lastName: string
-  mlisaUserRole: string,
-  originalRequestedURL: string
-  pver: string
-  region: string
-  renew: number
-  roleName: string[]
-  scope: string
-  sub: string,
-  swuId: string
-  tenantId: string
-  tenantType: AccountType
-  userIdmTenantId: string
+  companyName: string
+  pver?: string
+  iss?: string
+  userIdmTenantId?: string
+  mlisaUserRole?: string
+  scope?: string
+  adminId?: string
+  exp: number
+  iat?: number
+  email: string
+  isVar?: boolean
+  isRuckusUser?: boolean
   userName: string
-  varAltoTenantId: string
-  varIdmTenantId: string
+  varIdmTenantId?: string
+  firstName: string
+  varAltoTenantId?: string
+  flexera_alm_account_id?: string
+  tenantId: string
+  roleName?: string[]
+  isRuckusSupport?: boolean
+  renew?: number
+  region?: string
+  acx_account_regions?: AccountRegion[]
+  acx_account_tier?: AccountTier
+  acx_account_vertical?: AccountVertical.DEFAULT
+  acx_trial_in_progress?: boolean
+  isBetaFlag?: boolean
 }
 
 const cache = new Map()
@@ -74,19 +70,21 @@ export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
   if (jwt === null) {
-    const tenantId = getTenantId()
+    const tenantId = getTenantId() // when JWT FF is disabled
     if (isDev) {
       // eslint-disable-next-line no-console
       console.warn('No JWT token found! So setting default JWT values')
     }
     const jwtToken: {
-      acx_account_tier: AccountTier;
-      acx_account_vertical: AccountVertical;
-      acx_account_type: AccountType;
+      acx_account_tier: AccountTier
+      acx_account_vertical: AccountVertical
+      tenantType: AccountType
+      isBetaFlag: false
       tenantId: string | undefined } = {
-        acx_account_tier: AccountTier.GOLD,
+        acx_account_tier: AccountTier.PLATINUM,
         acx_account_vertical: AccountVertical.DEFAULT,
-        acx_account_type: AccountType.REC,
+        tenantType: AccountType.REC,
+        isBetaFlag: false,
         tenantId: tenantId
       }
     return jwtToken
@@ -110,7 +108,7 @@ export function getJwtToken () {
   } else {
     if (isDev) {
       // eslint-disable-next-line no-console
-      console.warn('JWT TOKEN NOT FOUND!!!!!')
+      console.warn('JWT TOKEN NOT FOUND!')
     }
     return null
   }

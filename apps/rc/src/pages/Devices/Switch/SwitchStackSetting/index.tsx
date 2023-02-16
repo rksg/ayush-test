@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Tooltip, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
-import { DefaultOptionType }                                                    from 'antd/lib/select'
-import { FormattedMessage, useIntl }                                            from 'react-intl'
+import { Form, Select, Radio, Space, RadioChangeEvent, Input, Switch } from 'antd'
+import { DefaultOptionType }                                           from 'antd/lib/select'
+import { FormattedMessage, useIntl }                                   from 'react-intl'
 
-import { showActionModal }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { showActionModal, Tooltip } from '@acx-ui/components'
 import {
   IP_ADDRESS_TYPE,
   IGMP_SNOOPING_TYPE,
@@ -82,7 +81,7 @@ export function SwitchStackSetting
       title: $t({ defaultMessage: 'Switch Reboot is Required' }),
       content: (<FormattedMessage
         defaultMessage={`
-            {status} the jumbo mode option will 
+            {status} the jumbo mode option will
             cause the switch to reboot once the settings are applied`
         }
         values={{
@@ -101,16 +100,14 @@ export function SwitchStackSetting
         label={
           <>
             {$t({ defaultMessage: 'DHCP Client' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t({
                 defaultMessage:
                             // eslint-disable-next-line max-len
                             'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
               })}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>
         }
         initialValue={null}
@@ -154,14 +151,12 @@ export function SwitchStackSetting
           <>
             {$t({ defaultMessage: 'IP Address' })}
             {isL3ConfigAllowed &&
-            <Tooltip
+            <Tooltip.Question
               title={$t({ defaultMessage:
                 'This IP address is the {ipAddressInterfaceType} {ipAddressInterface} IP address' },
               { ipAddressInterfaceType, ipAddressInterface })}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>}
+            />}
           </>
         }
         name='ipAddress'

@@ -89,6 +89,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
       <ul>
         <li>
           <a
+            download=""
             href="#"
           >
             Download template

@@ -9,7 +9,7 @@ import { UserNameButton, LogOut } from './styledComponents'
 
 const UserButton = () => {
   const { $t } = useIntl()
-  const userProfile = useUserProfileContext()
+  const { data: userProfile } = useUserProfileContext()
   const location = useLocation()
 
   const menuHeaderDropdown = (

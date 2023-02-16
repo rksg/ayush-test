@@ -58,6 +58,14 @@ describe('MultiLineTimeSeriesChart', () => {
     expect(screen.queryByText('New Clients')).toBeNull()
   })
 
+  it('should render custom legend format', () => {
+    render(<MultiLineTimeSeriesChart
+      data={getSeriesData()}
+      legendFormatter='test: {name}'
+    />)
+    expect(screen.queryByText('test: New Clients')).toBeVisible()
+  })
+
   it('should not show series if show is false', () => {
     const formatter = jest.fn()
     const { asFragment } = render(<MultiLineTimeSeriesChart

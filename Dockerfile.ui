@@ -13,6 +13,7 @@ RUN export $(cat ${ENV_FILE}) \
 
 # Install dependencies
 COPY package.json package-lock.json ./
+COPY patches ./patches
 RUN npm install
 
 COPY .eslintignore \

@@ -7,7 +7,7 @@ import { CsvSize, ImportCsvDrawer } from '.'
 const props = {
   title: 'Import from file',
   visible: true,
-  temlateLink: '#',
+  templateLink: '#',
   maxSize: CsvSize['5MB'],
   maxEntries: 512,
   importRequest: ()=>{}

@@ -12,11 +12,6 @@ import {
 
 import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
-// enum AddPassphrasesType {
-//   IMPORT,
-//   MANUAL
-// }
-
 export interface DpskPassphraseDrawerProps {
   visible: boolean;
   setVisible: (v: boolean) => void;
@@ -28,43 +23,11 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   const params = useParams()
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ manualSettingForm ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-  // eslint-disable-next-line max-len
-  // const [ addPassphrasesType, setAddPassphrasesType ] = useState<AddPassphrasesType>(AddPassphrasesType.IMPORT)
 
   const onClose = () => {
     setVisible(false)
     manualSettingForm.resetFields()
-
-    // if (addPassphrasesType === AddPassphrasesType.MANUAL) {
-    //   manualSettingForm.resetFields()
-    // }
   }
-
-  // const onAddPassphrasesTypeChange = (e: RadioChangeEvent) => {
-  //   setAddPassphrasesType(e.target.value)
-  // }
-
-  const content = (
-    // <Space size={'large'} direction='vertical'>
-    //   <Radio.Group defaultValue={addPassphrasesType} onChange={onAddPassphrasesTypeChange}>
-    //     <Space size={'middle'} direction='vertical'>
-    //       <Radio value={AddPassphrasesType.IMPORT}>
-    //         {$t({ defaultMessage: 'Import list' })}
-    //       </Radio>
-    //       <Radio value={AddPassphrasesType.MANUAL}>
-    //         {$t({ defaultMessage: 'Add manually' })}
-    //       </Radio>
-    //     </Space>
-    //   </Radio.Group>
-    //   {addPassphrasesType === AddPassphrasesType.IMPORT &&
-    //     <h1>Add Passphrases Uploader!</h1>
-    //   }
-    //   {addPassphrasesType === AddPassphrasesType.MANUAL &&
-    //     <AddDpskPassphrasesForm form={manualSettingForm} />
-    //   }
-    // </Space>
-    <AddDpskPassphrasesForm form={manualSettingForm} />
-  )
 
   const onManualSettingFormSave = async () => {
     await manualSettingForm.validateFields()
@@ -72,14 +35,8 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
     await createPassphrases({ params, payload }).unwrap()
   }
 
-  // const saveFnMap: { [key in AddPassphrasesType]: () => Promise<void> } = {
-  //   [AddPassphrasesType.MANUAL]: onManualSettingFormSave,
-  //   [AddPassphrasesType.IMPORT]: onImportSave
-  // }
-
   const onSave = async () => {
     try {
-      // await saveFnMap[addPassphrasesType]()
       await onManualSettingFormSave()
 
       onClose()
@@ -100,7 +57,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
-      children={content}
+      children={<AddDpskPassphrasesForm form={manualSettingForm} />}
       footer={
         <Drawer.FormFooter
           showAddAnother={false}

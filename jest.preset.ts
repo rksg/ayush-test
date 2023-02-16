@@ -4,7 +4,8 @@ const nxPreset = require('@nrwl/jest/preset')
 const esModules = [
   'react-dnd',
   'dnd-core',
-  '@react-dnd'
+  '@react-dnd',
+  'escape-string-regexp'
 ].join('|')
 
 module.exports = {

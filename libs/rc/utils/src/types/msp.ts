@@ -66,6 +66,7 @@ export interface DelegationEntitlementRecord {
 export interface MspEc {
   id: string;
   name: string;
+  mspName?: string;
   tenantType: string;
   streetAddress: string;
   status: string;
@@ -269,6 +270,71 @@ export interface MspIntegratorDelegated {
 export interface EcInvitation {
   admin_email: string;
   resend: boolean;
+}
+
+export interface EcProfile {
+  name: string;
+  msp_label: string;
+  is_active: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  street_address?: string;
+  city?: string;
+  country?: string;
+  state?: string;
+  tenant_id?: string;
+  parent_tenant_id?: string;
+  tenant_type?: string;
+}
+
+export interface TenantDetail {
+  createdDate?: string;
+  entitlementId?: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean
+  maintenanceState?: boolean
+  name: string;
+  oemName?: string;
+  ruckusUser?: boolean
+  status: string;
+  tenantType: string;
+  updatedDate?: string;
+  upgradeGroup?: string;
+}
+
+export interface MspProfile {
+  msp_label: string;
+  logo_uuid: string;
+  msp_fqdn: string;
+  contact_support_url: string;
+  contact_support_behavior: string;
+  open_case_url: string;
+  open_case_behavior: string;
+  my_open_case_url: string;
+  my_open_case_behavior: string;
+  change_password_url: string;
+  msp_phone: string;
+  msp_email: string;
+  msp_website:string
+}
+
+export interface MspEcProfile {
+  msp_label: string;
+  name: string;
+  street_address: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  phone_number: string;
+  fax_number: string;
+  city: string;
+  mapping_url: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  is_active:string;
+  tenant_id:string
+  parent_tenant_id:string
 }
 
 export interface SupportDelegation {

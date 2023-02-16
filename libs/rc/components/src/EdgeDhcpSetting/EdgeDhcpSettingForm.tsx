@@ -1,10 +1,11 @@
-import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
+import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
+import { Alert, StepsForm, Subtitle } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
-  LeaseTimeUnit } from '@acx-ui/rc/utils'
+  LeaseTimeUnit
+} from '@acx-ui/rc/utils'
 
 import { ToggleButton } from '../ToggleButton'
 
@@ -77,7 +78,7 @@ export const EdgeDhcpSettingForm = () => {
             children={<Input />}
           />
           <Form.Item
-            name='primaryDnsServer'
+            name='primaryDnsIp'
             label={$t({ defaultMessage: 'Primary DNS Server' })}
             children={<Input />}
           />
@@ -89,7 +90,7 @@ export const EdgeDhcpSettingForm = () => {
           </Form.Item>
           {enableSecondaryDNSServer &&
               <Form.Item
-                name='secondaryDnsServer'
+                name='secondaryDnsIp'
                 label={$t({ defaultMessage: 'Secondary DNS Server' })}
                 children={<Input />}
               />
@@ -129,6 +130,9 @@ export const EdgeDhcpSettingForm = () => {
         <Col span={15}>
           <Form.Item
             name='dhcpPools'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
+            ]}
             children={<DHCPPoolTable></DHCPPoolTable>}
           />
         </Col>
@@ -140,7 +144,7 @@ export const EdgeDhcpSettingForm = () => {
       <Row gutter={20}>
         <Col span={15}>
           <Form.Item
-            name='dhcpHosts'
+            name='hosts'
             children={<DHCPHostTable></DHCPHostTable>}
           />
         </Col>

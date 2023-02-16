@@ -47,7 +47,8 @@ import {
   NetworkSegmentationGroup,
   WebAuthTemplate,
   AccessSwitch,
-  DistributionSwitch
+  DistributionSwitch,
+  downloadFile
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -90,19 +91,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Multicast DNS Proxy Service Profile',
-            'Update Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profiles',
-            'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles',
+            'AddMulticastDnsProxyServiceProfile',
+            'DeleteMulticastDnsProxyServiceProfile',
+            'DeleteMulticastDnsProxyServiceProfiles',
+            'AddWifiCallingServiceProfile',
+            'DeleteWiFiCallingProfile',
+            'DeleteWiFiCallingProfiles',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles',
-            'Delete DHCP Config Service Profile',
-            'Delete DHCP Config Service Profiles'
+            'AddDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -568,8 +568,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
+          'Content-Type': undefined
         })
         return {
           ...req,
@@ -577,6 +576,31 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    downloadPassphrases: build.mutation<Blob, RequestPayload<{ timezone: string, dateFormat: string }>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DpskUrls.exportPassphrases, {
+          ...params,
+          timezone: payload?.timezone ?? 'UTC',
+          dateFormat: payload?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+        })
+
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'DPSK_Passphrase.csv'
+            downloadFile(response, fileName)
+          },
+          headers: {
+            'Content-Type': 'text/csv',
+            'Accept': 'text/csv'
+          }
+        }
+      }
     }),
     portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
       query: ({ params }) => {
@@ -711,6 +735,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
+        return transferToTableResult<NetworkSegmentationGroup>(result)
+      }
     })
   })
 })
@@ -719,7 +756,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useDevicePolicyListQuery,
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
@@ -754,6 +790,7 @@ export const {
   useCreateDpskPassphrasesMutation,
   useDeleteDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
+  useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
   usePortalNetworkInstancesQuery,
@@ -765,6 +802,7 @@ export const {
   useUpdatePortalMutation,
   useUploadURLMutation,
   useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,

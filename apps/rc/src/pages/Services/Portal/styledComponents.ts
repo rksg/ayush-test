@@ -15,7 +15,7 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   TextPlus as UITextPlus,
   ConfigurationSolid as AntSettingOutlined,
   EnvelopClosedOutlined as AntMailOutlined,
-  Edit as AntEditOutlined,
+  EditOutlined as AntEditOutlined,
   AccountCircleOutlined as AntUserOutlined,
   FacebookOutlined as Facebook,
   GoogleSolidPlus,
@@ -140,7 +140,9 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  background-color: var(--acx-primary-white) !important;
+  .ant-layout{
+    background-color: var(--acx-primary-white);
+  }
   background-position: center !important;
   background-repeat: no-repeat !important;
   height:100%;
@@ -415,13 +417,16 @@ export const ViewSectionSpan = styled.span`
  color:var(--acx-accents-orange-30);
  margin-left:2px;
 `
-export const ViewTextArea = styled.div`
+export const ViewTextArea = styled.textarea`
  width:100%;
  height: 327px;
  line-height:20px;
  overflow-y:auto;
  text-align: left;
  padding: 5px 5px 20px 20px;
+ border: 0;
+ resize: none;
+ outline: none;
 `
 export const Popover = styled(AntPopover)`
 

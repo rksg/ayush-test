@@ -65,7 +65,8 @@ export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value)) {
+  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$')
+  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -633,3 +634,22 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
   return Promise.resolve()
 }
 
+export function validateRecoveryPassphrasePart (value: string) {
+  const { $t } = getIntl()
+
+  if (!value) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const spaceRegex = new RegExp(/.*\s+.*/)
+  if (spaceRegex.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePartSpace))
+  }
+
+  const re = new RegExp(/^([0-9]{4})$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePart))
+  }
+
+  return Promise.resolve()
+}

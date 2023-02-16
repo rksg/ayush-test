@@ -1,7 +1,9 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
+  useGetDhcpStatsQuery,
   useGetDpskListQuery,
   useGetPortalProfileListQuery,
   useServiceListQuery
@@ -28,6 +30,7 @@ const defaultPayload = {
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const services = [
     {
@@ -47,9 +50,10 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_DHCP,
       category: RadioCardCategory.EDGE,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
-      })
+      tableQuery: useGetDhcpStatsQuery({
+        params, payload: { ...defaultPayload }
+      }),
+      disabled: !edgeEnabled
     },
     {
       type: ServiceType.DPSK,
@@ -84,6 +88,7 @@ export default function MyServices () {
       <GridRow>
         {services.map(service => {
           return (
+            !service.disabled &&
             <GridCol col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}

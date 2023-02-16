@@ -22,7 +22,7 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 function TestUserProfile () {
-  const userProfile = useUserProfileContext()
+  const { data: userProfile } = useUserProfileContext()
   return <div>
     {userProfile?.fullName}
   </div>

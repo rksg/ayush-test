@@ -1127,30 +1127,30 @@ export const rcToastTemplates:any = {
   },
   AddWiFiCallingProfile: {
     messages: {
-      PENDING: 'Adding WiFi Calling profile "${attributes.name}"',
-      SUCCESS: 'WiFi Calling profile "${attributes.profileName}" was added',
-      FAIL: 'WiFi Calling profile "${attributes.profileName}" was not added'
+      PENDING: 'Adding Wi-Fi Calling profile "${attributes.name}"',
+      SUCCESS: 'Wi-Fi Calling profile "${attributes.profileName}" was added',
+      FAIL: 'Wi-Fi Calling profile "${attributes.profileName}" was not added'
     }
   },
   UpdateWiFiCallingProfile: {
     messages: {
-      PENDING: 'Updating WiFi Calling profile "${attributes.name}"',
-      SUCCESS: 'WiFi Calling profile "${attributes.profileName}" was updated',
-      FAIL: 'WiFi Calling profile "${attributes.profileName}" was not updated'
+      PENDING: 'Updating Wi-Fi Calling profile "${attributes.name}"',
+      SUCCESS: 'Wi-Fi Calling profile "${attributes.profileName}" was updated',
+      FAIL: 'Wi-Fi Calling profile "${attributes.profileName}" was not updated'
     }
   },
   DeleteWiFiCallingProfile: {
     messages: {
-      PENDING: 'Deleting WiFi Calling profile "${attributes.name}"',
-      SUCCESS: 'WiFi Calling profile "${attributes.profileName}" was deleted',
-      FAIL: 'WiFi Calling profile "${attributes.profileName}" was not deleted'
+      PENDING: 'Deleting Wi-Fi Calling profile "${attributes.name}"',
+      SUCCESS: 'Wi-Fi Calling profile "${attributes.profileName}" was deleted',
+      FAIL: 'Wi-Fi Calling profile "${attributes.profileName}" was not deleted'
     }
   },
   DeleteWiFiCallingProfiles: {
     messages: {
-      PENDING: 'Deleting ${count} WiFi Calling profiles',
-      SUCCESS: '${count} WiFi Calling profiles were deleted',
-      FAIL: '${count} WiFi Calling profiles were not deleted'
+      PENDING: 'Deleting ${count} Wi-Fi Calling profiles',
+      SUCCESS: '${count} Wi-Fi Calling profiles were deleted',
+      FAIL: '${count} Wi-Fi Calling profiles were not deleted'
     }
   },
   AddRoguePolicy: {
@@ -1234,9 +1234,9 @@ export const rcToastTemplates:any = {
   UpdateDenialOfServiceProtection: {
     messages: {
       WAITING: 'Pending updating DoS Protection',
-      PENDING: 'Updating WiFi DoS Protection',
-      SUCCESS: 'WiFi DoS Protection were updated',
-      FAIL: 'WiFi DoS Protection were not updated'
+      PENDING: 'Updating Wi-Fi DoS Protection',
+      SUCCESS: 'Wi-Fi DoS Protection were updated',
+      FAIL: 'Wi-Fi DoS Protection were not updated'
     }
   },
   UpdateApRadioCustomization: {
