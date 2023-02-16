@@ -204,8 +204,6 @@ export function EditPortDrawer ({
   const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, switchId } })
   const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches })
-  // Pinky: need to add feature flag
-    // = useGetDefaultVlanQuery({ payload: { isDefault: true, switchIds: switches } })
 
   const getVlans = async () => {
     return switches.length > 1

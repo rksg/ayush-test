@@ -240,6 +240,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
+        if (!req.url.includes('defaultVlan')) {
+          payload = { isDefault: true, switchIds: payload }
+        }
         return {
           ...req,
           body: payload
