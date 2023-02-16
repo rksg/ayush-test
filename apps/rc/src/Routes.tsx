@@ -15,26 +15,28 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
-import Edges                       from './pages/Devices/Edge'
-import AddEdge                     from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                 from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                    from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }               from './pages/Devices/Switch/StackForm'
-import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
-import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
-import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
-import { SwitchForm }              from './pages/Devices/Switch/SwitchForm'
-import ApDetails                   from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                  from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/NetworksTable'
-import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
-import AdaptivePolicyForm          from './pages/Policies/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
-import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
+import Edges                                        from './pages/Devices/Edge'
+import AddEdge                                      from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                                  from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }                                from './pages/Devices/Switch/StackForm'
+import SwitchDetails                                from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage }                  from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable                                from './pages/Devices/Switch/SwitchesTable'
+import { SwitchForm }                               from './pages/Devices/Switch/SwitchForm'
+import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }                              from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                                     from './pages/Devices/Wifi/ApsTable'
+import NetworkDetails                               from './pages/Networks/NetworkDetails/NetworkDetails'
+import NetworkForm                                  from './pages/Networks/NetworkForm/NetworkForm'
+import NetworksTable                                from './pages/Networks/NetworksTable'
+import AccessControlForm                            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AdaptivePolicyList, { AdaptivePolicyTabKey } from './pages/Policies/AdaptivePolicy'
+import { AdaptivePolicyDetail }                     from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyDetail/AdaptivePolicyDetail'
+import AdaptivePolicyForm                           from './pages/Policies/AdaptivePolicy/AdaptivePolicy/AdaptivePolicyForm/AdaptivePolicyForm'
+import ClientIsolationForm                          from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -376,6 +378,16 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
+        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
+        element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
         element={<AdaptivePolicyForm/>}
       />
@@ -383,6 +395,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.EDIT })}
         element={<AdaptivePolicyForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.DETAIL })}
+        element={<AdaptivePolicyDetail/>}
       />
     </Route>
   )

@@ -3,51 +3,15 @@ import { useEffect, useRef } from 'react'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { Loader, PageHeader, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { getPolicyRoutePath, PolicyOperation, PolicyType }  from '@acx-ui/rc/utils'
-import { useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, StepsForm, StepsFormInstance }                from '@acx-ui/components'
+import { AdaptivePolicy, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                   from '@acx-ui/react-router-dom'
 
-import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
+import { assignConditions, editAdpativePolicy } from './__test__/fixtures'
+import { AdaptivePolicySettingForm }            from './AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormProps {
   editMode?: boolean
-}
-
-export const editAdpativePolicy = {
-  id: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
-  name: 'test1',
-  description: 'for test',
-  policyType: 'RADIUS',
-  onMatchResponse: 'test'
-}
-
-export const editAdpativePolicyConditions = {
-  paging: {
-    totalCount: 2,
-    page: 1,
-    pageSize: 2,
-    pageCount: 1
-  },
-  content: [
-    {
-      id: '73eff1f1-8e9f-418c-8893-698387617d73',
-      policyId: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
-      templateAttributeId: 11,
-      evaluationRule: {
-        criteriaType: 'StringCriteria',
-        regexStringCriteria: 'test*'
-      }
-    },
-    {
-      id: 'dd9c41f3-a420-43c4-a029-83230f27a4e0',
-      policyId: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
-      templateAttributeId: 12,
-      evaluationRule: {
-        criteriaType: 'StringCriteria',
-        regexStringCriteria: 'test*'
-      }
-    }
-  ]
 }
 
 export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
@@ -59,8 +23,9 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance>()
 
-  const data = editAdpativePolicy
-  const conditions = editAdpativePolicyConditions
+  // TODO: just for mock data
+  const data = editAdpativePolicy as AdaptivePolicy
+  const conditions = assignConditions.content
 
   useEffect(() => {
     if(data && editMode) {
@@ -70,7 +35,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
 
   useEffect(() =>{
     if(conditions && editMode) {
-      formRef.current?.setFieldValue('evaluationRules', conditions.content)
+      formRef.current?.setFieldValue('evaluationRules', conditions)
     }
   }, [conditions, editMode])
 

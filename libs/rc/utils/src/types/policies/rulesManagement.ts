@@ -1,8 +1,15 @@
-
 export interface AdaptivePolicySet {
   id: string,
   name: string,
   description: string
+}
+
+export interface AdaptivePolicy {
+  id: string,
+  name: string,
+  description: string,
+  policyType: string,
+  onMatchResponse: string
 }
 
 export interface RuleTemplate {
@@ -22,9 +29,10 @@ export interface RuleAttribute {
 
 export interface AccessCondition {
   id: string,
-  name: string,
-  templateAttributeId: string,
-  evaluationRule: EvaluationRule
+  name?: string,
+  templateAttributeId: number,
+  evaluationRule: EvaluationRule,
+  policyId?: string
 }
 
 export interface EvaluationRule {

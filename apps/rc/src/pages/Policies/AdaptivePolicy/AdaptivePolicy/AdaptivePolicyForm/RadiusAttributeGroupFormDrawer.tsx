@@ -11,7 +11,7 @@ import { AttributeAssignment, OperatorType }  from '@acx-ui/rc/utils'
 
 import {
   RadiusAttributeGroupSettingForm
-} from '../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupSettingForm'
+} from '../../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupSettingForm'
 
 import { RadiusAttributeDialog } from './RadiusAttributeDialog'
 

@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { Modal, showToast }    from '@acx-ui/components'
 import { AttributeAssignment } from '@acx-ui/rc/utils'
 
-import { RadiusAttributeForm } from '../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeForm'
+import { RadiusAttributeForm } from '../../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeForm'
 
 
 interface RadiusAttributeDialogProps {

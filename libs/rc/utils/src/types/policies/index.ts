@@ -15,7 +15,9 @@ export enum PolicyType {
   AAA = 'AAA',
   CLIENT_ISOLATION = 'Client Isolation',
   MAC_REGISTRATION_LIST = 'MAC Registration List',
-  ADAPTIVE_POLICY = 'Adaptive Policy'
+  ADAPTIVE_POLICY = 'Adaptive Policy',
+  RADIUS_ATTRIBUTE_GROUP = 'RADIUS Attribute Group',
+  ADAPTIVE_POLICY_SET = 'Adaptive Policy Set'
 }
 
 export enum PolicyTechnology {

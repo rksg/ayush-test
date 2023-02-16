@@ -1,4 +1,4 @@
-import { DataType, OperatorType } from '@acx-ui/rc/utils'
+import { DataType, EvaluationRule, OperatorType } from '@acx-ui/rc/utils'
 
 export const adpativePolicyList = {
   paging: {
@@ -26,30 +26,33 @@ export const editAdpativePolicy = {
   onMatchResponse: 'test'
 }
 
-export const conditions = {
-  paging: { totalCount: 8, page: 1, pageSize: 8, pageCount: 1 },
+export const assignConditions = {
+  paging: {
+    totalCount: 2,
+    page: 1,
+    pageSize: 2,
+    pageCount: 1
+  },
   content: [
     {
-      id: 11,
-      name: 'Wireless Network "SSID"',
-      description: 'A regular expression defining the Wi-Fi SSID(s) to limit the this policy.',
-      attributeTextMatch: 'SSID',
-      attributeType: 'regex'
+      id: '73eff1f1-8e9f-418c-8893-698387617d73',
+      policyId: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
+      templateAttributeId: 11,
+      name: 'test',
+      evaluationRule: {
+        criteriaType: 'StringCriteria',
+        regexStringCriteria: 'test*'
+      } as EvaluationRule
     },
     {
-      id: 12,
-      name: 'NAS Identifier',
-      description: 'A regular expression defining the NAS Identifier(s) to limit this policy.',
-      attributeTextMatch: 'NAS-Identifier',
-      attributeType: 'regex'
-    },
-    {
-      id: 13,
-      name: 'Radius User Name',
-      description: 'A regular expression defining the User-Name(s) to limit this policy. ' +
-        'Could be name, could be realm.',
-      attributeTextMatch: 'User-Name',
-      attributeType: 'regex'
+      id: 'dd9c41f3-a420-43c4-a029-83230f27a4e0',
+      policyId: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
+      templateAttributeId: 12,
+      name: 'test2',
+      evaluationRule: {
+        criteriaType: 'StringCriteria',
+        regexStringCriteria: 'test*'
+      } as EvaluationRule
     }
   ]
 }
