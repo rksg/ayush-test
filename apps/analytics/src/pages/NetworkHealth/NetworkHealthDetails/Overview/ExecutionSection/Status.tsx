@@ -17,71 +17,82 @@ enum StatusBadgeEnum {
 
 interface StatusColumn {
   title: MessageDescriptor,
-  format: (value: number, state: ConfigStatusEnum, $t: IntlShape['$t']) => string
-  diff: (current: number, previous: number) => number|null
+  format: (
+    value: number|typeof undefined|typeof NaN, state: ConfigStatusEnum, $t: IntlShape['$t']
+  ) => string
+  diff: (
+    current: number|typeof undefined|typeof NaN, previous: number|typeof undefined|typeof NaN
+  ) => number|null
   badgeColor: (value: number) => StatusBadgeEnum
 }
 
 export const statusColumns: Record<string, StatusColumn> = {
   passedApsPercent: {
     title: defineMessage({ defaultMessage: 'Test Result' }),
-    format: (value: number, state: ConfigStatusEnum) => state === ConfigStatusEnum.NoData
+    format: (value, state) => state === ConfigStatusEnum.NoData
       ? noDataSymbol
       : formatter('percentFormat')(Math.abs(value || 0)),
-    diff: (current, previous) => current - previous,
+    diff: (current, previous) => current! - previous!,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
   },
   avgPingTime: {
     title: defineMessage({ defaultMessage: 'Average Ping Time' }),
-    format: (value: number, state: ConfigStatusEnum, $t: IntlShape['$t']) =>
-      state === ConfigStatusEnum.Configured
-        ? (value ? formatter('durationFormat')(Math.abs(value)) : noDataSymbol)
-        : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
-    diff: (current, previous) => (current !== 0 && previous !== 0) ? current - previous : null,
+    format: (value, state, $t) => state === ConfigStatusEnum.Configured
+      ? (value ? formatter('durationFormat')(Math.abs(value)) : noDataSymbol)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+    diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Negative : StatusBadgeEnum.Positive
   },
   avgUpload: {
     title: defineMessage({ defaultMessage: 'Average Upload' }),
-    format: (value: number, state: ConfigStatusEnum, $t: IntlShape['$t']) =>
-      state === ConfigStatusEnum.Configured
-        ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
-        : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
-    diff: (current, previous) => (current !== 0 && previous !== 0) ? current - previous : null,
+    format: (value, state, $t) => state === ConfigStatusEnum.Configured
+      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+    diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
   },
   avgDownload: {
     title: defineMessage({ defaultMessage: 'Average Download' }),
-    format: (value: number, state: ConfigStatusEnum, $t: IntlShape['$t']) =>
-      state === ConfigStatusEnum.Configured
-        ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
-        : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
-    diff: (current, previous) => (current !== 0 && previous !== 0) ? current - previous : null,
+    format: (value, state, $t) => state === ConfigStatusEnum.Configured
+      ? (value ? formatter('networkSpeedFormat')(Math.abs(value)) : noDataSymbol)
+      : state === ConfigStatusEnum.NA ? $t({ defaultMessage: 'N/A' }) : noDataSymbol,
+    diff: (current, previous) => (current !== 0 && previous !== 0) ? current! - previous! : null,
     badgeColor: value => (value > 0) ? StatusBadgeEnum.Positive : StatusBadgeEnum.Negative
   }
 }
 
-export const Status = ( { details }: ReturnType<typeof getExecutionSectionData>) => {
-  const { $t } = useIntl()
-  return <> {
-    Object.keys(statusColumns).map(key => {
-      const item = statusColumns[key]
-      const [ previous, current ] = _.get(details, key)
-      const configured = _.get(details, ['configured', key])
-      const diff = item.diff(current, previous) as number
-      return <GridCol key={key} col={{ span: 6 }}>
-        <Statistic
-          title={$t(item.title)}
-          value={item.format(current, configured as ConfigStatusEnum, $t)}
-          suffix={diff
-            ? <Tooltip title={$t({ defaultMessage: 'Compared to previous test' })}>
-              <TrendPill
-                value={
-                  `${(diff > 0) ? '+' : '-'}${item.format(diff, ConfigStatusEnum.Configured, $t)}`}
-                trend={item.badgeColor(diff)} />
-            </Tooltip>
-            : null}
-        />
-      </GridCol>
-    })
-  } </>
+export interface StatusBlockProps {
+  field: string
+  values: [number|typeof undefined|typeof NaN, number|typeof undefined|typeof NaN]
+  configured: ConfigStatusEnum
 }
+
+export const StatusBlock = ({ field, values, configured }: StatusBlockProps) => {
+  const { $t } = useIntl()
+  const item = statusColumns[field]
+  const [ previous, current ] = values
+  const diff = item.diff(current, previous) as number
+  return <GridCol key={field} col={{ span: 6 }}>
+    <Statistic
+      title={$t(item.title)}
+      value={item.format(current, configured as ConfigStatusEnum, $t)}
+      suffix={diff
+        ? <Tooltip title={$t({ defaultMessage: 'Compared to previous test' })}>
+          <TrendPill
+            value={
+              `${(diff > 0) ? '+' : '-'}${item.format(diff, ConfigStatusEnum.Configured, $t)}`}
+            trend={item.badgeColor(diff)} />
+        </Tooltip>
+        : null}
+    />
+  </GridCol>
+}
+
+export const Status = ( { details }: ReturnType<typeof getExecutionSectionData>) => <>{
+  Object.keys(statusColumns).map(field =>
+    <StatusBlock
+      key={field}
+      field={field}
+      values={_.get(details, field)}
+      configured={_.get(details, ['configured', field])}/>
+  )}</>

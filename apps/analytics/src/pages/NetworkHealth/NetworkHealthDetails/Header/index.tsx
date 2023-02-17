@@ -14,7 +14,7 @@ import { TestRunButton } from './TestRunButton'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-const statsFromSummary = (
+export const statsFromSummary = (
   summary: NetworkHealthTest['summary']
 ) => {
   const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
@@ -115,7 +115,7 @@ const SubTitle = (
 
   return <Loader states={[state]} fallback={<Spinner size='small' />}>
     {subtitles
-      .filter(({ key }) => _.get(headerData, key) !== undefined)
+      .filter(({ key }) => _.has(headerData, key))
       .map(({ key, title, format }) => [
         $t(title),
         format

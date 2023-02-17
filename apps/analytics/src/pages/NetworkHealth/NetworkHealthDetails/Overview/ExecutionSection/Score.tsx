@@ -69,7 +69,7 @@ export const Score = ( { details }: ReturnType<typeof getExecutionSectionData>) 
       </span>
       return item.status === ScoreBadgeStatusEnum.NA
         ? ScoreText
-        : <Tooltip key={key} title={item.tooltip ? $t(item.tooltip) : ''}>
+        : <Tooltip key={key} title={$t(item.tooltip!)}>
           <Badge color={colors[item.status]} text={ScoreText} />
         </Tooltip>
     })}

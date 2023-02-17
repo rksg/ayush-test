@@ -1,17 +1,10 @@
-import { networkHealthApiURL }                                              from '@acx-ui/analytics/services'
-import { useIsTierAllowed }                                                 from '@acx-ui/feature-toggle'
-import { Provider }                                                         from '@acx-ui/store'
-import { act, mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { networkHealthApiURL }                                                         from '@acx-ui/analytics/services'
+import { useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
+import { Provider }                                                                    from '@acx-ui/store'
+import { act, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardSpec, fetchServiceGuardTest } from './pages/NetworkHealth/__tests__/fixtures'
 import AnalyticsRoutes                                  from './Routes'
-
-jest.mock('./pages/NetworkHealth/NetworkHealthForm/NetworkHealthSpecGuard', () => ({
-  NetworkHealthSpecGuard: (props: React.PropsWithChildren) => <div
-    data-testid='NetworkHealthSpecGuard'
-    children={props.children}
-  />
-}))
 
 jest.mock('./pages/NetworkHealth/NetworkHealthForm', () => ({
   default: () => <div data-testid='NetworkHealthForm' />,
@@ -111,6 +104,9 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGua
   await act(async () => { await new Promise((resolve) => setTimeout(resolve, 100)) })
   expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
   expect(screen.getByText('Network Health test does not exist')).toBeVisible()
+
+  const close = await screen.findByRole('img')
+  fireEvent.click(close)
 })
 test('should navigate to analytics/recommendations', () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
