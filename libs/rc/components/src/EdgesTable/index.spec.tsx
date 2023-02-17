@@ -161,4 +161,17 @@ describe('Edge Table', () => {
     await screen.findByText('Are you sure you want to send OTP?')
     await user.click(screen.getByRole('button', { name: 'OK' }))
   })
+
+  it('should not contains columns configured to be filtered', async () => {
+    render(
+      <Provider>
+        <EdgesTable filterColumns={['venue']}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+
+    await screen.findByRole('row', { name: /Smart Edge 1/i })
+    expect(screen.queryByRole('columnheader', { name: /Venue/i })).not.toBeInTheDocument()
+    expect((await screen.findAllByRole('columnheader')).length).toBe(9)
+  })
 })

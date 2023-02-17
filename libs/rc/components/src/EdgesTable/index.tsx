@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -18,7 +19,8 @@ export interface EdgesTableQueryProps
   extends Omit<TABLE_QUERY<EdgeStatus, RequestPayload<unknown>, unknown>, 'useQuery'>{}
 
 interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
-  tableQuery?: EdgesTableQueryProps
+  tableQuery?: EdgesTableQueryProps;
+  filterColumns?: string[];  // use column key to filter them out
 }
 
 export const defaultEdgeTablePayload = {
@@ -134,6 +136,12 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     }
   ]
+
+  if (props.filterColumns) {
+    props.filterColumns.forEach((columnTofilter) => {
+      _.remove(columns, { key: columnTofilter })
+    })
+  }
 
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {

@@ -39,6 +39,6 @@ export const VenueEdgesTable = () => {
       </TenantLink>
     </SpaceWrapper>
 
-    <EdgesTable tableQuery={tableQuery}/>
+    <EdgesTable tableQuery={tableQuery} filterColumns={['venue']}/>
   </>)
 }
