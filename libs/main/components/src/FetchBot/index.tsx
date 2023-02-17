@@ -12,6 +12,7 @@ import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { getJwtToken }                       from '@acx-ui/utils'
 
 
 declare global {
@@ -102,11 +103,16 @@ export function FetchBot (props:FetchBotProps) {
     // eslint-disable-next-line no-console
     console.log('Attaching generateToken method to window')
     window.generateToken = async function (callback){
+      const jwtToken = getJwtToken()
       const userUrl = createHttpRequest (
         CommonUrlsInfo.getUserProfile,
         { ...params }
       )
-      fetch(userUrl.url).then((res)=>{
+      fetch(userUrl.url,{
+        headers: {
+          Authorization: jwtToken ? `Bearer ${jwtToken}` : ''
+        }
+      }).then((res)=>{
         res.json().then((userInfo)=>{
           statusCallback && statusCallback('user-profile-success')
           const { externalId: swuId } = userInfo
@@ -117,7 +123,8 @@ export function FetchBot (props:FetchBotProps) {
           fetch(authUrl.url,{
             method: authUrl.method.toUpperCase(),
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': jwtToken ? `Bearer ${jwtToken}` : ''
             },
             body: JSON.stringify({ swuId })
           }).then(async (res)=>{
