@@ -18,10 +18,17 @@ import {
   wifiNetworkDetail,
   AddGuestPassErrorResponse,
   AllowedNetworkSingleList,
-  AddGuestPassWihtoutExpirationResponse
+  AddGuestPassWihtoutExpirationResponse,
+  network,
+  userProfile
 } from '../../../__tests__/fixtures'
 
-import { AddGuestDrawer, genUpdatedTemplate, getHumanizedLocale, getMomentLocale } from './addGuestDrawer'
+import {
+  AddGuestDrawer,
+  genUpdatedTemplate,
+  getHumanizedLocale,
+  getMomentLocale
+} from './addGuestDrawer'
 
 jest.mock('socket.io-client')
 
@@ -30,8 +37,16 @@ describe('Add Guest Drawer', () => {
 
   beforeEach(() => {
     mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
         res(ctx.json(GuestClient))
+      ),
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(userProfile))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
@@ -47,7 +62,7 @@ describe('Add Guest Drawer', () => {
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'tenant-id'
     }
   })
 
