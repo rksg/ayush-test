@@ -11,8 +11,8 @@ export const getActivityDescription = (
 ) => {
   const template = replaceStrings(
     descriptionTemplate,
-    Object.fromEntries(descriptionData?.map(({ name, value }) => [name, value])),
-    (key, values) => `<b>${values[key]}</b>`
+    Object.fromEntries((descriptionData||[]).map(({ name, value }) => [name, value])),
+    (key, values) => values[key] ? `<b>${values[key]}</b>` : undefined
   )
 
   return <FormatMessage

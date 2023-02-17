@@ -68,6 +68,8 @@ export interface NetworkDetail {
   },
 }
 
+export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
+
 export interface NetworkSaveData {
   id?: string;
   name?: string;

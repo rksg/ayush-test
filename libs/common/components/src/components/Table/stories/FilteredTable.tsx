@@ -6,31 +6,45 @@ import { showToast }         from '../../Toast'
 type RecordType = {
   key: string
   name: string
+  givenName: string
+  surname: string
   age: number
   description: string
   address: string,
   children?: RecordType[]
 }
 
-const columns: TableProps<RecordType>['columns'] = [
+export const columns: TableProps<RecordType>['columns'] = [
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     filterable: true,
-    searchable: true
+    searchable: true,
+    children: [{
+      title: 'Given Name',
+      dataIndex: 'givenName',
+      key: 'givenName',
+      searchable: true
+    },{
+      title: 'Surname',
+      dataIndex: 'surname',
+      key: 'surname',
+      searchable: true
+    }]
   },
   {
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     filterable: true
   },
   {
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: text => <u>{text}</u>,
+    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
     searchable: true
   },
   {
@@ -52,6 +66,7 @@ const columnsFilterOnly: TableProps<RecordType>['columns'] = [
     title: 'Age',
     dataIndex: 'age',
     key: 'age',
+    align: 'center',
     filterable: true
   },
   {
@@ -77,13 +92,14 @@ const columnsSearchOnly: TableProps<RecordType>['columns'] = [
   {
     title: 'Age',
     dataIndex: 'age',
-    key: 'age'
+    key: 'age',
+    align: 'center'
   },
   {
     title: 'Description',
     dataIndex: 'description',
     key: 'description',
-    render: text => <u>{text}</u>,
+    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
     searchable: true
   },
   {
@@ -94,10 +110,12 @@ const columnsSearchOnly: TableProps<RecordType>['columns'] = [
   }
 ]
 
-const data: TableProps<RecordType>['dataSource'] = [
+export const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '1',
     name: 'John Doe',
+    givenName: 'John',
+    surname: 'Doe',
     age: 32,
     description: 'John Doe living at sample address',
     address: 'sample address',
@@ -105,6 +123,8 @@ const data: TableProps<RecordType>['dataSource'] = [
       {
         key: '1.1',
         name: 'Fred Mayers',
+        givenName: 'Fred',
+        surname: 'Mayers',
         age: 27,
         description: 'Fred Mayers is a good guy',
         address: 'Fred lives alone'
@@ -114,6 +134,8 @@ const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '2',
     name: 'Jane Doe',
+    givenName: 'Jane',
+    surname: 'Doe',
     age: 33,
     description: 'Jane Doe living at new address',
     address: 'new address',
@@ -121,6 +143,8 @@ const data: TableProps<RecordType>['dataSource'] = [
       {
         key: '2.1',
         name: 'Edna Tan',
+        givenName: 'Edna',
+        surname: 'Tan',
         description: 'just started work',
         age: 17,
         address: 'living in canada'
@@ -128,6 +152,8 @@ const data: TableProps<RecordType>['dataSource'] = [
       {
         key: '2.2',
         name: 'Will Smith',
+        givenName: 'Will',
+        surname: 'Smith',
         description: 'accomplished actor',
         age: 17,
         address: 'born and raised in us'
@@ -137,6 +163,8 @@ const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '3',
     name: 'Jordan Doe',
+    givenName: 'Jordan',
+    surname: 'Doe',
     age: 33,
     description: '',
     address: 'another address',
@@ -144,6 +172,8 @@ const data: TableProps<RecordType>['dataSource'] = [
       {
         key: '3.1',
         name: 'Dawn Soh',
+        givenName: 'Dawn',
+        surname: 'Soh',
         age: 22,
         description: 'Dawn just graduated college',
         address: 'none, had moved out of the dorm'
@@ -151,6 +181,8 @@ const data: TableProps<RecordType>['dataSource'] = [
       {
         key: '3.2',
         name: 'Edna Wee',
+        givenName: 'Edna',
+        surname: 'Wee',
         age: 22,
         description: 'Edna loves to run',
         address: 'living abroad in America'
@@ -160,6 +192,8 @@ const data: TableProps<RecordType>['dataSource'] = [
   {
     key: '4',
     name: 'Sam Smith',
+    givenName: 'Sam',
+    surname: 'Smiths',
     age: 43,
     description: 'a great singer',
     address: 'mountain style'

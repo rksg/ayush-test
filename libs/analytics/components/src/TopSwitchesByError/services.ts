@@ -8,6 +8,7 @@ export type HierarchyNodeData = {
 export type TopSwitchesByErrorData = {
   name: string
   mac: string
+  serial: string
   inErr: number
   outErr: number
 }
@@ -33,6 +34,7 @@ export const api = dataApi.injectEndpoints({
               topNSwitchesByErrors(n: $n) {
                 name
                 mac
+                serial
                 inErr
                 outErr
               }

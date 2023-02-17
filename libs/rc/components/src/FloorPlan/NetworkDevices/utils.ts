@@ -1,12 +1,14 @@
-import { ApDeviceStatusEnum, APView, NetworkDevice, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                        from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APView, FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                       from '@acx-ui/utils'
 
-export function calculateDeviceColor (device: NetworkDevice): string {
+export function calculateDeviceColor (device: NetworkDevice,
+  context: FloorplanContext, showRogueApMode: boolean): string {
   const deviceStatus = device.deviceStatus
   let deviceColor = ''
   switch(device.networkDeviceType) {
     case NetworkDeviceType.ap:
-      deviceColor = calculateApColor(deviceStatus)
+      deviceColor = calculateApColor(deviceStatus,
+        showRogueApMode, context, device)?.deviceColor
       break
     case NetworkDeviceType.lte_ap:
       deviceColor = apStatusTransform(deviceStatus).color
@@ -127,8 +129,112 @@ export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum,
   return { message, icon, color }
 }
 
-function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum) {
+export function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum,
+  showRogueApMode: boolean,
+  context: FloorplanContext, device: NetworkDevice): RogueApInfo {
   const status = apStatusTransform(deviceStatus)
-  // TODO: Rouge AP need to handle later [needs discussion]
-  return status.color
+  const deviceIcon = status.icon
+  // TODO: Rogue AP need to handle later [needs discussion]
+  if (showRogueApMode) {
+    if (deviceIcon === 'icon-ok') {
+      if (context === FloorplanContext.rogue_ap) {
+        return calculateSpecificRogueApInfo(device)
+      } else {
+        return calculateAllVenueRogueApInfo(device)
+      }
+    } else {
+      return {
+        deviceColor: status.color + ' ap-rogue-type-offline'
+      } as RogueApInfo
+    }
+  } else {
+    return {
+      deviceColor: status.color
+    } as RogueApInfo
+  }
+}
+
+function calculateAllVenueRogueApInfo (device: NetworkDevice): RogueApInfo {
+  const rogueCategory = device.rogueCategory
+  const categoryNames: string[] = rogueCategory? Object.keys(rogueCategory) : []
+  const categoryNums: number[] = rogueCategory? Object.values(rogueCategory) : [0]
+
+  const rogueType = categoryNames[0] || 'ignored'
+  const totalRogueNumber = categoryNums
+    .reduce((accumulator: number, currentValue: number) => accumulator + currentValue)
+  const deviceColor = `ap-rogue-type-${rogueType}`
+
+  return {
+    deviceColor,
+    allrogueApTooltipRequired: true,
+    allVenueRogueApTooltipAttr: {
+      totalRogueNumber,
+      deviceName: device.name,
+      categoryNames,
+      categoryNums
+    },
+    drawRogueApItem: true,
+    showRogueTotalNumber: true
+  }
+}
+
+export function calculateSpecificRogueApInfo (device: NetworkDevice): RogueApInfo {
+  const { $t } = getIntl()
+  const snrInfo = getSnrDisplayInfo(device?.snr as number)
+  const rogueType = device.rogueCategoryType?.toLowerCase()
+  const deviceColor = `ap-rogue-type-${rogueType}`
+  const rogueSnrClass = ' ' + snrInfo.cssClass
+
+  const snrIconHtml = getSnrIconHtml(snrInfo.activatedBarIndex)
+  const rogueApTooltips = `<div class="specific-rogue-tooltip-style"><div>
+  ${$t({ defaultMessage: 'Detecting AP: ' })}
+   ${device.name}</div><div>${$t({ defaultMessage: 'MAC Address: ' })}
+   ${device.macAddress}</div><div>${$t({ defaultMessage: 'SNR: ' })}
+   ${device.snr} ${$t({ defaultMessage: 'dB' })} ${snrIconHtml}</div></div>`
+
+  return {
+    deviceColor,
+    rogueSnrClass,
+    rogueApTooltips,
+    allrogueApTooltipRequired: false,
+    specificRogueApTooltipAttr: {
+      activatedBarIndex: snrInfo.activatedBarIndex,
+      deviceName: device.name,
+      macAddress: device.macAddress as string,
+      snr: device.snr as number
+    },
+    drawRogueApItem: true,
+    showRogueTotalNumber: false
+  }
+}
+
+export function getSnrIconHtml (activatedBarIndex: number) {
+  let iconHtml = '<div class="wifi-signal-snr">'
+  for (let i = 1; i < 5; i++) {
+    iconHtml += `<div class="bar bar${i} ${(activatedBarIndex <= i) ? 'activated' : ''}"></div>`
+  }
+  iconHtml += '</div>'
+
+  return iconHtml
+}
+
+export function getSnrDisplayInfo (snr: number) {
+  let snrCssClass: string
+  let snrActivatedBarIndex: number
+
+  if (snr > 40) {
+    snrCssClass = 'ap-rogue-snr-over-40-db'
+    snrActivatedBarIndex = 1
+  } else if (snr >= 26) {
+    snrCssClass = 'ap-rogue-snr-26-40-db'
+    snrActivatedBarIndex = 2
+  } else if (snr >= 16) {
+    snrCssClass = 'ap-rogue-snr-16-25-db'
+    snrActivatedBarIndex = 3
+  } else {
+    snrCssClass = 'ap-rogue-snr-0-15-db'
+    snrActivatedBarIndex = 4
+  }
+
+  return { cssClass: snrCssClass, activatedBarIndex: snrActivatedBarIndex }
 }

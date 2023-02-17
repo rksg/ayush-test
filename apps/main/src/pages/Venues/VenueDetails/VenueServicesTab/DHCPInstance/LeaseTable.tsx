@@ -20,7 +20,7 @@ export default function VenueLeaseTable (){
       key: 'hostName',
       searchable: true,
       title: $t({ defaultMessage: 'Hostname' }),
-      dataIndex: 'hostName',
+      dataIndex: 'hostname',
       sorter: true
     },
     {
@@ -31,8 +31,8 @@ export default function VenueLeaseTable (){
     {
       key: 'DHCPPool',
       title: $t({ defaultMessage: 'DHCP Pool' }),
-      dataIndex: 'dhcpPoolName',
-      filterable: true
+      dataIndex: 'dhcpPoolName'
+      // filterable: true, // TODO: change to search or provide static list
     },
     {
       key: 'MACAddress',
@@ -42,7 +42,7 @@ export default function VenueLeaseTable (){
     {
       key: 'Status',
       title: $t({ defaultMessage: 'Status' }),
-      filterable: true,
+      // filterable: true, // TODO: change to search or provide static list
       dataIndex: 'status'
     },
     {

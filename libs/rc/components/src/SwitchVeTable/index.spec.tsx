@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
@@ -12,32 +13,19 @@ import {
   fireEvent
 } from '@acx-ui/test-utils'
 
-import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList } from './__tests__/fixtures'
+import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList, switchesList, venueRoutedList } from './__tests__/fixtures'
 
 import { SwitchVeTable } from '.'
-
-
-
-jest.mock('@acx-ui/icons', ()=> ({
-  ...jest.requireActual('@acx-ui/icons'),
-  SearchOutlined: () => <div data-testid='search-outlined' />,
-  CancelCircle: () => <div data-testid='cancel-circle' />,
-  CloseSymbol: () => <div data-testid='close-symbol' />,
-  SettingsOutlined: (props: {}) => <div data-testid='settings-outlined' {...props} />,
-  QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
-}))
-
 
 describe('Switch VE Table', () => {
   const params = {
     tenantId: 'tenant-id',
     switchId: 'switch-id',
-    serialNumber: 'switch-serialNumber'
+    serialNumber: 'switch-serialNumber',
+    venueId: 'venue-id'
   }
 
-
   beforeEach(() => {
-
     mockServer.use(
       rest.delete(
         SwitchUrlsInfo.deleteVePorts.url,
@@ -62,9 +50,17 @@ describe('Switch VE Table', () => {
         (_, res, ctx) => res(ctx.json(switchDetailHeader))),
       rest.put(
         SwitchUrlsInfo.updateVePort.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        SwitchUrlsInfo.getVenueRoutedList.url,
+        (_, res, ctx) => res(ctx.json(venueRoutedList))),
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json(switchesList)))
     )
   })
+
+  afterEach(() => Modal.destroyAll())
 
   it('should render VE table correctly', async () => {
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
@@ -157,7 +153,6 @@ describe('Switch VE Table', () => {
         (_, res, ctx) => res(ctx.json(routedList)))
     )
 
-
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,
@@ -221,4 +216,18 @@ describe('Switch VE Table', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
   })
 
+  it('should render VE table in venue level correctly', async () => {
+    render(<Provider><SwitchVeTable isVenueLevel={true} /></Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/venues/:venueId/edit/switch/interfaces'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(/VE-1/i)).toBeVisible()
+
+    await userEvent.click(screen.getByText(/add vlan interface \(ve\)/i))
+    const drawer = await screen.findByRole('dialog')
+    expect(drawer).toBeVisible()
+  })
 })

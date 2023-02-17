@@ -10,11 +10,13 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
-import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
-import { DHCPSaveData }                                        from '@acx-ui/rc/utils'
-import { useParams, useTenantLink, useNavigate, useLocation }  from '@acx-ui/react-router-dom'
+import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }              from '@acx-ui/rc/services'
+import { DHCPSaveData, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useParams, useTenantLink, useNavigate, useLocation }               from '@acx-ui/react-router-dom'
 
 import { SettingForm } from './DHCPSettingForm'
+
+export const DEFAULT_GUEST_DHCP_NAME = 'DHCP-Guest'
 
 interface DHCPFormProps {
   editMode?: boolean
@@ -93,7 +95,10 @@ export default function DHCPForm (props: DHCPFormProps) {
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
           $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>

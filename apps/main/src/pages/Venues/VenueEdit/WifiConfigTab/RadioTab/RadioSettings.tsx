@@ -8,15 +8,13 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Switch,
-  Tooltip } from 'antd'
-import { includes } from 'lodash'
-import { useIntl }  from 'react-intl'
-import styled       from 'styled-components/macro'
+  Switch } from 'antd'
+import { includes, isEmpty } from 'lodash'
+import { useIntl }           from 'react-intl'
+import styled                from 'styled-components/macro'
 
-import { Loader, StepsForm, StepsFormInstance, Tabs } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -24,8 +22,8 @@ import { ApRadioTypeEnum,
   SelectItemOption,
   SingleRadioSettings }                               from '@acx-ui/rc/components'
 import {
-  // useLazyApListQuery,
-  // useGetVenueCapabilitiesQuery,
+  useLazyApListQuery,
+  useGetVenueCapabilitiesQuery,
   useGetDefaultRadioCustomizationQuery,
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
@@ -34,6 +32,7 @@ import {
   useUpdateVenueTripleBandRadioSettingsMutation
 } from '@acx-ui/rc/services'
 import {
+  APExtended,
   VenueRadioCustomization
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -104,9 +103,10 @@ export function RadioSettings () {
   const [isLower5gInherit, setIsLower5gInherit] = useState(true)
   const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
 
-  // const [triBandApModels, setTriBandApModels] = useState<string[]>([])
+  const [triBandApModels, setTriBandApModels] = useState<string[]>([])
+  const [hasTriBandAps, setHasTriBandAps] = useState(false)
 
-  // const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
 
   const { data: tripleBandRadioSettingsData } =
     useGetVenueTripleBandRadioSettingsQuery({ params: { tenantId, venueId } })
@@ -128,24 +128,9 @@ export function RadioSettings () {
 
   const [ updateVenueTripleBandRadioSettings ] = useUpdateVenueTripleBandRadioSettingsMutation()
 
-  // const [apList] = useLazyApListQuery()
+  const [ apList ] = useLazyApListQuery()
 
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
-
-  // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
-  // let filters = { model: triBandApModelNames }
-
-  // if (venueId?.length) {
-  //   filters = Object.assign(filters, { venueId })
-  // }
-  // const payload = {
-  //   fields: ['name', 'model', 'venueId', 'id'],
-  //   pageSize: 10000,
-  //   sortField: 'name',
-  //   sortOrder: 'ASC',
-  //   url: '/api/viewmodel/{tenantId}/aps',
-  //   filters
-  // }
 
   const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
     const bandwidthList = Object.keys(availableChannels)
@@ -191,27 +176,43 @@ export function RadioSettings () {
   }, [supportChannelsData])
 
   useEffect(() => {
-    // TODO
-    // if(venueCaps){
-    //   setTriBandApModels(venueCaps?.apModels
-    //     .filter(apCapability => apCapability.supportTriRadio === true)
-    //     .map(triBandApCapability => triBandApCapability.model) as string[])
-    // }
+    if (venueCaps) {
+      let apModels = venueCaps.apModels
+        .filter(apCapability => apCapability.supportTriRadio === true)
+        .map(triBandApCapability => triBandApCapability.model) as string[]
+
+      setTriBandApModels(apModels)
+    }
+  }, [venueCaps])
+
+  useEffect(() => {
+    const triBandApModelNames = isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
+    let filters = { model: triBandApModelNames, venueId: [venueId] }
+
+    const payload = {
+      fields: ['name', 'model', 'venueId', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      url: '/api/viewmodel/{tenantId}/aps',
+      filters
+    }
+
+    if (apList) {
+      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
+        const { data } = res || {}
+        if (data) {
+          const findAp = data.some((ap: APExtended) => ap.venueId === venueId)
+          setHasTriBandAps(findAp)
+        }
+      })
+    }
+  }, [triBandApModels])
+
+  useEffect(() => {
+
     const triBandEnabled = !!(triBandRadioFeatureFlag && tripleBandRadioSettingsData?.enabled)
-    setIsTriBandRadio(triBandEnabled)
-    //if (tripleBandRadioSettingsData){
-    //  setIsTriBandRadio(tripleBandRadioSettingsData.enabled)
-    // TODO
-    // try{
-    //   const apListData = apList({ params: { tenantId }, payload })
-    //   if(apListData){
-    //     apListData.unwrap().then((data)=>{
-    //       const hasTriBandAp = data.some((ap: AP) => ap.venueId === venueId)
-    //       setTriBandRadio(hasTriBandAp)
-    //     })
-    //   }
-    // }catch(e){ return e }
-    //}
+    setIsTriBandRadio(hasTriBandAps || triBandEnabled)
 
     const setRadioFormData = (data: VenueRadioCustomization) => {
       setEditRadioContextData({ radioData: data })
@@ -233,7 +234,7 @@ export function RadioSettings () {
       setRadioFormData(venueSavedChannelsData)
     }
   }, [tripleBandRadioSettingsData, venueSavedChannelsData,
-    triBandRadioFeatureFlag])
+    triBandRadioFeatureFlag, hasTriBandAps])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
@@ -337,8 +338,7 @@ export function RadioSettings () {
     }
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: VenueRadioCustomization) => {
+  const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
 
     update5gData(formData)
 
@@ -350,15 +350,22 @@ export function RadioSettings () {
       delete formData.radioParams6G
     }
 
-    updateVenueTripleBandRadioSettings({
-      params: { tenantId, venueId },
-      payload: { enabled: isTriBandRadio }
-    })
+    try {
+      await updateVenueTripleBandRadioSettings({
+        params: { tenantId, venueId },
+        payload: { enabled: isTriBandRadio }
+      }).unwrap()
 
-    updateVenueRadioCustomization({
-      params: { tenantId, venueId },
-      payload: formData
-    })
+      await updateVenueRadioCustomization({
+        params: { tenantId, venueId },
+        payload: formData
+      }).unwrap()
+    }catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const handleChange = () => {
@@ -443,6 +450,7 @@ export function RadioSettings () {
               <>
                 {$t({ defaultMessage: 'Tri-band radio settings' })}
                 <Switch
+                  disabled={hasTriBandAps}
                   checked={isTriBandRadio}
                   onClick={(checked, event) => {
                     event.stopPropagation()
@@ -456,13 +464,11 @@ export function RadioSettings () {
                   }}
                   style={{ marginLeft: '20px' }}
                 />
-                <Tooltip
+                <Tooltip.Question
                 // eslint-disable-next-line max-len
                   title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </>
               }
               {triBandRadioFeatureFlag && isTriBandRadio &&

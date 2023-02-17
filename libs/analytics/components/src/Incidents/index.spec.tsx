@@ -6,7 +6,7 @@ import { fireEvent, mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import { IncidentListPage as Incidents } from '.'
+import { IncidentListPage as Incidents, IncidentTabContent } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -96,6 +96,23 @@ describe('Incidents Page', () => {
       pathname: `/t/${params.tenantId}/analytics/incidents/tab/connection`,
       hash: '',
       search: ''
+    })
+  })
+
+  describe('IncidentTabContent', () => {
+    it('should render disabled graphs', async () => {
+      const params = {
+        tenantId: 'tenant-id'
+      }
+      render(
+        <Provider>
+          <IncidentTabContent disableGraphs />
+        </Provider>,
+        { route: { params } }
+      )
+      expect(screen.queryByText('Overview')).not.toBeInTheDocument()
+      expect(screen.queryByText('Total Incidents')).not.toBeInTheDocument()
+      expect(await screen.findByText('IncidentTable')).toBeVisible()
     })
   })
 })

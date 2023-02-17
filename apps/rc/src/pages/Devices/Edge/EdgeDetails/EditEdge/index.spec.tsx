@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('EditEdge', () => {
 
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
+  let params: { tenantId: string, serialNumber: string, activeTab?: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -65,8 +65,7 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    const settingsTab = screen.getByRole('tab', { name: 'Ports' })
-    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
+    await screen.findByRole('tab', { name: 'Ports', selected: true })
   })
 
   it('Active DNS Server tab successfully', async () => {
@@ -77,8 +76,7 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    const settingsTab = screen.getByRole('tab', { name: 'DNS Server' })
-    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
+    await screen.findByRole('tab', { name: 'DNS Server', selected: true })
   })
 
   it('Active Static Routes tab successfully', async () => {
@@ -89,8 +87,7 @@ describe('EditEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab' }
       })
-    const settingsTab = screen.getByRole('tab', { name: 'Static Routes' })
-    expect(settingsTab.getAttribute('aria-selected')).toBeTruthy()
+    await screen.findByRole('tab', { name: 'Static Routes', selected: true })
   })
 
   it('switch tab', async () => {
@@ -105,6 +102,13 @@ describe('EditEdge', () => {
     await user.click(screen.getByRole('tab', { name: 'DNS Server' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/dns`,
+      hash: '',
+      search: ''
+    })
+    await user.click(screen.getByRole('tab', { name: 'Ports' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      // eslint-disable-next-line max-len
+      pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
       hash: '',
       search: ''
     })

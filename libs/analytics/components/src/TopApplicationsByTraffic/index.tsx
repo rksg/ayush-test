@@ -80,7 +80,6 @@ export function TopApplicationsByTraffic ({
     columns={columns}
     dataSource={getDataSource(data.topNAppByUpload, data.uploadAppTraffic)}
     type='compact'
-    pagination={false}
     rowKey='name'
   /> : <NoData/>
 
@@ -88,7 +87,6 @@ export function TopApplicationsByTraffic ({
     columns={columns}
     dataSource={getDataSource(data.topNAppByDownload, data.downloadAppTraffic)}
     type='compact'
-    pagination={false}
     rowKey='name'
   /> : <NoData/>
 

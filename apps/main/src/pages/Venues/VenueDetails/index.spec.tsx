@@ -15,6 +15,8 @@ import {
   serviceProfile
 } from '../__tests__/fixtures'
 
+import { events, eventsMeta } from './VenueTimelineTab/__tests__/fixtures'
+
 import { VenueDetails } from '.'
 
 const data: Dashboard = {
@@ -29,32 +31,16 @@ const data: Dashboard = {
   }
 }
 
-/* eslint-disable max-len */
-jest.mock('@acx-ui/analytics/components', () => ({
-  AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
-  ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
-  IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
-  NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
-  SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
-  TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
-  TopApplicationsByTraffic: () => <div data-testid={'analytics-TopApplicationsByTraffic'} title='TopApplicationsByTraffic' />,
-  TopSSIDsByClient: () => <div data-testid={'analytics-TopSSIDsByClient'} title='TopSSIDsByClient' />,
-  TopSSIDsByTraffic: () => <div data-testid={'analytics-TopSSIDsByTraffic'} title='TopSSIDsByTraffic' />,
-  TopSwitchesByError: () => <div data-testid={'analytics-TopSwitchesByError'} title='TopSwitchesByError' />,
-  TopSwitchesByPoEUsage: () => <div data-testid={'analytics-TopSwitchesByPoEUsage'} title='TopSwitchesByPoEUsage' />,
-  TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
-  TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
-  VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />,
-  IncidentTabContent: () => <div data-testid={'analytics-IncidentTabContent'} title='IncidentTabContent' />,
-  HealthPage: () => <div data-testid={'analytics-HealthPage'} title='HealthPage' />
-}))
-jest.mock('@acx-ui/rc/components', () => ({
-  TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
-  VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
-  VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
-}))
-/* eslint-enable */
-
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
 
 describe('VenueDetails', () => {
   beforeEach(() => {
@@ -83,6 +69,14 @@ describe('VenueDetails', () => {
       rest.get(
         DHCPUrls.getVenueDHCPServiceProfile.url,
         (_,res,ctx) => res(ctx.json(serviceProfile))
+      ),
+      rest.post(
+        CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))
+      ),
+      rest.post(
+        CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta))
       )
     )
   })
@@ -93,14 +87,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'overview'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-
     expect(await screen.findByText('testVenue')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(7)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -109,10 +100,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'analytics'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('AI Analytics')
   })
 
   it('should navigate to client tab correctly', async () => {
@@ -121,10 +113,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'clients'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Clients (0)')
   })
 
   it('should navigate to device tab correctly', async () => {
@@ -133,10 +126,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'devices'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Devices (0)')
   })
 
   it('should navigate to network tab correctly', async () => {
@@ -145,10 +139,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'networks'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Networks (0)')
   })
 
   it('should navigate to service tab correctly', async () => {
@@ -157,10 +152,11 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'services'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Services')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -169,10 +165,12 @@ describe('VenueDetails', () => {
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
+    render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
+    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {

@@ -18,7 +18,7 @@ const PortalSettingForm = (props:{
   const params = useParams()
 
   const nameValidator = async (value: string) => {
-    const list = (await getPortalList({ params }, true).unwrap()).content
+    const list = (await getPortalList({ params }, true).unwrap()).data
       .filter(n => n.id !== params.serviceId)
       .map(n => n.serviceName)
 

@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
 import {
   useNavigate,
@@ -22,8 +23,7 @@ function ApEditTabs () {
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
   const {
     editContextData,
-    setEditContextData,
-    editRadioContextData
+    setEditContextData
   } = useContext(ApEditContext)
 
   const apViewModelPayload = {
@@ -35,8 +35,11 @@ function ApEditTabs () {
     filters: { serialNumber: [params.serialNumber] }
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
+  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
 
   const onTabChange = (tab: string) => {
+    if (tab === 'settings') tab = (supportStaticIpSettings)? `${tab}/general` : `${tab}/radio`
+
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
@@ -59,7 +62,6 @@ function ApEditTabs () {
         showUnsavedModal(
           editContextData,
           setEditContextData,
-          editRadioContextData,
           tx.retry
         )
       })

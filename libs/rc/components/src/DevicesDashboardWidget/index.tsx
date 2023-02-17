@@ -2,8 +2,13 @@ import {  Loader }                   from '@acx-ui/components'
 import { useDashboardOverviewQuery } from '@acx-ui/rc/services'
 import {  useParams }                from '@acx-ui/react-router-dom'
 
-import { getApDonutChartData, getSwitchDonutChartData } from '../DevicesWidget/helper'
-import { DevicesWidget }                                from '../DevicesWidget/index'
+import {
+  getApDonutChartData,
+  getEdgeDonutChartData,
+  getSwitchDonutChartData
+} from '../DevicesWidget/helper'
+import { DevicesWidget } from '../DevicesWidget/index'
+
 
 export function DevicesDashboardWidget () {
   const queryResults = useDashboardOverviewQuery({
@@ -12,7 +17,8 @@ export function DevicesDashboardWidget () {
     selectFromResult: ({ data, ...rest }) => ({
       data: {
         apData: getApDonutChartData(data?.summary?.aps?.summary),
-        switchData: getSwitchDonutChartData(data)
+        switchData: getSwitchDonutChartData(data),
+        edgeData: getEdgeDonutChartData(data?.summary?.edges)
       },
       ...rest
     })
@@ -23,6 +29,7 @@ export function DevicesDashboardWidget () {
       <DevicesWidget
         apData={queryResults.data.apData}
         switchData={queryResults.data.switchData}
+        edgeData={queryResults.data.edgeData}
         enableArrowClick
       />
     </Loader>

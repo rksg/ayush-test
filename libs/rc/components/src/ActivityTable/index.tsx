@@ -23,7 +23,7 @@ interface ActivityTableProps {
 const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<Activity>()
+  const [current, setCurrent] = useState<string>()
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -38,7 +38,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row as Activity)
+            setCurrent(row.requestId)
           }}
         >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
       }
@@ -51,7 +51,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       render: function (_, row) {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return $t(msg)
-      }
+      },
+      filterable: Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'product',
@@ -61,7 +62,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       render: function (_, row) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return $t(msg)
-      }
+      },
+      filterable: Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'source',
@@ -124,12 +126,17 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
     />
-    {visible && <TimelineDrawer
+    {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(current!)}
+      data={getDrawerData(tableQuery.data?.data
+        .find(row => current && row.requestId === current)!)}
+      timeLine={tableQuery.data?.data
+        .find(row => current && row.requestId === current)?.steps}
     /> }
   </Loader>
 }

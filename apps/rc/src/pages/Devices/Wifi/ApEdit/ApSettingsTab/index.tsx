@@ -2,15 +2,19 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
+import { Tabs, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
-import { LanPorts }      from './LanPorts'
-import { RadioSettings } from './RadioTab/RadioSettings'
+import { DirectedMulticast } from './DirectedMulticast'
+import { IpSettings }        from './General/IpSettings'
+import { LanPorts }          from './LanPorts'
+import { MdnsProxyTab }      from './MdnsProxyTab/MdnsProxyTab'
+import { RadioSettings }     from './RadioTab/RadioSettings'
 
 const { TabPane } = Tabs
 
@@ -20,7 +24,9 @@ export function ApSettingsTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/settings/`)
   const { editContextData, setEditContextData } = useContext(ApEditContext)
-  const releaseTag = useIsSplitOn(Features.DEVICES)
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
+  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -39,6 +45,7 @@ export function ApSettingsTab () {
 
   const tabTitleMap = (tabkey: string) => {
     const tabTitle = {
+      general: $t({ defaultMessage: 'General' }),
       radio: $t({ defaultMessage: 'Radio' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
@@ -53,28 +60,42 @@ export function ApSettingsTab () {
   return (
     <Tabs
       onChange={onTabChange}
-      defaultActiveKey='radio'
+      defaultActiveKey={supportStaticIpSettings? 'general' : 'radio'}
       activeKey={params.activeSubTab}
       type='card'
     >
+      {supportStaticIpSettings &&
+        <TabPane tab={tabTitleMap('general')} key='general'>
+          <IpSettings />
+        </TabPane>
+      }
       <TabPane tab={tabTitleMap('radio')} key='radio'>
         <RadioSettings />
       </TabPane>
       <TabPane tab={tabTitleMap('lanPort')} key='lanPort'>
         <LanPorts />
       </TabPane>
-      <TabPane disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {tabTitleMap('proxy')}</Tooltip>}
+      <TabPane disabled={!isServicesEnabled}
+        tab={
+          <Tooltip title={isServicesEnabled ? '' : $t(notAvailableMsg)}>
+            {tabTitleMap('proxy')}
+          </Tooltip>
+        }
         key='proxy'>
-        {$t({ defaultMessage: 'mDNS Proxy' })}
+        <MdnsProxyTab />
       </TabPane>
-      <TabPane disabled={!releaseTag}
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {tabTitleMap('multicast')}</Tooltip>}
+      {supportDirectedMulticast &&
+        <TabPane tab={<>
+          {tabTitleMap('multicast')}
+          <Tooltip title={$t(directedMulticastInfo)} placement='right'>
+            <QuestionMarkCircleOutlined
+              style={{ marginLeft: '8px', marginBottom: '-3px', height: '16px', width: '16px' }}/>
+          </Tooltip>
+        </>}
         key='multicast'>
-        {$t({ defaultMessage: 'Directed Multicast' })}
-      </TabPane>
+          <DirectedMulticast />
+        </TabPane>
+      }
     </Tabs>
   )
 }

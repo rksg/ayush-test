@@ -16,8 +16,6 @@ const list = {
       name: 'Registration pool',
       description: '',
       autoCleanup: true,
-      priority: 1,
-      ssidRegex: 'mac-auth',
       enabled: true,
       expirationEnabled: false,
       registrationCount: 5

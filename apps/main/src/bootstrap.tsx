@@ -4,12 +4,11 @@ import { createRoot } from 'react-dom/client'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import {
-  CommonUrlsInfo,
-  createHttpRequest
-} from '@acx-ui/rc/utils'
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-import { Provider }      from '@acx-ui/store'
+import { UserProfileProvider }                 from '@acx-ui/rc/components'
+import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
+import { BrowserRouter }                       from '@acx-ui/react-router-dom'
+import { Provider }                            from '@acx-ui/store'
+import { getTenantId }                         from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 
@@ -37,20 +36,13 @@ export function loadMessages (locales: readonly string[]): string {
   return supportedLocales[locale as keyof typeof supportedLocales]
 }
 
-function getTenantId () {
-  const chunks = window.location.pathname.split('/')
-  for (const c in chunks) {
-    if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
-  }
-  return
-}
 export function renderPendoAnalyticsTag () {
   const script = document.createElement('script')
   // @ts-ignore
   const key = get('PENDO_API_KEY')
   script.onerror = event => {
     /* eslint-disable */  // Disables everything from this point down
-    console.log('Failed to load pendo api key from env', event)
+    console.error('Failed to load pendo api key from env', event)
   }
   // Installing Pendo snippet
   const scriptText = `(function(apiKey){
@@ -70,14 +62,14 @@ export function renderPendoAnalyticsTag () {
 export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
   const param = { tenantId }
-  const userUrl = createHttpRequest (
+  const userProfileRequest = createHttpRequest (
     CommonUrlsInfo.getUserProfile,
     param
   )
+  const url = userProfileRequest.url
 
-  const url = userUrl.url
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, userProfileRequest)
     const user = await res.json()
     window.pendo.initialize({
       visitor: {
@@ -100,7 +92,7 @@ export async function pendoInitalization (): Promise<void> {
     })
   } catch (error) {
     /* eslint-disable no-console */
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -122,9 +114,11 @@ export async function init () {
       <ConfigProvider lang={lang}>
         <Provider>
           <BrowserRouter>
-            <React.Suspense fallback={null}>
-              <AllRoutes />
-            </React.Suspense>
+            <UserProfileProvider>
+              <React.Suspense fallback={null}>
+                <AllRoutes />
+              </React.Suspense>
+            </UserProfileProvider>
           </BrowserRouter>
         </Provider>
       </ConfigProvider>

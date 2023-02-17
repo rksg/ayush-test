@@ -2,11 +2,14 @@ import React, { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps } from '@acx-ui/components'
-import { useNetworkListQuery }     from '@acx-ui/rc/services'
-import { Network, useTableQuery }  from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                 from '@acx-ui/components'
+import { useNetworkListQuery }                     from '@acx-ui/rc/services'
+import { Network, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
+
+import { networkTypes } from '../../../Networks/wireless/NetworkForm/contentsMap'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
+
 
 const defaultPayload = {
   searchString: '',
@@ -29,7 +32,10 @@ const WifiCallingNetworksDetail = () => {
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
-      key: 'nwSubType'
+      key: 'nwSubType',
+      render: (data, row) => {
+        return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
+      }
     },
     {
       title: $t({ defaultMessage: 'Venues' }),

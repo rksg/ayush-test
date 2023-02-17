@@ -16,7 +16,7 @@ import {
   Network,
   onSocketActivityChanged,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   downloadFile,
   transformByte,
@@ -49,7 +49,7 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
-              id: clientList.data.map(item => item.clientMac)
+              id: clientList?.data.map(item => item.clientMac)
             }
           }
         }
@@ -79,7 +79,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             [
               'RegeneratePass',
               'DisableGuest',
@@ -247,7 +247,7 @@ export const clientApi = baseClientApi.injectEndpoints({
 export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   metaList:TableResult<ClientListMeta>) => {
   const data:ClientList[] = []
-  clientList.data.forEach(client => {
+  clientList?.data.forEach(client => {
     const meta = metaList?.data?.find(
       i => i.clientMac === client.clientMac
     )

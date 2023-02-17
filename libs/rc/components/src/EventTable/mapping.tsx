@@ -12,7 +12,10 @@ export const eventTypeMapping = {
   AP: defineMessage({ defaultMessage: 'AP' }),
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  NETWORK: defineMessage({ defaultMessage: 'Network' })
+  NETWORK: defineMessage({ defaultMessage: 'Network' }),
+  ADMIN: defineMessage({ defaultMessage: 'Admin' }),
+  ADMINACTIVITY: defineMessage({ defaultMessage: 'Admin Activity' }),
+  NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
 }
 
 export const productMapping = {

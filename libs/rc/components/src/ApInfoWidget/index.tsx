@@ -14,7 +14,6 @@ import {
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -71,7 +70,6 @@ export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
 }
 
 export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: AnalyticsFilter }) {
-  const params = useParams()
   const { $t } = useIntl()
   const { currentAP, filters } = props
 
@@ -81,7 +79,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
     defaultPayload: {
       ...defaultPayload,
       filters: {
-        serialNumber: [params.serialNumber]
+        serialNumber: [currentAP.serialNumber]
       }
     },
     sorter: {
@@ -90,7 +88,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
     },
     pagination: {
       pageSize: 25,
-      current: 1,
+      page: 1,
       total: 0
     }
   })

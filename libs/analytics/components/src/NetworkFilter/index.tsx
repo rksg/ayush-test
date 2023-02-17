@@ -3,9 +3,14 @@ import { omit, groupBy, pick, find } from 'lodash'
 import { SingleValueType }           from 'rc-cascader/lib/Cascader'
 import { useIntl }                   from 'react-intl'
 
-import { useAnalyticsFilter, defaultNetworkPath, Incident } from '@acx-ui/analytics/utils'
-import { calculateSeverity }                                from '@acx-ui/analytics/utils'
-import { Select, Option, Loader }                           from '@acx-ui/components'
+import {
+  useAnalyticsFilter,
+  calculateSeverity,
+  defaultNetworkPath,
+  Incident } from '@acx-ui/analytics/utils'
+import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
+import { useReportsFilter }                  from '@acx-ui/reports/utils'
+import { NetworkPath }                       from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -13,12 +18,85 @@ import { LabelWithSeverityCicle }                   from './LabelWithSeverityCir
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
+export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
+
+export const getSupersetRlsClause = (paths?:NetworkPath[],radioBands?:RadioBand[]) => {
+  let radioBandClause = ''
+  let zoneClause = ''
+  let apClause = ''
+  let switchGroupClause = ''
+  let switchClause = ''
+  let networkClause = ''
+
+  if(radioBands?.length){
+    radioBandClause = ` "band" in (${radioBands.map(radioBand=>`'${radioBand}'`).join(', ')})`
+  }
+
+  if(paths?.length){
+    const zoneIds:string[] = []
+    const switchGroupIds:string[] = []
+    const apMacs:string[] = []
+    const switchMacs:string[]=[]
+    paths.forEach(path=>{
+      if(path.length === 2 && path[1].type === 'zone'){
+        zoneIds.push(`'${path[1].name}'`)
+      }
+      else if(path.length === 2 && path[1].type === 'switchGroup'){
+        switchGroupIds.push(`'${path[1].name}'`)
+      }
+      else if(path.length === 3 && path[2].type === 'AP'){
+        apMacs.push(`'${path[2].name}'`)
+      }
+      else if(path.length === 3 && path[2].type === 'switch'){
+        switchMacs.push(`'${path[2].name}'`)
+      }
+    })
+    if(zoneIds.length){
+      zoneClause = `"zoneName" in (${zoneIds.join(', ')})`
+    }
+
+    if(apMacs.length){
+      apClause = `"apMac" in (${apMacs.join(', ')})`
+    }
+
+    if(switchGroupIds.length){
+      switchGroupClause = `"switchGroupLevelOneName" in (${switchGroupIds.join(', ')})`
+    }
+
+    if(switchMacs.length){
+      switchClause = `"switchId" in (${switchMacs.join(', ')})`
+    }
+
+    if(zoneClause || apClause || switchGroupClause || switchClause){
+      networkClause = ` (${[zoneClause,apClause,switchGroupClause,switchClause]
+        .filter(item=>item!=='').join(' OR ')})`
+    }
+  }
+
+  return {
+    radioBandClause,
+    networkClause
+  }
+}
+
 export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;
   severity: { [key: string]: number };
 }
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
-type ConnectedNetworkFilterProps = { shouldQuerySwitch : boolean, withIncidents?: boolean }
+type ConnectedNetworkFilterProps = {
+    shouldQuerySwitch : boolean,
+    withIncidents?: boolean,
+    showRadioBand?: boolean,
+    multiple?: boolean,
+    replaceWithId?:boolean,
+    filterMode?: FilterMode,
+    filterFor?: 'analytics' | 'reports',
+    defaultValue?: SingleValueType | SingleValueType[],
+    defaultRadioBand?: RadioBand[],
+    isRadioBandDisabled?: boolean,
+    radioBandDisabledReason?: string
+   }
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>
@@ -74,11 +152,24 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 const getFilterData = (
   data: Child[],
   $t: CallableFunction,
-  nodesWithSeverities: VenuesWithSeverityNodes
+  nodesWithSeverities: VenuesWithSeverityNodes,
+  filterMode:string,
+  replaceWithId?: boolean
 ): Option[] => {
   const venues: { [key: string]: Option } = {}
-  for (const { name, path, aps, switches } of data) {
-    if (!venues[name]) {
+  for (const { id, name, path, aps, switches } of data) {
+    const shouldPushVenue = ()=>{
+      if(filterMode==='both')
+        return true
+      if(filterMode === 'ap' && aps?.length)
+        return true
+      if(filterMode === 'switch' && switches?.length)
+        return true
+
+      return false
+    }
+
+    if (shouldPushVenue() && !venues[name]) {
       venues[name] = {
         label: (
           <LabelWithSeverityCicle
@@ -90,13 +181,13 @@ const getFilterData = (
             name={name}
           />
         ),
-        value: JSON.stringify(path),
+        value: replaceWithId ? JSON.stringify(path).replace(name,id) : JSON.stringify(path),
         displayLabel: name,
         children: [] as Option[]
       }
     }
     const venue = venues[name]
-    if (aps?.length && venue.children) {
+    if (venue && aps?.length && venue.children && ['ap','both'].includes(filterMode)) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
@@ -129,7 +220,7 @@ const getFilterData = (
         })
       })
     }
-    if (switches?.length && venue.children) {
+    if (venue && switches?.length && venue.children && ['switch','both'].includes(filterMode)) {
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
@@ -192,10 +283,23 @@ export const onApply = (
 export { ConnectedNetworkFilter as NetworkFilter }
 
 function ConnectedNetworkFilter (
-  { shouldQuerySwitch, withIncidents } : ConnectedNetworkFilterProps
+  { shouldQuerySwitch,
+    withIncidents,
+    showRadioBand,
+    filterMode='both',
+    filterFor='analytics',
+    multiple,
+    replaceWithId,
+    defaultValue,
+    defaultRadioBand,
+    isRadioBandDisabled=false,
+    radioBandDisabledReason } : ConnectedNetworkFilterProps
 ) {
   const { $t } = useIntl()
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
+  const { setNetworkPath: setReportsNetworkPath,
+    raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
+  const { bands: selectedBands } = reportsFilter
   /* eslint-disable react-hooks/rules-of-hooks */
   const incidentsList = withIncidents
     ? useIncidentsListQuery(
@@ -213,20 +317,53 @@ function ConnectedNetworkFilter (
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes) : [],
+      data: data ?
+        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes,
+          filterMode, replaceWithId) : [],
       ...rest
     })
   })
+  const rawVal = filterFor === 'reports' ? reportsRaw : raw
   return (
     <UI.Container>
       <Loader states={[queryResults]}>
         <Select
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
-          multiple={false}
-          defaultValue={raw}
-          value={raw}
+          multiple={multiple}
+          showRadioBand={showRadioBand}
+          defaultValue={defaultValue || rawVal}
+          defaultRadioBand={defaultRadioBand || selectedBands || []}
+          isRadioBandDisabled={isRadioBandDisabled}
+          radioBandDisabledReason={radioBandDisabledReason}
+          value={defaultValue || rawVal}
           options={queryResults.data}
-          onApply={(value) => onApply(value, setNetworkPath)}
+          onApply={(value,bands) => {
+            if(showRadioBand || multiple){
+              let paths:NetworkPath[]=[]
+              if(value?.length){
+                value.forEach(item => {
+                  const lastElement = (item as SingleValueType).slice(-1)[0] as string
+                  if(lastElement.includes('{')){
+                    const fullPath:NetworkPath=JSON.parse(lastElement)
+                    paths.push(fullPath)
+                  }else{
+                    const isSwitchGroup = lastElement.indexOf('switches') === 0
+                    const firstElement = (item as SingleValueType)[0] as string
+                    const fullPath:NetworkPath=JSON.parse(firstElement)
+                    if(isSwitchGroup && fullPath[1]){
+                      fullPath[1].type = 'switchGroup'
+                    }
+                    paths.push(fullPath)
+                  }
+                })
+              }else{
+                paths.push(defaultNetworkPath)
+              }
+              setReportsNetworkPath(paths, (bands || []) as RadioBand[], value || [])
+            }else{
+              onApply(value, setNetworkPath)
+            }
+          }}
           displayRender={displayRender}
           showSearch={{ filter: search }}
           allowClear

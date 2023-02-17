@@ -22,7 +22,9 @@ import {
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  ServiceValidationSolid,
+  ServiceValidationOutlined
 } from '@acx-ui/icons'
 
 import { genPlaceholder, LayoutProps } from '..'
@@ -74,6 +76,22 @@ const config: LayoutProps['menuConfig'] = [
     name: 'Timeline',
     inactiveIcon: CalendarDateOutlined,
     activeIcon: CalendarDateSolid
+  },
+  {
+    path: '/servicevalidation',
+    name: 'Service Validation',
+    inactiveIcon: ServiceValidationOutlined,
+    activeIcon: ServiceValidationSolid,
+    routes: [
+      {
+        path: '/serviceValidation/networkHealth',
+        name: 'NetworkHealth'
+      },
+      {
+        path: '/serviceValidation/videoCallQoe',
+        name: 'Video Call QoE'
+      }
+    ]
   },
   {
     path: '/reports',

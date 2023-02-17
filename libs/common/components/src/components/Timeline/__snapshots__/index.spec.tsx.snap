@@ -1,0 +1,345 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Timeline should render 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1to6ymf-0 jaxwsf"
+  >
+    <div
+      class="ant-descriptions"
+    >
+      <div
+        class="ant-descriptions-view"
+      >
+        <table>
+          <tbody>
+            <tr
+              class="ant-descriptions-row"
+            >
+              <td
+                class="ant-descriptions-item"
+                colspan="3"
+              >
+                <div
+                  class="ant-descriptions-item-container"
+                >
+                  <span
+                    class="ant-descriptions-item-label"
+                  >
+                    Current Status
+                  </span>
+                  <span
+                    class="ant-descriptions-item-content"
+                  >
+                    Pending
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <ul
+      class="ant-timeline"
+    >
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          --
+        </div>
+      </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
+      />
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            --
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
+                  >
+                    <svg
+                      class="styledComponents__PendingsIcon-sc-1to6ymf-10 dMjqBx"
+                      data-testid="Pending"
+                    />
+                    Pending
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    AddVenue
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          Dec 20 2022 04:27:30
+        </div>
+      </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
+      />
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 gBXlKK"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            --
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bOwEFv"
+                  >
+                    <svg
+                      class="styledComponents__InProgressIcon-sc-1to6ymf-11 kXLEWK"
+                      data-testid="InProgress"
+                    />
+                    In progress
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    UpdateSwitchPosition
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                >
+                  <svg
+                    data-testid="PlusSquareSolid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          Dec 20 2022 09:55:03
+        </div>
+      </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
+      />
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            Dec 20 2022 09:55:04
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 jODqPx"
+                  >
+                    <svg
+                      class="styledComponents__SuccessIcon-sc-1to6ymf-8 dkqLMl"
+                      data-testid="CheckMarkCircleSolid"
+                    />
+                    Success
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    AddVenue
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
+        class="ant-timeline-item"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          Dec 20 2022 09:55:03
+        </div>
+      </li>
+      <div
+        class="styledComponents__Dash-sc-1to6ymf-12 grKSiV"
+      />
+      <li
+        class="ant-timeline-item ant-timeline-item-last"
+      >
+        <div
+          class="ant-timeline-item-tail"
+        />
+        <div
+          class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
+        >
+          <div
+            class="styledComponents__Step-sc-1to6ymf-4 kiDmfG"
+          />
+        </div>
+        <div
+          class="ant-timeline-item-content"
+        >
+          <div
+            class="styledComponents__ItemWrapper-sc-1to6ymf-1 gsdtQA"
+          >
+            Dec 20 2022 09:55:04
+            <div
+              class="styledComponents__ContentWrapper-sc-1to6ymf-2 hCoMWG"
+            >
+              <div
+                class="styledComponents__WithExpanderWrapper-sc-1to6ymf-6 jSjuUQ"
+              >
+                <div>
+                  <div
+                    class="styledComponents__StatusWrapper-sc-1to6ymf-3 bvHcIB"
+                  >
+                    <svg
+                      class="styledComponents__FailIcon-sc-1to6ymf-9 iZmNvE"
+                      data-testid="CancelCircleSolid"
+                    />
+                    Failed
+                  </div>
+                  <div
+                    class="styledComponents__DescriptionWrapper-sc-1to6ymf-5 zACBC"
+                  >
+                    AddVenue
+                  </div>
+                </div>
+                <div
+                  class="styledComponents__ExpanderWrapper-sc-1to6ymf-7 fhkogC"
+                >
+                  <svg
+                    data-testid="PlusSquareSolid"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</DocumentFragment>
+`;

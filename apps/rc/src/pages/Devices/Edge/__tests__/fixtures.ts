@@ -1,4 +1,4 @@
-import { EdgePort, EdgePortTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgePortStatus } from '@acx-ui/rc/utils'
 
 export const mockVenueData = {
   fields: ['name', 'id'],
@@ -92,32 +92,273 @@ export const mockEdgeData = {
   tags: ['tag1', 'tag2']
 }
 
-export const edgePortsSetting:EdgePort[] = [{
+export const edgePortsSetting:EdgePortStatus[] = [{
   portId: '1',
-  portName: 'Port 1',
+  name: 'Port 1',
   status: 'Up',
   adminStatus: 'Enabled',
-  portType: EdgePortTypeEnum.WAN,
+  type: EdgePortTypeEnum.WAN,
   mac: 'AA:BB:CC:DD:EE:FF',
-  speed: 12* Math.pow(12, 6),
-  duplexSpeed: 100* Math.pow(12, 6),
-  ip: '1.1.1.1'
+  speedKbps: 12* Math.pow(12, 6),
+  duplex: 'Full',
+  ip: '1.1.1.1',
+  sortIdx: 1
 },
 {
   portId: '2',
-  portName: 'Port 2',
+  name: 'Port 2',
   status: 'Down',
   adminStatus: 'Disabled',
-  portType: EdgePortTypeEnum.LAN,
+  type: EdgePortTypeEnum.LAN,
   mac: 'AA:BB:CC:DD:EE:FF',
-  speed: 10* Math.pow(12, 6),
-  duplexSpeed: 100* Math.pow(12, 6),
-  ip: '1.1.1.2'
+  speedKbps: 10* Math.pow(12, 6),
+  duplex: 'Half',
+  ip: '1.1.1.2',
+  sortIdx: 2
 }]
 
 export const mockEdgeDnsServersData = {
   primary: '1.1.1.1',
   secondary: '2.2.2.2'
+}
+
+export const mockEdgePortConfig = {
+  ports: [
+    {
+      id: '6ab895d4-cb8a-4664-b3f9-c4d6e0c8b8c1',
+      name: 'port0',
+      mac: '00:0c:29:b6:ad:04',
+      enabled: true,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.1.1.1'
+    },
+    {
+      id: '20b445af-7270-438d-88a3-a5a2219c377b',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.2'
+    },
+    {
+      id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
+      name: 'port1',
+      mac: '00:0c:29:b6:ad:0e',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '3.3.3.3',
+      subnet: '255.255.255.0',
+      gateway: '3.3.3.3'
+    },
+    {
+      id: '6fcbcfc2-c207-4e45-b392-1f529cd1d6d4',
+      name: 'tap0',
+      mac: '02:fe:05:1f:95:85',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '4.4.4.4',
+      subnet: '255.255.255.0',
+      gateway: '4.4.4.4'
+    },
+    {
+      id: '081a71a7-aaad-4a13-967b-1c82166de11a',
+      name: 'port2',
+      mac: '00:0c:29:b6:ad:18',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: true,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '5.5.5.5',
+      subnet: '255.255.255.0',
+      gateway: '5.5.5.5'
+    }
+  ]
+}
+
+export const mockEdgePortStatus = [
+  {
+    portId: mockEdgePortConfig.ports[0].id,
+    ip: '10.206.78.152'
+  },
+  {
+    portId: mockEdgePortConfig.ports[1].id,
+    ip: '10.206.78.153'
+  }
+]
+
+export const mockEdgePortConfigWithStatusIp = {
+  ports: [
+    {
+      ...mockEdgePortConfig.ports[0],
+      statusIp: '10.206.78.152'
+    },
+    {
+      ...mockEdgePortConfig.ports[1],
+      statusIp: '10.206.78.153'
+    },
+    {
+      ...mockEdgePortConfig.ports[2],
+      statusIp: '10.206.78.154'
+    },
+    {
+      ...mockEdgePortConfig.ports[3],
+      statusIp: '10.206.78.155'
+    },
+    {
+      ...mockEdgePortConfig.ports[4],
+      statusIp: '10.206.78.156'
+    }
+  ]
+}
+
+export const mockEdgeSubInterfaces = {
+  page: 1,
+  pageSize: 10,
+  totalCount: 10,
+  content: [
+    {
+      id: 'fa663fd2-3057-44d9-ba25-9b45c93069cd',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 2
+    },
+    {
+      id: 'fe04bc40-e1bb-4dd4-af9a-a218576f1f63',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 4
+    },
+    {
+      id: 'e0edab51-0be9-46eb-aa0f-63600cd3396c',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 6
+    },
+    {
+      id: '62e2aa44-a5c9-41f1-b90b-ffdcb314cdca',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 5
+    },
+    {
+      id: 'dde3f2d0-ac27-4e1d-9789-25b3a401b2d9',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'STATIC',
+      ip: '4.4.4.4',
+      subnet: '255.255.255.0',
+      gateway: '',
+      vlan: 88
+    },
+    {
+      id: 'd654a5c8-974e-4467-8e49-82c945d56395',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 7
+    },
+    {
+      id: '28375703-a754-45c2-ba02-1293f67b7b8e',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 8
+    },
+    {
+      id: '935b9839-147d-44a0-9439-5357ea561487',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 9
+    },
+    {
+      id: '4c184ef5-df78-4dac-9831-a50838585d98',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 10
+    },
+    {
+      id: '2aca0be0-a547-4744-8535-bcf138a021a5',
+      name: 'local0',
+      mac: '00:00:00:00:00:00',
+      enabled: true,
+      portType: 'LAN',
+      natEnabled: false,
+      ipMode: 'DHCP',
+      ip: '',
+      subnet: '',
+      gateway: '',
+      vlan: 11
+    }
+  ]
 }
 
 export const mockStaticRoutes = {

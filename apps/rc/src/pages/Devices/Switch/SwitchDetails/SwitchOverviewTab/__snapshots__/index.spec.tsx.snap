@@ -106,7 +106,7 @@ exports[`SwitchOverviewTab should navigate to ports tab correctly 1`] = `
               role="tab"
               tabindex="0"
             >
-              Route Interfaces
+              Routed Interfaces
             </div>
           </div>
           <div

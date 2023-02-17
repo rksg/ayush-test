@@ -17,15 +17,19 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
     .ant-descriptions-item-container {
       align-items: baseline;
 
+      .ant-descriptions-item-label,
+      .ant-descriptions-item-content {
+        font-size: var(--acx-body-4-font-size);
+        line-height: var(--acx-body-4-line-height);
+      }
+
       .ant-descriptions-item-label {
         width: ${props => props.labelWidthPercent}%;
         color: var(--acx-neutrals-60);
       }
 
-      .ant-descriptions-item-label,
       .ant-descriptions-item-content {
-        font-size: var(--acx-body-4-font-size);
-        line-height: var(--acx-body-4-line-height);
+        display: unset;
       }
     }
   }

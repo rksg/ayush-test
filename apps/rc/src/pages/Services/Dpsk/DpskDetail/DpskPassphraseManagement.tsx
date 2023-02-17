@@ -1,32 +1,71 @@
 import { useState } from 'react'
 
-import { Input }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import {
+  Button,
+  Loader,
+  showActionModal,
+  showToast,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { CopyOutlined }             from '@acx-ui/icons'
+import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
-  useDpskPassphraseListQuery
+  useDownloadPassphrasesMutation,
+  useDpskPassphraseListQuery,
+  useUploadPassphrasesMutation
 } from '@acx-ui/rc/services'
-import { NewDpskPassphrase, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
-import { formatter }                        from '@acx-ui/utils'
+import {
+  ExpirationType,
+  NewDpskPassphrase,
+  transformAdvancedDpskExpirationText,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
+import { formatter } from '@acx-ui/utils'
 
-import DpskPassphraseDrawer from './DpskPassphraseDrawer'
+import { unlimitedNumberOfDeviceLabel } from './contentsMap'
+import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
+
+
+interface UploadPassphrasesFormFields {
+  usernamePrefix: string
+}
 
 
 export default function DpskPassphraseManagement () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const [ addPassphrasesDrawerVisible, setAddPassphrasesDrawerVisible ] = useState(false)
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
+  const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
+  const [ downloadCsv ] = useDownloadPassphrasesMutation()
+  const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
+    sorter: {
+      sortField: 'createdDate',
+      sortOrder: 'desc'
+    },
     defaultPayload: {
       fields: ['check-all', 'id', 'passphrase', 'username',
         'vlanId', 'mac', 'numberOfDevices', 'createdDate', 'expirationDate']
     }
   })
+
+  const downloadPassphrases = () => {
+    downloadCsv({ params }).unwrap().catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export passphrases.' })
+      })
+    })
+  }
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
@@ -34,7 +73,7 @@ export default function DpskPassphraseManagement () {
       title: $t({ defaultMessage: 'Passphrase Created' }),
       dataIndex: 'createdDate',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      defaultSortOrder: 'descend',
       render: function (data) {
         return formatter('dateTimeFormat')(data)
       }
@@ -49,13 +88,16 @@ export default function DpskPassphraseManagement () {
       key: 'numberOfDevices',
       title: $t({ defaultMessage: 'No. of Devices' }),
       dataIndex: 'numberOfDevices',
-      sorter: false
+      sorter: false,
+      render: function (data) {
+        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+      }
     },
     {
       key: 'mac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      sorter: false
+      sorter: true
     },
     {
       key: 'passphrase',
@@ -69,6 +111,11 @@ export default function DpskPassphraseManagement () {
             bordered={false}
             value={data as string}
           />
+          <Button
+            type='link'
+            icon={<CopyOutlined />}
+            onClick={() => navigator.clipboard.writeText(data as string)}
+          />
         </div>
       }
     },
@@ -76,7 +123,7 @@ export default function DpskPassphraseManagement () {
       key: 'vlanId',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanId',
-      sorter: false
+      sorter: true
     },
     {
       key: 'expirationDate',
@@ -84,7 +131,13 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'expirationDate',
       sorter: true,
       render: function (data) {
-        return formatter('dateTimeFormat')(data)
+        if (data) {
+          return transformAdvancedDpskExpirationText(intl, {
+            expirationType: ExpirationType.SPECIFIED_DATE,
+            expirationDate: data as string
+          })
+        }
+        return transformAdvancedDpskExpirationText(intl, { expirationType: null })
       }
     }
   ]
@@ -115,6 +168,14 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Add Passphrases' }),
       onClick: () => setAddPassphrasesDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Import From File' }),
+      onClick: () => setUploadCsvDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: () => downloadPassphrases()
     }
   ]
 
@@ -123,11 +184,42 @@ export default function DpskPassphraseManagement () {
       visible={addPassphrasesDrawerVisible}
       setVisible={setAddPassphrasesDrawerVisible}
     />
+    <ImportCsvDrawer type='DPSK'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['5MB']}
+      maxEntries={512}
+      templateLink='assets/templates/DPSK_import_template_expiration.csv'
+      visible={uploadCsvDrawerVisible}
+      isLoading={uploadCsvResult.isLoading}
+      importRequest={async (formData, values) => {
+        const formValues = values as UploadPassphrasesFormFields
+        formData.append('usernamePrefix', formValues.usernamePrefix)
+        try {
+          await uploadCsv({ params, payload: formData }).unwrap()
+          setUploadCsvDrawerVisible(false)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+          if (error.data?.message) {
+            showToast({
+              type: 'error',
+              content: error.data.message
+            })
+          }
+        }
+      }}
+      onClose={() => setUploadCsvDrawerVisible(false)} >
+      <Form.Item
+        name='usernamePrefix'
+        label={$t({ defaultMessage: 'User name prefix' })}
+        children={<Input />}
+      />
+    </ImportCsvDrawer>
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         actions={actions}
         rowActions={rowActions}
         rowSelection={{ type: 'checkbox' }}

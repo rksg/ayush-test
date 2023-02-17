@@ -11,8 +11,12 @@ import { VenueSyslog }                                                          
 
 
 import { ApStatusDetails, LanPort } from './ap'
+import { RogueCategory }            from './policies'
+import { ConfigurationHistory }     from './switch'
 
-import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
+
+
 
 export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
@@ -44,6 +48,7 @@ export interface VenueDetailHeader {
 		},
 		totalCount: number
 	},
+	edges: EdgeStatusSeverityStatistic,
 	totalClientCount: string
 	venue: VenueDetail
 }
@@ -128,10 +133,35 @@ export interface NetworkDevice {
 	yPercent?: number;
 	position?: NetworkDevicePosition;
 	isActive?: boolean;
-	rogueCategory?: string;
+	rogueCategory?: Record<RogueCategory, number>;
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export interface RogueApInfo {
+	deviceColor: string;
+    rogueSnrClass?: string;
+    rogueApTooltips?: string;
+	allrogueApTooltipRequired?: boolean;
+	allVenueRogueApTooltipAttr?: AllVenueRogueApTooltipAttr,
+	specificRogueApTooltipAttr?: SpecificRogueApTooltipAttr,
+    drawRogueApItem?: boolean;
+    showRogueTotalNumber?: boolean;
+}
+
+export interface AllVenueRogueApTooltipAttr {
+	totalRogueNumber: number,
+    deviceName: string,
+    categoryNames: string[],
+	categoryNums?: number[];
+}
+
+export interface SpecificRogueApTooltipAttr{
+	activatedBarIndex: number,
+	deviceName: string,
+	macAddress: string,
+	snr: number
 }
 
 export enum RogueDeviceCategoryType {
@@ -296,6 +326,13 @@ export interface Acl {
 	id: string,
 	name: string,
 	aclRules: AclRule[]
+}
+
+export interface JwtToken {
+	access_token: string,
+	expires_in: string,
+	id_token: string,
+	type: string
 }
 
 export interface SwitchModelSlot {
@@ -605,4 +642,35 @@ export interface LocalUser {
   password: string,
   authPort: number,
   purpose: string
+}
+
+export interface VenueDirectedMulticast {
+  wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
+}
+
+export interface VenueConfigHistoryDetailResp {
+	response: {
+		list: ConfigurationHistory[]
+	}
+}
+
+export enum LoadBalancingMethodEnum {
+  CLIENT_COUNT = 'BASED_ON_CLIENT_COUNT',
+  CAPCITY = 'BASED_ON_CAPACITY'
+}
+
+export enum SteeringModeEnum {
+  BASIC = 'BASIC',
+  PROACTIVE = 'PROACTIVE',
+  STRICT = 'STRICT'
+}
+
+export interface VenueLoadBalancing {
+  enabled: boolean,
+  loadBalancingMethod: LoadBalancingMethodEnum,
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: number,
+  steeringMode: SteeringModeEnum
 }

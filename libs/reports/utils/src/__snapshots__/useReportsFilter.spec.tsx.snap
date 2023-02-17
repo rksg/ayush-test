@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useReportsFilter changes filter value 1`] = `
+<DocumentFragment>
+  <div>
+    {"paths":[[{"type":"network","name":"Network"}]],"bands":["2.4"]}
+  </div>
+</DocumentFragment>
+`;
+
+exports[`useReportsFilter gets initial value from search parameters 1`] = `
+<DocumentFragment>
+  <div>
+    {"filters":{"paths":[[{"type":"network","name":"Network"},{"type":"zone","name":"555548721e264115bda45a75043f65d7"}]],"bands":["5","2.4"]},"raw":["[{\\\\\\"type\\\\\\":\\\\\\"network\\\\\\",\\\\\\"name\\\\\\":\\\\\\"Network\\\\\\"},...]"]}
+  </div>
+</DocumentFragment>
+`;

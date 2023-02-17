@@ -10,13 +10,14 @@ describe('EventDetails', () => {
   ]
 
 
+  const handleClose = jest.fn()
+
   it('renders Details correctly', () => {
-    const { asFragment } = render(<Details fields={fields}/>)
+    const { asFragment } = render(<Details fields={fields} openHandler={handleClose}/>)
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('renders closes Details correctly', async () => {
-    const handleClose = jest.fn()
     render(<Details fields={fields} openHandler={handleClose}/>)
     fireEvent.click(await screen.findByTestId('CloseSymbol'))
     expect(handleClose).toBeCalledTimes(1)

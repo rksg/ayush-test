@@ -17,6 +17,13 @@ const withoutCounts = {
   switchClientsCount: 0
 }
 
+const paths = [
+  'venue-details/devices',
+  'venue-details/clients/wifi',
+  'venue-details/devices/switch',
+  'venue-details/clients/switch'
+]
+
 const common = {
   venueId: '7ae27179b7b84de89eb7e56d9b15943d',
   name: 'Aparna-Venue',
@@ -95,10 +102,10 @@ describe('Venue Marker Tooltip', () => {
 
     const links = screen.getAllByText('1234')
     expect(links.length).toEqual(4)
-    links.forEach(link => {
+    links.forEach((link, i) => {
       fireEvent.click(link)
       expect(onNavigateMock).lastCalledWith({
-        path: 'TODO',
+        path: paths[i],
         venueId: '7ae27179b7b84de89eb7e56d9b15943d'
       })
     })

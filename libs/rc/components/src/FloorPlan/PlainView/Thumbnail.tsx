@@ -40,8 +40,7 @@ export default function Thumbnail (props: {
           selectedFloorPlan={floorPlan}
           networkDevices={networkDevices}
           contextAlbum={true}
-          galleryMode={false}
-          context=''/>
+          galleryMode={false}/>
         <img
           style={{ width: '100%', height: '100%' }}
           src={floorPlan.imageUrl}

@@ -191,7 +191,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -201,7 +201,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                             type="button"
                                           >
                                             <span>
@@ -297,7 +297,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 class="ant-table-cell ant-table-selection-column react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
                                                                   class="ant-table-selection"
@@ -320,62 +320,62 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </label>
                                                                 </div>
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Name
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 IP Address
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Authentication Port
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Accounting Port
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Shared Secret
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
@@ -383,10 +383,10 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 style="position: sticky; right: 0px;"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                             </tr>
@@ -561,86 +561,6 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                       </div>
                                                     </div>
                                                   </div>
-                                                  <ul
-                                                    class="ant-pagination ant-pagination-mini ant-table-pagination ant-table-pagination-center"
-                                                    unselectable="unselectable"
-                                                  >
-                                                    <li
-                                                      aria-disabled="true"
-                                                      class="ant-pagination-prev ant-pagination-disabled"
-                                                      title="Previous Page"
-                                                    >
-                                                      <button
-                                                        class="ant-pagination-item-link"
-                                                        disabled=""
-                                                        tabindex="-1"
-                                                        type="button"
-                                                      >
-                                                        <span
-                                                          aria-label="left"
-                                                          class="anticon anticon-left"
-                                                          role="img"
-                                                        >
-                                                          <svg
-                                                            aria-hidden="true"
-                                                            data-icon="left"
-                                                            fill="currentColor"
-                                                            focusable="false"
-                                                            height="1em"
-                                                            viewBox="64 64 896 896"
-                                                            width="1em"
-                                                          >
-                                                            <path
-                                                              d="M724 218.3V141c0-6.7-7.7-10.4-12.9-6.3L260.3 486.8a31.86 31.86 0 000 50.3l450.8 352.1c5.3 4.1 12.9.4 12.9-6.3v-77.3c0-4.9-2.3-9.6-6.1-12.6l-360-281 360-281.1c3.8-3 6.1-7.7 6.1-12.6z"
-                                                            />
-                                                          </svg>
-                                                        </span>
-                                                      </button>
-                                                    </li>
-                                                    <li
-                                                      class="ant-pagination-item ant-pagination-item-1 ant-pagination-item-active"
-                                                      tabindex="0"
-                                                      title="1"
-                                                    >
-                                                      <a
-                                                        rel="nofollow"
-                                                      >
-                                                        1
-                                                      </a>
-                                                    </li>
-                                                    <li
-                                                      aria-disabled="true"
-                                                      class="ant-pagination-next ant-pagination-disabled"
-                                                      title="Next Page"
-                                                    >
-                                                      <button
-                                                        class="ant-pagination-item-link"
-                                                        disabled=""
-                                                        tabindex="-1"
-                                                        type="button"
-                                                      >
-                                                        <span
-                                                          aria-label="right"
-                                                          class="anticon anticon-right"
-                                                          role="img"
-                                                        >
-                                                          <svg
-                                                            aria-hidden="true"
-                                                            data-icon="right"
-                                                            fill="currentColor"
-                                                            focusable="false"
-                                                            height="1em"
-                                                            viewBox="64 64 896 896"
-                                                            width="1em"
-                                                          >
-                                                            <path
-                                                              d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
-                                                            />
-                                                          </svg>
-                                                        </span>
-                                                      </button>
-                                                    </li>
-                                                  </ul>
                                                 </div>
                                               </div>
                                             </div>
@@ -685,7 +605,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -695,7 +615,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                             type="button"
                                           >
                                             <span>
@@ -791,7 +711,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 class="ant-table-cell ant-table-selection-column react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
                                                                   class="ant-table-selection"
@@ -815,62 +735,62 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </label>
                                                                 </div>
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Name
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 IP Address
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Authentication Port
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Shared Secret
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Purpose
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
@@ -878,10 +798,10 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 style="position: sticky; right: 0px;"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                             </tr>
@@ -1020,7 +940,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                                   >
                                     <div
-                                      class="styledComponents__Wrapper-sc-1abm7iv-13 gzZsiC"
+                                      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
                                     >
                                       <div
                                         class="ant-space ant-space-horizontal ant-space-align-center"
@@ -1030,7 +950,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                           class="ant-space-item"
                                         >
                                           <button
-                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                                            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                                             type="button"
                                           >
                                             <span>
@@ -1124,7 +1044,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 class="ant-table-cell ant-table-selection-column react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
                                                                   class="ant-table-selection"
@@ -1148,40 +1068,40 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                   </label>
                                                                 </div>
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Username
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Password
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
                                                                 class="ant-table-cell react-resizable"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 Privilege
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                               <th
@@ -1189,10 +1109,10 @@ exports[`SwitchAAATab should render correctly 1`] = `
                                                                 style="position: sticky; right: 0px;"
                                                               >
                                                                 <div
-                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-9"
+                                                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                                                 />
                                                                 <div
-                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-10"
+                                                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                                                 />
                                                               </th>
                                                             </tr>
@@ -1903,7 +1823,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
               type="button"
             >
               <span>
@@ -1915,7 +1835,7 @@ exports[`SwitchAAATab should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>

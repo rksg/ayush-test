@@ -1,12 +1,14 @@
 /* eslint-disable max-len */
-import { Divider, Input } from 'antd'
-import { useIntl }        from 'react-intl'
+import { Divider, Input }       from 'antd'
+import { capitalize, includes } from 'lodash'
+import { useIntl }              from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Drawer, Descriptions }                          from '@acx-ui/components'
 import { useApLanPortsQuery, useGetApRadioCustomizationQuery, useGetVenueQuery }                from '@acx-ui/rc/services'
 import { ApDetails, ApLanPort, ApRadio, ApVenueStatusEnum, ApViewModel, DeviceGps, gpsToFixed } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                from '@acx-ui/react-router-dom'
+import { TenantLink }                                                                           from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../../ApContext'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import { ApDetailsSettings }    from './ApDetailsSettings'
@@ -20,9 +22,10 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { tenantId, serialNumber } = useApContext()
   const { visible, setVisible, currentAP, apDetails } = props
-  const currentCellularInfo = currentAP?.apStatusData?.cellularInfo
+  const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
+  const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
   const { data: venueData } = useGetVenueQuery({
     params: { tenantId, venueId: currentAP?.venueId }
   },
@@ -112,7 +115,35 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         <Descriptions.Item
           label={$t({ defaultMessage: 'IP Address' })}
           children={
-            currentAP?.IP || '--'
+            (currentAP?.IP)? `${currentAP.IP}${ipTypeDisplay}` : '--'
+          }
+        />
+        { includes(ipTypeDisplay, 'Static') && (
+          <>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Network Mask' })}
+              children={
+                APSystem?.netmask || '--'
+              }
+            />
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Gateway' })}
+              children={
+                APSystem?.gateway || '--'
+              }
+            />
+          </>
+        )}
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Primary DNS' })}
+          children={
+            APSystem?.primaryDnsServer || '--'
+          }
+        />
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Secondary DNS' })}
+          children={
+            APSystem?.secondaryDnsServer || '--'
           }
         />
         <Descriptions.Item

@@ -181,8 +181,8 @@ describe('EpdgTable', () => {
     expect(deleteButton).toBeInTheDocument()
     fireEvent.click(deleteButton)
 
-    await screen.findByText(/delete service/i)
+    await screen.findByText(/delete rule/i)
 
-    fireEvent.click(screen.getByText(/delete service/i))
+    fireEvent.click(screen.getByText(/delete rule/i))
   })
 })

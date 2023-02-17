@@ -13,32 +13,37 @@ export default function PortalViewHostApproval (props:{
   const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSectionNoBorder>
-      <UI.ViewSectionTabsBig
+      <UI.ViewSectionTabs
         defaultActiveKey='register'
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabsBig.TabPane tab={portalLang.register} key='register'>
-          <UI.FieldText style={{ marginLeft: 5 }}>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.register} key='register'>
+          <UI.FieldTextBig style={{ marginLeft: 5 }}>
             {portalLang.registerPageNote}
-          </UI.FieldText>
-          <UI.ViewSectionSpan>*</UI.ViewSectionSpan><UI.ViewSectionUserOutlined/><UI.FieldInputSmall
-            placeholder={portalLang.name}></UI.FieldInputSmall><br/>
-          <UI.ViewSectionSpan>*</UI.ViewSectionSpan>
-          <UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
-            placeholder={portalLang.mobilePhone}></UI.FieldInputSmall>
-          <UI.ViewSectionText>
+          </UI.FieldTextBig>
+          <UI.ViewSectionText>{portalLang.name}
+            <UI.ViewSectionSpan>*</UI.ViewSectionSpan></UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionUserOutlined/><UI.FieldInputSmall>
+          </UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText>{portalLang.mobilePhone}
+            <UI.ViewSectionSpan>*</UI.ViewSectionSpan></UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionMobileOutlined/><UI.FieldInputSmall
+            placeholder={'(123) 456-7890'}></UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText style={{ marginBottom: 10, marginTop: -10 }}>
             {portalLang.selfSignMobilePhoneNote}
           </UI.ViewSectionText>
-          <UI.ViewSectionSpan>*</UI.ViewSectionSpan><UI.ViewSectionMailOutlined/><UI.FieldInputSmall
-            placeholder={portalLang.hostEmail}></UI.FieldInputSmall>
-          <UI.ViewSectionText>
+          <UI.ViewSectionText>{portalLang.hostEmail}
+            <UI.ViewSectionSpan>*</UI.ViewSectionSpan></UI.ViewSectionText>
+          <UI.ViewDivInput><UI.ViewSectionMailOutlined/><UI.FieldInputSmall>
+          </UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText style={{ marginBottom: 10, marginTop: -10 }}>
             {portalLang.hostEmailNote}
           </UI.ViewSectionText>
-          <UI.ViewSectionEditOutlined/><UI.FieldInputSmall
-            placeholder={portalLang.hostNoteBlankText}>
-          </UI.FieldInputSmall>
-          <UI.ViewSectionText>{
+          <UI.ViewSectionText>{portalLang.hostNoteBlankText}</UI.ViewSectionText>
+          <UI.ViewDivInput style={{ height: 60 }}><UI.FieldInputSmall>
+          </UI.FieldInputSmall></UI.ViewDivInput>
+          <UI.ViewSectionText style={{ marginBottom: 10, marginTop: -10 }}>{
             portalLang.hostNoteHint}</UI.ViewSectionText>
           <PortalButtonContent
             demoValue={demoValue}
@@ -46,9 +51,9 @@ export default function PortalViewHostApproval (props:{
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.register}</PortalButtonContent>
 
-        </UI.ViewSectionTabsBig.TabPane>
-        <UI.ViewSectionTabsBig.TabPane tab={portalLang.login} key='login'>
-          <UI.FieldText>{portalLang.loginNote}</UI.FieldText>
+        </UI.ViewSectionTabs.TabPane>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.login} key='login'>
+          <UI.FieldTextBig>{portalLang.loginNote}</UI.FieldTextBig>
           <UI.FieldInput></UI.FieldInput>
           <UI.ViewSectionLink>
             {portalLang.forgotPswdLink}</UI.ViewSectionLink>
@@ -57,8 +62,8 @@ export default function PortalViewHostApproval (props:{
             isPreview={isPreview}
             updateButton={(data)=>updateBtn?.(data)}
           >{portalLang.connectToWifi}</PortalButtonContent>
-        </UI.ViewSectionTabsBig.TabPane>
-      </UI.ViewSectionTabsBig>
+        </UI.ViewSectionTabs.TabPane>
+      </UI.ViewSectionTabs>
     </UI.ViewSectionNoBorder>
 
   )

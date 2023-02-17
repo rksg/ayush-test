@@ -30,17 +30,59 @@ module.exports = async function setupProxy (app) {
       }
     ))
   }
+
+  app.use(createProxyMiddleware(
+    '/docs',
+    {
+      target: 'https://docs.cloud.ruckuswireless.com',
+      changeOrigin: true,
+      pathRewrite: { '^/docs': '/' }
+    }
+  ))
+
   app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
-    { target: CLOUD_URL, changeOrigin: true, ws: true }
+    {
+      target: CLOUD_URL, changeOrigin: true, ws: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
   ))
   app.use(createProxyMiddleware(
     '/api',
-    { target: CLOUD_URL, changeOrigin: true }
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
   ))
   app.use(createProxyMiddleware(
     '/g',
-    { target: CLOUD_URL, changeOrigin: true }
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+  app.use(createProxyMiddleware(
+    '/mfa',
+    { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+  app.use(createProxyMiddleware(
+    '/**',
+    {
+      target: CLOUD_URL.replace('//', '//api.'),
+      changeOrigin: true,
+      secure: false,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
   ))
   return app
 }

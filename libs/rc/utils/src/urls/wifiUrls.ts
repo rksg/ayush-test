@@ -228,5 +228,45 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   resetApCustomization: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization'
+  },
+  getVenueDirectedMulticast: {
+    method: 'get',
+    url: '/api/venues/:venueId/directedMulticastSettings'
+  },
+  updateVenueDirectedMulticast: {
+    method: 'put',
+    url: '/api/venues/:venueId/directedMulticastSettings'
+  },
+  getApDirectedMulticast: {
+    method: 'get',
+    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+  },
+  updateApDirectedMulticast: {
+    method: 'put',
+    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+  },
+  resetApDirectedMulticast: {
+    method: 'delete',
+    url: '/api/venues/aps/:serialNumber/directedMulticastSettings'
+  },
+  getVenueLoadBalancing: {
+    method: 'get',
+    url: '/api/venues/:venueId/loadBalancingSettings'
+  },
+  updateVenueLoadBalancing: {
+    method: 'put',
+    url: '/api/venues/:venueId/loadBalancingSettings'
+  },
+  getApNetworkSettings: {
+    method: 'get',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
+  },
+  updateApNetworkSettings: {
+    method: 'put',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
+  },
+  resetApNetworkSettings: {
+    method: 'delete',
+    url: '/api/venues/aps/:serialNumber/networkSettings'
   }
 }

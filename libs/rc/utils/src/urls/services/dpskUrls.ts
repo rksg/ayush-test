@@ -1,40 +1,50 @@
 import { ApiInfo } from '../../apiService'
 
+export const DpskBaseUrl = '/api/dpskServices'
+
+export const DpskPassphraseBaseUrl = '/api/dpskServices/:serviceId/passphrases'
+
+const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
+
 export const DpskUrls: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
-    url: '/api/dpskServices/:serviceId'
+    url: DpskBaseUrl + '/:serviceId'
   },
   getDpskList: {
     method: 'get',
-    url: '/api/dpskServices'
+    url: DpskBaseUrl + paginationParams
   },
   addDpsk: {
     method: 'post',
-    url: '/api/dpskServices'
+    url: DpskBaseUrl
   },
   updateDpsk: {
-    method: 'patch',
-    url: '/api/dpskServices/:serviceId'
+    method: 'put',
+    url: DpskBaseUrl + '/:serviceId'
   },
   deleteDpsk: {
     method: 'delete',
-    url: '/api/dpskServices/:serviceId'
+    url: DpskBaseUrl + '/:serviceId'
   },
   getPassphraseList: {
     method: 'get',
-    url: '/api/dpskServices/:serviceId/passphrases'
+    url: DpskPassphraseBaseUrl + paginationParams
   },
   addPassphrase: {
     method: 'post',
-    url: '/api/dpskServices/:serviceId/passphrases'
+    url: DpskPassphraseBaseUrl
   },
   uploadPassphrases: {
     method: 'post',
-    url: '/api/dpskServices/:serviceId/passphrases/upload'
+    url: DpskPassphraseBaseUrl
   },
   deletePassphrase: {
     method: 'delete',
-    url: '/api/dpskServices/:serviceId/passphrases'
+    url: DpskPassphraseBaseUrl
+  },
+  exportPassphrases: {
+    method: 'get',
+    url: DpskPassphraseBaseUrl + '?timezone=:timezone&date-format=:dateFormat'
   }
 }

@@ -3,24 +3,32 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
 import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { useParams, useTenantLink, useNavigate  }      from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 
-import { VenueEdgesTable }   from './VenueEdgesTable'
-import { VenueMeshApsTable } from './VenueMeshAps'
-import { VenueRogueAps }     from './VenueRogueAps'
+import { VenueEdgesTable } from './VenueEdgesTable'
+import { VenueRogueAps }   from './VenueRogueAps'
+import { VenueSwitch }     from './VenueSwitch'
+import { VenueWifi }       from './VenueWifi'
 
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
-  const { venueId, activeSubTab } = useParams()
-  const basePath = useTenantLink('')
   const navigate = useNavigate()
+  const { activeSubTab, venueId } = useParams()
+  const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
+
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'APs List' }),
       value: 'apsList',
-      children: <VenueMeshApsTable />
+      children: <VenueWifi />
     },
     {
       label: $t({ defaultMessage: 'AP Groups' }),
@@ -44,12 +52,10 @@ export function VenueDevicesTab () {
   }
 
   return (
-    <Tabs
+    <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
-      activeKey={activeSubTab}
-      type='card'
       onChange={onTabChange}
-    >
+      type='card'>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi'>
         <div style={{ height: '100%', flex: 1, minHeight: '50vh' }}>
           <AutoSizer>
@@ -70,7 +76,7 @@ export function VenueDevicesTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        {$t({ defaultMessage: 'Switch' })}
+        <VenueSwitch />
       </Tabs.TabPane>
 
       { useIsSplitOn(Features.EDGES) && (

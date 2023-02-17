@@ -6,38 +6,57 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-
-// import * as UI from './styledComponents'
 import { Button, Drawer, showToast } from '@acx-ui/components'
-import { useAddVePortMutation, useGetAclUnionQuery,
-  useGetSwitchQuery,
+import {
+  useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
-  useSwitchDetailHeaderQuery,
+  useLazyGetAclUnionQuery,
+  useLazyGetSwitchListQuery,
+  useLazyGetSwitchQuery,
+  useLazySwitchDetailHeaderQuery,
   useUpdateVePortMutation } from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, VeForm, VeViewModel, VlanVePort } from '@acx-ui/rc/utils'
-import { useParams }                                        from '@acx-ui/react-router-dom'
-import { getIntl, validationMessages }                      from '@acx-ui/utils'
+import {
+  AclUnion,
+  IP_ADDRESS_TYPE,
+  Switch,
+  SwitchViewModel,
+  VeForm,
+  VeViewModel,
+  VlanVePort
+} from '@acx-ui/rc/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 interface SwitchVeProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEditMode: boolean
+  isVenueLevel: boolean
   editData: VeViewModel
 }
 
 export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, isEditMode, editData } = props
+  const { visible, setVisible, isEditMode, isVenueLevel, editData } = props
 
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
-  const { switchId, tenantId } = useParams()
-  const [venueId, setVenueId] = useState('')
-  const switchDetailHeader = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
-  const aclUnionList = useGetAclUnionQuery({ params: { tenantId, switchId } })
-  const getSwitch = useGetSwitchQuery({ params: { tenantId, switchId } })
+  const { switchId: sid, tenantId, venueId: vid } = useParams()
+  const [venueId, setVenueId] = useState(vid ?? '')
+  const [switchId, setSwitchId] = useState(isVenueLevel ? editData?.switchId : sid)
+
+  const [switchDetailHeaderData, setSwitchDetailHeaderData]
+    = useState(null as unknown as SwitchViewModel)
+  const [aclUnionList, setAclUnionList] = useState(null as unknown as AclUnion)
+  const [switchData, setSwitchData] = useState(null as unknown as Switch)
 
   const [getVePortVlansList] = useLazyGetFreeVePortVlansQuery()
+  const [getAclUnion] = useLazyGetAclUnionQuery()
+  const [getSwitch] = useLazyGetSwitchQuery()
+  const [getSwitchList] = useLazyGetSwitchListQuery()
+  const [switchDetailHeader] = useLazySwitchDetailHeaderQuery()
+  const [switchOption, setSwitchOption] = useState([] as DefaultOptionType[])
+
   const [vlanVePortOption, setVlanVePortOption] = useState([] as DefaultOptionType[])
   const [aclOption, setAclOption] = useState([] as DefaultOptionType[])
   const [addVePort] = useAddVePortMutation()
@@ -51,6 +70,26 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [ipAddressFromDH, setIpAddressFromDH] = useState('')
   const [ipSubnetFromDH, setIpSubnetFromDH] = useState('')
+
+  const getSwitches = async () => {
+    const payload = { filters: { venueId: [venueId] } }
+    const switches =(await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
+      .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
+    setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+  }
+
+  const getSwitchDetailHeader = async (switchId: string) => {
+    const { data } = await switchDetailHeader({ params: { tenantId, switchId } })
+    setSwitchDetailHeaderData(data as SwitchViewModel)
+  }
+  const getAclUnionData = async (switchId: string) => {
+    const { data } = await getAclUnion({ params: { tenantId, switchId } })
+    setAclUnionList(data as AclUnion)
+  }
+  const getSwitchData = async (switchId: string) => {
+    const { data } = await getSwitch({ params: { tenantId, switchId } })
+    setSwitchData(data as Switch)
+  }
 
   useEffect(()=>{
     if (isEditMode && editData && visible) {
@@ -66,40 +105,43 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           form.setFieldValue('ipSubnetMask', ipSubnetFromDH)
         }
       }
-      handleVlanVePortOption()
     }
   }, [editData, visible, disableIpSetting])
 
-
   useEffect(() => {
-    if (switchDetailHeader.data) {
-      setVenueId(switchDetailHeader.data.venueId)
-      const ipFullContentParsed = switchDetailHeader.data.ipFullContentParsed
+    if (switchDetailHeaderData) {
+      setVenueId(switchDetailHeaderData.venueId)
+      const ipFullContentParsed = switchDetailHeaderData.ipFullContentParsed
       setDisableIpSetting( ipFullContentParsed === false)
-      setIpAddressFromDH(switchDetailHeader.data.ipAddress || '')
-      setIpSubnetFromDH(switchDetailHeader.data.subnetMask || '')
+      setIpAddressFromDH(switchDetailHeaderData.ipAddress || '')
+      setIpSubnetFromDH(switchDetailHeaderData.subnetMask || '')
     }
 
-    if(getSwitch.data){
-      setDhcpServerEnabled(getSwitch.data.dhcpServerEnabled || false)
+    if(switchData){
+      setDhcpServerEnabled(switchData.dhcpServerEnabled || false)
     }
-  }, [switchDetailHeader.data, getSwitch.data])
+  }, [switchDetailHeaderData, switchData])
 
   useEffect(() => {
-    if (venueId && !isEditMode) {
-      handleVlanVePortOption()
+    if (venueId) {
+      getSwitches()
     }
-  }, [venueId])
+    if (switchId) {
+      getSwitchDetailHeader(switchId)
+      getAclUnionData(switchId)
+      getSwitchData(switchId)
+    }
+    switchId && venueId && handleVlanVePortOption()
+  }, [venueId, switchId])
 
   useEffect(() => {
-    if (!aclUnionList.isLoading && aclUnionList.data) {
-
+    if (aclUnionList) {
       let aclList: string[] = []
-      if (aclUnionList.data.switchAcl) {
-        aclList = [...aclUnionList.data.switchAcl]
+      if (aclUnionList.switchAcl) {
+        aclList = [...aclUnionList.switchAcl]
       }
-      if (aclUnionList.data.profileAcl) {
-        aclList = [...aclList, ...aclUnionList.data.profileAcl]
+      if (aclUnionList.profileAcl) {
+        aclList = [...aclList, ...aclUnionList.profileAcl]
       }
       const option = aclList.map((item: string) => ({
         label: item,
@@ -119,7 +161,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           key: item.vlanId,
           value: item.vlanId,
           disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
-        }))
+        })) ?? []
 
     setVlanVePortOption(option as DefaultOptionType[])
   }
@@ -199,7 +241,9 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   return (
 
     <Drawer
-      title={$t({ defaultMessage: 'View VLAN' })}
+      title={isEditMode
+        ? $t({ defaultMessage: 'Edit VE Port' })
+        : $t({ defaultMessage: 'Add VE Port' })}
       visible={visible}
       onClose={onClose}
       width={443}
@@ -211,6 +255,23 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           form={form}
           onFinish={onSumbit}
         >
+          { isVenueLevel && !isEditMode && <Form.Item
+            label={$t({ defaultMessage: 'Switch' })}
+            name='switchId'
+            rules={[
+              { required: true }]}
+            initialValue={null}
+          >
+            <Select
+              onChange={(e)=> { setSwitchId(e) }}
+              options={[{
+                label: $t({ defaultMessage: 'Select Switch...' }),
+                value: null
+              },
+              ...switchOption
+              ]}
+            />
+          </Form.Item> }
 
           <Form.Item
             label={$t({ defaultMessage: 'VLAN ID' })}
@@ -220,6 +281,11 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             initialValue={null}
           >
             <Select
+              onChange={(e) => {
+                e && form.resetFields(['veId'])
+                form.setFieldValue('veId', e || '')
+              }}
+              disabled={isEditMode || (isVenueLevel && !switchId) || isIncludeIpSetting}
               options={[
                 {
                   label: $t({ defaultMessage: 'Select...' }),
@@ -243,7 +309,12 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
               lineHeight: '32px'
             }}>
           VE- */}
-            <InputNumber style={{ marginLeft: '5px' }} min={1} max={4095}/>
+            <InputNumber
+              disabled={isEditMode}
+              style={{ marginLeft: '5px' }}
+              min={1}
+              max={4095}
+            />
             {/* </span> */}
           </Form.Item>
 

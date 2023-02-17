@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }     from '@acx-ui/rc/services'
+import { showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes,
@@ -39,15 +39,38 @@ const RogueVenueTable = () => {
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
-    dispatch({
-      type: RogueAPDetectionActionTypes.ADD_VENUES,
-      payload: selectRows.map(row => {
-        return {
-          id: row.id,
-          name: row.name
+    if (selectRows.filter(row => row.hasOwnProperty('rogueDetection')).length > 0) {
+      showActionModal({
+        type: 'warning',
+        title: $t({ defaultMessage: 'Change Rogue AP Profile?' }),
+        // eslint-disable-next-line max-len
+        content: $t({ defaultMessage: 'Only 1 rogue AP profile can be activate at a venue. Are you sure you want to change the rogue AP profile to this venue?' }),
+        customContent: {
+          action: 'CUSTOM_BUTTONS',
+          buttons: [{
+            text: $t({ defaultMessage: 'Cancel' }),
+            type: 'link',
+            key: 'cancel'
+          }, {
+            text: $t({ defaultMessage: 'OK' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: () => {
+              dispatch({
+                type: RogueAPDetectionActionTypes.ADD_VENUES,
+                payload: selectRows.map(row => {
+                  return {
+                    id: row.id,
+                    name: row.name
+                  }
+                })
+              } as RogueAPDetectionActionPayload)
+            }
+          }]
         }
       })
-    } as RogueAPDetectionActionPayload)
+    }
   }
 
   const deactivateVenue = (selectRows: VenueRoguePolicyType[]) => {
@@ -74,20 +97,6 @@ const RogueVenueTable = () => {
       key: 'aggregatedApStatus',
       align: 'center',
       render: (data, row) => {
-        // if (row.aggregatedApStatus?.hasOwnProperty('1_01_NeverContactedCloud')) {
-        //   return <span style={{ color: cssStr('--acx-neutrals-50') }}>
-        //     {row.aggregatedApStatus['1_01_NeverContactedCloud']}
-        //   </span>
-        // }
-        // if (row.aggregatedApStatus?.hasOwnProperty('2_00_Operational')) {
-        //   return <TenantLink
-        //     to={`/venues/${row.id}/venue-details/devices`}
-        //   >
-        //     <span style={{ color: cssStr('--acx-semantics-green-50') }}>
-        //       {row.aggregatedApStatus['2_00_Operational']}
-        //     </span>
-        //   </TenantLink>
-        // }
         return Object.values(row.aggregatedApStatus ?? {}).reduce((a, b) => a + b, 0)
       }
     },
@@ -156,7 +165,7 @@ const RogueVenueTable = () => {
     }
   })
 
-  const rowActions: TableProps<VenueRoguePolicyType>['actions'] = [{
+  const rowActions: TableProps<VenueRoguePolicyType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Activate' }),
     onClick: (selectRows: VenueRoguePolicyType[], clearSelection: () => void) => {
       if (state.venues.length + selectRows.length >= 64) {

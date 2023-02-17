@@ -1,18 +1,31 @@
 import React from 'react'
 
 import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                from '@acx-ui/store'
 import { render, screen, cleanup } from '@acx-ui/test-utils'
-import { mockRestApiQuery }        from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
+jest.mock('@acx-ui/main/components', () => ({
+  ActivityButton: () => <div data-testid='activity-button' />,
+  AlarmsButton: () => <div data-testid='alarms-button' />,
+  HelpButton: () => <div data-testid='help-button' />,
+  UserButton: () => <div data-testid='user-button' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
+  useUserProfileContext: () => ({
+    data: { companyName: 'Mock company' }
+  })
+}))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />
 })
 jest.mock('analytics/Routes', () => () => {
   return <div data-testid='analytics' />
+}, { virtual: true })
+jest.mock('reports/Routes', () => () => {
+  return <div data-testid='reports' />
 }, { virtual: true })
 jest.mock('rc/Routes', () => () => {
   return (
@@ -34,9 +47,6 @@ jest.mock('msp/Routes', () => () => {
 }, { virtual: true })
 
 describe('AllRoutes', () => {
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', {})
-  })
   afterEach(cleanup)
   test('should navigate to dashboard', async () => {
     render(<Provider><AllRoutes /></Provider>, {
@@ -55,6 +65,15 @@ describe('AllRoutes', () => {
       }
     })
     await screen.findByTestId('analytics')
+  })
+  test('should navigate to reports/*', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/reports/network/wireless',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('reports')
   })
 
   test('should navigate to devices/*', async () => {

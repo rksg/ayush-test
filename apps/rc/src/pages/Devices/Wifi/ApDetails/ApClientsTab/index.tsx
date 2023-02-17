@@ -1,8 +1,7 @@
-import { useIntl } from 'react-intl'
+import { ClientDualTable } from '@acx-ui/rc/components'
 
 export function ApClientsTab () {
-  const { $t } = useIntl()
   return (
-    <>{$t({ defaultMessage: 'Clients' })}</>
+    <ClientDualTable />
   )
 }

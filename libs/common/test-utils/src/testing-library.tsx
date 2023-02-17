@@ -21,6 +21,10 @@ type CustomOptions = {
      * Default to true
      */
     wrapRoutes?: boolean
+    /**
+     * Search paths
+     */
+    search?: string
   }
 }
 

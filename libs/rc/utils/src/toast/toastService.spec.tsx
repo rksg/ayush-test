@@ -2,7 +2,7 @@ import { message } from 'antd'
 
 import { act, fireEvent, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { CountdownNode, showActivityMessage, showTxToast, TxStatus } from './toastService'
+import { CountdownNode, onActivityMessageReceived, showTxToast, showActivityToast, TxStatus } from './toastService'
 
 const tx = {
   requestId: '6470931c-c9ce-42f4-b9a3-48324f109bd5',
@@ -32,7 +32,7 @@ const tx = {
   startDatetime: '2022-07-04 07:10:46 +0000',
   endDatetime: '2022-07-04 07:10:47 +0000',
   useCase: 'AddNetworkDeep',
-  linkTemplate: '/t/@@tenantId/networks/@@entityId/network-details/overview',
+  linkTemplate: '/t/@@tenantId/networks/wireless/@@entityId/network-details/overview',
   linkData: [
     { name: 'tenantId',value: 'ecc2d7cf9d2342fdb31ae0e24958fcac' },
     { name: 'entityId',value: '65f6a2f6ec5843be9d9b5b3255a26b04' },
@@ -58,7 +58,7 @@ describe('Toast Service: basic', () => {
   })
 })
 
-describe('Toast Service: showTxToast', () => {
+describe('Toast Service: showActivityToast', () => {
   afterEach((done) => {
     const toast = screen.queryByRole('img')
     if (toast) {
@@ -69,9 +69,9 @@ describe('Toast Service: showTxToast', () => {
     }
   })
 
-  it('renders showActivityMessage successful content', async () => {
+  it('renders onActivityMessageReceived successful content', async () => {
     act(() => {
-      showActivityMessage(tx, ['AddNetworkDeep'])
+      onActivityMessageReceived(tx, ['AddNetworkDeep'], ()=>{ showActivityToast(tx) })
     })
     /* eslint-disable max-len */
     await screen.findByText('Network "open-network" was added by FisrtName 1094 LastName 1094 (dog1094@email.com)')
@@ -79,7 +79,7 @@ describe('Toast Service: showTxToast', () => {
     fireEvent.click(link)
   })
 
-  it('renders showActivityMessage failed content', async () => {
+  it('renders onActivityMessageReceived failed content', async () => {
     const failedTx = {
       ...tx,
       status: TxStatus.FAIL,
@@ -87,7 +87,7 @@ describe('Toast Service: showTxToast', () => {
       error: '{"errors":[{"code":"xxx-xxxxx","message":"Operation: ADD, Type: Network, Id: xxx, Err: xxxxxx"}],"requestId":"xxxxxxx"}'
     }
     act(() => {
-      showActivityMessage(failedTx, ['AddNetworkDeep'])
+      onActivityMessageReceived(failedTx, ['AddNetworkDeep'], ()=>{ showActivityToast(failedTx) })
     })
     await screen.findByText('Network "open-network" was not added')
     fireEvent.click(await screen.findByRole('button', { name: 'Technical Details' }))

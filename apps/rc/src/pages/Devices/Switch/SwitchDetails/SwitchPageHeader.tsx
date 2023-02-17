@@ -1,96 +1,203 @@
-import { Dropdown, Menu, Space } from 'antd'
-import { useIntl }               from 'react-intl'
+/* eslint-disable max-len */
+import { useContext, useEffect, useState } from 'react'
 
-import { Button, PageHeader }                                                      from '@acx-ui/components'
-import { ClockOutlined, ArrowExpand }                                              from '@acx-ui/icons'
-import { SwitchStatus }                                                            from '@acx-ui/rc/components'
-import { useSwitchDetailHeaderQuery }                                              from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchRow, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Dropdown, Menu, MenuProps, Space } from 'antd'
+import _                                    from 'lodash'
+import moment                               from 'moment-timezone'
+import { useIntl }                          from 'react-intl'
+
+import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
+import { ArrowExpand }                                      from '@acx-ui/icons'
+import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
+import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
+import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
+import { dateRangeForLast, formatter, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
 
+import { SwitchDetailsContext } from '.'
+
+enum MoreActions {
+SYNC_DATA = 'SYNC_DATA',
+REBOOT = 'REBOOT',
+CLI_SESSION = 'CLI_SESSION',
+DELETE = 'DELETE'
+}
+
+
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, switchId, serialNumber } = useParams()
-  const { data } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+  const { switchId, serialNumber, tenantId } = useParams()
+  const switchAction = useSwitchActions()
+  const {
+    switchDetailsContextData
+  } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
-  const currentSwitchOperational = isStrictOperationalSwitch(
-    data?.deviceStatus as SwitchStatusEnum, !!data?.configReady, !!data?.syncedSwitchConfig)
-    && !data?.suspendingDeployTime
+  const linkToSwitch = useTenantLink('/devices/switch/')
 
-  // const handleMenuClick: MenuProps['onClick'] = (e) => { TODO:
-  //   // console.log('click', e)
-  // }
+  const [getSwitchList] = useLazyGetSwitchListQuery()
+  const jwtToken = useGetJwtTokenQuery({ params: { tenantId, serialNumber } })
+
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncDataEndTime, setSyncDataEndTime] = useState('')
+  const [cliModalState, setCliModalOpen] = useState(false)
+
+  const isOperational = switchDetailHeader?.deviceStatus === SwitchStatusEnum.OPERATIONAL
+  const isStack = switchDetailHeader?.isStack || false
+  const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
+
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    switch(e.key) {
+      case MoreActions.CLI_SESSION:
+        setCliModalOpen(true)
+        break
+      case MoreActions.REBOOT:
+        switchAction.showRebootSwitch(switchId || '', tenantId || '', isStack)
+        break
+      case MoreActions.DELETE:
+        switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
+        break
+      case MoreActions.SYNC_DATA:
+        switchAction.doSyncData(switchId || '', tenantId || '', handleSyncData)
+        setIsSyncing(true)
+        break
+    }
+  }
+
+  const handleSyncData = async () => {
+    const payload = {
+      fields: ['syncDataId', 'syncDataEndTime', 'syncedSwitchConfig', 'configReady', 'deviceStatus', 'cliApplied', 'id'],
+      pageSize: 10,
+      filters: {
+        switchMac: [switchDetailHeader?.switchMac]
+      }
+    }
+    const list =
+      (await getSwitchList({ params: { tenantId: tenantId }, payload }, false))
+        .data?.data || []
+    if (list.length > 0) {
+      handleSyncButton(list[0].syncDataEndTime || '', !_.isEmpty(list[0].syncDataId))
+    }
+  }
+
+  const handleSyncButton = function (value: string, isSync: boolean) {
+    let result = value
+    if (isSync) {
+      result = $t({ defaultMessage: 'Sync data operation in progress...' })
+      refetchResult()
+    } else if (!_.isEmpty(value)) {
+      result = `${$t({ defaultMessage: 'Last synced at ' })} ${formatter('dateTimeFormatWithSeconds')(value)}`
+    }
+    setIsSyncing(isSync)
+    setSyncDataEndTime(result)
+  }
+
+  useEffect(() => {
+    if (switchDetailHeader?.switchMac) {
+      handleSyncData()
+    }
+  }, [switchDetailHeader?.switchMac])
+
+  const refetchResult = function () {
+    setTimeout(() => {
+      handleSyncData()
+    }, 3000)
+  }
 
   const menu = (
-    <Menu
-      // onClick={handleMenuClick}
-      items={[
-        {
-          label: $t({ defaultMessage: 'Sync Data' }),
-          key: '1'
-        },
-        {
-          type: 'divider'
-        },
-        {
-          label: $t({ defaultMessage: 'Reboot Switch' }),
-          key: '2'
-        },
-        {
-          label: $t({ defaultMessage: 'CLI Session' }),
-          key: '3'
-        },
-        {
-          type: 'divider'
-        },
-        {
-          label: $t({ defaultMessage: 'Delete Switch' }),
-          key: '4'
-        }
-      ]}
-    />
+    <Menu onClick={handleMenuClick} >
+      {isSyncedSwitchConfig &&
+        <>
+          <Menu.Item
+            key={MoreActions.SYNC_DATA}
+            disabled={isSyncing || !isOperational}>
+            <Tooltip placement='bottomRight' title={syncDataEndTime}>
+              {$t({ defaultMessage: 'Sync Data' })}
+            </Tooltip>
+          </Menu.Item>
+          <Menu.Divider />
+        </>}
+      {isOperational &&
+        <>
+          <Menu.Item
+            key={MoreActions.REBOOT} >
+            {isStack ?
+              $t({ defaultMessage: 'Reboot Stack' }) : $t({ defaultMessage: 'Reboot Switch' })}
+          </Menu.Item>
+          <Menu.Item
+            key={MoreActions.CLI_SESSION}>
+            {$t({ defaultMessage: 'CLI Session' })}
+          </Menu.Item>
+          <Menu.Divider />
+        </>
+      }
+      <Menu.Item
+        key={MoreActions.DELETE}>
+        <Tooltip placement='bottomRight' title={syncDataEndTime}>
+          {isStack ?
+            $t({ defaultMessage: 'Delete Stack' }) : $t({ defaultMessage: 'Delete Switch' })}
+        </Tooltip>
+      </Menu.Item>
+    </Menu>
   )
+
   return (
-    <PageHeader
-      title={data?.name || data?.switchName || data?.serialNumber || ''}
-      titleExtra={
-        <SwitchStatus row={data as unknown as SwitchRow} showText={!currentSwitchOperational} />}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
-      ]}
-      extra={[
-        <Button key='date-filter' icon={<ClockOutlined />}>
-          {$t({ defaultMessage: 'Last 24 Hours' })}
-        </Button>,
-        <Dropdown overlay={menu} key='actionMenu'>
-          <Button>
-            <Space>
-              {$t({ defaultMessage: 'More Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>,
-        <Button
-          key='configure'
-          type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit`
-            })
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
-      footer={<SwitchTabs switchDetail={data as SwitchViewModel} />}
-    />
+    <>
+      <PageHeader
+        title={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+        titleExtra={
+          <SwitchStatus row={switchDetailHeader as unknown as SwitchRow} showText={!currentSwitchOperational} />}
+        breadcrumb={[
+          { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
+        ]}
+        extra={[
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            enableDates={dateRangeForLast(3, 'months')}
+            onDateApply={setDateFilter as CallableFunction}
+            showTimePicker
+            selectionType={range}
+          />,
+          <Dropdown overlay={menu} key='actionMenu'>
+            <Button>
+              <Space>
+                {$t({ defaultMessage: 'More Actions' })}
+                <ArrowExpand />
+              </Space>
+            </Button>
+          </Dropdown>,
+          <Button
+            key='configure'
+            type='primary'
+            onClick={() =>
+              navigate({
+                ...basePath,
+                pathname: `${basePath.pathname}${switchDetailHeader.isStack ? '/stack' : ''}/edit`
+              })
+            }
+          >{$t({ defaultMessage: 'Configure' })}</Button>
+        ]}
+        footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
+      />
+      <SwitchCliSession
+        modalState={cliModalState}
+        setIsModalOpen={setCliModalOpen}
+        serialNumber={serialNumber || ''}
+        jwtToken={jwtToken.data?.access_token || ''}
+        switchName={switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || ''}
+      />
+    </>
   )
 }
 

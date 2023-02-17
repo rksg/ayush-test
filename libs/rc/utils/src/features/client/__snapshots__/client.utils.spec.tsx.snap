@@ -2,37 +2,37 @@
 
 exports[`Test getDeviceTypeIcon function should return device type icon 1`] = `
 <DocumentFragment>
-  <div
+  <svg
     data-testid="LaptopOutlined"
   />
-  <div
+  <svg
     data-testid="MobilePhoneOutlined"
   />
-  <div
+  <svg
     data-testid="TabletOutlined"
   />
-  <div
+  <svg
     data-testid="VoIpOutlined"
   />
-  <div
+  <svg
     data-testid="GamingOutlined"
   />
-  <div
+  <svg
     data-testid="PrinterOutlined"
   />
-  <div
+  <svg
     data-testid="IotOutlined"
   />
-  <div
+  <svg
     data-testid="WdsOutlined"
   />
-  <div
+  <svg
     data-testid="IotOutlined"
   />
-  <div
+  <svg
     data-testid="HomeAvOutlined"
   />
-  <div
+  <svg
     data-testid="WdsOutlined"
   />
 </DocumentFragment>
@@ -40,28 +40,28 @@ exports[`Test getDeviceTypeIcon function should return device type icon 1`] = `
 
 exports[`Test getOsTypeIcon function should return os type icon 1`] = `
 <DocumentFragment>
-  <div
+  <svg
     data-testid="Apple"
   />
-  <div
+  <svg
     data-testid="Android"
   />
-  <div
+  <svg
     data-testid="Blackberry"
   />
-  <div
+  <svg
     data-testid="Chrome"
   />
-  <div
+  <svg
     data-testid="Linux"
   />
-  <div
+  <svg
     data-testid="Amazon"
   />
-  <div
+  <svg
     data-testid="Ubuntu"
   />
-  <div
+  <svg
     data-testid="Microsoft"
   />
 </DocumentFragment>

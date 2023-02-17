@@ -10,7 +10,6 @@ import {
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -53,21 +52,15 @@ describe('Guest Table', () => {
   it('should render table', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
-    const { asFragment } = render(
+    render(
       <Provider>
         <GuestsTable />
       </Provider>, {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
-
     await screen.findByText('test1')
     jest.useRealTimers()
-
   })
 
 
@@ -79,11 +72,8 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     fireEvent.click(await screen.findByText('test1'))
     await screen.findByText('Guest Details')
-
   })
 
   it('should render detail by click created time', async () => {
@@ -94,7 +84,6 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')
   })
@@ -107,12 +96,10 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     fireEvent.click(await screen.findByText('test2'))
     await screen.findByText('Guest Details')
 
-    const button = screen.getByRole('button', { name: /close/i })
+    const button = screen.getByRole('button', { name: 'Close' })
     fireEvent.click(button)
   })
 
@@ -124,8 +111,6 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
     await screen.findByText('testVenue')
@@ -136,11 +121,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('disable_client'))
     await screen.findByText('Guest Details')
@@ -153,11 +135,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -174,8 +153,6 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
     await fireEvent.mouseEnter(await screen.findByText(/actions/i))
@@ -190,11 +167,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -253,11 +227,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -306,11 +277,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -328,11 +296,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -345,11 +310,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -372,11 +334,8 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
     await fireEvent.mouseEnter(await screen.findByText(/actions/i))
@@ -410,12 +369,12 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
-    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
-    await waitFor(() => expect(importBtn).toBeEnabled())
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Import from file' })).toBeEnabled())
 
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
     fireEvent.click(importBtn)
     const dialog = await screen.findByRole('dialog')
     const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })

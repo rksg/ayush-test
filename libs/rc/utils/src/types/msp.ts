@@ -1,3 +1,7 @@
+import { defineMessage } from 'react-intl'
+
+import { Address } from './venue'
+
 export enum DelegationStatus {
   DELEGATION_STATUS_INVITED = 'DELEGATION_STATUS_INVITED',
   DELEGATION_STATUS_ACCEPTED = 'DELEGATION_STATUS_ACCEPTED'
@@ -35,6 +39,7 @@ export enum EntitlementDeviceSubType {
   ICX76 = 'ICX76',
   ICX78 = 'ICX78',
   ICXTEMP = 'ICXTEMP',
+  ICX = 'ICX',
   // for MSP
   ICX_ANY = 'ICX_ANY',
   MSP_WIFI = 'MSP_WIFI',
@@ -61,17 +66,49 @@ export interface DelegationEntitlementRecord {
 export interface MspEc {
   id: string;
   name: string;
+  mspName?: string;
   tenantType: string;
   streetAddress: string;
   status: string;
+  accountType?: string;
+  mspAdmins?: string[];
   mspAdminCount: string;
   mspEcAdminCount: string;
+  integrator?: string,
+  installer?: string,
   expirationDate: string;
   wifiLicenses: string;
-  switchLicens: string;
+  switchLicenses: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+}
+
+export interface MspEcData {
+  id?: string;
+  name: string;
+  tenant_type?: string,
+  address?: Address,
+  street_address?: string;
+  state?: string;
+  country?: string;
+  postal_code?: string;
+  phone_number?: string;
+  fax_number?: string;
+  city?: string;
+  mapping_url?: string;
+  service_effective_date?: string;
+  service_expiration_date?: string;
+  is_active?: string;
+  tenant_id?: string;
+  parent_tenant_id?: string;
+  admin_email?: string,
+  admin_firstname?: string,
+  admin_lastname?: string,
+  admin_role?: string,
+  licenses?: {},
+  delegations?: MspIntegratorDelegated[],
+  admin_delegations?: MspEcDelegatedAdmins[]
 }
 
 export interface VarCustomer {
@@ -101,6 +138,33 @@ export enum RolesEnum {
   ADMINISTRATOR = 'ADMIN',
   GUEST_MANAGER = 'OFFICE_ADMIN',
   READ_ONLY = 'READ_ONLY'
+}
+
+export const roleDisplayText = {
+  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
+  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
+  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
+}
+
+export enum DateSelectionEnum {
+  CUSTOME_DATE = 'CUSTOME_DATE',
+  FIVE_YEARS = 'FIVE_YEARS',
+  THREE_YEARS = 'THREE_YEARS',
+  ONE_YEAR = 'ONE_YEAR',
+  NINETY_DAYS = '90_DAYS',
+  SIXTY_DAYS = '60_DAYS',
+  THIRTY_DAYS = '30_DAYS'
+}
+
+export const dateDisplayText = {
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
+  [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
+  [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),
+  [DateSelectionEnum.NINETY_DAYS]: defineMessage({ defaultMessage: '90 Days' }),
+  [DateSelectionEnum.SIXTY_DAYS]: defineMessage({ defaultMessage: '60 Days' }),
+  [DateSelectionEnum.THIRTY_DAYS]: defineMessage({ defaultMessage: '30 Days' })
 }
 
 export interface MspAdministrator {
@@ -138,6 +202,7 @@ export interface MspEntitlement {
   expirationDate: string;
   tenantId: string;
   isTrial: boolean;
+  status?: string;
 }
 
 export interface MspEntitlementSummary {
@@ -172,6 +237,7 @@ export interface MspAssignmentHistory {
   revokedBy: string;
   mspTenantId: string;
   trialAssignment: boolean;
+  status: string;
 }
 
 export interface MspAssignmentSummary {
@@ -191,12 +257,94 @@ export interface MspEcAdmin {
   last_name: string;
 }
 
-export interface MspEcDeligatedAdmins {
+export interface MspEcDelegatedAdmins {
   msp_admin_id: string;
   msp_admin_role: string;
+}
+
+export interface MspIntegratorDelegated {
+  delegation_type: string;
+  delegation_id: string;
 }
 
 export interface EcInvitation {
   admin_email: string;
   resend: boolean;
+}
+
+export interface EcProfile {
+  name: string;
+  msp_label: string;
+  is_active: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  street_address?: string;
+  city?: string;
+  country?: string;
+  state?: string;
+  tenant_id?: string;
+  parent_tenant_id?: string;
+  tenant_type?: string;
+}
+
+export interface TenantDetail {
+  createdDate?: string;
+  entitlementId?: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean
+  maintenanceState?: boolean
+  name: string;
+  oemName?: string;
+  ruckusUser?: boolean
+  status: string;
+  tenantType: string;
+  updatedDate?: string;
+  upgradeGroup?: string;
+}
+
+export interface MspProfile {
+  msp_label: string;
+  logo_uuid: string;
+  msp_fqdn: string;
+  contact_support_url: string;
+  contact_support_behavior: string;
+  open_case_url: string;
+  open_case_behavior: string;
+  my_open_case_url: string;
+  my_open_case_behavior: string;
+  change_password_url: string;
+  msp_phone: string;
+  msp_email: string;
+  msp_website:string
+}
+
+export interface MspEcProfile {
+  msp_label: string;
+  name: string;
+  street_address: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  phone_number: string;
+  fax_number: string;
+  city: string;
+  mapping_url: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  is_active:string;
+  tenant_id:string
+  parent_tenant_id:string
+}
+
+export interface SupportDelegation {
+  id: string;
+  type: string;
+  status: string;
+  createdDate: string;
+  delegatedBy: string;
+  delegatedTo: string;
+  delegatedToName: string;
+  expiryDate: string;
+  updatedDate: string;
 }

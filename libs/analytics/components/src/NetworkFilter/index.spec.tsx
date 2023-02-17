@@ -5,7 +5,7 @@ import { dataApiURL }                                   from '@acx-ui/analytics/
 import { defaultNetworkPath }                           from '@acx-ui/analytics/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent  } from '@acx-ui/test-utils'
-import { DateRange }                                    from '@acx-ui/utils'
+import { DateRange, NetworkPath }                       from '@acx-ui/utils'
 
 import { api as incidentApi } from '../IncidentTable/services'
 
@@ -13,7 +13,7 @@ import { networkHierarchy }  from './__tests__/fixtures'
 import { api }               from './services'
 import { NonSelectableItem } from './styledComponents'
 
-import { NetworkFilter, onApply, displayRender } from './index'
+import { NetworkFilter, onApply, displayRender, getSupersetRlsClause } from './index'
 
 const mockIncidents = [
   {
@@ -129,6 +129,25 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   formattedPath: jest.fn(),
   useAnalyticsFilter: () => mockUseAnalyticsFilter
 }))
+
+const mockReportsSetNetworkPath = jest.fn()
+
+const reportsFilters = {
+  paths: [[{ type: 'network', name: 'Network' }]],
+  bands: []
+}
+
+const mockUseReportsFilter = {
+  filters: reportsFilters,
+  setNetworkPath: mockReportsSetNetworkPath,
+  raw: []
+}
+
+jest.mock('@acx-ui/reports/utils', () => ({
+  ...jest.requireActual('@acx-ui/reports/utils'),
+  useReportsFilter: () => mockUseReportsFilter
+}))
+
 describe('Network Filter', () => {
 
   beforeEach(() => {
@@ -180,6 +199,128 @@ describe('Network Filter', () => {
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
     expect(mockSetNetworkPath).toHaveBeenCalledWith(path, raw)
     await userEvent.click(screen.getByRole('combobox'))
+  })
+  it('should select network node and bands', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showRadioBand={true}
+      filterFor='reports'
+      replaceWithId={true}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(await screen.findByRole('combobox'))
+    const allOptions = screen.getAllByRole('menuitemcheckbox')
+    fireEvent.click(screen.getByText('swg1'))
+    const menuOptions = screen.getAllByRole('menu')
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(menuOptions[1].getElementsByClassName('ant-cascader-checkbox')[1])
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(allOptions[0].children[0])
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.click(allOptions[2].children[0])
+    const band6GHz = screen.getByLabelText('6 GHz')
+    const band2_4GHz = screen.getByLabelText('2.4 GHz')
+    await userEvent.click(band6GHz)
+    await userEvent.click(band2_4GHz)
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(mockReportsSetNetworkPath).toBeCalledWith(
+      [
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id5',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id4',
+          type: 'switchGroup'
+        }],
+        [{
+          name: 'Network',
+          type: 'network'
+        }, {
+          name: 'id1',
+          type: 'zone'
+        }]
+      ], ['6', '2.4'], [
+        // eslint-disable-next-line max-len
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id5"}]', 'switchesswg1'],
+        ['[{"type":"network","name":"Network"},{"type":"switchGroup","name":"id4"}]'],
+        ['[{"type":"network","name":"Network"},{"type":"zone","name":"id1"}]']
+      ]
+    )
+  })
+
+  it('should list only venues having APs', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showRadioBand={true}
+      filterFor='reports'
+      replaceWithId={true}
+      filterMode={'ap'}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should list only venues having Switches', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      showRadioBand={true}
+      filterFor='reports'
+      replaceWithId={true}
+      filterMode={'switch'}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(screen.getByRole('combobox'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should select network node and bands with onApplyFn', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: mockIncidents } } }
+    })
+    const { asFragment } = render(<Provider><NetworkFilter
+      shouldQuerySwitch
+      filterFor='reports'
+      showRadioBand={true}
+      replaceWithId={true}
+    /></Provider>)
+    await screen.findByText('Entire Organization')
+    await userEvent.click(await screen.findByRole('combobox'))
+    const band6GHz = screen.getByLabelText('6 GHz')
+    const band2_4GHz = screen.getByLabelText('2.4 GHz')
+    await userEvent.click(band6GHz)
+    await userEvent.click(band2_4GHz)
+    expect(asFragment()).toMatchSnapshot()
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
   it('should not select non-selectable element', async () => {
     const select = jest.fn()
@@ -327,5 +468,68 @@ describe('Network Filter with incident severity', () => {
     await userEvent.click(screen.getByRole('combobox'))
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('getSupersetRlsClause',()=>{
+  it('should return RLS clause based network filters',()=>{
+    const paths:NetworkPath[] = [
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue'
+      }, {
+        type: 'switch',
+        name: 'C0:C5:20:AA:33:2D'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue'
+      }, {
+        type: 'switch',
+        name: 'C0:C5:20:B2:11:59'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'switchGroup',
+        name: 'Switch-Venue1'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sindhuja-Venue'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sonali'
+      }, {
+        type: 'AP',
+        name: '00:0C:29:1E:9F:E4'
+      }],
+      [{
+        type: 'network',
+        name: 'Network'
+      }, {
+        type: 'zone',
+        name: 'Sonali'
+      }, {
+        type: 'AP',
+        name: '38:FF:36:13:DB:D0'
+      }]
+    ]
+    const rlsClause = getSupersetRlsClause(paths,['6','2.4'])
+    expect(rlsClause).toMatchSnapshot()
   })
 })

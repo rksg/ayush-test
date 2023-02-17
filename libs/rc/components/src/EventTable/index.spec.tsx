@@ -2,14 +2,14 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                from '@acx-ui/store'
-import { findTBody, render, screen, within }                       from '@acx-ui/test-utils'
+import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import {  Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                 from '@acx-ui/store'
+import { findTBody, render, renderHook, screen, within }            from '@acx-ui/test-utils'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
-import { EventTable } from '.'
+import { EventTable, useEventTableFilter } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -20,6 +20,14 @@ jest.mock('@acx-ui/components', () => ({
 }))
 
 const params = { tenantId: 'tenant-id' }
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  useDateFilter: jest.fn(() => ({
+    startDate: '2022-01-01T00:00:00+08:00',
+    endDate: '2022-01-02T00:00:00+08:00'
+  }))
+}))
 
 describe('EventTable', () => {
   const tableQuery = {
@@ -34,13 +42,18 @@ describe('EventTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('should render activity list', async () => {
+  it('should render event list', async () => {
     render(
       <Provider>
         <EventTable tableQuery={tableQuery} />
       </Provider>,
       { route: { params } }
     )
+
+    await screen.findByPlaceholderText('Search Source, Description')
+    expect(await screen.findAllByText('Severity')).toHaveLength(2)
+    expect(await screen.findAllByText('Event Type')).toHaveLength(2)
+    expect(await screen.findAllByText('Product')).toHaveLength(2)
 
     const tbody = within(await findTBody())
     const rows = await tbody.findAllByRole('row')
@@ -55,7 +68,48 @@ describe('EventTable', () => {
     expected.forEach((expected, index) => expect(rows[index].textContent).toContain(expected))
   })
 
-  it('should open/close activity drawer', async () => {
+  it('should render based on filterables/searchables is empty', async () => {
+    render(
+      <Provider>
+        <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByText('Severity')
+    await screen.findByText('Event Type')
+    await screen.findByText('Product')
+  })
+
+  it('should render based on filterables/searchables is false', async () => {
+    render(
+      <Provider>
+        <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByText('Severity')
+    await screen.findByText('Event Type')
+    await screen.findByText('Product')
+  })
+
+  it('should render based on filterables/searchables is array', async () => {
+    render(
+      <Provider>
+        <EventTable
+          tableQuery={tableQuery}
+          searchables={['message', 'entity_type']}
+          filterables={['severity', 'entity_type', 'product']}
+        />
+      </Provider>,
+      { route: { params } }
+    )
+    await screen.findByPlaceholderText('Search Source, Description')
+    expect(await screen.findAllByText('Severity')).toHaveLength(2)
+    expect(await screen.findAllByText('Event Type')).toHaveLength(2)
+    expect(await screen.findAllByText('Product')).toHaveLength(2)
+  })
+
+  it('should open/close event drawer', async () => {
     render(
       <Provider>
         <EventTable tableQuery={tableQuery} />
@@ -136,5 +190,13 @@ describe('EventTable', () => {
     elements = await screen.findAllByText(name)
     expect(elements).toHaveLength(1)
     elements.forEach(element => expect(element.nodeName).not.toBe('A'))
+  })
+})
+
+describe('useEventTableFilter', () => {
+  it('should return correct value', () => {
+    const { result } = renderHook(() => useEventTableFilter())
+    expect(result.current)
+      .toEqual({ fromTime: '2021-12-31T16:00:00Z', toTime: '2022-01-01T16:00:00Z' })
   })
 })

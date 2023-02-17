@@ -16,7 +16,7 @@ import * as UI from './styledComponents'
 const { Panel } = Collapse
 const { TextArea } = Input
 
-export type ModalType = 'info' | 'error' | 'confirm' | 'warning'
+type ModalType = 'info' | 'error' | 'confirm' | 'warning'
 
 type DeleteContent = {
   action: 'DELETE',
@@ -106,12 +106,13 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
         {confirmationText && <ConfirmForm text={confirmationText} modal={modal} />}
       </>)
       props = {
-        ...props, title, content,
+        title, content,
         okText: $t(
           { defaultMessage: 'Delete {formattedEntityName}' },
           { formattedEntityName: entityName }
         ),
-        okButtonProps: { disabled: Boolean(confirmationText) }
+        okButtonProps: { disabled: Boolean(confirmationText) },
+        ...props
       }
       break
     case 'SHOW_ERRORS':

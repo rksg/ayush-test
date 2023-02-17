@@ -16,6 +16,7 @@ describe('SelectionControl', () => {
         label: 'l2',
         value: 'v2'
       }]}
+      extra={'Some text'}
     />)
     expect(screen.getByText('l1')).toBeVisible()
     expect(screen.getByText('l2')).toBeVisible()
@@ -24,5 +25,6 @@ describe('SelectionControl', () => {
     screen.getByText('l2').click()
     expect(onChange).toHaveBeenCalled()
     expect(onChange.mock.calls[0][0].target.value).toEqual('v2')
+    expect(screen.getByText('Some text')).toBeVisible()
   })
 })

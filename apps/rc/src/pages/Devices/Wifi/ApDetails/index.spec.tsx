@@ -7,48 +7,84 @@ import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { apDetailData } from './__tests__/fixtures'
+import { apDetailData }       from './__tests__/fixtures'
+import { events, eventsMeta } from './ApTimelineTab/__tests__/fixtures'
 
 import ApDetails from '.'
 
-/* eslint-disable max-len */
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   RangePicker: () => <div data-testid={'analytics-RangePicker'} title='RangePicker' />
 }))
-jest.mock('@acx-ui/analytics/components', () => ({
-  ...jest.requireActual('@acx-ui/analytics/components'),
-  AnalyticsTabs: () => <div data-testid={'analytics-AnalyticsTabs'} title='AnalyticsTabs' />,
-  ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
-  IncidentBySeverity: () => <div data-testid={'analytics-IncidentBySeverity'} title='IncidentBySeverity' />,
-  NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
-  SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
-  TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
-  TopApplicationsByTraffic: () => <div data-testid={'analytics-TopApplicationsByTraffic'} title='TopApplicationsByTraffic' />,
-  TopSSIDsByClient: () => <div data-testid={'analytics-TopSSIDsByClient'} title='TopSSIDsByClient' />,
-  TopSSIDsByTraffic: () => <div data-testid={'analytics-TopSSIDsByTraffic'} title='TopSSIDsByTraffic' />,
-  TopSwitchesByError: () => <div data-testid={'analytics-TopSwitchesByError'} title='TopSwitchesByError' />,
-  TopSwitchesByPoEUsage: () => <div data-testid={'analytics-TopSwitchesByPoEUsage'} title='TopSwitchesByPoEUsage' />,
-  TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
-  TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
-  VenueHealth: () => <div data-testid={'analytics-VenueHealth'} title='VenueHealth' />
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
-jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  TopologyFloorPlanWidget: () => <div data-testid={'rc-TopologyFloorPlanWidget'} title='TopologyFloorPlanWidget' />,
-  VenueAlarmWidget: () => <div data-testid={'rc-VenueAlarmWidget'} title='VenueAlarmWidget' />,
-  VenueDevicesWidget: () => <div data-testid={'rc-VenueDevicesWidget'} title='VenueDevicesWidget' />
-}))
-/* eslint-enable */
+
+const list = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '000000000001',
+      name: 'mock-ap-1',
+      model: 'R510',
+      fwVersion: '6.2.0.103.261',
+      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
+      venueName: 'Mock-Venue',
+      deviceStatus: '2_00_Operational',
+      IP: '10.00.000.101',
+      apMac: '00:00:00:00:00:01',
+      apStatusData: {
+        APRadio: [
+          {
+            txPower: null,
+            channel: 10,
+            band: '2.4G',
+            Rssi: null,
+            radioId: 0
+          },
+          {
+            txPower: null,
+            channel: 120,
+            band: '5G',
+            Rssi: null,
+            radioId: 1
+          }
+        ]
+      },
+      meshRole: 'DISABLED',
+      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
+      tags: '',
+      deviceGroupName: ''
+    }
+  ]
+}
 
 describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))
-      )
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(list))
+      ),
+      rest.get(CommonUrlsInfo.getApDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(apDetailData))),
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
   })
 
@@ -63,7 +99,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(7)
+    expect(await screen.findAllByRole('tab')).toHaveLength(7)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -72,10 +108,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'analytics'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('AI Analytics')
   })
 
   it('should navigate to troubleshooting tab correctly', async () => {
@@ -84,10 +121,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Ping')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -96,10 +134,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Reports')
   })
 
   it('should navigate to networks tab correctly', async () => {
@@ -108,10 +147,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'networks'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Networks ()')
   })
 
   it('should navigate to clients tab correctly', async () => {
@@ -120,10 +160,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'clients'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Clients ()')
   })
 
   it('should navigate to services tab correctly', async () => {
@@ -132,10 +173,11 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'services'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Services (0)')
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -144,10 +186,12 @@ describe('ApDetails', () => {
       serialNumber: 'ap-serialNumber',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><ApDetails /></Provider>, {
+    render(<Provider><ApDetails /></Provider>, {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
+      .toEqual('Timeline')
+    await screen.findByTestId('rc-EventTable')
   })
 
   it('should not navigate to non-existent tab', async () => {
@@ -160,7 +204,8 @@ describe('ApDetails', () => {
       route: { params, path: '/:tenantId/devices/wifi/:serialNumber/details/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
+    const tabs = await screen.findAllByRole('tab')
+    expect(tabs.filter(x => x.getAttribute('aria-selected') === 'true'))
       .toHaveLength(0)
   })
   it('should go to edit page', async () => {

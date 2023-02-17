@@ -53,16 +53,17 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-papXJ iBkRgT"
             >
               <div
+                data-testid="dropContainer"
                 style="position: absolute; width: 100%; height: 100%;"
               />
               <div>
                  
                 <div>
                   <div
-                    class="sc-jSMfEi gTKhVy device-container gallery"
+                    class="sc-jSMfEi dSrpFV device-container gallery"
                     draggable="true"
                     style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                   >
@@ -79,7 +80,7 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
                 </div>
                 <div>
                   <div
-                    class="sc-jSMfEi gTKhVy device-container gallery"
+                    class="sc-jSMfEi dSrpFV device-container gallery"
                     draggable="true"
                     style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                   >
@@ -153,9 +154,10 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-papXJ iBkRgT"
             >
               <div
+                data-testid="dropContainer"
                 style="position: absolute; width: 100%; height: 100%;"
               />
               <div>
@@ -219,9 +221,10 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-papXJ iBkRgT"
             >
               <div
+                data-testid="dropContainer"
                 style="position: absolute; width: 100%; height: 100%;"
               />
               <div>
@@ -285,9 +288,10 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-papXJ iBkRgT"
             >
               <div
+                data-testid="dropContainer"
                 style="position: absolute; width: 100%; height: 100%;"
               />
               <div>
@@ -351,9 +355,10 @@ exports[`Floor Plan Gallery View should render correctly Gallery View 1`] = `
             class="ant-card-body"
           >
             <div
-              class="sc-gKXOVf LHzlb"
+              class="sc-papXJ iBkRgT"
             >
               <div
+                data-testid="dropContainer"
                 style="position: absolute; width: 100%; height: 100%;"
               />
               <div>

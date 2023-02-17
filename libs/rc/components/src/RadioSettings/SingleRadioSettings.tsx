@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
@@ -11,6 +11,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadioSettingsChannels } from '../RadioSettingsChannels'
 
+import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -60,14 +61,20 @@ export function SingleRadioSettings (props:{
     context = 'venue',
     isUseVenueSettings = false,
     testId } = props
+
   const {
     radioType,
     supportChannels,
     bandwidthOptions,
     editContext,
     supportDfsChannels } = props
+
+  const {
+    editContextData,
+    setEditContextData
+  } = useContext(editContext)
+
   const isSupportRadio = bandwidthOptions?.length > 0
-  const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = (context === 'venue') ?
     VenueRadioTypeDataKeyMap[radioType] : ApRadioTypeDataKeyMap[radioType]
 
@@ -78,6 +85,7 @@ export function SingleRadioSettings (props:{
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
+  const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(['5G', 'DFS'])
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
@@ -114,11 +122,9 @@ export function SingleRadioSettings (props:{
     //bandwidthList = Object.keys(supportChannels)
   }
 
-  /*
-  const showChannelBarCOntrolLink = (radioType !== ApRadioTypeEnum.Radio24G &&
+  const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
 
-  */
 
   const [
     channelMethod,
@@ -153,7 +159,14 @@ export function SingleRadioSettings (props:{
     const showChannelBarRadios = [
       ApRadioTypeEnum.Radio5G,
       ApRadioTypeEnum.RadioLower5G,
-      ApRadioTypeEnum.RadioUpper5G]
+      ApRadioTypeEnum.RadioUpper5G
+    ]
+
+    // Reset to AUTO if AP doesn't not supported venue radio settings's bandwidth
+    if (channelBandwidth !== 'AUTO' &&
+        !bandwidthOptions.find(option => option.value === channelBandwidth)) {
+      form.setFieldValue(channelBandwidthFieldName, 'AUTO')
+    }
 
     if (!isEmpty(supportChannels)) {
       const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
@@ -182,19 +195,23 @@ export function SingleRadioSettings (props:{
           setOldBandwidth(bandwidth)
         }
 
-        if (context === 'ap') {
-          if (oldChannelMethod && isManualSelect) {
-            form.setFieldValue(allowedChannelsFieldName, [])
+        if (oldChannelMethod !== channelMethod) {
+          if (oldChannelMethod) {
+            if (isManualSelect) {
+              const allowChannels = form.getFieldValue(allowedChannelsFieldName)
+              if (allowChannels.length !== 1) {
+                form.setFieldValue(allowedChannelsFieldName, [])
+              }
+            } else {
+              form.setFieldValue(allowedChannelsFieldName, availableCannels)
+            }
           }
-
-          if (oldChannelMethod !== channelMethod) {
-            setOldChannelMethod(channelMethod)
-          }
+          setOldChannelMethod(channelMethod)
         }
 
       } else {
         const { indoor, outdoor, dfs } = supportChannels
-        const availableDfsChannels = dfs[bandwidth] || []
+        const availableDfsChannels = (dfs && dfs[bandwidth]) || []
 
         const availableIndoorChannels = indoor[bandwidth]
         const selectedIndoorChannels = setSelectedChannels(availableIndoorChannels)
@@ -233,7 +250,7 @@ export function SingleRadioSettings (props:{
       }
     }
 
-  }, [supportChannels, channelBandwidth, radioType,
+  }, [supportChannels, channelBandwidth, radioType, bandwidthOptions,
     allowIndoorForOutdoor, combinChannels, channelMethod])
 
 
@@ -265,12 +282,22 @@ export function SingleRadioSettings (props:{
     setIndoorChannelErrMsg(indoorErrMsg)
     setOutdoorChannelErrMsg(outdoorErrMsg)
 
-  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels])
+    // have error messages
+    const hasErrors = !isEmpty(errMsg + indoorErrMsg + outdoorErrMsg)
+    setEditContextData({
+      ...editContextData,
+      hasError: hasErrors
+    })
+  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
       props.onResetDefaultValue(radioType)
     }
+  }
+
+  const updateChannelBarDisplaySettings = (values: string[]) => {
+    setDisplayRadioBarSettings(values)
   }
 
   return (
@@ -306,6 +333,13 @@ export function SingleRadioSettings (props:{
               <div style={{ color: cssStr('--acx-semantics-red-50') }}>
                 {channelErrMsg}
               </div>
+            </Col>
+          }
+          {showChannelBarControlLink &&
+            <Col offset={6} span={6} style={{ paddingLeft: 'unset' }}>
+              <ChannelBarControlPopover
+                initValue={displayRadioBarSettings}
+                onChannelBarDisplayChanged={updateChannelBarDisplaySettings} />
             </Col>
           }
         </Row>

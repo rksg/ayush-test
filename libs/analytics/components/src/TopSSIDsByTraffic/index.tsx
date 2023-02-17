@@ -87,7 +87,6 @@ function TopSSIDsByTrafficWidget ({
     columns={columns}
     dataSource={getDataSource(data.topNSSIDByTraffic, data.totalUserTraffic)}
     type='compact'
-    pagination={false}
     rowKey='name'
   /> : <NoData/>
 

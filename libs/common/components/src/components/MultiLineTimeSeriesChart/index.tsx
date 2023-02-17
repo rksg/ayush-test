@@ -62,6 +62,7 @@ export interface MultiLineTimeSeriesChartProps <
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
+    legendFormatter?: string | ((name: string) => string) | undefined
     lineColors?: string[]
     dataFormatter?: ChartFormatterFn
     seriesFormatters?: Record<string, ChartFormatterFn>
@@ -144,6 +145,7 @@ export function MultiLineTimeSeriesChart <
 ({
   data,
   legendProp = 'name' as keyof TChartData,
+  legendFormatter,
   dataFormatter = formatter('countFormat'),
   seriesFormatters,
   yAxisProps,
@@ -173,6 +175,7 @@ export function MultiLineTimeSeriesChart <
       legend: {
         ...legendOptions(),
         textStyle: legendTextStyleOptions(),
+        formatter: legendFormatter || '{name}' ,
         data: data
           .filter(datum=> datum.show !== false )
           .map(datum => datum[legendProp]) as unknown as string[]

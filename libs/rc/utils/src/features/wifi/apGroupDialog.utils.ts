@@ -58,7 +58,7 @@ const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
   }
 }
 
-export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkVenue) => {
+export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkVenue, keepApGroupBasicData?: boolean) => {
   const { selectionType, allApGroupsRadioTypes, apgroups } = info.values
 
   let newData = {
@@ -86,6 +86,14 @@ export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkV
         } else {
           ret.vlanId = editedApGroup.vlanId
         }
+
+        if (keepApGroupBasicData) { //For Networkform > Venues page
+          ret.isDefault = editedApGroup.isDefault
+          if(!editedApGroup.isDefault) {
+            ret.apGroupName = editedApGroup.apGroupName
+          }
+        }
+
         return ret
       })
     })

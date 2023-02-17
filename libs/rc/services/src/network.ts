@@ -7,9 +7,8 @@ import {
   NetworkVenue,
   NetworkSaveData,
   onSocketActivityChanged,
-  refetchByUsecase,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   Dashboard,
   Network,
@@ -55,9 +54,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg, ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
-          })
+          onActivityMessageReceived(msg,
+            ['AddNetworkDeep', 'DeleteNetwork', 'UpdateNetworkDeep'], () => {
+              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+            })
         })
       }
     }),
@@ -145,7 +145,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             [
               'AddNetworkVenue',
               'DeleteNetworkVenue',
@@ -219,7 +219,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          refetchByUsecase(msg, ['UpdateNetworkDeep'], () => {
+          onActivityMessageReceived(msg, ['UpdateNetworkDeep'], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
           })
         })
@@ -285,14 +285,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
         return {
           ...externalProvidersReq
-        }
-      }
-    }),
-    globalValues: build.query<{ [key:string]:string }, RequestPayload>({
-      query: () => {
-        const globalValuesReq = createHttpRequest(CommonUrlsInfo.getGlobalValues)
-        return {
-          ...globalValuesReq
         }
       }
     })
@@ -403,6 +395,5 @@ export const {
   useDashboardOverviewQuery,
   useValidateRadiusQuery,
   useLazyValidateRadiusQuery,
-  useExternalProvidersQuery,
-  useGlobalValuesQuery
+  useExternalProvidersQuery
 } = networkApi

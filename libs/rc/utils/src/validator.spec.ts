@@ -8,9 +8,13 @@ import {
   checkVlanMember,
   checkValues,
   apNameRegExp,
+  dscpRegExp,
   gpsRegExp,
+  poeBudgetRegExp,
+  priorityRegExp,
   serialNumberRegExp,
-  targetHostRegExp
+  targetHostRegExp,
+  validateRecoveryPassphrasePart
 } from './validator'
 
 describe('validator', () => {
@@ -157,6 +161,32 @@ describe('validator', () => {
     })
   })
 
+  describe('validate recovery passphrase part', () => {
+    it('Should take care of recovery passphrase part correctly', async () => {
+      const result = validateRecoveryPassphrasePart('1234')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if recovery passphrase part is empty', async () => {
+      const result1 = validateRecoveryPassphrasePart('')
+      await expect(result1).rejects.toEqual('This field is invalid')
+    })
+
+    it('Should display error message if recovery passphrase part is only space', async () => {
+      const result1 = validateRecoveryPassphrasePart(' ')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part contains space', async () => {
+      const result1 = validateRecoveryPassphrasePart('12 55')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part incorrectly', async () => {
+      const result1 = validateRecoveryPassphrasePart('125')
+      await expect(result1).rejects.toEqual('Passphrase part must be exactly 4 digits long')
+    })
+  })
+
   describe('targetHostRegExpExp', () => {
     it('Should take care of Serial Number values correctly', async () => {
       const result = targetHostRegExp('1.1.1.1')
@@ -165,6 +195,39 @@ describe('validator', () => {
     it('Should display error message if Serial Number values incorrectly', async () => {
       const result1 = targetHostRegExp('1.1.1.1.1')
       await expect(result1).rejects.toEqual('Please enter valid target host or IP address')
+    })
+  })
+
+  describe('poeBudgetRegExp', () => {
+    it('Should take care of Poe Budget values correctly', async () => {
+      const result = poeBudgetRegExp('2000')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Poe Budget values incorrectly', async () => {
+      const result1 = poeBudgetRegExp('10')
+      await expect(result1).rejects.toEqual('Poe Budget can only be from 1000 - 30000')
+    })
+  })
+
+  describe('dscpRegExp', () => {
+    it('Should take care of DSCP values correctly', async () => {
+      const result = dscpRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if DSCP values incorrectly', async () => {
+      const result1 = dscpRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 63')
+    })
+  })
+
+  describe('priorityRegExp', () => {
+    it('Should take care of Priority values correctly', async () => {
+      const result = priorityRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Priority values incorrectly', async () => {
+      const result1 = priorityRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 7')
     })
   })
 })

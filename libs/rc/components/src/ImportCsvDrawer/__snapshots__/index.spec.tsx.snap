@@ -73,7 +73,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                     type="button"
                   >
                     <span>
@@ -89,6 +89,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
       <ul>
         <li>
           <a
+            download=""
             href="#"
           >
             Download template
@@ -113,7 +114,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
     >
       <div>
         <button
-          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+          class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
           disabled=""
           type="button"
         >
@@ -122,7 +123,7 @@ exports[`Import CSV Drawer should render correctly 1`] = `
           </span>
         </button>
         <button
-          class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+          class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
           type="button"
         >
           <span>

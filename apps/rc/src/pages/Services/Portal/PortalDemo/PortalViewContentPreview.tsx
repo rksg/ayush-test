@@ -97,15 +97,16 @@ export default function PortalViewContentPreview (props:{
         demoValue={demoValue}
         isPreview={true}/>}
       {componentDisplay.termsConditions &&<UI.FieldText>{
-        props.portalLang.acceptTermsMsg2?.replace('{0}','')
-      }&nbsp;&nbsp;
-      <UI.FieldTextLink>
+        props.portalLang.acceptTermsMsg2?.replace('<1>{{linkText}}</1>','')
+      }&nbsp;
+      <UI.FieldLabelLink>
         {props.portalLang.acceptTermsLink}
-      </UI.FieldTextLink></UI.FieldText>}
+      </UI.FieldLabelLink></UI.FieldText>}
       {componentDisplay.poweredBy && <UI.SelectedDiv style={{ paddingLeft: 200/((
         demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
         <div style={{ backgroundColor: demoValue.poweredBgColor }}>
           {componentDisplay.poweredBy &&<UI.FieldText style={{
+            marginBottom: -15, marginLeft: -25,
             fontSize: (demoValue.poweredSize),
             lineHeight: 24 * ((demoValue.poweredSize)
             /PortalDemoDefaultSize.poweredSize)+'px' ,

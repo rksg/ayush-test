@@ -11,8 +11,8 @@ import moment               from 'moment-timezone'
 import { StoreValue }       from 'rc-field-form/lib/interface'
 import { useIntl }          from 'react-intl'
 
-import { DatePicker }                     from '@acx-ui/components'
-import { ExpirationMode, ExpirationType } from '@acx-ui/rc/utils'
+import { DatePicker }                                             from '@acx-ui/components'
+import { ExpirationMode, ExpirationType, EXPIRATION_DATE_FORMAT } from '@acx-ui/rc/utils'
 
 import {
   ExpirationModeLabel
@@ -38,8 +38,6 @@ export interface ExpirationDateSelectorProps {
   }
 }
 
-const DATE_FORMAT = 'YYYY-MM-DD'
-
 function ExpirationDatePickerWrapper (props: DatePickerProps) {
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     // Can not select days before today
@@ -50,7 +48,7 @@ function ExpirationDatePickerWrapper (props: DatePickerProps) {
     <DatePicker
       disabledDate={disabledDate}
       {...props}
-      value={props.value ? moment(props.value, DATE_FORMAT) : null}
+      value={props.value ? moment(props.value, EXPIRATION_DATE_FORMAT) : null}
     />
   )
 }
@@ -85,7 +83,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
   const expirationMode = Form.useWatch<ExpirationMode>([inputName, 'mode'])
 
   const normalizeDate = (value: StoreValue) => {
-    return value && value.format(DATE_FORMAT)
+    return value && value.format(EXPIRATION_DATE_FORMAT)
   }
 
   const onModeChange = (e: RadioChangeEvent) => {
@@ -127,7 +125,7 @@ export function ExpirationDateSelector (props: ExpirationDateSelectorProps) {
                 ]}
                 normalize={normalizeDate}
               >
-                <ExpirationDatePickerWrapper format={DATE_FORMAT} />
+                <ExpirationDatePickerWrapper format={EXPIRATION_DATE_FORMAT} />
               </Form.Item>
             }
           </UI.FieldSpace>

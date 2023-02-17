@@ -1,7 +1,9 @@
 import {
   RogueAPDetectionActionPayload,
   RogueAPDetectionActionTypes,
-  RogueAPDetectionContextType, RogueCategory, RogueRuleType
+  RogueAPDetectionContextType,
+  RogueCategory,
+  RogueRuleType
 } from '@acx-ui/rc/utils'
 
 import { rogueAPDetectionReducer } from './RogueAPDetectionReducer'
@@ -198,7 +200,7 @@ describe('RogueAPDetectionReducer test', () => {
     const updateDelAction = {
       type: RogueAPDetectionActionTypes.DEL_RULE,
       payload: {
-        name: 'rule2-modify'
+        name: ['rule2-modify', 'anotherRule']
       }
     }
 
@@ -328,6 +330,35 @@ describe('RogueAPDetectionReducer test', () => {
       type: 'undefined',
       payload: {
         tags: ['tag1', 'tag2', 'tag3']
+      }
+    }
+
+    const updatedState = rogueAPDetectionReducer(initState, action as RogueAPDetectionActionPayload)
+
+    expect(updatedState).toEqual({
+      ...initState
+    })
+  })
+
+  it('when UPDATE_STATE action is dispatched', () => {
+    const initState = {
+      policyName: 'policyName',
+      tags: ['tag1'],
+      description: 'description',
+      rules: [],
+      venues: []
+    } as RogueAPDetectionContextType
+
+    const action = {
+      type: RogueAPDetectionActionTypes.UPDATE_STATE,
+      payload: {
+        state: {
+          policyName: 'policyName',
+          tags: ['tag1'],
+          description: 'description',
+          rules: [],
+          venues: []
+        }
       }
     }
 

@@ -4,7 +4,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
 <div
   aria-labelledby="test-id"
   aria-modal="true"
-  class="ant-modal styledComponents__Modal-sc-k3durc-0 fZVPqM"
+  class="ant-modal styledComponents__Modal-sc-k3durc-0 nGbQa"
   role="dialog"
   style="width: 840px;"
 >
@@ -24,8 +24,8 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       <span
         class="ant-modal-close-x"
       >
-        <div
-          data-testid="close-symbol"
+        <svg
+          data-testid="CloseSymbol"
         />
       </span>
     </button>
@@ -353,39 +353,6 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
                           </div>
                           <div
                             class="ant-space-item"
-                            style="margin-bottom: 16px;"
-                          />
-                          <div
-                            class="ant-space-item"
-                            style="margin-bottom: 16px;"
-                          >
-                            <label
-                              class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
-                            >
-                              <span
-                                class="ant-radio"
-                              >
-                                <input
-                                  class="ant-radio-input"
-                                  type="radio"
-                                  value="2"
-                                />
-                                <span
-                                  class="ant-radio-inner"
-                                />
-                              </span>
-                              <span>
-                                Select APs by tag
-                                <div
-                                  class="styledComponents__RadioDescription-sc-1ygdeo6-1 eMIDKH"
-                                >
-                                  This network will be only applied to APs with the tags.
-                                </div>
-                              </span>
-                            </label>
-                          </div>
-                          <div
-                            class="ant-space-item"
                           />
                         </div>
                       </div>
@@ -402,7 +369,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
       class="ant-modal-footer"
     >
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
         type="button"
       >
         <span>
@@ -410,7 +377,7 @@ exports[`NetworkApGroupDialog should render correctly 1`] = `
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+        class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
         type="button"
       >
         <span>

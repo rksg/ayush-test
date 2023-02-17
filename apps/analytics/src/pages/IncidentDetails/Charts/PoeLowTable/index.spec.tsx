@@ -57,6 +57,10 @@ describe('PoeLowTable', () => {
     const rows = await screen.findAllByRole('row')
     expect(rows[0].textContent).not.toMatch(/AP Group/)
     expect(rows[1].textContent).toMatch(/AnotherAP/)
+    const links: HTMLAnchorElement[] = screen.getAllByRole('link')
+    expect(links[0].href).toBe(
+      'http://localhost/t/undefined/devices/wifi/84:23:88:2F:ED:61/details/overview'
+    )
   })
   it('should show Ap Group column when sliceType is zone', async () => {
     mockGraphqlQuery(dataApiURL, 'ImpactedEntities', { data: response })

@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow } from '@acx-ui/components'
-import { CloseSymbol }      from '@acx-ui/icons'
+import { Descriptions } from '@acx-ui/components'
+import { CloseSymbol }  from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 
@@ -18,16 +18,15 @@ export const Details = ({ fields, openHandler, extra }: {
     <UI.Header>{$t({ defaultMessage: 'Connection Event Details' })}</UI.Header>
     <UI.Body>
       <UI.ListDetails>
-        {fields.map((field, index) =>
-          <GridRow key={index}>
-            <GridCol col={{ span: 8 }}>
-              <UI.DetailsRowLabel>{field.label}</UI.DetailsRowLabel>
-            </GridCol>
-            <GridCol col={{ span: 16 }}>
-              <UI.DetailsRowValue>{field.value}</UI.DetailsRowValue>
-            </GridCol>
-          </GridRow>
-        )}
+        <Descriptions>
+          {fields.map((field, index) =>
+            <Descriptions.Item
+              key={index}
+              label={field.label}
+              children={field.value}
+            />
+          )}
+        </Descriptions>
       </UI.ListDetails>
       {extra && <><UI.VerticalLine />{extra}</>}
     </UI.Body>

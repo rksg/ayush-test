@@ -69,7 +69,7 @@ export function AlarmWidget () {
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
       ? `wifi/${alarm.serialNumber}/details/overview`
-      : `switch/${alarm.serialNumber}/details/overview`
+      : `switch/${alarm.switchMacAddress}/${alarm.serialNumber}/details/overview`
 
     navigate({
       ...basePath,
@@ -97,7 +97,7 @@ export function AlarmWidget () {
     },
     pagination: {
       pageSize: 5,
-      current: 1,
+      page: 1,
       total: 0
     }
   })

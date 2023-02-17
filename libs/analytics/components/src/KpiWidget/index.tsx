@@ -6,9 +6,11 @@ import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/ana
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
 import { intlFormats, formatter }                              from '@acx-ui/utils'
 
+import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
+
 import * as UI from './styledComponents'
 
-const { useKpiTimeseriesQuery } = healthApi
+const { useKpiTimeseriesQuery, useKpiHistogramQuery } = healthApi
 
 export interface KpiList<T> {
   connectionSuccess: T
@@ -76,28 +78,47 @@ export function KpiWidget ({
   filters: AnalyticsFilter;
   type?: 'no-chart-style' | 'with-chart-style'
 }){
+  const { histogram } = Object(kpiConfig[name as keyof typeof kpiConfig])
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
+  const { startDate , endDate } = filters
+  const venueFilter = filters.filter?.networkNodes?.at(0)?.at(0)
+  const intl = useIntl()
+  let numerator=0, denominator=0
+  if(histogram){
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const histQueryResults = useKpiHistogramQuery(
+      { ...filters,
+        path: venueFilter ? [...filters.path, venueFilter] : filters.path,
+        startDate,
+        endDate,
+        kpi: name })
+    const { success, total } = histQueryResults.data ?
+      tranformHistResponse({ ...histQueryResults.data!,
+        kpi: name, threshold: threshold as number }) : { success: 0, total: 0 }
+    numerator = success
+    denominator = total
+  }
   const queryResults= useKpiTimeseriesQuery({
     ...filters,
+    path: venueFilter ? [...filters.path, venueFilter] : filters.path,
     kpi: name,
     threshold: (threshold ?? '') as string,
-    granularity: getSparklineGranularity(filters.startDate,filters.endDate)
-  },{
-    selectFromResult: ({ data: kpiData, ...rest })=>{
-      return { data: kpiData?.data, ...rest }
-    }
+    granularity: getSparklineGranularity(startDate,endDate)
   })
-  const intl = useIntl()
-  const { data } = queryResults
+  const { data: results } = queryResults
 
-  const numerator = data ? data.map(item=>item !== null?item:[0,0])
-    .reduce((pv,cv)=>pv + cv[0], 0) : 0
-  const denominator = data ? data.map(item=>item !== null?item:[0,0])
-    .reduce((pv,cv)=>pv + cv[1], 0) : 0
+  if(!histogram){
+    const { success, total } = results ? transformTSResponse(results!,
+      { startDate, endDate }) : { success: 0, total: 0 }
+    numerator = success
+    denominator = total
+  }
+
 
   const kpiInfoText=getKpiInfoText(numerator, denominator, threshold, intl)
 
-  const sparklineData:number[] = data ? getSparklineData(data as TimeseriesData) : []
+  const sparklineData:number[] = results?.data ?
+    getSparklineData(results.data as TimeseriesData) : []
 
   const percent = numerator && denominator ? numerator / denominator : 0
 
@@ -154,7 +175,7 @@ export function KpiWidget ({
             </Tooltip>
           </GridCol>
           <GridCol col={{ span: 11 }}>
-            {data && <SparklineChart data={sparklineData}
+            {results?.data && <SparklineChart data={sparklineData}
               style={sparklineChartStyle}
               isTrendLine={true} />}
           </GridCol>

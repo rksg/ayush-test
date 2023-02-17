@@ -13,6 +13,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
   },
+  deleteDHCPProfile: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
+    // /dhcpConfigServiceProfiles/{dhcpConfigServiceProfileId}
+  },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
     method: 'get',
@@ -37,6 +42,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   activeVenueDHCPPool: {
     //set DHCP Pool Active
     method: 'post',
+    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
+  },
+  deactivateVenueDHCPPool: {
+    //set DHCP Pool Deactivate
+    method: 'delete',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
   },
   updateVenueDHCPProfile: {

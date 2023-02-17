@@ -61,7 +61,7 @@ export function MacRegistrationListOverviewTab () {
                 <Form.Item
                   label={$t({ defaultMessage: 'Default Access' })}
                 >
-                  <Paragraph>{$t({ defaultMessage: 'Access' })}</Paragraph>
+                  <Paragraph>{data?.defaultAccess ?? ''}</Paragraph>
                 </Form.Item>
               </Col>
               <Col span={6}>

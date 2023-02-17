@@ -7,11 +7,18 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Select,
-  Tooltip
+  Select
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  SortableElementProps,
+  SortableContainerProps
+} from 'react-sortable-hoc'
 
 import {
   Button,
@@ -21,19 +28,29 @@ import {
   StepsFormInstance,
   TableProps,
   Table,
-  showToast
+  showToast,
+  Tabs,
+  Tooltip,
+  Alert
 } from '@acx-ui/components'
-import { DeleteOutlinedIcon, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { DeleteOutlinedIcon, Drag } from '@acx-ui/icons'
 import {
-  useLazyGetVlansByVenueQuery,
+  useGetSwitchQuery,
+  useVenuesListQuery,
   useSaveSwitchMutation,
-  useVenuesListQuery
+  useUpdateSwitchMutation,
+  useSwitchDetailHeaderQuery,
+  useLazyGetVlansByVenueQuery,
+  useLazyGetStackMemberListQuery
 } from '@acx-ui/rc/services'
 import {
   Switch,
   getSwitchModel,
   SWITCH_SERIAL_PATTERN,
-  SwitchTable
+  SwitchTable,
+  SwitchStatusEnum,
+  isOperationalSwitch,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -41,6 +58,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { SwitchStackSetting }                                          from '../SwitchStackSetting'
 import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../SwitchUpgradeNotification'
 
 import {
@@ -48,7 +66,8 @@ import {
   DisabledDeleteOutlinedIcon,
   RequiredDotSpan,
   StepFormTitle,
-  TypographyText } from './styledComponents'
+  TypographyText
+} from './styledComponents'
 
 const defaultPayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -59,7 +78,8 @@ const defaultPayload = {
 
 export function StackForm () {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
+  const { tenantId, switchId, action } = useParams()
+  const editMode = action === 'edit'
   const formRef = useRef<StepsFormInstance<Switch>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
@@ -67,21 +87,32 @@ export function StackForm () {
 
   const { data: venuesList, isLoading: isVenuesListLoading } =
     useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
-
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
+  const { data: switchData, isLoading: isSwitchDataLoading } =
+    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
+  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
+    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
+  const [getStackMemberList] = useLazyGetStackMemberListQuery()
 
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
 
   const [validateModel, setValidateModel] = useState([] as string[])
   const [visibleNotification, setVisibleNotification] = useState(false)
+  const [deviceOnline, setDeviceOnline] = useState(false)
+  const [isIcx7650, setIsIcx7650] = useState(false)
+  const [readOnly, setReadOnly] = useState(false)
+  const [disableIpSetting, setDisableIpSetting] = useState(false)
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(3)
+
+  const dataFetchedRef = useRef(false)
+
   const defaultArray: SwitchTable[] = [
-    { key: '1', id: '', model: '', active: true },
-    { key: '2', id: '', model: '' },
-    { key: '3', id: '', model: '' }
+    { key: '1', id: '', model: '', active: true, disabled: false },
+    { key: '2', id: '', model: '', disabled: false },
+    { key: '3', id: '', model: '', disabled: false }
   ]
   const [tableData, setTableData] = useState(defaultArray)
 
@@ -94,7 +125,82 @@ export function StackForm () {
         })) ?? []
       )
     }
-  }, [venuesList])
+    if(switchData && switchDetail){
+      if(dataFetchedRef.current) return
+      dataFetchedRef.current = true
+      formRef?.current?.resetFields()
+      formRef?.current?.setFieldsValue({ ...switchDetail, ...switchData })
+
+      setIsIcx7650(!!switchDetail.model?.includes('ICX7650'))
+      setReadOnly(!!switchDetail.cliApplied)
+      setDeviceOnline(
+        isOperationalSwitch(
+          switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
+      )
+
+      if(!!switchDetail.model?.includes('ICX7650')){
+        formRef?.current?.setFieldValue('rearModule',
+          formRef.current?.getFieldValue('rearModule') === 'stack-40g')
+      }
+
+      if (switchDetail.ipFullContentParsed === false) {
+        setDisableIpSetting(true)
+      }
+
+      const getStackMembersList = async () => {
+        const stackMembersPayload = {
+          fields: [
+            'activeUnitId',
+            'unitId',
+            'unitStatus',
+            'name',
+            'deviceStatus',
+            'model',
+            'serialNumber',
+            'activeSerial',
+            'switchMac',
+            'ip',
+            'venueName',
+            'uptime'
+          ],
+          filters: { activeUnitId: [''] }
+        }
+
+        stackMembersPayload.filters.activeUnitId = [switchDetail?.activeSerial || '']
+        const stackMembersList = switchDetail?.activeSerial
+          ? (await getStackMemberList({
+            params: { tenantId, switchId }, payload: stackMembersPayload
+          }, true))
+          : []
+
+        const stackMembers = _.get(stackMembersList, 'data.data').map(
+          (item: { id: string; model: undefined }, index: number) => {
+            const key: string = (index+1).toString()
+            formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
+            if(_.get(switchDetail, 'activeSerial') === item.id){
+              formRef?.current?.setFieldValue('active', key)
+              setActiveRow(key)
+            }
+            setVisibleNotification(true)
+            return {
+              ...item,
+              key,
+              model: `${item.model === undefined ? getSwitchModel(item.id) : item.model}
+                ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
+              active: _.get(switchDetail, 'activeSerial') === item.id,
+              disabled: true
+            }
+          })
+
+        stackMembers.sort((a: { active: boolean }, b: { active: boolean }) =>
+          Number(b.active) - Number(a.active))
+        setTableData(stackMembers)
+        setRowKey(stackMembers.length)
+      }
+
+      getStackMembersList()
+    }
+  }, [venuesList, switchData, switchDetail])
 
   const handleChange = (row: SwitchTable, index: number) => {
     const dataRows = [...tableData]
@@ -121,25 +227,28 @@ export function StackForm () {
       {
         key: (rowKey + 1).toString(),
         id: '',
-        model: ''
+        model: '',
+        disabled: false
       }
     ])
   }
 
   const [saveSwitch] = useSaveSwitchMutation()
-  const handleAddSwitchStack = async (values: Switch) => {
+  const [updateSwitch] = useUpdateSwitchMutation()
+
+  const handleAddSwitchStack = async (values: SwitchViewModel) => {
     try {
       const payload = {
         name: values.name || '',
         id: formRef.current?.getFieldValue(`serialNumber${activeRow}`),
         description: values.description,
         venueId: values.venueId,
-        stackMembers: tableData.map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
         enableStack: true,
         jumboMode: false,
         igmpSnooping: 'none',
         spanningTreePriority: '',
-        initialVlanId: values.initialVlanId
+        initialVlanId: values?.initialVlanId
       }
       await saveSwitch({ params: { tenantId } , payload }).unwrap()
 
@@ -147,7 +256,70 @@ export function StackForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
+      })
+    }
+  }
+
+  const handleEditSwitchStack = async () => {
+    if(readOnly){
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/switch`
+      })
+      return
+    }
+
+    const values = formRef.current?.getFieldsValue([
+      'id',
+      'description',
+      'enableStack',
+      'firmwareVersion',
+      'igmpSnooping',
+      'initialVlanId',
+      'isPrimaryDeleted',
+      'jumboMode',
+      'name',
+      'sendedHostname',
+      'softDeleted',
+      'spanningTreePriority',
+      'trustPorts',
+      'venueId'
+    ])
+
+    try {
+      let payload = {
+        ...values,
+        stackMembers: tableData.map((item) => ({ id: item.id })),
+        trustPorts: formRef.current?.getFieldValue('trustPorts')
+      }
+
+      if(disableIpSetting){
+        delete payload.ipAddress
+        delete payload.subnetMask
+        delete payload.defaultGateway
+        delete payload.ipAddressType
+      }
+
+      if(isIcx7650) {
+        payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
+      } else {
+        delete payload.rearModule
+      }
+
+      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
+
+      dataFetchedRef.current = false
+
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/switch`
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       showToast({
         type: 'error',
@@ -184,9 +356,8 @@ export function StackForm () {
     }).length
     return memberExistCount > 1
       ? Promise.reject(
-        $t({
-          defaultMessage:
-              "Serial number is invalid since it's not unique in stack"
+        $t({ defaultMessage:
+            'Serial number is invalid since it\'s not unique in stack'
         })
       )
       : Promise.resolve()
@@ -196,7 +367,23 @@ export function StackForm () {
     setActiveRow(e.target.value)
   }
 
+  const DragHandle = SortableHandle(() =>
+    <Drag style={{ cursor: 'grab', color: '#6e6e6e' }} />
+  )
+
   const columns: TableProps<SwitchTable>['columns'] = [
+    {
+      dataIndex: 'sort',
+      key: 'sort',
+      width: 60,
+      show: editMode && !deviceOnline,
+      render: (data, row) => {
+        return activeRow !== row.key &&
+          <div data-testid={`${row.key}_Icon`} style={{ textAlign: 'center' }}>
+            <DragHandle/>
+          </div>
+      }
+    },
     {
       dataIndex: 'key',
       key: 'key',
@@ -214,19 +401,22 @@ export function StackForm () {
         return (
           <Form.Item
             name={`serialNumber${row.key}`}
+            validateTrigger={['onKeyUp', 'onFocus', 'onBlur']}
             rules={[
               {
-                required: formRef.current?.getFieldValue('active') === row.key ? true : false,
+                required: activeRow === row.key ? true : false,
                 message: $t({ defaultMessage: 'This field is required' })
               },
               { validator: (_, value) => validatorSwitchModel(value) },
               { validator: (_, value) => validatorUniqueMember(value) }
             ]}
+            validateFirst
           >
             <Input
               data-testid={`serialNumber${row.key}`}
-              onChange={() => handleChange(row, index)}
+              onBlur={() => handleChange(row, index)}
               style={{ textTransform: 'uppercase' }}
+              disabled={row.disabled}
             />
           </Form.Item>
         )
@@ -244,10 +434,11 @@ export function StackForm () {
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'active',
       key: 'active',
+      show: !editMode,
       render: function (data, row) {
         return (
           <Form.Item name={'active'} initialValue={activeRow}>
-            <Radio.Group onChange={radioOnChange}>
+            <Radio.Group onChange={radioOnChange} disabled={row.disabled}>
               <Radio data-testid={`active${row.key}`} key={row.key} value={row.key} />
             </Radio.Group>
           </Form.Item>
@@ -270,7 +461,8 @@ export function StackForm () {
               <DeleteOutlinedIcon />
             )
           }
-          disabled={tableData.length <= 1}
+          disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
+          hidden={row.disabled}
           onClick={() => handleDelete(index, row)}
         />
       )
@@ -300,10 +492,53 @@ export function StackForm () {
     setApGroupOption(options as DefaultOptionType[])
   }
 
+  const [currentTab, setCurrentTab] = useState('details')
+
+  const onTabChange = (tab: string) => {
+    setCurrentTab(tab)
+  }
+
+  // @ts-ignore
+  const SortableItem = SortableElement((props: SortableElementProps) => <tr {...props} />)
+  // @ts-ignore
+  const SortContainer = SortableContainer((props: SortableContainerProps) => <tbody {...props} />)
+
+  const onSortEnd = ({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) => {
+    if(oldIndex !== newIndex) {
+      let tempDataSource = [...tableData]
+      let movingItem = tempDataSource[oldIndex]
+      tempDataSource.splice(oldIndex, 1)
+      tempDataSource = [...tempDataSource.slice(0, newIndex),
+        ...[movingItem], ...tempDataSource.slice(newIndex, tempDataSource.length)]
+      tempDataSource.sort((a, b) => Number(b.active) - Number(a.active))
+      setTableData(tempDataSource)
+    }
+  }
+  const DraggableContainer = (props: SortableContainerProps) => {
+    return <SortContainer
+      useDragHandle
+      disableAutoscroll
+      onSortEnd={onSortEnd}
+      {...props}
+    />
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const DraggableBodyRow = (props: any) => {
+    const { className, style, ...restProps } = props
+    const index = tableData.findIndex(
+      (x) => x.key === restProps['data-row-key']
+    )
+    return <SortableItem index={index} {...restProps} />
+  }
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Switch Stack' })}
+        title={editMode ?
+          $t({ defaultMessage: '{name}' }, {
+            name: switchDetail?.name || switchDetail?.switchName || switchDetail?.serialNumber }):
+          $t({ defaultMessage: 'Add Switch Stack' })}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Switches' }),
@@ -313,129 +548,180 @@ export function StackForm () {
       />
       <StepsForm
         formRef={formRef}
-        onFinish={handleAddSwitchStack}
+        onFinish={editMode ? handleEditSwitchStack : handleAddSwitchStack}
         onCancel={() =>
           navigate({
             ...basePath,
             pathname: `${basePath.pathname}/switch`
           })
         }
-        buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
+        buttonLabel={{
+          submit: readOnly ? $t({ defaultMessage: 'OK' }) :
+            editMode ?
+              $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+          cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+        }}
       >
         <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Loader
-                states={[
-                  {
-                    isLoading: isVenuesListLoading
-                  }
-                ]}
-              >
-                <Form.Item
-                  name='venueId'
-                  label={$t({ defaultMessage: 'Venue' })}
-                  initialValue={null}
-                  rules={[
-                    {
-                      required: true,
-                      message: $t({ defaultMessage: 'This field is required' })
+          <Loader
+            states={[
+              {
+                isLoading: isVenuesListLoading || isSwitchDataLoading || isSwitchDetailLoading
+              }
+            ]}
+          >
+            <Row gutter={20}>
+              <Col span={8}>
+                <Tabs onChange={onTabChange}
+                  activeKey={currentTab}
+                  type='line'
+                  hidden={!editMode}
+                >
+                  <Tabs.TabPane tab={$t({ defaultMessage: 'Stack Details' })} key='details' />
+                  {deviceOnline &&
+                    <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />}
+                </Tabs>
+                <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
+                  {readOnly &&
+                  // eslint-disable-next-line max-len
+                  <Alert type='info' message={$t({ defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue' })} />}
+                  <Form.Item
+                    name='venueId'
+                    label={$t({ defaultMessage: 'Venue' })}
+                    rules={[
+                      {
+                        required: true,
+                        message: $t({ defaultMessage: 'This field is required' })
+                      }
+                    ]}
+                    initialValue={null}
+                    children={
+                      <Select
+                        options={[
+                          {
+                            label: $t({ defaultMessage: 'Select venue...' }),
+                            value: null
+                          },
+                          ...venueOption
+                        ]}
+                        onChange={async (value) => await handleVenueChange(value)}
+                        disabled={readOnly || editMode}
+                      />
                     }
-                  ]}
-                  children={
-                    <Select
-                      options={[
-                        {
-                          label: $t({ defaultMessage: 'Select venue...' }),
-                          value: null
-                        },
-                        ...venueOption
-                      ]}
-                      onChange={async (value) => await handleVenueChange(value)}
-                    />
-                  }
-                />
-                <Form.Item
-                  name='name'
-                  label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
-                  rules={[{ max: 255 }]}
-                  children={<Input />}
-                />
-                <Form.Item
-                  name='description'
-                  label={$t({ defaultMessage: 'Description' })}
-                  rules={[{ max: 64 }]}
-                  initialValue=''
-                  children={<Input.TextArea rows={4} maxLength={180} />}
-                />
-                <Form.Item
-                  name='initialVlanId'
-                  label={
-                    <>
-                      {$t({ defaultMessage: 'DHCP Client' })}
-                      <Tooltip
-                        title={$t({
-                          defaultMessage:
+                  />
+                  <Form.Item
+                    name='name'
+                    label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
+                    rules={[{ max: 255 }]}
+                    children={<Input disabled={readOnly} />}
+                  />
+                  <Form.Item
+                    name='description'
+                    label={$t({ defaultMessage: 'Description' })}
+                    rules={[{ max: 64 }]}
+                    initialValue={''}
+                    children={<Input.TextArea rows={4} maxLength={180} disabled={readOnly} />}
+                  />
+                  {!editMode && <Form.Item
+                    name='initialVlanId'
+                    label={
+                      <>
+                        {$t({ defaultMessage: 'DHCP Client' })}
+                        <Tooltip.Question
+                          title={$t({
+                            defaultMessage:
                             // eslint-disable-next-line max-len
                             'DHCP Client interface will only be applied to factory default switches. Switches with pre-existing configuration will not get this change to prevent connectivity loss.'
-                        })}
-                        placement='bottom'
-                      >
-                        <QuestionMarkCircleOutlined />
-                      </Tooltip>
-                    </>
+                          })}
+                          placement='bottom'
+                        />
+                      </>
+                    }
+                    initialValue={null}
+                    children={
+                      <Select
+                        disabled={readOnly || apGroupOption?.length === 0}
+                        options={[
+                          {
+                            label: $t({ defaultMessage: 'Select VLAN...' }),
+                            value: null
+                          },
+                          ...apGroupOption
+                        ]}
+                      />
+                    }
+                  />
                   }
-                  initialValue={null}
-                  children={
-                    <Select
-                      disabled={apGroupOption?.length === 0}
-                      options={[
-                        {
-                          label: $t({ defaultMessage: 'Select VLAN...' }),
-                          value: null
-                        },
-                        ...apGroupOption
-                      ]}
-                    />
-                  }
-                />
-                <StepFormTitle>
-                  {$t({ defaultMessage: 'Stack Member' })}
-                  <RequiredDotSpan> *</RequiredDotSpan>
-                </StepFormTitle>
-                <TypographyText type='secondary'>
-                  {
-                    $t({
-                      defaultMessage:
+                  <StepFormTitle>
+                    {$t({ defaultMessage: 'Stack Member' })}
+                    <RequiredDotSpan> *</RequiredDotSpan>
+                  </StepFormTitle>
+                  {!editMode && <TypographyText type='secondary'>
+                    {
+                      $t({
+                        defaultMessage:
                         // eslint-disable-next-line max-len
                         'Stack members will be ordered according to the order in which they were entered here. You can always modify this later.'
-                    })
+                      })
+                    }
+                  </TypographyText>
                   }
-                </TypographyText>
-                <TableContainer>
-                  <Table columns={columns} dataSource={tableData} type='form' />
-                  {tableData.length < 12 && (
-                    <Button
-                      onClick={handleAddRow}
-                      type='link'
-                      size='small'
-                      disabled={tableData.length >= 12}
-                    >
-                      {$t({ defaultMessage: 'Add another member' })}
-                    </Button>
-                  )}
-                </TableContainer>
+                  <TableContainer data-testid='dropContainer'>
+                    <Table
+                      columns={columns}
+                      dataSource={tableData}
+                      type='form'
+                      components={{
+                        body: {
+                          wrapper: DraggableContainer,
+                          row: DraggableBodyRow
+                        }
+                      }}
+                    />
+                    {tableData.length < 12 && (
+                      <Button
+                        onClick={handleAddRow}
+                        type='link'
+                        size='small'
+                        disabled={tableData.length >= 12}
+                        hidden={readOnly}
+                      >
+                        {$t({ defaultMessage: 'Add another member' })}
+                      </Button>
+                    )}
+                  </TableContainer>
 
-                <SwitchUpgradeNotification
-                  isDisplay={visibleNotification}
-                  isDisplayHeader={false}
-                  type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
-                  validateModel={validateModel}
-                />
-
-              </Loader>
-            </Col>
-          </Row>
+                  <SwitchUpgradeNotification
+                    isDisplay={visibleNotification}
+                    isDisplayHeader={false}
+                    type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
+                    validateModel={validateModel}
+                  />
+                </div>
+                {editMode &&
+                  <>
+                    <Form.Item name='id' hidden={true} />
+                    <Form.Item name='firmwareVersion' hidden={true} />
+                    <Form.Item name='isPrimaryDeleted' hidden={true} />
+                    <Form.Item name='sendedHostname' hidden={true} />
+                    <Form.Item name='softDeleted' hidden={true} />
+                    <Form.Item name='trustPorts' hidden={true} />
+                  </>
+                }
+                <Form.Item name='enableStack' initialValue={true} hidden={true} />
+                {editMode &&
+                  <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                    <SwitchStackSetting
+                      apGroupOption={apGroupOption}
+                      readOnly={readOnly}
+                      isIcx7650={isIcx7650}
+                      disableIpSetting={disableIpSetting}
+                    />
+                  </div>
+                }
+              </Col>
+            </Row>
+          </Loader>
         </StepsForm.StepForm>
       </StepsForm>
     </>

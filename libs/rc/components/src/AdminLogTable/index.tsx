@@ -52,10 +52,13 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       title: $t({ defaultMessage: 'Event Type' }),
       dataIndex: 'entity_type',
       sorter: true,
-      render: function (_, row) {
+      render: function (_, row, __, highlightFn) {
         const type = row.entity_type.toUpperCase() as keyof typeof adminLogTypeMapping
-        return $t(adminLogTypeMapping[type])
-      }
+        return highlightFn($t(adminLogTypeMapping[type]))
+      },
+      filterable: Object.entries(adminLogTypeMapping)
+        .map(([key, value])=>({ key, value: $t(value) })),
+      searchable: true
     },
     {
       key: 'adminName',
@@ -68,9 +71,10 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'message',
       sorter: true,
-      render: function (_, row) {
-        return JSON.parse(row.message).message_template
-      }
+      render: function (_, row, __, highlightFn) {
+        return highlightFn(JSON.parse(row.message).message_template)
+      },
+      searchable: true
     }
   ]
   const getDrawerData = (data: AdminLog) => [
@@ -109,6 +113,8 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      enableApiFilter={true}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Log Details' })}

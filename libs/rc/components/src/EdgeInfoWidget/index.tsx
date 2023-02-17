@@ -5,9 +5,9 @@ import { useIntl } from 'react-intl'
 // import AutoSizer   from 'react-virtualized-auto-sizer'
 import styled from 'styled-components'
 
-import { cssStr, GridRow, GridCol, Loader , DonutChart, onChartClick, NoActiveData, Button } from '@acx-ui/components'
-import type { DonutChartData, DonutChartProps }                                              from '@acx-ui/components'
-import { EdgePort, EdgeStatus, EdgeResourceUtilizationEnum, EdgePortAdminStatusEnum }        from '@acx-ui/rc/utils'
+import type { DonutChartData, DonutChartProps }                                                             from '@acx-ui/components'
+import { Button, cssStr, DonutChart, GridCol, GridRow, Loader, NoActiveData, onChartClick }                 from '@acx-ui/components'
+import { EdgeDnsServers, EdgePortAdminStatusEnum, EdgePortStatus, EdgeResourceUtilizationEnum, EdgeStatus } from '@acx-ui/rc/utils'
 
 import { SpaceWrapper } from '../SpaceWrapper/index'
 
@@ -15,6 +15,19 @@ import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
 import EdgePortsListDrawer    from './EdgePortsListDrawer'
 import { EdgeSysResourceBox } from './EdgeSysResourceBox'
 
+interface EdgeInfoWidgetProps {
+  className?: string
+  currentEdge: EdgeStatus | undefined
+  edgePortsSetting: EdgePortStatus[] | undefined
+  dnsServers: EdgeDnsServers | undefined
+  isEdgeStatusLoading: boolean
+  isPortListLoading: boolean
+}
+
+interface EdgePortsWidgetProps {
+  isLoading: boolean
+  edgePortsSetting: EdgePortStatus[] | undefined
+}
 
 function EdgeOverviewDonutWidget ({ title, data, isLoading, chartDataTransformer, onClick }:
    { title:string, data: Array<DonutChartData>,
@@ -53,7 +66,7 @@ const EdgeAlarmWidget = () => {
 
 type ReduceReturnType = Record<string, number>
 
-export const getPortsAdminStatusChartData = (ports: EdgePort[]): DonutChartData[] => {
+export const getPortsAdminStatusChartData = (ports: EdgePortStatus[] | undefined): DonutChartData[] => {
   const seriesMapping = [
     { key: EdgePortAdminStatusEnum.Enabled,
       name: EdgePortAdminStatusEnum.Enabled,
@@ -85,8 +98,7 @@ export const getPortsAdminStatusChartData = (ports: EdgePort[]): DonutChartData[
   return chartData
 }
 
-const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
-  { isLoading: boolean, edgePortsSetting: EdgePort[] }) => {
+const EdgePortsWidget = ({ isLoading, edgePortsSetting }: EdgePortsWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const handleDonutClick = () => {
@@ -100,13 +112,18 @@ const EdgePortsWidget = ({ isLoading, edgePortsSetting }:
     <EdgePortsListDrawer
       visible={visible}
       setVisible={setVisible}
-      edgePortsSetting={edgePortsSetting as EdgePort[]}
+      edgePortsSetting={edgePortsSetting as EdgePortStatus[]}
     />
   </>)
 }
 
-export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting, isEdgeStatusLoading, isPortListLoading }:
-   { className?: string, currentEdge: EdgeStatus, edgePortsSetting: EdgePort[], isEdgeStatusLoading: boolean, isPortListLoading: boolean }) => {
+export const EdgeInfoWidget = styled(({
+  className,
+  currentEdge,
+  edgePortsSetting,
+  dnsServers,
+  isEdgeStatusLoading,
+  isPortListLoading }: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = React.useState(false)
   const moreDetailsHandler = () => {
@@ -157,8 +174,9 @@ export const EdgeInfoWidget = styled(({ className, currentEdge, edgePortsSetting
       <EdgeDetailsDrawer
         visible={visible}
         setVisible={setVisible}
-        currentEdge={currentEdge as EdgeStatus}
-        edgePortsSetting={edgePortsSetting as EdgePort[]}
+        currentEdge={currentEdge}
+        edgePortsSetting={edgePortsSetting}
+        dnsServers={dnsServers}
       />
     </GridRow>
   )

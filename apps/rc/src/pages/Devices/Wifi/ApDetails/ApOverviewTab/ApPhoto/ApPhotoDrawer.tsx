@@ -13,7 +13,8 @@ import {
   useApViewModelQuery
 } from '@acx-ui/rc/services'
 import { generateHexKey } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
+
+import { useApContext } from '../../ApContext'
 
 import { getCroppedImg }                                from './cropImage'
 import { AppContainer, FooterDiv, PlusIcon, MinusIcon } from './styledComponents'
@@ -34,7 +35,7 @@ interface cropImageType {
 
 export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
   const { $t } = useIntl()
-  const params = useParams()
+  const params = useApContext()
 
   const apPhoto = useGetApPhotoQuery({ params })
   const [addApPhoto] = useAddApPhotoMutation()

@@ -15,6 +15,7 @@ const tags: string[] = []
 const ePDG: EPDG[] = []
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = []
 
 const initState = {
   serviceName,
@@ -24,7 +25,8 @@ const initState = {
   tags,
   description,
   networksName,
-  networkIds
+  networkIds,
+  epdgs
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {

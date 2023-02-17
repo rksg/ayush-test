@@ -80,6 +80,7 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
       okText={$t({ defaultMessage: 'Resend Invitation' })}
       onCancel={handleCancel}
       onOk={handleOk}
+      maskClosable={false}
       okButtonProps={{
         disabled: disabledResendButton
       }}

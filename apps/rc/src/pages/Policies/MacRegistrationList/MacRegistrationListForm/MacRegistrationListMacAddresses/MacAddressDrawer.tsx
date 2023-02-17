@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Space } from 'antd'
-import { Radio }                        from 'antd'
-import moment                           from 'moment-timezone'
-import { useIntl }                      from 'react-intl'
+import { Form, Input } from 'antd'
+import moment          from 'moment-timezone'
+import { useIntl }     from 'react-intl'
 
 import { Drawer, showToast }         from '@acx-ui/components'
 import { ExpirationDateSelector }    from '@acx-ui/rc/components'
@@ -15,11 +14,9 @@ import {
   checkObjectNotExists,
   ExpirationDateEntity,
   ExpirationMode,
-  MacRegistration
+  MacRegistration, MacRegistrationFilterRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-
-import { macAddressRegExp } from '../../MacRegistrationListUtils'
 
 interface MacAddressDrawerProps {
   visible: boolean
@@ -33,21 +30,25 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
-  const [ addType ] = [ Form.useWatch('listExpiration', form),
-    Form.useWatch('importAction', form)]
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
 
-  const macAddressValidator = async (value: string) => {
+  const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
-      params: { policyId }
+      params: { policyId },
+      payload: {
+        page: '1',
+        pageSize: '10000',
+        sortField: 'macAddress',
+        sortOrder: 'ASC'
+      }
     }).unwrap()).data
       .filter(n => n.id !== editData?.id)
-      .map(n => ({ name: n.macAddress }))
+      .map(n => ({ name: n.macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'MAC Address' }))
+    return checkObjectNotExists(list, { name: macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() } , intl.$t({ defaultMessage: 'MAC Address' }))
   }
 
   useEffect(()=>{
@@ -74,8 +75,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     form.resetFields()
   }
 
-  const onSubmit = async (data: MacRegistration) => {
+  const onSubmit = async () => {
     try {
+      await form.validateFields()
+      const data = form.getFieldsValue()
       if (isEdit) {
         const payload = {
           username: data.username?.length === 0 ? null : data.username,
@@ -102,23 +105,24 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         }).unwrap()
       }
       onClose()
-    } catch (error) {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
-      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.data?.message) {
+        showToast({
+          type: 'error',
+          content: intl.$t({ defaultMessage: 'An error occurred' })
+        })
+      }
     }
   }
 
-  const addManuallyContent = <Row>
-    <Col span={16}>
+  const addManuallyContent =
+    <Form layout='vertical' form={form}>
       <Form.Item name='macAddress'
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
           { required: true },
-          { validator: (_, value) => macAddressRegExp(value) },
+          { validator: (_, value) => MacRegistrationFilterRegExp(value) },
           { validator: (_, value) => macAddressValidator(value) }
         ]}
         validateFirst
@@ -145,30 +149,14 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
           [ExpirationMode.AFTER_TIME]: false
         }}
       />
-    </Col>
-  </Row>
-
-  const content = <Form layout='vertical' form={form} onFinish={onSubmit}>
-    {isEdit ? addManuallyContent :
-      <>
-        <Form.Item name='importAction' initialValue={2}>
-          <Radio.Group>
-            <Space direction='vertical'>
-              <Radio value={2}>{intl.$t({ defaultMessage: 'Add manually' })}</Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
-        {addType !== 1 && addManuallyContent}
-      </>
-    }
-  </Form>
+    </Form>
 
   const footer = (
     <Drawer.FormFooter
       onCancel={resetFields}
-      buttonLabel={{ save: (addType === 1 ? intl.$t({ defaultMessage: 'Import List' }):
-        (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' }))) }}
-      onSave={async () => { form.submit() }}
+      // eslint-disable-next-line max-len
+      buttonLabel={{ save: (isEdit ? intl.$t({ defaultMessage: 'Done' }) : intl.$t({ defaultMessage: 'Add' })) }}
+      onSave={onSubmit}
     />
   )
 
@@ -178,10 +166,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC Address' }) : intl.$t({ defaultMessage: 'Add MAC Address' })}
       visible={visible}
       onClose={onClose}
-      children={content}
+      children={addManuallyContent}
       footer={footer}
       destroyOnClose={resetField}
-      width={600}
+      width={440}
     />
   )
 }

@@ -119,8 +119,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       case ClientStatusEnum.CONNECTED:
         obj = [
           <ClientDetails client={client} />,
-          <Connection client={client} />,
           <OperationalData client={client} />,
+          <Connection client={client} />,
           (networkType === 'guest' && <GuestDetails />),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
@@ -211,7 +211,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         }
         children={
           client?.enableLinkToAp
-            ? <TenantLink to={`devices/aps/${client.apSerialNumber}/details/overview`}>
+            ? <TenantLink to={`devices/wifi/${client.apSerialNumber}/details/overview`}>
               {client?.apName || '--'}
             </TenantLink>
             : client?.apName || '--'
@@ -245,7 +245,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Wireless Network' })}
         children={
           client?.enableLinkToNetwork
-            ? <TenantLink to={`networks/${client.networkId}/network-details/overview`}>
+            ? <TenantLink to={`networks/wireless/${client.networkId}/network-details/overview`}>
               {client?.networkName || '--'}
             </TenantLink>
             : client?.networkName || '--'
@@ -378,7 +378,7 @@ function WiFiCallingDetails ({ client }: { client: ClientExtended }) {
 
   return <>
     <Subtitle level={4}>
-      {$t({ defaultMessage: 'WiFi Calling Details' })}
+      {$t({ defaultMessage: 'Wi-Fi Calling Details' })}
     </Subtitle>
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
@@ -478,7 +478,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         label={$t({ defaultMessage: 'Last SSID' })}
         children={
           client?.enableLinkToNetwork
-            ? <TenantLink to={`networks/${client.networkId}/network-details/overview`}>
+            ? <TenantLink to={`networks/wireless/${client.networkId}/network-details/overview`}>
               {client?.ssid || '--'}
             </TenantLink>
             : client?.ssid || '--'

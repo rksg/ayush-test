@@ -1,13 +1,12 @@
 import { useState } from 'react'
 
-import { Form, Input, Select, Tooltip } from 'antd'
-import TextArea                         from 'antd/lib/input/TextArea'
-import { useIntl }                      from 'react-intl'
+import { Form, Input, Select } from 'antd'
+import TextArea                from 'antd/lib/input/TextArea'
+import { useIntl }             from 'react-intl'
 
-import { Alert, Loader }              from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { useVenuesListQuery }         from '@acx-ui/rc/services'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { Alert, Loader, Tooltip } from '@acx-ui/components'
+import { useVenuesListQuery }     from '@acx-ui/rc/services'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 interface EdgeSettingFormProps {
   isEdit?: boolean
@@ -21,7 +20,8 @@ const venueOptionsDefaultPayload = {
     'id'
   ],
   sortField: 'name',
-  sortOrder: 'ASC'
+  sortOrder: 'ASC',
+  pageSize: 10000
 }
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
@@ -60,26 +60,28 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       <Form.Item
         name='name'
         label={$t({ defaultMessage: 'SmartEdge Name' })}
-        rules={[{
-          required: true
-        }]}
+        rules={[
+          { required: true },
+          { max: 64 }
+        ]}
         children={<Input />}
       />
       <Form.Item
         name='serialNumber'
         label={<>
           { $t({ defaultMessage: 'Serial Number' }) }
-          <Tooltip
-            title={$t({ defaultMessage: 'test' })}
+          <Tooltip.Question
+            title={$t({ defaultMessage: 'Serial Number' })}
             placement='bottom'
-          >
-            <QuestionMarkCircleOutlined />
-          </Tooltip>
+          />
         </>}
-        rules={[{
-          required: true,
-          message: $t({ defaultMessage: 'Please enter Serial Number' })
-        }]}
+        rules={[
+          {
+            required: true,
+            message: $t({ defaultMessage: 'Please enter Serial Number' })
+          },
+          { max: 34 }
+        ]}
         children={
           <Input
             disabled={props.isEdit}
@@ -89,7 +91,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       <Form.Item
         name='description'
         label={$t({ defaultMessage: 'Description' })}
-        children={<TextArea rows={4} maxLength={64} />}
+        children={<TextArea rows={4} maxLength={255} />}
       />
       <Form.Item
         name='tags'

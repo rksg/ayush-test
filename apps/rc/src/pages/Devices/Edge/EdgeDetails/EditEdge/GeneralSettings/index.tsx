@@ -55,6 +55,8 @@ const GeneralSettings = () => {
       delete payload.serialNumber
 
       await upadteEdge({ params: params, payload: payload }).unwrap()
+      navigate(linkToEdgeList)
+
     } catch {
       // TODO error message not be defined
       showToast({

@@ -7,10 +7,12 @@ import {
   Table,
   TableProps,
   Loader,
+  Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery } from '@acx-ui/rc/services'
+import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
+  isOperationalSwitch,
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
@@ -52,7 +54,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
 
   const tableQuery = useTableQuery({
-    useQuery: useGetSwitchRoutedListQuery, //TODO: support venue level
+    useQuery: isVenueLevel ? useGetVenueRoutedListQuery : useGetSwitchRoutedListQuery,
     defaultPayload,
     sorter: {
       sortField: 'veId',
@@ -132,6 +134,14 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
   }
 
+  const transformData = (data?: VeViewModel[]) => {
+    return data?.map((ve: VeViewModel) => ({
+      ...ve,
+      inactiveRow: !isOperationalSwitch(ve.deviceStatus, ve.syncedSwitchConfig),
+      // eslint-disable-next-line max-len
+      inactiveTooltip: $t({ defaultMessage: 'The port can not be edited since it is on a switch that is not operational' })
+    }))
+  }
 
   const rowActions: TableProps<VeViewModel>['rowActions'] = [
     {
@@ -153,7 +163,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Routed Interface' }),
-            entityValue: rows.length === 1 ? rows[0].name : `VE-${rows[0].veId}`,
+            entityValue: rows.length === 1 ? (rows[0].name || `VE-${rows[0].veId}`) : undefined,
             numOfEntities: rows.length
           },
           onOk: () => {
@@ -171,12 +181,21 @@ export function SwitchVeTable ( { isVenueLevel } : {
   return <Loader states={[tableQuery]}>
     <Table
       columns={columns}
-      dataSource={(tableQuery.data?.data)}
+      dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      rowKey='veId'
+      rowKey='id'
       rowActions={rowActions}
-      rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
+      rowSelection={{
+        type: 'checkbox',
+        renderCell: (checked, record, index, originNode) => {
+          return record?.inactiveRow
+            ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
+            : originNode
+        },
+        getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
+        onChange: onSelectChange
+      }}
       actions={[{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
         onClick: () => {
@@ -185,13 +204,14 @@ export function SwitchVeTable ( { isVenueLevel } : {
       }]
       }
     />
-
-    <SwitchVeDrawer
+    {visible && <SwitchVeDrawer
       visible={visible}
       setVisible={setVisible}
       isEditMode={isEditMode}
+      isVenueLevel={isVenueLevel}
       editData={editData}
-    />
+    />}
+
   </Loader>
 
 }

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -48,7 +49,7 @@ describe('AddEdge', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it('should be blocked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -61,6 +62,23 @@ describe('AddEdge', () => {
     await screen.findByText('Please enter Venue')
     await screen.findByText('Please enter SmartEdge Name')
     await screen.findByText('Please enter Serial Number')
+  })
+
+  it('should be blocked when length of field value is exceed', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    fireEvent.change(edgeNameInput, { target: { value: '12345678901234567890123456789012345678901234567890123456789012345' } })
+    const serialNumberInput = screen.getByRole('textbox', { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: '12345678901234567890123456789012345' } })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
+    expect(await screen.findByText('serialNumber must be up to 34 characters')).toBeVisible()
   })
 
   it('should add edge successfully', async () => {

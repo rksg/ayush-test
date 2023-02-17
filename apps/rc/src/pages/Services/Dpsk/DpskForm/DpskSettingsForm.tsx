@@ -9,11 +9,10 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import {
   ExpirationDateSelector
 } from '@acx-ui/rc/components'
-import { useLazyDpskListQuery } from '@acx-ui/rc/services'
+import { useLazyGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -32,10 +31,10 @@ export default function DpskSettingsForm () {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const [ dpskList ] = useLazyDpskListQuery()
+  const [ dpskList ] = useLazyGetDpskListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = (await dpskList({}).unwrap()).content
+    const list = (await dpskList({}).unwrap()).data
       .filter(n => n.id !== id)
       .map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'DPSK service' }))
@@ -47,7 +46,7 @@ export default function DpskSettingsForm () {
 
   return (
     <Row>
-      <Col span={6}>
+      <Col span={8}>
         <StepsForm.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsForm.Title>
         <Form.Item name='id' noStyle>
           <Input type='hidden' />
@@ -73,7 +72,7 @@ export default function DpskSettingsForm () {
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Format' }) }
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
                   defaultMessage={`Format options: <br></br><br></br>
@@ -83,9 +82,7 @@ export default function DpskSettingsForm () {
                   `}
                   values={{ br: () => <br /> }}
                 />}
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>
           }
           rules={[{ required: true }]}
@@ -102,13 +99,11 @@ export default function DpskSettingsForm () {
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Length' }) }
-              <Tooltip
+              <Tooltip.Question
                 // eslint-disable-next-line max-len
                 title={intl.$t({ defaultMessage: 'Number of characters in passphrase. Valid range 8-63' })}
                 placement='bottom'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
+              />
             </>
           }
         >

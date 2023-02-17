@@ -55,7 +55,7 @@ describe('EditEdge general settings', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it('should be blocked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -81,7 +81,10 @@ describe('EditEdge general settings', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
+    const tagsInput = screen.getByRole('textbox',
+      { name: 'Tags' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(tagsInput, { target: { value: '1,2,3' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
   })

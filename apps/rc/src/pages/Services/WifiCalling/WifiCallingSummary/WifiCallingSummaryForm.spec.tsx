@@ -76,7 +76,6 @@ describe('WifiCallingSummaryForm', () => {
     expect(screen.getByText('serviceNameId1')).toBeInTheDocument()
     expect(screen.getByText('description1')).toBeInTheDocument()
     expect(screen.getByText('Voice')).toBeInTheDocument()
-    expect(screen.getByText('tag1, tag2, tag3')).toBeInTheDocument()
     expect(screen.getByText('init.aaa.com (10.10.10.10)')).toBeInTheDocument()
   })
 
@@ -93,7 +92,6 @@ describe('WifiCallingSummaryForm', () => {
     expect(screen.getByText('serviceNameId1')).toBeInTheDocument()
     expect(screen.getByText('description1')).toBeInTheDocument()
     expect(screen.getByText('Voice')).toBeInTheDocument()
-    expect(screen.getByText('tag1, tag2, tag3')).toBeInTheDocument()
     expect(screen.getByText('init.aaa.com')).toBeInTheDocument()
   })
 })

@@ -1,9 +1,9 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import { generatePath }                                   from 'react-router-dom'
 
-import { dataApi }             from '@acx-ui/analytics/services'
+import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
 import {
+  baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
   baseVenueApi as venueApi,
   baseEventAlarmApi as eventAlarmApi,
@@ -16,7 +16,11 @@ import {
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
-  baseSwitchApi as switchApi
+  baseSwitchApi as switchApi,
+  baseMfaApi as mfaApi,
+  baseAdministrationApi as administrationApi,
+  baseEdgeDhcpApi as edgeDhcpApi,
+  basePersonaApi as personaApi
 } from '@acx-ui/rc/services'
 
 import type { Middleware } from '@reduxjs/toolkit'
@@ -45,7 +49,8 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       (status === 400 && error === 'API-KEY not present') ||
       status === 401 || status === 403
     ) {
-      window.location.href = generatePath('/logout')
+      sessionStorage.removeItem('jwt')
+      window.location.href = '/logout'
     }
   }
   return next(action)
@@ -56,6 +61,7 @@ const isProd = process.env['NODE_ENV'] === 'production'
 
 export const store = configureStore({
   reducer: {
+    [commonApi.reducerPath]: commonApi.reducer,
     [networkApi.reducerPath]: networkApi.reducer,
     [venueApi.reducerPath]: venueApi.reducer,
     [eventAlarmApi.reducerPath]: eventAlarmApi.reducer,
@@ -70,7 +76,12 @@ export const store = configureStore({
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
-    [switchApi.reducerPath]: switchApi.reducer
+    [switchApi.reducerPath]: switchApi.reducer,
+    [mfaApi.reducerPath]: mfaApi.reducer,
+    [administrationApi.reducerPath]: administrationApi.reducer,
+    [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
+    [personaApi.reducerPath]: personaApi.reducer,
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -79,6 +90,7 @@ export const store = configureStore({
       immutableCheck: isDev ? undefined : false
     }).concat([
       ...(isProd ? [errorMiddleware] : []),
+      commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
       eventAlarmApi.middleware,
@@ -93,7 +105,12 @@ export const store = configureStore({
       edgeApi.middleware,
       policyApi.middleware,
       clientApi.middleware,
-      switchApi.middleware
+      switchApi.middleware,
+      mfaApi.middleware,
+      administrationApi.middleware,
+      edgeDhcpApi.middleware,
+      personaApi.middleware,
+      networkHealthApi.middleware
     ])
   },
 

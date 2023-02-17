@@ -7,7 +7,10 @@ import {
   DpskUrls,
   transformDpskNetwork,
   websocketServerUrl,
-  getServiceListRoutePath
+  getServiceRoutePath,
+  ServiceType,
+  ServiceOperation,
+  DpskBaseUrl
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -58,7 +61,7 @@ describe('DpskForm', () => {
         (req, res, ctx) => res(ctx.json(mockedEditFormData))
       ),
       rest.get(
-        DpskUrls.getDpskList.url,
+        DpskBaseUrl,
         (req, res, ctx) => res(ctx.json(mockedDpskList))
       ),
       rest.get(
@@ -77,15 +80,17 @@ describe('DpskForm', () => {
       }
     )
 
+    const dataToCreate = { ...mockedCreateFormData }
+
     const { result: mockedPassphraseFormatLabel } = renderHook(() => {
       // eslint-disable-next-line max-len
-      return transformDpskNetwork(useIntl(), DpskNetworkType.FORMAT, mockedCreateFormData.passphraseFormat)
+      return transformDpskNetwork(useIntl(), DpskNetworkType.FORMAT, dataToCreate.passphraseFormat)
     })
 
     // Set Service Name
     await userEvent.type(
       await screen.findByRole('textbox', { name: /Service Name/i }),
-      mockedCreateFormData.name
+      dataToCreate.name
     )
 
     // Set Passphrase Format
@@ -95,7 +100,7 @@ describe('DpskForm', () => {
     // Set Passphrase Length
     await userEvent.type(
       screen.getByRole('spinbutton', { name: /Passphrase Length/i }),
-      mockedCreateFormData.passphraseLength.toString()
+      dataToCreate.passphraseLength.toString()
     )
 
     // Set List Expiration (After time)
@@ -110,7 +115,7 @@ describe('DpskForm', () => {
     const expirationTypeElem = comboboxElems[1]
     expect(expirationTypeElem).toBeInTheDocument()
 
-    await userEvent.type(expirationOffsetElem, mockedCreateFormData.expirationOffset!.toString())
+    await userEvent.type(expirationOffsetElem, dataToCreate.expirationOffset!.toString())
     await userEvent.click(expirationTypeElem)
     await userEvent.click(screen.getByText('Days'))
 
@@ -160,9 +165,10 @@ describe('DpskForm', () => {
     expect(errorMsgElem).toBeInTheDocument()
   })
 
-  it('should navigate to the Select service page when clicking Cancel button', async () => {
+  it('should navigate to the DPSK table when clicking Cancel button', async () => {
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(getServiceListRoutePath(true))
+      // eslint-disable-next-line max-len
+      return useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
     })
 
     render(

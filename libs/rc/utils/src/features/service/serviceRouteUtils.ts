@@ -11,7 +11,8 @@ export enum DpskDetailsTabKey {
 export enum ServiceOperation {
   CREATE,
   EDIT,
-  DETAIL
+  DETAIL,
+  LIST
 }
 
 interface ServiceRoutePathProps {
@@ -22,22 +23,25 @@ interface ServiceRoutePathProps {
 interface ServiceDetailsLinkProps extends ServiceRoutePathProps {
   oper: Exclude<ServiceOperation, ServiceOperation.CREATE>;
   serviceId: string;
-  activeTab?: string;
+  activeTab?: DpskDetailsTabKey; // Union the other services tab keys if needed
 }
 
 const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.CREATE]: 'create',
   [ServiceOperation.EDIT]: ':serviceId/edit',
-  [ServiceOperation.DETAIL]: ':serviceId/detail'
+  [ServiceOperation.DETAIL]: ':serviceId/detail',
+  [ServiceOperation.LIST]: 'list'
 }
 
 const typePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
+  [ServiceType.EDGE_DHCP]: 'edgeDhcp',
   [ServiceType.WIFI_CALLING]: 'wifiCalling',
   [ServiceType.MDNS_PROXY]: 'mdnsProxy',
   [ServiceType.DPSK]: 'dpsk',
-  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation'
+  [ServiceType.NETWORK_SEGMENTATION]: 'networkSegmentation',
+  [ServiceType.WEBAUTH_SWITCH]: 'webAuth'
 }
 
 function hasTab ({ type, oper }: ServiceRoutePathProps): boolean {
@@ -72,9 +76,13 @@ export function getServiceDetailsLink (props: ServiceDetailsLinkProps): string {
 }
 
 export function getServiceListRoutePath (prefixSlash = false): string {
-  return (prefixSlash ? '/' : '') + 'services'
+  return (prefixSlash ? '/' : '') + 'services/list'
 }
 
 export function getSelectServiceRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'services/select'
+}
+
+export function getServiceCatalogRoutePath (prefixSlash = false): string {
+  return (prefixSlash ? '/' : '') + 'services/catalog'
 }

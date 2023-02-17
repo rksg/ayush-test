@@ -15,12 +15,13 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   TextPlus as UITextPlus,
   ConfigurationSolid as AntSettingOutlined,
   EnvelopClosedOutlined as AntMailOutlined,
-  Edit as AntEditOutlined,
+  EditOutlined as AntEditOutlined,
   AccountCircleOutlined as AntUserOutlined,
-  Facebook,
-  GoogleSolid,
-  LinkedIn,
-  Twitter
+  FacebookOutlined as Facebook,
+  GoogleSolidPlus,
+  LinkedinOutlined as LinkedIn,
+  TwitterOutlined as Twitter,
+  SMSOutlined
 }   from '@acx-ui/icons'
 
 export const popoverClassName = 'portal-demo-popover'
@@ -139,7 +140,9 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  background-color: var(--acx-primary-white) !important;
+  .ant-layout{
+    background-color: var(--acx-primary-white);
+  }
   background-position: center !important;
   background-repeat: no-repeat !important;
   height:100%;
@@ -197,6 +200,18 @@ export const FieldText = styled.div`
   font-size:10px;
   text-align:center;
 `
+export const FieldTextMiddle = styled.div`
+  margin-top:10px;
+  line-height: 26px;
+  font-size:12px;
+  text-align:center;
+`
+export const FieldTextBig = styled.div`
+  margin-top:10px;
+  line-height: 26px;
+  font-size:14px;
+  text-align:center;
+`
 export const FieldLabel = styled.div`
   margin-top:10px;
   margin-bottom:5px;
@@ -206,8 +221,8 @@ const fieldInputStyle = css`
 ::placeholder{
   font-style:italic;
 }
-width:280px;
-height:25px;
+width:266px;
+height:28px;
 margin-top:10px;
 padding-left:4px;
 margin-bottom:10px;
@@ -219,17 +234,20 @@ border:1px solid var(--acx-neutrals-50);
 `
 export const FieldInput = styled.input`
   ${fieldInputStyle}
+  border-radius:5px;
 `
 export const FieldInputSmall = styled.input`
   ${fieldInputStyle}
-  width:250px;
+  width:232px;
+  margin-top:0px;
   margin-bottom:0px;
-  border-radius:5px;
+  border:0;
+  pointer-events:none;
 `
 export const PortalButton = styled.button`
   margin-top:20px;
   margin-bottom:10px;
-  width:275px;
+  width:220px;
   height:32px;
   background-color:var(--acx-accents-orange-50);
   color:var(--acx-primary-white);
@@ -251,6 +269,7 @@ export const FieldTextLink = styled.div`
   ${linkStyle}
 `
 export const FieldLabelLink = styled.label`
+  font-size: var(--acx-body-5-font-size) !important;
   ${linkStyle}
 `
 export const ViewSection = styled.div`
@@ -259,8 +278,8 @@ export const ViewSection = styled.div`
   width:420px;
   max-width:100%;
   text-align:center;
-  padding:25px 0 25px 0;
-  border: 2px solid var(--acx-neutrals-40);
+  padding:25px 5px 25px 5px;
+  border: 2px solid var(--acx-neutrals-30);
 `
 export const ViewSectionNoBorder = styled.div`
   height:auto;
@@ -268,22 +287,23 @@ export const ViewSectionNoBorder = styled.div`
   max-width:100%;
   text-align:center;
   padding:10px 0 10px 0;
+  border: 2px solid var(--acx-neutrals-30);
 
 `
 export const ViewSectionLink = styled.div`
   text-align: right;
   padding-right:65px;
   padding-top: 5px;
-  font-size: 10px;
+  font-size: 12px;
   color:var(--acx-accents-blue-50);
   cursor:pointer;
 `
 export const ViewSectionText = styled.div`
   padding-top: 5px;
-  font-size: 11px;
+  font-size: 10px;
   color:var(--acx-neutrals-60);
   text-align:left;
-  margin-left:70px;
+  margin-left:45px;
 `
 export const ViewSectionTitle = styled.div`
   font-size:18px;
@@ -302,64 +322,30 @@ export const ViewSectionTabs = styled(UITabs)`
     }
     .ant-tabs-nav {
       padding-left:0px;
+      margin-left:auto;
+      margin-right:auto;
       .ant-tabs-nav-list{
+        border-bottom: 1px solid var(--acx-neutrals-30);
         .ant-tabs-tab {
-          background: var(--acx-neutrals-20);
-          margin-bottom:3px;
+          border:0;
           margin-left:2px !important;
           &.ant-tabs-tab-active {
-            border:1px solid var(--acx-accents-orange-50);
+            border: 0;
             color:var(--acx-neutrals-20);
-            background: var(--acx-neutrals-20);
-            margin-bottom: -3px;
+            border-bottom: 2px solid var(--acx-accents-orange-50);
+            .ant-tabs-tab-btn{
+              color:var(--acx-primary-black);
+            }
           }
       }
     }
   }
   .ant-tabs-content {
-    margin-top:-17px;
     margin-left:2px;
     height: auto;
     min-height:200px;
-    border: 1px solid var(--acx-accents-orange-50);
     width: 380px;
-  }
-`
-export const ViewSectionTabsBig = styled(UITabs)`
-
-  margin-top:10px;
-  margin-bottom:10px;
-  width:100%;
-  &.ant-tabs-card {
-    .ant-tabs-nav::before {
-      display: none;
-    }
-    .ant-tabs-nav {
-      padding-left:0 !important;
-      .ant-tabs-nav-list{
-        .ant-tabs-tab:hover{
-          color:var(--acx-neutrals-20);
-          border:0px;
-        }
-        .ant-tabs-tab {
-          background:var(--acx-primary-white);
-          border:0px;
-          margin-bottom:3px;
-          margin-left:2px !important;
-          &.ant-tabs-tab-active{
-            border-color:var(--acx-neutrals-20);
-            border:2px solid var(--acx-neutrals-20);
-            margin-bottom: -2px;
-          }
-      }
-    }
-  }
-  .ant-tabs-content {
-    margin-left:2px;
-    height: auto;
-    min-height:200px;
-    margin-top:-18px;
-    border: 2px solid var(--acx-neutrals-20);
+    border: 0;
   }
 `
 export const ViewSectionSocial=styled.div<{ $type: string | null }>`
@@ -381,17 +367,18 @@ export const ViewSectionSocial=styled.div<{ $type: string | null }>`
   `}
   margin:auto;
   display:flex;
-  height:50px;
-  width:280px;
+  height:40px;
+  width:240px;
   border-radius:5px;
   margin-bottom:10px;
   cursor:pointer;
 `
 export const ViewSectionSocialText=styled.div`
-  padding-top:15px;
+  padding-top:11px;
   padding-left:30px;
 `
 export const ViewSectionSocialIcon=styled.div`
+  padding-left:10px;
  .anticon{
   font-size:28px;
   padding-top:10px;
@@ -402,7 +389,7 @@ const iconsStyle = css`
 margin-bottom:-7px;
 width: 25px;
 height: 25px;
-background-color: var(--acx-neutrals-20);
+background-color: var(--acx-primary-white);
 border-radius: 5px 0 0 5px;
 `
 export const ViewSectionMobileOutlined = styled(UIMobilePhoneOutlined)`
@@ -414,19 +401,13 @@ path{
 export const ViewSectionUserOutlined = styled(AntUserOutlined)`
 ${iconsStyle}
 path:nth-child(1){
-  stroke: var(--acx-neutrals-20);
-}
-path:nth-child(2),path:nth-child(3){
-  fill:var(--acx-primary-black);
+  stroke: var(--acx-primary-white);
 }
 `
 export const ViewSectionMailOutlined = styled(AntMailOutlined)`
 ${iconsStyle}
-path{
-  fill:var(--acx-primary-black);
-}
 path:nth-child(2){
-  stroke:var(--acx-primary-white);
+  stroke:var(--acx-primary-black);
 }
 `
 export const ViewSectionEditOutlined = styled(AntEditOutlined)`
@@ -434,16 +415,18 @@ ${iconsStyle}
 `
 export const ViewSectionSpan = styled.span`
  color:var(--acx-accents-orange-30);
- margin-left:-9px;
+ margin-left:2px;
 `
-export const ViewTextArea = styled.div`
+export const ViewTextArea = styled.textarea`
  width:100%;
  height: 327px;
  line-height:20px;
- border: 2px solid var(--acx-neutrals-20);
  overflow-y:auto;
  text-align: left;
  padding: 5px 5px 20px 20px;
+ border: 0;
+ resize: none;
+ outline: none;
 `
 export const Popover = styled(AntPopover)`
 
@@ -574,34 +557,29 @@ export const PictureOutlined = styled(UIPictureSolid)<{ $isDesk: boolean | null 
   `}
 `
 const socialIconStyle=css`
-  width: 32px;
-  height: 32px;
-  margin-top: 8px;
+  width: 21px;
+  height: 21px;
+  margin-top: 10px;
 `
 export const FacebookOutlined = styled(Facebook)`
   ${socialIconStyle}
-  path{fill:var(--acx-primary-white);}
 `
 export const TwitterOutlined = styled(Twitter)`
 ${socialIconStyle}
-path{fill:var(--acx-primary-white);}
 `
 export const LinkedinOutlined = styled(LinkedIn)`
 ${socialIconStyle}
-path{fill:var(--acx-primary-white);}
 `
-export const SMSMobileOutlined = styled(UIMobilePhoneOutlined)`
+export const SMSMobileOutlined = styled(SMSOutlined)`
 ${socialIconStyle}
-path{
-  stroke:var(--acx-primary-white);
-}
-path:nth-child(2){
-  fill:var(--acx-primary-white);
-}
 `
-export const GoogleOutlined = styled(GoogleSolid)`
+export const GoogleOutlined = styled(GoogleSolidPlus)`
 ${socialIconStyle}
-path:nth-child(4){
-  stroke:var(--acx-primary-white);
-}
+`
+export const ViewDivInput = styled.div`
+border:1px solid var(--acx-neutrals-50);
+border-radius:5px;
+width:272px;
+margin-left:45px;
+margin-bottom:10px;
 `

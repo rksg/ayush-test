@@ -21,6 +21,10 @@
     "rc-components": "libs/rc/components",
     "rc-services": "libs/rc/services",
     "rc-utils": "libs/rc/utils",
-    "react-router-dom": "libs/common/react-router-dom"
+    "react-router-dom": "libs/common/react-router-dom",
+    "reports": "apps/reports",
+    "reports-components": "libs/reports/components",
+    "reports-services": "libs/reports/services",
+    "reports-utils": "libs/reports/utils"
   }
 }

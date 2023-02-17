@@ -2,13 +2,15 @@ import { omit } from 'lodash'
 
 import {
   Dashboard,
+  EdgeStatusSeverityStatistic,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 
 import {
   getSwitchDonutChartData,
   getApDonutChartData,
-  getVenueSwitchDonutChartData
+  getVenueSwitchDonutChartData,
+  getEdgeDonutChartData
 } from './helper'
 
 describe('getApDonutChartData', () => {
@@ -128,5 +130,42 @@ describe('getVenueSwitchDonutChartData', () => {
   })
   it('should return empty array if no data', ()=>{
     expect(getVenueSwitchDonutChartData(null as unknown as VenueDetailHeader)).toEqual([])
+  })
+})
+
+describe('getEdgeDonutChartData', () => {
+  const data = {
+    summary: {
+      '1_InSetupPhase': 5,
+      '3_RequiresAttention': 3,
+      '1_InSetupPhase_Offline': 3
+    },
+    totalCount: 1
+  }
+  it('should return correct formatted data', async () => {
+    expect(getEdgeDonutChartData(data)).toEqual([{
+      color: '#ED1C24',
+      name: 'Requires Attention',
+      value: 3
+    }, {
+      color: '#ACAEB0',
+      name: 'In Setup Phase: 5, Offline: 3',
+      value: 8
+    }])
+
+    //Removing 1_InSetupPhase, and it should return 1_InSetupPhase_Offline count
+    const modifiedData = omit(data, 'summary.1_InSetupPhase')
+    expect(getEdgeDonutChartData(modifiedData)).toEqual([{
+      color: '#ED1C24',
+      name: 'Requires Attention',
+      value: 3
+    }, {
+      color: '#ACAEB0',
+      name: 'Offline',
+      value: 3
+    }])
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getEdgeDonutChartData(null as unknown as EdgeStatusSeverityStatistic)).toEqual([])
   })
 })

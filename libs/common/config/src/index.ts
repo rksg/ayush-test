@@ -14,6 +14,9 @@ export interface EnvironmentConfig {
   SPLIT_IO_KEY: string
   PENDO_API_KEY: string
   DISABLE_PENDO: string
+  CAPTIVE_PORTAL_DOMAIN_NAME: string
+  CHANGE_PASSWORD: string
+  MANAGE_LICENSES: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import {
-  Col, Row
-} from 'antd'
+import { Col, Row, Typography }   from 'antd'
 import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsForm, Table, TableProps, Button, showToast } from '@acx-ui/components'
-import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation }  from '@acx-ui/rc/services'
-import { EdgeStaticRoute }                                         from '@acx-ui/rc/utils'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { Loader, showToast, StepsForm, Table, TableProps }        from '@acx-ui/components'
+import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
+import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
+import { useTenantLink }                                          from '@acx-ui/react-router-dom'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -83,10 +81,8 @@ const StaticRoutes = () => {
     setDrawerVisible(true)
   }
 
-  const toolBarRender = () => [
-    <Button type='link' onClick={() => openDrawer()}>
-      {$t({ defaultMessage: 'Add Route' })}
-    </Button>
+  const actionButtons = [
+    { label: $t({ defaultMessage: 'Add Route' }), onClick: () => openDrawer() }
   ]
 
   const addRoute = (data: EdgeStaticRoute) => {
@@ -137,15 +133,16 @@ const StaticRoutes = () => {
                 data={currentEditData}
                 allRoutes={routesData}
               />
+              <Typography.Title level={3}>
+                {$t({ defaultMessage: 'Static Routes' })}
+              </Typography.Title>
               <Table<EdgeStaticRoute>
-                headerTitle={$t({ defaultMessage: 'Static Routes' })}
-                toolBarRender={toolBarRender}
+                actions={actionButtons}
                 columns={columns}
                 rowActions={rowActions}
                 dataSource={routesData}
                 rowSelection={{ type: 'checkbox' }}
                 rowKey='id'
-                type='form'
               />
             </Loader>
           </Col>

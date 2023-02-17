@@ -15,16 +15,15 @@ export default function PortalViewGuestForget (props: {
   const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSection>
-      <UI.ViewSectionTitle>{portalLang.forgotPswdLink}</UI.ViewSectionTitle>
-      <UI.FieldText>{portalLang.forgotPswdNote}</UI.FieldText>
+      <UI.FieldTextBig>{portalLang.forgotPswdNote}</UI.FieldTextBig>
       <UI.ViewSectionTabs
         defaultActiveKey='text'
         type='card'
         size={'middle'}
       >
         <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswdText} key='text'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
-            {portalLang.forgotPswdTextDesc}</UI.FieldText>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
+            {portalLang.forgotPswdTextDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
             placeholder={portalLang.mobilePhone}></UI.FieldInput>
           <PortalButtonContent
@@ -34,8 +33,8 @@ export default function PortalViewGuestForget (props: {
           >{portalLang.sendPswd}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswdEmail} key='email'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
-            {portalLang.forgotPswdEmailDesc}</UI.FieldText>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
+            {portalLang.forgotPswdEmailDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
             placeholder={portalLang.email}></UI.FieldInput>
           <PortalButtonContent
@@ -45,8 +44,8 @@ export default function PortalViewGuestForget (props: {
           >{portalLang.sendPswd}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
         <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswOther} key='other'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>
-            {portalLang.forgotPswOtherDesc}</UI.FieldText>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>
+            {portalLang.forgotPswOtherDesc}</UI.FieldTextMiddle>
         </UI.ViewSectionTabs.TabPane>
       </UI.ViewSectionTabs>
       <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>

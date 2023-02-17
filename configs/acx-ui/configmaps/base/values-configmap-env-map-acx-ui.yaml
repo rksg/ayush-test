@@ -18,3 +18,12 @@ data:
       - configmap: configmap-acx-ui
         key: disable.pendo
         name: DISABLE_PENDO
+      - configmap: configmap-acx-ui
+        key: captive.portal.domain.name
+        name: CAPTIVE_PORTAL_DOMAIN_NAME
+      - configmap: configmap-acx-ui
+        key:  change.password
+        name: CHANGE_PASSWORD
+      - configmap: configmap-acx-ui
+        key: manage.licenses
+        name: MANAGE_LICENSES

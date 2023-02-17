@@ -18,17 +18,17 @@ import {
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
-  useParams
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
 
-import ApTabs from './ApTabs'
+import { useApContext } from './ApContext'
+import ApTabs           from './ApTabs'
 
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber } = useParams()
+  const { tenantId, serialNumber } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
 

@@ -36,7 +36,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    expect(screen.getAllByRole('img', { name: 'loader' })[0]).toBeVisible()
   })
   it('should render correctly without search params', async () => {
 
@@ -50,7 +50,10 @@ describe('ClientTroubleshootingTab', () => {
       }
     )
     expect(await screen.findByTestId('history-collapse')).toBeVisible()
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(
@@ -63,7 +66,10 @@ describe('ClientTroubleshootingTab', () => {
       </MemoryRouter>
     )
     expect(await screen.findByTestId('history-collapse')).toBeVisible()
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
   })
   it('should handle history button toggle', async () => {
     render(
@@ -99,6 +105,9 @@ describe('ClientTroubleshootingTab', () => {
     fireEvent.mouseDown(selectionInput[0])
     fireEvent.click(await screen.findByText('Performance'))
     fireEvent.click(await screen.findByText('Apply'))
-    expect(asFragment()).toMatchSnapshot()
+    const fragment = asFragment()
+    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    expect(fragment).toMatchSnapshot()
   })
 })

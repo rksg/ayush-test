@@ -1,0 +1,209 @@
+import { useState, useEffect } from 'react'
+
+import { ClockCircleFilled }      from '@ant-design/icons'
+import { Select }                 from 'antd'
+import { SorterResult }           from 'antd/lib/table/interface'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
+
+import { LayoutUI, Loader, Badge, StatusIcon }                                              from '@acx-ui/components'
+import { TimelineDrawer }                                                                   from '@acx-ui/rc/components'
+import { useActivitiesQuery }                                                               from '@acx-ui/rc/services'
+import { Activity, CommonUrlsInfo, useTableQuery, getActivityDescription, severityMapping } from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate }                                                       from '@acx-ui/react-router-dom'
+import { formatter }                                                                        from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
+
+const defaultPayload: {
+  url: string
+  filters?: Record<string, string|[string]>
+  fields: string[]
+} = {
+  url: CommonUrlsInfo.getActivityList.url,
+  fields: [
+    'startDatetime',
+    'endDatetime',
+    'status',
+    'product',
+    'admin',
+    'descriptionTemplate',
+    'descriptionData',
+    'severity'
+  ]
+}
+
+export default function ActivityButton () {
+  const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/timeline')
+  const [status, setStatus] = useState('all')
+  const [detail, setDetail] = useState<Activity>()
+  const [detailModal, setDetailModalOpen] = useState<boolean>()
+  const [activityModal, setActivityModalOpen] = useState<boolean>()
+
+  const tableQuery = useTableQuery({
+    useQuery: useActivitiesQuery,
+    defaultPayload,
+    sorter: {
+      sortField: 'startDatetime',
+      sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 25
+    }
+  })
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: moment().subtract(7,'d').format(),
+        toTime: moment().format(),
+        ...(status === 'all' ? {} : { status: [status] })
+      }
+    })
+  }, [status])
+
+  const activityList = <>
+    <UI.FilterRow>
+      <Select value={status}
+        size='small'
+        onChange={(val)=>{
+          setStatus(val)
+        }}>
+        <Select.Option value={'all'}>
+          { $t({ defaultMessage: 'All Statuses' }) }
+        </Select.Option>
+        <Select.Option value={'PENDING'}>
+          { $t({ defaultMessage: 'Pending' }) }
+        </Select.Option>
+        <Select.Option value={'INPROGRESS'}>
+          { $t({ defaultMessage: 'In Progress' }) }
+        </Select.Option>
+        <Select.Option value={'SUCCESS'}>
+          { $t({ defaultMessage: 'Completed' }) }
+        </Select.Option>
+      </Select>
+      <UI.LinkButton type='link'
+        size='small'
+        onClick={() => navigate(basePath)}>
+        {$t({ defaultMessage: 'View all activities' })}
+      </UI.LinkButton>
+    </UI.FilterRow>
+    <Loader states={[tableQuery]}>
+      <UI.ListTable
+        itemLayout='horizontal'
+        pagination={{
+          ...tableQuery.pagination,
+          showSizeChanger: false,
+          onChange: (page, pageSize) => {
+            const pagination = {
+              current: page,
+              pageSize
+            }
+            const sorter = {
+              field: 'startDatetime',
+              order: 'descend'
+            } as SorterResult<Activity>
+            const extra = {
+              currentDataSource: [] as Activity[],
+              action: 'paginate' as const
+            }
+            return tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
+          }
+        }}
+        dataSource={tableQuery.data?.data}
+        renderItem={item => {
+          const activity = item as Activity
+          return (
+            <UI.ActivityItem onClick={() => {
+              setDetailModalOpen(true)
+              setDetail(activity)
+            }}>
+              <UI.ActivityMeta
+                title={getActivityDescription(
+                  activity.descriptionTemplate,
+                  activity.descriptionData
+                )}
+                avatar={<StatusIcon status={activity.status as Activity['status']}/>}
+                description={
+                  <UI.ListTime>{formatter('calendarFormat')(activity.startDatetime)}</UI.ListTime>}
+              />
+            </UI.ActivityItem>
+          )}}
+      />
+    </Loader>
+  </>
+
+  const getDrawerData = (data: Activity) => [
+    {
+      title: defineMessage({ defaultMessage: 'Start Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'End Time' }),
+      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Severity' }),
+      value: (() => {
+        const msg = severityMapping[data.severity as keyof typeof severityMapping]
+        return $t(msg)
+      })()
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Event Type' }),
+      value: 'Admin activity'
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Source' }),
+      value: data.admin.name
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Admin IP' }),
+      value: data.admin.ip
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Admin Interface' }),
+      value: data.admin.interface
+    },
+    {
+      title: defineMessage({ defaultMessage: 'Description' }),
+      value: getActivityDescription(
+        data.descriptionTemplate,
+        data.descriptionData
+      )
+    }
+  ]
+
+  return <>
+    <Badge
+      overflowCount={9}
+      offset={[-3, 0]}
+      children={<LayoutUI.ButtonSolid icon={<ClockCircleFilled />}
+        onClick={()=>{
+          setActivityModalOpen(true)
+        }}/>}
+    />
+    <UI.Drawer
+      width={464}
+      title={$t({ defaultMessage: 'Activities' })}
+      visible={activityModal}
+      onClose={() => {
+        setActivityModalOpen(false)
+      }}
+      mask={true}
+      children={activityList}
+    />
+    {detailModal && <TimelineDrawer
+      width={464}
+      title={defineMessage({ defaultMessage: 'Activity Details' })}
+      visible={detailModal}
+      onClose={()=>setDetailModalOpen(false)}
+      onBackClick={()=>setDetailModalOpen(false)}
+      data={getDrawerData?.(detail!)}
+      timeLine={detail?.steps}
+    />}
+  </>
+}

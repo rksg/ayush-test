@@ -39,11 +39,14 @@ export function DisabledButton (
   // ref: https://github.com/react-component/tooltip/issues/18
   const notAvailMsg = useIntl().$t(notAvailableMsg)
   const { tooltipPlacement, ...buttonProps } = props
-  return <Tooltip
-    placement={tooltipPlacement || 'top'}
-    title={props.title || notAvailMsg}>
-    <span style={{ cursor: 'not-allowed' }}>
-      <Button {...buttonProps} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
-    </span>
-  </Tooltip>
+  const button = <span style={{ cursor: 'not-allowed' }}>
+    <Button {...buttonProps} disabled style={{ ...props.style, pointerEvents: 'none' }}/>
+  </span>
+  return props.title !== ''
+    ? <Tooltip
+      placement={tooltipPlacement || 'top'}
+      title={props.title || notAvailMsg}>
+      {button}
+    </Tooltip>
+    : button
 }

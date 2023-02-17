@@ -409,6 +409,81 @@ exports[`ApDetailsTab should render correctly 1`] = `
                           >
                             <label
                               class=""
+                              for="0_tags"
+                              title="Tags"
+                            >
+                              Tags
+                            </label>
+                          </div>
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <div
+                                  class="ant-select ant-select-in-form-item ant-select-multiple ant-select-show-search"
+                                >
+                                  <div
+                                    class="ant-select-selector"
+                                  >
+                                    <div
+                                      class="ant-select-selection-overflow"
+                                    >
+                                      <div
+                                        class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                                        style="opacity: 1;"
+                                      >
+                                        <div
+                                          class="ant-select-selection-search"
+                                          style="width: 0px;"
+                                        >
+                                          <input
+                                            aria-activedescendant="0_tags_list_0"
+                                            aria-autocomplete="list"
+                                            aria-controls="0_tags_list"
+                                            aria-haspopup="listbox"
+                                            aria-owns="0_tags_list"
+                                            autocomplete="off"
+                                            class="ant-select-selection-search-input"
+                                            id="0_tags"
+                                            role="combobox"
+                                            type="search"
+                                            value=""
+                                          />
+                                          <span
+                                            aria-hidden="true"
+                                            class="ant-select-selection-search-mirror"
+                                          >
+                                             
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <span
+                                      class="ant-select-selection-placeholder"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-label"
+                          >
+                            <label
+                              class=""
                               title="GPS Coordinates"
                             >
                               GPS Coordinates
@@ -448,7 +523,7 @@ exports[`ApDetailsTab should render correctly 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+              class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
               type="button"
             >
               <span>
@@ -460,7 +535,7 @@ exports[`ApDetailsTab should render correctly 1`] = `
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>

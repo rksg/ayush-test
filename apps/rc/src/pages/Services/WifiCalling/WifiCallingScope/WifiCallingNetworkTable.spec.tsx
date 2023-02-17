@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { userEvent }      from '@storybook/testing-library'
 import { act, fireEvent } from '@testing-library/react'
 import { rest }           from 'msw'
 
@@ -81,8 +82,12 @@ const ePDG: EPDG[] = [{
   domain: 'init.aaa.com',
   ip: '10.10.10.10'
 }]
-const networkIds: string[] = []
-const networksName: string[] = []
+const networkIds: string[] = ['1b34da3ca1784ab48ad97d609b02f61c']
+const networksName: string[] = ['birdytest2']
+const epdgs: EPDG[] = [{
+  domain: 'init.aaa.com',
+  ip: '10.10.10.10'
+}]
 
 const initState = {
   serviceName,
@@ -92,7 +97,8 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 } as WifiCallingFormContextType
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -143,7 +149,7 @@ describe('WifiCallingNetworkTable', () => {
 
     await screen.findByText('birdytest2')
 
-    expect(screen.getAllByText('psk').length).toBe(2)
+    expect(screen.getAllByText('Pre-Shared Key (PSK)').length).toBe(2)
     let item = screen.getByRole('cell', {
       name: /birdytest2/i
     })
@@ -158,6 +164,10 @@ describe('WifiCallingNetworkTable', () => {
     let deactivateButton = screen.getAllByText('Deactivate')
 
     fireEvent.click(deactivateButton[0])
+
+    await userEvent.click(screen.getAllByRole('switch')[0])
+
+    await userEvent.click(screen.getAllByRole('switch')[1])
 
   }, 20000)
 })

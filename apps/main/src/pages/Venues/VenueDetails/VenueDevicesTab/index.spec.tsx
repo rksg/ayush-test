@@ -19,6 +19,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
+}))
+
 const data: Dashboard = {
   summary: {
     clients: {
@@ -269,8 +274,7 @@ const meshData = {
     }
   ] }
 
-describe('VenueMeshAps', () => {
-  let params: { tenantId: string, venueId: string, activeTab: string }
+describe('VenueWifi', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
       return feature === Features.EDGES ? false: true
@@ -286,24 +290,31 @@ describe('VenueMeshAps', () => {
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
       ),
       rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
         CommonUrlsInfo.getMeshAps.url,
         (req, res, ctx) => res(ctx.json(meshData))
       )
     )
-
-    params = {
-      tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
-      venueId: '8caa8f5e01494b5499fa156a6c565138',
-      activeTab: 'devices'
-    }
   })
 
+  const params = {
+    tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+    venueId: '8caa8f5e01494b5499fa156a6c565138',
+    activeTab: 'devices',
+    activeSubTab: 'wifi'
+  }
+
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><VenueDetails /></Provider>, {
-      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab' }
+    render(<Provider><VenueDetails /></Provider>, {
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
 
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(await screen.findByTestId('LineChartOutline'))
+
+    fireEvent.click(await screen.findByTestId('MeshSolid'))
 
     await screen.findByText('R710')
   })

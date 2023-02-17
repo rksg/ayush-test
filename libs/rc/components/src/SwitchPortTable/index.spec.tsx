@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { switchApi }                                             from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                                        from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { switchApi }                                     from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { SwitchPortTable } from '.'
 
@@ -265,6 +265,15 @@ const portlistData_7150 = {
   totalCount: 2
 }
 
+jest.mock('./SwitchLagDrawer', () => ({
+  SwitchLagDrawer: () => <div data-testid='SwitchLagDrawer' />
+}))
+
+jest.mock('./editPortDrawer', () => ({
+  EditPortDrawer: () => <div data-testid='editPortDrawer' />
+}))
+
+
 describe('SwitchPortTable', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -277,16 +286,19 @@ describe('SwitchPortTable', () => {
   })
 
   it('should render ports of switch ICX7650 correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <SwitchPortTable isVenueLevel={false} />
     </Provider>, {
       route: { params, path: '/:tenantId' }
     })
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findAllByText('1/1/1')
     await screen.findByRole('button', { name: 'Manage LAG' })
-    expect(asFragment()).toMatchSnapshot()
+
+    const row = await screen.findAllByRole('row')
+    fireEvent.click(await within(row[1]).findByRole('checkbox'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
   })
 
   it('should render ports of switch ICX7150 correctly', async () => {
@@ -296,15 +308,13 @@ describe('SwitchPortTable', () => {
         (req, res, ctx) => res(ctx.json(portlistData_7150))
       )
     )
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <SwitchPortTable isVenueLevel={true} />
     </Provider>, {
       route: { params, path: '/:tenantId' }
     })
 
-    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findAllByText('1/1/1')
     expect(screen.queryByText('Manage LAG')).not.toBeInTheDocument()
-    expect(asFragment()).toMatchSnapshot()
   })
 })
