@@ -108,7 +108,8 @@ export function renderFilter <RecordType> (
     value={filterValues[key as keyof Filter]}
     onChange={(value: unknown) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-      setFilterValues({ ...filterValues, [key]: isValidValue ? value: undefined })
+      const filterValue = Array.isArray(value) ? value : [value]
+      setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
     }}
     placeholder={column.title as string}
     showArrow
