@@ -1,27 +1,30 @@
 import '@testing-library/jest-dom'
-import { rest }         from 'msw'
-import { IntlProvider } from 'react-intl'
+import { rest } from 'msw'
 
+import { venueApi }                                                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ConnectionStates, ConnectionStatus, DeviceStates, DeviceTypes } from '@acx-ui/rc/utils'
-import { Provider }                                                                      from '@acx-ui/store'
+import { Provider, store }                                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }              from '@acx-ui/test-utils'
 
 import { TopologyGraph } from '.'
 
 
+const fields = [
+  'deviceType',
+  'venueName',
+  'serialNumber',
+  'switchMac',
+  'name',
+  'tenantId',
+  'apMac',
+  'model',
+  'syncDataStartTime',
+  'customerName',
+  'deviceStatus'
+]
+
 const graphData = {
-  fields: ['deviceType',
-    'venueName',
-    'serialNumber',
-    'switchMac',
-    'name',
-    'tenantId',
-    'apMac',
-    'model',
-    'syncDataStartTime',
-    'customerName',
-    'deviceStatus'
-  ],
+  fields,
   totalCount: 1,
   page: null,
   data: [
@@ -239,6 +242,8 @@ const graphData = {
   ]
 }
 
+const scaleData = { ...graphData }
+
 const mock = {
   inverse: () => mock,
   multiply: () => mock,
@@ -291,37 +296,21 @@ Object.defineProperty(global.SVGElement.prototype, 'height', {
 
 
 describe('Topology', () => {
-  let params: { tenantId: string, venueId: string }
-  beforeEach(() => {
+  beforeEach(() => store.dispatch(venueApi.util.resetApiState()))
+
+  it('should render correctly', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getTopology.url,
         (req, res, ctx) => {
-          const scaleData = { ...graphData }
-          if (expect.getState().currentTestName === 'Topology test scale')
-            for (let i=0; i<100; i++) {
-              scaleData.data[0].nodes.push({
-                type: DeviceTypes.Ap,
-                category: 'Ap',
-                name: 'ApName',
-                mac: '',
-                serial: '534689211603',
-                id: '5C:DF:89:2A:AF:06' + i,
-                states: DeviceStates.Regular,
-                childCount: 0
-              })
-            }
-          return res(ctx.json(scaleData))
+          return res(ctx.json(graphData))
         }
       )
     )
-    params = {
-      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
-      venueId: '7231da344778480d88f37f0cca1c534f'
-    }
-  })
-  it('should render correctly', async () => {
-
 
     const { asFragment } = await render(<Provider>
       <TopologyGraph /></Provider>,{
@@ -408,10 +397,42 @@ describe('Topology', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
-  it('test scale', async () => {
-    await render(<Provider><IntlProvider locale='en'>
-      <TopologyGraph /></IntlProvider></Provider>,{
+
+  it('scale data should render', async () => {
+    const params = {
+      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
+      venueId: '7231da344778480d88f37f0cca1c534f'
+    }
+
+    for (let i=0; i<100; i++) {
+      scaleData.data[0].nodes.push({
+        type: DeviceTypes.Ap,
+        category: 'Ap',
+        name: 'ApName',
+        mac: '',
+        serial: '534689211603',
+        id: '5C:DF:89:2A:AF:06' + i,
+        states: DeviceStates.Regular,
+        childCount: 0
+      })
+    }
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json(scaleData))
+        }
+      )
+    )
+    const { asFragment } = await render(<Provider>
+      <TopologyGraph /></Provider>,{
       route: { params }
     })
+
+    const ApDevices = await screen.findAllByTestId('TopologyAPIcon')
+
+    expect(ApDevices.length).toBe(105)
+
+    expect(asFragment()).toMatchSnapshot()
   })
 })

@@ -5,7 +5,7 @@ import { Card, Descriptions, Loader }                                           
 import { ApDeviceStatusEnum, APExtended, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
 import { formatter }                                                                                    from '@acx-ui/utils'
 
-import * as UI                                  from './styledComponents'
+import * as UI                                     from './styledComponents'
 import { getDeviceColor, getWirelessRadioColumns } from './utils'
 
 
