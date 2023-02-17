@@ -173,7 +173,7 @@ export function SwitchConfigHistoryTable (props: {
   const handleFilterChange = (customFilters: FILTER) => {
     const payload = {
       ...tableQuery.payload,
-      filterByConfigType: customFilters?.configType
+      filterByConfigType: Array.isArray(customFilters?.configType) ? customFilters?.configType[0] : undefined
     }
 
     tableQuery.setPayload(payload)
