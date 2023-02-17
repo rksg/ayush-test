@@ -16,8 +16,9 @@ import * as UI from './styledComponents'
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
+  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
-  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+  const isEdgesEnable = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const sets = [
     {

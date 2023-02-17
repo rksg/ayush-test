@@ -30,7 +30,8 @@ const defaultPayload = {
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
-  const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
+  const edgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
     {
