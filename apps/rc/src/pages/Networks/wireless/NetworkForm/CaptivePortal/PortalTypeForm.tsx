@@ -85,7 +85,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath}>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
@@ -106,7 +106,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr}>
+            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={true}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

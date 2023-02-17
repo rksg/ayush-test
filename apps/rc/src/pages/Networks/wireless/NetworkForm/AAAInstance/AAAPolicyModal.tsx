@@ -25,13 +25,13 @@ export default function AAAPolicyModal (props:{
       onClose()
       if(data)updateInstance(data)
     }}/>
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
       <Button type='link'
-        title={!useIsSplitOn(Features.POLICIES)?$t(notAvailableMsg):''}
+        title={disableAAA?$t(notAvailableMsg):''}
         onClick={()=>setVisible(true)}
-        disabled={!useIsSplitOn(Features.POLICIES)}>
+        disabled={disableAAA}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal

@@ -10,6 +10,8 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -65,14 +67,14 @@ function SettingsForm () {
     }
     setData && setData({ ...data, isCloudpathEnabled: checked })
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch disabled={editMode} onChange={onCloudPathChange} />
+          <Switch disabled={editMode||disableAAA} onChange={onCloudPathChange} />
         </Form.Item>
         <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>

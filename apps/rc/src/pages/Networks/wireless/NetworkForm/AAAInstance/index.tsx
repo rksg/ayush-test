@@ -32,6 +32,7 @@ const AAAInstance = (props:{
       setAaaList(data?.map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
@@ -40,11 +41,11 @@ const AAAInstance = (props:{
           noStyle
           label={props.serverLabel}
           rules={[
-            { required: !useIsSplitOn(Features.POLICIES)?false:true }
+            { required: !disableAAA }
           ]}
           initialValue={''}
           children={<Select
-            disabled={!useIsSplitOn(Features.POLICIES)}
+            disabled={disableAAA}
             style={{ width: 210 }}
             onChange={(value)=>{
               form.setFieldValue(props.type,

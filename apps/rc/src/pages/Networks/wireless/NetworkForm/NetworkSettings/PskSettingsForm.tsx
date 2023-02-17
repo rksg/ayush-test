@@ -17,7 +17,8 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { InformationSolid } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -158,7 +159,7 @@ function SettingsForm () {
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({ ...data, wlan: { macAddressAuthentication: checked } })
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -260,7 +261,7 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode} onChange={onMacAuthChange} />
+                <Switch disabled={editMode||disableAAA} onChange={onMacAuthChange} />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
               <Tooltip.Question
