@@ -251,10 +251,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -267,10 +268,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     blinkLedAp: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),

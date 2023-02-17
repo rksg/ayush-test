@@ -179,7 +179,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchVlans: {
     method: 'get',
     url: '/switches/:switchId/vlans',
-    oldUrl: '/api/switch/tenant/:tenantId/vlans/switch/:serialNumber',
+    oldUrl: '/api/switch/tenant/:tenantId/vlans/switch/:switchId',
     newApi: true
   },
   getSwitchesVlan: {
