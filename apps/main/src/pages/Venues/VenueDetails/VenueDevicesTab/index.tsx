@@ -44,13 +44,6 @@ export function VenueDevicesTab () {
     }
   ]
 
-  const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/venues/${venueId}/venue-details/devices/${tab}`
-    })
-  }
-
   return (
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'

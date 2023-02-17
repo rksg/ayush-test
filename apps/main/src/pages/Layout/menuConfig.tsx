@@ -162,7 +162,7 @@ export function useMenuConfig () {
           },
           ...useIsSplitOn(Features.EDGES) ? [{
             path: '/devices/edge/list',
-            name: $t({ defaultMessage: 'Edge' })
+            name: $t({ defaultMessage: 'SmartEdge' })
           }] : []
         ]
     },
