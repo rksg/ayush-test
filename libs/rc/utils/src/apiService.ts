@@ -66,7 +66,7 @@ export const createHttpRequest = (
   const enableNewApi = function () {
     const hasOldUrl = !_.isEmpty(apiInfo.oldUrl)
     if(apiInfo.newApi) {
-      return !hasOldUrl || isDev() || isLocalHost()
+      return !hasOldUrl || isInt() || isDev() || isLocalHost()
     } else {
       return false
     }
