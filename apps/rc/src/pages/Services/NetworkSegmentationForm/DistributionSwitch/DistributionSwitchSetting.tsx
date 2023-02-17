@@ -1,12 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import { Col, Form, Input, InputNumber, ModalProps, Row, Select, Space, Transfer } from 'antd'
-import { useIntl }                                                                 from 'react-intl'
+import { Col, Form, Input, InputNumber, Row, Select, Space, Transfer } from 'antd'
+import { useIntl }                                                     from 'react-intl'
 
 import { Button, Drawer, Modal, StepsForm, Subtitle, Table, TableProps } from '@acx-ui/components'
 import {
-  useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery,
+  useGetAccessSwitchesByDSQuery,
   useGetAvailableSwitchesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -23,9 +22,19 @@ import NetworkSegmentationFormContext from '../NetworkSegmentationFormContext'
 
 export default function DistributionSwitchSetting () {
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const { saveState, updateSaveState } = useContext(NetworkSegmentationFormContext)
 
   const [openDrawer, setOpenDrawer] = useState(false)
   const [selected, setSelected] = useState<DistributionSwitch>()
+  const [dsList, setDsList] = useState<DistributionSwitch[]>([])
+
+  useEffect(()=>{
+    if (saveState.distributionSwitches) {
+      setDsList(saveState.distributionSwitches)
+      form.setFieldValue('distributionSwitches', saveState.distributionSwitches)
+    }
+  }, [saveState])
 
   const rowActions: TableProps<DistributionSwitch>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -35,14 +44,45 @@ export default function DistributionSwitchSetting () {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: (selectedRows, clearSelection) => {
-      clearSelection()
+    onClick: (selectedRows) => {
+      setSelected(undefined)
+      const newList = dsList?.filter(ds=>{
+        return !selectedRows.map(r=>r.id).includes(ds.id)
+      })
+
+      saveToContext(newList)
     }
   }]
+
+  const saveToContext = (newList: DistributionSwitch[]) => {
+    const newAsList = newList.map(ds => {
+      return ds.accessSwitches || []
+    }).flat()
+    updateSaveState({ ...saveState, distributionSwitches: newList, accessSwitches: newAsList })
+  }
 
   const addHandler = () => {
     setSelected(undefined)
     setOpenDrawer(true)
+  }
+
+  const handleSaveDS = (values: DistributionSwitch) => {
+    let newList = dsList || []
+    if (!selected) { // Add
+      newList = newList.concat(values)
+    }
+    else { // edit
+      newList = newList.map(ds => {
+        if (selected.id === ds.id) {
+          return { ...selected, ...values }
+        }
+        return ds
+      })
+    }
+    setSelected(undefined)
+    setOpenDrawer(false)
+
+    saveToContext(newList)
   }
 
   return (<>
@@ -52,11 +92,14 @@ export default function DistributionSwitchSetting () {
     <StepsForm.Title>
       {$t({ defaultMessage: 'Distribution Switch Settings' })}
     </StepsForm.Title>
+    <Form.Item name='distributionSwitches' hidden />
     <DistributionSwitchTable rowActions={rowActions}
+      dataSource={dsList}
       selectedRowKeys={selected ? [selected.id] : []}/>
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
+      onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
   </>)
 }
@@ -64,27 +107,45 @@ export default function DistributionSwitchSetting () {
 function DistributionSwitchDrawer (props: {
   open: boolean,
   editRecord?: DistributionSwitch,
-  onClose: ()=>void
+  onClose: ()=>void,
+  onSaveDS?:(values: DistributionSwitch)=>void
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
-  const { open, editRecord, onClose } = props
+  const { open, editRecord, onClose, onSaveDS } = props
 
   const defaultRecord = { siteKeepAlive: 5, siteRetry: 3 }
 
   const { saveState } = useContext(NetworkSegmentationFormContext)
-  const venueId = saveState.venueId
+  const { venueId, distributionSwitches, accessSwitches } = saveState
 
   const [openModal, setOpenModal] = useState(false)
+  const [asList, setAsList] = useState<AccessSwitch[]>([])
 
-  const { data: availableSwitches } = useGetAvailableSwitchesQuery({
+  const dsId = Form.useWatch('id', form)
+
+  const { availableSwitches } = useGetAvailableSwitchesQuery({
     params: { tenantId, venueId }
-  }, { skip: !venueId })
+  }, {
+    skip: !venueId,
+    selectFromResult: ({ data }) => ({
+      availableSwitches: data?.switchViewList?.filter(sw=>
+        // filter out switches already selected in this MDU
+        !distributionSwitches?.find(ds => ds.id === sw.id) &&
+        !accessSwitches?.find(ds => ds.id === sw.id)
+      ) || []
+    })
+  })
 
   useEffect(()=>{
     form.resetFields()
-  }, [form, open])
+    setAsList(editRecord?.accessSwitches || [])
+  }, [form, open, editRecord])
+
+  const handleFormFinish = (values: DistributionSwitch) => {
+    onSaveDS && onSaveDS({ ...values, accessSwitches: asList })
+  }
 
   return (
     <Drawer
@@ -102,24 +163,35 @@ function DistributionSwitchDrawer (props: {
           try {
             await form.validateFields()
             form.submit()
-            onClose()
           } catch (error) {
             if (error instanceof Error) throw error
           }
         }}
       />} >
       <Form form={form}
+        onFinish={handleFormFinish}
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
-        <Form.Item name='name'
+        <Form.Item name='id'
           label={$t({ defaultMessage: 'Distribution Switch' })}
-          rules={[{ required: true }]} >
+          rules={[{ required: true }]}
+          hidden={!!editRecord}
+        >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitches?.switchViewList?.map(item => ({
+            options={availableSwitches.map(item => ({
               value: item.id,
               label: item.name
-            }))
-            } />
+            }))}
+            onChange={(newId)=>{
+              form.setFieldValue('name', availableSwitches.find(s=>s.id===newId)?.name)
+            }}
+          />
+        </Form.Item>
+        <Form.Item name='name'
+          label={$t({ defaultMessage: 'Distribution Switch' })}
+          hidden={!editRecord}
+        >
+          <Input disabled/>
         </Form.Item>
         <Form.Item name='vlanList'
           label={$t({ defaultMessage: 'VLAN Range' })}
@@ -165,7 +237,7 @@ function DistributionSwitchDrawer (props: {
             </Button>
           </Col>
         </Row>
-        <Table
+        <Table<AccessSwitch>
           columns={[{
             title: $t({ defaultMessage: 'Access Switch' }),
             dataIndex: 'name',
@@ -179,51 +251,84 @@ function DistributionSwitchDrawer (props: {
             dataIndex: ['uplinkInfo', 'uplinkId'],
             key: 'uplinkInfo'
           }]}
-          dataSource={[{
-            id: 'ccc',
-            name: 'ccc',
-            vlanId: 321,
-            model: 'sad',
-            uplinkInfo: {
-              uplinkType: 'PORT',
-              uplinkId: '1/3/2'
-            }
-          }]}
+          dataSource={asList}
           type='form'
           rowKey='id' />
       </Form>
-      <SelectAccessSwitchModal visible={openModal} onCancel={()=>setOpenModal(false)} />
+      <SelectAccessSwitchModal visible={openModal}
+        onSave={(newAsList)=> {
+          setAsList(newAsList)
+          setOpenModal(false)
+        }}
+        onCancel={()=>setOpenModal(false)}
+        selected={asList}
+        switchId={dsId} />
     </Drawer>
   )
 }
 
-function SelectAccessSwitchModal (props: ModalProps) {
+function SelectAccessSwitchModal ({ visible, onSave, onCancel, selected, switchId }: {
+  visible: boolean,
+  onSave?: ( asList: AccessSwitch[] )=>void,
+  onCancel: ()=>void,
+  selected?: AccessSwitch[]
+  switchId: string
+}) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
 
   const { saveState } = useContext(NetworkSegmentationFormContext)
-  const venueId = saveState.venueId
+  const { venueId, distributionSwitches } = saveState
 
   const [selectedAsList, setSelectedAsList] = useState([] as string[])
 
-  const { data } = useGetAccessSwitchesQuery({ params: { tenantId, venueId } }, { skip: !venueId })
+  const { availableAs } = useGetAccessSwitchesByDSQuery(
+    { params: { tenantId, venueId, switchId } }, {
+      skip: !venueId || !switchId,
+      selectFromResult: ({ data }) => {
+        const inUseSwitchIds = (distributionSwitches || []).map(ds=>ds.id).concat([switchId])
+        return {
+          availableAs: data?.switchViewList?.filter(sw=>!inUseSwitchIds.includes(sw.id)) || []
+        }
+      }
+    }
+  )
 
-  const handleUpdateAsList = () => {}
+  useEffect(()=>{
+    if (!visible) {
+      setSelectedAsList([])
+    }
+    if (selected) {
+      setSelectedAsList(selected.map(s=>s.id))
+    }
+  }, [selected, visible])
+
+  const handleUpdateAsList = () => {
+    onSave && onSave(availableAs
+      .filter(as=>selectedAsList.includes(as.id))
+      .map(as=>({ ...as, distributionSwitchId: switchId })) // convert to AccessSwitch
+    )
+  }
   const handleChange = (targetKeys: string[]) => {
     setSelectedAsList(targetKeys)
   }
 
   return (
-    <Modal {...props}
+    <Modal
+      visible={visible}
       title={$t({ defaultMessage: 'Select Access Switches' })}
       okText={$t({ defaultMessage: 'Apply' })}
       onOk={handleUpdateAsList}
+      onCancel={onCancel}
       okButtonProps={{
         disabled: selectedAsList.length <= 0
       }}
       width={662} >
       <Transfer
-        dataSource={data?.data}
+        dataSource={availableAs.map(as=>({
+          key: as.id,
+          title: as.name
+        }))}
         targetKeys={selectedAsList}
         showSearch
         showSelectAll={false}
@@ -234,20 +339,19 @@ function SelectAccessSwitchModal (props: ModalProps) {
         ]}
         operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
         onChange={handleChange}
-        render={item => `${item.name} (${item.id})`}
+        render={item => `${item.title} (${item.key})`}
       />
     </Modal>)
 }
 
-function DistributionSwitchTable (
-  props: {
-    rowActions: TableProps<DistributionSwitch>['rowActions'],
-    selectedRowKeys: string[]
-  }
-) {
+function DistributionSwitchTable ( props: {
+  rowActions: TableProps<DistributionSwitch>['rowActions'],
+  dataSource: DistributionSwitch[],
+  selectedRowKeys: string[]
+}) {
   const { $t } = useIntl()
 
-  const { rowActions, selectedRowKeys } = props
+  const { rowActions, dataSource, selectedRowKeys } = props
 
   const columns: TableProps<DistributionSwitch>['columns'] = React.useMemo(() => {
     return [{
@@ -265,7 +369,10 @@ function DistributionSwitchTable (
       key: 'accessSwitches',
       title: $t({ defaultMessage: 'Access Switch' }),
       dataIndex: 'accessSwitches',
-      sorter: true
+      sorter: false,
+      render: (data, row)=>{
+        return row.accessSwitches?.map(as=>`${as.name}`).join(', ')
+      }
     }, {
       key: 'loopbackInterface',
       title: $t({ defaultMessage: 'Loopback Interface' }),
@@ -298,20 +405,7 @@ function DistributionSwitchTable (
   return (<>
     <Table
       columns={columns}
-      dataSource={[{
-        id: 'xxx',
-        name: 'xxx',
-        siteName: 'xxx',
-        siteIpAddress: 'xxx',
-        vlanList: 'xxx',
-        siteKeepAlive: 'xxx',
-        siteRetry: 'xxx',
-        loopbackInterfaceId: 'xxx',
-        loopbackInterfaceIpAddress: 'xxx',
-        loopbackInterfaceSubnetMask: 'xxx'
-      }]}
-      // pagination={tableQuery.pagination}
-      // onChange={tableQuery.handleTableChange}
+      dataSource={dataSource}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'radio', selectedRowKeys }} />

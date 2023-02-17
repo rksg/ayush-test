@@ -35,11 +35,11 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
   },
-  getSwitchesByServiceId: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
-  },
-  getAvailableSwitchesByDsId: {
+  // getSwitchesByServiceId: {
+  //   method: 'get',
+  //   url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+  // },
+  getAccessSwitchesByDS: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
       '/distributions/:switchId/accessSwitches'
@@ -51,13 +51,13 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   validateAccessSwitchInfo: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitchInfo'
-  },
-  getAccessSwitches: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
-  },
-  getDistributionSwitches: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
   }
+  // getAccessSwitches: {
+  //   method: 'post',
+  //   url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
+  // },
+  // getDistributionSwitches: {
+  //   method: 'post',
+  //   url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+  // }
 }

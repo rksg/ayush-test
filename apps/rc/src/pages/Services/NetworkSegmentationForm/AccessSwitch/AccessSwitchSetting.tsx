@@ -11,7 +11,6 @@ import {
   Select,
   Space,
   Typography } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -24,15 +23,16 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { isLAGMemberPort }            from '@acx-ui/rc/components'
 import {
   useSwitchPortlistQuery,
-  useGetSwitchVlansQuery,
+  useGetSwitchVlanQuery,
   useLazyGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useGetLagListQuery
 } from '@acx-ui/rc/services'
-import { AccessSwitch, WebAuthTemplate } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
+import { AccessSwitch, UplinkInfo, WebAuthTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { defaultTemplateData }        from '../../NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegmentationFormContext from '../NetworkSegmentationFormContext'
@@ -47,6 +47,7 @@ export default function AccessSwitchSetting () {
     <Typography.Paragraph>
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
+    <Form.Item name='accessSwitches' hidden />
     <AccessSwitchTable />
   </>)
 }
@@ -63,20 +64,19 @@ function AccessSwitchDrawer (props: {
 
   const { open, editRecords, onClose, onSave } = props
 
-  const { saveState } = useContext(NetworkSegmentationFormContext)
-  const venueId = saveState.venueId
-
   const switchId = editRecords && editRecords[0].id
   const editingWebAuthPageType = editRecords && editRecords[0].webAuthPageType
 
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
-  const { vlanList } = useGetSwitchVlansQuery({ params: { tenantId, switchId }, payload: {
+  const { vlanList } = useGetSwitchVlanQuery({ params: { tenantId, switchId }, payload: {
     page: 1, pageSize: 4096, sortField: 'vlanId', sortOrder: 'ASC'
   } }, {
     skip: !switchId,
     selectFromResult: ({ data }) => ({
-      vlanList: data?.filter(vlan => vlan.vlanName !== 'DEFAULT-VLAN' )
-        .map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId }))
+      vlanList: [
+        ...(data?.switchVlan || []),
+        ...(data?.profileVlan || [])
+      ].map(vlan => ({ label: vlan.vlanId, value: vlan.vlanId }))
     })
   })
   const { portList } = useSwitchPortlistQuery({ params: { tenantId }, payload: {
@@ -85,13 +85,20 @@ function AccessSwitchDrawer (props: {
   } }, {
     skip: !switchId,
     selectFromResult: ({ data }) => ({
-      portList: data?.data?.map(port => ({ label: port.portIdentifier, value: port.portId }))
+      portList: data?.data?.map(port => ({
+        label: port.portIdentifier,
+        value: port.portIdentifier,
+        disabled: isLAGMemberPort(port)
+      }))
     })
   })
   const { lagList } = useGetLagListQuery({ params: { tenantId, switchId } }, {
     skip: !switchId,
     selectFromResult: ({ data }) => ({
-      lagList: data?.map(lag => ({ label: lag.name, value: lag.lagId }))
+      lagList: data?.map(lag => ({
+        label: `${lag.lagId} (${lag.name})`,
+        value: lag.lagId
+      }))
     })
   })
   const { data: templateListResult } = useWebAuthTemplateListQuery({
@@ -127,7 +134,7 @@ function AccessSwitchDrawer (props: {
   }, [templateId, tenantId])
 
   const UplinkRadio = (props: {
-    value: AccessSwitch['uplinkInfo']['uplinkType'],
+    value: UplinkInfo['uplinkType'],
     options?: { value?: string | number, label?: string }[]
   }) => {
     const { value: radioValue, options } = props
@@ -284,22 +291,25 @@ function AccessSwitchDrawer (props: {
 
 function AccessSwitchTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const { saveState, updateSaveState } = useContext(NetworkSegmentationFormContext)
 
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<AccessSwitch[]>()
-  const [accessSwitchList, setAccessSwitchList ] = useState<AccessSwitch[]>([{
-    id: 'c0:c5:20:aa:24:57',
-    name: 'ICX7150-C12 Router',
-    vlanId: 11,
-    model: 'ICX7150-C12P',
-    webAuthPageType: 'USER_DEFINED',
-    templateId: '0f99786fd7464f5790af824c6352ad1d',
-    distributionSwitchId: '123',
-    uplinkInfo: {
-      uplinkType: 'PORT',
-      uplinkId: '1/2/3'
+  const [accessSwitchList, setAccessSwitchList ] = useState<AccessSwitch[]>([])
+
+  const { data: templateListResult } = useWebAuthTemplateListQuery({
+    params: { tenantId },
+    payload: {
+      fields: [ 'name', 'id' ]
     }
-  }])
+  })
+
+  useEffect(()=>{
+    if (saveState.accessSwitches) {
+      setAccessSwitchList(saveState.accessSwitches)
+    }
+  }, [saveState.accessSwitches])
 
   const onClose = () => {
     setOpen(false)
@@ -308,15 +318,17 @@ function AccessSwitchTable () {
   const onSave = (values: Partial<AccessSwitch>) => {
     if (!selected || !accessSwitchList) return
 
-    setAccessSwitchList(accessSwitchList.map(as => {
+    const newList = accessSwitchList.map(as => {
       const isSelected = selected.map(item => item.id).includes(as.id)
       if (isSelected) {
         return { ...as, ...values }
       }
       return as
-    }))
+    })
     setSelected(undefined)
     setOpen(false)
+
+    updateSaveState({ ...saveState, accessSwitches: newList })
   }
 
   const rowActions: TableProps<AccessSwitch>['rowActions'] = [
@@ -329,40 +341,49 @@ function AccessSwitchTable () {
     }
   ]
 
-  const columns: TableProps<AccessSwitch>['columns'] = React.useMemo(() => {
-    return [{
-      key: 'name',
-      title: $t({ defaultMessage: 'Access Switch' }),
-      dataIndex: 'name',
-      sorter: true
-    }, {
-      key: 'model',
-      title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'model',
-      sorter: true
-    }, {
-      key: 'distributionSwitchId',
-      title: $t({ defaultMessage: 'Dist. Switch' }),
-      dataIndex: 'distributionSwitchId',
-      sorter: true,
-      defaultSortOrder: 'ascend'
-    }, {
-      key: 'uplinkInfo',
-      title: $t({ defaultMessage: 'Uplink Port' }),
-      dataIndex: ['uplinkInfo', 'uplinkId'],
-      sorter: true
-    }, {
-      key: 'vlanId',
-      title: $t({ defaultMessage: 'VLAN ID' }),
-      dataIndex: 'vlanId',
-      sorter: true
-    }, {
-      key: 'templateId',
-      title: $t({ defaultMessage: 'Net Seg Auth Page' }),
-      dataIndex: 'templateId',
-      sorter: true
-    }]
-  }, [$t])
+  const columns: TableProps<AccessSwitch>['columns'] = [{
+    key: 'name',
+    title: $t({ defaultMessage: 'Access Switch' }),
+    dataIndex: 'name',
+    sorter: true
+  }, {
+    key: 'model',
+    title: $t({ defaultMessage: 'Model' }),
+    dataIndex: 'model',
+    sorter: true
+  }, {
+    key: 'distributionSwitchId',
+    title: $t({ defaultMessage: 'Dist. Switch' }),
+    dataIndex: 'distributionSwitchId',
+    sorter: true,
+    defaultSortOrder: 'ascend',
+    render: (data, row) => {
+      const dsId = row.distributionSwitchId
+      return saveState.distributionSwitches?.find(ds=>ds.id===dsId)?.name || dsId
+    }
+  }, {
+    key: 'uplinkInfo',
+    title: $t({ defaultMessage: 'Uplink Port' }),
+    dataIndex: ['uplinkInfo', 'uplinkId'],
+    sorter: true,
+    render: (data, row) => {
+      return row.uplinkInfo ? `${row.uplinkInfo.uplinkType} ${data}` : ''
+    }
+  }, {
+    key: 'vlanId',
+    title: $t({ defaultMessage: 'VLAN ID' }),
+    dataIndex: 'vlanId',
+    sorter: true
+  }, {
+    key: 'templateId',
+    title: $t({ defaultMessage: 'Net Seg Auth Page' }),
+    dataIndex: 'templateId',
+    sorter: true,
+    render: (data, row) => {
+      return templateListResult?.data.find(tp=>tp.id===row.templateId)?.name || data
+    }
+  }]
+
   return (<>
     <Table
       columns={columns}

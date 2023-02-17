@@ -46,8 +46,6 @@ import {
   NetworkSegmentationUrls,
   NetworkSegmentationGroup,
   WebAuthTemplate,
-  AccessSwitch,
-  DistributionSwitch,
   downloadFile,
   SwitchLite
 } from '@acx-ui/rc/utils'
@@ -709,25 +707,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-
-    getAccessSwitches: build.query<TableResult<AccessSwitch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
-    getDistributionSwitches: build.query<TableResult<DistributionSwitch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitches, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
       query: ({ params }) => {
         const req =
@@ -748,6 +727,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
         return transferToTableResult<NetworkSegmentationGroup>(result)
+      }
+    }),
+
+    getAccessSwitchesByDS: build.query<{
+      switchViewList: SwitchLite[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest( NetworkSegmentationUrls.getAccessSwitchesByDS, params)
+        return {
+          ...req,
+          body: payload
+        }
       }
     }),
     getAvailableSwitches: build.query<{
@@ -820,7 +811,6 @@ export const {
   useCreateWebAuthTemplateMutation,
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
-  useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery,
+  useGetAccessSwitchesByDSQuery,
   useGetAvailableSwitchesQuery
 } = serviceApi

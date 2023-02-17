@@ -64,13 +64,19 @@ export default function NetworkSegmentationForm () {
 
           <StepsForm.StepForm
             name='distSwitch'
-            title={$t({ defaultMessage: 'Dist. Switch' })}>
+            title={$t({ defaultMessage: 'Dist. Switch' })}
+            onFinish={async (data) => {
+              updateSaveState({ ...saveState, ...data })
+              return true
+            }}
+          >
             <DistributionSwitchSetting />
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
             name='accessSwitch'
-            title={$t({ defaultMessage: 'Access Switch' })}>
+            title={$t({ defaultMessage: 'Access Switch' })}
+          >
             <AccessSwitchSetting />
           </StepsForm.StepForm>
 
