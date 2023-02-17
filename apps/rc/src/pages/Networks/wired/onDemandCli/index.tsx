@@ -4,10 +4,12 @@ import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
+import { useNavigate }                                            from '@acx-ui/react-router-dom'
 
 export function OnDemandCliTab () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
@@ -46,9 +48,10 @@ export function OnDemandCliTab () {
   const rowActions: TableProps<SwitchCliTemplateModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      disabled: true, //Waiting for support
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => { }
+      onClick: (selectedRows) => {
+        navigate(`${selectedRows[0].id}/edit`, { replace: false })
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -87,8 +90,9 @@ export function OnDemandCliTab () {
         rowSelection={{ type: 'checkbox' }}
         actions={[{
           label: $t({ defaultMessage: 'Add CLI Template' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => {
+            navigate('add', { replace: false })
+          }
         }]}
       />
     </Loader></>
