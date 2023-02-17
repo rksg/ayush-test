@@ -117,7 +117,7 @@ export function MspEcDropdownList () {
       render: function (data, row) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          (row.status === 'Active') ? <Link to={to}>{data}</Link> : data
         )
       }
     },
