@@ -108,45 +108,45 @@ export function FetchBot (props:FetchBotProps) {
         CommonUrlsInfo.getUserProfile,
         { ...params }
       )
-      fetch(userUrl.url,{
-        headers: {
-          Authorization: jwtToken ? `Bearer ${jwtToken}` : ''
-        }
-      }).then((res)=>{
-        res.json().then((userInfo)=>{
-          statusCallback && statusCallback('user-profile-success')
-          const { externalId: swuId } = userInfo
-          const authUrl = createHttpRequest (
-            CommonUrlsInfo.fetchBotAuth,
-            { ...params }
-          )
-          fetch(authUrl.url,{
+      try {
+        const userResp = await fetch(userUrl.url,{
+          headers: {
+            Authorization: jwtToken ? `Bearer ${jwtToken}` : ''
+          }
+        })
+        const userInfo = await userResp.json()
+        statusCallback && statusCallback('user-profile-success')
+        const { externalId: swuId } = userInfo
+        const authUrl = createHttpRequest (
+          CommonUrlsInfo.fetchBotAuth,
+          { ...params }
+        )
+        try {
+          const authResp = await fetch(authUrl.url,{
             method: authUrl.method.toUpperCase(),
             headers: {
               'Content-Type': 'application/json',
               'Authorization': jwtToken ? `Bearer ${jwtToken}` : ''
             },
             body: JSON.stringify({ swuId })
-          }).then(async (res)=>{
-            const { idToken } = await res.json()
-            callback(idToken,null,{
-              contactId: swuId
-            })
-            statusCallback && statusCallback('token-success')
-          }).catch((error)=>{
-            // eslint-disable-next-line no-console
-            console.error(error)
-            callback('',error.message,{})
-            statusCallback && statusCallback('token-error')
           })
-
-        })
-      }).catch((error)=>{
+          const { idToken } = await authResp.json()
+          callback(idToken,null,{
+            contactId: swuId
+          })
+          statusCallback && statusCallback('token-success')
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error)
+          callback('',error,{})
+          statusCallback && statusCallback('token-error')
+        }
+      } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error)
-        callback('',error.message,{})
+        callback('',error,{})
         statusCallback && statusCallback('user-profile-error')
-      })
+      }
     }
     return ()=>{
       // eslint-disable-next-line no-console

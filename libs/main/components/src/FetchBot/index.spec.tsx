@@ -116,10 +116,10 @@ describe('FetchBot',()=>{
     render(<Provider>
       <FetchBot statusCallback={mockStausFn}/>
     </Provider>, { route: { params } })
-    window.generateToken && window.generateToken((token:string,error:string,details:unknown)=>{
+    window.generateToken && window.generateToken((token:string,error:Error,details:unknown)=>{
       mockTokenCallback({
         token,
-        error,
+        error: error.message,
         details
       })
     })
@@ -149,10 +149,10 @@ describe('FetchBot',()=>{
     render(<Provider>
       <FetchBot statusCallback={mockStausFn}/>
     </Provider>, { route: { params } })
-    window.generateToken && window.generateToken((token:string,error:string,details:unknown)=>{
+    window.generateToken && window.generateToken((token:string,error:Error,details:unknown)=>{
       mockTokenCallback({
         token,
-        error,
+        error: error.message,
         details
       })
     })
