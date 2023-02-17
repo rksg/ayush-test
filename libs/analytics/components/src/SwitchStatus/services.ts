@@ -5,7 +5,7 @@ import { AnalyticsFilter, calculateGranularity } from '@acx-ui/analytics/utils'
 
 export type SwitchStatusTimeSeries = {
   time: string[];
-  isSwitchUp: string[];
+  isSwitchUp: number[];
 }
 
 export type SwitchStatus = {

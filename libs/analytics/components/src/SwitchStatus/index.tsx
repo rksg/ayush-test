@@ -84,7 +84,7 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
         <GridCol col={{ span: 24 }} style={{ height: '50px' }}>
           <AutoSizer>
             {({ height, width }) =>
-              queryResults.timeSeries.length ? (
+              queryResults.timeSeries?.length ? (
                 <MultiBarTimeSeriesChart
                   style={{ width, height }}
                   data={[
