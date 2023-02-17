@@ -8,8 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
-
+import { StepsForm }              from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
