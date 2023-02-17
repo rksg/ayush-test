@@ -101,7 +101,7 @@ describe('NetworkForm', () => {
     fireEvent.change(passphraseTextbox, { target: { value: '11111111' } })
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click((await screen.findAllByRole('combobox'))[3])
-    await userEvent.click(await screen.findByTitle('test1'))
+    await userEvent.click((await screen.findAllByTitle('test1'))[0])
   })
 
 
@@ -123,7 +123,7 @@ describe('NetworkForm', () => {
 
     await userEvent.click(await screen.findByRole('switch'))
     await userEvent.click((await screen.findAllByRole('combobox'))[3])
-    await userEvent.click(await screen.findByTitle('test1'))
+    await userEvent.click((await screen.findAllByTitle('test1'))[0])
     await userEvent.click((await screen.findAllByRole('switch'))[1])
     await userEvent.click((await screen.findAllByRole('switch'))[1])
   }, 20000)
