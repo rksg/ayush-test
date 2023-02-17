@@ -378,7 +378,7 @@ describe('Topology', () => {
 
     // no tooltip on cloud node mouseover
 
-    const cloud = await screen.findByTestId('CloudIconSolid')
+    const cloud = await screen.findByTestId('CloudSolid')
     fireEvent.mouseOver(cloud)
     expect(apCard).not.toBeInTheDocument()
 
