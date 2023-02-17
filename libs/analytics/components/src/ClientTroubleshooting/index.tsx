@@ -99,8 +99,14 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   onVisibleChange={setVisible}
                   trigger='click'
                   placement='bottom'
+                  align={{
+                    targetOffset: [
+                      (eventState as unknown as { x: number }).x ?? 0,
+                      (eventState as unknown as { y: number }).y ?? 0
+                    ]
+                  }}
                 >
-                  <div key='popover-child'/>
+                  <div key='popover-child' data-testid='popover-child'/>
                 </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>

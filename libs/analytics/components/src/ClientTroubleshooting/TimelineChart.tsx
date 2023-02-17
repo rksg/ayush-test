@@ -23,9 +23,8 @@ import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
-import moment             from 'moment-timezone'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
 import { categoryCodeMap, IncidentCode } from '@acx-ui/analytics/utils'
 import {
@@ -177,10 +176,15 @@ export const useDotClick = (
         const data = params.data as [number, string, Event]
         const { clientX, clientY } = (params as unknown as
           { event: { event: PointerEvent } }).event.event
+        const popoverChild = document.querySelector('div[data-testid="popover-child"]')
+        if (!popoverChild) return
+        const { x, y, width } = popoverChild.getBoundingClientRect()
+        const calcX = clientX - (x + width / 2)
+        const calcY = clientY - y
         onDotClick && onDotClick(({
           ...data[2],
-          x: clientX,
-          y: clientY
+          x: -calcX,
+          y: -calcY
         }))
       }
 
@@ -383,18 +387,12 @@ export function TimelineChart ({
       },
       // use this formatter to add popover content
       /* istanbul ignore next */
-      formatter: (params: unknown) => {
-        const typedParams = params as { componentSubType: string, name: string }
-        if (typedParams.componentSubType === 'custom') return ''
-        const test = renderToString(<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'>
-          <circle cx='50' cy='50' r='50' />
-        </svg>)
-        return test
-      },
+      formatter: () => '',
       ...tooltipOptions(),
       // Need to address test coverage for the postion
-      position: /* istanbul ignore next */ (point: [number, number]) =>
-        [point[0] + 10, mapping.length * 25]
+      position:
+      /* istanbul ignore next */
+        (point: [number, number]) => [point[0] + 10, mapping.length * 25]
     },
     xAxis: {
       ...xAxisOptions(),
