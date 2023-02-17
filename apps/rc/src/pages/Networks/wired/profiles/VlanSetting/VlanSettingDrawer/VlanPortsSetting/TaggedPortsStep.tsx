@@ -68,6 +68,7 @@ export function TaggedPortsStep () {
 
   let tmpTaggedSelectedItem: string[] = []
   const { DragSelection: DragSelectionTaggedPorts } = useSelectionContainer({
+    eventsElement: document.getElementById('taggedContainer'),
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
         let el = target
@@ -220,7 +221,7 @@ export function TaggedPortsStep () {
           </label>
         </Col>
       </Row>
-      <Row gutter={20} style={{ marginTop: '20px' }}>
+      <Row gutter={20} style={{ marginTop: '20px' }} id='taggedContainer'>
         <Col>
           <Card type='solid-bg'>
             <Row gutter={20}>

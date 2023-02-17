@@ -27,15 +27,15 @@ export interface VlanTrustPortInterface {
 export function TrustedPorts () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData } = useContext(ConfigurationProfileFormContext)
+  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<TrustedPort>()
   const [ruleList, setRuleList] = useState<TrustedPort[]>([])
 
   useEffect(() => {
-    if(currentData){
-      form.setFieldsValue(currentData)
-      setRuleList(currentData.trustedPorts)
+    if(currentData.trustedPorts && editMode){
+      form.setFieldValue('trustedPorts', currentData.trustedPorts)
+      setRuleList(currentData.trustedPorts || [])
     }
   }, [currentData])
 

@@ -63,8 +63,10 @@ export function VlanSetting () {
     render: (data) => {
       return data
         ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
-          const taggedPortsCount = row.taggedPorts?.length ?? 0
-          const untaggedPortsCount = row.untaggedPorts?.length ?? 0
+          const taggedPortsCount = row.taggedPorts && row.taggedPorts !=='' ?
+            row.taggedPorts?.split(',').length : 0
+          const untaggedPortsCount = row.untaggedPorts && row.untaggedPorts !=='' ?
+            row.untaggedPorts?.split(',').length : 0
           return result + taggedPortsCount + untaggedPortsCount
         }, 0)
         : 0
@@ -72,20 +74,11 @@ export function VlanSetting () {
   }]
 
   const handleSetVlan = (data: Vlan) => {
-    const isExist = vlanTable.filter(
-      (item: { vlanId: number }) => item.vlanId.toString() === data.vlanId.toString())
-    if(drawerEditMode && isExist.length > 0){
-      const vlans = vlanTable.map((item: { vlanId: number }) => {
-        if(item.vlanId.toString() === data.vlanId.toString()){
-          return { ...data }
-        }
-        return item
-      })
-      setVlanTable(vlans as Vlan[])
-    }else{
-      setVlanTable([...vlanTable, data])
-    }
-    form.setFieldValue('vlans', vlanTable)
+    const filterData = vlanTable.filter(
+      (item: { vlanId: number }) => item.vlanId.toString() !== data.vlanId.toString())
+
+    setVlanTable([...filterData, data])
+    form.setFieldValue('vlans', [...filterData, data])
     setDrawerEditMode(false)
     return true
   }
@@ -182,7 +175,7 @@ export function VlanSetting () {
         setDefaultVlan={handleSetDefaultVlan}
         vlansList={vlanTable}
       />
-      <Form.Item name='vlans' initialValue={vlanTable} />
+      <Form.Item name='vlans' />
     </>
   )
 }

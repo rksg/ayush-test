@@ -107,15 +107,15 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const { form, editMode, vlan, setVlan, vlansList } = props
 
   useEffect(() => {
-    if(vlan){
+    if(vlan && editMode){
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {
           id: item.id,
           model: item.model,
           slots: item.slots,
-          untaggedPorts: item.untaggedPorts?.split(','),
-          taggedPorts: item.taggedPorts?.split(',')
+          untaggedPorts: item.untaggedPorts && item.untaggedPorts?.split(','),
+          taggedPorts: item.taggedPorts && item.taggedPorts?.split(',')
         }
       }) as unknown
       setRuleList(vlanPortsData as SwitchModelPortData[])
@@ -135,7 +135,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'untaggedPorts',
       width: 180,
       render: (data) => {
-        const untaggedPorts = data?.toString().substring(0, 20)
+        const untaggedPorts = data?.toString().replace('false', '-').substring(0, 20)
         return untaggedPorts + (untaggedPorts?.length === 20 ? '...' : '')
       }
     },
@@ -145,7 +145,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       key: 'taggedPorts',
       width: 180,
       render: (data) => {
-        const taggedPorts = data?.toString().substring(0, 20)
+        const taggedPorts = data?.toString().replace('false', '-').substring(0, 20) || '-'
         return taggedPorts + (taggedPorts?.length === 20 ? '...' : '')
       }
     }
@@ -185,7 +185,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }
 
   const onSaveVlan = (values: SwitchModelPortData) => {
-    const tmpRuleList = ruleList !== undefined ?
+    const tmpRuleList = ruleList ?
       ruleList.filter(item => item.model !== values.model):
       ruleList || []
     const mergedRuleList = [

@@ -310,10 +310,10 @@ export function UntaggedPortsStep () {
           </label>
         </Col>
       </Row>
-      <Row gutter={20} style={{ marginTop: '20px' }}>
+      <Row gutter={20} style={{ marginTop: '20px' }} id='unTaggedContainer'>
         <Col>
           <Card type='solid-bg'>
-            <Row gutter={20} id='unTaggedContainer'>
+            <Row gutter={20}>
               <Col>
                 <div>
                   <Typography.Text style={{ fontWeight: 'bold' }}>

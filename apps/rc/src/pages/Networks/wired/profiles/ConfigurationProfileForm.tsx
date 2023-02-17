@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
+import { showToast, StepsForm, PageHeader, StepsFormInstance, Loader } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
@@ -26,10 +26,12 @@ export function ConfigurationProfileForm () {
   const params = useParams()
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
 
-  const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
+  const { data, isLoading } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
 
-  const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
-  const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
+  const [addSwitchConfigProfile, {
+    isLoading: isAddingSwitchConfigProfile }] = useAddSwitchConfigProfileMutation()
+  const [updateSwitchConfigProfile, {
+    isLoading: isUpdatingSwitchConfigProfile }] = useUpdateSwitchConfigProfileMutation()
 
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
@@ -110,7 +112,10 @@ export function ConfigurationProfileForm () {
   }
 
   return (
-    <>
+    <Loader states={[{
+      isLoading: isLoading,
+      isFetching: isAddingSwitchConfigProfile || isUpdatingSwitchConfigProfile
+    }]}>
       <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
@@ -172,6 +177,6 @@ export function ConfigurationProfileForm () {
           </StepsForm.StepForm>
         </StepsForm>
       </ConfigurationProfileFormContext.Provider>
-    </>
+    </Loader>
   )
 }

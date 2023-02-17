@@ -83,9 +83,9 @@ export function VenueSetting () {
       })
       setTableData(data)
     }
-    if(currentData && editMode){
-      form.setFieldsValue(currentData)
-      setVenueList(currentData.venues)
+    if(currentData.venues && editMode){
+      form.setFieldValue('venues', currentData.venues)
+      setVenueList(currentData.venues || [])
     }
   }, [tableQuery.data, currentData])
 

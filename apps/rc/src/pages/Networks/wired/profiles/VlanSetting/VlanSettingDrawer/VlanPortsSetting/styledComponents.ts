@@ -53,6 +53,8 @@ export const GroupListLayout = styled('div')`
 
   .ant-card{
     min-height: 320px;
+    padding-left: 0;
+    padding-right: 0;
   }
   
   .ant-radio-inner{
