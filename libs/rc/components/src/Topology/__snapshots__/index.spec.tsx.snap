@@ -5493,7 +5493,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -5530,7 +5530,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -5567,7 +5567,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologySwitchSolid"
+                        data-testid="Switch"
                       />
                     </div>
                   </foreignobject>
@@ -5606,7 +5606,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologySwitchSolid"
+                        data-testid="Switch"
                       />
                     </div>
                   </foreignobject>
@@ -5645,7 +5645,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -5684,7 +5684,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -5723,7 +5723,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshRootAPDevice"
+                        data-testid="AccessPointWifiMeshRoot"
                       />
                     </div>
                   </foreignobject>
@@ -5760,7 +5760,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -5799,7 +5799,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshAPDevice"
+                        data-testid="AccessPointWifiMesh"
                       />
                     </div>
                   </foreignobject>
@@ -5838,7 +5838,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="WiredAPDevice"
+                        data-testid="AccessPointWifiPort"
                       />
                     </div>
                   </foreignobject>
@@ -5877,7 +5877,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshRootAPDevice"
+                        data-testid="AccessPointWifiMeshRoot"
                       />
                     </div>
                   </foreignobject>
@@ -5916,7 +5916,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="UnKnownDevice"
+                        data-testid="Unknown"
                       />
                     </div>
                   </foreignobject>
@@ -5955,7 +5955,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="SwitchStackDevice"
+                        data-testid="StackDevice"
                       />
                     </div>
                   </foreignobject>
@@ -5994,7 +5994,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6033,7 +6033,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6072,7 +6072,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6111,7 +6111,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6150,7 +6150,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6189,7 +6189,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6228,7 +6228,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6267,7 +6267,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6306,7 +6306,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6345,7 +6345,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6384,7 +6384,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6423,7 +6423,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6462,7 +6462,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6501,7 +6501,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6540,7 +6540,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6579,7 +6579,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6618,7 +6618,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6657,7 +6657,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6696,7 +6696,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6735,7 +6735,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6774,7 +6774,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6813,7 +6813,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6852,7 +6852,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6891,7 +6891,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6930,7 +6930,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -6969,7 +6969,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7008,7 +7008,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7047,7 +7047,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7086,7 +7086,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7125,7 +7125,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7164,7 +7164,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7203,7 +7203,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7242,7 +7242,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7281,7 +7281,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7320,7 +7320,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7359,7 +7359,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7398,7 +7398,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7437,7 +7437,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7476,7 +7476,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7515,7 +7515,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7554,7 +7554,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7593,7 +7593,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7632,7 +7632,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7671,7 +7671,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7710,7 +7710,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7749,7 +7749,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7788,7 +7788,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7827,7 +7827,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7866,7 +7866,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7905,7 +7905,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7944,7 +7944,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -7983,7 +7983,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8022,7 +8022,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8061,7 +8061,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8100,7 +8100,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8139,7 +8139,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8178,7 +8178,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8217,7 +8217,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8256,7 +8256,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8295,7 +8295,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8334,7 +8334,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8373,7 +8373,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8412,7 +8412,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8451,7 +8451,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8490,7 +8490,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8529,7 +8529,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8568,7 +8568,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8607,7 +8607,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8646,7 +8646,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8685,7 +8685,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8724,7 +8724,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8763,7 +8763,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8802,7 +8802,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8841,7 +8841,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8880,7 +8880,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8919,7 +8919,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8958,7 +8958,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -8997,7 +8997,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9036,7 +9036,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9075,7 +9075,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9114,7 +9114,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9153,7 +9153,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9192,7 +9192,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9231,7 +9231,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9270,7 +9270,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9309,7 +9309,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9348,7 +9348,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9387,7 +9387,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9426,7 +9426,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9465,7 +9465,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9504,7 +9504,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9543,7 +9543,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9582,7 +9582,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9621,7 +9621,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9660,7 +9660,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9699,7 +9699,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9738,7 +9738,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9777,7 +9777,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9816,7 +9816,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9855,7 +9855,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -9894,7 +9894,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf elAZwe"
                     >
                       <svg
-                        data-testid="CloudIconSolid"
+                        data-testid="CloudSolidIcon"
                       />
                     </div>
                   </foreignobject>
@@ -10657,7 +10657,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -10694,7 +10694,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -10731,7 +10731,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologySwitchSolid"
+                        data-testid="Switch"
                       />
                     </div>
                   </foreignobject>
@@ -10770,7 +10770,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologySwitchSolid"
+                        data-testid="Switch"
                       />
                     </div>
                   </foreignobject>
@@ -10809,7 +10809,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -10848,7 +10848,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -10887,7 +10887,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshRootAPDevice"
+                        data-testid="AccessPointWifiMeshRoot"
                       />
                     </div>
                   </foreignobject>
@@ -10924,7 +10924,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="TopologyAPIcon"
+                        data-testid="AccessPointWifi"
                       />
                     </div>
                   </foreignobject>
@@ -10963,7 +10963,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshAPDevice"
+                        data-testid="AccessPointWifiMesh"
                       />
                     </div>
                   </foreignobject>
@@ -11002,7 +11002,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="WiredAPDevice"
+                        data-testid="AccessPointWifiPort"
                       />
                     </div>
                   </foreignobject>
@@ -11041,7 +11041,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="MeshRootAPDevice"
+                        data-testid="AccessPointWifiMeshRoot"
                       />
                     </div>
                   </foreignobject>
@@ -11080,7 +11080,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="UnKnownDevice"
+                        data-testid="Unknown"
                       />
                     </div>
                   </foreignobject>
@@ -11119,7 +11119,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf jEguCv"
                     >
                       <svg
-                        data-testid="SwitchStackDevice"
+                        data-testid="StackDevice"
                       />
                     </div>
                   </foreignobject>
@@ -11158,7 +11158,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf elAZwe"
                     >
                       <svg
-                        data-testid="CloudIconSolid"
+                        data-testid="CloudSolidIcon"
                       />
                     </div>
                   </foreignobject>

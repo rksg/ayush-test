@@ -323,11 +323,11 @@ describe('Topology', () => {
 
     await screen.findByTestId('topologyGraph')
 
-    const switchDevices = await screen.findAllByTestId('TopologySwitchSolid')
+    const switchDevices = await screen.findAllByTestId('Switch')
 
     expect(switchDevices.length).toBe(2)
 
-    const ApDevices = await screen.findAllByTestId('TopologyAPIcon')
+    const ApDevices = await screen.findAllByTestId('AccessPointWifi')
 
     expect(ApDevices.length).toBe(5)
 
@@ -364,7 +364,7 @@ describe('Topology', () => {
     // to cover poeEnabled false
     fireEvent.mouseOver(allPaths[3])
 
-    const switchStackDevice = await screen.findByTestId('SwitchStackDevice')
+    const switchStackDevice = await screen.findByTestId('StackDevice')
 
     fireEvent.mouseOver(switchStackDevice)
     await new Promise((resolve) => setTimeout(resolve, 500))
@@ -429,7 +429,7 @@ describe('Topology', () => {
       route: { params }
     })
 
-    const ApDevices = await screen.findAllByTestId('TopologyAPIcon')
+    const ApDevices = await screen.findAllByTestId('AccessPointWifi')
 
     expect(ApDevices.length).toBe(105)
 
