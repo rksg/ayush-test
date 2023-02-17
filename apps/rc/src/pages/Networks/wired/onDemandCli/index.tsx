@@ -26,10 +26,17 @@ export function OnDemandCliTab () {
     dataIndex: 'switches',
     sorter: true,
     render: function (data, row) {
-      if (row.switches) {
+      let switchArray: string[] = []
+      row.venueSwitches?.forEach(venue => {
+        venue.switches?.forEach(switchName => {
+          switchArray.push(switchName)
+        })
+      })
+
+      if (row.venueSwitches) {
         return <Tooltip
-          title={row.switches.join('\n')}>
-          {row.switches.length}
+          title={switchArray.join('\n')}>
+          {row.venueSwitches.length}
         </Tooltip>
       }
       return 0
@@ -45,7 +52,7 @@ export function OnDemandCliTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -59,7 +66,7 @@ export function OnDemandCliTab () {
             deleteCliTemplates({
               params: { tenantId },
               payload: selectedRows.map(r => r.id)
-            })
+            }).then(clearSelection)
           }
         })
       }

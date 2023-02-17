@@ -51,7 +51,7 @@ export function ProfilesTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -65,7 +65,7 @@ export function ProfilesTab () {
             deleteProfiles({
               params: { tenantId },
               payload: selectedRows.map(r => r.id)
-            })
+            }).then(clearSelection)
           }
         })
       }

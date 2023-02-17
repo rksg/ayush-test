@@ -185,7 +185,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
-    deleteProfiles: build.mutation<VeForm, RequestPayload>({
+    deleteProfiles: build.mutation<SwitchProfileModel, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteProfiles, params)
         return {
@@ -209,7 +209,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
-    deleteCliTemplates: build.mutation<VeForm, RequestPayload>({
+    deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteCliTemplates, params)
         return {
