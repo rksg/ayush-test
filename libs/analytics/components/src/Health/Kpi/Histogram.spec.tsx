@@ -42,7 +42,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render Histogram with data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 200, 3, 3, 0] } }
+      data: { network: { histogram: { data: [0, 2, 200, 3, 3, 0] } } }
     })
     render(
       <Provider>
@@ -61,7 +61,7 @@ describe('Threshold Histogram chart', () => {
   })
   it('should render Histogram with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [] } }
+      data: { network: { histogram: { data: [] } } }
     })
     render(
       <Provider>
@@ -81,7 +81,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render Histogram with data for reverse interpreted values', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [1, 1, 1, 10, 1, 1, 1, 1, 2] } }
+      data: { network: { histogram: { data: [1, 1, 1, 10, 1, 1, 1, 1, 2] } } }
     })
     render(
       <Provider>
@@ -100,7 +100,7 @@ describe('Threshold Histogram chart', () => {
   })
   it('should handle data greater than the splits size', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
     })
     render(
       <Provider>
@@ -120,7 +120,7 @@ describe('Threshold Histogram chart', () => {
   })
   it('should handle slider onchange and return when value is positive whole number', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
     })
     render(
       <Provider>
@@ -146,7 +146,7 @@ describe('Threshold Histogram chart', () => {
   })
   it('should call setKpiThreshold on clicking reset btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0, 20, 20, 2000] } }
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0, 20, 20, 2000] } } }
     })
 
     render(
@@ -175,7 +175,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render success toast setKpiThreshold on clicking apply btn', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
     })
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
@@ -206,7 +206,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render failure toast setKpiThreshold on clicking apply btn on failure', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
     })
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
@@ -235,7 +235,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render default scale on null data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [null, null, null] } }
+      data: { network: { histogram: { data: [null, null, null] } } }
     })
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
@@ -264,7 +264,7 @@ describe('Threshold Histogram chart', () => {
 
   it('should render % as unit for apServiceUptime', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } }
+      data: { network: { histogram: { data: [0, 2, 3, 20, 3, 0,20,20,2000] } } }
     })
 
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
