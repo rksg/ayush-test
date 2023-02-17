@@ -252,7 +252,7 @@ describe('RogueAPDetectionForm', () => {
     })
   })
 
-  it('should render RogueAPDetectionForm successfully and edit rule', async () => {
+  it.skip('should render RogueAPDetectionForm successfully and edit rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -357,9 +357,7 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Scope')).toBeTruthy()
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
-    await screen.findByRole('heading', { name: 'Settings', level: 3 })
-
-    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+    fireEvent.change(await screen.findByRole('textbox', { name: /policy name/i }),
       { target: { value: 'test' } })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),

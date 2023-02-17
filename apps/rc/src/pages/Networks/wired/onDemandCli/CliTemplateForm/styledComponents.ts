@@ -135,11 +135,6 @@ export const VariableList = styled(List)`
   }
 `
 
-export const FormItemLayout = styled(Space)`
-  display: grid;
-  grid-template-columns: auto 30px;
-`
-
 export const CodeMirrorContainer = styled('div')`
   .CodeMirror {
     font-family: var(--acx-neutral-brand-font);

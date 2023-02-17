@@ -138,7 +138,7 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
                     <div
                       class="ant-steps-item-title"
                     >
-                      Smart Edge
+                      SmartEdge
                     </div>
                   </div>
                 </div>

@@ -40,7 +40,7 @@ interface ImportFileDrawerProps extends DrawerProps {
   importRequest: (formData: FormData, values: object, content?: string)=>void
   readAsText?: boolean
   acceptType: string[]
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'CLI'
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI'
 }
 
 export const CsvSize = {

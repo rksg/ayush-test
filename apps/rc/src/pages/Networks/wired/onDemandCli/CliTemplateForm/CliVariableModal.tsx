@@ -18,7 +18,6 @@ import {
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { VariableType } from './CliStepConfiguration'
-import * as UI          from './styledComponents'
 
 import { tooltip } from './'
 
@@ -60,209 +59,172 @@ export function CliVariableModal (props: {
     }}
   >
     <Form.Item
-      label={$t({ defaultMessage: 'Variable Name' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='name'
-          rules={[
-            { required: true },
-            { validator: (_, value) => nameCannotStartWithNumberRegExp(value) },
-            { validator: (_, value) => cliVariableNameRegExp(value) },
-            { validator: (_, value) => {
-              const variables = variableList?.filter(v => v.name !== data?.name).map(v => v.name)
-              return checkObjectNotExists(variables, value,
-                $t({ defaultMessage: 'Name' }), 'value')
-            } }
-          ]}
-          validateFirst
-          children={<Input data-testid='variable-name' maxLength={20} disabled={editMode} />}
-        />
-        <Tooltip
+      name='name'
+      label={<>{$t({ defaultMessage: 'Variable Name' })}
+        <Tooltip.Question
           title={$t(tooltip.variableName)}
           placement='bottom'
-        >
-          <UI.QuestionMarkIcon />
-        </Tooltip>
-      </UI.FormItemLayout>}
+        />
+      </>}
+      rules={[
+        { required: true, message: $t({ defaultMessage: 'Please enter Variable Name' }) },
+        { validator: (_, value) => nameCannotStartWithNumberRegExp(value) },
+        { validator: (_, value) => cliVariableNameRegExp(value) },
+        { validator: (_, value) => {
+          const variables = variableList?.filter(v => v.name !== data?.name).map(v => v.name)
+          return checkObjectNotExists(variables, value,
+            $t({ defaultMessage: 'Name' }), 'value')
+        } }
+      ]}
+      validateFirst
+      children={<Input data-testid='variable-name' maxLength={20} disabled={editMode} />}
     />
     <Form.Item
+      name='type'
       label={$t({ defaultMessage: 'Variable Type' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='type'
-          initialValue={selectType}
-          rules={[{ required: true }]}
-        >
-          <Select
-            data-testid='variable-type'
-            value={selectType}
-            options={[
-              { label: $t({ defaultMessage: 'Select...' }), value: '' },
-              { label: $t({ defaultMessage: 'Address' }), value: VariableType.ADDRESS },
-              { label: $t({ defaultMessage: 'Range' }), value: VariableType.RANGE },
-              { label: $t({ defaultMessage: 'String' }), value: VariableType.STRING }
-            ]}
-            onChange={(value) => {
-              setSelectType(value)
-            }}
+      initialValue={selectType}
+      rules={[{ required: true }]}
+
+      children={<Select
+        data-testid='variable-type'
+        value={selectType}
+        options={[
+          { label: $t({ defaultMessage: 'Select...' }), value: '' },
+          { label: $t({ defaultMessage: 'Address' }), value: VariableType.ADDRESS },
+          { label: $t({ defaultMessage: 'Range' }), value: VariableType.RANGE },
+          { label: $t({ defaultMessage: 'String' }), value: VariableType.STRING }
+        ]}
+        onChange={(value) => {
+          setSelectType(value)
+        }}
+      />}
+    />
+
+    {selectType === VariableType.ADDRESS && <>
+      <Form.Item
+        name='startIp'
+        label={$t({ defaultMessage: 'Start IP Address' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => cliIpAddressRegExp(value) }
+        ]}
+        validateFirst
+        children={<Input data-testid='start-ip' />}
+      />
+      <Form.Item
+        name='endIp'
+        label={$t({ defaultMessage: 'End IP Address' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => cliIpAddressRegExp(value) },
+          {
+            validator: () => {
+              const invalid = validateSubnetmaskOverlap(form)
+              if (invalid) {
+                return Promise.reject($t(validationMessages.ipAddress))
+              }
+              return Promise.resolve()
+            }
+          }
+        ]}
+        validateFirst
+        children={<Input data-testid='end-ip' />}
+      />
+      <Form.Item
+        name='mask'
+        label={$t({ defaultMessage: 'Network Mask' })}
+        rules={[
+          { required: true },
+          { validator: (_, value) => subnetMaskPrefixRegExp(value) }
+        ]}
+        validateFirst
+        children={<Input data-testid='mask' />}
+      />
+    </>}
+
+    {selectType === VariableType.RANGE && <>
+      <Form.Item
+        name='startVal'
+        label={<>
+          {$t({ defaultMessage: 'Start Value' })}
+          <Tooltip.Question
+            title={$t(tooltip.rangeStartValue)}
+            placement='bottom'
           />
-        </Form.Item>
-      </UI.FormItemLayout>}
-    />
-
-    {selectType === VariableType.ADDRESS && <><Form.Item
-      label={$t({ defaultMessage: 'Start IP Address' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='startIp'
-          rules={[
-            { required: true },
-            { validator: (_, value) => cliIpAddressRegExp(value) }
-          ]}
-          validateFirst
-          children={<Input data-testid='start-ip' />}
-        />
-      </UI.FormItemLayout>}
-    />
-    <Form.Item
-      label={$t({ defaultMessage: 'End IP Address' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='endIp'
-          rules={[
-            { required: true },
-            { validator: (_, value) => cliIpAddressRegExp(value) },
-            {
-              validator: () => {
-                const invalid = validateSubnetmaskOverlap(form)
-                if (invalid) {
-                  return Promise.reject($t(validationMessages.ipAddress))
-                }
-                return Promise.resolve()
+        </>}
+        rules={[
+          { required: true,
+            message: $t({ defaultMessage: 'Please enter Start Value' }) },
+          {
+            type: 'integer', transform: Number, min: 0, max: 65535,
+            message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
+          },
+          {
+            validator: (_, value) => {
+              const endVal = form.getFieldValue('endVal')
+              if (endVal && (Number(endVal) <= Number(value))) {
+                return Promise.reject($t(validationMessages.startRangeInvalid))
               }
+              endVal && form.setFields([{ name: ['endVal'], errors: [] }])
+              return Promise.resolve()
             }
-          ]}
-          validateFirst
-          children={<Input data-testid='end-ip' />}
-        />
-      </UI.FormItemLayout>}
-    />
-    <Form.Item
-      label={$t({ defaultMessage: 'Network Mask' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='mask'
-          rules={[
-            { required: true },
-            { validator: (_, value) => subnetMaskPrefixRegExp(value) }
-          ]}
-          validateFirst
-          children={<Input data-testid='mask' />}
-        />
-      </UI.FormItemLayout>}
-    /></>}
-
-    {selectType === VariableType.RANGE && <><Form.Item
-      label={$t({ defaultMessage: 'Start Value' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='startVal'
-          rules={[
-            { required: true },
-            {
-              type: 'integer', transform: Number, min: 0, max: 65535,
-              message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
-            },
-            {
-              validator: (_, value) => {
-                const endVal = form.getFieldValue('endVal')
-                if (endVal && (Number(endVal) <= Number(value))) {
-                  return Promise.reject($t(validationMessages.startRangeInvalid))
-                }
-                endVal && form.setFields([{ name: ['endVal'], errors: [] }])
-                return Promise.resolve()
+          }
+        ]}
+        validateFirst
+        children={<Input
+          data-testid='start-value'
+          placeholder={$t({ defaultMessage: 'Between 0-65535' })}
+        />}
+      />
+      <Form.Item
+        name='endVal'
+        label={<>
+          {$t({ defaultMessage: 'End Value' })}
+          <Tooltip.Question
+            title={$t(tooltip.rangeEndValue)}
+            placement='bottom'
+          />
+        </>}
+        rules={[
+          { required: true,
+            message: $t({ defaultMessage: 'Please enter End Value' }) },
+          {
+            type: 'integer', transform: Number, min: 0, max: 65535,
+            message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
+          },
+          {
+            validator: (_, value) => {
+              const startVal = form.getFieldValue('startVal')
+              if (startVal && (Number(value) <= Number(startVal))) {
+                return Promise.reject($t(validationMessages.endRangeInvalid))
               }
+              startVal && form.setFields([{ name: ['startVal'], errors: [] }])
+              return Promise.resolve()
             }
-          ]}
-          validateFirst
-          children={<Input
-            data-testid='start-value'
-            placeholder={$t({ defaultMessage: 'Between 0-65535' })}
-          />}
-        />
-        <Tooltip
-          title={$t(tooltip.rangeStartValue)}
-          placement='bottom'
-        >
-          <UI.QuestionMarkIcon />
-        </Tooltip>
-      </UI.FormItemLayout>}
-    />
-    <Form.Item
-      label={$t({ defaultMessage: 'End Value' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='endVal'
-          rules={[
-            { required: true },
-            {
-              type: 'integer', transform: Number, min: 0, max: 65535,
-              message: $t(validationMessages.numberRangeInvalid, { from: 0, to: 65535 })
-            },
-            {
-              validator: (_, value) => {
-                const startVal = form.getFieldValue('startVal')
-                if (startVal && (Number(value) <= Number(startVal))) {
-                  return Promise.reject($t(validationMessages.endRangeInvalid))
-                }
-                startVal && form.setFields([{ name: ['startVal'], errors: [] }])
-                return Promise.resolve()
-              }
-            }
-          ]}
-          validateFirst
-          children={<Input
-            data-testid='end-value'
-            placeholder={$t({ defaultMessage: 'Between 0-65535' })}
-          />}
-        />
-        <Tooltip
-          title={$t(tooltip.rangeEndValue)}
-          placement='bottom'
-        >
-          <UI.QuestionMarkIcon />
-        </Tooltip>
-      </UI.FormItemLayout>}
-    /></>}
+          }
+        ]}
+        validateFirst
+        children={<Input
+          data-testid='end-value'
+          placeholder={$t({ defaultMessage: 'Between 0-65535' })}
+        />}
+      /></>}
 
     {selectType === VariableType.STRING && <Form.Item
-      label={$t({ defaultMessage: 'String' })}
-      children={<UI.FormItemLayout>
-        <Form.Item
-          noStyle
-          name='string'
-          rules={[
-            { required: true },
-            { validator: (_, value) => specialCharactersRegExp(value) }
-          ]}
-          validateFirst
-          children={<Input data-testid='string' maxLength={20} />}
-        />
-
-        <Tooltip
+      name='string'
+      label={<>{$t({ defaultMessage: 'String' })}
+        <Tooltip.Question
           title={$t(tooltip.stringValue)}
           placement='bottom'
-        >
-          <UI.QuestionMarkIcon />
-        </Tooltip>
-      </UI.FormItemLayout>}
+        />
+      </>}
+      rules={[
+        { required: true,
+          message: $t({ defaultMessage: 'Please enter String' }) },
+        { validator: (_, value) => specialCharactersRegExp(value) }
+      ]}
+      validateFirst
+      children={<Input data-testid='string' maxLength={20} />}
     />}
   </Form>
 
