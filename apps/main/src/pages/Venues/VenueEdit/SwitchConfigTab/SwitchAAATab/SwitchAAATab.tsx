@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -18,6 +18,7 @@ export function SwitchAAATab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
+  const [aaaSettingId, setAAASettingId] = useState<string>('')
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
@@ -75,7 +76,7 @@ export function SwitchAAATab () {
     }
 
     await updateAAASettingMutation({
-      params: { tenantId, venueId },
+      params: { tenantId, venueId, aaaSettingId },
       payload: _.pickBy(payload, v => v !== undefined)
     }).unwrap()
       .catch((error) => {
@@ -105,7 +106,7 @@ export function SwitchAAATab () {
           { settingsTitle }
         </StepsForm.SectionTitle>
         <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ flex: '150px' }}>
-          <AAASettings />
+          <AAASettings setAAASettingId={setAAASettingId} />
         </StepsForm.StepForm>
       </>
     )
