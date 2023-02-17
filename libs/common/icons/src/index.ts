@@ -70,6 +70,7 @@ export { ReactComponent as ChevronLeftCircleOutlined } from './icons/ChevronLeft
 export { ReactComponent as ChevronLeftCircleSolid } from './icons/ChevronLeftCircleSolid.svg'
 export { ReactComponent as ChevronLeftSquareOutlined } from './icons/ChevronLeftSquareOutlined.svg'
 export { ReactComponent as ChevronLeftSquareSolid } from './icons/ChevronLeftSquareSolid.svg'
+export { ReactComponent as ChevronRight } from './icons/ChevronRight.svg'
 export { ReactComponent as ChevronRightCircleOutlined } from './icons/ChevronRightCircleOutlined.svg'
 export { ReactComponent as ChevronRightCircleSolid } from './icons/ChevronRightCircleSolid.svg'
 export { ReactComponent as ChevronRightSquareArrowsChevronRightSquareOutlined } from './icons/ChevronRightSquareArrowsChevronRightSquareOutlined.svg'
