@@ -10,10 +10,10 @@ import { renderToString } from 'react-dom/server'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Loader }                                                                                                                                                                                                         from '@acx-ui/components'
-import { CloudSolidIcon, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort } from '@acx-ui/icons'
-import { useGetTopologyQuery }                                                                                                                                                                                            from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, UINode }                                                                                                     from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                                                                                     from '@acx-ui/components'
+import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort } from '@acx-ui/icons'
+import { useGetTopologyQuery }                                                                                                                                                                                        from '@acx-ui/rc/services'
+import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, UINode }                                                                                                 from '@acx-ui/rc/utils'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -418,7 +418,7 @@ export function DeviceIcon (props: { deviceType: DeviceTypes, deviceStatus: Devi
       case DeviceTypes.Ap:
         return <AccessPointWifi />
       case DeviceTypes.Cloud:
-        return <CloudSolidIcon />
+        return <CloudSolid />
       case DeviceTypes.ApMesh:
         return <AccessPointWifiMesh />
       case DeviceTypes.ApMeshRoot:

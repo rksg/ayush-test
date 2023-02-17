@@ -282,7 +282,7 @@ export { ReactComponent as FacebookOutlined } from './icons/FacebookOutlined.svg
 export { ReactComponent as TwitterOutlined } from './icons/TwitterOutlined.svg'
 export { ReactComponent as AccessPointWifi } from './icons/AccessPointWifi.svg'
 export { ReactComponent as Switch } from './icons/Switch.svg'
-export { ReactComponent as CloudSolidIcon } from './icons/CloudSolidIcon.svg'
+export { ReactComponent as CloudSolid } from './icons/CloudSolid.svg'
 export { ReactComponent as BiDirectionalArrow } from './icons/BiDirectionalArrow.svg'
 export { ReactComponent as Unknown } from './icons/Unknown.svg'
 export { ReactComponent as StackDevice } from './icons/StackDevice.svg'

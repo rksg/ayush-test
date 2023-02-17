@@ -9894,7 +9894,7 @@ exports[`Topology scale data should render 1`] = `
                       class="sc-gKXOVf elAZwe"
                     >
                       <svg
-                        data-testid="CloudSolidIcon"
+                        data-testid="CloudSolid"
                       />
                     </div>
                   </foreignobject>
@@ -11158,7 +11158,7 @@ exports[`Topology should render correctly 1`] = `
                       class="sc-gKXOVf elAZwe"
                     >
                       <svg
-                        data-testid="CloudSolidIcon"
+                        data-testid="CloudSolid"
                       />
                     </div>
                   </foreignobject>
