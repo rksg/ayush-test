@@ -25,6 +25,8 @@ import {
   SwitchRow,
   StackMember,
   ConfigurationHistory,
+  CliTemplateExample,
+  CliConfiguration,
   transformConfigType,
   transformConfigStatus,
   VeViewModel,
@@ -822,8 +824,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ? { data: leaseResult.response.dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
+    }),
+    getCliTemplate: build.query<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
+    getCliConfigExamples: build.query<CliTemplateExample[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliConfigExamples, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     })
-
   })
 })
 
@@ -992,6 +1031,10 @@ export const {
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
+  useGetProfilesQuery,
+  useAddCliTemplateMutation,
   useGetCliTemplatesQuery,
-  useGetProfilesQuery
+  useGetCliTemplateQuery,
+  useUpdateCliTemplateMutation,
+  useGetCliConfigExamplesQuery
 } = switchApi

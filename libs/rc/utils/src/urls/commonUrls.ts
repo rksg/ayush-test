@@ -144,6 +144,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
     newApi: true
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
   addVenue: {
     method: 'post',
     // newApi: true,

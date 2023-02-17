@@ -391,6 +391,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state',
     newApi: true
   },
+  addCliTemplate: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template'
+  },
+  getCliConfigExamples: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/example'
+  },
   getProfiles: {
     method: 'post',
     url: '/switchProfiles/query',
@@ -402,6 +410,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/cliTemplates/query',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template/query',
     newApi: true
+  },
+  getCliTemplate: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/:templateId'
+  },
+  updateCliTemplate: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getLagList: {
     method: 'get',
