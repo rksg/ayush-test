@@ -229,7 +229,7 @@ export function VenuesForm () {
       const formData = { ...values }
       formData.address = address
       if (isNewApi) {
-        await newAddVenue({ params, payload: formData }).unwrap()
+        await newAddVenue({ params, payload: formData }).unwrap() //Only for IT test
       } else {
         await addVenue({ params, payload: formData }).unwrap()
       }

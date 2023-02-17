@@ -99,7 +99,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
-  newAddVenue: {
+  newAddVenue: { // Only for IT test
     method: 'post',
     newApi: true,
     url: '/venues'

@@ -107,7 +107,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
-    newAddVenue: build.mutation<VenueExtended, RequestPayload>({
+    newAddVenue: build.mutation<VenueExtended, RequestPayload>({ //Only for IT test
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.newAddVenue, params)
         return {
