@@ -12,11 +12,11 @@ import { EmptyDescription } from './styledComponents'
 
 //for Local test, use '/docs/r1/mapfile/doc-mapper.json'
 // TODO: change to use '/docs/r1/mapfile/doc-mapper.json' for local and prod after gateway adds route
-export const MAPPING_URL = '/docs/r1/mapfile/doc-mapper.json'
+export const MAPPING_URL = 'https://docs.cloud.ruckuswireless.com/r1/mapfile/doc-mapper.json'
 
 // for local test, use '/docs/alto/latest/'
 // TODO: change to use '/docs/alto/latest/' for local and prod after gateway adds route
-export const DOCS_URL = '/docs/alto/latest/'
+export const DOCS_URL = 'https://docs.cloud.ruckuswireless.com/alto/latest/'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 

@@ -24,8 +24,9 @@ describe('ReRunButton', () => {
     expect(button).toBeVisible()
 
     fireEvent.click(button)
-    await waitFor(async () =>
-      expect(await screen.findByText('Network Health test run created')).toBeVisible())
+    await waitFor(() => {
+      expect(screen.queryByText('Network Health test run created')).toBeVisible()
+    })
 
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/t/t-id/serviceValidation/networkHealth/spec-id/tests/3',
@@ -49,7 +50,8 @@ describe('ReRunButton', () => {
     expect(button).toBeVisible()
 
     fireEvent.click(button)
-    await waitFor(async () =>
-      expect(await screen.findByText('Network Health test does not exist')).toBeVisible())
+    await waitFor(() => {
+      expect(screen.queryByText('Network Health test does not exist')).toBeVisible()
+    })
   })
 })

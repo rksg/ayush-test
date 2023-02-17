@@ -355,6 +355,7 @@ const {
       RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
     >({
       query: (variables) => ({ variables, document: runServiceGuardTest }),
+      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
     })

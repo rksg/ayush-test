@@ -21,7 +21,7 @@ describe('ReRunButton', () => {
       networkHealthApiURL, 'FetchServiceGuardRelatedTests', { data: fetchServiceGuardRelatedTests })
     render(<TestRunButton/>, {
       wrapper: Provider,
-      route: { params: { tenantId: 't-id', specId: 'spec-id', testId: '1' } }
+      route: { params: { tenantId: 't-id', testId: '1' } }
     })
     await waitFor(() => { expect(screen.getByText('Feb 14 2023 00:00:00')).toBeVisible() })
 
@@ -33,8 +33,8 @@ describe('ReRunButton', () => {
       networkHealthApiURL, 'FetchServiceGuardRelatedTests', { data: { serviceGuardTest: null } })
     render(<TestRunButton/>, {
       wrapper: Provider,
-      route: { params: { tenantId: 't-id', specId: 'spec-id', testId: '1' } }
+      route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    await waitFor(() => { expect(screen.getByText('-')).toBeVisible() })
+    await waitFor(() => { expect(screen.queryByText('-')).toBeVisible() })
   })
 })

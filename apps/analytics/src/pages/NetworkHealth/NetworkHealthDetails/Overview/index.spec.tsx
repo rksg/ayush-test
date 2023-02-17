@@ -19,7 +19,7 @@ describe('Overview component', () => {
   it('should render correctly', async () => {
     render(<Overview
       details={fetchServiceGuardTest.serviceGuardTest as unknown as NetworkHealthTest}/>)
-    expect(await screen.findByTestId('ConfigSection')).toBeVisible()
-    expect(await screen.findByTestId('ExecutionSection')).toBeVisible()
+    expect(screen.queryByTestId('ConfigSection')).toBeVisible()
+    expect(screen.queryByTestId('ExecutionSection')).toBeVisible()
   })
 })

@@ -1,7 +1,7 @@
-import { networkHealthApiURL }                                                         from '@acx-ui/analytics/services'
-import { useIsTierAllowed }                                                            from '@acx-ui/feature-toggle'
-import { Provider }                                                                    from '@acx-ui/store'
-import { act, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
+import { networkHealthApiURL }                                  from '@acx-ui/analytics/services'
+import { useIsTierAllowed }                                     from '@acx-ui/feature-toggle'
+import { Provider }                                             from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardSpec, fetchServiceGuardTest } from './pages/NetworkHealth/__tests__/fixtures'
 import AnalyticsRoutes                                  from './Routes'
@@ -87,8 +87,9 @@ test('should navigate to Netework Health edit page', async () => {
       wrapRoutes: false
     }
   })
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
+  await waitFor(()=>{
+    expect(screen.getByTestId('NetworkHealthForm')).toBeVisible()
+  })
 })
 test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGuard', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
@@ -100,9 +101,9 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthSpecGua
       wrapRoutes: false
     }
   })
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 100)) })
-  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+  await waitFor(()=>{
+    expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+  })
   expect(screen.getByText('Network Health test does not exist')).toBeVisible()
 
   const close = await screen.findByRole('img')
@@ -172,8 +173,9 @@ test('should navigate to serviceValidation/networkHealth/tab/overview', async ()
       wrapRoutes: false
     }
   })
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
+  await waitFor(()=>{
+    expect(screen.getByTestId('NetworkHealthDetails')).toBeVisible()
+  })
 })
 test('should navigate to serviceValidation/networkHealth/tab/details', async () => {
   mockGraphqlQuery(
@@ -197,9 +199,9 @@ test('should navigate to serviceValidation/networkHealth by NetworkHealthTestGua
       wrapRoutes: false
     }
   })
-  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-  await act(async () => { await new Promise((resolve) => setTimeout(resolve, 100)) })
-  expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+  await waitFor(()=>{
+    expect(screen.getByTestId('NetworkHealthPage')).toBeVisible()
+  })
   expect(screen.getByText('Network Health test does not exist')).toBeVisible()
 })
 

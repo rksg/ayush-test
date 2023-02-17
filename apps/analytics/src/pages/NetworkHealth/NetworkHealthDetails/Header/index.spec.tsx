@@ -1,6 +1,6 @@
-import { networkHealthApiURL }                                                  from '@acx-ui/analytics/services'
-import { Provider }                                                             from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { networkHealthApiURL }                       from '@acx-ui/analytics/services'
+import { Provider }                                  from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardTest } from '../../__tests__/fixtures'
 import { useNetworkHealthTest }  from '../../services'
@@ -99,7 +99,6 @@ describe('SubTitle', () => {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(() =>
       expect(screen.queryByText([
         'APs Under Test: 2 APs',
@@ -123,7 +122,6 @@ describe('SubTitle', () => {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(() =>
       expect(screen.queryByText([
         'APs Under Test: 0 of 2 APs tested',
@@ -144,7 +142,6 @@ describe('SubTitle', () => {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(() => expect(screen.queryByText([
       'WLAN: Unknown',
       'Radio Band: Unknown',
