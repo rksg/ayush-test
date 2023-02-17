@@ -500,6 +500,76 @@ export function priorityRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function whitespaceOnlyRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('\\S')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.whitespaceOnly))
+  }
+  return Promise.resolve()
+}
+
+export function agreeRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^agree$', 'i')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.agree))
+  }
+  return Promise.resolve()
+}
+
+export function nameCannotStartWithNumberRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([0-9][A-Za-z0-9]*)$/)
+
+  if (value && re.test(value)) {
+    return Promise.reject($t(validationMessages.nameCannotStartWithNumber))
+  }
+  return Promise.resolve()
+}
+
+export function cliVariableNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[A-Za-z0-9]*$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.nameInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function cliIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-2][0-3]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function subnetMaskPrefixRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(^255\.255\.(0|128|192|224|24[08]|25[245])\.0$)|(^255\.255\.255\.(0|128|192|224|24[08]|252)$)/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMaskBased255_255))
+  }
+  return Promise.resolve()
+}
+
+export function specialCharactersRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ -]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function ValidatePhoneNumber (phoneNumber: string) {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number

@@ -11,6 +11,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadioSettingsChannels } from '../RadioSettingsChannels'
 
+import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -74,7 +75,6 @@ export function SingleRadioSettings (props:{
   } = useContext(editContext)
 
   const isSupportRadio = bandwidthOptions?.length > 0
-  const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = (context === 'venue') ?
     VenueRadioTypeDataKeyMap[radioType] : ApRadioTypeDataKeyMap[radioType]
 
@@ -85,6 +85,7 @@ export function SingleRadioSettings (props:{
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
+  const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(['5G', 'DFS'])
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
@@ -121,11 +122,9 @@ export function SingleRadioSettings (props:{
     //bandwidthList = Object.keys(supportChannels)
   }
 
-  /*
-  const showChannelBarCOntrolLink = (radioType !== ApRadioTypeEnum.Radio24G &&
+  const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
 
-  */
 
   const [
     channelMethod,
@@ -297,6 +296,10 @@ export function SingleRadioSettings (props:{
     }
   }
 
+  const updateChannelBarDisplaySettings = (values: string[]) => {
+    setDisplayRadioBarSettings(values)
+  }
+
   return (
     <>
       {
@@ -330,6 +333,13 @@ export function SingleRadioSettings (props:{
               <div style={{ color: cssStr('--acx-semantics-red-50') }}>
                 {channelErrMsg}
               </div>
+            </Col>
+          }
+          {showChannelBarControlLink &&
+            <Col offset={6} span={6} style={{ paddingLeft: 'unset' }}>
+              <ChannelBarControlPopover
+                initValue={displayRadioBarSettings}
+                onChannelBarDisplayChanged={updateChannelBarDisplaySettings} />
             </Col>
           }
         </Row>
