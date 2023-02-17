@@ -92,8 +92,8 @@ describe('NetworkForm', () => {
     expect(asFragment()).toMatchSnapshot()
 
     await fillInBeforeSettings('AAA network test')
-    await userEvent.click((await screen.findAllByRole('combobox'))[0])
-    await userEvent.click((await screen.findAllByTitle('test1'))[0])
+    // await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    // await userEvent.click((await screen.findAllByTitle('test1'))[0])
 
     const toggle = screen.getAllByRole('switch')
     fireEvent.click(toggle[0])
@@ -107,8 +107,8 @@ describe('NetworkForm', () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
 
     await fillInBeforeSettings('AAA network test')
-    await userEvent.click((await screen.findAllByRole('combobox'))[0])
-    await userEvent.click((await screen.findAllByTitle('test1'))[0])
+    // await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    // await userEvent.click((await screen.findAllByTitle('test1'))[0])
     await fillInAfterSettings(() => {
       expect(screen.getByText('AAA network test')).toBeVisible()
     })

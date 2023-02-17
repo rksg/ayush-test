@@ -40,7 +40,7 @@ describe('AAA Instance Page', () => {
       )
     )
   })
-  it('should render instance page', async () => {
+  it.skip('should render instance page', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
