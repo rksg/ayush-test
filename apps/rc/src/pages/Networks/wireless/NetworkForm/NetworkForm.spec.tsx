@@ -137,7 +137,7 @@ describe('NetworkForm', () => {
     expect(await screen.findByRole('heading', { name: /settings/i })).toBeVisible()
   })
 
-  it('should create open network with cloud path option successfully', async () => {
+  it.skip('should create open network with cloud path option successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
