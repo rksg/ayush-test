@@ -18,7 +18,7 @@ describe('box', () => {
     type: 'successCount',
     title: defineMessage({ defaultMessage: 'test box' }),
     suffix: '/suffix',
-    isOpen: false,
+    // isOpen: false,
     value: '100'
   }
   it('should render correctly', async () => {
@@ -28,7 +28,7 @@ describe('box', () => {
     // expect(asFragment()).toMatchSnapshot()
     // await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
     // expect(onClick).toBeCalledTimes(1)
-    const { asFragment } = render(<Box {...boxProps} isOpen />)
+    const { asFragment } = render(<Box {...boxProps} />)
     expect(asFragment()).toMatchSnapshot()
   })
 })
