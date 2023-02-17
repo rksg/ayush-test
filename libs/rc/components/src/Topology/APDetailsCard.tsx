@@ -6,7 +6,7 @@ import { ApDeviceStatusEnum, APExtended, APView, RadioProperties, SwitchStatusEn
 import { formatter }                                                                                    from '@acx-ui/utils'
 
 import * as UI                                  from './styledComponents'
-import { getDeviceColor, wirelessRadioColumns } from './utils'
+import { getDeviceColor, getWirelessRadioColumns } from './utils'
 
 
 
@@ -84,7 +84,7 @@ export function APDetailsCard (props: {
           children={
             <UI.WirelessRadioTableContainer>
               <Table
-                columns={wirelessRadioColumns}
+                columns={getWirelessRadioColumns()}
                 dataSource={wirelessRadioDetails}
                 size='small'
                 pagination={false} />

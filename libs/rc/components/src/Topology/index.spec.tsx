@@ -323,8 +323,8 @@ describe('Topology', () => {
   it('should render correctly', async () => {
 
 
-    const { asFragment } = await render(<Provider><IntlProvider locale='en'>
-      <TopologyGraph /></IntlProvider></Provider>,{
+    const { asFragment } = await render(<Provider>
+      <TopologyGraph /></Provider>,{
       route: { params }
     })
 

@@ -68,25 +68,28 @@ export const switchStatus = (switchStatus: SwitchStatusEnum) => {
   }
 }
 
-export const wirelessRadioColumns: ColumnsType<RadioProperties> = [
-  {
-    title: '',
-    dataIndex: 'band',
-    align: 'center'
-  },
-  {
-    title: getIntl().$t({ defaultMessage: 'RF Channel' }),
-    dataIndex: 'channel',
-    align: 'center'
-  },
-  {
-    title: getIntl().$t({ defaultMessage: 'RF Bandwidth' }),
-    dataIndex: 'operativeChannelBandwidth',
-    align: 'center'
-  },
-  {
-    title: getIntl().$t({ defaultMessage: 'TX Power' }),
-    dataIndex: 'txPower',
-    align: 'center'
-  }
-]
+export function getWirelessRadioColumns () :ColumnsType<RadioProperties> {
+  const { $t } = getIntl()
+  return [
+    {
+      title: '',
+      dataIndex: 'band',
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'RF Channel' }),
+      dataIndex: 'channel',
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'RF Bandwidth' }),
+      dataIndex: 'operativeChannelBandwidth',
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'TX Power' }),
+      dataIndex: 'txPower',
+      align: 'center'
+    }
+  ]
+}
