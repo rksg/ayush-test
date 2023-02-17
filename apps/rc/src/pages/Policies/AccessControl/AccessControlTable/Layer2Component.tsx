@@ -65,6 +65,7 @@ const Layer2Component = () => {
               defaultMessage: 'This policy has been applied in network or it been used in another access control policy.'
             })
           })
+          clearSelection()
         } else {
           showActionModal({
             type: 'confirm',
