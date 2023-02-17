@@ -99,20 +99,32 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
   addVenue: {
     method: 'post',
+    // newApi: true,
+    // url: '/venues',
     url: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
+    // newApi: true,
+    // url: '/venues/:venueId',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
+    // newApi: true,
+    // url: '/venues/:venueId',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
+    // url: '/venues/:venueId',
+    // newApi: true,
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
