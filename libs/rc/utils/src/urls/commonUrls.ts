@@ -201,9 +201,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMeshAps: {
     method: 'post',
-    url: '/aps/query',
-    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
-    newApi: true
+    // url: '/aps/query',
+    // newApi: true,
+    url: '/api/viewmodel/:tenantId/aps/mesh'
   },
   getService: {
     method: 'get',
@@ -375,9 +375,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueSwitchSetting: {
     method: 'get',
-    url: '/venues/:venueId/switchSettings',
-    oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId',
-    newApi: true
+    // url: '/venues/:venueId/switchSettings',
+    // newApi: true,
+    url: '/api/switch/tenant/:tenantId/venue/:venueId'
   },
   updateVenueSwitchSetting: {
     method: 'put',
