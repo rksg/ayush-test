@@ -19,11 +19,12 @@ describe('Threshold Histogram chart', () => {
     render(
       <Provider>
         <ThresholdConfig
-          thresholdValue={'10'}
+          thresholdValue={10}
           percent={100}
           unit={defineMessage({ defaultMessage: 'seconds' })}
           shortXFormat={shortXFormat}
           onReset={jest.fn()}
+          onApply={jest.fn()}
         />
       </Provider>
     )

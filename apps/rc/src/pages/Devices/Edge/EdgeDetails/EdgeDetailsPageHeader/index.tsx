@@ -122,7 +122,7 @@ export const EdgeDetailsPageHeader = () => {
       title={currentEdge?.name || ''}
       titleExtra={<EdgeStatusLight data={status} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Smart Edge' }), link: '/devices/edge/list' }
+        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
       ]}
       extra={[
         <RangePicker

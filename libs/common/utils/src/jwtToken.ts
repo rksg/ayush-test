@@ -70,16 +70,16 @@ export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
   if (jwt === null) {
-    const tenantId = getTenantId()
+    const tenantId = getTenantId() // when JWT FF is disabled
     if (isDev) {
       // eslint-disable-next-line no-console
       console.warn('No JWT token found! So setting default JWT values')
     }
     const jwtToken: {
-      acx_account_tier: AccountTier;
-      acx_account_vertical: AccountVertical.DEFAULT;
-      tenantType: AccountType;
-      isBetaFlag: false;
+      acx_account_tier: AccountTier
+      acx_account_vertical: AccountVertical
+      tenantType: AccountType
+      isBetaFlag: false
       tenantId: string | undefined } = {
         acx_account_tier: AccountTier.PLATINUM,
         acx_account_vertical: AccountVertical.DEFAULT,

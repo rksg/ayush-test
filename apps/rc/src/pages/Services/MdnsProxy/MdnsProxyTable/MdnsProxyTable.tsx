@@ -1,7 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteMdnsProxyMutation, useServiceListQuery }                from '@acx-ui/rc/services'
+import {
+  Button,
+  PageHeader,
+  Table,
+  TableProps,
+  Loader,
+  showActionModal,
+  showToast
+} from '@acx-ui/components'
+import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -9,7 +17,8 @@ import {
   ServiceOperation,
   Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -51,7 +60,18 @@ export default function MdnsProxyTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
+              .then(clearSelection)
+              .catch(error => {
+                const errorResponse = error as CatchErrorResponse
+                // eslint-disable-next-line max-len
+                const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
+
+                showToast({
+                  type: 'error',
+                  content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
+                })
+              })
           }
         })
       }

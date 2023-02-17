@@ -13,7 +13,7 @@ import {
 import {
   useTableQuery,
   SwitchDhcp,
-  catchErrorResponse,
+  CatchErrorResponse,
   isOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -53,7 +53,7 @@ export function SwitchDhcpPoolTable () {
       setSelected(undefined)
       setDrawerVisible(false)
     } catch (error) {
-      const errorResponse = error as catchErrorResponse | { error: string }
+      const errorResponse = error as CatchErrorResponse | { error: string }
       const message = ('error' in errorResponse) ? errorResponse.error:
         errorResponse.data.errors.map(error => error.message).join('<br />')
       showToast({
@@ -106,6 +106,7 @@ export function SwitchDhcpPoolTable () {
 
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       setSelected(selectedRows[0].id)
       setDrawerVisible(true)
@@ -146,7 +147,7 @@ export function SwitchDhcpPoolTable () {
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{
-          type: 'radio',
+          type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[],
           onChange: (keys: React.Key[]) => {
             setSelected(keys[0] as string)

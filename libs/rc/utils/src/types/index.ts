@@ -44,6 +44,14 @@ export interface CommonResult {
   response?:{}
 }
 
+export interface CommonErrorsResult<T> {
+  data: {
+    errors: T[];
+    requestId: string;
+  };
+  status: number;
+}
+
 export interface Network {
   id: string
   name: string
@@ -102,7 +110,7 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
@@ -407,14 +415,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse {
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number
