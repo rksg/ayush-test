@@ -343,7 +343,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
   // return currentGuest.ssid
   if (currentGuest.networkId) {
     return (
-      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/aps`}>
+      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>
     )
   } else {
