@@ -4,20 +4,38 @@ import { ECharts }            from 'echarts'
 import ReactECharts           from 'echarts-for-react'
 import { CallbackDataParams } from 'echarts/types/dist/shared'
 
-import { act, render, waitFor, screen, cleanup, renderHook, fireEvent } from '@acx-ui/test-utils'
-import { TimeStamp }                                                    from '@acx-ui/types'
+import {
+  act,
+  render,
+  waitFor,
+  screen,
+  cleanup,
+  renderHook,
+  fireEvent
+} from '@acx-ui/test-utils'
+import { TimeStamp } from '@acx-ui/types'
 
-import { MultiBarTimeSeriesChart, useBarchartZoom, defaultLabelFormatter } from '.'
+import {
+  MultiBarTimeSeriesChart,
+  useBarchartZoom,
+  defaultLabelFormatter
+} from '.'
 
 const base = +new Date(2023, 1, 30)
 
 const sampleData = () => {
   const milisInDay = 24 * 3600 * 1000
-  const data = [[base, 'SwitchStatus', base + 1000]]
+  const data = [[base, 'SwitchStatus', base + 1000, 1, '#23AB36']]
   for (let i = 1; i < 37; i++) {
-    data.push([base + milisInDay * i, 'SwitchStatus', base + milisInDay * i + 1000, 1])
+    data.push([
+      base + milisInDay * i,
+      'SwitchStatus',
+      base + milisInDay * i + 1000,
+      Math.floor(Math.random() * 0) + 1,
+      '#23AB36'
+    ])
   }
-  return data as [TimeStamp, string, TimeStamp, number | null][]
+  return data as [TimeStamp, string, TimeStamp, number | null, string][]
 }
 
 const getData = () => {
@@ -115,7 +133,21 @@ describe('MultiBarTimeSeriesChart', () => {
     const params = { value: new Date(2023, 1, 30) } as CallbackDataParams
     expect(defaultLabelFormatter(data, params)).toContain('Status: Connected')
   })
-
+  it('should show valid tooltip with disconnected status', async () => {
+    const data = [
+      {
+        data: [[base, 'SwitchStatus', base + 1000, 0, '#23AB36']] as [
+          TimeStamp,
+          string,
+          TimeStamp,
+          number | null,
+          string
+        ][]
+      }
+    ]
+    const params = { value: new Date(2023, 1, 30) } as CallbackDataParams
+    expect(defaultLabelFormatter(data, params)).toContain('Status: Disconnected')
+  })
   describe('useBarchartZoom', () => {
     let onCallbacks: Record<string, (event: unknown) => void>
     let mockOn: (type: string, callback: (event: unknown) => void) => void

@@ -13,10 +13,11 @@ export const getData = () => {
       base + oneDay * i,
       'SwitchStatus',
       base + oneDay * i + Math.round(Math.random()) * 100000000,
-      1
+      1,
+      '#23AB36'
     ])
   }
-  return data as [TimeStamp, string, TimeStamp, number | null][]
+  return data as [TimeStamp, string, TimeStamp, number | null, string][]
 }
 const seriesNames = [['New Clients', 'Impacted Clients', 'Connected Clients']]
 export const getSeriesData = (index = 0) => {

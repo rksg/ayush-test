@@ -58,7 +58,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
     key: string;
     name: string;
     show?: boolean;
-    data: [TimeStamp, string, TimeStamp, number | null][];
+    data: [TimeStamp, string, TimeStamp, number | null, string][];
   }[];
   chartBoundary: number[];
   zoomEnabled?: boolean;
@@ -78,16 +78,19 @@ export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' 
 }[]
 
 export function defaultLabelFormatter (
-  data: { data: [TimeStamp, string, TimeStamp, number | null][] }[],
+  data: { data: [TimeStamp, string, TimeStamp, number | null, string][] }[],
   params: CallbackDataParams
 ) {
   const { $t } = getIntl()
   let status = $t({ defaultMessage: 'Not Available' })
-  data?.[0].data.forEach((dataPoint: [TimeStamp, string, TimeStamp, number | null]) => {
+  data?.[0].data.forEach((dataPoint: [TimeStamp, string, TimeStamp, number | null, string]) => {
     const startTime = moment(dataPoint?.[0])
     const endTime = moment(dataPoint?.[2])
     if (moment(params.value as string).isBetween(startTime, endTime, null, '[]'))
-      status = $t({ defaultMessage: 'Connected' })
+      status =
+        dataPoint[3] === 1
+          ? $t({ defaultMessage: 'Connected' })
+          : $t({ defaultMessage: 'Disconnected' })
   })
   return (
     formatter('dateTimeFormat')(params.value) +
@@ -206,7 +209,6 @@ export function MultiBarTimeSeriesChart ({
       bottom: 0,
       left: chartPadding,
       right: 0,
-      width: props.style?.width,
       height: rowHeight
     },
     tooltip: {
@@ -305,13 +307,15 @@ export function MultiBarTimeSeriesChart ({
       }
       : { toolbox: { show: false } }),
 
-    series: data.map(({ key, color, data }) => {
+    series: data.map(({ key, data }) => {
       return {
         type: 'custom',
         name: key,
         renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
         itemStyle: {
-          color: color
+          color: function (params: { data: [TimeStamp, string, TimeStamp, number | null, string] }){
+            return params.data[4]
+          }
         },
         data: data
       }

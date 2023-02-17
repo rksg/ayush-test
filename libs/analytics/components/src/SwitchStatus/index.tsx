@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesChartData, getSeriesData, AnalyticsFilter }      from '@acx-ui/analytics/utils'
+import { calculateGranularity }                                     from '@acx-ui/analytics/utils'
 import { Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr } from '@acx-ui/components'
 import { TimeStamp }                                                from '@acx-ui/types'
 
@@ -22,13 +23,17 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
   return timeSeries?.[0]?.data?.reduce((startEndTimes, dataPoint, index) => {
     const [time, value] = dataPoint
     if (index === 0 || value !== timeSeries?.[0]?.data[index - 1][1]) {
-      startEndTimes.push([time, 'switchStatus', time, value])
+      const seriesColor =
+        value === 1
+          ? cssStr('--acx-semantics-green-50')
+          : (cssStr('--acx-semantics-red-50') as string)
+      startEndTimes.push([time, 'switchStatus', time, value, seriesColor])
     } else {
       const lastStartEndTime = startEndTimes[startEndTimes.length - 1]
       lastStartEndTime[2] = time
     }
     return startEndTimes
-  }, [] as [TimeStamp, string, TimeStamp, number | null][])
+  }, [] as [TimeStamp, string, TimeStamp, number | null, string][])
 }
 export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
   const { $t } = useIntl()
@@ -40,14 +45,26 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
       return {
         timeSeries: getStartAndEndTimes(
           getSeriesData(data?.timeSeries!, seriesMapping) as TimeSeriesChartData[]
-        )?.filter((dataPoint) => dataPoint?.[3] === 1),
+        )
+          ?.filter((dataPoint) => dataPoint?.[3] === 1 || dataPoint?.[3] === 0)
+          .map((dataPoint) => {
+            let inclusiveDataPoint = dataPoint
+            inclusiveDataPoint[2] = moment(dataPoint?.[2])
+              .add(
+                moment
+                  .duration(calculateGranularity(filters.startDate, filters.endDate, 'PT15M'))
+                  .asSeconds(),
+                'seconds'
+              )
+              .toISOString()
+            return inclusiveDataPoint
+          }),
         switchTotalUptime: data?.switchTotalUptime,
         switchTotalDowntime: data?.switchTotalDowntime,
         ...rest
       }
     }
   })
-
   return (
     <Loader states={[queryResults]}>
       <UI.Wrapper>
@@ -79,7 +96,8 @@ export function SwitchStatusByTime ({ filters }: { filters: AnalyticsFilter }) {
                         TimeStamp,
                         string,
                         TimeStamp,
-                        number | null
+                        number | null,
+                        string
                       ][]
                     }
                   ]}
