@@ -197,7 +197,8 @@ const EdgesTable = () => {
 const Edges = () => {
 
   const { $t } = useIntl()
-  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
+  const isEdgesEnable = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   if (!isEdgesEnable) {
     return <span>{ $t({ defaultMessage: 'Edges is not enabled' }) }</span>
