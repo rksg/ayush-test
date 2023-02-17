@@ -304,8 +304,11 @@ export const validationMessages = {
   switchStaticRouteAdminDistanceInvalid: defineMessage({
     defaultMessage: 'Enter a valid number between 0 and 255',
     description: 'Validation - switch static route admin distance'
+  }),
+  subnetOverlapping: defineMessage({
+    defaultMessage: 'The ports have overlapping subnets',
+    description: 'Validation - subnet range'
   })
-
 
 
 

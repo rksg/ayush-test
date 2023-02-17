@@ -41,7 +41,9 @@ function TypesForm () {
     data,
     setData,
     editMode,
-    cloneMode
+    cloneMode,
+    modalMode,
+    createType
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
@@ -54,6 +56,11 @@ function TypesForm () {
       form.setFieldsValue({ ...data })
     }
   }, [data])
+  useEffect(()=>{
+    if(createType){
+      form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
+    }
+  },[createType])
   return (
     <>
       <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
@@ -64,7 +71,7 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange} disabled={editMode || cloneMode}>
+        <Radio.Group onChange={onChange} disabled={editMode || cloneMode || modalMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}

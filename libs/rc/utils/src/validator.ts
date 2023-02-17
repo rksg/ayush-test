@@ -65,7 +65,8 @@ export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value)) {
+  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$')
+  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -721,4 +722,38 @@ export function validateRecoveryPassphrasePart (value: string) {
   }
 
   return Promise.resolve()
+}
+
+export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
+  secondIpAddress: string, secondSubnetMask:string ) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  let result = false
+  let firstSubnetInfo
+  let secondSubnetInfo
+  try {
+    firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
+    secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+  } catch (error) {
+    // ignore invalid case
+    return Promise.resolve()
+  }
+
+  const firstStartLong = convertIpToLong(firstSubnetInfo.first)
+  const firstEndLong = convertIpToLong(firstSubnetInfo.last)
+  const secondStartLong = convertIpToLong(secondSubnetInfo.first)
+  const secondEndLong = convertIpToLong(secondSubnetInfo.last)
+
+  if(secondStartLong < firstStartLong) {
+    result = secondEndLong > firstStartLong
+  } else {
+    result = secondStartLong < firstEndLong
+  }
+
+  return result ? Promise.reject($t(validationMessages.subnetOverlapping))
+    : Promise.resolve()
+
 }
