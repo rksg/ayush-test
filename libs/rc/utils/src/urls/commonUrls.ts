@@ -174,9 +174,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueDetailsHeader: {
     method: 'get',
-    url: '/venues/:venueId/detailHeaders',
-    oldUrl: '/api/viewmodel/:tenantId/venue/:venueId/detailheader',
-    newApi: true
+    // 500 internal server error for new api
+    // url: '/venues/:venueId/detailHeaders',
+    // newApi: true,
+    url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
   },
   getVenueCityList: {
     method: 'post',
@@ -446,9 +447,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGuestsList: {
     method: 'post',
-    url: '/guestUsers/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
-    newApi: true
+    // new api not found
+    // url: '/guestUsers/query',
+    // newApi: true,
+    url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   addGuestPass: {
     method: 'post',
