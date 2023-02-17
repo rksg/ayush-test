@@ -44,7 +44,7 @@ describe('Kpi timeseries', () => {
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     render(<Provider>
       <KpiTimeseries
@@ -60,7 +60,7 @@ describe('Kpi timeseries', () => {
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     render(<Provider>
       <KpiTimeseries
@@ -76,7 +76,7 @@ describe('Kpi timeseries', () => {
   })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleNoDataTS }
+      data: { network: { timeSeries: sampleNoDataTS } }
     })
     render(<Provider>
       <KpiTimeseries
