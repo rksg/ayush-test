@@ -87,6 +87,7 @@ export function RadioSettings () {
 
   const [initData, setInitData] = useState({} as ApRadioCustomization)
   const [formInitializing, setFormInitializing] = useState(true)
+  const [apDataLoaded, setApDataLoaded] = useState(false)
 
 
   const { data: apRadioSavedData } =
@@ -126,7 +127,7 @@ export function RadioSettings () {
     const capabilities = getApCapabilities.data
     const availableChannels = getApAvailableChannels.data
 
-    if (ap && capabilities && availableChannels) {
+    if (!apDataLoaded && ap && capabilities && availableChannels) {
       const setData = async () => {
 
         const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
@@ -191,11 +192,12 @@ export function RadioSettings () {
         setVenue(venue)
         const apVenueData = convertVenueRadioSetingsToApRadioSettings(venueRadioData)
         setVenueRadioData(apVenueData)
+        setApDataLoaded(true)
       }
 
       setData()
     }
-  }, [getAp, getApCapabilities, getApAvailableChannels])
+  }, [getAp, getApCapabilities, getApAvailableChannels, apDataLoaded])
 
   const updateFormData = (data: ApRadioCustomization) => {
     formRef?.current?.setFieldsValue(data)
