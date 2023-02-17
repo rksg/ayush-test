@@ -287,7 +287,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/profile'
   },
   updateSwitchConfigProfile: {
-    method: 'post',
+    method: 'put',
     url: '/api/switch/tenant/:tenantId/profile'
   },
   getProfiles: {

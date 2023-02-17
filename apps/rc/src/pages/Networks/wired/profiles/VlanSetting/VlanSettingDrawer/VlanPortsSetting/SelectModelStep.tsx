@@ -1,5 +1,5 @@
 
-import { useState, useEffect, SetStateAction } from 'react'
+import { useState, useEffect, SetStateAction, useContext } from 'react'
 
 import { Row, Col, Form, Input, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
@@ -10,7 +10,9 @@ import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import * as UI          from './styledComponents'
+import VlanPortsContext from './VlanPortsContext'
+
 
 export interface ModelsType {
   label: string
@@ -26,6 +28,8 @@ export interface PortsType {
 export function SelectModelStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { vlanSettingValues, setVlanSettingValues, editMode } = useContext(VlanPortsContext)
+
   const [families, setFamilies] = useState<ModelsType[]>([])
   const [models, setModels] = useState<ModelsType[]>([])
   const [family, setFamily] = useState('')
@@ -65,7 +69,33 @@ export function SelectModelStep () {
       })
       setFamilies(familiesData)
     }
-  }, [ICX_MODELS_MODULES])
+    if(ICX_MODELS_MODULES && vlanSettingValues && editMode){
+      const selectedFamily = vlanSettingValues.family
+      const selectedModel = vlanSettingValues.model
+      const selectedEnable2 = vlanSettingValues.switchFamilyModels?.slots.
+        filter(item => item.slotNumber === 2)[0] || { enable: false, option: '' }
+      const selectedEnable3 = vlanSettingValues.switchFamilyModels?.slots.
+        filter(item => item.slotNumber === 3)[0] || { enable: false, option: '' }
+      const selectedEnable4 = vlanSettingValues.switchFamilyModels?.slots.
+        filter(item => item.slotNumber === 4)[0] || { enable: false, option: '' }
+      form.setFieldsValue({
+        family: selectedFamily,
+        model: selectedModel,
+        enableSlot2: selectedEnable2.enable,
+        enableSlot3: selectedEnable3.enable,
+        enableSlot4: selectedEnable4.enable,
+        selectedOptionOfSlot2: selectedEnable2.option,
+        selectedOptionOfSlot3: selectedEnable3.option,
+        selectedOptionOfSlot4: selectedEnable4.option
+      })
+      familyChangeAction(selectedFamily)
+      modelChangeAction(selectedFamily, selectedModel)
+      setEnableSlot2(selectedEnable2.enable)
+      setEnableSlot3(selectedEnable3.enable)
+      setEnableSlot4(selectedEnable4.enable)
+      checkIfModuleFixed(selectedFamily, selectedModel)
+    }
+  }, [ICX_MODELS_MODULES, vlanSettingValues])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -138,10 +168,16 @@ export function SelectModelStep () {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
-    form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
-    setModuleSelectionEnable(false)
-    setFamily(e.target.value)
-    const index = e.target.value as keyof typeof ICX_MODELS_MODULES
+    familyChangeAction(e.target.value)
+  }
+
+  const familyChangeAction = (family: string) => {
+    if(!editMode){
+      form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
+      setModuleSelectionEnable(false)
+    }
+    setFamily(family)
+    const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
     const modelsData = Object.keys(modelsList).map(key => {
@@ -151,18 +187,23 @@ export function SelectModelStep () {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
-    form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
-    setEnableSlot2(false)
-    setEnableSlot3(false)
-    setEnableSlot4(false)
-    setModuleSelectionEnable(true)
-    setModule2SelectionEnable(true)
-    setModule3SelectionEnable(true)
-    setModel(e.target.value)
-    checkIfModuleFixed(family, e.target.value)
-    getSlots(family, e.target.value)
-    setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
-    updateModelPortData(family, e.target.value)
+    modelChangeAction(family, e.target.value)
+  }
+
+  const modelChangeAction = (family: string, model: string) => {
+    if(!editMode){
+      form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
+      setEnableSlot2(false)
+      setEnableSlot3(false)
+      setEnableSlot4(false)
+      setModuleSelectionEnable(true)
+      setModule2SelectionEnable(true)
+      setModule3SelectionEnable(true)
+    }
+    setModel(model)
+    checkIfModuleFixed(family, model)
+    getSlots(family, model)
+    updateModelPortData(family, model)
   }
 
   const onCheckChange = function (e: CheckboxChangeEvent, slot: string) {
@@ -294,13 +335,6 @@ export function SelectModelStep () {
 
   return (
     <>
-      <Row gutter={20}>
-        <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>
-            {$t({ defaultMessage: 'Select family and model to be configured:' })}
-          </label>
-        </Col>
-      </Row>
       <Row gutter={20} style={{ marginTop: '20px' }}>
         <Col span={4}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Family' })}</Typography.Title>
@@ -308,9 +342,10 @@ export function SelectModelStep () {
             <Card>
               <Form.Item
                 name={'family'}
-                children={<Radio.Group onChange={onFamilyChange}>
+                required={true}
+                children={<Radio.Group onChange={onFamilyChange} defaultValue={family}>
                   {families.map(({ label, value }) => (
-                    <Radio key={value} value={value}>
+                    <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
                         {label}
@@ -328,9 +363,10 @@ export function SelectModelStep () {
             <Card>
               <Form.Item
                 name={'model'}
-                children={<Radio.Group onChange={onModelChange}>
+                required={true}
+                children={<Radio.Group onChange={onModelChange} defaultValue={model}>
                   {models.map(({ label, value }) => (
-                    <Radio key={value} value={value}>
+                    <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
                         {label}

@@ -1,3 +1,5 @@
+import { useContext, useEffect } from 'react'
+
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
@@ -8,7 +10,6 @@ import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
-import { useContext, useEffect } from 'react'
 
 const profileListPayload = {
   url: '/api/viewmodel/{tenantId}/switch/profilelist',

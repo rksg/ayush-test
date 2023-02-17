@@ -5,6 +5,8 @@ import { Vlan } from '@acx-ui/rc/utils'
 import { VlanSettingInterface } from './VlanPortsModal'
 
 export interface VlanPortsType {
+  editMode: boolean
+  currentVlanId?: string
   vlanSettingValues: VlanSettingInterface
   setVlanSettingValues: (data: VlanSettingInterface) => void
   vlanList: Vlan[]

@@ -832,6 +832,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    updateSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     })
   })
 })
@@ -1003,6 +1013,7 @@ export const {
   useGetDhcpLeasesQuery,
   useLazyValidateUniqueProfileNameQuery,
   useAddSwitchConfigProfileMutation,
+  useUpdateSwitchConfigProfileMutation,
   useGetCliTemplatesQuery,
   useGetProfilesQuery
 } = switchApi

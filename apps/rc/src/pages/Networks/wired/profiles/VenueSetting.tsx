@@ -59,7 +59,7 @@ const getNetworkId = () => {
 export function VenueSetting () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { currentData } = useContext(ConfigurationProfileFormContext)
+  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
@@ -83,7 +83,7 @@ export function VenueSetting () {
       })
       setTableData(data)
     }
-    if(currentData){
+    if(currentData && editMode){
       form.setFieldsValue(currentData)
       setVenueList(currentData.venues)
     }
@@ -135,6 +135,7 @@ export function VenueSetting () {
       align: 'center',
       render: function (data, row) {
         return <Switch
+          checked={form.getFieldValue('venues').includes(row.id)}
           onClick={(checked, event) => {
             if(checked){
               row.activated = { isActivated: true }

@@ -8,8 +8,7 @@ import {
   AclRule,
   transformTitleCase
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
 
@@ -39,7 +38,6 @@ export const defaultExtendedRuleList = {
 
 export function AclSetting () {
   const { $t } = getIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
   const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ aclsTable, setAclsTable ] = useState<Acl[]>([])
@@ -48,8 +46,8 @@ export function AclSetting () {
   const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData){
-      form.setFieldsValue(currentData)
+    if(currentData.acls){
+      form.setFieldsValue(currentData.acls)
       setAclsTable(currentData.acls)
     }
     if(aclsTable){

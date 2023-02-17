@@ -8,9 +8,21 @@ import { TrustedPort }                                   from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
-import { VlanSettingInterface }        from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
 
 import { TrustedPortsModal } from './TrustedPortsModal'
+
+export interface VlanTrustPortInterface {
+  enableSlot2?: boolean
+  enableSlot3?: boolean
+  enableSlot4?: boolean
+  family: string
+  model: string
+  selectedOptionOfSlot2?: string
+  selectedOptionOfSlot3?: string
+  selectedOptionOfSlot4?: string
+  switchFamilyModels?: TrustedPort
+  trustedPorts: TrustedPort[]
+}
 
 export function TrustedPorts () {
   const { $t } = getIntl()
@@ -72,7 +84,7 @@ export function TrustedPorts () {
     }
   ]
 
-  const onSaveVlan = (values: VlanSettingInterface) => {
+  const onSaveVlan = (values: VlanTrustPortInterface) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const proceedData = { ...values } as any
     proceedData.trustedPorts.id = ''
@@ -82,12 +94,6 @@ export function TrustedPorts () {
         enable: slot.enable,
         option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
       }))
-    // values.trustedPorts = values.trustedPorts.map(
-    //   port => port.slots.map((slot: { slotNumber: number; enable: boolean }) => ({
-    //     slotNumber: slot.slotNumber,
-    //     enable: slot.enable,
-    //     option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
-    //   })))
 
     const mergedRuleList = [
       ...ruleList.filter(item => item.model !== values.switchFamilyModels?.model),

@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { showToast, StepsForm, PageHeader, StepsFormInstance } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
+  useUpdateSwitchConfigProfileMutation,
   useSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
 import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
@@ -28,6 +29,7 @@ export function ConfigurationProfileForm () {
   const { data } = useSwitchConfigProfileQuery({ params }, { skip: !params.profileId })
 
   const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
+  const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
 
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
@@ -40,6 +42,7 @@ export function ConfigurationProfileForm () {
   useEffect(() => {
     if(data){
       setCurrentData(data as SwitchConfigurationProfile)
+      updateVlanCurrentData(data)
     }
   }, [data])
 
@@ -94,6 +97,18 @@ export function ConfigurationProfileForm () {
     }
   }
 
+  const handleEditProfile = async (data: SwitchConfigurationProfile) => {
+    try {
+      await updateSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
+      navigate(linkToProfiles, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
   return (
     <>
       <PageHeader
@@ -101,7 +116,7 @@ export function ConfigurationProfileForm () {
           ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
           : $t({ defaultMessage: 'Add Switch Configuration Profile' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired' }
+          { text: $t({ defaultMessage: 'Wired Networks' }), link: '/networks/wired/profiles' }
         ]}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
@@ -110,7 +125,7 @@ export function ConfigurationProfileForm () {
           editMode={editMode}
           onCancel={() => navigate(linkToProfiles, { replace: true })}
           onFinish={async (data) => {
-            handleAddProfile(data)
+            editMode ? handleEditProfile(data) : handleAddProfile(data)
           }}
         >
           <StepsForm.StepForm

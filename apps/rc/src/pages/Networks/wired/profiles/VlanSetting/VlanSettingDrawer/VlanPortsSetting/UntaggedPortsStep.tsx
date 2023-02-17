@@ -9,10 +9,8 @@ import {
 import { Row, Col, Form, Typography, Checkbox } from 'antd'
 import _                                        from 'lodash'
 
-import { Card, Tooltip }          from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { PortStatus }             from '@acx-ui/rc/utils'
-import { getIntl }                from '@acx-ui/utils'
+import { Card, Tooltip } from '@acx-ui/components'
+import { getIntl }       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -44,6 +42,7 @@ export function UntaggedPortsStep () {
             value: `1/1/${item.portNumber.toString()}` }))
         setPortsModule1(portModule1List1)
       }
+
       if(vlanSettingValues.switchFamilyModels?.slots[1] &&
         vlanSettingValues.switchFamilyModels?.slots[1].portStatus!== undefined){
         const portModule1List2 = vlanSettingValues.switchFamilyModels?.slots[1].portStatus?.map(
@@ -51,12 +50,18 @@ export function UntaggedPortsStep () {
             value: `1/2/${item.portNumber.toString()}` }))
         setPortsModule2(portModule1List2)
       }
+
       if(vlanSettingValues.switchFamilyModels?.slots[2] &&
         vlanSettingValues.switchFamilyModels?.slots[2].portStatus!== undefined){
         const portModule1List3 = vlanSettingValues.switchFamilyModels?.slots[2].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/3/${item.portNumber.toString()}` }))
         setPortsModule3(portModule1List3)
+      }
+
+      if(vlanSettingValues.switchFamilyModels?.untaggedPorts){
+        form.setFieldValue(['switchFamilyModels', 'untaggedPorts'],
+          vlanSettingValues.switchFamilyModels?.untaggedPorts)
       }
     }
   }, [vlanSettingValues])
@@ -171,16 +176,18 @@ export function UntaggedPortsStep () {
     }
 
   const getDisabledPorts = (timeslot: string) => {
-    const vlanSelectedPorts = vlanList.map(item => item.switchFamilyModels?.
-      filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model))
+    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
+      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
     const portExists = vlanSelectedPorts.map(item => item?.map(
       obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
 
-    const disabledPorts = vlanSettingValues.switchFamilyModels?.taggedPorts.includes(timeslot)
+    const disabledPorts = (vlanSettingValues.switchFamilyModels?.taggedPorts &&
+    vlanSettingValues.switchFamilyModels?.taggedPorts.includes(timeslot))
     || (portExists && portExists[0]) || false
     return disabledPorts
   }
 
+  //TODO
   const getTooltip = (slotNumber: number, portStr: string) => {
     // const speedNoData = 'link down or no traffic'
     // let tooltipText = ''
@@ -273,7 +280,7 @@ export function UntaggedPortsStep () {
   //   }
   //   return tooltipText
   }
-  
+
   // TODO: for switch
   // const getPortIcon(port: { usedInUplink: boolean; usedInFormingStack: any; poeUsed: any }) {
   //     if (this.deviceStatus === SwitchStatusEnum.DISCONNECTED) {

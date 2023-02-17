@@ -60,7 +60,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           editMode={editMode}
           vlan={vlan}
           setVlan={setVlan}
-          vlansList={vlansList}
+          vlansList={vlansList || []}
         />
       }
       footer={
@@ -114,12 +114,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           id: item.id,
           model: item.model,
           slots: item.slots,
-          untaggedPorts: item.untaggedPorts,
-          taggedPorts: item.taggedPorts
+          untaggedPorts: item.untaggedPorts?.split(','),
+          taggedPorts: item.taggedPorts?.split(',')
         }
       }) as unknown
       setRuleList(vlanPortsData as SwitchModelPortData[])
-    //   setRuleList(vlan.aclRules as AclStandardRule[] | AclExtendedRule[])
     }
   }, [form, vlan])
 
@@ -158,7 +157,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       onClick: (selectedRows) => {
         setSelected({
           ...selectedRows[0]
-          // source: selectedRows[0].source === 'any' ? 'any' : 'specific'
         })
         setOpenModal(true)
       }
@@ -218,11 +216,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => editMode ?
-              validateDuplicateVlanId(value, vlansList.filter(item => item.vlanId !== value)) :
-              validateDuplicateVlanId(value, vlansList) }
+            { validator: (_, value) => validateDuplicateVlanId(value, vlansList) }
           ]}
-          children={<Input style={{ width: '400px' }} type='number' />}
+          children={<Input style={{ width: '400px' }} />}
         />
         <Form.Item
           name='vlanName'

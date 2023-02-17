@@ -23,9 +23,10 @@ export interface PortsType {
   portTagged: string
 }
 
-export function SelectModelStep () {
+export function SelectModelStep (props: { editRecord?: TrustedPort }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { editRecord } = props
   const [families, setFamilies] = useState<ModelsType[]>([])
   const [models, setModels] = useState<ModelsType[]>([])
   const [family, setFamily] = useState('')
@@ -65,7 +66,32 @@ export function SelectModelStep () {
       })
       setFamilies(familiesData)
     }
-  }, [ICX_MODELS_MODULES])
+    if(editRecord){
+      const selectedFamily = editRecord.model.split('-')[0]
+      const selectedModel = editRecord.model.split('-')[1]
+      const selectedEnable2 = editRecord.slots.filter(item => item.slotNumber === 2)[0] || {}
+      const selectedEnable3 = editRecord.slots.filter(item => item.slotNumber === 3)[0] || {}
+      const selectedEnable4 = editRecord.slots.filter(item => item.slotNumber === 4)[0] || {}
+      form.setFieldsValue({
+        family: selectedFamily,
+        model: selectedModel,
+        enableSlot2: selectedEnable2.enable,
+        enableSlot3: selectedEnable3.enable,
+        enableSlot4: selectedEnable4.enable,
+        selectedOptionOfSlot2: selectedEnable2.option,
+        selectedOptionOfSlot3: selectedEnable3.option,
+        selectedOptionOfSlot4: selectedEnable4.option,
+        switchFamilyModels: editRecord
+      })
+      familyChangeAction(selectedFamily)
+      modelChangeAction(selectedFamily, selectedModel)
+      setEnableSlot2(selectedEnable2.enable)
+      setEnableSlot3(selectedEnable3.enable)
+      setEnableSlot4(selectedEnable4.enable)
+      checkIfModuleFixed(selectedFamily, selectedModel)
+      setTrustedPorts(editRecord)
+    }
+  }, [ICX_MODELS_MODULES, editRecord])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -138,10 +164,16 @@ export function SelectModelStep () {
   }
 
   const onFamilyChange = (e: RadioChangeEvent) => {
-    form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
-    setModuleSelectionEnable(false)
-    setFamily(e.target.value)
-    const index = e.target.value as keyof typeof ICX_MODELS_MODULES
+    familyChangeAction(e.target.value)
+  }
+
+  const familyChangeAction = (family: string) => {
+    if(!editRecord){
+      form.resetFields(['model', 'enableSlot2', 'enableSlot3', 'enableSlot4'])
+      setModuleSelectionEnable(false)
+    }
+    setFamily(family)
+    const index = family as keyof typeof ICX_MODELS_MODULES
     const modelsList = ICX_MODELS_MODULES[index]
 
     const modelsData = Object.keys(modelsList).map(key => {
@@ -151,18 +183,24 @@ export function SelectModelStep () {
   }
 
   const onModelChange = (e: RadioChangeEvent) => {
-    form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
-    setEnableSlot2(false)
-    setEnableSlot3(false)
-    setEnableSlot4(false)
-    setModuleSelectionEnable(true)
-    setModule2SelectionEnable(true)
-    setModule3SelectionEnable(true)
-    setModel(e.target.value)
-    checkIfModuleFixed(family, e.target.value)
-    getSlots(family, e.target.value)
+    modelChangeAction(family, e.target.value)
+  }
+
+  const modelChangeAction = (family: string, model: string) => {
+    if(!editRecord){
+      form.resetFields(['enableSlot2', 'enableSlot3', 'enableSlot4'])
+      setEnableSlot2(false)
+      setEnableSlot3(false)
+      setEnableSlot4(false)
+      setModuleSelectionEnable(true)
+      setModule2SelectionEnable(true)
+      setModule3SelectionEnable(true)
+    }
+    setModel(model)
+    checkIfModuleFixed(family, model)
+    getSlots(family, model)
     setTrustedPorts({ ...trustedPorts, slots: [] })
-    updateModelPortData(family, e.target.value)
+    updateModelPortData(family, model)
   }
 
   const onCheckChange = function (e: CheckboxChangeEvent, slot: string) {
@@ -294,13 +332,6 @@ export function SelectModelStep () {
 
   return (
     <>
-      <Row gutter={20}>
-        <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>
-            {$t({ defaultMessage: 'Select family and model to be configured:' })}
-          </label>
-        </Col>
-      </Row>
       <Row gutter={20} style={{ marginTop: '20px' }}>
         <Col span={4}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Family' })}</Typography.Title>
@@ -308,9 +339,13 @@ export function SelectModelStep () {
             <Card>
               <Form.Item
                 name={'family'}
-                children={<Radio.Group onChange={onFamilyChange}>
+                required={true}
+                children={<Radio.Group
+                  onChange={onFamilyChange}
+                  defaultValue={family}
+                >
                   {families.map(({ label, value }) => (
-                    <Radio key={value} value={value}>
+                    <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
                         {label}
@@ -328,9 +363,13 @@ export function SelectModelStep () {
             <Card>
               <Form.Item
                 name={'model'}
-                children={<Radio.Group onChange={onModelChange}>
+                required={true}
+                children={<Radio.Group
+                  onChange={onModelChange}
+                  defaultValue={model}
+                >
                   {models.map(({ label, value }) => (
-                    <Radio key={value} value={value}>
+                    <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
                         {label}

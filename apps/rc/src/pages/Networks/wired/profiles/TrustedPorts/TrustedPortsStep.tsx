@@ -4,21 +4,23 @@ import { useState, useEffect } from 'react'
 import { Row, Col, Form, Select } from 'antd'
 import _                          from 'lodash'
 
-import { Card }    from '@acx-ui/components'
-import { getIntl } from '@acx-ui/utils'
+import { Card }        from '@acx-ui/components'
+import { TrustedPort } from '@acx-ui/rc/utils'
+import { getIntl }     from '@acx-ui/utils'
 
-import { VlanSettingInterface } from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
-
-
+import { VlanTrustPortInterface } from './index'
 export interface PortsType {
   label: string,
   value: string
 }
 
-export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterface }) {
+export function TrustedPortsStep (props: {
+  vlanSettingValues: VlanTrustPortInterface,
+  editRecord?: TrustedPort
+}) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues } = props
+  const { vlanSettingValues, editRecord } = props
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
   const [portsModule3, setPortsModule3] = useState<PortsType[]>([])
@@ -56,7 +58,19 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
       form.setFieldValue(['trustedPorts', 'model'], vlanSettingValues.switchFamilyModels?.model)
       form.setFieldValue(['trustedPorts', 'slots'], vlanSettingValues.switchFamilyModels?.slots)
     }
-  }, [vlanSettingValues])
+    if(editRecord){
+      form.setFieldsValue({
+        trustedPorts: {
+          trustPorts: editRecord.trustPorts,
+          model: editRecord.model,
+          vlanDemand: editRecord.vlanDemand,
+          slots: editRecord.slots
+        },
+        switchFamilyModels: editRecord
+      })
+      setSelected(editRecord.trustPorts)
+    }
+  }, [vlanSettingValues, editRecord])
 
   return (
     <>
@@ -83,7 +97,7 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
                         ...portsModule2,
                         ...portsModule3
                       ]}
-                      onSelect={() => {
+                      onChange={() => {
                         form.setFieldValue(['trustedPorts', 'trustPorts'],
                           form.getFieldValue(['trustedPorts', 'trustPorts']).slice(0, 4)
                         )
@@ -104,6 +118,7 @@ export function TrustedPortsStep (props: { vlanSettingValues: VlanSettingInterfa
       <Form.Item name={['trustedPorts', 'model']} />
       <Form.Item name={['trustedPorts', 'vlanDemand']} initialValue={false} />
       <Form.Item name={['trustedPorts', 'slots']} />
+      {editRecord && <Form.Item name={'switchFamilyModels'} />}
     </>
   )
 }

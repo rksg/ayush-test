@@ -1,67 +1,93 @@
 import { useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Typography } from 'antd'
+import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, showToast, StepsForm } from '@acx-ui/components'
-import { TrustedPort }                            from '@acx-ui/rc/utils'
-
-import { VlanSettingInterface } from '../VlanSetting/VlanSettingDrawer/VlanPortsSetting/VlanPortsModal'
+import { Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { TrustedPort }                 from '@acx-ui/rc/utils'
 
 import { SelectModelStep }  from './SelectModelStep'
 import { TrustedPortsStep } from './TrustedPortsStep'
 
+import { VlanTrustPortInterface } from './index'
+
 export function TrustedPortsModal (props: {
   open: boolean,
-  onSave:(values: VlanSettingInterface)=>void,
+  onSave:(values: VlanTrustPortInterface)=>void,
   onCancel?: ()=>void,
   editRecord?: TrustedPort
   currrentRecords?: TrustedPort[]
 }) {
   const { $t } = useIntl()
-  const { onSave } = props
+  const { open, editRecord, onSave, onCancel } = props
   const [form] = Form.useForm()
+  const [noModelMsg, setNoModelMsg] = useState(false)
   const [vlanSettingValues, setVlanSettingValues] =
-    useState<VlanSettingInterface>({ family: '', model: '', trustedPorts: [] })
+    useState<VlanTrustPortInterface>({ family: '', model: '', trustedPorts: [] })
 
   useEffect(()=>{
     form.resetFields()
-    if (props.open && props.editRecord) {
-      form.setFieldsValue(props.editRecord)
+    if (open && editRecord) {
+      form.setFieldsValue(editRecord)
+      const family = editRecord.model.split('/')[0]
+      const model = editRecord.model.split('/')[1]
+      setVlanSettingValues({
+        family,
+        model,
+        trustedPorts: [editRecord]
+      })
     }
-  }, [form, props.open, props.editRecord])
+  }, [form, open, editRecord])
 
   return (
     <Modal
-      visible={props.open}
+      visible={open}
       maskClosable={true}
       onOk={()=>form.submit()}
-      onCancel={props.onCancel}
+      onCancel={onCancel}
       destroyOnClose={true}
       closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
     >
       <StepsForm
-        onCancel={props.onCancel}
+        editMode={!!editRecord}
+        onCancel={onCancel}
         onFinish={async (data) => {
-          // const switchFamilyModelsData = data.switchFamilyModels
           onSave(data)
         }}
+        buttonLabel={{ submit: editRecord ?
+          $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
       >
         <StepsForm.StepForm
           title='Select Model'
           onFinish={async (data) => {
-            setVlanSettingValues(data)
-            return true
+            if(data.family && data.model){
+              setNoModelMsg(false)
+              setVlanSettingValues(data)
+              return true
+            }
+            setNoModelMsg(true)
+            return false
           }}
         >
-          <SelectModelStep />
+          <div>
+            <label style={{ color: 'var(--acx-neutrals-60)' }}>
+              {$t({ defaultMessage: 'Select family and model to be configured:' })}
+            </label>
+          </div>
+
+          {noModelMsg &&
+            <Typography.Text type='danger'>
+              {$t({ defaultMessage: 'No model selected' })}
+            </Typography.Text>
+          }
+          <SelectModelStep editRecord={editRecord}/>
         </StepsForm.StepForm>
         <StepsForm.StepForm
           title='Trusted Ports'
         >
-          <TrustedPortsStep vlanSettingValues={vlanSettingValues} />
+          <TrustedPortsStep vlanSettingValues={vlanSettingValues} editRecord={editRecord} />
         </StepsForm.StepForm>
       </StepsForm>
     </Modal>

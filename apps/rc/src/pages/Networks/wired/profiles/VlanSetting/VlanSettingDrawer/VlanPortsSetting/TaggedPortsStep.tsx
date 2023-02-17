@@ -42,6 +42,7 @@ export function TaggedPortsStep () {
             value: `1/1/${item.portNumber.toString()}` }))
         setPortsModule1(portModule1List1)
       }
+
       if(vlanSettingValues.switchFamilyModels?.slots[1] &&
         vlanSettingValues.switchFamilyModels?.slots[1].portStatus!== undefined){
         const portModule1List2 = vlanSettingValues.switchFamilyModels?.slots[1].portStatus?.map(
@@ -49,12 +50,18 @@ export function TaggedPortsStep () {
             value: `1/2/${item.portNumber.toString()}` }))
         setPortsModule2(portModule1List2)
       }
+
       if(vlanSettingValues.switchFamilyModels?.slots[2] &&
         vlanSettingValues.switchFamilyModels?.slots[2].portStatus!== undefined){
         const portModule1List3 = vlanSettingValues.switchFamilyModels?.slots[2].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/3/${item.portNumber.toString()}` }))
         setPortsModule3(portModule1List3)
+      }
+
+      if(vlanSettingValues.switchFamilyModels?.taggedPorts){
+        form.setFieldValue(['switchFamilyModels', 'taggedPorts'],
+          vlanSettingValues.switchFamilyModels?.taggedPorts)
       }
     }
   }, [vlanSettingValues])

@@ -18,7 +18,7 @@ import { VlanSettingDrawer } from './VlanSettingDrawer'
 export function VlanSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { currentData } = useContext(ConfigurationProfileFormContext)
+  const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const [ vlanTable, setVlanTable ] = useState<Vlan[]>([])
   const [ defaultVlan, setDefaultVlan ] = useState<Vlan>()
   const [ drawerFormRule, setDrawerFormRule ] = useState<Vlan>()
@@ -27,11 +27,11 @@ export function VlanSetting () {
   const [ defaultVlanDrawerVisible, setDefaultVlanDrawerVisible ] = useState(false)
 
   useEffect(() => {
-    if(currentData){
+    if(currentData.vlans && editMode){
       form.setFieldsValue(currentData)
       setVlanTable(currentData.vlans)
     }
-  }, [currentData])
+  }, [currentData, editMode])
 
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),
@@ -85,7 +85,6 @@ export function VlanSetting () {
     }else{
       setVlanTable([...vlanTable, data])
     }
-
     form.setFieldValue('vlans', vlanTable)
     setDrawerEditMode(false)
     return true
@@ -174,7 +173,7 @@ export function VlanSetting () {
         setVisible={setVlanDrawerVisible}
         vlan={(drawerFormRule)}
         setVlan={handleSetVlan}
-        vlansList={vlanTable}
+        vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
       />
       <DefaultVlanDrawer
         visible={defaultVlanDrawerVisible}
