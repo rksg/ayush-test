@@ -27,8 +27,6 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-// import CliProfileFormContext from '../../profiles/CliProfileForm/CliProfileFormContext'
-
 import CliTemplateFormContext from './CliTemplateFormContext'
 import { CliVariableModal }   from './CliVariableModal'
 import * as UI                from './styledComponents'
@@ -108,7 +106,7 @@ export function CliStepConfiguration (props: {
   const [selectedEditVariable, setSelectedEditVariable] = useState({} as CliTemplateVariable)
   const [importModalvisible, setImportModalvisible] = useState(false)
 
-  const { editMode, data, setCliValidation } = useContext(CliTemplateFormContext)
+  const { editMode, data, initCodeMirror, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
   const { data: cliTemplates }
     = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
@@ -132,22 +130,22 @@ export function CliStepConfiguration (props: {
         cm: CodeMirror.EditorFromTextArea,
         event: React.KeyboardEvent
       ) => codemirrorOnKeyup(cm, event, form))
-      // !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
     }
   }, [codeMirrorInstance])
+
+  useEffect(() => {
+    if (codeMirrorInstance && initCodeMirror) {
+      const templateData = isTemplate ? data : data?.venueCliTemplate
+      codeMirrorInstance?.setValue(templateData?.cli ?? cliDefaultString)
+      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+    }
+  }, [initCodeMirror])
 
   useEffect(() => {
     const templateData = isTemplate ? data : data?.venueCliTemplate
     if (editMode && data) {
       form?.setFieldsValue(templateData)
-      codeMirrorInstance?.setValue(templateData?.cli ?? '')
-
-      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
       setVariableList((templateData?.variables ?? []) as CliTemplateVariable[])
-    } else if (data) {
-
-      codeMirrorInstance?.setValue(templateData?.cli ?? '')
-      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
     }
   }, [data])
 
@@ -160,7 +158,6 @@ export function CliStepConfiguration (props: {
   useEffect(() => {
     const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
     setCliValidation?.(validation)
-    // !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
   }, [cli])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {

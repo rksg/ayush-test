@@ -19,6 +19,8 @@ export interface CliTemplateFormContextType {
   setCliValidation: (data: CliValidation) => void
   data?: CliConfiguration | null
   setData?: (data?: CliConfiguration) => void
+  initCodeMirror?: boolean
+  setInitCodeMirror?: (data?: boolean) => void
   applySwitches?: Record<string, ApplySwitches[]>
   setApplySwitches?: (data: Record<string, ApplySwitches[]>) => void
   applyModels?: string[]

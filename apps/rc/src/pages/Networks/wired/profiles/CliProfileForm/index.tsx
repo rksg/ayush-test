@@ -56,8 +56,8 @@ export default function CliProfileForm () {
     = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
 
   const [data, setData] = useState(null as unknown as CliConfiguration | undefined)
-  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
   const [applyModels, setApplyModels] = useState([] as string[])
+  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
   const [initCodeMirror, setInitCodeMirror] = useState(false)
   const [summaryData, setSummaryData] = useState({} as CliConfiguration)
 
@@ -139,7 +139,8 @@ export default function CliProfileForm () {
         cliValidation,
         setCliValidation,
         applyModels,
-        setApplyModels
+        setApplyModels,
+        initCodeMirror
       }}>
         <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
           <StepsForm
@@ -148,18 +149,6 @@ export default function CliProfileForm () {
             onCurrentChange={(current) => {
               if (current === 2 && !initCodeMirror) {
                 setInitCodeMirror(true)
-                if (editMode) {
-                  setData({
-                    ...cliProfile,
-                    models: summaryData.models
-                  })
-                } else {
-                  setData({
-                    venueCliTemplate: { ////
-                      cli: 'manager registrar'
-                    }
-                  })
-                }
               }
             }}
             onCancel={() => navigate(linkToNetworks)}

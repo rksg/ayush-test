@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, Row, Typography } from 'antd'
 import _                                     from 'lodash'
@@ -10,7 +10,6 @@ import { Venue, useTableQuery }                                  from '@acx-ui/r
 import { useParams }                                             from '@acx-ui/react-router-dom'
 
 import CliTemplateFormContext from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
-// import CliProfileFormContext  from '../../profiles/CliProfileForm/CliProfileFormContext'
 
 import { cliFormMessages } from './'
 
@@ -27,6 +26,8 @@ export function CliStepVenues () {
 
   const { data, applyModels } = useContext(CliTemplateFormContext)
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({ params })
+  // const [transformedVenueData, setTransformedVenueData] = useState([] as Venue[])
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: 'Venue' }),
@@ -71,7 +72,7 @@ export function CliStepVenues () {
   const tableQuery = useTableQuery<Venue>({
     useQuery: useVenuesListQuery,
     defaultPayload: {
-      pageSize: 25,
+      pageSize: 10,
       sortField: 'name',
       sortOrder: 'ASC'
     }
@@ -79,10 +80,11 @@ export function CliStepVenues () {
 
   const onChangeVenues = (values?: React.Key[] | string[]) => {
     const selectedVenue = tableQuery?.data?.data.filter(v => values?.includes(v.id))
+    setSelectedRows(values as React.Key[])
     form?.setFieldValue('venues', selectedVenue)
   }
 
-  const transformData = (data?: Venue[], models?: string[], selectedVenues?: string[]) => {
+  const transformData = (data?: Venue[], models?: string[], selectedVenues?: React.Key[]) => {
     return data?.map(venue => {
       const getAppliedCliVenues = (venueId: string) => {
         return !selectedVenues?.includes(venueId) && venueId === venue.id
@@ -105,57 +107,67 @@ export function CliStepVenues () {
 
   useEffect(() => {
     onChangeVenues(data?.venues)
+    setSelectedRows(data?.venues as React.Key[])
   }, [data])
 
-  return <>
-    <Row gutter={24}>
-      <Col span={20}>
-        <StepsForm.Title>{$t({ defaultMessage: 'Venues' })}</StepsForm.Title>
-        <Typography.Text style={{
-          fontWeight: 600,
-          display: 'block',
-          fontSize: cssStr('--acx-body-3-font-size')
-        }}>
-          {$t({ defaultMessage: 'Select venues:' })}
-        </Typography.Text>
-        <Typography.Text style={{
-          display: 'block', margin: '4px 0 12px',
-          fontSize: cssStr('--acx-body-3-font-size')
-        }}>
-          {$t(cliFormMessages.VENUE_STEP_DESP)}
-        </Typography.Text>
-        <Form.Item
-          hidden={true}
-          name='venues'
-          children={<Input />}
-        />
-      </Col>
-    </Row>
+  // useEffect(() => {
+  //   if (tableQuery?.data?.data) {
+  //     const venueData = transformData(tableQuery?.data?.data, applyModels, selectedRows)
+  //     console.log(venueData, applyModels, data?.venues)
+  //     setTransformedVenueData(venueData as Venue[])
+  //   }
+  // }, [tableQuery?.data?.data])
 
-    <Row>
-      <Col span={20}>
-        <Loader states={[{ isLoading: false }]}>
-          <Table
-            columns={columns}
-            dataSource={transformData(tableQuery?.data?.data, applyModels, data?.venues)}
-            pagination={tableQuery.pagination}
-            onChange={tableQuery.handleTableChange}
-            rowKey='id'
-            rowSelection={{
-              type: 'checkbox',
-              selectedRowKeys: data?.venues,
-              renderCell: (checked, record, index, originNode) => {
-                const data = record as VenueExtend
-                return data?.inactiveRow
-                  ? <Tooltip title={data?.inactiveTooltip}>{originNode}</Tooltip>
-                  : originNode
-              },
-              getCheckboxProps: (record) => ({ disabled: (record as VenueExtend)?.inactiveRow }),
-              onChange: onChangeVenues
-            }}
-          />
-        </Loader>
-      </Col>
-    </Row>
-  </>
+  // useEffect(() => {
+  //   const venues = form?.getFieldValue('venues')
+  // }, [applyModels])
+
+  return <Row gutter={24}>
+    <Col span={24}>
+      <StepsForm.Title>{$t({ defaultMessage: 'Venues' })}</StepsForm.Title>
+      <Typography.Text style={{
+        fontWeight: 600,
+        display: 'block',
+        fontSize: cssStr('--acx-body-3-font-size')
+      }}>
+        {$t({ defaultMessage: 'Select venues:' })}
+      </Typography.Text>
+      <Typography.Text style={{
+        display: 'block', margin: '4px 0 12px',
+        fontSize: cssStr('--acx-body-3-font-size')
+      }}>
+        {$t(cliFormMessages.VENUE_STEP_DESP)}
+      </Typography.Text>
+      <Form.Item
+        hidden={true}
+        name='venues'
+        children={<Input />}
+      />
+
+      <Loader states={[{ isLoading: false }]}>
+        <Table
+          columns={columns}
+          dataSource={transformData(tableQuery?.data?.data, applyModels, data?.venues)}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowSelection={{
+            type: 'checkbox',
+            selectedRowKeys: selectedRows,
+            renderCell: (checked, record, index, originNode) => {
+              const data = record as VenueExtend
+              return data?.inactiveRow
+                ? <Tooltip title={data?.inactiveTooltip}>{originNode}</Tooltip>
+                : originNode
+            },
+            getCheckboxProps: (record) => ({
+              disabled: (record as VenueExtend)?.inactiveRow
+            }),
+            onChange: onChangeVenues
+          }}
+        />
+      </Loader>
+
+    </Col>
+  </Row>
 }

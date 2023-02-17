@@ -1,7 +1,4 @@
-import {
-  useState,
-  useRef
-} from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -63,8 +60,9 @@ export default function CliTemplateForm () {
     = useGetCliTemplateQuery({ params }, { skip: !editMode })
 
   const [data, setData] = useState(null as unknown as CliConfiguration | undefined)
-  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
   const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitches[]>)
+  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
+  const [initCodeMirror, setInitCodeMirror] = useState(false)
   const [summaryData, setSummaryData] = useState({} as CliConfiguration)
 
   const handleEditCli = async (data: CliConfiguration) => {
@@ -114,6 +112,12 @@ export default function CliTemplateForm () {
     }
   }
 
+  useEffect(() => {
+    if (!isCliTemplateLoading) {
+      setData(cliTemplate)
+    }
+  }, [cliTemplate])
+
   return (
     <>
       <PageHeader
@@ -131,7 +135,8 @@ export default function CliTemplateForm () {
         cliValidation,
         setCliValidation,
         applySwitches,
-        setApplySwitches
+        setApplySwitches,
+        initCodeMirror
       }}>
         <Loader states={[{ isLoading: editMode && isCliTemplateLoading }]}>
           <StepsForm
@@ -139,7 +144,7 @@ export default function CliTemplateForm () {
             editMode={editMode}
             onCurrentChange={(current) => {
               if (editMode && current === 1) {
-                setData(cliTemplate) // workaround for init CLI
+                setInitCodeMirror(true)
               }
             }}
             onCancel={() => navigate(linkToNetworks)}

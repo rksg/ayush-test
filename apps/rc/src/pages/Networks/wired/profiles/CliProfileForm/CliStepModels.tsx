@@ -12,7 +12,6 @@ import { ICX_MODELS_MODULES }                         from '@acx-ui/rc/utils'
 import { useParams }                                  from '@acx-ui/react-router-dom'
 
 import CliTemplateFormContext from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
-// import CliProfileFormContext  from '../../profiles/CliProfileForm/CliProfileFormContext'
 
 import * as UI from './styledComponents'
 
@@ -76,24 +75,18 @@ export function CliStepModels () {
     setFilteredModelFamily(checkedValues)
   }
 
-  const onSelectAllModels = () => {
+  const onSelectAllModels = (selectAll: boolean) => {
     const selected = form.getFieldValue('models') ?? []
-    const updateSelected = _.uniq([
-      ...selected,
-      ...getVisibleModelList(allFamilyModels, filteredModelFamily)
-    ])
+    const updateSelected = selectAll
+      ? _.uniq([
+        ...selected,
+        ...getVisibleModelList(allFamilyModels, filteredModelFamily)
+      ]) : _.uniq(selected.filter((m: string) =>
+        !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m)
+      ))
 
     form.setFieldValue('models', updateSelected)
-    setCount(updateSelected.length)
-  }
-
-  const onDeselectAllModels = () => {
-    const selected = form.getFieldValue('models') ?? []
-    const updateSelected = _.uniq(selected.filter((m: string) =>
-      !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m)
-    ))
-
-    form.setFieldValue('models', updateSelected)
+    setApplyModels?.(updateSelected as string[])
     setCount(updateSelected.length)
   }
 
@@ -168,7 +161,7 @@ export function CliStepModels () {
             <Button
               type='link'
               disabled={checkAllSelected()}
-              onClick={onSelectAllModels}>
+              onClick={() => onSelectAllModels(true)}>
               {$t({ defaultMessage: 'Select All' })}
             </Button>
             <Button
@@ -177,7 +170,7 @@ export function CliStepModels () {
                 !getVisibleModelList(allFamilyModels, filteredModelFamily)?.length
                 || !checkAllSelected()
               }
-              onClick={onDeselectAllModels}>
+              onClick={() => onSelectAllModels(false)}>
               {$t({ defaultMessage: 'Deselect All' })}
             </Button>
           </Space>

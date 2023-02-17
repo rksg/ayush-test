@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 
-import { Col, Divider, Row, Space, Typography } from 'antd'
-import { useIntl }                              from 'react-intl'
+import { Col, Divider, Row, Typography } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 import { Descriptions, StepsForm }       from '@acx-ui/components'
 import { CodeMirrorWidget }              from '@acx-ui/rc/components'
@@ -35,14 +35,14 @@ export function CliStepSummary (props: {
             children={data.name} />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Switch Models' })}
-            children={data?.models?.map(m => //////////
-              <Space key={m} style={{ display: 'flex' }}>{m}</Space>
+            children={data?.models?.map(m =>
+              <div key={m}>{m}</div>
             )}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Venues to apply' })}
-            children={(data?.venues as unknown as VenueDetail[])?.map(v => /////
-              <Space key={v.id} style={{ display: 'flex' }}>{(v?.name) || ''}</Space>
+            children={(data?.venues as unknown as VenueDetail[])?.map(v =>
+              <div key={v.id}>{(v?.name) || '--'}</div>
             )}
           />
           <Descriptions.Item
