@@ -14,7 +14,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
