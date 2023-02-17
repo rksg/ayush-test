@@ -313,8 +313,7 @@ export function EditPortDrawer ({
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
-      payload: selectedPorts?.[0]?.portIdentifier
+      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
     }, true).unwrap()
 
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')

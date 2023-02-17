@@ -213,11 +213,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       },
       keepUnusedDataFor: 0,
