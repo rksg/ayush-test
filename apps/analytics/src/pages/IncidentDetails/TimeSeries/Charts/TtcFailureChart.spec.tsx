@@ -47,7 +47,7 @@ describe('aggregateTtc', () => {
 describe('TtcFailureChart', () => {
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: { time, data: ttcCounts } }
+      data: { network: { timeSeries: { time, data: ttcCounts } } }
     })
     const { asFragment } = render(
       <Provider>
@@ -72,7 +72,7 @@ describe('TtcFailureChart', () => {
       ttcFailureChart: { time, ttc: noDataTtc }
     } as unknown as TimeSeriesChartResponse
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: { time, data: noDataTtcCounts } }
+      data: { network: { timeSeries: { time, data: noDataTtcCounts } } }
     })
     const { asFragment } = render(
       <Provider>

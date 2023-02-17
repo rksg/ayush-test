@@ -35,7 +35,7 @@ import {
   ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
-  catchErrorResponse,
+  CatchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -156,7 +156,7 @@ export function ApForm () {
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as catchErrorResponse)
+      handleError(err as CatchErrorResponse)
     }
   }
 
@@ -175,11 +175,11 @@ export function ApForm () {
       })
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as catchErrorResponse)
+      handleError(err as CatchErrorResponse)
     }
   }
 
-  const handleError = async (error: catchErrorResponse) => {
+  const handleError = async (error: CatchErrorResponse) => {
     const errorType = (error?.status === 423
       ? 'REQUEST_LOCKING'
       : error?.data?.errors?.[0]?.code) as keyof typeof errorTypeMap
