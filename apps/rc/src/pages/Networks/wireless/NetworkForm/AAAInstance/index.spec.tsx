@@ -70,6 +70,6 @@ describe('AAA Instance Page', () => {
   })
 })
 async function changeAAA (){
-  await userEvent.click(await screen.findByRole('combobox'))
-  await userEvent.click(await screen.findByTitle('test1'))
+  await userEvent.click((await screen.findAllByRole('combobox'))[0])
+  await userEvent.click((await screen.findAllByTitle('test1'))[0])
 }
