@@ -47,10 +47,10 @@ describe('Kpi Section', () => {
 
   it('should render disabled tooltip with network path', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: {
@@ -83,10 +83,10 @@ describe('Kpi Section', () => {
 
   it('should render disabled tooltip with no permissions', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: {
@@ -131,10 +131,10 @@ describe('Kpi Section', () => {
 
   it('should render with smaller timewindow', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: {

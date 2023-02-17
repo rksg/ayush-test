@@ -12,6 +12,34 @@ export interface l3AclPolicyInfoType {
   defaultAccess: string
 }
 
+export interface AccessControlInfoType {
+  id: string,
+  name: string,
+  description?: string,
+  devicePolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  l2AclPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  l3AclPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  applicationPolicy?: {
+    id: string,
+    enabled: boolean
+  },
+  rateLimiting?: {
+    uplinkLimit: number,
+    downlinkLimit: number,
+    enabled: boolean
+  },
+  networkIds?: string[]
+}
+
 export interface appPolicyInfoType {
   id: string,
   rules: AppRule[],
@@ -113,4 +141,9 @@ export enum ApplicationRuleType {
 export enum ApplicationPortMappingType {
   IP_WITH_PORT = 'IP_WITH_PORT',
   PORT_ONLY = 'PORT_ONLY'
+}
+
+export enum EnabledStatus {
+  ON = 'ON',
+  OFF = 'OFF'
 }

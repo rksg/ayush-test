@@ -5,7 +5,7 @@ import 'codemirror/addon/merge/merge.css'
 export const Container = styled.div`
 .CodeMirror {
   font-size: 12px;
-  line-height: 16px;
+  line-height: 1.3;
   z-index: 0;
 }
 
@@ -111,5 +111,12 @@ export const Container = styled.div`
 
 .CodeMirror-activeline-background {
   background-color: rgba(237, 28, 36, 0.2);
+}
+
+.cm-attribute {
+  color: var(--acx-accents-orange-50);
+}
+.cm-variable {
+  color: var(--acx-semantics-green-50);
 }
 `

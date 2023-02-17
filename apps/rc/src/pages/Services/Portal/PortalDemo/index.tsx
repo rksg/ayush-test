@@ -8,7 +8,7 @@ import { useGetPortalLangMutation }                           from '@acx-ui/rc/s
 import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
-import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
+import { captiveTypesDescription } from '../../../Networks/wireless/NetworkForm/contentsMap'
 import { portalViewTypes }         from '../contentsMap'
 import PortalFormContext           from '../PortalForm/PortalFormContext'
 import PortalPreviewModal          from '../PortalPreviewModal'

@@ -29,10 +29,14 @@ import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import NetworkDetails              from './pages/Networks/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/NetworksTable'
+import Wired                       from './pages/Networks/wired'
+import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliTemplateForm'
+import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
+import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
+import NetworksTable               from './pages/Networks/wireless/NetworksTable'
+import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import ClientIsolationDetail       from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
@@ -163,10 +167,17 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
+      <Route path='networks/wired/onDemandCli/add' element={<CliTemplateForm />} />
+      <Route
+        path='networks/wired/onDemandCli/:templateId/:action'
+        element={<CliTemplateForm />}
+      />
       <Route
         path='networks/wireless/:networkId/:action'
         element={<NetworkForm />}
       />
+      <Route path='networks/wired' element={<Wired />} />
+      <Route path='networks/wired/:activeTab' element={<Wired />} />
     </Route>
   )
 }
@@ -366,7 +377,17 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm edit={false}/>}
+        element={<AccessControlForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
+        element={<AccessControlForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
+        element={<AccessControlDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -377,6 +398,11 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
         element={<ClientIsolationForm editMode={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
+        element={<ClientIsolationDetail />}
       />
     </Route>
   )
