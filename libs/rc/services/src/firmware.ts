@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   TableResult,
   FirmwareUrlsInfo,
+  FirmwareVersion,
   FirmwareVenue,
   createHttpRequest,
   RequestPayload
@@ -11,7 +12,7 @@ import {
 export const baseFirmwareApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'firmwareApi',
-  tagTypes: ['Administration', 'Firmware', 'RadiusClientConfig'],
+  tagTypes: ['Firmware'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -32,10 +33,20 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    getLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getLatestFirmwareList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
   })
 })
 
 export const {
-  useGetVenueVersionListQuery
+  useGetVenueVersionListQuery,
+  useGetLatestFirmwareListQuery
 } = firmwareApi
