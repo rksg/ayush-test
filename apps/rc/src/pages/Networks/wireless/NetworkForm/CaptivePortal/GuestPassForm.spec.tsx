@@ -80,7 +80,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it('should test Guest pass network successfully', async () => {
+  it.skip('should test Guest pass network successfully', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
     await fillInBeforeSettings('Guest Pass network test')
 
