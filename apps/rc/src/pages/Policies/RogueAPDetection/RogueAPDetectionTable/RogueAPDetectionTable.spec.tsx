@@ -4,11 +4,11 @@ import { Path }  from 'react-router-dom'
 
 import {
   CommonUrlsInfo,
-  getServiceDetailsLink,
-  getServiceRoutePath,
-  MdnsProxyUrls,
-  ServiceOperation,
-  ServiceType
+  getPolicyDetailsLink,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType,
+  RogueApUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -19,15 +19,15 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import MdnsProxyTable from './MdnsProxyTable'
+import RogueAPDetectionTable from './RogueAPDetectionTable'
 
 const mockTableResult = {
   totalCount: 1,
   page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-    name: 'My mDNS Proxy 1',
-    type: 'mDNS Proxy',
+    name: 'My Rogue AP Detection 1',
+    type: 'Rogue AP Detection',
     scope: '5'
   }]
 }
@@ -45,18 +45,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('MdnsProxyTable', () => {
+describe('RogueAPDetectionTable', () => {
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
 
   // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/' + getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+  const tablePath = '/:tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getServicesList.url,
+        CommonUrlsInfo.getPoliciesList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -65,15 +65,16 @@ describe('MdnsProxyTable', () => {
   it('should render table', async () => {
     render(
       <Provider>
-        <MdnsProxyTable />
+        <RogueAPDetectionTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
     )
 
-    const targetServiceName = mockTableResult.data[0].name
-    expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
+    const targetName = mockTableResult.data[0].name
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('button', { name: /Add Rogue AP Detection Policy/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
 
   it('should delete selected row', async () => {
@@ -81,7 +82,7 @@ describe('MdnsProxyTable', () => {
 
     mockServer.use(
       rest.delete(
-        MdnsProxyUrls.deleteMdnsProxy.url,
+        RogueApUrls.deleteRogueApPolicy.url,
         (req, res, ctx) => {
           deleteFn(req.body)
           return res(ctx.json({ requestId: '12345' }))
@@ -91,7 +92,7 @@ describe('MdnsProxyTable', () => {
 
     render(
       <Provider>
-        <MdnsProxyTable />
+        <RogueAPDetectionTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
@@ -106,7 +107,7 @@ describe('MdnsProxyTable', () => {
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
@@ -116,7 +117,7 @@ describe('MdnsProxyTable', () => {
   it('should navigate to the Edit view', async () => {
     render(
       <Provider>
-        <MdnsProxyTable />
+        <RogueAPDetectionTable />
       </Provider>, {
         route: { params, path: tablePath }
       }
@@ -128,10 +129,10 @@ describe('MdnsProxyTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
-    const editPath = getServiceDetailsLink({
-      type: ServiceType.MDNS_PROXY,
-      oper: ServiceOperation.EDIT,
-      serviceId: target.id
+    const editPath = getPolicyDetailsLink({
+      type: PolicyType.ROGUE_AP_DETECTION,
+      oper: PolicyOperation.EDIT,
+      policyId: target.id
     })
 
     expect(mockedUseNavigate).toHaveBeenCalledWith({
