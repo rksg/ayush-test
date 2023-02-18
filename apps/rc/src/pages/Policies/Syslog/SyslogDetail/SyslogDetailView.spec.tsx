@@ -157,6 +157,6 @@ describe('SyslogDetailView', () => {
 
     // screen.getByText(1)
 
-    await screen.findByText(/instance \(0\)/i)
+    await screen.findByText(/configure/i)
   })
 })

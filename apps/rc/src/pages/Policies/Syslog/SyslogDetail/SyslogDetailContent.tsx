@@ -17,12 +17,12 @@ const SyslogDetailContent = () => {
     params: useParams()
   })
 
-  const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
+  const { setVenueId, setPolicyName } = useContext(SyslogDetailContext)
 
   useEffect(() => {
     if (data){
-      const filtersIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
-      setFiltersId(filtersIdList)
+      const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
+      setVenueId(venueIdList)
       setPolicyName(data.policyName ?? '')
     }
   }, [data])
@@ -35,7 +35,7 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Primary Server' })}
           </Card.Title>
           <Paragraph>
-            {`${data.server?.toString()}
+            {`${data.server}
             :${data.port?.toString()} ${data.protocol?.toString()}`}
           </Paragraph>
         </GridCol>
@@ -44,7 +44,7 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Secondary Server' })}
           </Card.Title>
           <Paragraph>
-            {`${data.secondaryServer?.toString()}
+            {`${data.secondaryServer}
             :${data.secondaryPort?.toString()} ${data.secondaryProtocol?.toString()}`}
           </Paragraph>
         </GridCol>

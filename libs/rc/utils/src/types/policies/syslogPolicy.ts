@@ -41,9 +41,9 @@ export interface SyslogVenue {
 }
 
 export interface SyslogDetailContextType {
-  filtersId: string[],
+  venueId: string[],
   policyName: string,
-  setFiltersId: (filtersId: string[]) => void
+  setVenueId: (venueId: string[]) => void
   setPolicyName: (policyName: string) => void
 }
 
@@ -55,7 +55,7 @@ export interface VenueSyslogPolicyType {
   switches?: number,
   aggregatedApStatus?: Record<ApDeviceStatusEnum, number>,
   status?: string
-  rogueDetection?: {
+  syslog?: {
     policyId: string,
     policyName: string,
     enabled: boolean

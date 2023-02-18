@@ -1,10 +1,9 @@
-import React from 'react'
-
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { CheckOutlined } from '@ant-design/icons'
+import { useIntl }       from 'react-intl'
+import { useParams }     from 'react-router-dom'
 
 import { Card, Table, TableProps }              from '@acx-ui/components'
-import { useVenueRoguePolicyQuery }             from '@acx-ui/rc/services'
+import { useVenueSyslogPolicyQuery }            from '@acx-ui/rc/services'
 import { useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                           from '@acx-ui/react-router-dom'
 
@@ -51,20 +50,20 @@ const SyslogVenueDetail = () => {
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi' }),
-      dataIndex: 'rogueAps',
-      key: 'rogueAps',
+      dataIndex: 'syslogEnable',
+      key: 'syslogEnable',
       render: (data, row) => {
-        return row.rogueAps ?? 0
+        return row.syslog?.enabled ? <CheckOutlined /> : null
       }
     }
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenueRoguePolicyQuery,
+    useQuery: useVenueSyslogPolicyQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
-        'rogueDetection.policyId': [params.policyId]
+        'syslog.policyId': [params.policyId]
       }
     }
   })
@@ -72,16 +71,19 @@ const SyslogVenueDetail = () => {
   const basicData = tableQuery.data?.data
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instance' })} (${tableQuery.data?.totalCount ?? 0})`}>
-      <div>
-        <Table
-          columns={basicColumns}
-          dataSource={basicData}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-        />
-      </div>
+    <Card title={
+      $t(
+        { defaultMessage: 'Instance ({count})' },
+        { count: tableQuery.data?.totalCount }
+      )
+    }>
+      <Table
+        columns={basicColumns}
+        dataSource={basicData}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='id'
+      />
     </Card>
   )
 }
