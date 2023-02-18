@@ -34,21 +34,27 @@ import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliT
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
+import AAATable                    from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AccessControlTable          from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
 import ClientIsolationDetail       from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
+import ClientIsolationTable        from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import PoliciesTable              from './pages/Policies/PoliciesTable'
+import MyPolicies                 from './pages/Policies/MyPolicies'
 import RogueAPDetectionDetailView
   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
+import RogueAPDetectionTable    from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import SyslogTable              from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import VLANPoolDetail           from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
+import VLANPoolTable            from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
 import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
 import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
@@ -321,7 +327,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
         // eslint-disable-next-line max-len
@@ -340,9 +346,17 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
+        element={<RogueAPDetectionTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
         element={<div />}
       />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
+        element={<SyslogTable />} />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
@@ -376,6 +390,10 @@ function PolicyRoutes () {
         element={<VLANPoolDetail/>}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
+        element={<VLANPoolTable />}
+      />
+      <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
         element={<AccessControlForm editMode={false}/>}
       />
@@ -390,6 +408,10 @@ function PolicyRoutes () {
         element={<AccessControlDetail />}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+        element={<AccessControlTable />}
+      />
+      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={<ClientIsolationForm editMode={false}/>}
@@ -398,6 +420,14 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
         element={<ClientIsolationForm editMode={true}/>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })}
+        element={<ClientIsolationTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
+        element={<AAATable />}
       />
       <Route
         // eslint-disable-next-line max-len
