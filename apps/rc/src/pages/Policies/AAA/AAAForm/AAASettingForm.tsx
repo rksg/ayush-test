@@ -41,12 +41,16 @@ const AAASettingForm = (props: AAASettingFormProps) => {
       }
     }
   }, [saveState])
+  const ACCT_FORBIDDEN_PORT = 1812
+  const AUTH_FORBIDDEN_PORT = 1813
   const validateRadiusPort = async (value: number)=>{
     if((value === 1812 && type === 'ACCOUNTING')||
     (value === 1813 && type === 'AUTHENTICATION')){
       return Promise.reject(
         $t({ defaultMessage: 'Authentication radius port '+
-        'cannot be 1813 and Accounting radius port cannot be 1812 ' }))
+        'cannot be {authForbiddenPort} and Accounting radius '+
+        'port cannot be {acctForbiddenPort} ' },
+        { acctForbiddenPort: ACCT_FORBIDDEN_PORT, authForbiddenPort: AUTH_FORBIDDEN_PORT }))
     }
     return Promise.resolve()
   }

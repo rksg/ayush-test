@@ -6,7 +6,7 @@ export interface AAAPolicyType{
   tags?: string[],
   primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: string,
+  type?: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[]
 }
 
@@ -21,7 +21,7 @@ export interface AAATempType {
   name: string,
   primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: string
+  type?: 'ACCOUNTING' | 'AUTHENTICATION'
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',

@@ -284,12 +284,13 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
   const pagination = {
     ...DEFAULT_PAGINATION,
     ...DEFAULT_SORTER,
+    pageStartZero: true,
     ...(_.omitBy(payload ?? {}, _.isNil))
   }
 
   return {
     pageSize: pagination.pageSize.toString(),
-    page: (payload?.pageStartZero === false? pagination.page : (pagination.page - 1)).toString(),
+    page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 }
