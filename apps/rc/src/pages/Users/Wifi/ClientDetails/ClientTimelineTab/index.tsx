@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
@@ -10,10 +10,11 @@ import {
   Event,
   usePollingTableQuery,
   RequestPayload,
-  TimelineTypes,
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+
+import { SessionTable } from './SessionTable'
 
 const Events = () => {
   const { clientId } = useParams()
@@ -42,7 +43,7 @@ const Events = () => {
 }
 
 const tabs : {
-  key: TimelineTypes,
+  key: string,
   title: MessageDescriptor,
   component: () => JSX.Element
 }[] = [
@@ -50,6 +51,11 @@ const tabs : {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),
     component: Events
+  },
+  {
+    key: 'sessions',
+    title: defineMessage({ defaultMessage: 'Sessions' }),
+    component: SessionTable
   }
 ]
 

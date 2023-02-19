@@ -7,6 +7,7 @@ import {
   useDeleteClientIsolationMutation,
   useDelRoguePolicyMutation,
   usePolicyListQuery,
+  useDeleteAAAPolicyMutation,
   useDeleteAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
@@ -103,7 +104,7 @@ export default function PoliciesTable () {
   const deletePolicyFnMapping = {
     [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
     [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
-    [PolicyType.AAA]: [],
+    [PolicyType.AAA]: useDeleteAAAPolicyMutation(),
     [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],

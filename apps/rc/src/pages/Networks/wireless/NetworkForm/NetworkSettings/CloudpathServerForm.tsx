@@ -1,96 +1,37 @@
-import React, { useContext } from 'react'
-
 import {
   Form,
-  Input,
-  Select
+  Switch
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Button, Subtitle }      from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { Subtitle } from '@acx-ui/components'
 
-import NetworkFormContext from '../NetworkFormContext'
 
-const { Option } = Select
+import AAAInstance from '../AAAInstance'
+
+
 
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
-  const selectedId = useWatch('cloudpathServerId')
-  const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
-
-  const onSelect = (selectedId: string) => {
-    setData && setData({ ...data, cloudpathServerId: selectedId })
-  }
+  const enableAccountingService = useWatch('enableAccountingService')
   return (
     <>
-      <Form.Item
-        name='cloudpathServerId'
-        label={$t({ defaultMessage: 'Cloudpath Server' })}
-        initialValue={data?.cloudpathServerId}
-        rules={[{ required: true }]}>
-        <Select placeholder={$t({ defaultMessage: 'Select...' })}
-          onSelect={onSelect}
-          children={selectOptions} />
-      </Form.Item>
-
-      <Button type='link' style={{ marginBottom: '16px' }}>
-        { $t({ defaultMessage: 'Add Server' }) }
-      </Button>
-
-      {selected && (<>
-        <Form.Item
-          label={$t({ defaultMessage: 'Deployment Type' })}
-          children={selected.deploymentType}
-        />
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Radius Authentication Service' }) }
-        </Subtitle>
-        <Form.Item
-          label={$t({ defaultMessage: 'IP Address' })}
-          children={
-            selected.authRadius.primary.ip +
-            ':' +
-            selected.authRadius.primary.port
-          }
-        />
-        { selected.accountingRadius &&
-          <>
-            <Subtitle level={4}>
-              { $t({ defaultMessage: 'Radius Accounting Service' }) }
-            </Subtitle>
-            <Form.Item
-              label={$t({ defaultMessage: 'IP Address' })}
-              children={
-                selected.accountingRadius?.primary.ip +
-                ':' +
-                selected.accountingRadius?.primary.port
-              }
-            />
-          </>
+      <AAAInstance serverLabel={$t({ defaultMessage: 'Cloudpath Server' })}
+        type='authRadius'/>
+      <div>
+        <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
+        <Form.Item name='enableAccountingService' valuePropName='checked'>
+          <Switch />
+        </Form.Item>
+        {enableAccountingService &&
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>
         }
-        <Form.Item
-          label={$t({ defaultMessage: 'Radius Shared Secret' })}
-          children={<Input.Password
-            readOnly
-            bordered={false}
-            value={selected.authRadius.primary.sharedSecret}
-          />}
-        />
-      </>)}
+      </div>
     </>
   )
 }

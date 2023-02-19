@@ -15,8 +15,8 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -361,10 +361,11 @@ export default function GuestsTable () {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
       />
-      <ImportCsvDrawer type='GuestPass'
+      <ImportFileDrawer type='GuestPass'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={250}
+        acceptType={['csv']}
         templateLink='assets/templates/guests_import_template.csv'
         visible={importVisible}
         isLoading={importResult.isLoading}
@@ -381,7 +382,7 @@ export default function GuestsTable () {
         }}
         onClose={() => setImportVisible(false)} >
         <GuestFields withBasicFields={false} />
-      </ImportCsvDrawer>
+      </ImportFileDrawer>
       <GenerateNewPasswordModal {...{
         generateModalVisible, setGenerateModalVisible, guestDetail, tenantId: params.tenantId
       }} />
@@ -408,7 +409,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
   // return currentGuest.ssid
   if (currentGuest.networkId) {
     return (
-      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/aps`}>
+      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>
     )
   } else {

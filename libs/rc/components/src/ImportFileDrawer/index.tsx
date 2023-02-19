@@ -19,7 +19,7 @@ import { formatter }           from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-type importErrorRes = {
+type ImportErrorRes = {
   errors: {
     code: number
     description?: string
@@ -29,29 +29,42 @@ type importErrorRes = {
   txId: string
 } | GuestErrorRes
 
-interface ImportCsvDrawerProps extends DrawerProps {
-  templateLink: string
+type AcceptableType = 'csv' | 'txt'
+
+interface ImportFileDrawerProps extends DrawerProps {
+  templateLink?: string
   maxSize: number
-  maxEntries: number
+  maxEntries?: number
   isLoading?: boolean
   importError?: FetchBaseQueryError
-  importRequest: (formData: FormData, values: object)=>void
-  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona'
+  importRequest: (formData: FormData, values: object, content?: string)=>void
+  readAsText?: boolean
+  acceptType: string[]
+  type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI'
 }
 
 export const CsvSize = {
   '1MB': 1024*1*1024,
+  '2MB': 1024*2*1024,
   '5MB': 1024*5*1024
 }
 
-export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
+const fileTypeMap: Record<AcceptableType, string[]>= {
+  csv: ['text/csv', 'application/vnd.ms-excel'],
+  txt: ['text/plain']
+}
+
+export function ImportFileDrawer (props: ImportFileDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
 
-  const { maxSize, maxEntries, isLoading, templateLink, importError, importRequest } = props
+  const { maxSize, maxEntries, isLoading, templateLink,
+    importError, importRequest, readAsText, acceptType } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
+  const [file, setFile] = useState<Blob>()
+  const [fileName, setFileName] = useState<string>()
 
   const bytesFormatter = formatter('bytesFormat')
 
@@ -63,7 +76,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
 
   useEffect(()=>{
     if (importError?.data) {
-      const errorObj = importError?.data as importErrorRes
+      const errorObj = importError?.data as ImportErrorRes
       let errors, downloadUrl
       let description = ''
 
@@ -98,7 +111,10 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
 
   const beforeUpload = (file: File) => {
     let errorMsg = ''
-    if (file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
+    const acceptableFileType = acceptType.map(type =>
+      fileTypeMap[type as AcceptableType]).flat()
+
+    if (!acceptableFileType?.includes(file.type)) {
       errorMsg = $t({ defaultMessage: 'Invalid file type.' })
     }
     if (file.size > maxSize) {
@@ -120,6 +136,8 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
     const newFormData = new FormData()
     newFormData.append('file', file, file.name)
 
+    setFile(file)
+    setFileName(file.name)
     setFormData(newFormData)
     setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
 
@@ -127,9 +145,21 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
   }
 
   const okHandler = () => {
-    form.validateFields().then(values => {
-      formData && importRequest(formData, values)
-    }).catch(() => {})
+    if (readAsText) {
+      const fileReader = new FileReader()
+      fileReader.onload = () => {
+        let result = String(fileReader.result)
+        if (isCsvFile(fileName as string)) {
+          result = convertCsvToText(result)
+        }
+        importRequest(formData as FormData, {}, result)
+      }
+      fileReader.readAsText(file as Blob)
+    } else {
+      form.validateFields().then(values => {
+        formData && importRequest(formData, values)
+      }).catch(() => {})
+    }
   }
 
   return (<UI.ImportFileDrawer {...props}
@@ -150,7 +180,7 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
       </Button>
     </div>} >
     <Upload.Dragger
-      accept='.csv'
+      accept={acceptType?.map(type => `.${String(type)}`).join(', ')}
       maxCount={1}
       showUploadList={false}
       beforeUpload={beforeUpload} >
@@ -166,11 +196,13 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
       </Space>
     </Upload.Dragger>
     <ul>
-      <li><a href={templateLink} download>{$t({ defaultMessage: 'Download template' })}</a></li>
+      { templateLink && <li>
+        <a href={templateLink} download>{$t({ defaultMessage: 'Download template' })}</a>
+      </li> }
       <li>{$t({ defaultMessage: 'File format must be csv' })}</li>
-      <li>{$t(
+      { maxEntries && <li>{$t(
         { defaultMessage: 'File may contain up to {maxEntries} entries' },
-        { maxEntries })}</li>
+        { maxEntries })}</li>}
       <li>{$t(
         { defaultMessage: 'File size cannot exceed {maxSize}' },
         { maxSize: bytesFormatter(maxSize) })}</li>
@@ -179,4 +211,28 @@ export function ImportCsvDrawer (props: ImportCsvDrawerProps) {
       {props.children}
     </Form>
   </UI.ImportFileDrawer>)
+}
+
+function isCsvFile (fileName: string) {
+  return fileName.endsWith('.csv')
+}
+
+function convertCsvToText (csvData: string) {
+  const allTextLines = csvData.split(/\r?\n|\r/)
+  const headers = allTextLines[0].split(',')
+  let text = ''
+
+  for (let i = 0; i < allTextLines.length; i++) {
+    // split content based on comma
+    let data = allTextLines[i].split(',')
+    if (data.length === headers.length) {
+      let tarr = []
+      for (let j = 0; j < headers.length; j++) {
+        tarr.push(data[j])
+      }
+
+      text = text + tarr.join(' ') + '\n'
+    }
+  }
+  return text
 }
