@@ -99,29 +99,33 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
   addVenue: {
     method: 'post',
-    newApi: true,
-    url: '/venues',
-    oldUrl: '/api/tenant/:tenantId/venue'
+    // newApi: true,
+    // url: '/venues',
+    url: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
-    newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: true,
+    // url: '/venues/:venueId',
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
-    newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: true,
+    // url: '/venues/:venueId',
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
-    url: '/venues/:venueId',
-    newApi: true,
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    // url: '/venues/:venueId',
+    // newApi: true,
+    url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
     method: 'delete',
@@ -350,5 +354,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   fetchBotAuth: {
     method: 'post',
     url: '/api/tenant/:tenantId/chatbot/idtoken'
+  },
+  getTopology: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
   }
 }

@@ -27,6 +27,10 @@ import {
   DevicePolicy,
   NewTableResult,
   transferToTableResult,
+  AAAPolicyType,
+  AaaUrls,
+  AAATempType,
+  AAADetailInstances,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   L2AclPolicy,
@@ -308,6 +312,81 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAPolicyList: build.query<AAATempType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add AAA Policy Profile',
+            'Update AAA Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    aaaNetworkInstances: build.query<TableResult<AAADetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params, RKS_NEW_UI)
+        return {
+          ...aaaDetailReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -741,6 +820,14 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
+  useAddAAAPolicyMutation,
+  useDeleteAAAPolicyMutation,
+  useGetAAAPolicyListQuery,
+  useLazyGetAAAPolicyListQuery,
+  useUpdateAAAPolicyMutation,
+  useAaaPolicyQuery,
+  useAaaNetworkInstancesQuery,
+  useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,

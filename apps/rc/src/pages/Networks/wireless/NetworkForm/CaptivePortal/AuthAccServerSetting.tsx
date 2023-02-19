@@ -5,71 +5,33 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }                              from '@acx-ui/components'
-import { ToggleButton }                          from '@acx-ui/rc/components'
-import { AaaServerOrderEnum, AaaServerTypeEnum } from '@acx-ui/rc/utils'
+import { Subtitle } from '@acx-ui/components'
 
-import { IpPortSecretForm } from './IpPortSecretForm'
+
+import AAAInstance from '../AAAInstance'
 export function AuthAccServerSetting () {
   const intl = useIntl()
   const { useWatch } = Form
   const [
-    enableSecondaryAuthServer,
-    enableAccountingService,
-    enableSecondaryAcctServer
+    enableAccountingService
   ] = [
-    useWatch<boolean>(['enableSecondaryAuthServer']),
-    useWatch<boolean>(['enableAccountingService']),
-    useWatch<boolean>(['enableSecondaryAcctServer'])
+    useWatch<boolean>(['enableAccountingService'])
   ]
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <IpPortSecretForm
-          serverType={AaaServerTypeEnum.AUTHENTICATION}
-          order={AaaServerOrderEnum.PRIMARY}
-        />
-        <Form.Item noStyle name='enableSecondaryAuthServer'>
-          <ToggleButton
-            enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
-            disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
-          />
-        </Form.Item>
-
-        {enableSecondaryAuthServer &&
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.SECONDARY}
-          />
-        }
+        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'/>
       </div>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
           <Switch />
         </Form.Item>
-
-        {enableAccountingService && (<>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.ACCOUNTING}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
-
-          <Form.Item noStyle name='enableSecondaryAcctServer'>
-            <ToggleButton
-              enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
-            />
-          </Form.Item>
-
-          {enableSecondaryAcctServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.ACCOUNTING}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
-          }
-        </>)}
+        {enableAccountingService &&
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>}
       </div>
     </Space>
   )
