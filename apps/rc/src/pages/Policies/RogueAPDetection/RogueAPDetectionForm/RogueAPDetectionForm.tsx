@@ -10,10 +10,12 @@ import {
 import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
 import {
   CatchErrorResponse,
-  getPolicyListRoutePath,
   RogueAPDetectionContextType,
   RogueAPRule,
-  RogueVenue
+  RogueVenue,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -30,7 +32,9 @@ type RogueAPDetectionFormProps = {
 const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  // eslint-disable-next-line max-len
+  const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { edit } = props
 
@@ -96,7 +100,7 @@ const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
           ? $t({ defaultMessage: 'Edit Rogue AP Detection Policy' })
           : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
       />
       <StepsForm<RogueAPDetectionContextType>

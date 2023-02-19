@@ -51,8 +51,8 @@ jest.mock('./pages/Services/ServiceCatalog', () => () => {
   return <div data-testid='ServiceCatalog' />
 })
 
-jest.mock('./pages/Policies/PoliciesTable', () => () => {
-  return <div data-testid='PoliciesTable' />
+jest.mock('./pages/Policies/MyPolicies', () => () => {
+  return <div data-testid='MyPolicies' />
 })
 
 jest.mock('./pages/Services/SelectServiceForm', () => () => {
@@ -524,14 +524,14 @@ describe('RcRoutes: Services', () => {
 })
 
 describe('RcRoutes: Policies', () => {
-  test('should navigate to policy list', async () => {
+  test('should navigate to My Policies', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + getPolicyListRoutePath(),
         wrapRoutes: false
       }
     })
-    expect(screen.getByTestId('PoliciesTable')).toBeVisible()
+    expect(screen.getByTestId('MyPolicies')).toBeVisible()
   })
 
   test('should navigate to create ROGUE_AP_DETECTION page', async () => {
@@ -642,6 +642,66 @@ describe('RcRoutes: Policies', () => {
       }
     })
     expect(screen.getByTestId('AAAPolicyDetail')).toBeVisible()
+  })
+
+  test('should navigate to AAA table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'AAA Server' })).toBeVisible()
+  })
+
+  test('should navigate to Access Control table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Access Control' })).toBeVisible()
+  })
+
+  test('should navigate to Client Isolation table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Client Isolation' })).toBeVisible()
+  })
+
+  test('should navigate to Rogue AP Detection table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Rogue AP Detection' })).toBeVisible()
+  })
+
+  test('should navigate to Syslog Server table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Syslog Server' })).toBeVisible()
+  })
+
+  test('should navigate to VLAN Pools table', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }),
+        wrapRoutes: false
+      }
+    })
+    expect(await screen.findByRole('heading', { level: 1, name: 'VLAN Pools' })).toBeVisible()
   })
 })
 
