@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, omitBy, pick }          from 'lodash'
+import { isEqual, omit, pick, isEmpty }                  from 'lodash'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -165,14 +165,15 @@ export function ApForm () {
     try {
       const payload = {
         ...omit(values, 'deviceGps'),
-        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) })
+        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) 
+          || deviceGps })
       }
-      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       setEditContextData && setEditContextData({
         ...editContextData,
         isDirty: false,
         hasError: false
       })
+      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as CatchErrorResponse)
@@ -251,13 +252,17 @@ export function ApForm () {
   const handleUpdateContext = () => {
     if (isEditMode) {
       const form = formRef?.current as StepsFormInstance
-      const originalData = {
-        deviceGps: {
-          latitude: selectedVenue?.latitude,
-          longitude: selectedVenue?.longitude
-        },
-        ...apDetails
-      } as ApDeep
+      const originalData = (isEmpty(apDetails?.deviceGps) ? {
+        ...apDetails,
+        ...{
+          deviceGps: {
+            latitude: selectedVenue?.latitude,
+            longitude: selectedVenue?.longitude
+          }
+        }
+      } : apDetails) as ApDeep
+
+
 
       setEditContextData && setEditContextData({
         ...editContextData,
@@ -684,7 +689,8 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const formData = form?.getFieldsValue()
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
-  const newData = omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
+  const newData = { ...omit(formData, 'deviceGps'), deviceGps: deviceGps }
+  //omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
   return !!Object.values(formData).length && !isEqual(oldData, newData)
 }
 
