@@ -13,7 +13,8 @@ import {
   wisprDataWep,
   selfsignData,
   portalList,
-  wisprDataWPA2
+  wisprDataWPA2,
+  cloudPathDataNone
 } from '../__tests__/fixtures'
 
 import { PortalSummaryForm } from './PortalSummaryForm'
@@ -128,6 +129,23 @@ describe('PortalSummaryForm', () => {
       }
     )
     expect(await screen.findByText('Portal Provider'))
+      .toBeVisible()
+  })
+  it('should render cloudpath successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    portalData.componentDisplay.wifi4eu = true
+    wisprDataWPA2.wlan.bypassCPUsingMacAddressAuthentication = false
+    render(
+      <Provider>
+        <Form>
+          <PortalSummaryForm summaryData={cloudPathDataNone} portalData={portalData}/>
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+    expect(await screen.findByText('Enrollment Workflow URL'))
       .toBeVisible()
   })
 })
