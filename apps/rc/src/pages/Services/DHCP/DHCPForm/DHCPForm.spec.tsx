@@ -54,6 +54,9 @@ describe('DHCPForm', () => {
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
         res(ctx.json(dhcpProfilesList))
       ),
+      rest.put(DHCPUrls.updateDHCPService.url,
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
       rest.post(
         DHCPUrls.addDHCPService.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))
