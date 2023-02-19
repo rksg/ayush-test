@@ -237,7 +237,10 @@ export function ApForm () {
     const options = await getApGroupOptions(value)
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
-    setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
+    const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
+    if (sameAsVenue) {
+      setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
+    }
     formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
