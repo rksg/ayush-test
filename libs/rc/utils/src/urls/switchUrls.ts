@@ -75,7 +75,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch',
+    url: '/api/switch/tenant/:tenantId/switch'
     // url: '/switches',
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
     // newApi: false
