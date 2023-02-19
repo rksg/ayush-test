@@ -161,6 +161,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
   },
+  addAcl: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
+  },
   addVePort: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId'

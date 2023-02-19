@@ -853,6 +853,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
+    addAcl: build.mutation<Acl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1027,5 +1036,6 @@ export const {
   useGetCliTemplatesQuery,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
-  useGetCliConfigExamplesQuery
+  useGetCliConfigExamplesQuery,
+  useAddAclMutation
 } = switchApi
