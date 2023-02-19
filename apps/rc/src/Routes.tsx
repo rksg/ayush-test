@@ -362,6 +362,7 @@ function PolicyRoutes () {
         element={<AAAPolicyDetail/>}
       />
       <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
         element={<RogueAPDetectionTable />}
       />
