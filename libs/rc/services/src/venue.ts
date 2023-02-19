@@ -51,7 +51,8 @@ import {
   RogueOldApResponseType,
   VenueRadioCustomization,
   VenueDirectedMulticast,
-  VenueLoadBalancing
+  VenueLoadBalancing,
+  TopologyData
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -901,6 +902,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+    }),
+    getTopology: build.query<TopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: TopologyData[] }) => {
+        return result?.data[0] as TopologyData
+      }
     })
   })
 })
@@ -985,5 +998,6 @@ export const {
   useGetVenueConfigHistoryDetailQuery,
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
-  useUpdateVenueLoadBalancingMutation
+  useUpdateVenueLoadBalancingMutation,
+  useGetTopologyQuery
 } = venueApi

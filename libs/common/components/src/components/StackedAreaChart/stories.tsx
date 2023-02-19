@@ -49,3 +49,9 @@ storiesOf('StackedAreaChart', module)
     style={{ width: 500 }}
     tooltipTotalTitle={'Total'}
   />)
+  .add('Custom Legend Format', () => <StackedAreaChart
+    data={data}
+    style={{ width: 500 }}
+    legendFormatter={()=>''}
+  />
+  )

@@ -14,6 +14,12 @@ export function PortalSummaryForm (props: {
   const $t = intl.$t
   return (
     <>
+      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
+      <Form.Item
+        label={$t({ defaultMessage: 'Enrollment Workflow URL:' })}
+        children={summaryData.guestPortal?.externalPortalUrl}
+      />
+      }
       {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.SelfSignIn&&
       <Form.Item
         label={$t({ defaultMessage: 'Sign-in Option:' })}
@@ -64,11 +70,13 @@ export function PortalSummaryForm (props: {
         />
       </>
       }
+      {summaryData.guestPortal?.guestNetworkType!==GuestNetworkTypeEnum.Cloudpath&&
       <Form.Item
         label={$t({ defaultMessage: 'Redirect URL:' })}
         children={summaryData.guestPortal?.redirectUrl ||
           $t({ defaultMessage: 'Original URL request' })}
       />
+      }
       {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.WISPr&&
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WPA3 &&
        summaryData.wlan?.wlanSecurity !== WlanSecurityEnum.WEP &&
@@ -143,11 +151,29 @@ export function PortalSummaryForm (props: {
             $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
         />
       }
+      {summaryData.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath&&
+        <Form.Item
+          label={$t({ defaultMessage: 'Ruckus DHCP Service:' })}
+          children={summaryData.enableDhcp?$t({ defaultMessage: 'Yes' }):
+            $t({ defaultMessage: 'No' })}
+        />
+      }
+      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
       <Form.Item
-        label={$t({ defaultMessage: 'Ruckus DHCP Service:' })}
-        children={summaryData.enableDhcp?$t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
+        label={$t({ defaultMessage: 'Use MAC authentication during reconnection:' })}
+        children={summaryData.wlan?.bypassCPUsingMacAddressAuthentication?
+          $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
       />
-      {summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr&&
+      }
+      {summaryData.guestPortal?.guestNetworkType===GuestNetworkTypeEnum.Cloudpath&&
+      <Form.Item
+        label={$t({ defaultMessage: 'Use Bypass Captive Network Assistant:' })}
+        children={summaryData.wlan?.bypassCNA?
+          $t({ defaultMessage: 'Yes' }):$t({ defaultMessage: 'No' })}
+      />
+      }
+      {(summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath||
+        summaryData.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr)&&
         summaryData.guestPortal?.walledGardens&&
         summaryData.guestPortal?.walledGardens?.length>0&&
         <Form.Item
