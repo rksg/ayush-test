@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty }                  from 'lodash'
+import { isEqual, omit, pick, isEmpty }         from 'lodash'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -165,7 +165,7 @@ export function ApForm () {
     try {
       const payload = {
         ...omit(values, 'deviceGps'),
-        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) 
+        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
           || deviceGps })
       }
       setEditContextData && setEditContextData({
