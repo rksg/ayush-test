@@ -39,7 +39,7 @@ const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
-  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnable = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const config: LayoutProps['menuConfig'] = [

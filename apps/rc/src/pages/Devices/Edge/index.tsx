@@ -197,11 +197,11 @@ const EdgesTable = () => {
 const Edges = () => {
 
   const { $t } = useIntl()
-  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
-  const isEdgesEnable = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
-  if (!isEdgesEnable) {
-    return <span>{ $t({ defaultMessage: 'Edges is not enabled' }) }</span>
+  if (!isDhcpEnabled) {
+    return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>
   }
 
   return (

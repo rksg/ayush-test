@@ -30,8 +30,8 @@ const defaultPayload = {
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
-  const earlyBetaEnabled = useIsSplitOn(Features.EARLY_BETA)
-  const edgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
     {
@@ -54,7 +54,7 @@ export default function MyServices () {
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       }),
-      disabled: !edgeEnabled
+      disabled: !isDhcpEnabled
     },
     {
       type: ServiceType.DPSK,
