@@ -8,8 +8,7 @@ import {
   mockServer,
   render,
   screen,
-  waitFor,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -121,8 +120,7 @@ describe('ClientDetails', () => {
     const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(screen.getAllByRole('tab')).toHaveLength(4)
+    expect(await screen.findAllByRole('tab')).toHaveLength(4)
 
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
