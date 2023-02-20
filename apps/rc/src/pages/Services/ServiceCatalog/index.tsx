@@ -18,7 +18,7 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
-  const isEdgesEnable = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const sets = [
     {
@@ -28,7 +28,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgesEnable
+          disabled: !isEdgeDhcpEnabled
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
