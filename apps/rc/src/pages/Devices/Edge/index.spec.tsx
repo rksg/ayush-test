@@ -56,7 +56,7 @@ describe('EdgeList', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/list' }
       })
-    await screen.findByText('Edges is not enabled')
+    await screen.findByText('SmartEdge is not enabled')
   })
 
   it('should create EdgeList successfully', async () => {
