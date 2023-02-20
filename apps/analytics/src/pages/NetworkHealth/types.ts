@@ -1,4 +1,7 @@
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
+
+import { NetworkHealthBaseQuery } from '@acx-ui/analytics/services'
+import { APListNode, PathNode }   from '@acx-ui/utils'
 
 type UUID = string
 
@@ -95,3 +98,7 @@ export type MutationUserError = {
 export type MutationResult <Result> = {
   userErrors: MutationUserError[]
 } & Result
+
+export type MutationResponse <
+  Result extends { userErrors?: MutationUserError[] } = { userErrors?: MutationUserError[] }
+> = TypedUseMutationResult<Result, { id?: string }, NetworkHealthBaseQuery>

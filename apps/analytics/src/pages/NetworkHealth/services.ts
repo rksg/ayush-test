@@ -1,9 +1,15 @@
-import { gql } from 'graphql-request'
-import _       from 'lodash'
+import { useEffect } from 'react'
+
+import { gql }     from 'graphql-request'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { networkHealthApi }     from '@acx-ui/analytics/services'
+import { showToast }            from '@acx-ui/components'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { APListNode, PathNode } from '@acx-ui/utils'
+
+import { messageMapping } from './contents'
 
 import type {
   APListNodes,
@@ -12,7 +18,9 @@ import type {
   NetworkNodes,
   NetworkPaths,
   MutationResult,
-  NetworkHealthConfig
+  NetworkHealthConfig,
+  MutationUserError,
+  MutationResponse
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -223,4 +231,25 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
+}
+
+export function useMutationResponseEffect <
+  Result extends { userErrors?: MutationUserError[] }
+> (
+  response: MutationResponse<Result>,
+  onOk?: (result: MutationResponse<Result>) => void
+) {
+  const { $t } = useIntl()
+
+  useEffect(() => {
+    if (!response.data) return
+
+    if (!response.data.userErrors) {
+      onOk?.(response)
+    } else {
+      const key = response.data.userErrors[0].message as keyof typeof messageMapping
+      const errorMessage = $t(messageMapping[key])
+      showToast({ type: 'error', content: errorMessage })
+    }
+  }, [$t, response, onOk])
 }
