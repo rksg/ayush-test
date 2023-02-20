@@ -21,10 +21,11 @@ import { validationMessages }                                 from '@acx-ui/util
 import NetworkFormContext from '../NetworkFormContext'
 import VLANPoolInstance   from '../VLANPoolInstance'
 
-import { AccessControlForm } from './AccessControlForm'
-import { LoadControlForm }   from './LoadControlForm'
-import { ServicesForm }      from './ServicesForm'
-import * as UI               from './styledComponents'
+import { AccessControlForm }  from './AccessControlForm'
+import { LoadControlForm }    from './LoadControlForm'
+import { ServicesForm }       from './ServicesForm'
+import * as UI                from './styledComponents'
+import { UserConnectionForm } from './UserConnectionForm'
 
 
 const { Panel } = Collapse
@@ -175,7 +176,7 @@ export function MoreSettingsForm (props: {
   }
   return (
     <UI.CollapsePanel
-      defaultActiveKey={['1', '2', '3']}
+      defaultActiveKey={['1', '2', '3', '4']}
       expandIconPosition='end'
       ghost={true}
       bordered={false}
@@ -609,6 +610,9 @@ export function MoreSettingsForm (props: {
             </div>
           </>}
       </Panel>
+      {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='4'>
+        <UserConnectionForm/>
+      </Panel>}
     </UI.CollapsePanel>
   )
 }
