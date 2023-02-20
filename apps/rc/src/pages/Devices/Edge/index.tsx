@@ -8,10 +8,11 @@ import { TenantLink }             from '@acx-ui/react-router-dom'
 
 const Edges = () => {
   const { $t } = useIntl()
-  const isEdgesEnable = useIsSplitOn(Features.EDGES)
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
-  if (!isEdgesEnable) {
-    return <span>{ $t({ defaultMessage: 'Edges is not enabled' }) }</span>
+  if (!isEdgeEnabled) {
+    return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>
   }
 
   return (
