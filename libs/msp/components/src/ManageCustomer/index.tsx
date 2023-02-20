@@ -537,7 +537,8 @@ export function ManageCustomer () {
   }
 
   const getAssignmentId = (deviceType: string) => {
-    const license = assignedLicense.filter(en => en.deviceType === deviceType)
+    const license =
+    assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 
