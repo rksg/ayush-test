@@ -4,9 +4,11 @@ import { Statistic }                                            from 'antd'
 import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { noDataSymbol }                from '@acx-ui/analytics/utils'
-import { GridCol, TrendPill, Tooltip } from '@acx-ui/components'
-import { formatter }                   from '@acx-ui/utils'
+import { noDataSymbol }     from '@acx-ui/analytics/utils'
+import { GridCol, Tooltip } from '@acx-ui/components'
+import { formatter }        from '@acx-ui/utils'
+
+import { Pill } from './styledComponents'
 
 import { ConfigStatusEnum, getExecutionSectionData } from '.'
 
@@ -78,7 +80,7 @@ export const StatusBlock = ({ field, values, configured }: StatusBlockProps) => 
       value={item.format(current, configured as ConfigStatusEnum, $t)}
       suffix={diff
         ? <Tooltip title={$t({ defaultMessage: 'Compared to previous test' })}>
-          <TrendPill
+          <Pill
             value={
               `${(diff > 0) ? '+' : '-'}${item.format(diff, ConfigStatusEnum.Configured, $t)}`}
             trend={item.badgeColor(diff)} />
