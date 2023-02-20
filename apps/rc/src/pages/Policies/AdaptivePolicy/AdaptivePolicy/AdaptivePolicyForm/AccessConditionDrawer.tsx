@@ -3,15 +3,17 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Select, Space } from 'antd'
 import { defineMessage, useIntl }     from 'react-intl'
 
-import { Drawer }          from '@acx-ui/components'
-import { AccessCondition } from '@acx-ui/rc/utils'
+import { Drawer }                         from '@acx-ui/components'
+import { useLazyAttributesListQuery }     from '@acx-ui/rc/services'
+import { AccessCondition, RuleAttribute } from '@acx-ui/rc/utils'
 
 interface RadiusAttributeDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEdit?: boolean,
   editCondition?: AccessCondition,
-  setAccessCondition: (condition: AccessCondition) => void
+  setAccessCondition: (condition: AccessCondition) => void,
+  templateId: number | undefined
 }
 
 const OperationTypeOption = [
@@ -23,40 +25,28 @@ const OperationTypeOption = [
   { label: defineMessage({ defaultMessage: 'Ends with' }), value: 'Ends with' }
 ]
 
-const attributes = {
-  paging: { totalCount: 8, page: 1, pageSize: 8, pageCount: 1 },
-  content: [
-    {
-      id: 11,
-      name: 'Wireless Network "SSID"',
-      description: 'A regular expression defining the Wi-Fi SSID(s) to limit the this policy.',
-      attributeTextMatch: 'SSID',
-      attributeType: 'STRING'
-    },
-    {
-      id: 12,
-      name: 'NAS Identifier',
-      description: 'A regular expression defining the NAS Identifier(s) to limit this policy.',
-      attributeTextMatch: 'NAS-Identifier',
-      attributeType: 'STRING'
-    },
-    {
-      id: 13,
-      name: 'Radius User Name',
-      description: 'A regular expression defining the User-Name(s) to limit this policy. ' +
-        'Could be name, could be realm.',
-      attributeTextMatch: 'User-Name',
-      attributeType: 'regex'
-    }
-  ]
-}
-
 export function AccessConditionDrawer (props: RadiusAttributeDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit = false, setAccessCondition, editCondition } = props
+  const { visible, setVisible, isEdit = false, setAccessCondition, editCondition, templateId } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
+  const [attributes, setAttributes] = useState([] as RuleAttribute [])
+
+  const [attributeList] = useLazyAttributesListQuery()
+
+  useEffect(() => {
+    if(templateId) {
+      const setData = async () => {
+        const list = (await attributeList({
+          params: { templateId: templateId.toString() },
+          payload: { page: '1', pageSize: '10000' }
+        }, true).unwrap())
+        setAttributes(list.data)
+      }
+      setData()
+    }
+  }, [templateId])
 
   const onClose = () => {
     setVisible(false)
@@ -110,9 +100,9 @@ export function AccessConditionDrawer (props: RadiusAttributeDrawerProps) {
       >
         <Select
           // eslint-disable-next-line max-len
-          options={attributes.content.map(p => ({ label: p.name, value: p.id }))}
+          options={attributes.map(p => ({ label: p.name, value: p.id }))}
           onChange={(value) => {
-            const attr = attributes.content.find((attribute) => attribute.id === value)
+            const attr = attributes.find((attribute) => attribute.id === value)
             if(attr) {
               form.setFieldsValue({
                 templateAttributeId: attr.id,

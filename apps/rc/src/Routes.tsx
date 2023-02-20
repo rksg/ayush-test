@@ -1,4 +1,4 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   ServiceType,
@@ -10,7 +10,7 @@ import {
   getSelectServiceRoutePath,
   ServiceOperation,
   getServiceRoutePath,
-  getServiceCatalogRoutePath
+  getServiceCatalogRoutePath, getAdaptivePolicyDetailRoutePath
 } from '@acx-ui/rc/utils'
 import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -393,12 +393,12 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.EDIT })}
+        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
         element={<AdaptivePolicyForm editMode={true}/>}
       />
       <Route
         // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.DETAIL })}
+        path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
         element={<AdaptivePolicyDetail/>}
       />
     </Route>

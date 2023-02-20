@@ -4,18 +4,16 @@ import { Col, Form, Row, Space, Typography } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { Button, Card, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { Button, Card, Loader, PageHeader, Table, TableProps }      from '@acx-ui/components'
+import { useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery } from '@acx-ui/rc/services'
 import {
   AccessCondition,
-  AdaptivePolicy,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-
-import { adpativePolicy, assignConditions } from './__test__/fixtures'
 
 export interface VenueTable {
   id: string,
@@ -60,12 +58,25 @@ function useColumns () {
 
 export function AdaptivePolicyDetail () {
   const { $t } = useIntl()
-  const { policyId } = useParams()
+  const { policyId, templateId } = useParams()
   const { Paragraph } = Typography
 
+  const getAdaptivePolicyQuery = useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
+
+  // eslint-disable-next-line max-len
+  const { data: conditionsData } = useGetConditionsInPolicyQuery({
+    payload: { page: '1', pageSize: '2147483647' },
+    params: { policyId, templateId } })
+  // const getConditionsInPolicyQuery = useTableQuery({
+  //   useQuery: useGetConditionsInPolicyQuery,
+  //   defaultPayload: {},
+  //   pagination: { pageSize: 2147483647 }
+  // })
+
+  const policyData = getAdaptivePolicyQuery.data
+  // const conditionsData = getConditionsInPolicyQuery.data
+
   // TODO: just for mock data
-  const policy = adpativePolicy as AdaptivePolicy
-  const conditions = assignConditions
   const venues = [
     {
       id: '1',
@@ -101,7 +112,7 @@ export function AdaptivePolicyDetail () {
   return (
     <>
       <PageHeader
-        title={policy.name || ''}
+        title={policyData?.name || ''}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies & Profiles > Adaptive Policy' }),
             // eslint-disable-next-line max-len
@@ -122,28 +133,31 @@ export function AdaptivePolicyDetail () {
       />
       <Space direction={'vertical'}>
         <Card>
-          {/*<Loader states={[{ isLoading, isFetching }]}>*/}
-          <Form layout={'vertical'}>
-            <Row>
-              <Col span={6}>
-                <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
-                  <Paragraph>{policy?.name}</Paragraph>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                <Form.Item label={$t({ defaultMessage: 'Access Policy Type' })}>
-                  <Paragraph>Advanced Policy Engine</Paragraph>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <Paragraph>Access Conditions</Paragraph>
-              </Col>
-              {getConditions(conditions.content)}
-            </Row>
-          </Form>
-          {/*</Loader>*/}
+          <Loader states={[
+            getAdaptivePolicyQuery,
+            { isLoading: false }
+          ]}>
+            <Form layout={'vertical'}>
+              <Row>
+                <Col span={6}>
+                  <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
+                    <Paragraph>{policyData?.name}</Paragraph>
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label={$t({ defaultMessage: 'Access Policy Type' })}>
+                    <Paragraph>Advanced Policy Engine</Paragraph>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
+                </Col>
+                {getConditions(conditionsData?.data ?? [])}
+              </Row>
+            </Form>
+          </Loader>
         </Card>
       </Space>
       <Card title={$t({ defaultMessage: 'Instance ({size})' },

@@ -44,7 +44,14 @@ import {
   RequestFormData,
   RadiusAttributeGroupUrlsInfo,
   RadiusAttributeGroup,
-  RadiusAttribute, RadiusAttributeVendor
+  // eslint-disable-next-line max-len
+  RadiusAttribute,
+  RadiusAttributeVendor,
+  AdaptivePolicy,
+  RulesManagementUrlsInfo,
+  RuleTemplate,
+  RuleAttribute,
+  AccessCondition
 } from '@acx-ui/rc/utils'
 
 
@@ -52,7 +59,8 @@ export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
   // eslint-disable-next-line max-len
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'RadiusAttributeGroup', 'RadiusAttribute'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'RadiusAttributeGroup', 'RadiusAttribute'
+    , 'AdaptivePolicy', 'AdaptivePolicySet', 'AdaptivePolicyCondition'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -637,6 +645,124 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'DETAIL' }]
+    }),
+    adaptivePolicyList: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicies,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<AdaptivePolicy>) {
+        return transferToTableResult<AdaptivePolicy>(result)
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicyByTemplate, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'AdaptivePolicy', id: 'DETAIL' }]
+    }),
+    deleteAdaptivePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.deletePolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    policyTemplateList: build.query<TableResult<RuleTemplate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateList,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<RuleTemplate>) {
+        return transferToTableResult<RuleTemplate>(result)
+      }
+    }),
+    attributesList: build.query<TableResult<RuleAttribute>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateAttributes,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<RuleAttribute>) {
+        return transferToTableResult<RuleAttribute>(result)
+      }
+    }),
+    addAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.createPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    addPolicyConditions: build.mutation<AdaptivePolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.addConditions, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicyCondition', id: 'LIST' }]
+    }),
+    deletePolicyConditions: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.deleteConditions, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getConditionsInPolicy: build.query<TableResult<AccessCondition>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getConditionsInPolicy,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<AccessCondition>) {
+        return transferToTableResult<AccessCondition>(result)
+      }
+    }),
+    updateAdaptivePolicy: build.mutation<AdaptivePolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.updatePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     })
   })
 })
@@ -696,5 +822,18 @@ export const {
   useDeleteRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
-  useAddRadiusAttributeGroupMutation
+  useAddRadiusAttributeGroupMutation,
+  useAdaptivePolicyListQuery,
+  useLazyAdaptivePolicyListQuery,
+  useGetAdaptivePolicyQuery,
+  useLazyGetAdaptivePolicyQuery,
+  useDeleteAdaptivePolicyMutation,
+  usePolicyTemplateListQuery,
+  useAttributesListQuery,
+  useLazyAttributesListQuery,
+  useAddAdaptivePolicyMutation,
+  useGetConditionsInPolicyQuery,
+  useLazyGetConditionsInPolicyQuery,
+  useUpdateAdaptivePolicyMutation,
+  useAddPolicyConditionsMutation
 } = policyApi

@@ -82,3 +82,18 @@ function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
   }
   return false
 }
+
+// eslint-disable-next-line max-len
+export function getAdaptivePolicyDetailRoutePath (oper: PolicyOperation): string {
+  const paths = ['policies']
+  paths.push(typePathMapping[PolicyType.ADAPTIVE_POLICY])
+  paths.push(':templateId')
+  paths.push(operationPathMapping[oper])
+  return paths.join('/')
+}
+
+// eslint-disable-next-line max-len
+export function getAdaptivePolicyDetailLink (props: { policyId: string, templateId: string, oper: Exclude<PolicyOperation, PolicyOperation.CREATE> }): string {
+  const { policyId, templateId, oper } = props
+  return generatePath(getAdaptivePolicyDetailRoutePath(oper), { policyId, templateId })
+}

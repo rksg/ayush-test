@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Space } from 'antd'
-import { useIntl }                      from 'react-intl'
-import { v4 as uuidv4 }                 from 'uuid'
+import { Col, Form, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
+import { useIntl }                                               from 'react-intl'
+import { useParams }                                             from 'react-router-dom'
+import { v4 as uuidv4 }                                          from 'uuid'
 
 import { Button, Descriptions, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
+  useLazyAdaptivePolicyListQuery,
+  usePolicyTemplateListQuery
+} from '@acx-ui/rc/services'
+import {
   AccessCondition,
-  AttributeAssignment,
-  RadiusAttributeGroup
+  AttributeAssignment, checkObjectNotExists,
+  RadiusAttributeGroup, RuleTemplate
 } from '@acx-ui/rc/utils'
 
 import { AccessConditionDrawer }          from './AccessConditionDrawer'
@@ -37,6 +42,8 @@ function useColumns () {
 
 export function AdaptivePolicySettingForm () {
   const { $t } = useIntl()
+  const { policyId } = useParams()
+
   const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
   const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
   // eslint-disable-next-line max-len
@@ -47,8 +54,29 @@ export function AdaptivePolicySettingForm () {
   // eslint-disable-next-line max-len
   const [selectRadiusAttributeGroup, setSelectRadiusAttributeGroup] = useState({} as RadiusAttributeGroup)
   const [editCondition, setEditCondition] = useState<AccessCondition>()
-  // const { policyId } = useParams()
+  const [templateMode, setTemplateMode] = useState([] as RuleTemplate [])
+  const [templateId, setTemplateId] = useState(0)
+
   const form = Form.useFormInstance()
+
+  const [policyList] = useLazyAdaptivePolicyListQuery()
+
+  // eslint-disable-next-line max-len
+  const { data: templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+
+  useEffect(() => {
+    if(templateList?.data) {
+      setTemplateMode(templateList.data)
+    }
+  }, [templateList?.data])
+
+  const nameValidator = async (value: string) => {
+    const list = (await policyList({
+      payload: { page: '1', pageSize: '2147483647' }
+    }).unwrap()).data.filter(n => n.id !== policyId)
+      .map(n => ({ name: n.name }))
+    return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Adaptive Policy' }))
+  }
 
   const setAccessCondition = (condition: AccessCondition) => {
     const newConditions: AccessCondition[] = evaluationRules ? evaluationRules.slice() : []
@@ -115,21 +143,35 @@ export function AdaptivePolicySettingForm () {
   }
 
   return (
-    <Row>
-      <Col span={6}>
+    <Row gutter={20}>
+      <Col span={10}>
         <Form.Item name='name'
           label={$t({ defaultMessage: 'Policy Name' })}
           rules={[
-            { required: true }
-            // { validator: (_, value) => nameValidator(value) }
+            { required: true },
+            { validator: (_, value) => nameValidator(value) }
           ]}
           validateFirst
           hasFeedback
           children={<Input/>}
         />
-      </Col>
-      <Col span={24}/>
-      <Col span={8}>
+        <Form.Item name='templateTypeId'
+          label={$t({ defaultMessage: 'Template Type' })}
+          rules={[
+            { required: true }
+          ]}
+          children={
+            <Radio.Group onChange={(e: RadioChangeEvent) => {
+              setAccessConditionsVisible(false)
+              setTemplateId(e.target.value)
+            }}>
+              <Space direction='vertical'>
+                {templateMode.map(({ id, name }) => (
+                  <Radio key={name} value={id}>{name}</Radio>
+                ))}
+              </Space>
+            </Radio.Group>
+          }/>
         <Form.Item
           name='evaluationRules'
           label={$t({ defaultMessage: 'Access Conditions' })}
@@ -159,9 +201,6 @@ export function AdaptivePolicySettingForm () {
             />
           </>
         </Form.Item>
-      </Col>
-      <Col span={24}/>
-      <Col span={8}>
         <Form.Item
           name='attributeGroupId'
           label={$t({ defaultMessage: 'RADIUS Attribute Group' })}
@@ -171,7 +210,6 @@ export function AdaptivePolicySettingForm () {
           ]}
         >
           <>
-            {/* eslint-disable-next-line max-len */}
             {$t({ defaultMessage: 'The RADIUS attributes to apply when this policy is matched' })}
           </>
         </Form.Item>
@@ -187,22 +225,22 @@ export function AdaptivePolicySettingForm () {
           </Button>
         </Space>
         {getAttributes(selectRadiusAttributeGroup.attributeAssignments)}
+        <AccessConditionDrawer
+          visible={accessConditionsVisible}
+          setVisible={setAccessConditionsVisible}
+          setAccessCondition={setAccessCondition}
+          editCondition={editCondition}
+          templateId={templateId}/>
+        <RadiusAttributeGroupDrawer
+          visible={attributeGroupVisible}
+          setVisible={setAttributeGroupVisible}
+          setRadiusAttributeGroup={setRadiusAttributeGroup}
+          setRadiusAttributeGroupFormDrawerVisible={setRadiusAttributeGroupFormDrawerVisible}/>
+        <RadiusAttributeGroupFormDrawer
+          visible={radiusAttributeGroupFormDrawerVisible}
+          setVisible={setRadiusAttributeGroupFormDrawerVisible}
+        />
       </Col>
-
-      <AccessConditionDrawer
-        visible={accessConditionsVisible}
-        setVisible={setAccessConditionsVisible}
-        setAccessCondition={setAccessCondition}
-        editCondition={editCondition}/>
-      <RadiusAttributeGroupDrawer
-        visible={attributeGroupVisible}
-        setVisible={setAttributeGroupVisible}
-        setRadiusAttributeGroup={setRadiusAttributeGroup}
-        setRadiusAttributeGroupFormDrawerVisible={setRadiusAttributeGroupFormDrawerVisible}/>
-      <RadiusAttributeGroupFormDrawer
-        visible={radiusAttributeGroupFormDrawerVisible}
-        setVisible={setRadiusAttributeGroupFormDrawerVisible}
-      />
     </Row>
   )
 }

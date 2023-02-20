@@ -17,7 +17,7 @@ export interface RuleTemplate {
   name: string,
   description: string,
   ruleType: RuleType,
-  templateReturnType: TemplateReturnType
+  returnType: TemplateReturnType
 }
 
 export interface RuleAttribute {
@@ -30,7 +30,7 @@ export interface RuleAttribute {
 export interface AccessCondition {
   id: string,
   name?: string,
-  templateAttributeId: number,
+  templateAttributeId: number | null,
   evaluationRule: EvaluationRule,
   policyId?: string
 }
@@ -41,7 +41,6 @@ export interface EvaluationRule {
 }
 
 export enum RuleType {
-  BASE = 'BASE',
   RADIUS = 'RADIUS',
   DPSK = 'DPSK'
 }

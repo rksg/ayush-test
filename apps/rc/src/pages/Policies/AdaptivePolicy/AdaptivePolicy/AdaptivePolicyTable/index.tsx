@@ -1,18 +1,23 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, showToast, Table, TableProps }  from '@acx-ui/components'
+import {
+  useAdaptivePolicyListQuery,
+  useDeleteAdaptivePolicyMutation,
+  useLazyGetConditionsInPolicyQuery, usePolicyTemplateListQuery
+} from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  getPolicyDetailsLink, getPolicyRoutePath,
+  getAdaptivePolicyDetailLink,
+  getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { adpativePolicyList, assignConditions } from './__test__/fixtures'
-
-
-function useColumns () {
+function useColumns (conditionsMap: Map<string, string>, templateIdMap: Map<string, string>) {
   const { $t } = useIntl()
   const columns: TableProps<AdaptivePolicy>['columns'] = [
     {
@@ -26,11 +31,12 @@ function useColumns () {
         return (
           // eslint-disable-next-line max-len
           <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.ADAPTIVE_POLICY,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!
-            })}
+            to={
+              getAdaptivePolicyDetailLink({
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!,
+                templateId: templateIdMap.get(row.policyType) ?? ''
+              })}
           >{data}</TenantLink>
         )
       }
@@ -40,8 +46,8 @@ function useColumns () {
       key: 'accessConditions',
       dataIndex: 'accessConditions',
       align: 'center',
-      render: function () {
-        return assignConditions.content.length
+      render: (_, row) => {
+        return conditionsMap.get(row.id) ?? '0'
       }
     },
     {
@@ -62,71 +68,107 @@ export default function AdaptivePolicyTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
 
-  const AdaptivePolicyTable = () => {
+  const [conditionCountMap, setConditionCountMap] = useState(new Map())
+  const [templateIdMap, setTemplateIdMap] = useState(new Map())
 
-    const list = adpativePolicyList.content as AdaptivePolicy []
+  const tableQuery = useTableQuery({
+    useQuery: useAdaptivePolicyListQuery,
+    defaultPayload: {}
+  })
 
-    const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
-      visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
-            oper: PolicyOperation.EDIT,
-            policyId: selectedRows[0].id!
-          })
+  // eslint-disable-next-line max-len
+  const { data: templateList, isLoading: templateIsLoading } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+
+  const [
+    deletePolicy,
+    { isLoading: isDeletePolicyUpdating }
+  ] = useDeleteAdaptivePolicyMutation()
+
+  const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
+
+  useEffect(() => {
+    if (tableQuery.isLoading || templateIsLoading)
+      return
+
+    const templateIds = new Map()
+    templateList?.data.forEach( template => {
+      templateIds.set(template.ruleType, template.id)
+    })
+    setTemplateIdMap(templateIds)
+
+    const conditionPools = new Map()
+    tableQuery.data?.data.forEach(policy => {
+      const { id, policyType } = policy
+      getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
+        .then(result => {
+          if (result.data) {
+            conditionPools.set(id, result.data.data.length)
+          }
         })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: ([{ name, id }], clearSelection) => {
-        // showActionModal({
-        //   type: 'confirm',
-        //   customContent: {
-        //     action: 'DELETE',
-        //     entityName: $t({ defaultMessage: 'group' }),
-        //     entityValue: name,
-        //     confirmationText: 'Delete'
-        //   },
-        //   onOk: async () => {
-        //     deleteGroup({ params: { policyId: id } })
-        //       .unwrap()
-        //       .then(() => {
-        //         showToast({
-        //           type: 'success',
-        //           content: $t({ defaultMessage: 'Group {name} was deleted' }, { name })
-        //         })
-        //         clearSelection()
-        //       }).catch((error) => {
-        //         showToast({
-        //           type: 'error',
-        //           content: error.data.message
-        //         })
-        //       })
-        //   }
-        // })
-      }
-    }]
+    })
+    setConditionCountMap(conditionPools)
+  }, [tableQuery.data, templateList?.data])
 
-    return (
-      // <Loader states={[
-      //   tableQuery,
-      //   { isLoading: false, isFetching: isDeleteMacGroupUpdating }
-      // ]}>
+  const rowActions: TableProps<AdaptivePolicy>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Edit' }),
+    onClick: (selectedRows) => {
+      navigate({
+        ...tenantBasePath,
+        pathname: `${tenantBasePath.pathname}/` + getAdaptivePolicyDetailLink({
+          oper: PolicyOperation.EDIT,
+          policyId: selectedRows[0].id!,
+          templateId: templateIdMap.get(selectedRows[0].policyType)
+        })
+      })
+    }
+  },
+  {
+    label: $t({ defaultMessage: 'Delete' }),
+    onClick: ([{ name, id, policyType }], clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'policy' }),
+          entityValue: name,
+          confirmationText: 'Delete'
+        },
+        onOk: async () => {
+          deletePolicy({ params: { policyId: id, templateId: templateIdMap.get(policyType) } })
+            .unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'Policy {name} was deleted' }, { name })
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
+        }
+      })
+    }
+  }]
+
+  return (
+    <Loader states={[
+      tableQuery,
+      { isLoading: false, isFetching: isDeletePolicyUpdating }
+    ]}>
       <Table
-        columns={useColumns()}
-        dataSource={list}
-        // pagination={tableQuery.pagination}
-        // onChange={tableQuery.handleTableChange}
+        columns={useColumns(conditionCountMap, templateIdMap)}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
         actions={[{
-          label: $t({ defaultMessage: 'Add Group' }),
+          label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
             navigate({
               ...tenantBasePath,
@@ -138,11 +180,6 @@ export default function AdaptivePolicyTable () {
           }
         }]}
       />
-      // </Loader>
-    )
-  }
-
-  return (
-    <AdaptivePolicyTable />
+    </Loader>
   )
 }

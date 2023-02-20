@@ -48,7 +48,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
     const list = (await attributeGroup({
       payload: {
         page: '1',
-        pageSize: '10000'
+        pageSize: '2147483647'
       }
     }).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
