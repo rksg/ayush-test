@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }           from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { venueApi }        from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,

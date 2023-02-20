@@ -1,13 +1,12 @@
 import { rest } from 'msw'
 
-import { MspUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  within,
-  waitForElementToBeRemoved
+  within
 } from '@acx-ui/test-utils'
 
 import { DeviceInventory } from '.'
@@ -148,8 +147,7 @@ describe('Device Inventory Table', () => {
   })
   it('should render page header and grid layout', async () => {
     render(<Provider><DeviceInventory /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('Device Inventory')).toBeVisible()
+    expect(await screen.findByText('Device Inventory')).toBeVisible()
     expect(screen.getByText('Manage own account')).toBeVisible()
   })
   it('should render table', async () => {
