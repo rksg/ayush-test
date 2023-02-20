@@ -1,26 +1,24 @@
 import React, { useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
-  Button,
   ColumnType,
-  PageHeader,
   Table,
   TableProps,
-  Loader,
-  showActionModal
+  Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useGetVenueVersionListQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery
+  useGetVenueCityListQuery,
+  useGetAvailableFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
+  FirmwareType,
   FirmwareVenue,
   ApVenueStatusEnum,
   TableQuery,
@@ -31,6 +29,8 @@ import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { PreferencesDialog }    from './PreferencesDialog'
+import { RevertDialog }         from './RevertDialog'
+import { SkipDialog }           from './SkipDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
 function useColumns (
@@ -147,11 +147,17 @@ type VenueTableProps = {
 export const VenueFirmwareTable = (
   { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
+  const params = useParams()
+  const { data: upgradeVersions } = useGetAvailableFirmwareListQuery({ params })
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
+  const [skipModelVisible, setSkipModelVisible] = useState(false)
+  const [revertModelVisible, setRevertModelVisible] = useState(false)
+  const [venues, setVenues] = useState<FirmwareVenue[]>([])
+  // let venues: FirmwareVenue[] = []
 
   const handleModalCancel = () => {
     setModelVisible(false)
@@ -164,6 +170,7 @@ export const VenueFirmwareTable = (
     setUpdateModelVisible(false)
   }
   const handleUpdateModalSubmit = (data: []) => {
+    console.log(data)
     // update firmware
   }
 
@@ -174,6 +181,19 @@ export const VenueFirmwareTable = (
     // change firmware scheduled
   }
 
+  const handleSkipModalCancel = () => {
+    setSkipModelVisible(false)
+  }
+  const handleSkipModalSubmit = (data: []) => {
+    // change firmware scheduled
+  }
+
+  const handleRevertModalCancel = () => {
+    setRevertModelVisible(false)
+  }
+  const handleRevertModalSubmit = (data: []) => {
+    // change firmware scheduled
+  }
 
   // const tableData: readonly FirmwareVenue[] | undefined = tableQuery.data
 
@@ -187,12 +207,25 @@ export const VenueFirmwareTable = (
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Update Now' }),
-    onClick: () => setUpdateModelVisible(true)
+    onClick: (selectedRows) => {
+      setVenues(selectedRows)
+      setUpdateModelVisible(true)
+    }
   },
   {
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Change Update Schedule' }),
     onClick: () => setChangeScheduleModelVisible(true)
+  },
+  {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Skip Update' }),
+    onClick: () => setSkipModelVisible(true)
+  },
+  {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Revert Now' }),
+    onClick: () => setRevertModelVisible(true)
   }]
 
   return (
@@ -218,19 +251,54 @@ export const VenueFirmwareTable = (
       />
       <UpdateNowDialog
         visible={updateModelVisible}
-        // personaGroupId={props.groupId}
+        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
+        data={venues}
+        eol={true}
+        availableVersions={upgradeVersions}
+        eolName='eolName'
+        latestEolVersion='eolVersion'
+        eolModels='eolModel'
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
-        // personaGroupId={props.groupId}
+        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
+        data={venues}
+        eol={true}
+        availableVersions={upgradeVersions}
+        eolName='eolName'
+        latestEolVersion='eolVersion'
+        eolModels='eolModel'
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
+      <SkipDialog
+        visible={skipModelVisible}
+        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
+        data={venues}
+        eol={true}
+        availableVersions={upgradeVersions}
+        eolName='eolName'
+        latestEolVersion='eolVersion'
+        eolModels='eolModel'
+        onCancel={handleSkipModalCancel}
+        onSubmit={handleSkipModalSubmit}
+      />
+      <RevertDialog
+        visible={revertModelVisible}
+        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
+        data={venues}
+        eol={true}
+        availableVersions={upgradeVersions}
+        eolName='eolName'
+        latestEolVersion='eolVersion'
+        eolModels='eolModel'
+        onCancel={handleRevertModalCancel}
+        onSubmit={handleRevertModalSubmit}
+      />
       <PreferencesDialog
         visible={modelVisible}
-        // personaGroupId={props.groupId}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
       />

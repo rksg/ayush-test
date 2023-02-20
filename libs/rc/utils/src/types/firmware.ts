@@ -1,3 +1,43 @@
+export const AVAILABLE_DAYS: Array<{ value: string, label: string }> = [
+  { value: 'Sunday', label: 'Sunday' },
+  { value: 'Monday', label: 'Monday' },
+  { value: 'Tuesday', label: 'Tuesday' },
+  { value: 'Wednesday', label: 'Wednesday' },
+  { value: 'Thursday', label: 'Thursday' },
+  { value: 'Friday', label: 'Friday' },
+  { value: 'Saturday', label: 'Saturday' }
+]
+
+export const AVAILABLE_SLOTS: Array<{ value: string, label: string }> = [
+  { value: '00:00-02:00', label: '12 AM - 02 AM' },
+  { value: '02:00-04:00', label: '02 AM - 04 AM' },
+  { value: '04:00-06:00', label: '04 AM - 06 AM' },
+  { value: '06:00-08:00', label: '06 AM - 08 AM' },
+  { value: '08:00-10:00', label: '08 AM - 10 AM' },
+  { value: '10:00-12:00', label: '10 AM - 12 PM' },
+  { value: '12:00-14:00', label: '12 PM - 02 PM' },
+  { value: '14:00-16:00', label: '02 PM - 04 PM' },
+  { value: '16:00-18:00', label: '04 PM - 06 PM' },
+  { value: '18:00-20:00', label: '06 PM - 08 PM' },
+  { value: '20:00-22:00', label: '08 PM - 10 PM' },
+  { value: '22:00-00:00', label: '10 PM - 12 AM' }
+]
+
+export const SCHEDULE_START_TIME_FORMAT = 'dddd, MMM. DD, hh A'
+export const SCHEDULE_END_TIME_FORMAT = 'hh A'
+
+export interface UpdateScheduleRequest {
+  date?: string;
+  time?: string;
+  venues: Array<{ id: string, version: string, type: FirmwareType }>;
+}
+
+export interface UpdateNowRequest {
+  firmwareCategoryId?: string;
+  firmwareVersion?: string;
+  venueIds: Array<string>;
+}
+
 export enum FirmwareCategory {
   RECOMMENDED = 'RECOMMENDED',
   CRITICAL = 'CRITICAL',
@@ -73,3 +113,39 @@ export interface VersionHistory {
   deployedDateTime: string;
 }
 
+export const firmwareTypeTrans = () => {
+  const firmwareCategories = [
+    {
+      type: 'Release',
+      subType: 'Recommended',
+      value: FirmwareCategory.RECOMMENDED
+    }, {
+      type: 'Release',
+      subType: 'Critical',
+      value: FirmwareCategory.CRITICAL
+    }, {
+      type: 'Beta',
+      value: FirmwareCategory.BETA
+    }
+  ]
+
+  return function transform (value: FirmwareCategory, field?: string) {
+    const category = firmwareCategories.find(firmwareCategorie =>
+      firmwareCategorie.value === value)
+    if (!category) {
+      return value
+    }
+
+    switch (field) {
+      case 'type': {
+        return category.type
+      }
+      case 'subType': {
+        return category.subType
+      }
+      default: {
+        return category.type + (category.subType? ' - ' + category.subType : '')
+      }
+    }
+  }
+}

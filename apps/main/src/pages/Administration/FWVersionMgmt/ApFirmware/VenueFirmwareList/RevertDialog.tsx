@@ -34,7 +34,7 @@ interface DevicesImportDialogProps {
   personaGroupId?: string
 }
 
-export interface UpdateApNowDialogProps {
+export interface RevertDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: []) => void,
@@ -47,7 +47,7 @@ export interface UpdateApNowDialogProps {
   eolModels?: any
 }
 
-export function UpdateNowDialog (props: UpdateApNowDialogProps) {
+export function RevertDialog (props: RevertDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
   const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
@@ -55,7 +55,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
   const { visible, onSubmit, onCancel, data, availableVersions, eol } = props
-  const subTitle = 'Choose which version to update the venue to:'
+  const subTitle = 'Are you sure you wish to revert to previous firmware version?'
   // const [versionOptions, setVersionOptions] = useState<FirmwareVersion[]>([])
   let versionOptions: FirmwareVersion[] = []
   // const [otherVersions, setOtherVersions] = useState<FirmwareVersion[]>([])
@@ -220,11 +220,11 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Update Now' })}
+      title={$t({ defaultMessage: 'Revert Now' })}
       subTitle={subTitle}
       visible={visible}
       width={560}
-      okText={$t({ defaultMessage: 'Run Update' })}
+      okText={$t({ defaultMessage: 'Run Revert' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       okButtonProps={{ disabled: disableSave }}
@@ -237,40 +237,14 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
           name={'importDevicesMode'}
           initialValue={DevicesImportMode.FromClientDevices}
         >
-          { versionOptions.length > 0 ?
-            <div>
-              <UI.TitleActive>Active Device</UI.TitleActive>
-              <Radio.Group onChange={onImportModeChange}>
-                <Space direction={'vertical'}>
-                  <Radio value={DevicesImportMode.FromClientDevices}>
-                    {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
-                  </Radio>
-                  { otherVersions.length > 0 ?
-                    <Radio value={DevicesImportMode.Manually}>
-                      <Select
-                        style={{ width: 200 }}
-                        placeholder='Select other version...'
-                        // value={otherVersions[0]}
-                        options={otherVersions}
-                      />
-                    </Radio>
-                    : null
-                  }
-                </Space>
-              </Radio.Group>
-            </div>
-            : null
-          }
-          { eol ?
-            <UI.Section>
-              <UI.TitleLegacy>Legacy Device</UI.TitleLegacy>
+          <UI.TitleActive>Select one previous version:</UI.TitleActive>
+          <Radio.Group onChange={onImportModeChange}>
+            <Space direction={'vertical'}>
               <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: '6.2.0.103.500' })}
+                {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
               </Radio>
-              <UI.ItemModel>AP Models: T300,T300E</UI.ItemModel>
-            </UI.Section>
-            : null
-          }
+            </Space>
+          </Radio.Group>
           <UI.Section>
             <UI.Ul>
               <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>

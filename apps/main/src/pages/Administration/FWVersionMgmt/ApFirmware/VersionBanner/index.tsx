@@ -11,7 +11,7 @@ import {
   FirmwareCategory
 } from '@acx-ui/rc/utils'
 
-// import * as UI from './styledComponents'
+import * as UI from './styledComponents'
 
 
 export const VersionBanner = () => {
@@ -29,10 +29,10 @@ export const VersionBanner = () => {
         )}
       </div>
       <div>
-        <span>{firmware?.category}</span>
-        <span>{ (firmware?.category) }</span>
+        <span>Release </span>
+        <span>(Recommended)</span>
         <span>-</span>
-        <span>{firmware?.createdDate}</span>
+        <span>Dec 16, 2022</span>
       </div>
     </div>
 

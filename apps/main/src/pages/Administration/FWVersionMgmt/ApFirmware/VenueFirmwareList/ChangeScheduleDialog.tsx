@@ -9,10 +9,11 @@ import { noDataSymbol }                                               from '@acx
 import { Button, Modal, RangePicker }                                 from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
+import { FirmwareType, FirmwareVenue, MacRegistrationPool }           from '@acx-ui/rc/utils'
 import { useDateFilter, dateRangeForLast, useDashboardFilter }        from '@acx-ui/utils'
 
 // import { PersonaDeviceItem } from './PersonaDevicesForm'
+import * as UI from './styledComponents'
 
 enum DevicesImportMode {
   FromClientDevices,
@@ -26,33 +27,45 @@ interface DevicesImportDialogProps {
   personaGroupId?: string
 }
 
-export function ChangeScheduleDialog (props: DevicesImportDialogProps) {
+export interface ChangeScheduleDialogProps {
+  visible: boolean,
+  onCancel: () => void,
+  onSubmit: (data: []) => void,
+  firmwareType: FirmwareType,
+  data?: FirmwareVenue[],
+  availableVersions?: any,
+  eol?: boolean,
+  eolName?: string,
+  latestEolVersion?: string,
+  eolModels?: any
+}
+
+export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
   const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel, personaGroupId } = props
+  const { visible, onSubmit, onCancel } = props
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const subTitle = `The devices will be added to MAC Registration List
-  (${macRegistrationPool?.name ?? noDataSymbol}) which is associated with this persona`
+  const subTitle = 'Choose which version to update the venue to:'
 
-  useEffect(() => {
-    if (!personaGroupId) return
+  // useEffect(() => {
+  //   if (!personaGroupId) return
 
-    getPersonaGroupById({ params: { groupId: personaGroupId } })
-      .then(result => {
-        if (!result.data || !result.data?.macRegistrationPoolId) return
+  //   getPersonaGroupById({ params: { groupId: personaGroupId } })
+  //     .then(result => {
+  //       if (!result.data || !result.data?.macRegistrationPoolId) return
 
-        getMacRegistrationById({
-          params: { policyId: result.data.macRegistrationPoolId }
-        }).then(result => {
-          if (!result.data) return
-          setMacRegistrationPool(result.data)
-        })
-      })
-  }, [personaGroupId])
+  //       getMacRegistrationById({
+  //         params: { policyId: result.data.macRegistrationPoolId }
+  //       }).then(result => {
+  //         if (!result.data) return
+  //         setMacRegistrationPool(result.data)
+  //       })
+  //     })
+  // }, [personaGroupId])
 
   const triggerSubmit = () => {
     // FIXME: need to filter unique device items, but it have type issue
@@ -75,14 +88,14 @@ export function ChangeScheduleDialog (props: DevicesImportDialogProps) {
   }
 
   return (
-    <Modal
+    <UI.ScheduleModal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       subTitle={subTitle}
       visible={visible}
-      okText={$t({ defaultMessage: 'Add' })}
+      width={560}
+      okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
-      width={importMode === DevicesImportMode.Manually ? 660 : 800}
     >
       <Form
         form={form}
@@ -95,23 +108,26 @@ export function ChangeScheduleDialog (props: DevicesImportDialogProps) {
           <Radio.Group onChange={onImportModeChange}>
             <Space direction={'horizontal'}>
               <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: 'Select from connected devices' })}
-              </Radio>
-              <Radio value={DevicesImportMode.Manually}>
-                {$t({ defaultMessage: 'Add manually' })}
+                {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
               </Radio>
             </Space>
           </Radio.Group>
         </Form.Item>
+        <UI.TitleActive>When do you want the update to run?</UI.TitleActive>
+        <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>
       </Form>
-      <RangePicker
-        key='range-picker'
-        selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-        enableDates={dateRangeForLast(3,'months')}
-        onDateApply={setDateFilter as CallableFunction}
-        showTimePicker
-        selectionType={range}
-      />
-    </Modal>
+      <UI.DateContainer>
+        <label>Update time:</label>
+        <div>
+          <RangePicker
+            key='range-picker'
+            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+            enableDates={dateRangeForLast(3,'months')}
+            onDateApply={setDateFilter as CallableFunction}
+            selectionType={range}
+          />
+        </div>
+      </UI.DateContainer>
+    </UI.ScheduleModal>
   )
 }

@@ -11,6 +11,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/version/latest'
   },
+  getAvailableFirmwareList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
+  },
   getPreferences: {
     method: 'get',
     url: '/api/tenant/:tenantId/preferences'

@@ -10,7 +10,7 @@ import { DeleteOutlinedIcon }                                         from '@acx
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
 
-// import { PersonaDeviceItem } from './PersonaDevicesForm'
+import * as UI from './styledComponents'
 
 enum DevicesImportMode {
   FromClientDevices,
@@ -32,8 +32,7 @@ export function PreferencesDialog (props: DevicesImportDialogProps) {
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
   const { visible, onSubmit, onCancel, personaGroupId } = props
-  const subTitle = `The devices will be added to MAC Registration List
-  (${macRegistrationPool?.name ?? noDataSymbol}) which is associated with this persona`
+  const subTitle = 'Choose update schedule method:'
 
   useEffect(() => {
     if (!personaGroupId) return
@@ -73,13 +72,13 @@ export function PreferencesDialog (props: DevicesImportDialogProps) {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Add Devices' })}
+      title={$t({ defaultMessage: 'Preferences' })}
       subTitle={subTitle}
       visible={visible}
-      okText={$t({ defaultMessage: 'Add' })}
+      width={560}
+      okText={$t({ defaultMessage: 'Save Preferences' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
-      width={importMode === DevicesImportMode.Manually ? 660 : 800}
     >
       <Form
         form={form}
@@ -90,12 +89,19 @@ export function PreferencesDialog (props: DevicesImportDialogProps) {
           initialValue={DevicesImportMode.FromClientDevices}
         >
           <Radio.Group onChange={onImportModeChange}>
-            <Space direction={'horizontal'}>
+            <Space direction={'vertical'}>
               <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: 'Select from connected devices' })}
+                {$t({ defaultMessage: 'Schedule Automatically' })}
+                <div>Upgrade preference saved for each venue based on venue’s local time-zone</div>
+                <UI.PreferencesSection>
+                  <div>Preferred update slot(s):</div>
+                  <div>Sunday, Saturday</div>
+                  <div>00:00-02:00, 02:00-04:00, 04:00-06:00</div>
+                </UI.PreferencesSection>
               </Radio>
               <Radio value={DevicesImportMode.Manually}>
-                {$t({ defaultMessage: 'Add manually' })}
+                {$t({ defaultMessage: 'Schedule Manually' })}
+                <div>Manually update firmware per venue</div>
               </Radio>
             </Space>
           </Radio.Group>
