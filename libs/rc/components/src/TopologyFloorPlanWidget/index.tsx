@@ -6,7 +6,8 @@ import { Card }                                  from '@acx-ui/components'
 import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
 import { notAvailableMsg }                       from '@acx-ui/utils'
 
-import { FloorPlan } from '../FloorPlan'
+import { FloorPlan }     from '../FloorPlan'
+import { TopologyGraph } from '../Topology'
 
 export function TopologyFloorPlanWidget () {
   const { $t } = useIntl()
@@ -16,8 +17,7 @@ export function TopologyFloorPlanWidget () {
         {$t({ defaultMessage: 'Topology' })}
       </Tooltip>,
       value: 'topology',
-      children: <span>Topology</span>,
-      disabled: true
+      children: <TopologyGraph />
     },
     {
       label: $t({ defaultMessage: 'Floor Plans' }),
