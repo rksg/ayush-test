@@ -6,6 +6,8 @@ import { useIntl }     from 'react-intl'
 import {
   Button,
   Loader,
+  Modal,
+  ModalType,
   showActionModal,
   showToast,
   Table,
@@ -21,12 +23,15 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ExpirationType,
+  NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
+
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
@@ -45,6 +50,7 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
+  const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
@@ -176,8 +182,19 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
+    },
+    {
+      label: $t({ defaultMessage: 'Add DPSK Network' }),
+      onClick: () => setNetworkModalVisible(true)
     }
   ]
+
+  const networkForm = <NetworkForm modalMode={true}
+    modalCallBack={()=>{
+      setNetworkModalVisible(false)
+    }}
+    createType={NetworkTypeEnum.DPSK}
+  />
 
   return (<>
     <DpskPassphraseDrawer
@@ -215,6 +232,13 @@ export default function DpskPassphraseManagement () {
         children={<Input />}
       />
     </ImportFileDrawer>
+    <Modal
+      title={$t({ defaultMessage: 'Add DPSK Network' })}
+      type={ModalType.ModalStepsForm}
+      visible={networkModalVisible}
+      mask={true}
+      children={networkForm}
+    />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
         columns={columns}
