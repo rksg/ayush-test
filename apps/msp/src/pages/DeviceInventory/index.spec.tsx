@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }    from '@acx-ui/store'
+import { getUrlForTest, MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -133,17 +133,17 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('Device Inventory Table', () => {
-  let params: { tenantId: string }
+  const params = {
+    mspTenantId: 'mspTenant-Id',
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+  }
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        MspUrlsInfo.getMspDeviceInventory.url,
+        getUrlForTest(MspUrlsInfo.getMspDeviceInventory),
         (req, res, ctx) => res(ctx.json(list))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
   })
   it('should render page header and grid layout', async () => {
     render(<Provider><DeviceInventory /></Provider>, { route: { params } })

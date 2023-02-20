@@ -9,7 +9,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/msps/:mspTenantId/ecInventories/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
-    newApi: true
+    newApi: false //Need Owner to check it
   },
   getIntegratorDeviceInventory: {
     method: 'post',
