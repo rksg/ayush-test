@@ -63,13 +63,12 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => res(ctx.json({ content: portalList }))
-      ),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => res(ctx.json({ content: portalList }))),
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({ response: {
-          requestId: 'request-id', id: 'test', serviceName: 'test' } }))
-      ),
+          requestId: 'request-id', id: 'test', serviceName: 'test' } }))),
       rest.get(AaaUrls.getAAAPolicyList.url,
         (_, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))),
       rest.get(PortalUrlsInfo.getPortalLang.url,

@@ -296,17 +296,18 @@ export default function NetworkForm (props:{
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
-              if(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-                 (editMode||cloneMode))return true
-              const settingData = {
-                ...{ type: saveState.type },
-                ...data
+              if (!(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+                (editMode || cloneMode))) {
+                const settingData = {
+                  ...{ type: saveState.type },
+                  ...data
+                }
+                let settingSaveData = tranferSettingsToSave(settingData, editMode)
+                if (!editMode) {
+                  settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+                }
+                updateSaveData(settingSaveData)
               }
-              let settingSaveData = tranferSettingsToSave(settingData, editMode)
-              if(!editMode) {
-                settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
-              }
-              updateSaveData(settingSaveData)
               return true
             }}
           >
