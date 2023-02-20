@@ -47,12 +47,8 @@ describe('SwitchAAATab', () => {
     render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
     fireEvent.click(await screen.findByRole('link', { name: 'Settings' }))
-
-    const sshCbx = screen.getByLabelText('SSH Authentication')
-    fireEvent.click(sshCbx)
-
-    const saveBtn = screen.getByRole('button', { name: 'Save AAA' })
-    fireEvent.click(saveBtn)
+    fireEvent.click(await screen.findByLabelText('SSH Authentication'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Save AAA' }))
   })
 
 
