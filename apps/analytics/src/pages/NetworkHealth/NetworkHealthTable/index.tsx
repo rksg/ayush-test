@@ -24,12 +24,11 @@ export const getLastRun = (result: string) => {
   }
 }
 
-export const getAPsUnderTest = (result: number) => {
-  if (result) {
-    return result
-  } else {
-    return noDataSymbol
-  }
+export const getAPsUnderTest = (total: number, pending: number) => {
+  const completedTest = total - pending
+  return total ? (
+    pending ? `${completedTest} of ${total} APs tested` : `${total} APs`
+  ) : noDataSymbol
 }
 
 export const getLastResult = (total: number, success: number, pending: number) => {
@@ -157,8 +156,9 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
       dataIndex: ['tests', 'items'],
       render: (value: React.ReactNode) => {
-        const result = _.get(value, '[0].summary.apsTestedCount')
-        return getAPsUnderTest(result)
+        const total = _.get(value, '[0].summary.apsTestedCount')
+        const pending = _.get(value, '[0].summary.apsPendingCount')
+        return getAPsUnderTest(total, pending)
       }
     },
     {
