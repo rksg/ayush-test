@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
@@ -10,8 +10,9 @@ import { useUserProfileContext }                                 from '@acx-ui/r
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
 import { formatter }                                             from '@acx-ui/utils'
 
-import * as contents                                              from '../contents'
-import { ClientType as ClientTypeEnum, TestType as TestTypeEnum } from '../types'
+import * as contents                 from '../contents'
+import { useMutationResponseEffect } from '../services'
+import { ClientType, TestType }      from '../types'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery, useNetworkHealthRunMutation } from './services'
 
@@ -40,48 +41,32 @@ export const getLastResult = (total: number, success: number, pending: number) =
 export function NetworkHealthTable () {
   const intl = useIntl()
   const { $t } = intl
-  const queryResults = useNetworkHealthQuery({})
+  const queryResults = useNetworkHealthQuery()
   const navigate = useNavigate()
   const networkHealthPath = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
   const [deleteMutation, deleteResponse] = useNetworkHealthDeleteMutation()
   const [runMutation, runResponse] = useNetworkHealthRunMutation()
 
-  useEffect(() => {
-    if (!deleteResponse.data) return
+  useMutationResponseEffect(deleteResponse, useCallback(() => {
+    showToast({
+      type: 'success',
+      content: $t(contents.messageMapping.TEST_DELETED)
+    })
+  }, [$t]))
 
-    if (!deleteResponse.data.userErrors) {
-      showToast({
-        type: 'success',
-        content: $t(contents.messageMapping.TEST_DELETED)
-      })
-    } else {
-      const key = deleteResponse.data.userErrors[0].message as keyof typeof contents.messageMapping
-      const errorMessage = $t(contents.messageMapping[key])
-      showToast({ type: 'error', content: errorMessage })
-    }
-  }, [$t, deleteResponse])
-
-  useEffect(() => {
-    if (!runResponse.data) return
-
-    if (!runResponse.data.userErrors) {
-      showToast({
-        type: 'success',
-        content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
-      })
-    } else {
-      const key = runResponse.data.userErrors[0].message as keyof typeof contents.messageMapping
-      const errorMessage = $t(contents.messageMapping[key])
-      showToast({ type: 'error', content: errorMessage })
-    }
-  }, [$t, runResponse])
+  useMutationResponseEffect(runResponse, useCallback(() => {
+    showToast({
+      type: 'success',
+      content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
+    })
+  }, [$t]))
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       onClick: ([{ id }], clearSelection) => {
-        runMutation({ params: { id } })
+        runMutation({ id })
         clearSelection()
       },
       disabled: (selectedRow) => (
@@ -111,7 +96,7 @@ export function NetworkHealthTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteMutation({ params: { id } })
+            deleteMutation({ id })
             clearSelection()
           }
         })
@@ -140,7 +125,7 @@ export function NetworkHealthTable () {
       sorter: { compare: sortProp('clientType', defaultSort) },
       filterable: Object.entries(contents.clientTypes).map(
         ([key, value])=>({ key, value: $t(value) })),
-      render: (value) => $t(contents.clientTypes[value as ClientTypeEnum])
+      render: (value) => $t(contents.clientTypes[value as ClientType])
     },
     {
       key: 'type',
@@ -149,7 +134,7 @@ export function NetworkHealthTable () {
       sorter: { compare: sortProp('type', defaultSort) },
       filterable: Object.entries(contents.testTypes).map(
         ([key, value])=>({ key, value: $t(value) })),
-      render: (value) => $t(contents.testTypes[value as TestTypeEnum])
+      render: (value) => $t(contents.testTypes[value as TestType])
     },
     {
       key: 'apsCount',

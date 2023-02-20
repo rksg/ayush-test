@@ -352,17 +352,22 @@ describe('Network Health Table', () => {
   })
 
   it('should throw error when deleting test which does not exist', async () => {
-    const expected = {
-      deletedSpecId: null,
-      userErrors: [{ field: 'spec', message: 'SPEC_NOT_FOUND' }]
-    }
     mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
     })
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
+      data: {
+        deleteServiceGuardSpec: {
+          deletedSpecId: null,
+          userErrors: [{ field: 'spec', message: 'SPEC_NOT_FOUND' }]
+        }
+      }
+    })
 
-    render(<Provider><NetworkHealthTable/></Provider>, {
+    render(<NetworkHealthTable/>, {
+      wrapper: Provider,
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
@@ -374,28 +379,28 @@ describe('Network Health Table', () => {
     fireEvent.click(radio[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
-    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
-      data: { deleteServiceGuardSpec: expected }
-    })
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    })
-    fireEvent.click(screen.getByText(/delete test/i))
+    fireEvent.click(await screen.findByText(/delete test/i))
     expect(await screen.findByText('Network Health test does not exist')).toBeVisible()
   })
 
   it('should delete test properly', async () => {
-    const expected = {
-      deletedSpecId: '3d51e2f0-6a1f-4641-94a4-9feb3803edff',
-      userErrors: null
-    }
     mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: networkHealthTests
       }
     })
 
-    render(<Provider><NetworkHealthTable/></Provider>, {
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
+      data: {
+        deleteServiceGuardSpec: {
+          deletedSpecId: '3d51e2f0-6a1f-4641-94a4-9feb3803edff',
+          userErrors: null
+        }
+      }
+    })
+
+    render(<NetworkHealthTable/>, {
+      wrapper: Provider,
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
@@ -407,13 +412,7 @@ describe('Network Health Table', () => {
     fireEvent.click(radio[0])
     fireEvent.click(await screen.findByRole('button', { name: 'Delete' }))
 
-    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec', {
-      data: { deleteServiceGuardSpec: expected }
-    })
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    })
-    fireEvent.click(screen.getByText(/delete test/i))
+    fireEvent.click(await screen.findByText(/delete test/i))
     expect(await screen.findByText('Network Health test deleted')).toBeVisible()
   })
 

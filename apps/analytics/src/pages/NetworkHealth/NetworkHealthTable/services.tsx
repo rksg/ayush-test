@@ -1,7 +1,6 @@
 import { gql } from 'graphql-request'
 
 import { networkHealthApi } from '@acx-ui/analytics/services'
-import { RequestPayload }   from '@acx-ui/rc/utils'
 
 import type { ClientType, MutationResult, TestType } from '../types'
 
@@ -44,9 +43,7 @@ type RunNetworkHealthTestResult = MutationResult<{
 
 export const api = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
-    networkHealth: build.query<
-      ServiceGuardSpec[], RequestPayload
-    >({
+    networkHealth: build.query<ServiceGuardSpec[], void>({
       query: () => ({
         document: gql`
           query ServiceGuardSpecs {
@@ -81,9 +78,10 @@ export const api = networkHealthApi.injectEndpoints({
       transformResponse: (response: Response) => response.allServiceGuardSpecs
     }),
     networkHealthDelete: build.mutation<
-      DeleteMutationResult, RequestPayload
+      DeleteMutationResult, { id: ServiceGuardSpec['id'] }
     >({
-      query: (payload) => ({
+      query: (variables) => ({
+        variables,
         document: gql`
           mutation DeleteServiceGuardSpec ($id: String!) {
             deleteServiceGuardSpec (id: $id) {
@@ -93,10 +91,7 @@ export const api = networkHealthApi.injectEndpoints({
               }
             }
           }
-        `,
-        variables: {
-          id: payload.params?.id
-        }
+        `
       }),
       invalidatesTags: [
         { type: 'NetworkHealth', id: 'LIST' }
@@ -105,9 +100,10 @@ export const api = networkHealthApi.injectEndpoints({
         response.deleteServiceGuardSpec
     }),
     networkHealthRun: build.mutation<
-      RunNetworkHealthTestResult, RequestPayload
+      RunNetworkHealthTestResult, { id: ServiceGuardSpec['id'] }
     >({
-      query: (payload) => ({
+      query: (variables) => ({
+        variables,
         document: gql`
           mutation RunNetworkHealthTest ($id: String!) {
             runServiceGuardTest (id: $id) {
@@ -136,10 +132,7 @@ export const api = networkHealthApi.injectEndpoints({
               }
             }
           }
-        `,
-        variables: {
-          id: payload.params?.id
-        }
+        `
       }),
       invalidatesTags: [
         { type: 'NetworkHealth', id: 'LIST' }
