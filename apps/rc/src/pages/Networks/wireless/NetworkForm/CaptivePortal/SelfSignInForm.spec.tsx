@@ -44,7 +44,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it.skip('should test Self sign in network successfully', async () => {
+  it('should test Self sign in network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
         editMode: true, cloneMode: true, data: selfsignData

@@ -48,7 +48,12 @@ describe('PortalTable', () => {
       rest.get(
         PortalUrlsInfo.getPortalProfileList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
-      )
+      ),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
+            acceptTermsMsg: 'I accept the' }))
+        })
     )
   })
 

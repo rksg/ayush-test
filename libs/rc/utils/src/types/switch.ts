@@ -218,6 +218,7 @@ export class SwitchViewModel extends Switch {
   firmware?: string
   activeSerial?: string
   syncDataId?: string
+  lastSeenTime?: string
 }
 
 export interface SwitchRow {
@@ -341,7 +342,13 @@ export interface SwitchCliTemplateModel{
   id: string,
   name: string,
   reload: boolean,
+  venueSwitches?: VenueSwitches[]
+}
+
+export interface VenueSwitches {
   switches?: string[]
+  id: string
+  venueId: string
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
