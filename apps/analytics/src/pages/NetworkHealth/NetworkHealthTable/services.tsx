@@ -3,15 +3,15 @@ import { gql } from 'graphql-request'
 import { networkHealthApi } from '@acx-ui/analytics/services'
 import { RequestPayload }   from '@acx-ui/rc/utils'
 
-import type { MutationResult } from '../types'
+import type { ClientType, MutationResult, TestType } from '../types'
 
 export type ServiceGuardSpec = {
   id: string,
   name: string,
-  type: 'on-demand' | 'scheduled',
+  type: TestType,
   apsCount: number
   userId: string,
-  clientType: 'virtual-client' | 'virtual-wireless-client',
+  clientType: ClientType,
   schedule: {
     nextExecutionTime: number
   }

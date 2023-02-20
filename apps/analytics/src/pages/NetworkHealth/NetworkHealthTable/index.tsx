@@ -58,10 +58,9 @@ export function NetworkHealthTable () {
         content: $t(contents.messageMapping.TEST_DELETED)
       })
     } else {
-      showToast({
-        type: 'error',
-        content: $t(contents.messageMapping.SPEC_NOT_FOUND)
-      })
+      const key = deleteResponse.data.userErrors[0].message as keyof typeof contents.messageMapping
+      const errorMessage = $t(contents.messageMapping[key])
+      showToast({ type: 'error', content: errorMessage })
     }
   }, [$t, deleteResponse])
 
@@ -88,7 +87,7 @@ export function NetworkHealthTable () {
         clearSelection()
       },
       disabled: (selectedRow) => (
-        selectedRow[0]?.apsCount == 0 || selectedRow[0]?.tests.items[0].summary.apsPendingCount > 0
+        selectedRow[0]?.apsCount === 0 || selectedRow[0]?.tests.items[0].summary.apsPendingCount > 0
       )
     },
     {
@@ -129,12 +128,12 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) =>
+      render: (value, row) => row.tests.items[0]?.summary.apsTestedCount ?
         <TenantLink to={
           `/serviceValidation/networkHealth/${row.tests.items[0]?.id}`
         }>
           {value}
-        </TenantLink>
+        </TenantLink> : value
     },
     {
       key: 'clientType',
