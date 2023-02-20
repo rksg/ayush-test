@@ -615,3 +615,19 @@ export interface Lag {
   type: LAG_TYPE
   untaggedVlan: string
 }
+
+export interface CliProfileModel{
+  model: string,
+  checked: boolean
+}
+
+export interface CliProfileFamily {
+  family: string,
+  model: CliProfileModel[]
+}
+
+export interface CliProfileFamilyModels {
+  familyModels: CliProfileFamily[]
+  venueId: string
+  venueName: string
+}

@@ -54,6 +54,61 @@ export function VlanPortsModal (props: {
     }
   }, [form, open, editRecord])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSaveModel = async (data: any) => {
+    if(data.family && data.model){
+      setNoModelMsg(false)
+      if(editMode){
+        setVlanSettingValues({
+          ...data,
+          switchFamilyModels: {
+            ...data.switchFamilyModels,
+            untaggedPorts: editRecord?.untaggedPorts,
+            taggedPorts: editRecord?.taggedPorts
+          }
+        })
+      }else{
+        setVlanSettingValues(data)
+      }
+      return true
+    }
+    setNoModelMsg(true)
+    return false
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSaveUntagged = async (data: any) => {
+    setVlanSettingValues({
+      ...vlanSettingValues,
+      switchFamilyModels: {
+        ...vlanSettingValues.switchFamilyModels,
+        ...data.switchFamilyModels
+      }
+    })
+    return true
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onFinish = async (data: any) => {
+    const switchFamilyModelsData = {
+      ...data.switchFamilyModels,
+      title: '',
+      vlanConfigName: ''
+    }
+    switchFamilyModelsData.model = data.family + '-' + data.model
+    switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
+      (slot: { slotNumber: number; enable: boolean }) => ({
+        slotNumber: slot.slotNumber,
+        enable: slot.enable,
+        option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
+      }))
+    switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
+      data.switchFamilyModels.taggedPorts.length
+    switchFamilyModelsData.untaggedPorts = data.switchFamilyModels.untaggedPorts.join(',')
+    switchFamilyModelsData.taggedPorts = data.switchFamilyModels.taggedPorts.join(',')
+    onSave(switchFamilyModelsData)
+  }
+
   return (
     <Modal
       visible={open}
@@ -68,49 +123,12 @@ export function VlanPortsModal (props: {
       <VlanPortsContext.Provider value={{
         vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
         <StepsForm
-          editMode={editMode}
           onCancel={onCancel}
-          onFinish={async (data) => {
-            const switchFamilyModelsData = {
-              ...data.switchFamilyModels,
-              title: '',
-              vlanConfigName: ''
-            }
-            switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
-              (slot: { slotNumber: number; enable: boolean }) => ({
-                slotNumber: slot.slotNumber,
-                enable: slot.enable,
-                option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
-              }))
-            switchFamilyModelsData.ports = data.switchFamilyModels.untaggedPorts.length +
-              data.switchFamilyModels.taggedPorts.length
-            switchFamilyModelsData.untaggedPorts = switchFamilyModelsData.untaggedPorts.join(',')
-            switchFamilyModelsData.taggedPorts = switchFamilyModelsData.taggedPorts.join(',')
-            onSave(switchFamilyModelsData)
-          }}
+          onFinish={onFinish}
         >
           <StepsForm.StepForm
-            title='Select Model'
-            onFinish={async (data) => {
-              if(data.family && data.model){
-                setNoModelMsg(false)
-                if(editMode){
-                  setVlanSettingValues({
-                    ...data,
-                    switchFamilyModels: {
-                      ...data.switchFamilyModels,
-                      untaggedPorts: editRecord?.untaggedPorts,
-                      taggedPorts: editRecord?.taggedPorts
-                    }
-                  })
-                }else{
-                  setVlanSettingValues(data)
-                }
-                return true
-              }
-              setNoModelMsg(true)
-              return false
-            }}
+            title={$t({ defaultMessage: 'Select Model' })}
+            onFinish={onSaveModel}
           >
             <div>
               <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -125,21 +143,12 @@ export function VlanPortsModal (props: {
             <SelectModelStep />
           </StepsForm.StepForm>
           <StepsForm.StepForm
-            title='Untagged Ports'
-            onFinish={async (data) => {
-              setVlanSettingValues({
-                ...vlanSettingValues,
-                switchFamilyModels: {
-                  ...vlanSettingValues.switchFamilyModels,
-                  ...data.switchFamilyModels
-                }
-              })
-              return true
-            }}
+            title={$t({ defaultMessage: 'Untagged Ports' })}
+            onFinish={onSaveUntagged}
           >
             <UntaggedPortsStep />
           </StepsForm.StepForm>
-          <StepsForm.StepForm title='Tagged Ports'>
+          <StepsForm.StepForm title={$t({ defaultMessage: 'Tagged Ports' })}>
             <TaggedPortsStep />
           </StepsForm.StepForm>
         </StepsForm>

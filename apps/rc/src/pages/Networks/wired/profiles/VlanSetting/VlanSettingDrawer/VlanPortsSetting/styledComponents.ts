@@ -1,32 +1,5 @@
 import styled from 'styled-components/macro'
 
-import {
-  Lightening,
-  RuckusUpload,
-  Stacking
-} from '@acx-ui/icons'
-
-export const LighteningIcon = styled(Lightening)`
-  vertical-align: text-top;
-  path {
-    fill: currentColor;
-  }
-`
-
-export const RuckusUploadIcon = styled(RuckusUpload)`
-  vertical-align: text-top;
-  path {
-    fill: currentColor;
-  }
-`
-
-export const StackingIcon = styled(Stacking)`
-  vertical-align: text-top;
-  path {
-    fill: currentColor;
-  }
-`
-
 export const GroupListLayout = styled('div')`
   display: flex;
   flex-direction: column;

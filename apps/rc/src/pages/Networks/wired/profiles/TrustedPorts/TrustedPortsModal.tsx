@@ -60,7 +60,7 @@ export function TrustedPortsModal (props: {
           $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}
       >
         <StepsForm.StepForm
-          title='Select Model'
+          title={$t({ defaultMessage: 'Select Model' })}
           onFinish={async (data) => {
             if(data.family && data.model){
               setNoModelMsg(false)
@@ -85,7 +85,7 @@ export function TrustedPortsModal (props: {
           <SelectModelStep editRecord={editRecord}/>
         </StepsForm.StepForm>
         <StepsForm.StepForm
-          title='Trusted Ports'
+          title={$t({ defaultMessage: 'Trusted Ports' })}
         >
           <TrustedPortsStep vlanSettingValues={vlanSettingValues} editRecord={editRecord} />
         </StepsForm.StepForm>

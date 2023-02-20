@@ -45,7 +45,8 @@ import {
   CommonResult,
   SwitchProfileModel,
   SwitchCliTemplateModel,
-  Lag
+  Lag,
+  CliProfileFamilyModels
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -842,6 +843,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1015,5 +1025,6 @@ export const {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
   useGetCliTemplatesQuery,
-  useGetProfilesQuery
+  useGetProfilesQuery,
+  useGetCliFamilyModelsQuery
 } = switchApi

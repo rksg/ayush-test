@@ -114,8 +114,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           id: item.id,
           model: item.model,
           slots: item.slots,
-          untaggedPorts: item.untaggedPorts && item.untaggedPorts?.split(','),
-          taggedPorts: item.taggedPorts && item.taggedPorts?.split(',')
+          untaggedPorts: item.untaggedPorts && item.untaggedPorts?.toString().split(','),
+          taggedPorts: item.taggedPorts && item.taggedPorts?.toString().split(',')
         }
       }) as unknown
       setRuleList(vlanPortsData as SwitchModelPortData[])

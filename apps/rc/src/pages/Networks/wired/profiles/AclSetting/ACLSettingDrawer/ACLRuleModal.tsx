@@ -92,7 +92,7 @@ export function ACLRuleModal (props: {
         <Form.Item
           name='protocol'
           hidden={props.aclType === 'standard'}
-          label={$t({ defaultMessage: 'protocol' })}
+          label={$t({ defaultMessage: 'Protocol' })}
           initialValue={'ip'}
           children={
             <Select onChange={onProtocolChange}>
@@ -122,8 +122,8 @@ export function ACLRuleModal (props: {
           initialValue=''
           rules={[
             { required: sourceSpecific },
-            { validator: (_, value) => sourceSpecific ?
-              validateSwitchStaticRouteIp(value) : Promise.resolve() }
+            { validator: (_, value) => sourceSpecific &&
+              validateSwitchStaticRouteIp(value) }
           ]}
           children={<Input placeholder={$t({ defaultMessage: 'e.g 1.1.1.1/24' })}/>}
         />}
@@ -147,8 +147,8 @@ export function ACLRuleModal (props: {
              initialValue=''
              rules={[
                { required: destinationSpecific },
-               { validator: (_, value) => destinationSpecific ?
-                 validateSwitchStaticRouteIp(value) : Promise.resolve() }
+               { validator: (_, value) => destinationSpecific &&
+                 validateSwitchStaticRouteIp(value) }
              ]}
              children={<Input placeholder={$t({ defaultMessage: 'e.g 1.1.1.1/24' })}/>}
            />}

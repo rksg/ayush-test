@@ -8,14 +8,17 @@ import {
   Loader,
   StepsForm,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import {
+  useGetCliFamilyModelsQuery,
   useNetworkVenueListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 
@@ -44,27 +47,19 @@ const defaultPayload = {
 }
 
 const defaultArray: Venue[] = []
-/* eslint-disable max-len */
-
-const getNetworkId = () => {
-  //  Identify tenantId in browser URL
-  // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
-  // Avoid breaking unit-tests even when browser URL has no tenantId.
-  // if (Array.isArray(parsedUrl) && parsedUrl.length >= 1 && parsedUrl[1].length > 0) {
-  //   return parsedUrl[1]
-  // }
-  return 'UNKNOWN-NETWORK-ID'
-}
 
 export function VenueSetting () {
   const { $t } = useIntl()
+  const params = useParams()
   const form = Form.useFormInstance()
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
     useQuery: useNetworkVenueListQuery,
-    apiParams: { networkId: getNetworkId() },
+    apiParams: { networkId: 'UNKNOWN-NETWORK-ID' },
     defaultPayload
   })
+
+  const { data: venueAppliedToCli } = useGetCliFamilyModelsQuery({ params })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
 
@@ -150,10 +145,26 @@ export function VenueSetting () {
             }
             event.stopPropagation()
           }}
+          disabled={venueAppliedToCli?.map(item => item.venueId).includes(row.id)}
         />
       }
     }
   ]
+
+  const rowSelection = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getCheckboxProps: (record: any) => ({
+      disabled: venueAppliedToCli?.map(item=>item.venueId).includes(record.id)
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    renderCell (checked: any, record: any, index: any, node: any) {
+      if (venueAppliedToCli?.map(item => item.venueId).includes(record.id)) {
+        // eslint-disable-next-line max-len
+        return <Tooltip title='A CLI configuration profile has been applied to this venue so it cannot be selected.'>{node}</Tooltip>
+      }
+      return node
+    }
+  }
 
   return (
     <Loader states={[
@@ -166,7 +177,8 @@ export function VenueSetting () {
             rowKey='id'
             rowActions={rowActions}
             rowSelection={{
-              type: 'checkbox'
+              type: 'checkbox',
+              ...rowSelection
             }}
             columns={columns}
             dataSource={tableData}

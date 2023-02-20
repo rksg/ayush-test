@@ -49,7 +49,7 @@ export function GeneralSetting () {
         />
         <Form.Item
           name='name'
-          label='Profile Name'
+          label={$t({ defaultMessage: 'Profile Name' })}
           rules={[
             { required: true },
             { max: 64 },
@@ -63,7 +63,7 @@ export function GeneralSetting () {
         </Form.Item>
         <Form.Item
           name='description'
-          label='Profile Description'
+          label={$t({ defaultMessage: 'Profile Description' })}
           initialValue={''}
         >
           <TextArea rows={4} maxLength={64} />

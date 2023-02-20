@@ -63,10 +63,10 @@ export function VlanSetting () {
     render: (data) => {
       return data
         ? (data as Vlan['switchFamilyModels'])?.reduce((result:number, row: SwitchModel) => {
-          const taggedPortsCount = row.taggedPorts && row.taggedPorts !=='' ?
-            row.taggedPorts?.split(',').length : 0
-          const untaggedPortsCount = row.untaggedPorts && row.untaggedPorts !=='' ?
-            row.untaggedPorts?.split(',').length : 0
+          const taggedPortsCount = row.taggedPorts ?
+            row.taggedPorts?.toString().split(',').length : 0
+          const untaggedPortsCount = row.untaggedPorts ?
+            row.untaggedPorts?.toString().split(',').length : 0
           return result + taggedPortsCount + untaggedPortsCount
         }, 0)
         : 0

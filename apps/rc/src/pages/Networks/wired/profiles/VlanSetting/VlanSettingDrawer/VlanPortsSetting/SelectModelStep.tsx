@@ -1,11 +1,11 @@
 
 import { useState, useEffect, SetStateAction, useContext } from 'react'
 
-import { Row, Col, Form, Input, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
-import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
-import _                                                                                from 'lodash'
+import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
+import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
+import _                                                                         from 'lodash'
 
-import { Card, StepsForm, Tooltip }                from '@acx-ui/components'
+import { Card, Tooltip }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
@@ -23,6 +23,15 @@ export interface PortsType {
   slotNumber: number,
   portNumber: number
   portTagged: string
+}
+
+export const generatePortData = (totalNumber: string) => {
+  let ports = []
+  for (let i = 1; i <= Number(totalNumber); i++) {
+    let port = { portNumber: i, portTagged: '' }
+    ports.push(port)
+  }
+  return ports
 }
 
 export function SelectModelStep () {
@@ -56,7 +65,6 @@ export function SelectModelStep () {
       taggedPorts: [],
       untaggedPorts: []
     })
-  const [markedPorts, setMarkedPorts] = useState<PortsType[]>([])
 
   const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
@@ -72,12 +80,12 @@ export function SelectModelStep () {
     if(ICX_MODELS_MODULES && vlanSettingValues && editMode){
       const selectedFamily = vlanSettingValues.family
       const selectedModel = vlanSettingValues.model
-      const selectedEnable2 = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 2)[0] || { enable: false, option: '' }
-      const selectedEnable3 = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 3)[0] || { enable: false, option: '' }
-      const selectedEnable4 = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 4)[0] || { enable: false, option: '' }
+      const selectedEnable2 = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 2)[0] || { enable: false, option: '' }
+      const selectedEnable3 = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 3)[0] || { enable: false, option: '' }
+      const selectedEnable4 = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 4)[0] || { enable: false, option: '' }
       form.setFieldsValue({
         family: selectedFamily,
         model: selectedModel,
@@ -95,7 +103,7 @@ export function SelectModelStep () {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues])
+  }, [ICX_MODELS_MODULES, vlanSettingValues, editMode])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -188,6 +196,7 @@ export function SelectModelStep () {
 
   const onModelChange = (e: RadioChangeEvent) => {
     modelChangeAction(family, e.target.value)
+    setVlanSettingValues({ ...vlanSettingValues, family, model: e.target.value })
   }
 
   const modelChangeAction = (family: string, model: string) => {
@@ -210,17 +219,20 @@ export function SelectModelStep () {
     switch(slot){
       case 'slot2':
         setEnableSlot2(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
         break
       case 'slot3':
         setEnableSlot3(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
         break
       case 'slot4':
         setEnableSlot4(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
   }
 
-  const onModuleChange = (value: string) => {
+  const onModuleChange = () => {
     getSlots(family, model)
     setSwitchFamilyModels({ ...switchFamilyModels, slots: [] })
     updateModelPortData(family, model)
@@ -288,14 +300,12 @@ export function SelectModelStep () {
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
-      let markedPortsInSameSlot =
-        markedPorts.filter((p: { slotNumber: number }) => p.slotNumber === slotNumber)
       const slotData = {
         slotNumber: slotNumber,
         enable: slotEnable,
         option: slotOption,
         slotPortInfo: slotPortInfo,
-        portStatus: generatePortData(totalPortNumber, markedPortsInSameSlot)
+        portStatus: generatePortData(totalPortNumber)
       }
 
       const slotIndex = switchFamilyModels.slots?.findIndex(
@@ -305,7 +315,7 @@ export function SelectModelStep () {
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
       } else {
-        if(switchFamilyModels.slots){
+        if(switchFamilyModels.slots[slotIndex]){
           tmpModelPortData.slots[slotIndex] = slotData
         }
       }
@@ -313,24 +323,11 @@ export function SelectModelStep () {
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
-      tmpModelPortData.model = family + '-' + selectedModel
+      tmpModelPortData.model = selectedFamily + '-' + selectedModel
       setSwitchFamilyModels(tmpModelPortData)
 
       form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }
-  }
-
-  const generatePortData = (totalNumber: string, markedPorts: PortsType[]) => {
-    let ports = []
-    for (let i = 1; i <= Number(totalNumber); i++) {
-      let markPortIndex = markedPorts.findIndex((p: { portNumber: number }) => p.portNumber === i)
-      let port = { portNumber: i, portTagged: '' }
-      if (markPortIndex !== -1) {
-        port.portTagged = markedPorts[markPortIndex].portTagged
-      }
-      ports.push(port)
-    }
-    return ports
   }
 
   return (

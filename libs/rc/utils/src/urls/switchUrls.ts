@@ -313,5 +313,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   deleteLag: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/lag/:lagId'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   }
 }

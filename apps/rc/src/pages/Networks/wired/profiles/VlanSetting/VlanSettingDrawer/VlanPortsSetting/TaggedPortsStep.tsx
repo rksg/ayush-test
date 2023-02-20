@@ -9,11 +9,13 @@ import {
 import { Row, Col, Form, Typography, Checkbox } from 'antd'
 import _                                        from 'lodash'
 
-import { Card, Tooltip } from '@acx-ui/components'
-import { getIntl }       from '@acx-ui/utils'
+import { Card, Tooltip }                  from '@acx-ui/components'
+import { SwitchSlot, ICX_MODELS_MODULES } from '@acx-ui/rc/utils'
+import { getIntl }                        from '@acx-ui/utils'
 
-import * as UI          from './styledComponents'
-import VlanPortsContext from './VlanPortsContext'
+import { generatePortData } from './SelectModelStep'
+import * as UI              from './styledComponents'
+import VlanPortsContext     from './VlanPortsContext'
 
 export interface PortsType {
   label: string,
@@ -32,39 +34,78 @@ export function TaggedPortsStep () {
   const [selectedItems1, setSelectedItems1] = useState<string[]>([])
   const [selectedItems2, setSelectedItems2] = useState<string[]>([])
   const [selectedItems3, setSelectedItems3] = useState<string[]>([])
+  const [slots, setSlots] = useState<SwitchSlot[]>([])
 
   useEffect(() => {
-    if(vlanSettingValues){
-      if(vlanSettingValues.switchFamilyModels?.slots[0] &&
-        vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
-        const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
+    let slotsTemplate: SwitchSlot[] = []
+    if(vlanSettingValues.switchFamilyModels){
+      for (let slotNumber = 1; slotNumber <= 4; slotNumber++) {
+        const switchFamilyModels = vlanSettingValues.switchFamilyModels
+        if (switchFamilyModels.slots[slotNumber - 1] &&
+          switchFamilyModels.slots[slotNumber - 1].enable) {
+          let totalPortNumber: string = '0'
+          let slotPortInfo: string = ''
+
+          const selectedFamily = switchFamilyModels.model.split('-')[0]
+          const selectedModel = switchFamilyModels.model.split('-')[1]
+          if ((switchFamilyModels.slots[slotNumber - 1].option || totalPortNumber === '0') &&
+          selectedFamily !== '' && selectedModel !== '') {
+            const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
+            const familyList = ICX_MODELS_MODULES[familyIndex]
+            const modelIndex = selectedModel as keyof typeof familyList
+            slotPortInfo = familyList[modelIndex][slotNumber - 1][0]
+            totalPortNumber = slotPortInfo.split('X')[0]
+          }
+
+          const slotData = {
+            slotNumber: slotNumber,
+            enable: switchFamilyModels.slots[slotNumber - 1].enable,
+            option: switchFamilyModels.slots[slotNumber - 1].option,
+            slotPortInfo: slotPortInfo,
+            portStatus: generatePortData(totalPortNumber)
+          }
+
+          slotsTemplate.push(slotData)
+        }
+      }
+      slotsTemplate = slotsTemplate.sort(
+        function (a: { slotNumber: number }, b: { slotNumber: number }) {
+          return a.slotNumber > b.slotNumber ? 1 : -1
+        })
+
+      setSlots(slotsTemplate)
+      if(slotsTemplate[0] && slotsTemplate[0].portStatus!== undefined){
+        const portModule1List1 = slotsTemplate[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/1/${item.portNumber.toString()}` }))
         setPortsModule1(portModule1List1)
       }
 
-      if(vlanSettingValues.switchFamilyModels?.slots[1] &&
-        vlanSettingValues.switchFamilyModels?.slots[1].portStatus!== undefined){
-        const portModule1List2 = vlanSettingValues.switchFamilyModels?.slots[1].portStatus?.map(
+      if(slotsTemplate[1] && slotsTemplate[1].portStatus!== undefined){
+        const portModule1List2 = slotsTemplate[1].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/2/${item.portNumber.toString()}` }))
         setPortsModule2(portModule1List2)
       }
 
-      if(vlanSettingValues.switchFamilyModels?.slots[2] &&
-        vlanSettingValues.switchFamilyModels?.slots[2].portStatus!== undefined){
-        const portModule1List3 = vlanSettingValues.switchFamilyModels?.slots[2].portStatus?.map(
+      if(slotsTemplate[2] && slotsTemplate[2].portStatus!== undefined){
+        const portModule1List3 = slotsTemplate[2].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
             value: `1/3/${item.portNumber.toString()}` }))
         setPortsModule3(portModule1List3)
       }
-
-      if(vlanSettingValues.switchFamilyModels?.taggedPorts){
-        form.setFieldValue(['switchFamilyModels', 'taggedPorts'],
-          vlanSettingValues.switchFamilyModels?.taggedPorts)
-      }
     }
-  }, [vlanSettingValues])
+
+    if(vlanSettingValues.switchFamilyModels?.taggedPorts){
+      const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
+        .toString().split(',').filter(item => item !== '')
+      form.setFieldValue(['switchFamilyModels', 'taggedPorts'], taggedPorts)
+
+      setSelectedItems1(taggedPorts.filter(item=> item.split('/')[1] === '1'))
+      setSelectedItems2(taggedPorts.filter(item=> item.split('/')[1] === '2'))
+      setSelectedItems3(taggedPorts.filter(item=> item.split('/')[1] === '3'))
+    }
+  }, [vlanSettingValues.switchFamilyModels])
 
   let tmpTaggedSelectedItem: string[] = []
   const { DragSelection: DragSelectionTaggedPorts } = useSelectionContainer({
@@ -231,11 +272,10 @@ export function TaggedPortsStep () {
                     {$t({ defaultMessage: 'Module 1' })}
                   </Typography.Text>
                 </div>
-                { vlanSettingValues.switchFamilyModels?.slots[0] &&
+                { slots[0] &&
                 <Typography.Paragraph>
                   {$t({ defaultMessage: '{module1}' },
-                    { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo
-                      ?.split('X').join(' X ') })}
+                    { module1: slots[0].slotPortInfo?.split('X').join(' X ') })}
                 </Typography.Paragraph>
                 }
                 <UI.Module>
@@ -267,7 +307,7 @@ export function TaggedPortsStep () {
                   />
                 </UI.Module>
               </Col>
-              {vlanSettingValues.enableSlot2 &&
+              {slots[1] &&
               <Col>
                 <Row gutter={20}>
                   <Col>
@@ -278,8 +318,7 @@ export function TaggedPortsStep () {
                     </div>
                     <Typography.Paragraph>
                       {$t({ defaultMessage: '{module2}' },
-                        { module2: vlanSettingValues.switchFamilyModels?.slots[1].slotPortInfo
-                          ?.split('X').join(' X ') })}
+                        { module2: slots[1].slotPortInfo?.split('X').join(' X ') })}
                     </Typography.Paragraph>
                     <UI.Module>
                       <Checkbox.Group
@@ -313,7 +352,7 @@ export function TaggedPortsStep () {
                 </Row>
               </Col>
               }
-              {vlanSettingValues.enableSlot3 &&
+              {slots[2] &&
               <Col>
                 <div>
                   <Typography.Text style={{ fontWeight: 'bold' }}>
@@ -322,8 +361,7 @@ export function TaggedPortsStep () {
                 </div>
                 <Typography.Paragraph>
                   {$t({ defaultMessage: '{module3}' },
-                    { module3: vlanSettingValues.switchFamilyModels?.slots[2].slotPortInfo
-                      ?.split('X').join(' X ') })}
+                    { module3: slots[2].slotPortInfo?.split('X').join(' X ') })}
                 </Typography.Paragraph>
                 <UI.Module>
                   <Checkbox.Group
