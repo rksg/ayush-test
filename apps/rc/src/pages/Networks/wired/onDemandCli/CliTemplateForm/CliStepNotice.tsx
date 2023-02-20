@@ -10,10 +10,11 @@ import * as UI from './styledComponents'
 
 import { tooltip } from './'
 
+// TODO: move to rc/components
 export function CliStepNotice () {
   const { $t } = useIntl()
   const params = useParams()
-  const isTemplate = params.configType !== 'profiles'
+  const isTemplate = params?.configType !== 'profiles'
   const editMode = params.action === 'edit'
   // eslint-disable-next-line max-len
   const documentLink = 'https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'

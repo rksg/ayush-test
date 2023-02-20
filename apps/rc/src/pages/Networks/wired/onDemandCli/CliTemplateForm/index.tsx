@@ -172,7 +172,7 @@ export default function CliTemplateForm () {
                 return cliValidation?.valid ?? true
               }}
             >
-              <CliStepConfiguration configType='Template' />
+              <CliStepConfiguration />
             </StepsForm.StepForm>
 
             <StepsForm.StepForm

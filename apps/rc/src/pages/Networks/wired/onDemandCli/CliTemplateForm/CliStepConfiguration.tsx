@@ -87,14 +87,12 @@ const cliTemplatesPayload = {
   sortOrder: 'DESC'
 }
 
-export function CliStepConfiguration (props: {
-  configType?: 'Profile' | 'Template'
-}) {
+// TODO: move to rc/components
+export function CliStepConfiguration () {
   const { $t } = useIntl()
   const params = useParams()
-  const { configType } = props
   const form = Form.useFormInstance()
-  const isTemplate = configType === 'Template'
+  const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
 
   const [cli, setCli] = useState('')

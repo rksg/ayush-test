@@ -26,7 +26,6 @@ export function CliStepVenues () {
 
   const { data, applyModels } = useContext(CliTemplateFormContext)
   const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({ params })
-  // const [transformedVenueData, setTransformedVenueData] = useState([] as Venue[])
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
@@ -105,7 +104,6 @@ export function CliStepVenues () {
 
   useEffect(() => {
     onChangeVenues(data?.venues)
-    setSelectedRows(data?.venues as React.Key[])
   }, [data])
 
   useEffect(() => {

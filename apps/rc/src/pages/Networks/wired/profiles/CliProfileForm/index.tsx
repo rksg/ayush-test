@@ -188,7 +188,7 @@ export default function CliProfileForm () {
                 return cliValidation?.valid ?? true
               }}
             >
-              <CliStepConfiguration configType='Profile' />
+              <CliStepConfiguration />
             </StepsForm.StepForm>
 
             <StepsForm.StepForm

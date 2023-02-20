@@ -77,13 +77,13 @@ export function CliStepModels () {
 
   const onSelectAllModels = (selectAll: boolean) => {
     const selected = form.getFieldValue('models') ?? []
-    const updateSelected = selectAll
-      ? _.uniq([
+    const selectedModels = selectAll
+      ? [
         ...selected,
-        ...getVisibleModelList(allFamilyModels, filteredModelFamily)
-      ]) : _.uniq(selected.filter((m: string) =>
-        !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m)
-      ))
+        ...getVisibleModelList(allFamilyModels, filteredModelFamily)]
+      : selected.filter((m: string) =>
+        !getVisibleModelList(allFamilyModels, filteredModelFamily).includes(m))
+    const updateSelected = _.uniq(selectedModels)
 
     form.setFieldValue('models', updateSelected)
     setApplyModels?.(updateSelected as string[])
