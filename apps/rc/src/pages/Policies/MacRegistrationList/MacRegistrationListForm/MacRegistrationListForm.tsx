@@ -74,7 +74,9 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -105,7 +107,9 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
