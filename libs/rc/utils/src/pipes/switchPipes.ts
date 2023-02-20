@@ -16,6 +16,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.DNS_SERVER:
       transform = $t({ defaultMessage: 'DNS Server' })
       break
+    case ConfigTypeEnum.DHCP_SERVER:
+      transform = $t({ defaultMessage: 'DHCP Server' })
+      break
     case ConfigTypeEnum.LAG_SETTINGS:
       transform = $t({ defaultMessage: 'LAG Setting' })
       break
@@ -87,6 +90,9 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
       break
     case ConfigStatusEnum.NO_CONFIG_CHANGE:
       transform = $t({ defaultMessage: 'No Config Change' })
+      break
+    case ConfigStatusEnum.NOTIFY_SUCCESS:
+      transform = $t({ defaultMessage: 'Notify Success' })
       break
     case ConfigStatusEnum.FAILED_NO_RESPONSE:
       transform = $t({ defaultMessage: 'Failed No Response' })

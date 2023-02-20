@@ -11,10 +11,10 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { Button, StepsForm }            from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery }          from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
-  NetworkSaveData,
   DpskSaveData,
   transformDpskNetwork,
   DpskNetworkType,
@@ -31,9 +31,7 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm (props: {
-  saveState: NetworkSaveData
-}) {
+export function DpskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
@@ -41,7 +39,12 @@ export function DpskSettingsForm (props: {
       form.setFieldsValue({
         isCloudpathEnabled: data.isCloudpathEnabled,
         dpskServiceProfileId: data?.dpskServiceProfileId,
-        dpskWlanSecurity: data?.wlan?.wlanSecurity
+        dpskWlanSecurity: data?.wlan?.wlanSecurity,
+        enableAccountingService: data.accountingRadius,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])
@@ -50,7 +53,6 @@ export function DpskSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!editMode && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -70,44 +72,48 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
-    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <div>
-        <StepsForm.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsForm.Title>
-        <Form.Item
-          label={$t({ defaultMessage: 'Security Protocol' })}
-          name='dpskWlanSecurity'
-          initialValue={WlanSecurityEnum.WPA2Personal}
-        >
-          <Select>
-            <Option value={WlanSecurityEnum.WPA2Personal}>
-              { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
-            </Option>
-            <Option value={WlanSecurityEnum.WPAPersonal}>{ $t({ defaultMessage: 'WPA' }) }</Option>
-          </Select>
-        </Form.Item>
+    <>
+      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+        <div>
+          <StepsForm.Title>{ $t({ defaultMessage: 'DPSK Settings' }) }</StepsForm.Title>
+          <Form.Item
+            label={$t({ defaultMessage: 'Security Protocol' })}
+            name='dpskWlanSecurity'
+            initialValue={WlanSecurityEnum.WPA2Personal}
+          >
+            <Select>
+              <Option value={WlanSecurityEnum.WPA2Personal}>
+                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+              </Option>
+              <Option value={WlanSecurityEnum.WPAPersonal}>
+                { $t({ defaultMessage: 'WPA' }) }</Option>
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          name='isCloudpathEnabled'
-          initialValue={false}
-        >
-          <Radio.Group onChange={onCloudPathChange}>
-            <Space direction='vertical'>
-              <Radio value={false} disabled={editMode}>
-                { $t({ defaultMessage: 'Use the DPSK Service' }) }
-              </Radio>
-              <Radio value={true} disabled={editMode}>
-                { $t({ defaultMessage: 'Use Cloudpath Server' }) }
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
-      </div>
-      <div>
-        {isCloudpathEnabled ? <CloudpathServerForm /> : <DpskServiceSelector />}
-      </div>
-    </Space>
+          <Form.Item
+            name='isCloudpathEnabled'
+            initialValue={false}
+          >
+            <Radio.Group onChange={onCloudPathChange}>
+              <Space direction='vertical'>
+                <Radio value={false} disabled={editMode}>
+                  { $t({ defaultMessage: 'Use the DPSK Service' }) }
+                </Radio>
+                <Radio value={true} disabled={editMode||disableAAA}>
+                  { $t({ defaultMessage: 'Use Cloudpath Server' }) }
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        </div>
+        <div>
+          {isCloudpathEnabled ? <CloudpathServerForm /> : <DpskServiceSelector />}
+        </div>
+      </Space>
+      {!editMode && <NetworkMoreSettingsForm wlanData={data} />}
+    </>
   )
 }
 

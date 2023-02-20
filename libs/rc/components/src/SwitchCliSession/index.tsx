@@ -84,6 +84,7 @@ export function SwitchCliSession (props: {
       visible={modalState}
       footer={null}
       onCancel={handleCancel}
+      destroyOnClose={true}
       modalRender={(modal) => (
         <UIDraggable
           disabled={disabled}

@@ -25,6 +25,8 @@ import {
   SwitchRow,
   StackMember,
   ConfigurationHistory,
+  CliTemplateExample,
+  CliConfiguration,
   transformConfigType,
   transformConfigStatus,
   VeViewModel,
@@ -44,7 +46,8 @@ import {
   SwitchDhcpLease,
   CommonResult,
   SwitchProfileModel,
-  SwitchCliTemplateModel
+  SwitchCliTemplateModel,
+  Lag
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -184,7 +187,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
-
+    deleteProfiles: build.mutation<SwitchProfileModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -199,7 +211,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
-
+    deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteCliTemplates, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
     addSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -307,6 +328,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
     }),
+
     importSwitches: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.importSwitches, params, {
@@ -695,6 +717,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
+    getLagList: build.query<Lag[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getLagList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
+    updateLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
+    addLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
+    deleteLag: build.mutation<Lag, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteLag, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
+    }),
     getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
@@ -772,8 +833,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ? { data: leaseResult.response.dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
+    }),
+    getCliTemplate: build.query<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
+    getCliConfigExamples: build.query<CliTemplateExample[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliConfigExamples, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateCliTemplate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     })
-
   })
 })
 
@@ -931,6 +1029,10 @@ export const {
   useGetTroubleshootingCleanQuery,
   useLazyGetTroubleshootingCleanQuery,
   useUpdateDhcpServerStateMutation,
+  useGetLagListQuery,
+  useAddLagMutation,
+  useUpdateLagMutation,
+  useDeleteLagMutation,
   useGetDhcpPoolsQuery,
   useGetDhcpServerQuery,
   useLazyGetDhcpServerQuery,
@@ -938,6 +1040,12 @@ export const {
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
+  useGetProfilesQuery,
+  useAddCliTemplateMutation,
   useGetCliTemplatesQuery,
-  useGetProfilesQuery
+  useDeleteCliTemplatesMutation,
+  useDeleteProfilesMutation,
+  useGetCliTemplateQuery,
+  useUpdateCliTemplateMutation,
+  useGetCliConfigExamplesQuery
 } = switchApi

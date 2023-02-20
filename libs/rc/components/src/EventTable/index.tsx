@@ -104,9 +104,7 @@ function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     params: ['clientMac']
   },
   network: {
-    // TODO:
-    // change to overview when overview page ready
-    path: 'networks/wireless/:networkId/network-details/aps',
+    path: 'networks/wireless/:networkId/network-details/overview',
     params: ['networkId']
   },
   switch: {

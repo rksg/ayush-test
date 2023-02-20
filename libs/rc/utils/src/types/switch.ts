@@ -218,6 +218,7 @@ export class SwitchViewModel extends Switch {
   firmware?: string
   activeSerial?: string
   syncDataId?: string
+  lastSeenTime?: string
 }
 
 export interface SwitchRow {
@@ -341,7 +342,13 @@ export interface SwitchCliTemplateModel{
   id: string,
   name: string,
   reload: boolean,
+  venueSwitches?: VenueSwitches[]
+}
+
+export interface VenueSwitches {
   switches?: string[]
+  id: string
+  venueId: string
 }
 
 export interface SwitchPortViewModel extends GridDataRow {
@@ -539,4 +546,54 @@ export interface SwitchDhcpLease {
   clientIp: string
   leaseExpiration: string
   leaseType: string
+}
+
+export interface CliTemplateExample {
+  id: string
+  name: string
+  cli: string
+  version: string
+}
+
+export interface CliTemplateVariable {
+  name: string
+  type: string
+  value: string
+}
+
+export interface CliTemplateVenueSwitches {
+  id: string
+  venueId?: string
+  switches: string[]
+}
+
+export interface CliConfiguration {
+  id: string
+  name: string
+  cli: string
+  reload?: boolean
+  applyLater?: boolean
+  venueSwitches?: CliTemplateVenueSwitches[]
+  variables?: CliTemplateVariable[]
+
+  // profile
+  overwrite?: boolean  //For profiles
+  // venues = []; //For profiles
+  // models = []; //For profiles
+}
+export enum LAG_TYPE {
+  STATIC = 'static',
+  DYNAMIC = 'dynamic'
+}
+
+export interface Lag {
+  id?: string
+  lagId?: number
+  name: string
+  ports: string[]
+  realRemove?: boolean
+  switchId: string
+  taggedVlans: string[]
+  type: LAG_TYPE
+  untaggedVlan: string
 }
