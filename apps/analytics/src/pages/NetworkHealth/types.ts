@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { APListNode, PathNode } from '@acx-ui/utils'
 
 type UUID = string
@@ -24,6 +26,16 @@ export enum AuthenticationMethod {
 export type APListNodes = [...PathNode[], APListNode]
 export type NetworkNodes = PathNode[]
 export type NetworkPaths = Array<APListNodes| NetworkNodes>
+
+export function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
+  const last = path[path.length - 1]
+  return _.has(last, 'list')
+}
+
+export function isNetworkNodes (path: APListNodes | NetworkNodes): path is NetworkNodes {
+  const last = path[path.length - 1]
+  return !_.has(last, 'list')
+}
 
 export enum ClientType {
   VirtualClient = 'virtual-client',
@@ -79,13 +91,8 @@ export type NetworkHealthFormDto = {
     | 'dnsServer'
     | 'pingAddress'
     | 'tracerouteAddress'
-    // TODO:
-    // Take `networkPaths` from `NetworkHealthConfig` when APsSelection input available
-    // | 'networkPaths'
+    | 'networkPaths'
   >
-  // TODO:
-  // Temporary handling unable APsSelection widget available
-  & { networkPaths: { networkNodes: string } }
 
 export type MutationUserError = {
   field: string
