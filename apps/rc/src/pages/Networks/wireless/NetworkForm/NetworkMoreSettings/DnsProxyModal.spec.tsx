@@ -10,6 +10,7 @@ import { DnsProxyContext } from './ServicesForm'
 
 let dnsProxyList = []
 const setDnsProxyList = jest.fn()
+const setEnableDnsProxy = jest.fn()
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
 describe('DnsProxyModal', () => {
@@ -17,7 +18,7 @@ describe('DnsProxyModal', () => {
     const { asFragment } = render(
       <Provider>
         <Form>
-          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList, setEnableDnsProxy }}>
             <DnsProxyModal />
           </DnsProxyContext.Provider>
         </Form>
@@ -38,7 +39,7 @@ describe('DnsProxyModal', () => {
     render(
       <Provider>
         <Form>
-          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList, setEnableDnsProxy }}>
             <DnsProxyModal />
           </DnsProxyContext.Provider>
         </Form>
@@ -77,7 +78,7 @@ describe('DnsProxyModal', () => {
     render(
       <Provider>
         <Form>
-          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList }}>
+          <DnsProxyContext.Provider value={{ dnsProxyList, setDnsProxyList, setEnableDnsProxy }}>
             <DnsProxyModal />
           </DnsProxyContext.Provider>
         </Form>

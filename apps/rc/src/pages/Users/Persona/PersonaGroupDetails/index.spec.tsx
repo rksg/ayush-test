@@ -40,7 +40,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.delete(
-        PersonaUrls.deletePersona.url,
+        PersonaUrls.deletePersonas.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
@@ -95,7 +95,7 @@ describe('Persona Group Details', () => {
     const targetPersona = mockPersonaTableResult.content[0]
     const row = await screen.findByRole('row', { name: targetPersona.name })
 
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
@@ -118,7 +118,7 @@ describe('Persona Group Details', () => {
 
     const targetPersona = mockPersonaTableResult.content[1]
     const row = await screen.findByRole('row', { name: targetPersona.name })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(within(row).getByRole('checkbox'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
     fireEvent.click(editButton)

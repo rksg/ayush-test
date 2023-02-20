@@ -99,20 +99,32 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
   addVenue: {
     method: 'post',
+    // newApi: true,
+    // url: '/venues',
     url: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
+    // newApi: true,
+    // url: '/venues/:venueId',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
+    // newApi: true,
+    // url: '/venues/:venueId',
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
+    // url: '/venues/:venueId',
+    // newApi: true,
     url: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
@@ -122,6 +134,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDetailsHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+  },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venue/citylist'
   },
   getVenueSettings: {
     method: 'get',
@@ -334,5 +350,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  getTopology: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
   }
 }

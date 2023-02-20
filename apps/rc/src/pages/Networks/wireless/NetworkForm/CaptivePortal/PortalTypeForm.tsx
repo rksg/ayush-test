@@ -4,14 +4,12 @@ import {
   Form,
   Radio,
   RadioChangeEvent,
-  Space,
-  Tooltip
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
@@ -41,7 +39,9 @@ function TypesForm () {
     data,
     setData,
     editMode,
-    cloneMode
+    cloneMode,
+    modalMode,
+    createType
   } = useContext(NetworkFormContext)
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
@@ -54,6 +54,11 @@ function TypesForm () {
       form.setFieldsValue({ ...data })
     }
   }, [data])
+  useEffect(()=>{
+    if(createType){
+      form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
+    }
+  },[createType])
   return (
     <>
       <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
@@ -64,7 +69,7 @@ function TypesForm () {
           'Select the way users gain access to the network through the captive portal' })}
         rules={[{ required: true }]}
       >
-        <Radio.Group onChange={onChange} disabled={editMode || cloneMode}>
+        <Radio.Group onChange={onChange} disabled={editMode || cloneMode || modalMode}>
           <Space direction='vertical'>
             <Radio value={GuestNetworkTypeEnum.ClickThrough}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.ClickThrough]}
@@ -81,12 +86,10 @@ function TypesForm () {
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
-              <Tooltip title={intl.$t(notAvailableMsg)}>
-                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
-                <RadioDescription>
-                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
-                </RadioDescription>
-              </Tooltip>
+              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
+              <RadioDescription>
+                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
+              </RadioDescription>
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.HostApproval}>
@@ -103,7 +106,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr}>
+            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={true}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

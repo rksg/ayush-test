@@ -26,7 +26,7 @@ describe('useTableQuery', ()=>{
       { wrapper: ({ children }) => <Provider children={children} /> }
     )
     expect(result.current.payload).toEqual({
-      page: 1, pageSize: 10, total: 0, sortField: 'name', sortOrder: 'ASC'
+      page: 1, pageSize: 10, defaultPageSize: 10, total: 0, sortField: 'name', sortOrder: 'ASC'
     })
   })
 
@@ -71,11 +71,13 @@ describe('useTableQuery', ()=>{
           useQuery: useTestQuery, defaultPayload: {}, pagination: { page: 15 } }),
         { wrapper: ({ children }) => <Provider children={children} /> }
       )
-      expect(result.current.pagination).toEqual({ current: 15, page: 15, pageSize: 10, total: 0 })
+      expect(result.current.pagination).toEqual({
+        current: 15, page: 15, pageSize: 10, defaultPageSize: 10, total: 0 })
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 100))
       })
-      expect(result.current.pagination).toEqual({ current: 1, page: 1, pageSize: 10, total: 100 })
+      expect(result.current.pagination).toEqual({
+        current: 1, page: 1, pageSize: 10, defaultPageSize: 10, total: 100 })
     })
     it('should handleFilterChange', async () => {
       const defaultSearch = {
@@ -132,7 +134,8 @@ describe('useTableQuery', ()=>{
         result.current.handleTableChange!(pagination, {}, sorter, extra)
       })
       expect(result.current.sorter).toEqual({ sortField: 'severity', sortOrder: 'ASC' })
-      expect(result.current.pagination).toEqual({ current: 5, page: 5, pageSize: 10, total: 100 })
+      expect(result.current.pagination).toEqual({
+        current: 5, page: 5, pageSize: 10, defaultPageSize: 10, total: 100 })
       expect(result.current.payload).toEqual(expect.objectContaining({
         sortField: 'severity', sortOrder: 'ASC', page: 5, pageSize: 10
       }))
@@ -167,6 +170,7 @@ describe('useTableQuery', ()=>{
     const expectedResult = {
       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
       method: 'get',
+      credentials: 'include',
       url: 'http://localhost/HelloWorld'
     }
     it('should return correct value', () => {

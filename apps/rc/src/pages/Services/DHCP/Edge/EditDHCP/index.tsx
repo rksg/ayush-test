@@ -34,12 +34,16 @@ const EditDhcp = () => {
     if(edgeDhcpData) {
       formRef.current?.resetFields()
       formRef.current?.setFieldsValue(edgeDhcpData)
+      formRef.current?.setFieldValue(
+        'enableSecondaryDNSServer',
+        !!formRef.current?.getFieldValue('secondaryDnsIp')
+      )
     }
   }, [edgeDhcpData])
 
   const handleEditEdgeDhcp = async (data: EdgeDhcpSetting) => {
     try {
-      const payload = { ...data, id: params.serviceId }
+      const payload = { ...edgeDhcpData, ...data }
       const pathVar = { id: params.serviceId }
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })

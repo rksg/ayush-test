@@ -661,6 +661,99 @@ export const policyListResponse = {
   totalPages: 0,
   page: 1
 }
+
+export const devicePolicyListResponse = {
+  data: [
+    {
+      id: '361a8e49222a4cbeae2bc6c7f0127dca',
+      name: 'device1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const applicationPolicyListResponse = {
+  data: [
+    {
+      id: 'e1ba3e5ca73b4bbf8c53bb5feff31f9b',
+      name: 'application1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const layer2PolicyListResponse = {
+  data: [
+    {
+      id: 'dee8918e1c40474a9f779b39ee672c5b',
+      name: 'layer2policy1',
+      macAddressesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const layer3PolicyListResponse = {
+  data: [
+    {
+      id: '4dee545ff0e04100b13774aa0ba6fc57',
+      name: 'layer3policy1',
+      rulesCount: 1,
+      networksCount: 0
+    }
+  ],
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  totalPages: 1,
+  page: 1
+}
+
+export const accessControlListResponse = [
+  {
+    l2AclPolicy: {
+      id: 'dee8918e1c40474a9f779b39ee672c5b',
+      enabled: true
+    },
+    l3AclPolicy: {
+      id: '4dee545ff0e04100b13774aa0ba6fc57',
+      enabled: true
+    },
+    name: 'acl-1',
+    rateLimiting: {
+      uplinkLimit: 0,
+      downlinkLimit: 0,
+      enabled: false
+    },
+    id: '2918e310075a4f5bb1b0d161769f6f64'
+  }
+]
+
 export const dhcpResponse = {
   id: '6cf550cdb67641d798d804793aaa82db',
   name: 'My-DHCP',
@@ -685,6 +778,20 @@ export const hostapprovalData = {
   }
 }
 
+export const cloudPathDataNone = {
+  authRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448a',
+  accountingRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448cd',
+  guestPortal: {
+    walledGardens: ['aa.com'],
+    guestNetworkType: GuestNetworkTypeEnum.Cloudpath,
+    externalPortalUrl: 'http://aa.bb'
+  },
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true,
+    wlanSecurity: WlanSecurityEnum.None,
+    bypassCNA: false
+  }
+}
 export const wisprDataNone = {
   guestPortal: {
     walledGardens: ['aa.com'],
@@ -775,7 +882,7 @@ export const guestpassData = {
 }
 export const portalList = [
   {
-    id: 2,
+    id: '2',
     serviceName: 'test2',
     content: {
       welcomeText: 'Welcome to the Guest Access login page',
@@ -798,6 +905,49 @@ export const portalList = [
       poweredSize: 14,
       poweredImgRatio: 50,
       poweredImg: '',
+      wifi4EUNetworkId: '',
+      termsCondition: '',
+      componentDisplay: {
+        logo: true,
+        welcome: true,
+        photo: true,
+        secondaryText: true,
+        termsConditions: false,
+        poweredBy: true,
+        wifi4eu: false
+      },
+      displayLangCode: 'en',
+
+      alternativeLang: { cs: false, zh_TW: false, fr: false }
+    }
+  }
+]
+export const portalListWithPhoto = [
+  {
+    id: '2',
+    serviceName: 'test2',
+    content: {
+      welcomeText: 'Welcome to the Guest Access login page',
+      welcomeColor: '#333333',
+      bgColor: '#FFFFFF',
+      welcomeSize: 14,
+      poweredImg: 'test',
+      logo: 'test',
+      photo: 'test',
+      bgImage: 'test',
+      photoRatio: 170,
+
+      logoRatio: 105,
+      secondaryText:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing' +
+        ' elit. Aenean euismod bibendum laoreet.',
+      secondaryColor: '#333333',
+      secondarySize: 14,
+      buttonColor: '#EC7100',
+      poweredBgColor: '#FFFFFF',
+      poweredColor: '#333333',
+      poweredSize: 14,
+      poweredImgRatio: 50,
       wifi4EUNetworkId: '',
       termsCondition: '',
       componentDisplay: {
@@ -885,6 +1035,28 @@ export const externalProviders = {
         }
       ],
       name: 'SkyWifiRadSec',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSecTest',
       customExternalProvider: false
     },
     {
@@ -1137,4 +1309,110 @@ export const apGroupsResponse = {
       isAllApGroups: false
     }
   ]
+}
+export const aaalList = [
+  {
+    id: 2,
+    name: 'test2'
+  },{
+    id: 1,
+    name: 'test1'
+  }
+]
+export const mockGuestMoreData = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'WISPr',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 1666,
+    userSessionTimeout: 6660
+  }
+}
+
+export const mockGuestMoreDataMinutes = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 66
+  }
+}
+export const mockGuestMoreDataDays = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: true
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: false,
+    macCredentialsDuration: 2422,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 1440
+  }
+}
+export const mockGuestMoreDataDaysLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 1440,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 2,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 1440
+  }
+}
+export const mockGuestMoreDataMinutesLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 1222,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 16,
+    userSessionTimeout: 6666
+  }
+}
+export const mockGuestMoreDataLockEnable = {
+  name: 'test',
+  type: 'guest',
+  isCloudpathEnabled: false,
+  wlan: {
+    bypassCPUsingMacAddressAuthentication: false
+  },
+  guestPortal: {
+    guestNetworkType: 'ClickThrough',
+    lockoutPeriod: 120,
+    lockoutPeriodEnabled: true,
+    macCredentialsDuration: 240,
+    userSessionGracePeriod: 1666,
+    userSessionTimeout: 6660
+  }
 }

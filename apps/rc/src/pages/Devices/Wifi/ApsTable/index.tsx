@@ -9,15 +9,38 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ApTable, CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
-import { useImportApMutation }               from '@acx-ui/rc/services'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
+import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
 
 export default function ApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
+
+  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  } }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+    })
+  })
+
+  const { apgroupFilterOptions } = useApGroupsListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: { isDefault: [false] }
+  } }, {
+    selectFromResult: ({ data }) => ({
+      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+    })
+  })
 
   const [ importCsv, importResult ] = useImportApMutation()
 
@@ -64,14 +87,20 @@ export default function ApsTable () {
         ]}
       />
       <ApTable
+        searchable={true}
+        filterables={{
+          venueId: venueFilterOptions,
+          deviceGroupId: apgroupFilterOptions
+        }}
         rowSelection={{
           type: 'checkbox'
         }}
       />
-      <ImportCsvDrawer type='AP'
+      <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
+        acceptType={['csv']}
         templateLink={importTemplateLink}
         visible={importVisible}
         isLoading={importResult.isLoading}

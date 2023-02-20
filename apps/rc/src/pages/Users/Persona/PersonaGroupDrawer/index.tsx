@@ -31,6 +31,16 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       isEdit
         ? await handleEditPersonaGroup(contextData)
         : await handleAddPersonaGroup(contextData)
+
+      showToast({
+        type: 'success',
+        content: $t({
+          defaultMessage: 'Persona Group {name} was {isEdit, select, true {updated} other {added}}'
+        },
+        { name: contextData.name, isEdit }
+        )
+      })
+
       onClose()
     } catch (error) {
       showToast({
@@ -68,13 +78,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       await form.validateFields()
       await onFinish(form.getFieldsValue())
     } catch (e) {
-      if (e instanceof Error) {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' }),
-          link: { onClick: () => alert(JSON.stringify(e)) }
-        })
-      }
+      return Promise.resolve()
     }
   }
 

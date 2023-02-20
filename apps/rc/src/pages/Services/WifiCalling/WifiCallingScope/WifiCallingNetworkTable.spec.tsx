@@ -149,7 +149,7 @@ describe('WifiCallingNetworkTable', () => {
 
     await screen.findByText('birdytest2')
 
-    expect(screen.getAllByText('psk').length).toBe(2)
+    expect(screen.getAllByText('Pre-Shared Key (PSK)').length).toBe(2)
     let item = screen.getByRole('cell', {
       name: /birdytest2/i
     })

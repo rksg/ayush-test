@@ -1,10 +1,11 @@
-import { Form, Input, Switch, Row, Col, InputNumber, Space, Select } from 'antd'
+import { Col, Form, Input, InputNumber, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                                   from 'react-intl'
 
-import { Subtitle, Alert, StepsForm } from '@acx-ui/components'
+import { Alert, StepsForm, Subtitle } from '@acx-ui/components'
 import {
   EdgeDhcpSetting,
-  LeaseTimeUnit } from '@acx-ui/rc/utils'
+  LeaseTimeUnit
+} from '@acx-ui/rc/utils'
 
 import { ToggleButton } from '../ToggleButton'
 
@@ -129,6 +130,9 @@ export const EdgeDhcpSettingForm = () => {
         <Col span={15}>
           <Form.Item
             name='dhcpPools'
+            rules={[
+              { required: true, message: $t({ defaultMessage: 'Please create DHCP pools' }) }
+            ]}
             children={<DHCPPoolTable></DHCPPoolTable>}
           />
         </Col>

@@ -1,50 +1,23 @@
-import { useEffect, useState } from 'react'
 
-import { Progress, Switch } from 'antd'
-import { useIntl }          from 'react-intl'
+import { Progress } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { DhcpPoolStats }             from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps }                 from '@acx-ui/components'
+import { DhcpPoolStats, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 
-export const useMockData = () => {
-  const [data, setData] = useState<DhcpPoolStats[]>()
-  const [isLoading, setIsloading] = useState(true)
-
-  useEffect(() => {
-    setData([
-      {
-        name: 'Pool1',
-        subnetMask: '255.255.255.0',
-        range: '1.1.1.1 - 1.1.1.99',
-        gateway: '1.1.1.1',
-        utilization: 25,
-        activate: true
-      },
-      {
-        name: 'Pool2',
-        subnetMask: '255.255.255.0',
-        range: '2.2.2.1 - 2.2.2.99',
-        gateway: '2.2.2.2',
-        utilization: 25,
-        activate: false
-      }
-    ])
-    setIsloading(false)
-  }, [])
-
-  return { isLoading, data }
+interface PoolsProps {
+  tableQuery: TableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>
 }
 
-const Pools = () => {
+const Pools = ({ tableQuery }: PoolsProps) => {
 
   const { $t } = useIntl()
-  const { data, isLoading } = useMockData()
 
   const columns: TableProps<DhcpPoolStats>['columns'] = [
     {
       title: $t({ defaultMessage: 'Pool' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: 'poolName',
+      dataIndex: 'poolName',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
@@ -55,8 +28,8 @@ const Pools = () => {
     },
     {
       title: $t({ defaultMessage: 'Pool Range' }),
-      key: 'range',
-      dataIndex: 'range'
+      key: 'poolRange',
+      dataIndex: 'poolRange'
     },
     {
       title: $t({ defaultMessage: 'Gateway' }),
@@ -67,34 +40,36 @@ const Pools = () => {
       title: $t({ defaultMessage: 'Utilization' }),
       key: 'utilization',
       dataIndex: 'utilization',
-      render (data, row) {
+      render () {
         return <Progress
           style={{ width: 100 }}
           strokeLinecap='butt'
           strokeColor='var(--acx-semantics-green-50)'
-          percent={row.utilization}
+          percent={0}
           showInfo={false}
           strokeWidth={20}
         />
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Activate' }),
-      key: 'activate',
-      dataIndex: 'activate',
-      render (data, row) {
-        return <Switch defaultChecked={row.activate} />
-      }
     }
+    // TODO Activate TBD
+    // {
+    //   title: $t({ defaultMessage: 'Activate' }),
+    //   key: 'activate',
+    //   dataIndex: 'activate',
+    //   render (data, row) {
+    //     return <Switch defaultChecked={row.activate} />
+    //   }
+    // }
   ]
 
   return (
-    <Loader states={[
-      { isFetching: isLoading, isLoading: false }
-    ]}>
+    <Loader states={[tableQuery]}>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={tableQuery?.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='id'
       />
     </Loader>
   )

@@ -1457,33 +1457,255 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           </div>
                         </div>
                         <div
-                          style="margin-bottom: 30px; display: grid; grid-template-columns: 120px 30px;"
+                          style="margin-bottom: 30px;"
                         >
-                          <h4
-                            class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
-                          >
-                            Access Control
-                          </h4>
                           <span
-                            class="ant-tooltip-disabled-compatible-wrapper"
-                            style="display: inline-block; cursor: not-allowed;"
+                            style="display: grid; grid-template-columns: 220px 130px auto; align-items: baseline; margin: 20px 0px;"
                           >
+                            <h4
+                              class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__CustomSubtitle-sc-ijp2z4-6 fPbHyn fGlyWi"
+                            >
+                              Access Control
+                            </h4>
                             <button
-                              aria-checked="false"
-                              class="ant-switch ant-switch-disabled"
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                               disabled=""
-                              role="switch"
-                              style="pointer-events: none;"
                               type="button"
                             >
-                              <div
-                                class="ant-switch-handle"
-                              />
-                              <span
-                                class="ant-switch-inner"
-                              />
+                              <span>
+                                Save as AC Profile
+                              </span>
+                            </button>
+                            <button
+                              class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                              type="button"
+                            >
+                              <span>
+                                Select Access Control profile
+                              </span>
                             </button>
                           </span>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Layer 2
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l2AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Layer 3
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_l3AclEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Device & OS
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_enableDeviceOs"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Applications
+                            <div
+                              style="display: grid; grid-template-columns: 50px 190px auto;"
+                            >
+                              <div
+                                class="ant-form-item"
+                                style="margin-bottom: 10px;"
+                              >
+                                <div
+                                  class="ant-row ant-form-item-row"
+                                >
+                                  <div
+                                    class="ant-col ant-form-item-control"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input-content"
+                                      >
+                                        <button
+                                          aria-checked="false"
+                                          class="ant-switch"
+                                          id="moreSettings_wlan_advancedCustomization_applicationPolicyEnable"
+                                          role="switch"
+                                          type="button"
+                                        >
+                                          <div
+                                            class="ant-switch-handle"
+                                          />
+                                          <span
+                                            class="ant-switch-inner"
+                                          />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="styledComponents__FieldLabel-sc-ijp2z4-0 iJhmzR"
+                            width="175px"
+                          >
+                            Client Rate Limit
+                            <div
+                              class="ant-form-item"
+                              style="margin-bottom: 10px;"
+                            >
+                              <div
+                                class="ant-row ant-form-item-row"
+                              >
+                                <div
+                                  class="ant-col ant-form-item-control"
+                                >
+                                  <div
+                                    class="ant-form-item-control-input"
+                                  >
+                                    <div
+                                      class="ant-form-item-control-input-content"
+                                    >
+                                      <button
+                                        aria-checked="false"
+                                        class="ant-switch"
+                                        id="moreSettings_enableClientRateLimit"
+                                        role="switch"
+                                        type="button"
+                                      >
+                                        <div
+                                          class="ant-switch-handle"
+                                        />
+                                        <span
+                                          class="ant-switch-inner"
+                                        />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <div
                           class="ant-form-item styledComponents__FormItemNoLabel-sc-ijp2z4-1 eCteXA ant-form-item-has-success"
@@ -1771,7 +1993,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                           style="display: grid; grid-template-columns: 0px 1fr;"
                         >
                           <span
-                            class="styledComponents__LabelOfInput-sc-ijp2z4-4 lbOdSM"
+                            class="styledComponents__LabelOfInput-sc-ijp2z4-4 kaRqXV"
                             style="left: 165px;"
                           >
                             Seconds

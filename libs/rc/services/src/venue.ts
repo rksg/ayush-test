@@ -51,7 +51,8 @@ import {
   RogueOldApResponseType,
   VenueRadioCustomization,
   VenueDirectedMulticast,
-  VenueLoadBalancing
+  VenueLoadBalancing,
+  TopologyData
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -116,6 +117,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'Venue', id: 'DETAIL' }]
     }),
+    getVenues: build.query<{ data: Venue[] }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenues, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenue, params)
@@ -142,6 +152,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
               api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
             })
         })
+      }
+    }),
+    getVenueCityList: build.query<{ name: string }[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params)
+        return{
+          ...req, body: payload
+        }
+      },
+      transformResponse: (result: { cityList: { name: string }[] }) => {
+        return result.cityList
       }
     }),
     getVenueSettings: build.query<VenueSettings, RequestPayload>({
@@ -870,6 +891,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+    }),
+    getTopology: build.query<TopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: TopologyData[] }) => {
+        return result?.data[0] as TopologyData
+      }
     })
   })
 })
@@ -880,8 +913,10 @@ export const {
   useAddVenueMutation,
   useGetVenueQuery,
   useLazyGetVenueQuery,
+  useGetVenuesQuery,
   useUpdateVenueMutation,
   useVenueDetailsHeaderQuery,
+  useGetVenueCityListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
@@ -951,5 +986,6 @@ export const {
   useGetVenueConfigHistoryDetailQuery,
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
-  useUpdateVenueLoadBalancingMutation
+  useUpdateVenueLoadBalancingMutation,
+  useGetTopologyQuery
 } = venueApi
