@@ -103,15 +103,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    // url: '/switches',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   updateSwitch: {
     method: 'put',
-    // url: '/switches/:switchId',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches/:switchId',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   addStackMember: {
     method: 'post',
