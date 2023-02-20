@@ -82,7 +82,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/integrators' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -102,7 +102,7 @@ describe('Integrators', () => {
       <Provider>
         <Integrators />
       </Provider>, {
-        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+        route: { params, path: '/:tenantId/dashboard/integrators' }
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
