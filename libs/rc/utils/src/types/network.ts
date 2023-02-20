@@ -87,6 +87,8 @@ export interface NetworkSaveData {
   redirectUrl?: string;
   guestPortal?: GuestPortal;
   portalServiceProfileId?: string;
+  authRadiusId?: string;
+  accountingRadiusId?: string;
   enableDhcp?: boolean;
   wlan?: {
     ssid?: string;

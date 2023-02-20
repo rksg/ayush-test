@@ -32,7 +32,7 @@ describe('Pill with kpi threshold', () => {
 
   it('should render pill with data (success below threshold)', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [0, 2, 2, 3, 3, 0] } }
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
     })
     render(
       <Provider>
@@ -49,7 +49,7 @@ describe('Pill with kpi threshold', () => {
   })
   it('should render pill with data (success above threshold)', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [1, 2, 2, 3, 2, 0, 0] } }
+      data: { network: { histogram: { data: [1, 2, 2, 3, 2, 0, 0] } } }
     })
     render(
       <Provider>
@@ -67,7 +67,7 @@ describe('Pill with kpi threshold', () => {
 
   it('should render pill with data for reverse interpreted values', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [1, 1, 1, 1, 1, 1, 1, 1, 2] } }
+      data: { network: { histogram: { data: [1, 1, 1, 1, 1, 1, 1, 1, 2] } } }
     })
     render(
       <Provider>
@@ -84,7 +84,7 @@ describe('Pill with kpi threshold', () => {
   })
   it('should render pill with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [] } }
+      data: { network: { histogram: { data: [] } } }
     })
     render(
       <Provider>
@@ -125,7 +125,7 @@ describe('Pill without kpi threshold', () => {
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     render(
       <Provider>
@@ -141,7 +141,7 @@ describe('Pill without kpi threshold', () => {
   })
   it('should render pill with data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     render(
       <Provider>
@@ -158,7 +158,7 @@ describe('Pill without kpi threshold', () => {
   })
   it('should render pill with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleNoDataTS }
+      data: { network: { timeSeries: sampleNoDataTS } }
     })
     render(
       <Provider>
@@ -175,7 +175,7 @@ describe('Pill without kpi threshold', () => {
   })
   it('should render pill with correct tooltip', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleNoDataTS }
+      data: { network: { timeSeries: sampleNoDataTS } }
     })
     render(
       <Provider>
@@ -197,7 +197,7 @@ describe('Pill without kpi threshold', () => {
   })
   it('should calculate results according to time window', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: sampleTS }
+      data: { network: { timeSeries: sampleTS } }
     })
     const timeWindow: [string, string] = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:00:00.000Z']
     render(

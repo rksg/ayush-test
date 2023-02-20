@@ -1,13 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
-import { useGetProfilesQuery }                      from '@acx-ui/rc/services'
-import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate }                              from '@acx-ui/react-router-dom'
+import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
+import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                              from '@acx-ui/react-router-dom'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const navigate = useNavigate()
+
+  const [deleteProfiles] = useDeleteProfilesMutation()
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
@@ -51,8 +54,24 @@ export function ProfilesTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: true, //Waiting for support
-      onClick: () => {}
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: selectedRows.length > 1 ?
+              $t({ defaultMessage: 'Profiles' }) : $t({ defaultMessage: 'Profile' }),
+            entityValue: selectedRows[0].name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: () => {
+            deleteProfiles({
+              params: { tenantId },
+              payload: selectedRows.map(r => r.id)
+            }).then(clearSelection)
+          }
+        })
+      }
     }
   ]
 

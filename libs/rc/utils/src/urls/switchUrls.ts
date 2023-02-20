@@ -306,9 +306,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   },
+  deleteProfiles: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/profiles'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  deleteCliTemplates: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getCliTemplate: {
     method: 'get',
