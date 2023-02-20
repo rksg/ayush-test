@@ -22,7 +22,7 @@ import {
 import MdnsProxyTable from './MdnsProxyTable'
 
 const mockTableResult = {
-  totalCount: 3,
+  totalCount: 1,
   page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',

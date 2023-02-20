@@ -15,7 +15,7 @@ import {
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  catchErrorResponse
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -67,7 +67,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
 
       navigate(serviceTablePath, { replace: true })
     } catch (error) {
-      const errorResponse = error as catchErrorResponse
+      const errorResponse = error as CatchErrorResponse
       const errorMsg = errorResponse.data?.errors?.map(error => error.message).join('<br />')
 
       showToast({

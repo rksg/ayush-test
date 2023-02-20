@@ -5,8 +5,10 @@ import {
   websocketServerUrl,
   ClientIsolationUrls,
   ClientUrlsInfo,
-  getPolicyListRoutePath,
-  ClientIsolationSaveData
+  ClientIsolationSaveData,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -307,7 +309,8 @@ describe('ClientIsolationForm', () => {
 
   it('should navigate to the list page when clicking Cancel button', async () => {
     const { result: policyListPath } = renderHook(() => {
-      return useTenantLink(getPolicyListRoutePath(true))
+      // eslint-disable-next-line max-len
+      return useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
     })
 
     render(

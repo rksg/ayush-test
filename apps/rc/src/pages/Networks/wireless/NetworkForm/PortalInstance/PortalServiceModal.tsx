@@ -2,11 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button } from '@acx-ui/components'
-import { Portal } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType } from '@acx-ui/components'
+import { Portal }                   from '@acx-ui/rc/utils'
 
 import PortalForm from '../../../../Services/Portal/PortalForm/PortalForm'
-import * as UI    from '../styledComponents'
 
 export default function PortalServiceModal (props:{
   updateInstance: (value:Portal) => void
@@ -28,14 +27,13 @@ export default function PortalServiceModal (props:{
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Guest Portal Service' })}
       </Button>
-      <UI.Drawer
+      <Modal
         title={$t({ defaultMessage: 'Add Portal Service' })}
         visible={visible}
-        onClose={onClose}
+        type={ModalType.ModalStepsForm}
         mask={true}
         children={getContent}
         destroyOnClose={true}
-        width={'calc( 100% - var(--acx-sider-width))'}
       />
     </>
   )

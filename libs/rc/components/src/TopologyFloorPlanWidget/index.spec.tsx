@@ -7,6 +7,10 @@ jest.mock('../FloorPlan', () => ({
   FloorPlan: () => <div>Floor Plan</div>
 }))
 
+jest.mock('../Topology', () => ({
+  Topology: () => <div>Topology</div>
+}))
+
 describe('TopologyFloorPlanWidget', () => {
   it('should render correctly', () => {
     const { asFragment } = render(<Provider><TopologyFloorPlanWidget /></Provider>)
