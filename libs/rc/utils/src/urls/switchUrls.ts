@@ -75,15 +75,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    url: '/switches',
-    oldUrl: '/api/switch/tenant/:tenantId/switch',
-    newApi: true
+    url: '/api/switch/tenant/:tenantId/switch'
+    // url: '/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   updateSwitch: {
     method: 'put',
-    url: '/switches/:switchId',
-    oldUrl: '/api/switch/tenant/:tenantId/switch',
-    newApi: true
+    url: '/api/switch/tenant/:tenantId/switch'
+    // url: '/switches/:switchId',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   addStackMember: {
     method: 'post',
@@ -278,13 +280,37 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  addCliTemplate: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/cli-template'
+  },
+  getCliConfigExamples: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/example'
+  },
   getProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
   },
+  deleteProfiles: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/profiles'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  deleteCliTemplates: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/cli-template'
+  },
+  getCliTemplate: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cli-template/:templateId'
+  },
+  updateCliTemplate: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getLagList: {
     method: 'get',

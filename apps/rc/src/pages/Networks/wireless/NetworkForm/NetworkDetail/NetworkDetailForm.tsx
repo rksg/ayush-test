@@ -123,11 +123,11 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: disableAAA },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]

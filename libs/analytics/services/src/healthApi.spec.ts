@@ -22,9 +22,11 @@ describe('Services for health kpis', () => {
   }
   describe('Timeseries', () => {
     const expectedResult = {
-      timeSeries: {
-        data: [[10, 10]],
-        time: ['2022-01-01T00:00:00+08:00']
+      network: {
+        timeSeries: {
+          data: [[10, 10]],
+          time: ['2022-01-01T00:00:00+08:00']
+        }
       }
     }
     afterEach(() => {
@@ -41,7 +43,7 @@ describe('Services for health kpis', () => {
         })
       )
       expect(status).toBe('fulfilled')
-      expect(data).toStrictEqual(expectedResult.timeSeries)
+      expect(data).toStrictEqual(expectedResult.network.timeSeries)
       expect(error).toBe(undefined)
     })
     it('should return correct data for kpi with threshold', async () => {
@@ -56,7 +58,7 @@ describe('Services for health kpis', () => {
         })
       )
       expect(status).toBe('fulfilled')
-      expect(data).toStrictEqual(expectedResult.timeSeries)
+      expect(data).toStrictEqual(expectedResult.network.timeSeries)
       expect(error).toBe(undefined)
     })
 
@@ -163,8 +165,10 @@ describe('Services for health kpis', () => {
   })
   describe('Histogram', () => {
     const expectedResult = {
-      histogram: {
-        data: [10, 10]
+      network: {
+        histogram: {
+          data: [10, 10]
+        }
       }
     }
     afterEach(() => {
@@ -181,7 +185,7 @@ describe('Services for health kpis', () => {
         })
       )
       expect(status).toBe('fulfilled')
-      expect(data).toStrictEqual(expectedResult.histogram)
+      expect(data).toStrictEqual(expectedResult.network.histogram)
       expect(error).toBe(undefined)
     })
   })
