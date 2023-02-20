@@ -298,9 +298,9 @@ exports[`KpiWidget should return proper Kpi info text 1`] = `
 Object {
   "current": Object {
     "clientThroughput": Object {
-      "shortText": "Above 10 Mbps",
+      "shortText": "Above 9.77 Mbps",
       "title": "Client Throughput",
-      "tooltip": "12.3K of 23.5K sessions above 10 Mbps",
+      "tooltip": "12.3K of 23.5K sessions above 9.77 Mbps",
     },
     "connectionSuccess": Object {
       "shortText": "",

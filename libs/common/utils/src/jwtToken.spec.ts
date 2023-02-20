@@ -75,3 +75,30 @@ describe('jwtToken', () => {
     expect(() => getJwtTokenPayload()).toThrow('Unable to parse JWT Token')
   })
 })
+
+describe('process.env.NODE_ENV = development', () => {
+  const oldEnv = process.env.NODE_ENV
+  beforeEach(()=>{
+    process.env.NODE_ENV = 'development'
+    sessionStorage.setItem('jwt', '')
+  })
+  afterEach(()=>{
+    process.env.NODE_ENV = oldEnv
+  })
+  it('getJwtTokenPayload', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+    require('./jwtToken').getJwtTokenPayload()
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toBeCalledWith('No JWT token found! So setting default JWT values')
+  })
+  it('getJwtToken', () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+    require('./jwtToken').getJwtToken()
+
+    expect(spy).toHaveBeenCalled()
+    expect(spy).toBeCalledWith('JWT TOKEN NOT FOUND!')
+  })
+})

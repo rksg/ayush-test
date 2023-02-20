@@ -63,7 +63,7 @@ interface JwtToken {
 
 const cache = new Map()
 
-const isDev = process.env['NODE_ENV'] === 'development'
+const isDev = () => process.env['NODE_ENV'] === 'development'
 
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
@@ -71,7 +71,7 @@ export function getJwtTokenPayload () {
 
   if (jwt === null) {
     const tenantId = getTenantId() // when JWT FF is disabled
-    if (isDev) {
+    if (isDev()) {
       // eslint-disable-next-line no-console
       console.warn('No JWT token found! So setting default JWT values')
     }
@@ -106,7 +106,7 @@ export function getJwtToken () {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
   } else {
-    if (isDev) {
+    if (isDev()) {
       // eslint-disable-next-line no-console
       console.warn('JWT TOKEN NOT FOUND!')
     }
