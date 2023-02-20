@@ -300,19 +300,17 @@ function ConnectedNetworkFilter (
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   const { bands: selectedBands } = reportsFilter
-  /* eslint-disable react-hooks/rules-of-hooks */
-  const incidentsList = withIncidents
-    ? useIncidentsListQuery(
-      omit({
-        ...filters, path: defaultNetworkPath, includeMuted: false
-      }, 'filter'),
-      {
-        selectFromResult: ({ data }) => ({
-          data: data ? getSeverityFromIncidents(data) : []
-        })
-      }
-    )
-    : { data: [] }
+  const incidentsList = useIncidentsListQuery(
+    omit({
+      ...filters, path: defaultNetworkPath, includeMuted: false
+    }, 'filter'),
+    {
+      skip: !Boolean(withIncidents),
+      selectFromResult: ({ data }) => ({
+        data: data ? getSeverityFromIncidents(data) : []
+      })
+    }
+  )
 
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
