@@ -35,8 +35,7 @@ const initialPortalData : Portal ={
     photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
     logoRatio: PortalDemoDefaultSize.logoRatio,
-    secondaryText: 'Lorem ipsum dolor sit amet, '+
-    'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
+    secondaryText: '',
     secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: '#EC7100',
@@ -145,13 +144,13 @@ export const PortalForm = (props:{
   }, [data])
   return (
     <>
-      <PageHeader
+      {!networkView && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/service' }
         ]}
-      />
+      />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
         <StepsForm<Portal>
           formRef={formRef}
