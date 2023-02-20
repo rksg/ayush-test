@@ -301,6 +301,43 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
 
+export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true, 
+  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+    const { $t } = getIntl()
+  switch (switchStatusEnum) {
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+    case SwitchStatusEnum.INITIALIZING:
+      return $t({ defaultMessage: 'Initializing' })
+    case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
+    case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
+    case SwitchStatusEnum.FIRMWARE_UPD_START:
+    case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
+    case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      return $t({ defaultMessage: 'Firmware Updating' })
+    case SwitchStatusEnum.OPERATIONAL:
+      if (configReady && syncedSwitchConfig) {
+        if (suspendingDeployTime && suspendingDeployTime.length > 0) {
+          return $t({ defaultMessage: 'Operational - applying configuration' })
+        }
+        return $t({ defaultMessage: 'Operational' })
+      } else if (!syncedSwitchConfig) {
+        return $t({ defaultMessage: 'Synchronizing data' })
+      } else {
+        return $t({ defaultMessage: 'Operational - Synchronizing' })
+      }
+    case SwitchStatusEnum.DISCONNECTED:
+      return $t({ defaultMessage: 'Disconnected from cloud' })
+    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      return $t({ defaultMessage: 'Never contacted Active Switch' })
+    default:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+  }
+}
+
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
   syncedSwitchConfig = true, suspendingDeployTime = '') => {
   const { $t } = getIntl()

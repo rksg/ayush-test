@@ -1,12 +1,45 @@
 import { Descriptions } from '@acx-ui/components'
-import { FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
+import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
 import styled from 'styled-components/macro'
 
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
   height: 24px;
-  text-align: right;
-  padding: 0 16px;
+  // padding: 0 16px;
+  // display: flex;
+  // justify-content: space-between;
+  
+  .unit-header {
+    background-color: var(--acx-primary-black);
+    color: var(--acx-primary-white);
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    text-align: center;
+    float: left;
+
+    &.operational {
+      background-color: var(--acx-semantics-green-50);
+    }
+  }
+
+  .model {
+    width: 180px;
+    float: left;
+    padding: 3px 20px 3px 8px;
+  }
+
+  .icon {
+    float: left;
+  }
+
+  .status {
+    padding-right: 20px;
+  }
+
+  .view-button{
+    float: right;
+  }
 `
 
 export const SwitchFrontRearViewWrapper = styled.div`
@@ -102,6 +135,10 @@ export const TagsSolidIcon = styled(TagsSolid)`
   path {
     fill: var(--acx-primary-white);
   }
+`
+
+export const SettingsIcon = styled(ConfigurationOutlined)`
+  height: 14px;
 `
 
 const getRearColor = (rearColor: string) => {

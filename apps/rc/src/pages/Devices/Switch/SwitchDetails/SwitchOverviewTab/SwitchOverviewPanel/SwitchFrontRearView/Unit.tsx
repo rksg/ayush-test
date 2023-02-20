@@ -1,6 +1,6 @@
 import { Button } from '@acx-ui/components'
 import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchStatus } from '@acx-ui/rc/utils'
+import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
@@ -250,7 +250,7 @@ export function Unit (props:{
         isOnline,
         needAck: isEmpty(switchMember.needAck) ? false : switchMember.needAck,
         ackMsg: getAckMsg(!!switchMember.needAck, switchMember.serialNumber, switchMember.newSerialNumber),
-        activeStatus: isEmpty(switchMember.unitStatus) ? transformSwitchStatus(defaultStatusEnum) :
+        activeStatus: isEmpty(switchMember.unitStatus) ? transformSwitchUnitStatus(defaultStatusEnum) :
           switchMember.unitStatus
       }
     };
@@ -294,22 +294,54 @@ export function Unit (props:{
   }
 
   const ViewModeButton = <Button 
-    type='link' 
-    size='small'
-    disabled={!isSwitchOperational}
-    onClick={onClickViewMode}
-  >
-  { isRearView ? $t({ defaultMessage: 'Front View' }) : $t({ defaultMessage: 'Rear View' }) }
-  </Button>
+      type='link' 
+      size='small'
+      disabled={!isSwitchOperational}
+      onClick={onClickViewMode}
+    >
+    { isRearView ? $t({ defaultMessage: 'Front View' }) : $t({ defaultMessage: 'Rear View' }) }
+    </Button>
 
   return <div>
     <UI.TitleBar>
-      {!isSwitchOperational && !isRearView ? 
-        <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
-          <span>{ViewModeButton}</span>
-        </Tooltip> :
-        ViewModeButton
+      {
+        isStack && 
+        <>
+        {
+          isOnline 
+          ? <>
+              <div>{unit.switchUnit}</div>
+              <div>{unit.model}</div>
+              { unit.unitStatus.needAck 
+                ? <div>{unit.unitStatus.ackMsg}</div>
+                : <span>{unit.poeUsage.used} / {unit.poeUsage.total} ({unit.poeUsage.percentage})</span>
+              }
+            </>
+          : <>
+              <div className='unit-header'>{unit.switchUnit}</div>
+              <div className='model'>{unit.model}</div>
+              <div className='icon'>
+                <UI.SettingsIcon />
+              </div>
+              <div className='status'>
+                { unit.unitStatus && unit.unitStatus.needAck 
+                  ? unit.unitStatus.ackMsg
+                  : unit.unitStatus.activeStatus
+                }
+              </div>
+            
+            </>
+        }
+        </>
       }
+      <div className='view-button'>
+        {!isSwitchOperational && !isRearView ? 
+          <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
+            <span>{ViewModeButton}</span>
+          </Tooltip> :
+          ViewModeButton
+        }
+      </div>
     </UI.TitleBar>
     <UI.UnitWrapper>
       { !isRearView 
