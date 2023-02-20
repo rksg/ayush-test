@@ -10,8 +10,7 @@ import {
   mockServer,
   render,
   screen,
-  waitFor,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { emptyList, mockAaaSetting, mockAaaSettingWithOrder, radiusList } from '../../../__tests__/fixtures'
@@ -47,13 +46,7 @@ describe('SwitchAAATab', () => {
     )
     render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
-    await waitForElementToBeRemoved(
-      () => screen.queryAllByRole('img', { name: 'loader' }),
-      { timeout: 10000 }
-    )
-
-    const settingsBtn = screen.getByRole('link', { name: 'Settings' })
-    fireEvent.click(settingsBtn)
+    fireEvent.click(await screen.findByRole('link', { name: 'Settings' }))
 
     const sshCbx = screen.getByLabelText('SSH Authentication')
     fireEvent.click(sshCbx)

@@ -160,8 +160,7 @@ describe('Device Inventory Table', () => {
         route: { params, path: '/:tenantId/deviceinventory' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const tbody = screen.getByRole('table').querySelector('tbody')!
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
     expect(rows).toHaveLength(list.data.length)
