@@ -14,14 +14,7 @@ import ManageDhcpDrawer from './ManageDhcpDrawer'
 import Pools            from './Pools'
 import * as UI          from './styledComponents'
 
-const useMockData = () => {
-  const [data] = useState(0)
-  return { data }
-}
-
 const EdgeDhcp = () => {
-
-  const { data } = useMockData()
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
@@ -58,7 +51,7 @@ const EdgeDhcp = () => {
       content: <Pools tableQuery={tableQuery} />
     },
     leases: {
-      title: $t({ defaultMessage: 'Leases ( {count} online )' }, { count: data }),
+      title: $t({ defaultMessage: 'Leases ( {count} online )' }, { count: 0 }),
       content: <Leases />
     }
   }
