@@ -34,7 +34,7 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return <TenantLink
-          to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
+          to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
       }
     },
     {

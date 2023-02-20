@@ -46,6 +46,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid subnet mask',
     description: 'Validation - subnet mask checks'
   }),
+  subnetMaskBased255_255: defineMessage({
+    defaultMessage: 'Please enter a valid Netmask based on the 255.255 mask prefix',
+    description: 'Validation - subnet mask checks'
+  }),
   invalid: defineMessage({
     defaultMessage: 'This field is invalid',
     description: 'Validation - invalid checks'
@@ -205,6 +209,46 @@ export const validationMessages = {
     defaultMessage: 'Enter a valid number between 0 and 7',
     description: 'Validation - priority checks'
   }),
+  whitespaceOnly: defineMessage({
+    defaultMessage: 'Whitespace chars only are not allowed',
+    description: 'Validation - Whitespace chars check'
+  }),
+  numberRangeInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between {from} and {to}',
+    description: 'Validation - range check'
+  }),
+  agree: defineMessage({
+    defaultMessage: 'Please type “AGREE”',
+    description: 'Validation - Please type “AGREE”'
+  }),
+  nameCannotStartWithNumber: defineMessage({
+    defaultMessage: 'Name cannot start with a number',
+    description: 'Validation - name checks'
+  }),
+  nameInvalid: defineMessage({
+    defaultMessage: 'Name may include only letters and numbers',
+    description: 'Validation - name checks'
+  }),
+  startRangeInvalid: defineMessage({
+    defaultMessage: 'Start value must be lower than end value',
+    description: 'Validation - range checks'
+  }),
+  endRangeInvalid: defineMessage({
+    defaultMessage: 'End value must be higher than start value',
+    description: 'Validation - range checks'
+  }),
+  specialCharactersInvalid: defineMessage({
+    defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed',
+    description: 'Validation - special characters checks'
+  }),
+  minValueInvalid: defineMessage({
+    defaultMessage: 'Minimal value is {value}',
+    description: 'Validation - min value checks'
+  }),
+  maxValueInvalid: defineMessage({
+    defaultMessage: 'Maximal value is {value}',
+    description: 'Validation - max value checks'
+  }),
   oneRadioChannel: defineMessage({
     defaultMessage: 'Please select one channel',
     description: 'Validation - radio channel checks'
@@ -272,8 +316,11 @@ export const validationMessages = {
   switchStaticRouteAdminDistanceInvalid: defineMessage({
     defaultMessage: 'Enter a valid number between 0 and 255',
     description: 'Validation - switch static route admin distance'
+  }),
+  subnetOverlapping: defineMessage({
+    defaultMessage: 'The ports have overlapping subnets',
+    description: 'Validation - subnet range'
   })
-
 
 
 
