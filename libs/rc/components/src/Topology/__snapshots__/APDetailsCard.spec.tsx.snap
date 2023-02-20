@@ -1,0 +1,434 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Topology AP Card should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-13w5wfx-4 ebSYxh"
+    type="no-border"
+  >
+    <div
+      class="ant-card"
+    >
+      <div
+        class="ant-card-head"
+      >
+        <div
+          class="ant-card-head-wrapper"
+        >
+          <div
+            class="ant-card-head-title"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="ant-card-extra"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-card-body"
+      >
+        <div
+          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm"
+            style="padding: 0px;"
+            type="button"
+          >
+            <span>
+              R760-181-66
+            </span>
+          </button>
+        </div>
+        <div
+          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+        >
+          <div
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+          >
+            <div
+              class="ant-descriptions-view"
+            >
+              <table>
+                <tbody>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          AP Model
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          R760
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          MAC Address
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          B4:79:C8:3E:C8:70
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          IP Address
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          192.168.181.66
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Status
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          <span
+                            class="ant-badge ant-badge-status ant-badge-not-a-wrapper"
+                          >
+                            <span
+                              class="ant-badge-status-dot"
+                            />
+                            <span
+                              class="ant-badge-status-text"
+                            >
+                              AP operational
+                            </span>
+                          </span>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Health
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          --
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Wireless Radio
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          <div
+                            class="sc-ftvSup dEqZDE"
+                          >
+                            <div
+                              class="ant-table-wrapper"
+                            >
+                              <div
+                                class="ant-spin-nested-loading"
+                              >
+                                <div
+                                  class="ant-spin-container"
+                                >
+                                  <div
+                                    class="ant-table ant-table-small"
+                                  >
+                                    <div
+                                      class="ant-table-container"
+                                    >
+                                      <div
+                                        class="ant-table-content"
+                                      >
+                                        <table
+                                          style="table-layout: auto;"
+                                        >
+                                          <colgroup />
+                                          <thead
+                                            class="ant-table-thead"
+                                          >
+                                            <tr>
+                                              <th
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              />
+                                              <th
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                RF Channel
+                                              </th>
+                                              <th
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                RF Bandwidth
+                                              </th>
+                                              <th
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                TX Power
+                                              </th>
+                                            </tr>
+                                          </thead>
+                                          <tbody
+                                            class="ant-table-tbody"
+                                          >
+                                            <tr
+                                              class="ant-table-row ant-table-row-level-0"
+                                            >
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                2.4G
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                0
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                20
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                max
+                                              </td>
+                                            </tr>
+                                            <tr
+                                              class="ant-table-row ant-table-row-level-0"
+                                            >
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                5G
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                0
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                80
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                max
+                                              </td>
+                                            </tr>
+                                            <tr
+                                              class="ant-table-row ant-table-row-level-0"
+                                            >
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                5G
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                0
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                80
+                                              </td>
+                                              <td
+                                                class="ant-table-cell"
+                                                style="text-align: center;"
+                                              >
+                                                max
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Clients Connected
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          --
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Last Seen
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          Feb 07 2023 08:31
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

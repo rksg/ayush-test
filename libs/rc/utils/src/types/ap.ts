@@ -62,7 +62,8 @@ export interface AP {
   hops?: number,
   apDownRssi?: number,
   apUpRssi: number,
-  poePort?: string
+  poePort?: string,
+  healthStatus?: string
 }
 
 export interface ApViewModel extends AP {

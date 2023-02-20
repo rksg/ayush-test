@@ -610,7 +610,7 @@ export function MoreSettingsForm (props: {
             </div>
           </>}
       </Panel>
-      {wlanData.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='4'>
+      {data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&<Panel header='User Connection' key='4'>
         <UserConnectionForm/>
       </Panel>}
     </UI.CollapsePanel>
