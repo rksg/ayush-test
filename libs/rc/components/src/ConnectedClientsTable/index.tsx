@@ -137,7 +137,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return '--'
         }else{
           return (
-            <TenantLink to={`/devices/switch/${data}/details/overview`}>{row.switchName}</TenantLink>
+            <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
           )
         }
       }

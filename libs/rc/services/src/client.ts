@@ -47,7 +47,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         const clientListMetaInfo = {
           ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
-            fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
+            fields: ['switchId', 'switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
               id: clientList?.data.map(item => item.clientMac)
             }
