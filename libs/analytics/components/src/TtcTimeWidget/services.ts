@@ -20,8 +20,9 @@ export const api = dataApi.injectEndpoints({
             $path: [HierarchyNodeInput]
             $start: DateTime
             $end: DateTime
+            $filter: FilterInput
           ) {
-            network (start: $start, end: $end) {
+            network (start: $start, end: $end, filter: $filter) {
               hierarchyNode (path: $path) {
                 timeSeries (granularity: "all") {
                   ttc: timeToConnect
@@ -32,7 +33,8 @@ export const api = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          path: payload.path
+          path: payload.path,
+          filter: payload.filter ?? {}
         }
       }),
       transformResponse: (result: Response) =>

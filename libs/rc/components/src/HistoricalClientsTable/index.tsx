@@ -76,7 +76,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     sorter: true,
     render: (data, row) => row?.networkId
       ? <TenantLink
-        to={`/networks/wireless/${row?.networkId}/network-details/aps`}>{data}</TenantLink>
+        to={`/networks/wireless/${row?.networkId}/network-details/overview`}>{data}</TenantLink>
       : data
   }, {
     key: 'disconnectTime',

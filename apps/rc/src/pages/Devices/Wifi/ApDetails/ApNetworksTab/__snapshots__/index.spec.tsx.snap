@@ -396,7 +396,7 @@ exports[`Networks Table should render table 1`] = `
                                 class="ant-table-cell ant-table-column-sort"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/aps"
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/networks/wireless/c9d5f4c771c34ad2898f7078cebbb191/network-details/overview"
                                 >
                                   network-01
                                 </a>

@@ -35,6 +35,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
   ClientHealth: () => <div data-testid='anayltics-ClientHealth' title='ClientHealth' />
 }))
 
+jest.mock('./TopApplications', () => ({
+  TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
+}))
+
 const params = {
   tenantId: 'tenant-id',
   clientId: 'client-id'
