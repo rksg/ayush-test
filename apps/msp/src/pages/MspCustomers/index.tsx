@@ -158,7 +158,7 @@ export function MspCustomers () {
       render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          (row.status === 'Active') ? <Link to={to}>{highlightFn(data as string)}</Link> : data
         )
       }
     },
