@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
 import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
+import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -9,21 +12,33 @@ import {
   ServiceOperation,
   getServiceRoutePath,
   getServiceListRoutePath,
-  Portal
+  Portal,
+  PortalLanguageEnum
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
+import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
+import Logo               from '../../../../assets/images/portal-demo/RuckusCloud.svg'
+import { getLanguage }    from '../../commonUtils'
+import PortalPreviewModal from '../PortalPreviewModal'
 
 export default function PortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deletePortal ] = useDeletePortalMutation()
-
+  const [getPortalLang] = useGetPortalLangMutation()
+  const PORTAL_LIMIT_NUMBER = 256
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
-    defaultPayload: {}
-  })
+    defaultPayload: {
 
+    }
+  })
+  const params = useParams()
+  const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
+  const [portalId, setPortalId]=useState('')
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
@@ -77,21 +92,44 @@ export default function PortalTable () {
       }
     },
     {
-      // TODO
       key: 'language',
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
-      sorter: true
+      sorter: true,
+      render: (data, row) =>{
+        return getLanguage(row.content.displayLangCode as keyof typeof PortalLanguageEnum )
+      }
     },
     {
-      // TODO
       key: 'demo',
       title: intl.$t({ defaultMessage: 'Preview' }),
       dataIndex: 'demo',
-      align: 'center'
+      align: 'center',
+      render: (data, row) =>{
+        const demoValue = row.content
+        const prefix = '/api/file/tenant/'+params.tenantId+'/'
+        const newDemo = { ...demoValue, poweredImg: demoValue.poweredImg?
+          (prefix+demoValue.poweredImg):Powered,
+        logo: demoValue.logo?(prefix+demoValue.logo):Logo,
+        photo: demoValue.photo?(prefix+demoValue.photo): Photo,
+        bgImage: demoValue.bgImage?(prefix+demoValue.bgImage):'' }
+        return <div aria-label={row.id}
+          onClick={(e)=>{
+            getPortalLang({ params: { ...params, messageName:
+              row.content.displayLangCode+'.json' } }).unwrap().then(res=>{
+              setPortalLang(res)
+              setPortalId(row.id as string)
+            })
+            e.stopPropagation()
+          }}><PortalPreviewModal
+            demoValue={newDemo}
+            portalLang={portalLang}
+            id={row.id}
+            portalId={portalId}
+            fromPortalList={true}/></div>
+      }
     },
     {
-      // TODO
       key: 'networkCount',
       title: intl.$t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkCount',
@@ -112,7 +150,10 @@ export default function PortalTable () {
         extra={[
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })} key='add'>
-            <Button type='primary'>{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= PORTAL_LIMIT_NUMBER
+                : false} >{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
           </TenantLink>
         ]}
       />

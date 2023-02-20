@@ -409,11 +409,19 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
     newApi: true
   },
+  deleteProfiles: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/profiles'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/cliTemplates/query',
     oldUrl: '/api/switch/tenant/:tenantId/cli-template/query',
     newApi: true
+  },
+  deleteCliTemplates: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getCliTemplate: {
     method: 'get',

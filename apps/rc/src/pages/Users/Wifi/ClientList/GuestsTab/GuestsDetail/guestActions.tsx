@@ -18,10 +18,10 @@ export function useGuestActions () {
   const [enableGuests] = useEnableGuestsMutation()
   const [disableGuests] = useDisableGuestsMutation()
 
-  const showDownloadInformation = (guest: Guest, tenantId?: string) => {
+  const showDownloadInformation = (guest: Guest | Guest[], tenantId?: string) => {
     const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const guestIds = [guest.id]
+    const guestIds = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
 
     getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
       .catch(() => {
@@ -32,17 +32,20 @@ export function useGuestActions () {
       })
   }
 
-  const showDeleteGuest = async (guest: Guest, tenantId?: string, callBack?: ()=>void) => {
+  const showDeleteGuest = async (guest: Guest | Guest[],
+    tenantId?: string, callBack?: ()=>void) => {
+    const guests = Array.isArray(guest) ? guest : [guest]
+
     showActionModal({
       type: 'confirm',
       customContent: {
         action: 'DELETE',
         entityName: $t({ defaultMessage: 'Guest' }),
-        entityValue: guest.name,
-        numOfEntities: 1
+        entityValue: guests[0].name,
+        numOfEntities: guests.length
       },
       onOk: () => {
-        deleteGuests({ params: { tenantId }, payload: [guest.id] }).then(
+        deleteGuests({ params: { tenantId }, payload: guests.map(g => g.id) }).then(
           callBack
         )
       }

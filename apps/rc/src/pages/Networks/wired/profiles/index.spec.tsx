@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
@@ -58,7 +59,9 @@ describe('Wired', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(SwitchUrlsInfo.getProfiles.url,
-        (_, res, ctx) => res(ctx.json(profilesList)))
+        (_, res, ctx) => res(ctx.json(profilesList))),
+      rest.delete(SwitchUrlsInfo.deleteProfiles.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
   })
 
@@ -74,6 +77,21 @@ describe('Wired', () => {
 
     expect(await screen.findByText('Add Regular Profile')).toBeVisible()
     expect(await screen.findByText('profile-test')).toBeVisible()
+  })
+
+  it('should delete profiles correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      activeTab: 'profiles'
+    }
+    render(<Provider><ProfilesTab /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:activeTab' }
+    })
+
+    expect(await screen.findByText('profile-test')).toBeVisible()
+    await userEvent.click(await screen.findByText('profile-test'))
+    await userEvent.click(await screen.findByText('Delete'))
+    await userEvent.click(await screen.findByText('Delete Profile'))
   })
 
 })

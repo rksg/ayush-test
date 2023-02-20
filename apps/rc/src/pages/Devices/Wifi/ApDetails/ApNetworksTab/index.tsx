@@ -41,7 +41,9 @@ export function ApNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (disabledType.includes(row.nwSubType as NetworkTypeEnum)) ? data :(
-          <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+            {data}
+          </TenantLink>
         )
       }
     }, {
