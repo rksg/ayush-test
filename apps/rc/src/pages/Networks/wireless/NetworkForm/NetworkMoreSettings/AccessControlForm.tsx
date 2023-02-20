@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import {
   Checkbox,
@@ -12,13 +12,13 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button }                    from '@acx-ui/components'
+import { Button, Modal, ModalType, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useApplicationPolicyListQuery,
-  useAccessControlProfileListQuery
+  useAccessControlProfileListQuery, useAddAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
   AccessControlProfile
@@ -27,11 +27,13 @@ import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
 
-import ApplicationDrawer  from '../../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
-import DeviceOSDrawer     from '../../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
-import Layer2Drawer       from '../../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
-import Layer3Drawer       from '../../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
-import NetworkFormContext from '../NetworkFormContext'
+import { convertToPayload }     from '../../../../Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AccessControlSettingForm from '../../../../Policies/AccessControl/AccessControlForm/AccessControlSettingForm'
+import ApplicationDrawer        from '../../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
+import DeviceOSDrawer           from '../../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
+import Layer2Drawer             from '../../../../Policies/AccessControl/AccessControlForm/Layer2Drawer'
+import Layer3Drawer             from '../../../../Policies/AccessControl/AccessControlForm/Layer3Drawer'
+import NetworkFormContext       from '../NetworkFormContext'
 
 import * as UI from './styledComponents'
 
@@ -106,13 +108,78 @@ export function AccessControlForm () {
 
 function SaveAsAcProfileButton () {
   const { $t } = useIntl()
+  const params = useParams()
+  const form = Form.useFormInstance()
+  const [visible, setVisible] = useState(false)
+
+  const [ createAclProfile ] = useAddAccessControlProfileMutation()
+
+  const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
+
   return (
-    <Button
-      type='link'
-      disabled={true}
-    >
-      {$t({ defaultMessage: 'Save as AC Profile' })}
-    </Button>
+    <>
+      <Button
+        type='link'
+        onClick={() => setVisible(true)}
+      >
+        {$t({ defaultMessage: 'Save as AC Profile' })}
+      </Button>
+      <Modal
+        title={$t({ defaultMessage: 'Add Access Control Policy' })}
+        visible={visible}
+        type={ModalType.ModalStepsForm}
+      >
+        <StepsForm<AccessControlProfile>
+          formRef={formRef}
+          onCancel={() => setVisible(false)}
+          onFinish={async () => {
+            try {
+              await createAclProfile({
+                params: params,
+                payload: convertToPayload(false, formRef, params.policyId)
+              }).unwrap()
+
+              setVisible(false)
+            } catch(error) {
+              showToast({
+                type: 'error',
+                content: $t({ defaultMessage: 'An error occurred' })
+              })
+            }
+          }}
+        >
+          <StepsForm.StepForm<AccessControlProfile>
+            name='settings'
+            title={$t({ defaultMessage: 'Settings' })}
+          >
+            <AccessControlSettingForm
+              editMode={false}
+              embeddedMode={true}
+              embeddedObject={{
+                l2AclPolicyId: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'l2AclPolicyId']
+                ),
+                l3AclPolicyId: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'l3AclPolicyId']
+                ),
+                devicePolicyId: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'devicePolicyId']
+                ),
+                applicationPolicyId: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'applicationPolicyId']
+                ),
+                uplinkLimit: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'userUplinkRateLimiting']
+                ),
+                downlinkLimit: form.getFieldValue(
+                  ['wlan', 'advancedCustomization', 'userDownlinkRateLimiting']
+                )
+              }}
+            />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Modal>
+    </>
   )
 }
 

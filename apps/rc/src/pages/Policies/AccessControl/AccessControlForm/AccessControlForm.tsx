@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { MutableRefObject, useRef } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -22,6 +22,58 @@ type AccessControlFormProps = {
   editMode: boolean
 }
 
+export const convertToPayload = (
+  editMode: boolean,
+  formRef: MutableRefObject<StepsFormInstance<AccessControlProfile> | undefined>,
+  policyId: string | undefined) => {
+  let payload = {} as AccessControlInfoType
+  if (editMode) {
+    payload.id = policyId ?? ''
+  }
+
+  payload.name = formRef.current?.getFieldValue('policyName')
+  payload.description = formRef.current?.getFieldValue('description')
+
+  if (formRef.current?.getFieldValue('enableLayer2')) {
+    payload.l2AclPolicy = {
+      enabled: true,
+      id: formRef.current?.getFieldValue('l2AclPolicyId')
+    }
+  }
+
+  if (formRef.current?.getFieldValue('enableLayer3')) {
+    payload.l3AclPolicy = {
+      enabled: true,
+      id: formRef.current?.getFieldValue('l3AclPolicyId')
+    }
+  }
+
+  if (formRef.current?.getFieldValue('enableDeviceOs')) {
+    payload.devicePolicy = {
+      enabled: true,
+      id: formRef.current?.getFieldValue('devicePolicyId')
+    }
+  }
+
+  if (formRef.current?.getFieldValue('enableApplications')) {
+    payload.applicationPolicy = {
+      enabled: true,
+      id: formRef.current?.getFieldValue('applicationPolicyId')
+    }
+  }
+
+  if (formRef.current?.getFieldValue(['rateLimiting', 'enableDownloadLimit'])
+    || formRef.current?.getFieldValue(['rateLimiting', 'enableUploadLimit'])) {
+    payload.rateLimiting = {
+      enabled: true,
+      uplinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'uplinkLimit']) ?? 0,
+      downlinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'downlinkLimit']) ?? 0
+    }
+  }
+
+  return payload
+}
+
 const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -35,66 +87,17 @@ const AccessControlForm = (props: AccessControlFormProps) => {
 
   const [ updateAclProfile ] = useUpdateAccessControlProfileMutation()
 
-  const convertToPayload = (editMode: boolean) => {
-    let payload = {} as AccessControlInfoType
-    if (editMode) {
-      payload.id = params.policyId ?? ''
-    }
-
-    payload.name = formRef.current?.getFieldValue('policyName')
-    payload.description = formRef.current?.getFieldValue('description')
-
-    if (formRef.current?.getFieldValue('enableLayer2')) {
-      payload.l2AclPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('l2AclPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableLayer3')) {
-      payload.l3AclPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('l3AclPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableDeviceOs')) {
-      payload.devicePolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('devicePolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableApplications')) {
-      payload.applicationPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('applicationPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue(['rateLimiting', 'enableDownloadLimit'])
-      || formRef.current?.getFieldValue(['rateLimiting', 'enableUploadLimit'])) {
-      payload.rateLimiting = {
-        enabled: true,
-        uplinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'uplinkLimit']) ?? 0,
-        downlinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'downlinkLimit']) ?? 0
-      }
-    }
-
-    return payload
-  }
-
   const handleAccessControlPolicy = async (editMode: boolean) => {
     try {
       if (!editMode) {
         await createAclProfile({
           params: params,
-          payload: convertToPayload(false)
+          payload: convertToPayload(false, formRef, params.policyId)
         }).unwrap()
       } else {
         await updateAclProfile({
           params: params,
-          payload: convertToPayload(true)
+          payload: convertToPayload(true, formRef, params.policyId)
         }).unwrap()
       }
 

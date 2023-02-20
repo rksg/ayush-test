@@ -371,6 +371,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
 
   if (!get(data, 'accessControlProfileEnable')) {
     advancedCustomization.accessControlProfileId = null
+    advancedCustomization.accessControlEnable = false
   }
 
   if (get(data, 'accessControlProfileEnable')

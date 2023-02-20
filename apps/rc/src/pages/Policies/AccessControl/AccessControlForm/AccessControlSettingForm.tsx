@@ -9,16 +9,23 @@ import { useParams }   from 'react-router-dom'
 import { GridCol, GridRow }                                                     from '@acx-ui/components'
 import { StepsForm }                                                            from '@acx-ui/components'
 import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
+import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
 
 import AccessControlComponent from './AccessControlComponent'
 
 type AccessControlSettingFormProps = {
-  editMode: boolean
+  editMode: boolean,
+  embeddedMode?: boolean,
+  embeddedObject?: AclEmbeddedObject
 }
 
 const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
   const { $t } = useIntl()
-  const { editMode } = props
+  const {
+    editMode,
+    embeddedMode = false,
+    embeddedObject = {} as AclEmbeddedObject
+  } = props
   const params = useParams()
   const form = Form.useFormInstance()
 
@@ -61,6 +68,30 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
 
     }
   }, [data, editMode])
+
+  useEffect(() => {
+    if (embeddedMode) {
+      form.setFieldValue('enableLayer2', embeddedObject?.l2AclPolicyId)
+      form.setFieldValue('l2AclPolicyId', embeddedObject?.l2AclPolicyId)
+      form.setFieldValue('enableLayer3', embeddedObject?.l3AclPolicyId)
+      form.setFieldValue('l3AclPolicyId', embeddedObject?.l3AclPolicyId)
+      form.setFieldValue('enableDeviceOs', embeddedObject?.devicePolicyId)
+      form.setFieldValue('devicePolicyId', embeddedObject?.devicePolicyId)
+      form.setFieldValue('enableApplications', embeddedObject?.applicationPolicyId)
+      form.setFieldValue('applicationPolicyId', embeddedObject?.applicationPolicyId)
+      form.setFieldValue(
+        'enableClientRateLimit', embeddedObject?.uplinkLimit || embeddedObject?.downlinkLimit
+      )
+      form.setFieldValue(['rateLimiting', 'uplinkLimit'], embeddedObject?.uplinkLimit ?? 0)
+      form.setFieldValue(['rateLimiting', 'enableUploadLimit'],
+        embeddedObject?.uplinkLimit && embeddedObject?.uplinkLimit > 0
+      )
+      form.setFieldValue(['rateLimiting', 'downlinkLimit'], embeddedObject?.downlinkLimit ?? 0)
+      form.setFieldValue(['rateLimiting', 'enableDownloadLimit'],
+        embeddedObject?.downlinkLimit && embeddedObject?.downlinkLimit > 0
+      )
+    }
+  }, [embeddedMode, embeddedObject])
 
   return (
     <GridRow>
