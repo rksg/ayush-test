@@ -886,7 +886,7 @@ export const rootCauseRecommendationMap = {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
-          <p>System has detected the AP(s) are underperforming w.r.t WiFi Radio spatial streams due to insufficient power available on PoE port. This can occur due to following reasons:</p>
+          <p>System has detected the AP(s) are underperforming w.r.t Wi-Fi Radio spatial streams due to insufficient power available on PoE port. This can occur due to following reasons:</p>
           <ol>
             <li>Insufficient power from the Power over Ethernet (PoE) switch or PoE injector device aka. Power Sourcing Equipment (PSE).</li>
             <li>Faulty cables, Wrong cable types and very long cables can lead to power deterioration supplied to AP.</li>

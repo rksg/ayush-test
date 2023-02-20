@@ -65,10 +65,10 @@ export function Integrators () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{data}</Link>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -175,6 +175,7 @@ export function Integrators () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowSelection={{ type: 'radio' }}
         />

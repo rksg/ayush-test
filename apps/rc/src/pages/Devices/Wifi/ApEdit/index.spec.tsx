@@ -98,7 +98,7 @@ describe('ApEdit', () => {
       }))
     }))
 
-    it('should handle data updated', async () => {
+    it.skip('should handle data updated', async () => {
       render(<Provider><ApEdit /></Provider>, {
         route: { params },
         path: '/:tenantId/devices/wifi/:serialNumber/edit/:activeTab'

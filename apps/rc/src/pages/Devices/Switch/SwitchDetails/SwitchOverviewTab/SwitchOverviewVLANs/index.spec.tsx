@@ -13,11 +13,6 @@ import { vlanList } from './__tests__/fixtures'
 
 import { SwitchOverviewVLANs } from '.'
 
-jest.mock('@acx-ui/icons', () => ({
-  ...jest.requireActual('@acx-ui/icons'),
-  QuestionMarkCircleOutlined: () => <div data-testid='QuestionMarkCircleOutlined' />
-}))
-
 describe('Switch Overview VLAN', () => {
   const params = {
     tenantId: 'tenant-id',

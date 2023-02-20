@@ -34,9 +34,8 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         return (
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.MAC_REGISTRATION_LIST,
@@ -44,7 +43,7 @@ function useColumns () {
               policyId: row.id!,
               activeTab: MacRegistrationDetailsTabKey.OVERVIEW
             })}
-          >{data}</TenantLink>
+          >{highlightFn(data as string)}</TenantLink>
         )
       }
     },

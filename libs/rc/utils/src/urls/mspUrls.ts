@@ -69,6 +69,10 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation'
   },
+  getMspCustomersListDropdown: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:mspTenantId/mspeclist'
+  },
   getMspProfile: {
     method: 'get',
     url: '/api/mspservice/tenant/:tenantId/msplabel'
@@ -76,6 +80,14 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   getMspEcProfile: {
     method: 'get',
     url: '/api/mspservice/tenant/:tenantId'
+  },
+  getTenantDetail: {
+    method: 'get',
+    url: '/api/tenant/:tenantId'
+  },
+  getSupportMspCustomersList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/msp-ec?delegation=support'
   },
   getMspEcAdminList: {
     method: 'get',

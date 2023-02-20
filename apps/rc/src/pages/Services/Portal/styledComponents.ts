@@ -15,13 +15,14 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   TextPlus as UITextPlus,
   ConfigurationSolid as AntSettingOutlined,
   EnvelopClosedOutlined as AntMailOutlined,
-  Edit as AntEditOutlined,
+  EditOutlined as AntEditOutlined,
   AccountCircleOutlined as AntUserOutlined,
   FacebookOutlined as Facebook,
   GoogleSolidPlus,
   LinkedinOutlined as LinkedIn,
   TwitterOutlined as Twitter,
-  SMSOutlined
+  SMSOutlined,
+  EyeOpenSolid
 }   from '@acx-ui/icons'
 
 export const popoverClassName = 'portal-demo-popover'
@@ -140,7 +141,9 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   max-width:600px;
   `}
   align-items:center;
-  background-color: var(--acx-primary-white) !important;
+  .ant-layout{
+    background-color: var(--acx-primary-white);
+  }
   background-position: center !important;
   background-repeat: no-repeat !important;
   height:100%;
@@ -415,13 +418,16 @@ export const ViewSectionSpan = styled.span`
  color:var(--acx-accents-orange-30);
  margin-left:2px;
 `
-export const ViewTextArea = styled.div`
+export const ViewTextArea = styled.textarea`
  width:100%;
  height: 327px;
  line-height:20px;
  overflow-y:auto;
  text-align: left;
  padding: 5px 5px 20px 20px;
+ border: 0;
+ resize: none;
+ outline: none;
 `
 export const Popover = styled(AntPopover)`
 
@@ -566,7 +572,7 @@ export const LinkedinOutlined = styled(LinkedIn)`
 ${socialIconStyle}
 `
 export const SMSMobileOutlined = styled(SMSOutlined)`
-${socialIconStyle}
+
 `
 export const GoogleOutlined = styled(GoogleSolidPlus)`
 ${socialIconStyle}
@@ -577,4 +583,14 @@ border-radius:5px;
 width:272px;
 margin-left:45px;
 margin-bottom:10px;
+`
+export const EyeOpenPreview = styled(EyeOpenSolid)`
+cursor: pointer;
+path{
+  fill:var(--acx-accents-blue-50) !important;
+  stroke:var(--acx-accents-blue-50) !important;
+}
+path:nth-child(1){
+  fill: var(--acx-primary-white) !important;
+}
 `

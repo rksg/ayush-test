@@ -50,7 +50,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                           <div
                             class="ant-pro-table-list-toolbar-setting-item"
                           >
-                            <div
+                            <svg
                               data-testid="SettingsOutlined"
                             />
                           </div>
@@ -718,7 +718,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
                                   class="ant-table-cell"
                                 >
                                   <a
-                                    href="/t/tenant-id/networks/wireless/3f04e252a9d04180855813131d007aca/network-details/aps"
+                                    href="/t/tenant-id/networks/wireless/3f04e252a9d04180855813131d007aca/network-details/overview"
                                   >
                                     NMS-app6-WLAN
                                   </a>

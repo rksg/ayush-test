@@ -54,7 +54,7 @@ export default function PortalViewContentPreview (props:{
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
-      >{demoValue.secondaryText}
+      >{demoValue.secondaryText || props.portalLang.secondaryText}
       </UI.FieldText>}
       {((view === PortalViewEnum.ClickThrough && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough
@@ -106,7 +106,7 @@ export default function PortalViewContentPreview (props:{
         demoValue.poweredImgRatio)/PortalDemoDefaultSize.poweredImgRatio) }}>
         <div style={{ backgroundColor: demoValue.poweredBgColor }}>
           {componentDisplay.poweredBy &&<UI.FieldText style={{
-            marginBottom: -29, marginLeft: -25,
+            marginBottom: -15, marginLeft: -25,
             fontSize: (demoValue.poweredSize),
             lineHeight: 24 * ((demoValue.poweredSize)
             /PortalDemoDefaultSize.poweredSize)+'px' ,

@@ -1,7 +1,6 @@
 import { useParams } from 'react-router-dom'
 
-import { useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { EmbeddedReport }             from '@acx-ui/reports/components'
+import { EmbeddedReport }       from '@acx-ui/reports/components'
 import {
   ReportType,
   reportTypeDataStudioMapping
@@ -9,12 +8,10 @@ import {
 
 export function SwitchReportsTab () {
   const params = useParams()
-  const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
-
   return (
     <EmbeddedReport
       embedDashboardName={reportTypeDataStudioMapping[ReportType.SWITCH_DETAIL]}
-      rlsClause={`"switchId" in ('${switchDetailQuery?.data?.switchMac}')`}
+      rlsClause={`"switchId" in ('${params?.switchId?.toUpperCase()}')`}
     />
   )
 }

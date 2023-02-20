@@ -1,8 +1,11 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { getServiceDetailsLink, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                  from '@acx-ui/store'
-import { render, screen, within }                                                    from '@acx-ui/test-utils'
+import { EdgeDhcpUrls, getServiceDetailsLink, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { Provider }                                                                                from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                      from '@acx-ui/test-utils'
+
+import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
 
@@ -22,6 +25,21 @@ describe('EdgeDhcpTable', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+
+    mockServer.use(
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.delete(
+        EdgeDhcpUrls.deleteDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.delete(
+        EdgeDhcpUrls.bulkDeleteDhcpServices.url,
+        (req, res, ctx) => res(ctx.status(202))
+      )
+    )
   })
 
   it('Should render EdgeDhcpTable successfully', async () => {
@@ -31,8 +49,8 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findAllByRole('row', { name: /DHCP-/i })
-    expect(row.length).toBe(2)
+    const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
+    expect(row.length).toBe(3)
   })
 
   it('edge dhcp service detail page link should be correct', async () => {
@@ -43,7 +61,7 @@ describe('EdgeDhcpTable', () => {
         route: { params, path: tablePath }
       })
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
-      { name: 'DHCP-1' }) as HTMLAnchorElement
+      { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
       .toContain(`/t/${params.tenantId}/${getServiceDetailsLink({
         type: ServiceType.EDGE_DHCP,
@@ -60,7 +78,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /DHCP-1/i })
+    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -82,7 +100,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findAllByRole('row', { name: /DHCP-/i })
+    const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
@@ -96,10 +114,10 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /DHCP-1/i })
+    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "DHCP-1"?')
+    await screen.findByText('Delete "TestDHCP-1"?')
     await user.click(screen.getByRole('button', { name: 'Delete DHCP' }))
   })
 
@@ -111,8 +129,8 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row1 = await screen.findByRole('row', { name: /DHCP-1/i })
-    const row2 = await screen.findByRole('row', { name: /DHCP-2/i })
+    const row1 = await screen.findByRole('row', { name: /TestDHCP-1/i })
+    const row2 = await screen.findByRole('row', { name: /TestDHCP-2/i })
     await user.click(within(row1).getByRole('checkbox'))
     await user.click(within(row2).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))

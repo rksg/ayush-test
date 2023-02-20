@@ -12,8 +12,11 @@ import {
   MspEntitlement,
   MspEntitlementSummary,
   MspEc, EcDeviceInventory,
+  TenantDetail,
   MspEcData,
   MspEcDelegatedAdmins,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
   SupportDelegation,
   VarCustomer,
   MspProfile,
@@ -38,7 +41,18 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateMspEc',
+            'UpdateMspEc'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -130,6 +144,50 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getMspCustomersList, params, {}, true)
+        return {
+          ...mspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const varCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getVarDelegations, params, {}, true)
+        return {
+          ...varCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    supportCustomerListDropdown: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const supportMspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getSupportMspCustomersList, params, {}, true)
+        return {
+          ...supportMspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getTenantDetail: build.query<TenantDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getTenantDetail,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     getMspProfile: build.query<MspProfile, RequestPayload>({
       query: ({ params }) => {
         const req =
@@ -138,6 +196,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    supportMspCustomerList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const supportMspCustomerListReq =
+        createHttpRequest(MspUrlsInfo.getSupportMspCustomersList, params)
+        return {
+          ...supportMspCustomerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
       query: ({ params }) => {
@@ -271,6 +340,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    refreshMspEntitlement: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.refreshMspEntitlement, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -285,6 +363,11 @@ export const {
   useMspEntitlementSummaryQuery,
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
+  useMspCustomerListDropdownQuery,
+  useVarCustomerListDropdownQuery,
+  useSupportCustomerListDropdownQuery,
+  useGetTenantDetailQuery,
+  useSupportMspCustomerListQuery,
   useGetMspProfileQuery,
   useGetMspEcProfileQuery,
   useMspEcAdminListQuery,
@@ -299,5 +382,6 @@ export const {
   useReactivateMspEcMutation,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
-  useDisableMspEcSupportMutation
+  useDisableMspEcSupportMutation,
+  useRefreshMspEntitlementMutation
 } = mspApi

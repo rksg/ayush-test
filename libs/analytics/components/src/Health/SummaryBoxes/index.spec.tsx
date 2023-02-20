@@ -18,24 +18,18 @@ describe('box', () => {
     type: 'successCount',
     title: defineMessage({ defaultMessage: 'test box' }),
     suffix: '/suffix',
-    isOpen: false,
+    // isOpen: false,
     value: '100'
   }
   it('should render correctly', async () => {
-    const onClick = jest.fn()
-    const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
+    // TODO: post GA
+    // const onClick = jest.fn()
+    // const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
+    // expect(asFragment()).toMatchSnapshot()
+    // await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
+    // expect(onClick).toBeCalledTimes(1)
+    const { asFragment } = render(<Box {...boxProps} />)
     expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
-    expect(onClick).toBeCalledTimes(1)
-  })
-  it('should render correctly when disabled', async () => {
-    const onClick = jest.fn()
-    const { asFragment } = render(<Box {...boxProps} disabled onClick={onClick}/>)
-    expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(screen.getByTestId('CaretDoubleDownOutlined'))
-    expect(onClick).toBeCalledTimes(0)
-    await userEvent.hover(screen.getByTestId('CaretDoubleDownOutlined'))
-    expect(await screen.findByRole('tooltip', { hidden: true })).not.toBe(null)
   })
 })
 

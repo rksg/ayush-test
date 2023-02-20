@@ -6,7 +6,7 @@ import { Card, Table, TableProps }                 from '@acx-ui/components'
 import { useNetworkListQuery }                     from '@acx-ui/rc/services'
 import { Network, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 
-import { networkTypes } from '../../../Networks/NetworkForm/contentsMap'
+import { networkTypes } from '../../../Networks/wireless/NetworkForm/contentsMap'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 

@@ -24,7 +24,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   // eslint-disable-next-line max-len
-  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over WiFi' }),
+  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over Wi-Fi' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(

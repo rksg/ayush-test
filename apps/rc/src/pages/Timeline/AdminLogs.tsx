@@ -59,6 +59,9 @@ const AdminLogs = () => {
       sortField: 'event_datetime',
       sortOrder: 'DESC'
     },
+    search: {
+      searchTargetFields: ['entity_id', 'message']
+    },
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 

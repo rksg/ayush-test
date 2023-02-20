@@ -88,8 +88,9 @@ export function PersonaGroupForm (props: {
                     disabled={!!defaultValue?.dpskPoolId}
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     options={
-                      dpskPoolList?.data?.data.map(
-                        pool => ({ value: pool.id, label: pool.name }))
+                      dpskPoolList?.data?.data
+                        .filter(pool => !pool.identityId)
+                        .map(pool => ({ value: pool.id, label: pool.name }))
                     }
                   />
                 }
