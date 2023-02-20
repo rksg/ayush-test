@@ -1,4 +1,7 @@
-export { ActivityTable } from './ActivityTable'
+export {
+  ActivityTable,
+  defaultSorter as activityDefaultSorter
+} from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'

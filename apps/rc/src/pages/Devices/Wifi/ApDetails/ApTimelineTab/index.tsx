@@ -1,18 +1,30 @@
 import { useEffect } from 'react'
 
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
-import { useNavigate }                               from 'react-router-dom'
+import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                                                                                         from '@acx-ui/components'
-import { EventTable, eventDefaultPayload, eventDefaultSearch, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                                                               from '@acx-ui/rc/services'
+import { Tabs }           from '@acx-ui/components'
+import {
+  EventTable,
+  eventDefaultPayload,
+  eventDefaultSearch,
+  eventDefaultSorter,
+  useEventTableFilter,
+  ActivityTable,
+  activityDefaultSorter
+} from '@acx-ui/rc/components'
+import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
   TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  useTableQuery,
+  Activity,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { useApContext } from '../ApContext'
 
@@ -39,6 +51,45 @@ const Events = () => {
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
 
+const Activities = () => {
+  const { startDate, endDate } = useDateFilter()
+  const { networkId } = useParams()
+
+  const tableQuery = useTableQuery<Activity>({
+    useQuery: useActivitiesQuery,
+    defaultPayload: {
+      url: CommonUrlsInfo.getActivityList.url,
+      fields: [
+        'startDatetime',
+        'endDatetime',
+        'status',
+        'admin',
+        'descriptionTemplate',
+        'descriptionData',
+        'severity'
+      ],
+      filters: {
+        networkId: [ networkId ]
+      }
+    },
+    sorter: activityDefaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+  })
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime: startDate,
+        toTime: endDate
+      }
+    })
+  }, [startDate, endDate])
+
+  return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']} hiddenColumn={['product']}/>
+}
+
+
 const tabs : {
   key: TimelineTypes,
   title: MessageDescriptor,
@@ -48,6 +99,11 @@ const tabs : {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),
     component: Events
+  },
+  {
+    key: 'activities',
+    title: defineMessage({ defaultMessage: 'Activities' }),
+    component: Activities
   }
 ]
 

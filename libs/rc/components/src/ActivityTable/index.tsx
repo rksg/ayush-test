@@ -16,11 +16,20 @@ import { formatter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-interface ActivityTableProps {
-  tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
+export const defaultSorter = {
+  sortField: 'startDatetime',
+  sortOrder: 'DESC'
 }
 
-const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
+interface ActivityTableProps {
+  tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
+  hiddenColumn?: boolean | string[]
+  filterables?: boolean | string[]
+}
+
+const ActivityTable = ({
+  tableQuery, filterables = true, hiddenColumn = false
+}: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<string>()
@@ -52,19 +61,21 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return $t(msg)
       },
-      filterable: Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('status') : filterables)
+        && Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
-    {
+    ...(Array.isArray(hiddenColumn) ? !hiddenColumn.includes('product') : !hiddenColumn) ? [{
       key: 'product',
       title: $t({ defaultMessage: 'Product' }),
       dataIndex: 'product',
       sorter: true,
-      render: function (_, row) {
+      render: function (_: React.ReactNode, row: { product: string }) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return $t(msg)
       },
-      filterable: Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
-    },
+      filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
+        && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
+    }] : [],
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
