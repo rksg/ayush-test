@@ -79,22 +79,20 @@ export function CliStepVenues () {
   })
 
   const onChangeVenues = (values?: React.Key[] | string[]) => {
-    const selectedVenue = tableQuery?.data?.data.filter(v => values?.includes(v.id))
     setSelectedRows(values as React.Key[])
-    form?.setFieldValue('venues', selectedVenue)
+    form?.setFieldValue('venues', values)
   }
 
-  const transformData = (data?: Venue[], models?: string[], selectedVenues?: React.Key[]) => {
-    return data?.map(venue => {
-      const getAppliedCliVenues = (venueId: string) => {
-        return !selectedVenues?.includes(venueId) && venueId === venue.id
-      }
+  const transformData = (list?: Venue[], models?: string[], selectedVenues?: React.Key[]) => {
+    return list?.map(venue => {
       const venueApplyModels = cliFamilyModels
-        ?.filter(familyModel => getAppliedCliVenues(familyModel.venueId))?.[0]?.familyModels
-        ?.map(familyModel => familyModel.models).flat()
-        ?.map(familyModel => familyModel.model)
+        ?.find(familyModel => familyModel.venueId === venue.id)?.familyModels
+        ?.map(familyModels => familyModels.models).flat()
+        ?.map(m => m.model)
 
-      const isModelOverlap = _.intersection(models, venueApplyModels)?.length > 0
+      const isModelOverlap =
+        (!selectedVenues?.includes(venue.id) && !data?.venues?.includes(venue.id))
+        && _.intersection(models, venueApplyModels)?.length > 0
 
       return {
         ...venue,
@@ -110,17 +108,18 @@ export function CliStepVenues () {
     setSelectedRows(data?.venues as React.Key[])
   }, [data])
 
-  // useEffect(() => {
-  //   if (tableQuery?.data?.data) {
-  //     const venueData = transformData(tableQuery?.data?.data, applyModels, selectedRows)
-  //     console.log(venueData, applyModels, data?.venues)
-  //     setTransformedVenueData(venueData as Venue[])
-  //   }
-  // }, [tableQuery?.data?.data])
-
-  // useEffect(() => {
-  //   const venues = form?.getFieldValue('venues')
-  // }, [applyModels])
+  useEffect(() => {
+    const list = transformData(tableQuery?.data?.data, applyModels, selectedRows)
+    const venues = form?.getFieldValue('venues')
+    const updateVenues = venues?.filter((vId:string) => {
+      const venueApplyModels = list?.find(v => v.id === vId)?.models
+      const excludeApplyingModels = venueApplyModels?.filter(m => !data?.models?.includes(m))
+      const isModelOverlap = _.intersection(applyModels, excludeApplyingModels)?.length > 0
+      return !isModelOverlap
+    })
+    setSelectedRows(updateVenues as React.Key[])
+    form?.setFieldValue('venues', updateVenues)
+  }, [applyModels])
 
   return <Row gutter={24}>
     <Col span={24}>
@@ -147,7 +146,7 @@ export function CliStepVenues () {
       <Loader states={[{ isLoading: false }]}>
         <Table
           columns={columns}
-          dataSource={transformData(tableQuery?.data?.data, applyModels, data?.venues)}
+          dataSource={transformData(tableQuery?.data?.data, applyModels, selectedRows)}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'

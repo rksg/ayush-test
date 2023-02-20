@@ -17,8 +17,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CatchErrorResponse,
-  CliConfiguration,
-  VenueDetail
+  CliConfiguration
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -30,7 +29,6 @@ import { CliStepConfiguration } from '../../onDemandCli/CliTemplateForm/CliStepC
 import { CliStepNotice }        from '../../onDemandCli/CliTemplateForm/CliStepNotice'
 import CliTemplateFormContext   from '../../onDemandCli/CliTemplateForm/CliTemplateFormContext'
 
-// import CliProfileFormContext, { ApplySwitches, CliProfileFormContextType } from './CliProfileFormContext'
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
 import { CliStepVenues }  from './CliStepVenues'
@@ -70,7 +68,7 @@ export default function CliProfileForm () {
         ..._.omit(data, ['selectedFamily', 'venues']),
         switchModels: data?.models?.toString()
       },
-      venues: (data?.venues as unknown as VenueDetail[])?.map(v => v?.id)
+      venues: data?.venues
     }
   }
 

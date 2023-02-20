@@ -252,7 +252,7 @@ describe('Cli Profile Form - Edit', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn') ///
+    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
     await userEvent.click(addExampleBtns[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -280,7 +280,7 @@ describe('Cli Profile Form - Edit', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn') ///
+    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
     await userEvent.click(addExampleBtns[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 

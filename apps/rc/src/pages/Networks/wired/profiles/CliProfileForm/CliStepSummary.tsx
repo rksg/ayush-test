@@ -3,21 +3,34 @@ import { useRef, useEffect } from 'react'
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm }       from '@acx-ui/components'
-import { CodeMirrorWidget }              from '@acx-ui/rc/components'
-import { CliConfiguration, VenueDetail } from '@acx-ui/rc/utils'
+import { Descriptions, StepsForm } from '@acx-ui/components'
+import { CodeMirrorWidget }        from '@acx-ui/rc/components'
+import { useVenuesListQuery }      from '@acx-ui/rc/services'
+import { CliConfiguration }        from '@acx-ui/rc/utils'
+import { useParams }               from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+
+const venuesListPayload = {
+  fields: ['name', 'country', 'id'],
+  pageSize: 10000,
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 export function CliStepSummary (props: {
   data: CliConfiguration
 }) {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const { data } = props
 
   const codeMirrorEl = useRef(null as unknown as {
     setValue: Function,
   })
+
+  const { data: venuesList }
+  = useVenuesListQuery({ params: { tenantId }, payload: venuesListPayload })
 
   useEffect(() => {
     codeMirrorEl?.current?.setValue(data?.cli || '')
@@ -41,9 +54,10 @@ export function CliStepSummary (props: {
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Venues to apply' })}
-            children={(data?.venues as unknown as VenueDetail[])?.map(v =>
-              <div key={v.id}>{(v?.name) || '--'}</div>
-            )}
+            children={data?.venues?.map(vId => {
+              const venue = venuesList?.data?.find(venue => venue.id === vId)
+              return venue?.id ? <div key={venue?.id}>{venue?.name}</div> : '--'
+            })}
           />
           <Descriptions.Item
             label={$t({ defaultMessage: 'Override existing configuration' })}
