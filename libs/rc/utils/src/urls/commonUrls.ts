@@ -398,7 +398,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchConfigProfile: {
     method: 'get',
-    url: '/switchProfiles/:switchProfileId',
+    url: '/switchProfiles/:profileId',
     oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
     newApi: true
   },
