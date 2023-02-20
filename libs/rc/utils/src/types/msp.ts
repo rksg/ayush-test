@@ -102,13 +102,14 @@ export interface MspEcData {
   is_active?: string;
   tenant_id?: string;
   parent_tenant_id?: string;
-  admin_email?: string,
-  admin_firstname?: string,
-  admin_lastname?: string,
-  admin_role?: string,
-  licenses?: {},
-  delegations?: MspIntegratorDelegated[],
-  admin_delegations?: MspEcDelegatedAdmins[]
+  admin_email?: string;
+  admin_firstname?: string;
+  admin_lastname?: string;
+  admin_role?: string;
+  licenses?: {};
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+  number_of_days?: string;
 }
 
 export interface VarCustomer {
@@ -263,9 +264,10 @@ export interface MspEcDelegatedAdmins {
 }
 
 export interface MspIntegratorDelegated {
+  mspec_list?: string[];
   delegation_type: string;
   delegation_id?: string;
-  number_of_days?: number;
+  number_of_days?: string;
 }
 
 export interface EcInvitation {

@@ -8,7 +8,6 @@ import {
   DisabledButton,
   PageHeader,
   showActionModal,
-  showToast,
   Table,
   TableProps,
   Loader
@@ -27,7 +26,7 @@ import {
   useTableQuery,
   MspEc
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink, MspTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -76,7 +75,11 @@ export function Integrators () {
       title: $t({ defaultMessage: 'Account Type' }),
       dataIndex: 'tenantType',
       key: 'tenantType',
-      sorter: true
+      sorter: true,
+      render: function (data, row) {
+        return row.tenantType === AccountType.MSP_INTEGRATOR
+          ? $t({ defaultMessage: 'Integrator' }) : $t({ defaultMessage: 'Installer' })
+      }
     },
     {
       title: $t({ defaultMessage: 'Customers Assigned' }),
@@ -122,6 +125,8 @@ export function Integrators () {
   ]
 
   const IntegratorssTable = () => {
+    const navigate = useNavigate()
+    const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload
@@ -133,12 +138,15 @@ export function Integrators () {
 
     const rowActions: TableProps<MspEc>['rowActions'] = [
       {
-        label: $t({ defaultMessage: 'Manage' }),
-        onClick: (selectedRows) =>
-          showToast({
-            type: 'info',
-            content: `Manage ${selectedRows[0].name}`
+        label: $t({ defaultMessage: 'Edit' }),
+        onClick: (selectedRows) => {
+          setTenantId(selectedRows[0].id)
+          const type = selectedRows[0].tenantType
+          navigate({
+            ...basePath,
+            pathname: `${basePath.pathname}/${type}/${selectedRows[0].id}`
           })
+        }
       },
       {
         label: $t({ defaultMessage: 'Resend Invitation Email' }),

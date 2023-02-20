@@ -148,5 +148,21 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   reactivateMspEcAccount: {
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
+  },
+  getMspBaseURL: {
+    method: 'get',
+    url: '/api/mspservice/baseurl'
+  },
+  getMspLabel: {
+    method: 'get',
+    url: '/api/mspservice/tenant/:tenantId/msplabel'
+  },
+  addMspLabel: {
+    method: 'post',
+    url: '/api/mspservice/tenant/:tenantId/msplabel'
+  },
+  updateMspLabel: {
+    method: 'put',
+    url: '/api/mspservice/tenant/:tenantId/msplabel'
   }
 }

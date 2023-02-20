@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   AssignedEc,
+  BaseUrl,
   MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
@@ -21,7 +22,8 @@ import {
   SupportDelegation,
   VarCustomer,
   MspProfile,
-  MspEcProfile
+  MspEcProfile,
+  MspPortal
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -360,6 +362,44 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspBaseURL: build.query<BaseUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspLabel: build.query<MspPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspLabel, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -395,5 +435,9 @@ export const {
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
-  useRefreshMspEntitlementMutation
+  useRefreshMspEntitlementMutation,
+  useGetMspBaseURLQuery,
+  useGetMspLabelQuery,
+  useAddMspLabelMutation,
+  useUpdateMspLabelMutation
 } = mspApi

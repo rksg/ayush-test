@@ -6,6 +6,9 @@ import {
   Divider,
   Form,
   Input,
+  Radio,
+  RadioChangeEvent,
+  Space,
   Select,
   Typography
 } from 'antd'
@@ -86,7 +89,8 @@ interface EcFormData {
     admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number,
-    ecCustomers: MspEc[]
+    ecCustomers: MspEc[],
+    number_of_days: string
 }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -173,6 +177,7 @@ export function ManageIntegrator () {
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
+  const [unlimitSelected, setUnlimitSelected] = useState(true)
 
   const [addIntegrator] = useAddCustomerMutation()
   const [updateIntegrator] = useUpdateCustomerMutation()
@@ -318,8 +323,11 @@ export function ManageIntegrator () {
         })
       })
 
+      const type = unlimitSelected ? AccountType.MSP_INTEGRATOR : AccountType.MSP_INSTALLER
+      const numOfDays = unlimitSelected ? '' : ecFormData.number_of_days
+
       const customer: MspEcData = {
-        tenant_type: AccountType.MSP_INSTALLER,
+        tenant_type: type,
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
         service_effective_date: today,
@@ -329,18 +337,18 @@ export function ManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations
+
       }
-
-      // customer.delegations = [
-      //   {
-      //     // mspec_list: [
-      //     //     "7284b48e1a9c40049c042b6bf5efabb5"
-      //     // ],
-      //     delegation_type: AccountType.MSP_INSTALLER,
-      //     number_of_days: 10
-      //   }
-      // ]
-
+      if (selectedEcs?.length > 0) {
+        const ecs = selectedEcs.map(ec => ec.id)
+        customer.delegations = [
+          {
+            mspec_list: ecs,
+            delegation_type: type,
+            number_of_days: numOfDays
+          }
+        ]
+      }
       const licAssignment = []
       if (ecFormData.wifiLicense !== 0) {
         licAssignment.push({
@@ -674,29 +682,48 @@ export function ManageIntegrator () {
       )
     }
 
+    const onChange = (e: RadioChangeEvent) => {
+      setUnlimitSelected(e.target.value)
+    }
+
     const content =
     <>
       <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Periods' })}</Subtitle>
-      {/* <Form.Item
+      <Form.Item
         name='type'
         initialValue={true}
+        style={{ marginTop: '20px' }}
       >
-        <Radio.Group onChange={(e: RadioChangeEvent) => {setTypeSelected(e.target.value)}}>
+        <Radio.Group onChange={onChange}>
           <Space direction='vertical'>
-            <Radio
-              value={true}
-              disabled={false}>
-              { $t({ defaultMessage: 'Limited to' }) }
+            <Radio value={true} disabled={false}>
+              { intl.$t({ defaultMessage: 'Not Limited' }) }
             </Radio>
-            <Radio
-              style={{ marginTop: '2px', marginBottom: '50px' }}
-              value={false}
-              disabled={false}>
-              { $t({ defaultMessage: 'Not Limited' }) }
-            </Radio>
+            <UI.FieldLabelAccessPeriod width='275px'>
+              <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
+                { intl.$t({ defaultMessage: 'Limited To' }) }
+              </Radio>
+              <Form.Item
+                name='number_of_days'
+                initialValue={'7'}
+                rules={[{ validator: (_, value) =>
+                {
+                  if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+                    return Promise.reject(
+                      `${intl.$t({ defaultMessage: 'Invalid number' })} `
+                    )
+                  }
+                  return Promise.resolve()
+                }
+                }]}
+                children={<Input type='number'/>}
+                style={{ paddingRight: '20px' }}
+              />
+              <label>Day(s) (1..60)</label>
+            </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>
-      </Form.Item> */}
+      </Form.Item>
 
       <Subtitle level={4}>
         { intl.$t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
@@ -989,7 +1016,8 @@ export function ManageIntegrator () {
             name='customers'
             title={intl.$t({ defaultMessage: 'Customers' })}
             onFinish={async (data) => {
-              const ecFormData = { ...data }
+              const ecData = { ...formData, ...data }
+              setFormData(ecData)
               const customers = formRef.current?.getFieldsValue(['ecCustomers'])
               setSelectedEcs(customers?.ecCustomers)
               return true
