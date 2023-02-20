@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  AssignedEc,
   MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
@@ -286,6 +287,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignedEcListReq =
+          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+        return {
+          ...mspAssignedEcListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
@@ -377,6 +388,7 @@ export const {
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
+  useGetAssignedMspEcToIntegratorQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
   useReactivateMspEcMutation,
