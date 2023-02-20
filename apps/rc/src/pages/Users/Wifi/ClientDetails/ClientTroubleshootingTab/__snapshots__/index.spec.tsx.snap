@@ -272,7 +272,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
           style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-15 kKnIRS"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
           >
             <div
               class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -287,7 +287,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
                     <div
                       class="ant-col ant-col-3"
@@ -304,7 +304,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
                       >
                         Connection Events
                       </span>
@@ -314,7 +314,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
                       >
                         0
                       </span>
@@ -324,9 +324,9 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
                         data-testid="PlusSquareOutlined"
-                        style="cursor: pointer;"
+                        style="cursor: not-allowed;"
                       />
                     </div>
                     <div
@@ -334,7 +334,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
                       >
                         Roaming
                       </span>
@@ -344,7 +344,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
                       >
                         0
                       </span>
@@ -364,7 +364,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
                       >
                         Connection Quality
                       </span>
@@ -388,7 +388,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
                       >
                         Network Incidents
                       </span>
@@ -398,7 +398,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-10 epCNGl"
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
                       >
                         0
                       </span>
