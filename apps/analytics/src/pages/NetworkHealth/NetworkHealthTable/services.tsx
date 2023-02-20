@@ -141,6 +141,9 @@ export const api = networkHealthApi.injectEndpoints({
           id: payload.params?.id
         }
       }),
+      invalidatesTags: [
+        { type: 'NetworkHealth', id: 'LIST' }
+      ],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
     })

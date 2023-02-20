@@ -31,12 +31,10 @@ export const getAPsUnderTest = (result: number) => {
   }
 }
 
-export const getLastResult = (total: number, success: number) => {
-  if (total) {
-    return `${formatter('percentFormatRound')(success/total)} pass`
-  } else {
-    return noDataSymbol
-  }
+export const getLastResult = (total: number, success: number, pending: number) => {
+  return total ? (
+   pending ?'In progress...' : `${formatter('percentFormatRound')(success/total)} pass`
+  ) : noDataSymbol
 }
 
 export function NetworkHealthTable () {
@@ -130,7 +128,7 @@ export function NetworkHealthTable () {
       searchable: true,
       render: (value, row) => row.tests.items[0]?.summary.apsTestedCount ?
         <TenantLink to={
-          `/serviceValidation/networkHealth/${row.tests.items[0]?.id}`
+          `/serviceValidation/networkHealth/tests/${row.tests.items[0]?.id}`
         }>
           {value}
         </TenantLink> : value
@@ -185,7 +183,8 @@ export function NetworkHealthTable () {
       render: (value: React.ReactNode) => {
         const total = _.get(value, '[0].summary.apsTestedCount')
         const success = _.get(value, '[0].summary.apsSuccessCount')
-        return getLastResult(total, success)
+        const pending = _.get(value, '[0].summary.apsPendingCount')
+        return getLastResult(total, success, pending)
       }
     }
   ], [])
