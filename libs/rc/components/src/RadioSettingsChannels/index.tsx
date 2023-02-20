@@ -109,9 +109,16 @@ export function RadioSettingsChannels (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickGroupChannels = async (checkedValues: any) => {
     form.validateFields([props.formName])
-    const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
-    form.setFieldValue(props.formName, selectedValue)
-    updateChannelGroupList(selectedValue)
+    const selectedValues = await getSelectedValues(channelGroupValueList, checkedValues)
+    form.setFieldValue(props.formName, selectedValues)
+
+    channelGroupList.forEach(group => {
+      const hasSelected = selectedValues.includes(group.channels.map(c => c.value)[0])
+      group.selected = hasSelected
+      group.channels.forEach(c => c.selected = hasSelected)
+    })
+
+    setChannelGroupList(channelGroupList)
   }
 
   useEffect(() => {
@@ -293,13 +300,6 @@ export function RadioSettingsChannels (props: {
       }
       return result
     }
-  }
-
-  function updateChannelGroupList (selectedValues: string[]) {
-    setChannelGroupList(channelGroupList.map(group => ({
-      ...group,
-      selected: selectedValues.includes(group.channels.map(c => c.value)[0])
-    })))
   }
 
   async function getSelectedValues (groupValueList: string[][], selectedValues: string[]) {

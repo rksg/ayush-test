@@ -339,9 +339,7 @@ export function RadioSettings () {
   }
 
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
-    console.log('===== formData =====')
-    console.log(formData)
-    console.log('==========')
+
     update5gData(formData)
 
     if (isTriBandRadio) {
@@ -362,8 +360,7 @@ export function RadioSettings () {
         params: { tenantId, venueId },
         payload: formData
       }).unwrap()
-
-    }catch {
+    } catch {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
