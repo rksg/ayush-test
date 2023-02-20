@@ -70,7 +70,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Edit ACL' })}
+      title={$t({ defaultMessage: 'Add ACL' })}
       visible={visible}
       destroyOnClose={true}
       maskClosable={true}
