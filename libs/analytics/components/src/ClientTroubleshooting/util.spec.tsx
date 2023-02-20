@@ -594,13 +594,14 @@ describe('util', () => {
     })
   })
   describe('chart utils', () => {
-    const useTooltipParameters = (type: string, obj: object) => {
+    const useTooltipParameters = (name: string, obj: object, type?: 'custom' | 'scatter') => {
       return {
         value: 1668403161155,
         seriesData: [
           {
             data: obj,
-            seriesName: type
+            seriesName: name,
+            seriesType: type
           }
         ]
       }
@@ -685,7 +686,7 @@ describe('util', () => {
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
       expect(useLabelFormatter(useTooltipParameters('quality', qualityDataObj)))
-        .toContain('-74 dBm/ 15 dB/ 3.07 Mbps/ 37.9 Mbps')
+        .toContain('-74 dBm / 15 dB / 3.07 Mbps / 37.9 Mbps')
 
       expect(useLabelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
     })
@@ -700,8 +701,13 @@ describe('util', () => {
 
     it('tooltipFormatter should return correct Html string for roaming', async () => {
       expect(
-        useLabelFormatter(useTooltipParameters('roaming', roamingDataObj))
+        useLabelFormatter(useTooltipParameters('roaming', roamingDataObj, 'custom'))
       ).toContain('-73 dBm / 18:4B:0D:5C:A2:4C / 144 / 11ac / 2 SS / 80 MHz')
+
+      expect(useLabelFormatter(useTooltipParameters('roaming', eventDataObj, 'scatter')))
+        .toMatch(
+          'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
+        )
 
       expect(useLabelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper)).toMatch('')
     })

@@ -21,7 +21,8 @@ import {
   successResponse,
   venueListResponse,
   policyListResponse,
-  apGroupsResponse
+  apGroupsResponse,
+  externalProviders
 } from './__tests__/fixtures'
 import NetworkForm from './NetworkForm'
 
@@ -204,7 +205,12 @@ describe('NetworkForm', () => {
       ),
       rest.get(CommonUrlsInfo.getAccessControlProfileList.url, (_, res, ctx) =>
         res(ctx.json([]))
-      )
+      ),
+      rest.get(CommonUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json(externalProviders))),
+      rest.get('https://maps.googleapis.com/maps/api/timezone/json',
+        (_, res, ctx) => res(ctx.json({})))
+
     )
   })
 

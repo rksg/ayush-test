@@ -187,7 +187,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
-
+    deleteProfiles: build.mutation<SwitchProfileModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -202,7 +211,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
-
+    deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteCliTemplates, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
     addSwitch: build.mutation<Switch, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
@@ -1034,6 +1052,8 @@ export const {
   useGetProfilesQuery,
   useAddCliTemplateMutation,
   useGetCliTemplatesQuery,
+  useDeleteCliTemplatesMutation,
+  useDeleteProfilesMutation,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,

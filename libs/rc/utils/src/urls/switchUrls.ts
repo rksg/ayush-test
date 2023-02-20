@@ -75,15 +75,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    // url: '/switches',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   updateSwitch: {
     method: 'put',
-    // url: '/switches/:switchId',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches/:switchId',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   addStackMember: {
     method: 'post',
@@ -294,9 +296,17 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
   },
+  deleteProfiles: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/profiles'
+  },
   getCliTemplates: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template/query'
+  },
+  deleteCliTemplates: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/cli-template'
   },
   getCliTemplate: {
     method: 'get',

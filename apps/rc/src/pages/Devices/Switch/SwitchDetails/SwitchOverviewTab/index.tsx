@@ -6,7 +6,7 @@ import { AnalyticsFilter, useAnalyticsFilter }                                  
 import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
 import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
 import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { SwitchViewModel }                                                       from '@acx-ui/rc/utils'
+import { isRouter, SwitchViewModel, SWITCH_TYPE }                                from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
@@ -21,6 +21,7 @@ export function SwitchOverviewTab () {
   const { filters } = useAnalyticsFilter()
   const [ switchFilter, setSwitchFilter ] = useState(null as unknown as AnalyticsFilter)
   const [ switchDetail, setSwitchDetail ] = useState(null as unknown as SwitchViewModel)
+  const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
   const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
   const { data: venue } = useGetVenueQuery({
     params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
@@ -43,6 +44,7 @@ export function SwitchOverviewTab () {
         venueDescription: venue.description,
         unitDetails: stackMember?.data
       })
+      setSupportRoutedInterfaces(isRouter(switchDetailQuery.data?.switchType || SWITCH_TYPE.SWITCH))
     }
   }, [switchDetailQuery.data, venue, stackMember])
 
@@ -86,9 +88,11 @@ export function SwitchOverviewTab () {
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
         <SwitchOverviewPorts />
       </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
-        <SwitchOverviewRouteInterfaces />
-      </Tabs.TabPane>
+      {supportRoutedInterfaces &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
+          <SwitchOverviewRouteInterfaces />
+        </Tabs.TabPane>
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
         <SwitchOverviewVLANs />
       </Tabs.TabPane>
