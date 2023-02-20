@@ -44,7 +44,7 @@ module.exports = async function setupProxy (app) {
     '/api/websocket/socket.io',
     {
       target: CLOUD_URL, changeOrigin: true, ws: true,
-      onProxyReq: function (request) {
+      onProxyReqWs: function (request) {
         request.setHeader('origin', CLOUD_URL)
       }
     }

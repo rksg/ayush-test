@@ -47,7 +47,7 @@ export function PskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
+    if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
       form.setFieldsValue({
         wlan: {
           passphrase: data.wlan?.passphrase,
@@ -157,8 +157,17 @@ function SettingsForm () {
     }
   }
   const onMacAuthChange = (checked: boolean) => {
-    setData && setData({ ...data, wlan: { macAddressAuthentication: checked } })
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          macAddressAuthentication: checked
+        }
+      }
+    })
   }
+
   const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
