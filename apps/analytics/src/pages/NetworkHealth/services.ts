@@ -151,10 +151,57 @@ const runServiceGuardTest = gql`
   }
 `
 
+const fetchServiceGuardTestResults = gql`
+  query ServiceGuardResults($testId: Float!, $offset: Int, $limit: Int) {
+    serviceGuardTest(id: $testId) {
+      config { authenticationMethod pingAddress tracerouteAddress speedTestEnabled }
+      spec {
+        specId: id
+        name
+        type
+        apsCount
+        clientType
+      }
+      wlanAuthSettings {
+        wpaVersion
+      }
+      aps (offset: $offset, limit: $limit) {
+        total
+        size
+        items {
+          apName
+          apMac
+          ${Object.keys(stages).join('\n')}
+          pingReceive
+          pingTotal
+          avgPingTime
+          error
+          speedTestFailure
+          speedTestServer
+          download
+          upload
+          tracerouteLog
+          state
+          clients {
+            failure {
+              failedMsgId messageIds ssid radio reason failureType
+            }
+          }
+          stationAp {
+            name
+            mac
+            snr
+          }
+        }
+      }
+    }
+  }
+`
 const {
   useNetworkHealthDetailsQuery,
   useNetworkHealthTestQuery,
-  useNetworkHealthRelatedTestsQuery
+  useNetworkHealthRelatedTestsQuery,
+  useNetworkHealthTestResultsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     networkHealthDetails: build.query<NetworkHealthSpec, { id: string }>({
@@ -171,14 +218,26 @@ const {
         result.serviceGuardTest
     }),
     networkHealthRelatedTests: build.query<
-      Record<string, number|string>[], { testId: NetworkHealthTest['id'] }
+      Record<string, number | string>[],
+      { testId: NetworkHealthTest['id'] }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardRelatedTests }),
       transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) => {
-        if(!result.serviceGuardTest) return []
-        const { id: specId, tests: { items } } = result.serviceGuardTest.spec
+        if (!result.serviceGuardTest) return []
+        const {
+          id: specId,
+          tests: { items }
+        } = result.serviceGuardTest.spec
         return items.map(({ id, createdAt, summary }) => ({ specId, id, createdAt, ...summary }))
       }
+    }),
+    networkHealthTestResults: build.query<
+      Record<string, number | string>[],
+      { testId: NetworkHealthTest['id']; offset: number; limit: number }
+    >({
+      query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
+      transformResponse: (result: { serviceGuardTest: Record<string, number | string>[] }) =>
+        result.serviceGuardTest
     })
   })
 })
@@ -205,6 +264,13 @@ export function useNetworkHealthRelatedTests () {
     { skip: !Boolean(params.testId) })
 }
 
+export function useNetworkHealthTestResults () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthTestResultsQuery(
+    { testId: parseInt(params.testId!, 10), offset: 0,
+      limit: 10 },
+    { skip: !Boolean(params.testId) })
+}
 function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
   const last = path[path.length - 1]
   return _.has(last, 'list')
@@ -370,3 +436,6 @@ export function useNetworkHealthSpecMutation () {
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
 }
+
+
+

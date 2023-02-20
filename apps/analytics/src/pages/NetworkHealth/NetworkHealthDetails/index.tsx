@@ -6,7 +6,7 @@ import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/rea
 import { useNetworkHealthTest } from '../services'
 import { NetworkHealthTest }    from '../types'
 
-import { Details }                                     from './Details'
+import { Details }                                     from './DetailsTable'
 import { Title, SubTitle, ReRunButton, TestRunButton } from './Header'
 import { Overview }                                    from './Overview'
 
