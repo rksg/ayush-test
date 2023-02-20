@@ -44,7 +44,7 @@ export function NetworkHealthTable () {
   const { $t } = intl
   const queryResults = useNetworkHealthQuery({})
   const navigate = useNavigate()
-  const navigateToList = useTenantLink('/serviceValidation/networkHealth/')
+  const networkHealthPath = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
   const [deleteMutation, deleteResponse] = useNetworkHealthDeleteMutation()
   const [runMutation, runResponse] = useNetworkHealthRunMutation()
@@ -83,8 +83,8 @@ export function NetworkHealthTable () {
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
-      onClick: async ([{ id }], clearSelection) => {
-        await runMutation({ params: { id } })
+      onClick: ([{ id }], clearSelection) => {
+        runMutation({ params: { id } })
         clearSelection()
       },
       disabled: (selectedRow) => (
@@ -94,7 +94,7 @@ export function NetworkHealthTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
-        navigate(`${navigateToList.pathname}/${selectedRows[0].id}/edit`)
+        navigate(`${networkHealthPath.pathname}/${selectedRows[0].id}/edit`)
       },
       disabled: (selectedRow) => selectedRow[0]?.userId === userProfile?.externalId ? false : true
     },
@@ -113,8 +113,8 @@ export function NetworkHealthTable () {
             entityName: $t(defineMessage({ defaultMessage: 'test' })),
             entityValue: name
           },
-          onOk: async () => {
-            await deleteMutation({ params: { id } })
+          onOk: () => {
+            deleteMutation({ params: { id } })
             clearSelection()
           }
         })
