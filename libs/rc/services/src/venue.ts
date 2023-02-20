@@ -55,7 +55,9 @@ import {
   PropertyConfigs,
   PropertyUrlsInfo,
   PropertyUnit,
-  ResidentPortal
+  ResidentPortal,
+  NewTableResult,
+  transferToTableResult
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -67,7 +69,7 @@ export const baseVenueApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'venueApi',
   tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna',
-    'VenueRadio', 'PropertyConfigs', 'PropertyUnit'],
+    'VenueRadio', 'PropertyConfigs', 'PropertyUnit', 'ResidentPortal'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})
 })
@@ -949,6 +951,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       },
+      transformResponse (result: NewTableResult<PropertyUnit>) {
+        return transferToTableResult<PropertyUnit>(result)
+      },
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     updatePropertyUnit: build.mutation<PropertyUnit, RequestPayload>({
@@ -977,7 +982,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      transformResponse (result: NewTableResult<ResidentPortal>) {
+        return transferToTableResult<ResidentPortal>(result)
+      },
+      providesTags: [{ type: 'ResidentPortal', id: 'LIST' }]
     })
   })
 })
@@ -1067,6 +1076,7 @@ export const {
   useAddPropertyUnitMutation,
 
   useGetPropertyUnitByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
   useGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
   useDeletePropertyUnitsMutation,
