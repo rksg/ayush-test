@@ -101,7 +101,7 @@ export function Unit (props:{
 
   const { $t } = useIntl()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
-  const [ isRearView, setIsRearView ] = useState(true)
+  const [ isRearView, setIsRearView ] = useState(false)
   const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
   const [ rearSlots, setRearSlots ] = useState(null as unknown as number[])
   const [ unit, setUnit ] = useState(defaultUnit)

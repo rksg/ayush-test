@@ -792,3 +792,10 @@ export enum PortTaggedEnum {
   UNTAGGED = 'UNTAGGED',
   LAG = 'LAG'
 }
+
+export enum UnitStatus {
+  OK = 'OK',
+  FAILED = 'FAILED',
+  NOT_PRESENT = 'NOT_PRESENT', // Legacy value - need confirm
+  OTHER = 'OTHER', // Somehow SZ may send 'Other' status
+}

@@ -1,5 +1,5 @@
 import { Descriptions } from '@acx-ui/components'
-import { PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
+import { FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
 import styled from 'styled-components/macro'
 
 export const TitleBar = styled.div`
@@ -43,18 +43,6 @@ export const RearViewWrapper = styled.div`
   float:left;
 `
 
-export const Rear = styled.div<{ rearColor: string }>`
-  border-width: '2px';
-  border-style: solid;
-  border-color: ${(props) => getPortColor(props.rearColor)};
-  height: 30px;
-  width: 120px;
-  margin: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
 const getPortColor = (portColor: string) => {
   const colorMap:{[key:string]: string} = {
     lightgray: 'var(--acx-neutrals-25)',
@@ -93,7 +81,7 @@ export const PoeUsageIcon = styled(PoeUsage)`
 export const TooltipStyle = styled(Descriptions)`
   .ant-descriptions-item-content, 
   .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
-    color: #fff;
+    color: var(--acx-primary-white);
   }
 `
 
@@ -102,7 +90,7 @@ export const TagsOutlineIcon = styled(TagsOutline)`
   height: 14px;
   vertical-align: middle;
   path {
-    fill: #fff;
+    fill: var(--acx-primary-white);
   }
 `
 
@@ -112,6 +100,63 @@ export const TagsSolidIcon = styled(TagsSolid)`
   vertical-align: middle;
   margin-top: 5px;
   path {
-    fill: #fff;
+    fill: var(--acx-primary-white);
+  }
+`
+
+const getRearColor = (rearColor: string) => {
+  const colorMap:{[key:string]: string} = {
+    gray: 'var(--acx-neutrals-50)',
+    red: 'var(--acx-semantics-red-60)',
+    green: 'var(--acx-semantics-green-50)'
+  }
+  return colorMap[rearColor]
+}
+
+const getRearLabelColor = (labelColor: string) => {
+  const colorMap:{[key:string]: string} = {
+    gray: 'var(--acx-neutrals-50)',
+    black: 'var(--acx-primary-black)'
+  }
+  return colorMap[labelColor]
+}
+
+export const Rear = styled.div<{ rearColor: string }>`
+  border-width: 2px;
+  border-style: solid;
+  border-color: ${(props) => getRearColor(props.rearColor)};
+  height: 35px;
+  width: 120px;
+  padding: 0 4px;
+  margin: 4px;
+  display: flex;
+  align-items: center;
+`
+
+export const RearDescrption = styled.div<{ labelColor: string }>`
+  margin-left: 4px;
+  margin-top: 4px;
+  color: ${(props) => getRearLabelColor(props.labelColor)};
+  .slot {
+    font-size: 12px;
+    line-height: 12px;
+  }
+  .status {
+    font-weight: 600;
+    line-height: 16px;
+  }
+`
+
+export const RearPowerIcon = styled(PoeUsage)`
+  height: 16px;
+  path {
+    fill: var(--acx-primary-black);
+  }
+`
+
+export const RearFanIcon = styled(FanSolid)`
+  height: 18px;
+  path {
+    fill: var(--acx-primary-black);
   }
 `
