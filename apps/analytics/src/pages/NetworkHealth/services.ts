@@ -333,7 +333,7 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { createServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.createServiceGuardSpec
     }),
@@ -347,7 +347,7 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
     }),
@@ -355,7 +355,7 @@ const {
       RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
     >({
       query: (variables) => ({ variables, document: runServiceGuardTest }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
     })
