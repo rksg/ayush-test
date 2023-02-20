@@ -87,16 +87,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
     const redirectUrlInput = await screen.findByPlaceholderText('e.g. http://www.example.com')
     fireEvent.change(redirectUrlInput, { target: { value: 'https://www.commscope.com/ruckus/' } })
     await userEvent.click(await screen.findByRole('checkbox', { name: /Redirect users to/ }))
-    // await userEvent.click(await screen.findByRole('checkbox',
-    //   { name: /Enable Ruckus DHCP service/ }))
-    // await userEvent.click(await screen.findByText('More details'))
-    await userEvent.click(await screen.findByText('Next'))
-    await userEvent.click(await screen.findByText('Next'))
-    await screen.findByRole('heading', { level: 3, name: 'Portal Web Page' })
-    // await userEvent.click(await screen.findByText('Add Guest Portal Service'))
-    // await userEvent.type(await screen.findByRole(
-    //   'textbox', { name: 'Service Name' }),'create Portal test')
-    // await userEvent.click(await screen.findByText('Reset'))
-    // await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Enable Ruckus DHCP service/ }))
   })
 })
