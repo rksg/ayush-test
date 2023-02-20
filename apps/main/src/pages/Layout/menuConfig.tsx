@@ -40,7 +40,7 @@ export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
-  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -162,7 +162,7 @@ export function useMenuConfig () {
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           },
-          ...isEdgeDhcpEnabled ? [{
+          ...isEdgeEnabled ? [{
             path: '/devices/edge/list',
             name: $t({ defaultMessage: 'Edge' })
           }] : []
