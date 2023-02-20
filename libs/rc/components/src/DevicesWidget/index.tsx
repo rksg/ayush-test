@@ -6,6 +6,7 @@ import type { DonutChartData }    from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useNavigateToPath }      from '@acx-ui/react-router-dom'
 
+export  { seriesMappingAP } from './helper'
 
 export function DevicesWidget (props: {
   apData: DonutChartData[], switchData: DonutChartData[], edgeData: DonutChartData[],
