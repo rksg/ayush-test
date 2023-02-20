@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/components'
 import {
   switchApi,
-  useGetAclUnionQuery,
+  useLazyGetAclUnionQuery,
   useGetDefaultVlanQuery,
   useLazyGetPortSettingQuery,
   useLazyGetPortsSettingQuery,
@@ -42,8 +42,7 @@ import {
   SwitchPortViewModel,
   SwitchVlanUnion,
   PortSettingModel,
-  Vlan,
-  Acl
+  Vlan
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { store }     from '@acx-ui/store'
@@ -202,11 +201,12 @@ export function EditPortDrawer ({
   const [getSwitchConfigurationProfileByVenue] = useLazyGetSwitchConfigurationProfileByVenueQuery()
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
+  const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, switchId } })
+
   const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches })
 
@@ -265,6 +265,7 @@ export function EditPortDrawer ({
 
   useEffect(() => {
     const setData = async () => {
+      const aclUnion = await getAclUnion({ params: { tenantId, switchId } }, true).unwrap()
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
       const vlansByVenue = await getVlansByVenue({
@@ -692,7 +693,6 @@ export function EditPortDrawer ({
     })
   }
 
-  const handleSetRule = (data: Acl) => {}
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
       <Button disabled={loading} key='cancel' onClick={onClose}>
@@ -1168,6 +1168,7 @@ export function EditPortDrawer ({
         <ACLSettingDrawer
           visible={drawerAclVisible}
           setVisible={setDrawerAclVisible}
+          aclsOptions={aclsOptions}
           setAclsOptions={setAclsOptions}
           profileId={switchConfigurationProfileId}
         />

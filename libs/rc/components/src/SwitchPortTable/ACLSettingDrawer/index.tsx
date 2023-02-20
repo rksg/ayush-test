@@ -42,6 +42,7 @@ export const defaultExtendedRuleList = {
 export interface ACLSettingDrawerProps {
   visible: boolean
   setVisible: (v: boolean) => void
+  aclsOptions: DefaultOptionType[]
   setAclsOptions: (v: DefaultOptionType[]) => void
   profileId: string
 }
@@ -49,7 +50,7 @@ export interface ACLSettingDrawerProps {
 export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
   const { $t } = useIntl()
   const [aclType, setAclType] = useState('standard')
-  const { visible, setVisible, setAclsOptions, profileId } = props
+  const { visible, setVisible, aclsOptions, setAclsOptions, profileId } = props
   const [form] = Form.useForm<Acl>()
 
   const onClose = () => {
@@ -82,6 +83,7 @@ export function ACLSettingDrawer (props: ACLSettingDrawerProps) {
           aclType={aclType}
           setAclType={setAclType}
           setVisible={setVisible}
+          aclsOptions={aclsOptions}
           setAclsOptions={setAclsOptions}
           profileId={profileId}
         />
@@ -96,6 +98,7 @@ interface ACLSettingFormProps {
   aclType: string
   setAclType: (v: string) => void
   setVisible: (v: boolean) => void
+  aclsOptions: DefaultOptionType[]
   setAclsOptions: (v: DefaultOptionType[]) => void
   profileId: string
 }
@@ -108,7 +111,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   const [ruleList, setRuleList] = useState<
     AclStandardRule[] | AclExtendedRule[]
   >([defaultStandardRuleList])
-  const { form, aclType, setAclType, setVisible, setAclsOptions, profileId } = props
+  const { form, aclType, setAclType, setVisible, aclsOptions, setAclsOptions, profileId } = props
 
   const [addAcl] = useAddAclMutation()
 
@@ -239,7 +242,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         params: { tenantId: params.tenantId, profileId: profileId },
         payload
       }).unwrap()
-
+      setAclsOptions([...aclsOptions, { label: payload.name, value: payload.name }])
       setVisible(false)
     } catch(err) {
 
