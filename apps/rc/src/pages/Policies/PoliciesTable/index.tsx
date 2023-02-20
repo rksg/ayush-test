@@ -1,19 +1,28 @@
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { usePolicyListQuery }                                             from '@acx-ui/rc/services'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useTableQuery,
-  Policy,
-  PolicyType,
-  PolicyTechnology,
+  useDelVLANPoolPolicyMutation,
+  useDeleteClientIsolationMutation,
+  useDelRoguePolicyMutation,
+  usePolicyListQuery,
+  useDeleteAAAPolicyMutation,
+  useDeleteAccessControlProfileMutation
+} from '@acx-ui/rc/services'
+import {
   getPolicyDetailsLink,
   getSelectPolicyRoutePath,
-  PolicyOperation
+  Policy,
+  PolicyOperation,
+  PolicyTechnology,
+  PolicyType,
+  RogueApConstant,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { policyTypeLabelMapping, policyTechnologyLabelMapping } from '../contentsMap'
+import { policyTechnologyLabelMapping, policyTypeLabelMapping } from '../contentsMap'
 
 
 function useColumns () {
@@ -85,8 +94,26 @@ const defaultPayload = {
 
 export default function PoliciesTable () {
   const { $t } = useIntl()
+  const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+
+  const [ delVLANPoolPolicy ] = useDelVLANPoolPolicyMutation()
+  // const [ delRoguePolicy ] = useDelRoguePolicyMutation()
+
+  const deletePolicyFnMapping = {
+    [PolicyType.ROGUE_AP_DETECTION]: useDelRoguePolicyMutation(),
+    [PolicyType.CLIENT_ISOLATION]: useDeleteClientIsolationMutation(),
+    [PolicyType.AAA]: useDeleteAAAPolicyMutation(),
+    [PolicyType.ACCESS_CONTROL]: useDeleteAccessControlProfileMutation(),
+    [PolicyType.MAC_REGISTRATION_LIST]: [],
+    [PolicyType.SYSLOG]: [],
+    [PolicyType.VLAN_POOL]: [],
+    [PolicyType.LAYER_2_POLICY]: [],
+    [PolicyType.LAYER_3_POLICY]: [],
+    [PolicyType.APPLICATION_POLICY]: [],
+    [PolicyType.DEVICE_POLICY]: []
+  }
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -96,7 +123,8 @@ export default function PoliciesTable () {
   const rowActions: TableProps<Policy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name, type }]) => {
+      visible: ([row]) => row && row.name !== RogueApConstant.DefaultProfile,
+      onClick: ([{ id, name, type }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
@@ -104,16 +132,28 @@ export default function PoliciesTable () {
             entityName: $t({ defaultMessage: 'Policy' }),
             entityValue: name
           },
-          onOk: () => {
-            // TODO
-            // eslint-disable-next-line no-console
-            console.log('Delete policy: ', id, type)
+          onOk: async () => {
+            const [ deleteFn ] = deletePolicyFnMapping[type]
+            if (deleteFn) {
+              deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+            }
+
+            if (type === PolicyType.VLAN_POOL) {
+              await delVLANPoolPolicy({
+                params: {
+                  ...params, policyId: id
+                }
+              }).unwrap()
+            }
+
+            clearSelection()
           }
         })
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: ([row]) => row && row.name !== RogueApConstant.DefaultProfile,
       onClick: ([{ type, id }]) => {
         navigate({
           ...tenantBasePath,

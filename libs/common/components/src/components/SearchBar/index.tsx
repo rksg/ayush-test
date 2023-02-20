@@ -6,11 +6,14 @@ import { SearchOutlined } from '@acx-ui/icons'
 
 import { Input } from './styledComponents'
 
-function SearchBar (props: { onChange: (value: string) => void }) {
+function SearchBar (props: { onChange: (value: string) => void, placeHolder?: string }) {
+  const { onChange, placeHolder } = props
+  const defaultPlaceHolder = useIntl().$t({ defaultMessage: 'Search for...' })
   return <Input
-    placeholder={useIntl().$t({ defaultMessage: 'Search for...' })}
+    placeholder={placeHolder || defaultPlaceHolder}
     prefix={<SearchOutlined />}
-    onChange={({ target: { value } }) => props.onChange(value)}
+    onChange={({ target: { value } }) => onChange(value)}
+    allowClear
   />
 }
 

@@ -1,21 +1,19 @@
 import { useState } from 'react'
-import React        from 'react'
-
 
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import { usePingApMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
+import { useApContext } from '../ApContext'
+
 export function ApPingForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { tenantId, serialNumber } = useApContext()
   const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()
@@ -58,12 +56,10 @@ export function ApPingForm () {
           name='name'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>}
           rules={[
             { required: true },

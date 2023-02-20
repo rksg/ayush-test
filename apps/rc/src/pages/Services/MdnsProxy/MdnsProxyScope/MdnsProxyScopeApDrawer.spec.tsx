@@ -38,7 +38,7 @@ describe('MdnsProxyScopeApDrawer', () => {
   })
 
   it('should render table with the giving data', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <MdnsProxyScopeApDrawer
           venue={mockedVenueList.data[1] as Venue}
@@ -54,8 +54,6 @@ describe('MdnsProxyScopeApDrawer', () => {
 
     // eslint-disable-next-line max-len
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-    expect(asFragment()).toMatchSnapshot()
 
     const targetAp = mockedApList.data[0]
 

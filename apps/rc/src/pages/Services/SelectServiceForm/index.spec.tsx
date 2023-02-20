@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import { renderHook } from '@testing-library/react'
 import userEvent      from '@testing-library/user-event'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -31,20 +32,13 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('Select Service Form', () => {
+
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+
   const params = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
   }
   const path = '/:tenantId/' + getSelectServiceRoutePath()
-
-  it('should render form', async () => {
-    const { asFragment } = render(
-      <SelectServiceForm />, {
-        route: { params, path }
-      }
-    )
-
-    expect(asFragment()).toMatchSnapshot()
-  })
 
   it('should navigate to the correct service page', async () => {
     render(
@@ -53,7 +47,7 @@ describe('Select Service Form', () => {
       }
     )
 
-    const wifiCallingRadio = screen.getByRole('radio', { name: /Wi-Fi Calling/ })
+    const wifiCallingRadio = screen.getByDisplayValue(/Wi-Fi Calling/)
     const submitButton = screen.getByRole('button', { name: 'Next' })
 
     await userEvent.click(wifiCallingRadio)

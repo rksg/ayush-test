@@ -10,7 +10,7 @@ describe('MdnsProxyOverview', () => {
   it('should render table', async () => {
     const { asFragment } = render(
       <Provider>
-        <MdnsProxyOverview data={{ name: '', forwardingRules: [] }} />
+        <MdnsProxyOverview data={{ name: '', rules: [] }} />
       </Provider>)
 
     expect(asFragment()).toMatchSnapshot()

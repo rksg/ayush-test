@@ -1,8 +1,16 @@
 /* eslint-disable max-len */
 import moment from 'moment-timezone'
 
+import { getIntl } from '@acx-ui/utils'
+
 export function transformDisplayText (value?: string) {
   return value ? value : '--'
+}
+
+export function transformDisplayOnOff (value: boolean) {
+  const { $t } = getIntl()
+  return value ? $t({ defaultMessage: 'ON' }) :
+    $t({ defaultMessage: 'OFF' })
 }
 
 export function transformDisplayNumber (value?: number) {

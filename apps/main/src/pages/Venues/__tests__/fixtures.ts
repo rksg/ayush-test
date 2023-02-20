@@ -4,7 +4,11 @@ import {
   GuestNetworkTypeEnum,
   RadioEnum,
   RadioTypeEnum,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  FacilityEnum,
+  FlowLevelEnum,
+  PriorityEnum,
+  ProtocolEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -37,6 +41,7 @@ export const venuelist = {
       status: '1_InSetupPhase',
       switchClients: 2,
       switches: 1,
+      edges: 3,
       clients: 1
     }
   ]
@@ -845,6 +850,125 @@ export const venueRoguePolicy = [
     id: '9700ca95e4be4a22857f0e4b621a685f'
   }
 ]
+
+export const rogueApPolicyNotDefaultProfile = {
+  venues: [
+    {
+      id: '3db73a30cd06490aaf4bca01a1eb8894',
+      name: 'My-Venue'
+    }
+  ],
+  name: 'roguePolicy1',
+  rules: [
+    {
+      name: 'macSpoofing',
+      type: 'MacSpoofingRule',
+      classification: 'Malicious',
+      priority: 2
+    },
+    {
+      name: 'rule1',
+      type: 'AdhocRule',
+      classification: 'Malicious',
+      priority: 1
+    }
+  ],
+  id: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueRoguePolicyList = [
+  {
+    name: 'Default profile',
+    rules: [
+      {
+        name: 'Same Network Rule',
+        type: 'SameNetworkRule',
+        classification: 'Malicious',
+        priority: 1
+      },
+      {
+        name: 'Mac Spoofing Rule',
+        type: 'MacSpoofingRule',
+        classification: 'Malicious',
+        priority: 2
+      },
+      {
+        name: 'SSID Spoofing Rule',
+        type: 'SsidSpoofingRule',
+        classification: 'Malicious',
+        priority: 3
+      },
+      {
+        name: 'RTS Abuse Rule',
+        type: 'RTSAbuseRule',
+        classification: 'Malicious',
+        priority: 4
+      },
+      {
+        name: 'CTS Abuse Rule',
+        type: 'CTSAbuseRule',
+        classification: 'Malicious',
+        priority: 5
+      },
+      {
+        name: 'Deauth Flood Rule',
+        type: 'DeauthFloodRule',
+        classification: 'Malicious',
+        priority: 6
+      },
+      {
+        name: 'Disassoc Flood Rule',
+        type: 'DisassocFloodRule',
+        classification: 'Malicious',
+        priority: 7
+      },
+      {
+        name: 'Excessive Power Rule',
+        type: 'ExcessivePowerRule',
+        classification: 'Malicious',
+        priority: 8
+      },
+      {
+        name: 'Null SSID Rule',
+        type: 'NullSSIDRule',
+        classification: 'Malicious',
+        priority: 9
+      },
+      {
+        name: 'Adhoc',
+        type: 'AdhocRule',
+        classification: 'Unclassified',
+        priority: 10
+      }
+    ],
+    id: 'ebb16f640edf4272bc56aef4b37fb630'
+  },
+  {
+    venues: [
+      {
+        id: '3db73a30cd06490aaf4bca01a1eb8894',
+        name: 'My-Venue'
+      }
+    ],
+    name: 'roguePolicy1',
+    rules: [
+      {
+        name: 'rule1',
+        type: 'AdhocRule',
+        classification: 'Malicious',
+        priority: 1
+      },
+      {
+        name: 'macSpoofing',
+        type: 'MacSpoofingRule',
+        classification: 'Malicious',
+        priority: 2
+      }
+    ],
+    id: '9700ca95e4be4a22857f0e4b621a685f'
+  }
+]
+
 export const configProfiles = [
   {
     id: '771f6e6b21af43fa8879e10170114fc4',
@@ -1377,6 +1501,20 @@ export const mockAaaSettingWithOrder = {
   acctExecFirstServer: 'RADIUS'
 }
 
+export const mockDirectedMulticast = {
+  wiredEnabled: true,
+  wirelessEnabled: true,
+  networkEnabled: true
+}
+
+export const mockLoadBalabcing = {
+  enabled: true,
+  loadBalancingMethod: 'BASED_ON_CLIENT_COUNT',
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: 25,
+  steeringMode: 'BASIC'
+}
+
 export const radiusList = {
   data: [
     {
@@ -1713,8 +1851,8 @@ export const radioCustomizationData = {
   },
   radioParams24G: {
     allowedChannels: ['4', '5', '6', '7', '8', '9', '10', '11'],
-    channelBandwidth: 'AUTO',
-    method: 'BACKGROUND_SCANNING',
+    channelBandwidth: '40MHz',
+    method: 'CHANNELFLY',
     changeInterval: 33,
     scanInterval: 20,
     txPower: 'MAX'
@@ -1765,11 +1903,11 @@ export const radioCustomizationData = {
       '140',
       '144'
     ],
-    channelBandwidth: '40MHz',
+    channelBandwidth: '160MHz',
     method: 'BACKGROUND_SCANNING',
     changeInterval: 33,
     scanInterval: 20,
-    txPower: 'MAX'
+    txPower: 'Auto'
   }
 }
 
@@ -2608,3 +2746,41 @@ export const validChannelsData = {
     ]
   }
 }
+
+export const venueSyslog = {
+  serviceProfileId: '31846cfe930b49b4802b302f35029589',
+  enabled: true
+}
+
+export const syslogServerProfiles = [{
+  name: 'SyslogProfile1',
+  id: '31846cfe930b49b4802b302f35029589',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+},
+{
+  name: 'SyslogProfile2',
+  id: '78f92fbf80334e8b83cddd3210db4920',
+  server: '1.1.1.1',
+  port: 514,
+  facility: 'KEEP_ORIGINAL' as FacilityEnum,
+  priority: 'INFO' as PriorityEnum,
+  protocol: 'UDP' as ProtocolEnum,
+  flowLevel: 'CLIENT_FLOW' as FlowLevelEnum,
+  secondaryServer: '2.2.2.2',
+  secondaryPort: 514,
+  secondaryProtocol: 'TCP' as ProtocolEnum,
+  venueIds: [
+    'bc20590f588948f1822dd20aa8a1914c'
+  ]
+}]

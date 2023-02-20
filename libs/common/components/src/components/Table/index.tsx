@@ -1,21 +1,24 @@
 import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 
-import ProTable, { ProTableProps as ProAntTableProps } from '@ant-design/pro-table'
-import { Space }                                       from 'antd'
-import _                                               from 'lodash'
-import Highlighter                                     from 'react-highlight-words'
-import { useIntl }                                     from 'react-intl'
-import AutoSizer                                       from 'react-virtualized-auto-sizer'
+import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
+import { Menu, MenuProps, Space }                                     from 'antd'
+import escapeStringRegexp                                             from 'escape-string-regexp'
+import _                                                              from 'lodash'
+import Highlighter                                                    from 'react-highlight-words'
+import { useIntl }                                                    from 'react-intl'
+import AutoSizer                                                      from 'react-virtualized-auto-sizer'
 
-import { SettingsOutlined } from '@acx-ui/icons'
+import { SettingsOutlined }        from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { Button }  from '../Button'
-import { Tooltip } from '../Tooltip'
+import { Button, DisabledButton } from '../Button'
+import { Dropdown }               from '../Dropdown'
+import { Tooltip }                from '../Tooltip'
 
-import { FilterValue, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                          from './ResizableColumn'
-import * as UI                                                      from './styledComponents'
-import { settingsKey, useColumnsState }                             from './useColumnsState'
+import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
+import { ResizableColumn }                                     from './ResizableColumn'
+import * as UI                                                 from './styledComponents'
+import { settingsKey, useColumnsState }                        from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -44,16 +47,18 @@ export interface TableProps <RecordType>
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
     type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
-    rowKey?: Exclude<ProAntTableProps<RecordType, ParamsType>['rowKey'], Function>
+    rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
       label: string,
       disabled?: boolean,
-      onClick: () => void
+      tooltip?: string,
+      onClick?: () => void,
+      dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
       label: string,
-      disabled?: boolean,
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
       tooltip?: string,
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
@@ -66,14 +71,27 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
+    enableApiFilter?: boolean
+    onFilterChange?: (
+      filters: Filter,
+      search: { searchString?: string, searchTargetFields?: string[] }
+    ) => void
   }
+
+export interface TableHighlightFnArgs {
+  (
+    textToHighlight: string,
+    formatFn?: (keyword: string) => React.ReactNode
+  ): string | React.ReactNode
+}
 
 const defaultPagination = {
   mini: true,
-  defaultPageSize: 10,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
-  showTotal: false
+  showTotal: false,
+  showSizeChanger: true
 }
 
 function useSelectedRowKeys <RecordType> (
@@ -91,18 +109,35 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+const MIN_SEARCH_LENGTH = 2
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function Table <RecordType extends Record<string, any>> (
-  { type = 'tall', columnState, ...props }: TableProps<RecordType>
-) {
+function Table <RecordType extends Record<string, any>> ({
+  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
+}: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<FilterValue>({} as FilterValue)
+  const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
+
+  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
+    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+
+  useEffect(() => {
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
+      debounced(filterValues, searchValue)
+    }
+    return () => debounced.cancel()
+  }, [searchValue, debounced])
+
+  useEffect(() => {
+    debounced(filterValues, searchValue)
+    return () => debounced.cancel()
+  }, [filterValues, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -131,7 +166,7 @@ function Table <RecordType extends Record<string, any>> (
 
   const columnsState = useColumnsState({ columns, columnState })
 
-  const setting: SettingOptionType | false = type === 'tall' ? {
+  const setting: SettingOptionType | false = type === 'tall' && !columnState?.hidden ? {
     draggable: true,
     checkable: true,
     checkedReset: false,
@@ -156,21 +191,19 @@ function Table <RecordType extends Record<string, any>> (
     children: <SettingsOutlined/>
   } : false
 
-  const rowKey = (props.rowKey ?? 'key') as keyof RecordType
-
+  const rowKey = (props.rowKey ?? 'key')
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
-
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {
-      return selectedRowKeys.includes(item[rowKey] as unknown as Key)
+      return selectedRowKeys.includes(typeof rowKey === 'function' ?
+        rowKey(item) : item[rowKey] as unknown as Key)
     }) ?? []
   }, [props.dataSource, rowKey])
-
   const onRowClick = (record: RecordType) => {
     if (!props.rowSelection) return
     if (rowSelection?.getCheckboxProps?.(record)?.disabled) return
 
-    const key = record[rowKey] as unknown as Key
+    const key = typeof rowKey === 'function' ? rowKey(record) : record[rowKey] as unknown as Key
     const isSelected = selectedRowKeys.includes(key)
 
     let newKeys: Key[] | undefined
@@ -192,28 +225,28 @@ function Table <RecordType extends Record<string, any>> (
     setSelectedRowKeys(newKeys)
     props.rowSelection?.onChange?.(newKeys, getSelectedRows(newKeys), { type })
   }
-  columns = columns.map(column => column.searchable && searchValue
-    ? {
-      ...column,
-      render: (_, value) => <Highlighter
-        highlightStyle={{ fontWeight: 'bold', background: 'none', padding: 0 }}
-        searchWords={[searchValue]}
-        textToHighlight={value[column.dataIndex as keyof RecordType] as unknown as string}
-        autoEscape
-      />
-    }
-    : column
-  )
 
-  const filterables = columns.filter(column => {
-    return column.filterable
-  })
-  const searchables = columns.filter(column => column.searchable)
+  const aggregator = (
+    columns: TableColumn<RecordType, 'text'>[],
+    field: keyof TableColumn<RecordType, 'text'>
+  ) => Object.values(columns.reduce((all, column) => {
+    if(column[field]) { all[column.key] = column }
+    if(isGroupColumn(column) && column.children?.length > 0)
+      column.children.forEach((child) => {
+        if(child[field]) { all[child.key] = child }
+      })
+    return all
+  }, {} as Record<string, TableColumn<RecordType, 'text'>>))
+
+  const filterables = aggregator(columns, 'filterable')
+  const searchables = aggregator(columns, 'searchable')
+
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
-    const filteredValue = filterValues[key as keyof FilterValue]
+    const filteredValue = filterValues[key as keyof Filter]
     return filteredValue
   })
+
   const hasRowSelected = Boolean(selectedRowKeys.length)
   const hasHeader = !hasRowSelected && (Boolean(filterables.length) || Boolean(searchables.length))
   const rowSelection: TableProps<RecordType>['rowSelection'] = props.rowSelection ? {
@@ -225,11 +258,22 @@ function Table <RecordType extends Record<string, any>> (
       props.rowSelection?.onChange?.(keys, rows, info)
     }
   } : undefined
+
+  let pagination: false | TablePaginationConfig = false
+  if (type === 'tall') {
+    pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+    if ((pagination.total || dataSource?.length || 0) < pagination.defaultPageSize!) {
+      pagination = false
+    }
+  }
+
   const hasEllipsisColumn = columns.some(column => column.ellipsis)
+
   const components = _.merge({},
     props.components || {},
     type === 'tall' ? { header: { cell: ResizableColumn } } : {}
   ) as TableProps<RecordType>['components']
+
   const onRow: TableProps<RecordType>['onRow'] = function (record) {
     const defaultOnRow = props.onRow?.(record)
     return {
@@ -241,37 +285,90 @@ function Table <RecordType extends Record<string, any>> (
     }
   }
 
-  const getResizeProps = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
+  const columnResize = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) =>
+    (type === 'tall')
+      ? ({
+        ...col,
+        width: (col.key === settingsKey)
+          ? col.width
+          : colWidth[col.key as keyof typeof colWidth] || col.width,
+        onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
+          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+          hasEllipsisColumn,
+          width: colWidth[column.key],
+          definedWidth: col.width
+        })
+      })
+      : col
+
+  const columnRender = (col: ColumnType<RecordType> | ColumnGroupType<RecordType, 'text'>) => ({
     ...col,
-    width: (col.key === settingsKey)
-      ? col.width
-      : colWidth[col.key as keyof typeof colWidth] || col.width,
-    onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-      onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
-      hasEllipsisColumn,
-      width: colWidth[column.key],
-      definedWidth: col.width
+    ...( col.searchable && {
+      render: ((dom, entity, index, action, schema) => {
+        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
+          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+            ? formatFn
+              ? textToHighlight.replace(
+                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+              : <Highlighter
+                highlightStyle={{
+                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
+                searchWords={[searchValue]}
+                textToHighlight={textToHighlight}
+                autoEscape
+              />
+            : textToHighlight
+        return col.render
+          ? col.render(dom, entity, index, highlightFn, action, schema)
+          : highlightFn(_.get(entity, col.dataIndex))
+      }) as ProColumnType<RecordType, 'text'>['render']
     })
   })
+
+  const finalColumns = columns.map(column => ({
+    ..._.flow([columnResize, columnRender])(column),
+    ...(column.children && {
+      children: column.children.map(child => _.flow([columnRender, columnResize])(child))
+    })
+  }))
 
   const WrappedTable = (style: { width?: number }) => <UI.Wrapper
     style={style}
     $type={type}
-    $rowSelectionActive={Boolean(props.rowSelection) && !hasHeader}
+    $rowSelectionActive={
+      Boolean(props.rowSelection) && !hasHeader && props.tableAlertRender !== false
+    }
   >
     <UI.TableSettingsGlobalOverride />
     {props.actions && <Space
       size={0}
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
-      {props.actions?.map((action, index) => <Button
-        key={index}
-        type='link'
-        size='small'
-        disabled={action.disabled}
-        onClick={action.onClick}
-        children={action.label}
-      />)}
+      {props.actions?.map((action, index) => {
+        const content = !action.disabled
+          ? <Button
+            key={index}
+            type='link'
+            size='small'
+            onClick={action.dropdownMenu ? undefined : action.onClick}
+            children={action.label}
+          />
+          : <DisabledButton
+            key={index}
+            type='link'
+            size='small'
+            title={action.tooltip || ''}
+            children={action.label}
+          />
+        return action.dropdownMenu
+          ? <Dropdown
+            key={`dropdown-${index}`}
+            overlay={<Menu {...action.dropdownMenu} />}
+            disabled={action.disabled}>
+            {() => content }
+          </Dropdown>
+          : content
+      })}
     </Space>}
     {hasHeader && (
       <UI.Header>
@@ -281,17 +378,19 @@ function Table <RecordType extends Record<string, any>> (
               renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
             }
             {filterables.map((column, i) =>
-              renderFilter<RecordType>(column, i, dataSource, filterValues, setFilterValues)
+              renderFilter<RecordType>(
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
           </Space>
         </div>
         <UI.HeaderRight>
-          {(Boolean(activeFilters.length) || Boolean(searchValue)) && <Button
-            onClick={() => {
-              setFilterValues({} as FilterValue)
-              setSearchValue('')
-            }}
-          >
+          {(
+            Boolean(activeFilters.length) ||
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
+          ) && <Button onClick={() => {
+            setFilterValues({} as Filter)
+            setSearchValue('')
+          }}>
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
@@ -299,16 +398,15 @@ function Table <RecordType extends Record<string, any>> (
     )}
     <ProTable<RecordType>
       {...props}
-      dataSource={getFilteredData<RecordType>(
-        dataSource, filterValues, activeFilters, searchables, searchValue
-      )}
+      dataSource={enableApiFilter
+        ? dataSource
+        : getFilteredData<RecordType>(
+          dataSource, filterValues, activeFilters, searchables, searchValue)
+      }
       sortDirections={['ascend', 'descend', 'ascend']}
       bordered={false}
       search={false}
-      columns={(type === 'tall' ? columns.map(col=>({
-        ...getResizeProps(col),
-        children: col.children?.map(getResizeProps)
-      })): columns) as typeof columns}
+      columns={finalColumns}
       components={_.isEmpty(components) ? undefined : components}
       options={{ setting, reload: false, density: false }}
       columnsState={{
@@ -320,14 +418,12 @@ function Table <RecordType extends Record<string, any>> (
       }}
       scroll={{ x: hasEllipsisColumn || type !== 'tall' ? '100%' : 'max-content' }}
       rowSelection={rowSelection}
-      pagination={(type === 'tall'
-        ? { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
-        : false)}
+      pagination={pagination}
       columnEmptyText={false}
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      tableAlertRender={({ onCleanSelected }) => (
+      tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
             <span>
@@ -350,18 +446,23 @@ function Table <RecordType extends Record<string, any>> (
                 : option.visible ?? true
 
               if (!visible) return null
-              return <UI.ActionButton
+              return <Button
+                type='link'
+                size='small'
                 key={option.label}
-                disabled={option.disabled}
+                disabled={typeof option.disabled === 'function'
+                  ? option.disabled(rows)
+                  : option.disabled
+                }
                 onClick={() =>
                   option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
               >
                 {label}
-              </UI.ActionButton>
+              </Button>
             })}
           </Space>
         </Space>
-      )}
+      ))}
     />
   </UI.Wrapper>
   if (hasEllipsisColumn) {
@@ -372,5 +473,6 @@ function Table <RecordType extends Record<string, any>> (
 }
 
 Table.SubTitle = UI.SubTitle
+Table.Highlighter = UI.Highlighter
 
 export { Table }

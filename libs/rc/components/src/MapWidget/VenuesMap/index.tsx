@@ -16,14 +16,14 @@ export interface GoogleMapProps {
 }
 
 export interface NavigateProps {
-  venueId: string,
+  venueId?: string,
   path?: string
 }
 
 function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
 
   const [venues, setVenues] = React.useState<VenueMarkerOptions[]>([])
-  const basePath = useTenantLink('/venues/')
+  const basePath = useTenantLink('/')
   const navigate = useNavigate()
 
   /* istanbul ignore next */
@@ -31,7 +31,9 @@ function VenuesMap ({ cluster, data, enableVenueFilter }: GoogleMapProps) {
     const { venueId, path } = params
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${venueId}/${path}`
+      pathname: venueId
+        ? `${basePath.pathname}/venues/${venueId}/${path}`
+        : `${basePath.pathname}/${path}`
     })
   }
 

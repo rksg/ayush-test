@@ -14,7 +14,9 @@ import { useCreateDpskMutation, useGetDpskQuery, useUpdateDpskMutation } from '@
 import {
   CreateDpskFormFields,
   PassphraseFormatEnum,
-  getServiceListRoutePath
+  ServiceType,
+  getServiceRoutePath,
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -32,7 +34,8 @@ interface DpskFormProps {
 export default function DpskForm (props: DpskFormProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  // eslint-disable-next-line max-len
+  const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
   const params = useParams()
   const { editMode = false } = props
 
@@ -58,7 +61,7 @@ export default function DpskForm (props: DpskFormProps) {
       if (editMode) {
         await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
       } else {
-        await createDpsk({ params, payload: dpskSaveData }).unwrap()
+        await createDpsk({ payload: dpskSaveData }).unwrap()
       }
 
       navigate(linkToServices, { replace: true })
@@ -73,9 +76,15 @@ export default function DpskForm (props: DpskFormProps) {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add DPSK service' })}
+        title={editMode
+          ? $t({ defaultMessage: 'Edit DPSK service' })
+          : $t({ defaultMessage: 'Add DPSK service' })
+        }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <StepsForm<CreateDpskFormFields>

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { RcFile } from 'antd/lib/upload'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 
@@ -9,9 +11,10 @@ import PortalImageTools          from '../PortalImageTools'
 import PortalPopover             from '../PortalPopover'
 
 export default function PortalPoweredByContent (props: {
+  portalLang: { [key:string]:string },
   demoValue: Demo,
   updatePoweredBy:(value: { url?:string,size?:number,show?:boolean,text?:string,
-    textsize?:number,bgcolor?:string,color?:string }) => void
+    textsize?:number,bgcolor?:string,color?:string, file?:RcFile }) => void
 }) {
   const { demoValue, updatePoweredBy } = props
   const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
@@ -34,11 +37,11 @@ export default function PortalPoweredByContent (props: {
     showText={false}
     showColorPic={false}
     url={demoValue.poweredImg as string}
-    size={demoValue.poweredImgSize as number}
-    defaultSize={PortalDemoDefaultSize.poweredImgSize}
+    size={demoValue.poweredImgRatio as number}
+    defaultSize={PortalDemoDefaultSize.poweredImgRatio}
     updateDemoImg={(data)=>{
       updatePoweredBy({ ...data, textsize: demoValue.poweredSize,
-        bgcolor: demoValue.poweredBackgroundColor })
+        bgcolor: demoValue.poweredBgColor, file: data.file })
     }}
   />
   const poweredTextTools = <PortalImageTools
@@ -48,21 +51,21 @@ export default function PortalPoweredByContent (props: {
     defaultSize={PortalDemoDefaultSize.poweredSize}
     color={demoValue.poweredColor}
     updateDemoImg={(data) => {
-      updatePoweredBy({ ...data, size: demoValue.poweredImgSize,
-        bgcolor: demoValue.poweredBackgroundColor, textsize: data.size })
+      updatePoweredBy({ ...data, size: demoValue.poweredImgRatio,
+        bgcolor: demoValue.poweredBgColor, textsize: data.size })
     }}
   />
   const poweredTools = <PortalImageTools
     showText={false}
     showImg={false}
-    color={demoValue.poweredBackgroundColor}
+    color={demoValue.poweredBgColor}
     updateDemoImg={(data) => {
       updatePoweredBy({ ...data,bgcolor: data.color, color: demoValue.poweredColor })
     }}
   />
   return (
-    <UI.SelectedDiv style={{ paddingLeft: Math.min(200/(demoValue.poweredImgSize
-      /PortalDemoDefaultSize.poweredImgSize),
+    <UI.SelectedDiv style={{ paddingLeft: Math.min(200/(demoValue.poweredImgRatio
+      /PortalDemoDefaultSize.poweredImgRatio),
     200/((demoValue.poweredSize)
       /PortalDemoDefaultSize.poweredSize))+'px' }}
     ><PortalPopover
@@ -70,7 +73,7 @@ export default function PortalPoweredByContent (props: {
         visible={poweredClicked}
         onVisibleChange={(value) => setPoweredClicked(value)}
       ><div style={{ outline: outlineTwo, cursor: cursorTwo,
-          backgroundColor: demoValue.poweredBackgroundColor }}
+          backgroundColor: demoValue.poweredBgColor }}
         onMouseOver={() => {
           setCursorTwo('pointer')
           setOutlineTwo(dashedOutline)
@@ -89,12 +92,13 @@ export default function PortalPoweredByContent (props: {
           setPoweredClicked(true)
           setOutlineTwo(dashedOutline)
         }}>
-          {demoValue.componentDisplay?.PoweredBy &&
+          {demoValue.componentDisplay?.poweredBy &&
         <PortalPopover
           content={poweredTextTools}
           visible={poweredTextClicked}
           onVisibleChange={(value) => setPoweredTextClicked(value)}>
           <UI.FieldText style={{ fontSize: demoValue.poweredSize,
+            marginLeft: -15, marginBottom: -15,
             width: 152*(demoValue.poweredSize
           /PortalDemoDefaultSize.poweredSize)+'px' ,
             lineHeight: 24 * (demoValue.poweredSize
@@ -125,8 +129,8 @@ export default function PortalPoweredByContent (props: {
             setOutlineTwoText(dashedOutline)
           }}
           >
-            {'Powered By'}</UI.FieldText></PortalPopover>}
-          {demoValue.componentDisplay?.PoweredBy && <PortalPopover
+            {props.portalLang.poweredBy}</UI.FieldText></PortalPopover>}
+          {demoValue.componentDisplay?.poweredBy && <PortalPopover
             content={poweredImgTools}
             visible={poweredImgClicked}
             onVisibleChange={(value) => setPoweredImgClicked(value)}>
@@ -135,7 +139,7 @@ export default function PortalPoweredByContent (props: {
               style={{
                 marginLeft: 50,
                 cursor: cursorTwoImg, outline: outlineTwoImg,
-                height: demoValue.poweredImgSize,
+                height: demoValue.poweredImgRatio,
                 maxWidth: 425
               }}
               onMouseOver={(e)=>{

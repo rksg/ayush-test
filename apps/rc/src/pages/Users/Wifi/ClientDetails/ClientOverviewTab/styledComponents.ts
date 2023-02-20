@@ -1,5 +1,5 @@
-import { Form as AntForm, Space } from 'antd'
-import styled                     from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
 import { GridCol as GridColComponent  } from '@acx-ui/components'
 
@@ -33,21 +33,15 @@ export const GridCol = styled(GridColComponent)`
   justify-content: center;
 `
 
+export const BarChartContainer = styled.div`
+  height: 100%;
+`
+
 export const Title = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height)
   color: var(--acx-neutrals-70);
   margin-bottom: 6px;
-`
-
-export const Form = styled(AntForm)`
-  .ant-form-item {
-    font-size: var(--acx-body-4-font-size);
-  }
-
-  .ant-form-item-label > label {
-    color: var(--acx-neutrals-70)
-  }
 `
 
 export const OsType = styled(Space)`

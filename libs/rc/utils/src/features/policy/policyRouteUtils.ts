@@ -2,10 +2,16 @@ import { generatePath } from '@acx-ui/react-router-dom'
 
 import { PolicyType } from '../../types'
 
+export enum MacRegistrationDetailsTabKey {
+  OVERVIEW = 'overview',
+  MAC_REGISTRATIONS = 'macRegistrations'
+}
+
 export enum PolicyOperation {
   CREATE,
   EDIT,
-  DETAIL
+  DETAIL,
+  LIST
 }
 
 interface PolicyRoutePathProps {
@@ -16,12 +22,14 @@ interface PolicyRoutePathProps {
 interface PolicyDetailsLinkProps extends PolicyRoutePathProps {
   oper: Exclude<PolicyOperation, PolicyOperation.CREATE>;
   policyId: string;
+  activeTab?: MacRegistrationDetailsTabKey; // Union the other policies tab keys if needed
 }
 
 const operationPathMapping: Record<PolicyOperation, string> = {
   [PolicyOperation.CREATE]: 'create',
   [PolicyOperation.EDIT]: ':policyId/edit',
-  [PolicyOperation.DETAIL]: ':policyId/detail'
+  [PolicyOperation.DETAIL]: ':policyId/detail',
+  [PolicyOperation.LIST]: 'list'
 }
 
 const typePathMapping: Record<PolicyType, string> = {
@@ -30,14 +38,34 @@ const typePathMapping: Record<PolicyType, string> = {
   [PolicyType.CLIENT_ISOLATION]: 'clientIsolation',
   [PolicyType.ROGUE_AP_DETECTION]: 'rogueAp',
   [PolicyType.SYSLOG]: 'syslog',
-  [PolicyType.VLAN_POOL]: 'vlanPool'
+  [PolicyType.VLAN_POOL]: 'vlanPool',
+  [PolicyType.MAC_REGISTRATION_LIST]: 'macRegistrationList',
+  [PolicyType.LAYER_2_POLICY]: 'layer2Policy',
+  [PolicyType.LAYER_3_POLICY]: 'layer3Policy',
+  [PolicyType.APPLICATION_POLICY]: 'applicationPolicy',
+  [PolicyType.DEVICE_POLICY]: 'devicePolicy'
 }
 
-export function getPolicyRoutePath ({ type, oper }: PolicyRoutePathProps): string {
-  return 'policies/' + typePathMapping[type] + '/' + operationPathMapping[oper]
+export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
+  const { type, oper } = props
+  const paths = ['policies']
+
+  paths.push(typePathMapping[type])
+  paths.push(operationPathMapping[oper])
+  if (hasTab(props)) {
+    paths.push(':activeTab')
+  }
+
+  return paths.join('/')
 }
 
-export function getPolicyDetailsLink ({ type, oper, policyId }: PolicyDetailsLinkProps): string {
+export function getPolicyDetailsLink (props: PolicyDetailsLinkProps): string {
+  const { type, oper, policyId, activeTab } = props
+
+  if (hasTab({ type, oper })) {
+    return generatePath(getPolicyRoutePath({ type, oper }), { policyId, activeTab })
+  }
+
   return generatePath(getPolicyRoutePath({ type, oper }), { policyId })
 }
 
@@ -47,4 +75,11 @@ export function getPolicyListRoutePath (prefixSlash = false): string {
 
 export function getSelectPolicyRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'policies/select'
+}
+
+function hasTab ({ type, oper }: PolicyRoutePathProps): boolean {
+  if (type === PolicyType.MAC_REGISTRATION_LIST && oper === PolicyOperation.DETAIL) {
+    return true
+  }
+  return false
 }

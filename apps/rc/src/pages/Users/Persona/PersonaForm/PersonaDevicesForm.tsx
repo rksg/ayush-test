@@ -1,0 +1,90 @@
+import React, { useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import {  Table, TableProps } from '@acx-ui/components'
+import { PersonaDevice }      from '@acx-ui/rc/utils'
+
+import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
+
+
+export interface PersonaDeviceItem extends PersonaDevice {
+  hostname?: string
+}
+
+interface PersonaDevicesFormProps {
+  groupId?: string,
+  value?: PersonaDeviceItem[],
+  onChange?: (value: PersonaDeviceItem[]) => void
+}
+
+export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
+  const { $t } = useIntl()
+  const { value, onChange } = props
+  const [modelVisible, setModelVisible] = useState(false)
+
+  const triggerOnChange = (changeValue: PersonaDeviceItem[]) => {
+    onChange?.(changeValue ?? [])
+  }
+
+  const handleModalCancel = () => {
+    setModelVisible(false)
+  }
+
+  const handleModalSubmit = (data: Extract<PersonaDeviceItem, ['macAddress', 'hostname']>[]) => {
+    triggerOnChange([ ...value ?? [], ...data ])
+  }
+
+  const columns = [
+    {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'macAddress',
+      key: 'macAddress'
+    },
+    {
+      title: $t({ defaultMessage: 'Hostname' }),
+      dataIndex: 'hostname',
+      key: 'hostname'
+    }
+  ]
+
+  const actions: TableProps<PersonaDeviceItem>['actions'] = [
+    {
+      label: $t({ defaultMessage: 'Add Device' }),
+      onClick: () => {
+        setModelVisible(true)
+      }
+    }
+  ]
+
+  const rowActions: TableProps<PersonaDeviceItem>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (selectedItems, clearSelection) => {
+        const selectedMacs = selectedItems.map(i => i.macAddress)
+        triggerOnChange(value?.filter(item => !selectedMacs.includes(item.macAddress)) ?? [])
+        clearSelection()
+      }
+    }
+  ]
+
+  return (
+    <>
+      <Table
+        type={'form'}
+        rowKey='macAddress'
+        columns={columns}
+        dataSource={value ?? []}
+        actions={actions}
+        rowActions={rowActions}
+        rowSelection={{ defaultSelectedRowKeys: [] }}
+      />
+      <PersonaDevicesImportDialog
+        visible={modelVisible}
+        personaGroupId={props.groupId}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+      />
+    </>
+  )
+}

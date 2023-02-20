@@ -6,7 +6,7 @@ import {
   MfaAuthApp,
   MfaDetailStatus,
   MfaOtpMethod,
-  ProfileDataToUpdate,
+  PlmMessageBanner,
   RequestPayload,
   UserSettings,
   UserProfile,
@@ -18,6 +18,7 @@ import {
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
+  tagTypes: ['UserProfile'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -68,14 +69,27 @@ export const userApi = baseUserApi.injectEndpoints({
           userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
         userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
         return userProfile
-      }
+      },
+      providesTags: ['UserProfile']
     }),
-    updateUserProfile: build.mutation<ProfileDataToUpdate, RequestPayload>({
+    updateUserProfile: build.mutation<Partial<UserProfile>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateUserProfile, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: ['UserProfile']
+    }),
+    getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
+      query: ({ params }) => {
+        const messageBannerReq = createHttpRequest(
+          CommonUrlsInfo.getCloudMessageBanner,
+          params
+        )
+        return {
+          ...messageBannerReq
         }
       }
     }),
@@ -152,9 +166,5 @@ export const {
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetMfaTenantDetailsQuery,
-  useGetMfaAdminDetailsQuery,
-  // useGetMfaMasterCodeQuery,
-  useMfaRegisterAdminMutation,
-  useMfaRegisterPhoneQuery
+  useGetPlmMessageBannerQuery
 } = userApi

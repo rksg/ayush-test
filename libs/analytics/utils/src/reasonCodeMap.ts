@@ -1,9 +1,10 @@
 import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
-import { ccd80211ReasonCodes } from './mapping/ccd80211ReasonCodeMap'
-import { ccdFailureTypes }     from './mapping/ccdFailureTypeMap'
-import { ccdReasonCodes }      from './mapping/ccdReasonCodeMap'
-import { clientEvents }        from './mapping/clientEventsMap'
+import { disconnectReasonCodeMap } from './mapping/80211MgmtDeauthAndDisassociationFramesMap'
+import { ccd80211ReasonCodes }     from './mapping/ccd80211ReasonCodeMap'
+import { ccdFailureTypes }         from './mapping/ccdFailureTypeMap'
+import { ccdReasonCodes }          from './mapping/ccdReasonCodeMap'
+import { clientEvents }            from './mapping/clientEventsMap'
 
 export type MapElement = {
   id: number
@@ -57,6 +58,10 @@ export function clientEventDescription (
 export function mapCodeToReason (code: string, intl: IntlShape) {
   const reason = failureTitles[code as keyof typeof failureTitles] || clientEventDescription(code)
   return (typeof reason === 'string') ? reason : intl.$t(reason)
+}
+
+export function mapDisconnectCodeToReason (code: string | null): MessageDescriptor {
+  return (code && disconnectReasonCodeMap[code]) || defineMessage({ defaultMessage: 'Unknown' })
 }
 
 export function mapCodeToAttempt (code: string, intl: IntlShape) {

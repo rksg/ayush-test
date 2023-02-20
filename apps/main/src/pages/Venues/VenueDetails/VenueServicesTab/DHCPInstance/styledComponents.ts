@@ -1,5 +1,5 @@
-import { Select, Form } from 'antd'
-import styled           from 'styled-components/macro'
+import { Select, Form, Switch } from 'antd'
+import styled                   from 'styled-components/macro'
 
 
 export const Wrapper = styled.section`
@@ -29,4 +29,7 @@ export const StyledForm = styled(Form)`
   .ant-form-item {
     margin-bottom: ${gatewayBottom};
   }
+`
+export const ReadonlySwitch = styled(Switch)`
+  opacity: 0.5;
 `

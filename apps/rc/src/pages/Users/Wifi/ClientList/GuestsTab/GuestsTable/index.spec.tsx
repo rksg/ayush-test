@@ -1,19 +1,23 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
   render,
   screen,
-  waitForElementToBeRemoved
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
-
-import { GuestClient, GuestNetworkList } from '../../../__tests__/fixtures'
+import {
+  AllowedNetworkList,
+  GuestClient,
+  RegenerateGuestPassword
+} from '../../../__tests__/fixtures'
 
 
 import GuestsTable from '.'
@@ -22,7 +26,6 @@ jest.mock('socket.io-client')
 
 describe('Guest Table', () => {
   let params: { tenantId: string }
-
   global.URL.createObjectURL = jest.fn()
 
   beforeEach(() => {
@@ -33,9 +36,18 @@ describe('Guest Table', () => {
         (req, res, ctx) => res(ctx.json(GuestClient))
       ),
       rest.post(
+        ClientUrlsInfo.getGuests.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(GuestNetworkList))
+        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
+      ),
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(RegenerateGuestPassword))
       )
+
     )
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -45,7 +57,7 @@ describe('Guest Table', () => {
   it('should render table', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
-    const { asFragment } = render(
+    render(
       <Provider>
         <GuestsTable />
       </Provider>, {
@@ -54,12 +66,9 @@ describe('Guest Table', () => {
 
 
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
 
     await screen.findByText('test1')
     jest.useRealTimers()
-
   })
 
 
@@ -71,11 +80,9 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test1'))
     await screen.findByText('Guest Details')
-
   })
 
   it('should render detail by click created time', async () => {
@@ -86,7 +93,6 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(await screen.findByText('20/11/2022 08:57'))
     await screen.findByText('Guest Details')
   })
@@ -99,12 +105,11 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test2'))
     await screen.findByText('Guest Details')
 
-    const button = screen.getByRole('button', { name: /close/i })
+    const button = screen.getByRole('button', { name: 'Close' })
     fireEvent.click(button)
   })
 
@@ -116,7 +121,6 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -128,11 +132,9 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('disable_client'))
     await screen.findByText('Guest Details')
@@ -145,11 +147,9 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -166,7 +166,6 @@ describe('Guest Table', () => {
         wrapper: Provider
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -182,11 +181,9 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test4'))
     await screen.findByText('Guest Details')
@@ -201,9 +198,114 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('checkbox', {
       name: /send to email/i
     }))
-    const generateButton = screen.getByRole('button', { name: /generate/i })
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
     await userEvent.click(generateButton)
 
+  })
+
+  it('should click "generate new password" validation 1', async () => {
+    const json = {
+      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
+      response: {
+        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
+        createdDate: 1670475350467,
+        name: 'guest1',
+        disabled: false,
+        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        notes: '',
+        email: 'test@commscope.com',
+        mobilePhoneNumber: '+886988000000',
+        macAddresses: [],
+        ssid: 'test guest',
+        deliveryMethods: ['PRINT'],
+        guestUserType: 'GuestPass',
+        expiration: {
+          activationType: 'Creation',
+          duration: 7,
+          unit: 'Day'
+        },
+        locale: 'en',
+        password: '886007'
+      }
+    }
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(json))
+      )
+    )
+
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' }
+      })
+
+
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
+    await userEvent.click(generateButton)
+  })
+
+  it('should click "generate new password" validation 2', async () => {
+    const json = {
+      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
+      response: {
+        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
+        createdDate: 1670475350467,
+        name: 'guest1',
+        disabled: false,
+        networkId: 'd50b652907b64a008e8af2d160b29b64',
+        notes: '',
+        email: 'test@commscope.com',
+        mobilePhoneNumber: '+886988000000',
+        macAddresses: [],
+        ssid: 'test guest',
+        deliveryMethods: ['PRINT'],
+        guestUserType: 'GuestPass',
+        expiration: {
+          activationType: 'Creation',
+          duration: 7,
+          unit: 'Hour'
+        },
+        locale: 'en',
+        password: '886007'
+      }
+    }
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.json(json))
+      )
+    )
+
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' }
+      })
+
+
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
+    await userEvent.click(generateButton)
   })
 
   it('should click "download" correctly', async () => {
@@ -211,11 +313,9 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -228,11 +328,9 @@ describe('Guest Table', () => {
       <Provider>
         <GuestsTable />
       </Provider>, {
-        route: { params, path: '/:tenantId/users/wifi/guests' },
-        wrapper: Provider
+        route: { params, path: '/:tenantId/users/wifi/guests' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
@@ -242,5 +340,79 @@ describe('Guest Table', () => {
     fireEvent.click(screen.getByRole('button', {
       name: /delete guest/i
     }))
+  })
+
+  it('should handle error for generate password', async () => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.generateGuestPassword.url,
+        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
+      )
+    )
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' }
+      })
+
+    fireEvent.click(await screen.findByText('test4'))
+    await screen.findByText('Guest Details')
+    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
+    fireEvent.click(await screen.findByText(/generate new password/i))
+    fireEvent.click(screen.getByRole('checkbox', {
+      name: /print guest pass/i
+    }))
+    const generateButton = screen.getByRole('button', { name: 'Generate' })
+    await userEvent.click(generateButton)
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
+
+  it('should show "Import from file" correctly', async () => {
+    mockServer.use(
+      rest.post(
+        ClientUrlsInfo.importGuestPass.url,
+        (req, res, ctx) => res(ctx.status(400), ctx.json({
+          requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
+          error: {
+            rootCauseErrors: [{
+              code: 'GUEST-400002',
+              message: 'File does not contain any entries'
+            }],
+            request: {},
+            status: 400
+          }
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <GuestsTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/users/wifi/guests' }
+      })
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Import from file' })).toBeEnabled())
+
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    fireEvent.click(importBtn)
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    const allowedNetworkCombo =
+      await within(dialog).findByLabelText('Allowed Network', { exact: false })
+    fireEvent.mouseDown(allowedNetworkCombo)
+    const option = await screen.findByText('guest pass wlan1')
+    fireEvent.click(option)
+
+    fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
+
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
+
+    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 })

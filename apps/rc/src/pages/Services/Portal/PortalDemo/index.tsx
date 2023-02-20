@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                                          from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                     from '@acx-ui/icons'
-import { Demo, GuestNetworkTypeEnum, PortalLanguageEnum, PortalViewEnum } from '@acx-ui/rc/utils'
+import { Alert, Tooltip }                                     from '@acx-ui/components'
+import { useGetPortalLangMutation }                           from '@acx-ui/rc/services'
+import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
+import { useParams }                                          from '@acx-ui/react-router-dom'
 
-import { capativeTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
-import { getLanguage }              from '../../commonUtils'
-import { portalViewTypes }          from '../contentsMap'
-import * as UI                      from '../styledComponents'
+import { captiveTypesDescription } from '../../../Networks/wireless/NetworkForm/contentsMap'
+import { portalViewTypes }         from '../contentsMap'
+import PortalFormContext           from '../PortalForm/PortalFormContext'
+import PortalPreviewModal          from '../PortalPreviewModal'
+import * as UI                     from '../styledComponents'
 
 import PortalBackground         from './PortalBackground'
 import PortalComponents         from './PortalComponents'
@@ -24,16 +25,24 @@ import PortalViewContentPreview from './PortalViewContentPreview'
 
 
 type PortalDemoProps = {
-  isPreview?: boolean
+  networkSocial?: { [key:string]:boolean },
+  networkViewType?: GuestNetworkTypeEnum,
+  fromNetwork?: boolean,
+  isPreview?: boolean,
   value?: Demo,
   resetDemo?: () => void,
-  onChange?: (data: Demo) => void
+  onChange?: (data: Demo) => void,
+  viewPortalLang?: { [key:string]:string },
 }
 export default function PortalDemo ({
+  networkSocial,
+  networkViewType,
+  fromNetwork,
   isPreview,
   value,
   resetDemo,
-  onChange
+  onChange,
+  viewPortalLang
 }: PortalDemoProps) {
   const { $t } = useIntl()
   const { Option } = UI.Select
@@ -43,7 +52,10 @@ export default function PortalDemo ({
     tablet: false,
     mobile: false
   })
-  const [showLanguage, setShowLanguage] = useState(false)
+  const {
+    portalData,
+    setPortalData
+  } = useContext(PortalFormContext)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
   const demoValue = value as Demo
@@ -55,7 +67,7 @@ export default function PortalDemo ({
     demoValue={demoValue}
     updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
   />
-
+  const networkPreview = (isPreview && fromNetwork)
   const type= view === PortalViewEnum.ClickThrough? GuestNetworkTypeEnum.ClickThrough :
     (view === PortalViewEnum.GuestPassConnect || view ===PortalViewEnum.GuestPassForgot)?
       GuestNetworkTypeEnum.GuestPass:
@@ -64,19 +76,25 @@ export default function PortalDemo ({
         view === PortalViewEnum.HostApproval?
           GuestNetworkTypeEnum.HostApproval:GuestNetworkTypeEnum.ClickThrough
   const viewKeys = Object.keys(PortalViewEnum) as Array<keyof typeof PortalViewEnum>
-  const alternativeLang = demoValue.alternativeLang
-  const displayLang = getLanguage(demoValue.displayLang as keyof typeof PortalLanguageEnum)
-  let langs = [] as string[]
-  const langKeys = Object.keys(alternativeLang || {}) as Array<keyof typeof PortalLanguageEnum>
-  langKeys.map((key) =>{
-    if(alternativeLang?.[key]) langs.push(getLanguage(key))
-    return langs
-  }
-  )
+  const params = useParams()
+  const [getPortalLang] = useGetPortalLangMutation()
+  const [portalLang, setPortalLang]=useState(viewPortalLang || {} as { [key:string]:string })
+  useEffect(()=>{
+    if(!isPreview && demoValue.displayLangCode){
+      getPortalLang({ params: { ...params, messageName:
+      demoValue.displayLangCode+'.json' } }).unwrap().then((res)=>{
+        setPortalLang(res)
+      })
+    }
+  }, [demoValue.displayLangCode])
+  useEffect(()=>{
+    if(isPreview&&viewPortalLang)setPortalLang(viewPortalLang)
+  },[viewPortalLang])
   return (
-    <>
+    <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
+      width: '95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
-      {demoValue.componentDisplay.WiFi4EU && !demoValue.wifi4EU
+      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
           message={$t(defineMessage({
             defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
@@ -86,7 +104,7 @@ export default function PortalDemo ({
         <div style={{ display: 'flex' }}>
           <div
             style={{ flex: '0 0 345px' }}>
-            <UI.Label>
+            {!networkPreview &&<div><UI.Label>
               {$t({ defaultMessage: 'View as:' })}
             </UI.Label>
             <UI.Select
@@ -97,20 +115,19 @@ export default function PortalDemo ({
                 <Option key={key} value={key}>
                   {$t(portalViewTypes[key])}</Option>
               ))}
-            </UI.Select>
+            </UI.Select></div>}
           </div>
           <div style={{ flex: '0 0 40px' }}>
-            <UI.FieldExtraTooltip>
-              <Tooltip
+            {!networkPreview &&<UI.FieldExtraTooltip>
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
-                  {...capativeTypesDescription[type]}
+                  {...captiveTypesDescription[type]}
                 />}
-                children={<QuestionMarkCircleOutlined width={16}/>}
               />
-            </UI.FieldExtraTooltip>
+            </UI.FieldExtraTooltip>}
           </div>
-          <div style={{ flex: '0 0 190px' }}>
+          <div style={{ flex: 'auto', textAlign: 'center' }}>
             <UI.DesktopOutlined $marked={marked.desk}
               title='deskicon'
               onClick={()=>{
@@ -130,67 +147,55 @@ export default function PortalDemo ({
                 setMarked({ desk: false, tablet: false, mobile: true })
               }}/>
           </div>
-          {!isPreview&&<div
-            style={{ flex: 'auto', textAlign: 'right', paddingRight: 5 }}>
-            <UI.Popover
-              overlayClassName={UI.popoverClassName}
-              overlayInnerStyle={{ maxHeight: 500 , overflowY: 'auto' }}
-              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-              content={langContent}
-              trigger='click'
-              placement='bottomLeft'
-              visible={showLanguage}
-              onVisibleChange={(data)=>setShowLanguage(data)}
-            ><UI.Button type='default' size='small'>
-                {$t({ defaultMessage: 'Language Settings' })}</UI.Button></UI.Popover>
-            <UI.Popover
-              overlayClassName={UI.popoverClassName}
-              overlayInnerStyle={{ minWidth: 260 }}
-              getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
-              content={compContent}
-              trigger='click'
-              placement='bottomLeft'
-              visible={showComponent}
-              onVisibleChange={(data)=>setShowComponent(data)}
-            ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
-              </UI.Button></UI.Popover>
-            <UI.Button type='default'
-              size='small'
-              onClick={()=>{
-                resetDemo?.()
-              }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
-          </div>}
-          {isPreview&&<div
-            style={{ flex: 'auto', textAlign: 'right', paddingRight: 40 }}>
-            <UI.Select defaultValue={displayLang} style={{ width: 250, textAlign: 'left' }}>
-              <Option key={displayLang}>
-                {displayLang}
-              </Option>
-              {langs.map(
-                key =><Option key={key}>{key}</Option>
-              )}
-            </UI.Select>
+          <div
+            style={{ flex: '0 0 513px', textAlign: 'right', paddingRight: 5 }}>
+            {!isPreview&&<div>
+              {langContent}
+              <UI.Popover
+                overlayClassName={UI.popoverClassName}
+                overlayInnerStyle={{ minWidth: 260 }}
+                getPopupContainer={()=>document.getElementById('democontent') as HTMLElement}
+                content={compContent}
+                trigger='click'
+                placement='bottomLeft'
+                visible={showComponent}
+                onVisibleChange={(data)=>setShowComponent(data)}
+              ><UI.Button type='default' size='small'>{$t({ defaultMessage: 'Components' })}
+                </UI.Button></UI.Popover>
+              <PortalPreviewModal demoValue={demoValue} portalLang={portalLang}/>
+              <UI.Button type='default'
+                size='small'
+                onClick={()=>{
+                  resetDemo?.()
+                }}>{$t({ defaultMessage: 'Reset' })}</UI.Button>
+            </div>}
           </div>
-          }
         </div>
       </UI.LayoutHeader>
-      <UI.LayoutContent id='democontent'>
+      <UI.LayoutContent id={networkPreview?'noid':'democontent'} $isPreview={isPreview}>
         {!isPreview&&<PortalBackground $isDesk={marked.desk}
-          backgroundColor={demoValue.backgroundColor}
-          updateBackgroundImg={(data: string) =>
-            onChange?.({ ...demoValue, backgroundImage: data })}
+          backgroundColor={demoValue.bgColor}
+          updateBackgroundImg={({ url, file }) =>{
+            setPortalData?.({ ...portalData as Portal, bgFile: file })
+            onChange?.({ ...demoValue, bgImage: url })}}
           updateBackgroundColor={(data: string) =>
-            onChange?.({ ...demoValue, backgroundColor: data })}/>}
+            onChange?.({ ...demoValue, bgColor: data })}/>}
         <UI.LayoutView $type={screen}
-          style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.backgroundImage+'")',
-            backgroundColor: (isPreview?value:demoValue)?.backgroundColor }}>
-          {isPreview?<PortalViewContentPreview view={view}
-            demoValue={value as Demo}/>:
-            <PortalViewContent view={view}
-              demoValue={demoValue}
-              updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
-            />}
+          style={{ backgroundImage: 'url("'+(isPreview?value:demoValue)?.bgImage+'")',
+            backgroundColor: (isPreview?value:demoValue)?.bgColor }}>
+          <div>
+            {isPreview?<PortalViewContentPreview view={view}
+              networkSocial={networkSocial}
+              networkViewType={networkViewType}
+              portalLang={portalLang}
+              demoValue={value as Demo}/>:
+              <PortalViewContent view={view}
+                portalLang={portalLang}
+                demoValue={demoValue}
+                updateViewContent={(data)=>onChange?.({ ...demoValue, ...data })}
+              />}
+          </div>
         </UI.LayoutView>
       </UI.LayoutContent>
-    </>)
+    </div>)
 }

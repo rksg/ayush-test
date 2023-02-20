@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { venueApi }                              from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
@@ -48,6 +49,7 @@ describe('VenueEdit', () => {
   })
 
   it('should handle tab changes', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><VenueEdit /></Provider>, { route: { params } })
     fireEvent.click(await screen.findByRole('tab', { name: 'Wi-Fi Configuration' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

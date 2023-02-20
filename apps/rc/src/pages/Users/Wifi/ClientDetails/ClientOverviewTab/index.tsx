@@ -28,6 +28,7 @@ import {
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
+import { TopApplications }      from './TopApplications'
 
 const clientPayload = {
   searchString: '',
@@ -152,11 +153,15 @@ export function ClientOverviewTab () {
               clientStatistic={clientStatistics}
               clientStatus={clientStatus}
               clientDetails={clientDetails}
+              filters={filters}
             />
           </UI.CardWrapper>
         </GridCol>
-        <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
-          {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
+        <GridCol col={{ span: 8 }} style={{ height: '292px' }}>
+          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='donut' />
+        </GridCol>
+        <GridCol col={{ span: 16 }} style={{ height: '292px' }}>
+          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='line' />
         </GridCol>
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />

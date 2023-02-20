@@ -4,28 +4,35 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, Loader, TableProps, Tooltip, Table  }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
-const disabledType = [NetworkTypeEnum.DPSK, NetworkTypeEnum.CAPTIVEPORTAL]
+const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function getCols (intl: ReturnType<typeof useIntl>, isServicesEnabled: boolean) {
   const columns: TableProps<Network>['columns'] = [
     {
       key: 'name',
-      title: intl.$t({ defaultMessage: 'Network Name' }),
+      title: intl.$t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      disable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+              {data}
+              {data !== row.ssid &&
+                <> {intl.$t({ defaultMessage: '(SSID: {ssid})' }, { ssid: row.ssid })}</>
+              }
+            </TenantLink>
           )
         }
       }
@@ -58,7 +65,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         }else{
           return (
             <TenantLink
-              to={`/networks/${row.id}/network-details/venues`}
+              to={`/networks/wireless/${row.id}/network-details/venues`}
               children={count ? count : 0}
             />
           )
@@ -76,7 +83,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return data
         }else{
           return (
-            <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+            <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
           )
         }
       }
@@ -85,7 +92,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clients',
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
-      sorter: true,
+      sorter: false,
       align: 'center'
     },
     {
@@ -93,7 +100,8 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Services' }),
       dataIndex: 'services',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      show: isServicesEnabled
     },
     {
       key: 'vlan',
@@ -103,19 +111,19 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       render: function (data, row) {
         return transformVLAN(row)
       }
-    },
-    {
-      key: 'health',
-      title: intl.$t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: intl.$t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
     }
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: intl.$t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: intl.$t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
   ]
   return columns
 }
@@ -171,15 +179,20 @@ interface NetworkTableProps {
 }
 
 export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
-  const linkToEditNetwork = useTenantLink('/networks/')
+  const linkToEditNetwork = useTenantLink('/networks/wireless/')
 
   const { tenantId } = useParams()
   const [
     deleteNetwork, { isLoading: isDeleteNetworkUpdating }
   ] = useDeleteNetworkMutation()
+
+  if(!isServicesEnabled){
+    disabledType.push(NetworkTypeEnum.CAPTIVEPORTAL)
+  }
 
   const rowActions: TableProps<Network>['rowActions'] = [
     {
@@ -217,7 +230,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        columns={getCols(intl)}
+        columns={getCols(intl, isServicesEnabled)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

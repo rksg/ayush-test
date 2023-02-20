@@ -1,16 +1,15 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { Badge, Space } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Badge }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import {
   Loader,
   Table,
   TableProps,
   deviceStatusColors,
-  StackedBarChart,
-  cssStr
+  ColumnType
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
@@ -18,32 +17,35 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
+  APExtended,
   ApExtraParams,
-  AP,
   APMeshRole,
   APView,
   DeviceConnectionStatus,
   transformApStatus,
   transformDisplayNumber,
   transformDisplayText,
-  useTableQuery,
   TableQuery,
-  RequestPayload
+  RequestPayload,
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { getFilters }                         from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getFilters }                                        from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { useApActions } from '../useApActions'
+import { seriesMappingAP } from '../DevicesWidget/helper'
+import { useApActions }    from '../useApActions'
 
 
 
 export const defaultApPayload = {
   searchString: '',
+  searchTargetFields: ['name', 'model', 'IP', 'apMac', 'tags', 'serialNumber'],
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
     'apStatusData.APRadio.band', 'tags', 'serialNumber',
     'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
+    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
     'fwVersion'
   ]
 }
@@ -90,9 +92,12 @@ export const APStatus = (
   )
 }
 
+
 interface ApTableProps
-  extends Omit<TableProps<AP>, 'columns'> {
-  tableQuery?: TableQuery<AP, RequestPayload<unknown>, ApExtraParams>
+  extends Omit<TableProps<APExtended>, 'columns'> {
+  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
+  searchable?: boolean
+  filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export function ApTable (props: ApTableProps) {
@@ -100,20 +105,30 @@ export function ApTable (props: ApTableProps) {
   const navigate = useNavigate()
   const params = useParams()
   const filters = getFilters(params)
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const tableQuery = props.tableQuery ?? useTableQuery({
+  const { searchable, filterables } = props
+
+  const inlineTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
-      filters
+      filters,
+      search: {
+        searchTargetFields: defaultApPayload.searchTargetFields
+      }
     },
-    pollingInterval: 30000 //TODO: Wait for confirm the interval with PLM
+    option: { skip: Boolean(props.tableQuery) }
   })
+  const tableQuery = props.tableQuery || inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
 
+  const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
+    key, value: <Badge color={color} text={name} />
+  }))
+
   const tableData = tableQuery.data?.data ?? []
+  const linkToEditAp = useTenantLink('/devices/wifi/')
 
   const columns = React.useMemo(() => {
     const extraParams = tableQuery.data?.extra ?? {
@@ -129,65 +144,80 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       sorter: true,
-      render: (data, row) => (
-        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>{data}</TenantLink>
+      disable: true,
+      searchable: searchable,
+      render: (data, row, _, highlightFn) => (
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+          {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
       )
     }, {
       key: 'deviceStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'deviceStatus',
       sorter: true,
+      disable: true,
+      filterKey: 'deviceStatusSeverity',
+      filterable: filterables ? statusFilterOptions : false,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
+      searchable: searchable,
       sorter: true
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'IP'
+      dataIndex: 'IP',
+      searchable: searchable,
+      sorter: true
     }, {
       key: 'apMac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'apMac',
+      searchable: searchable,
       sorter: true
-    }, {
-      key: 'incidents',
-      title: () => (
-        <>
-          { $t({ defaultMessage: 'Incidents' }) }
-          <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-        </>
-      ),
-      dataIndex: 'incidents',
-      sorter: false,
-      render: (data, row) => {
-        //TODO: Shows breakdown by severity - with a counter for each severity
-        return (<Space direction='horizontal'>
-          <StackedBarChart
-            style={{ height: 10, width: 40 }}
-            data={[{
-              category: 'emptyStatus',
-              series: [{
-                name: '',
-                value: 1
-              }]
-            }]}
-            showTooltip={false}
-            showLabels={false}
-            showTotal={false}
-            barColors={[cssStr(deviceStatusColors.empty)]}
-          />
-          <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
-            {data ? data: 0}
-          </TenantLink>
-        </Space>)
-      }
-    }, {
+    },
+    // TODO:  Waiting for backend support
+    // {
+    //   key: 'incidents',
+    //   title: () => (
+    //     <>
+    //       { $t({ defaultMessage: 'Incidents' }) }
+    //       <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
+    //     </>
+    //   ),
+    //   dataIndex: 'incidents',
+    //   sorter: false,
+    //   render: (data, row) => {
+    //     //TODO: Shows breakdown by severity - with a counter for each severity
+    //     return (<Space direction='horizontal'>
+    //       <StackedBarChart
+    //         style={{ height: 10, width: 40 }}
+    //         data={[{
+    //           category: 'emptyStatus',
+    //           series: [{
+    //             name: '',
+    //             value: 1
+    //           }]
+    //         }]}
+    //         showTooltip={false}
+    //         showLabels={false}
+    //         showTotal={false}
+    //         barColors={[cssStr(deviceStatusColors.empty)]}
+    //       />
+    //       <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
+    //         {data ? data: 0}
+    //       </TenantLink>
+    //     </Space>)
+    //   }
+    // },
+    {
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueName',
+      filterKey: 'venueId',
+      filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
       render: (data, row) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
@@ -223,6 +253,8 @@ export function ApTable (props: ApTableProps) {
       key: 'deviceGroupName',
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
+      filterKey: 'deviceGroupId',
+      filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true
       //TODO: Click-> Filter by AP group
     }, {
@@ -235,13 +267,14 @@ export function ApTable (props: ApTableProps) {
           title: <Table.SubTitle children={channelTitleMap[channel as keyof ApExtraParams]} />,
           align: 'center',
           ellipsis: true,
-          render: transformDisplayText
+          render: (data: never, row: { [x: string]: string | undefined }) => transformDisplayText(row[channel])
         } : null)
         .filter(Boolean)
     }, {
       key: 'tags',
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
+      searchable: searchable,
       sorter: true
       //TODO: Click-> Filter by Tag
     }, {
@@ -249,6 +282,7 @@ export function ApTable (props: ApTableProps) {
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'serialNumber',
       show: false,
+      searchable: searchable,
       sorter: true
     }, {
       key: 'fwVersion',
@@ -256,12 +290,31 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'fwVersion',
       show: false,
       sorter: true
-    }] as TableProps<AP>['columns']
+    }, {
+      key: 'poePort',
+      title: $t({ defaultMessage: 'PoE Port' }),
+      dataIndex: 'poePort',
+      show: false,
+      sorter: false,
+      render: (data, row) => {
+        if (!row.hasPoeStatus) {
+          return <span></span>
+        }
+
+        const iconColor = (row.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
+        return (
+          <span>
+            <Badge color={`var(${iconColor})`}
+              text={transformDisplayText(row.poePortInfo)}
+            />
+          </span>
+        )
+      }
+    }] as TableProps<APExtended>['columns']
   }, [$t, tableQuery.data?.extra])
 
-
   const isActionVisible = (
-    selectedRows: AP[],
+    selectedRows: APExtended[],
     { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
     let visible = true
     if (isOperational) {
@@ -274,12 +327,11 @@ export function ApTable (props: ApTableProps) {
   }
 
 
-
-  const rowActions: TableProps<AP>['rowActions'] = [{
+  const rowActions: TableProps<APExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
-      navigate(`${rows[0].serialNumber}/edit/details`, { replace: false })
+      navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/details`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
@@ -302,13 +354,15 @@ export function ApTable (props: ApTableProps) {
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<AP>
+      <Table<APExtended>
         {...props}
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         rowActions={rowActions}
       />
     </Loader>

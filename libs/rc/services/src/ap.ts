@@ -14,17 +14,15 @@ import {
   CommonUrlsInfo,
   createHttpRequest,
   DhcpAp,
-  ApRadioChannelsForm,
   onSocketActivityChanged,
   RequestPayload,
   RequestFormData,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   RadioProperties,
   WifiUrlsInfo,
   WifiApSetting,
   ApLanPort,
-  ApRadio,
   APPhoto,
   ApViewModel,
   VenueDefaultApGroup,
@@ -34,7 +32,11 @@ import {
   Capabilities,
   PacketCaptureOperationResponse,
   ApRadioCustomization,
-  VenueDefaultRegulatoryChannels
+  VenueDefaultRegulatoryChannels,
+  APExtended,
+  LanPortStatusProperties,
+  ApDirectedMulticast,
+  APNetworkSettings
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -48,7 +50,7 @@ export const baseApApi = createApi({
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
-    apList: build.query<TableResult<AP, ApExtraParams>, RequestPayload>({
+    apList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
       query: ({ params, payload }) => {
         const apListReq = createHttpRequest(CommonUrlsInfo.getApsList, params)
         return {
@@ -56,7 +58,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<AP, ApExtraParams>) {
+      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
@@ -70,7 +72,7 @@ export const apApi = baseApApi.injectEndpoints({
             'DeleteAps',
             'AddApGroupLegacy'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
           })
         })
@@ -131,7 +133,7 @@ export const apApi = baseApApi.injectEndpoints({
             'UpdateApCustomization',
             'ResetApCustomization'
           ]
-          showActivityMessage(msg, activities, () => {
+          onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'Details' }]))
           })
         })
@@ -248,14 +250,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    apRadioCustomization: build.query<ApRadio, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
-        return {
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
@@ -299,46 +293,48 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    getApRadio: build.query<ApRadioChannelsForm, RequestPayload>({
+    getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Ap', id: 'LIST' }]
+      providesTags: [{ type: 'Ap', id: 'RADIO' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApRadioCustomization',
+            'ResetApRadioCustomization'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'RADIO' }]))
+          })
+        })
+      }
     }),
-    updateApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+    updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.updateApRadioCustomization, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
-    deleteApRadio: build.mutation<ApRadioChannelsForm, RequestPayload>({
+    deleteApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApRadio, params)
+        const req = createHttpRequest(WifiUrlsInfo.deleteApRadioCustomization, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
-        return {
-          ...req
-        }
-      }
-    }),
-
-    getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
         return {
           ...req
         }
@@ -449,7 +445,87 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApDirectedMulticast',
+            'ResetApDirectedMulticast'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]))
+          })
+        })
+      }
+    }),
+    updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
+    }),
+    resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
+    }),
+    getApNetworkSettings: build.query<APNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApNetworkSettings, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateApNetworkSettings',
+            'ResetApNetworkSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'NETWORK_SETTINGS' }]))
+          })
+        })
+      }
+    }),
+    updateApNetworkSettings: build.mutation<APNetworkSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApNetworkSettings, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
+    }),
+    resetApNetworkSettings: build.mutation<APNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.resetApNetworkSettings, params)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
     })
+
+
   })
 })
 
@@ -460,7 +536,6 @@ export const {
   useApViewModelQuery,
   useApDetailsQuery,
   useApLanPortsQuery,
-  useApRadioCustomizationQuery,
   useAddApMutation,
   usePingApMutation,
   useTraceRouteApMutation,
@@ -486,11 +561,10 @@ export const {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
-  useGetApRadioQuery,
-  useUpdateApRadioMutation,
-  useDeleteApRadioMutation,
-  useGetPacketCaptureStateQuery,
   useGetApRadioCustomizationQuery,
+  useUpdateApRadioCustomizationMutation,
+  useDeleteApRadioCustomizationMutation,
+  useGetPacketCaptureStateQuery,
   useStopPacketCaptureMutation,
   useStartPacketCaptureMutation,
   useGetApLanPortsQuery,
@@ -499,11 +573,60 @@ export const {
   useLazyGetApCapabilitiesQuery,
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
-  useGetApValidChannelQuery
+  useGetApValidChannelQuery,
+  useGetApDirectedMulticastQuery,
+  useUpdateApDirectedMulticastMutation,
+  useResetApDirectedMulticastMutation,
+  useGetApNetworkSettingsQuery,
+  useUpdateApNetworkSettingsMutation,
+  useResetApNetworkSettingsMutation
 } = apApi
 
 
-const transformApList = (result: TableResult<AP, ApExtraParams>) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const setAPRadioInfo = (row: APExtended, APRadio: RadioProperties[], channelColunnnShow: any) => {
+
+  const apRadio24 = _.find(APRadio, r => r.band === ApRadioBands.band24)
+  const apRadioU50 = _.find(APRadio,
+    r => r.band === ApRadioBands.band50 && r.radioId === 2)
+  const apRadio50 = !apRadioU50 &&_.find(APRadio,
+    r => r.band === ApRadioBands.band50 && r.radioId === 1)
+  const apRadio60 = !apRadioU50 && _.find(APRadio,
+    r => r.radioId === 2)
+  const apRadioL50 = apRadioU50 && _.find(APRadio,
+    r => r.band === ApRadioBands.band50 && r.radioId === 1)
+
+  row.channel24 = apRadio24?.channel || undefined
+  row.channel50 = (apRadio50 && apRadio50.channel) || undefined
+  row.channelL50 = apRadioL50?.channel || undefined
+  row.channelU50 = apRadioU50?.channel || undefined
+  row.channel60 = (apRadio60 && apRadio60.channel) || undefined
+
+
+  if (channelColunnnShow) {
+    if (!channelColunnnShow.channel50 && apRadio50) channelColunnnShow.channel50 = true
+    if (!channelColunnnShow.channelL50 && apRadioL50) channelColunnnShow.channelL50 = true
+    if (!channelColunnnShow.channelU50 && apRadioU50) channelColunnnShow.channelU50 = true
+    if (!channelColunnnShow.channel60 && apRadio60) channelColunnnShow.channel60 = true
+  }
+
+}
+
+const setPoEPortStatus = (row: APExtended, lanPortStatus: LanPortStatusProperties[]) => {
+  if (!lanPortStatus) {
+    return
+  }
+
+  const poeStatus = _.find(lanPortStatus, status => status.port === row.poePort)
+  if (poeStatus) {
+    const [poeStatusUp, poePortInfo] = poeStatus.phyLink.split(' ')
+    row.hasPoeStatus = !!poeStatus
+    row.isPoEStatusUp = poeStatusUp.includes('Up')
+    row.poePortInfo = poePortInfo
+  }
+}
+
+const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   let channelColumnStatus = {
     channel24: true,
     channel50: false,
@@ -513,41 +636,17 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
   }
 
   result.data = result.data.map(item => {
-    if (item.apStatusData?.APRadio) {
-      const apRadioArray = item.apStatusData.APRadio
+    const { APRadio, lanPortStatus } = item.apStatusData || {}
 
-      const apRadioObject = {
-        apRadio24: apRadioArray.find((item: RadioProperties) =>
-          item.band === ApRadioBands.band24),
-        apRadio50: apRadioArray.find((item: RadioProperties) =>
-          item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioL50: apRadioArray.find((item: RadioProperties) =>
-          item.band === ApRadioBands.band50 && item.radioId === 1),
-        apRadioU50: apRadioArray.find((item: RadioProperties) =>
-          item.band === ApRadioBands.band50 && item.radioId === 2),
-        apRadio60: apRadioArray.find((item: RadioProperties) =>
-          item.radioId === 2)
-      }
-
-      const channelValue = {
-        channel24: apRadioObject.apRadio24?.channel,
-        channel50: !apRadioObject.apRadioU50 && apRadioObject.apRadio50?.channel,
-        channelL50: apRadioObject.apRadioU50 && apRadioObject.apRadioL50?.channel,
-        channelU50: apRadioObject.apRadioU50?.channel,
-        channel60: !apRadioObject.apRadioU50 && apRadioObject.apRadio60?.channel
-      }
-
-      channelColumnStatus = {
-        channel24: true,
-        channel50: Boolean(channelValue.channel50) || channelColumnStatus.channel50,
-        channelL50: Boolean(channelValue.channelL50) || channelColumnStatus.channelL50,
-        channelU50: Boolean(channelValue.channelU50) || channelColumnStatus.channelU50,
-        channel60: Boolean(channelValue.channel60) || channelColumnStatus.channel60
-      }
-      return { ...item, ...channelValue }
-    } else {
-      return item
+    if (APRadio) {
+      setAPRadioInfo(item, APRadio, channelColumnStatus)
     }
+
+    if (lanPortStatus) {
+      setPoEPortStatus(item, lanPortStatus)
+    }
+
+    return item
   })
   result.extra = channelColumnStatus
   return result
@@ -556,24 +655,26 @@ const transformApList = (result: TableResult<AP, ApExtraParams>) => {
 const transformApViewModel = (result: ApViewModel) => {
   const ap = JSON.parse(JSON.stringify(result))
   ap.lastSeenTime = ap.lastSeenTime ? formatter('dateTimeFormatWithSeconds')(ap.lastSeenTime) : '--'
+
+  const { APSystem, APRadio } = ap.apStatusData || {}
   // get uptime field.
-  if (ap.apStatusData && ap.apStatusData.APSystem && ap.apStatusData.APSystem.uptime) {
-    ap.uptime = formatter('longDurationFormat')(ap.apStatusData.APSystem.uptime * 1000)
+  if (APSystem && APSystem.uptime) {
+    ap.uptime = formatter('longDurationFormat')(APSystem.uptime * 1000)
   } else {
     ap.uptime = '--'
   }
 
   // set Radio Properties fields.
-  if (ap.apStatusData && ap.apStatusData.APRadio) {
-    const apRadio24 = _.find(ap.apStatusData.APRadio,
+  if (APRadio) {
+    const apRadio24 = _.find(APRadio,
       r => r.band === ApRadioBands.band24)
-    const apRadioU50 = _.find(ap.apStatusData.APRadio,
+    const apRadioU50 = _.find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 2)
-    const apRadio50 = !apRadioU50 && _.find(ap.apStatusData.APRadio,
+    const apRadio50 = !apRadioU50 && _.find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 1)
-    const apRadio60 = !apRadioU50 && _.find(ap.apStatusData.APRadio,
+    const apRadio60 = !apRadioU50 && _.find(APRadio,
       r => r.radioId === 2)
-    const apRadioL50 = apRadioU50 && _.find(ap.apStatusData.APRadio,
+    const apRadioL50 = apRadioU50 && _.find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 1)
 
     ap.channel24 = apRadio24 as RadioProperties

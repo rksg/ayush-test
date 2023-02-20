@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps  }    from '@acx-ui/components'
-import { useAdminLogsQuery }             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { formatter }                     from '@acx-ui/utils'
+import { Loader, Table, TableProps  }              from '@acx-ui/components'
+import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
+import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { formatter }                               from '@acx-ui/utils'
 
 export interface EventList {
   adminName: string;
@@ -16,12 +16,14 @@ export interface EventList {
   event_datetime: string;
 }
 
-export function RecentLogin () {
+export function RecentLogin (props: { userEmail: string }) {
   const { $t } = useIntl()
+  const { userEmail } = props
+
   const tableQuery = useTableQuery({
     useQuery: useAdminLogsQuery,
     pagination: {
-      pageSize: 5
+      pageSize: 10000
     },
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
@@ -31,9 +33,10 @@ export function RecentLogin () {
         'entity_type',
         'entity_id',
         'message',
-        'adminName'
+        'adminName',
+        'id'
       ],
-      searchString: 'logged into',
+      searchString: 'logged',
       filters: {
         entity_type: ['ADMIN', 'NOTIFICATION']
       }
@@ -43,6 +46,13 @@ export function RecentLogin () {
       sortOrder: 'DESC'
     }
   })
+
+  const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
+
+  function getProfilesByType (queryData: AdminLog[]) {
+    return queryData?.filter(p =>
+      p.message.includes('logged into') && p.message.includes(userEmail)).slice(0, 5)
+  }
 
   const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
@@ -60,7 +70,7 @@ export function RecentLogin () {
       <Loader states={[tableQuery]}>
         <Table
           columns={columnsRecentLogin}
-          dataSource={tableQuery.data?.data}
+          dataSource={tableData}
           style={{ width: '600px' }}
           rowKey='id'
           type={'form'}

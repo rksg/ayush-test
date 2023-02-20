@@ -28,6 +28,7 @@ const ePDG: EPDG[] = [{
 }]
 const networkIds: string[] = []
 const networksName: string[] = []
+const epdgs: EPDG[] = []
 
 const initState = {
   serviceName,
@@ -37,12 +38,14 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
 }
 
 const initState_withoutEpdg = {
   ...initState,
-  ePDG: []
+  ePDG: [],
+  epdgs: []
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -79,7 +82,8 @@ const wifiCallingServiceResponse = {
   tags: [
     'tag1',
     'tag2'
-  ]
+  ],
+  epdgs: []
 }
 
 describe('EpdgTable', () => {
@@ -100,7 +104,7 @@ describe('EpdgTable', () => {
     const { result } = renderHook(() => useReducer(mainReducer, initState_withoutEpdg))
     const [state, dispatch] = result.current
 
-    const { asFragment } = render(<WifiCallingFormContext.Provider value={{
+    render(<WifiCallingFormContext.Provider value={{
       state: state,
       dispatch: dispatch
     }}>
@@ -111,8 +115,6 @@ describe('EpdgTable', () => {
         params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
       }
     })
-
-    await screen.findByText('a.b.com')
 
     const addButton = screen.getByRole('button', { name: 'Add' })
     fireEvent.click(addButton)
@@ -130,15 +132,13 @@ describe('EpdgTable', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     expect(saveButton).toBeInTheDocument()
     fireEvent.click(saveButton)
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render drawer successfully after clicking the Edit button', async () => {
     const { result } = renderHook(() => useReducer(mainReducer, initState))
     const [state, dispatch] = result.current
 
-    const { asFragment } = render(<WifiCallingFormContext.Provider value={{
+    render(<WifiCallingFormContext.Provider value={{
       state: state,
       dispatch: dispatch
     }}>
@@ -157,15 +157,13 @@ describe('EpdgTable', () => {
     await userEvent.click(editButton)
 
     expect(screen.getByText('Edit ePDG')).toBeInTheDocument()
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render drawer successfully after clicking the Delete button', async () => {
     const { result } = renderHook(() => useReducer(mainReducer, initState))
     const [state, dispatch] = result.current
 
-    const { asFragment } = render(<WifiCallingFormContext.Provider value={{
+    render(<WifiCallingFormContext.Provider value={{
       state: state,
       dispatch: dispatch
     }}>
@@ -183,10 +181,8 @@ describe('EpdgTable', () => {
     expect(deleteButton).toBeInTheDocument()
     fireEvent.click(deleteButton)
 
-    await screen.findByText(/delete service/i)
+    await screen.findByText(/delete rule/i)
 
-    fireEvent.click(screen.getByText(/delete service/i))
-
-    expect(asFragment()).toMatchSnapshot()
+    fireEvent.click(screen.getByText(/delete rule/i))
   })
 })

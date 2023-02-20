@@ -4,15 +4,16 @@ import { Col, Divider, Row, Space, Typography } from 'antd'
 import { DropTargetMonitor, useDrop, XYCoord }  from 'react-dnd'
 import { useIntl }                              from 'react-intl'
 
-import { Button, Loader } from '@acx-ui/components'
+import { Button, Loader, Tooltip } from '@acx-ui/components'
 import {
+  AccessPointWiFiOutlined,
   ApplicationsSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
@@ -46,33 +47,6 @@ export function setUpdatedLocation (device: NetworkDevice,
   return device
 }
 
-export function getImageFitPercentage (containerCoordsX: number,
-  containerCoordsY: number, imageCoordsX: number, imageCoordsY: number) {
-  let differencePercentage = 0
-
-  if (containerCoordsX !== imageCoordsX || containerCoordsY !== imageCoordsY) {
-    if (containerCoordsX > imageCoordsX) {
-      differencePercentage = (imageCoordsX / containerCoordsX) * 100
-    }
-    if (imageCoordsX > containerCoordsX) {
-      const temp_differencePercentage = (containerCoordsX / imageCoordsX) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-    if (containerCoordsY > imageCoordsY) {
-      const temp_differencePercentage = (imageCoordsY / containerCoordsY) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-    if (imageCoordsY > containerCoordsY) {
-      const temp_differencePercentage = (containerCoordsY / imageCoordsY) * 100
-      differencePercentage = (temp_differencePercentage < differencePercentage)
-        ? temp_differencePercentage : differencePercentage
-    }
-  }
-  return differencePercentage
-}
-
 export default function PlainView (props: { floorPlans: FloorPlanDto[],
   toggleGalleryView: Function,
   defaultFloorPlan: FloorPlanDto,
@@ -82,7 +56,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     [key: string]: TypeWiseNetworkDevices
   },
   networkDevicesVisibility: NetworkDeviceType[],
-  setCoordinates: Function }) {
+  setCoordinates: Function,
+  showRogueAp?: boolean }) {
   const { floorPlans,
     toggleGalleryView,
     defaultFloorPlan,
@@ -90,7 +65,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     onAddEditFloorPlan,
     networkDevices,
     networkDevicesVisibility,
-    setCoordinates } = props
+    setCoordinates,
+    showRogueAp } = props
   const { $t } = useIntl()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -258,7 +234,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           </Typography.Title>
         </Col>
         <Col>
-          <Space split={<Divider type='vertical' />}>
+          { !showRogueAp && <Space split={<Divider type='vertical' />}>
             <AddEditFloorplanModal
               buttonTitle={$t({ defaultMessage: 'Edit' })}
               onAddEditFloorPlan={onEditFloorPlanHandler}
@@ -268,16 +244,25 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
               {$t({ defaultMessage: 'Delete' })}
             </Button>
           </Space>
+          }
         </Col>
       </Row>
       <Divider style={{ margin: '0' }} />
       <UI.ImageContainerWrapper>
+        { showRogueAp && <UI.RogueAPHelpIcon className='rogue-help-info'>
+          <Tooltip.Question
+            trigger='click'
+            placement='right'
+            title={<RogueAPHelpTooltip/>} />
+        </UI.RogueAPHelpIcon> }
         <UI.ImageContainer imageMode={imageMode}
           ref={imageContainerRef}
           currentZoom={currentZoom}
           data-testid='image-container'>
           <div ref={drop}
+            data-testid='dropContainer'
             style={{
+              backgroundColor: showRogueAp ? 'rgba(0, 0, 0, 0.4)' : '',
               position: 'absolute',
               width: '100%',
               height: '100%'
@@ -288,7 +273,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
             networkDevices={networkDevices}
             contextAlbum={false}
             context={FloorplanContext['ap']}
-            galleryMode={false}/>
+            galleryMode={false}
+            showRogueAp={showRogueAp}/>
           }
           <img
             data-testid='floorPlanImage'
@@ -304,7 +290,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           <Loader states={[{ isLoading: !imageLoaded }]}></Loader>
         </UI.ImageLoaderContainer> }
       </UI.ImageContainerWrapper>
-      <UI.ImageButtonsContainer>
+      <UI.ImageButtonsContainer
+        alignbottom={floorPlans.length > 1 ? 0 : 1}>
         <Button
           data-testid='image-zoom-in'
           onClick={() => setImageModeHandler(ImageMode.ZOOM_IN)}
@@ -356,4 +343,34 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
       }
     </>
   )
+}
+
+export function RogueAPHelpTooltip () {
+  const { $t } = useIntl()
+  return <UI.TooltipContent className='rogue-ap-tooltip-content'>
+    <div className='rogue-help'>
+      <div className='rogue-mark malicious'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Malicious rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark unclassified'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Unclassified rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark known'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Known rogue' })}</div>
+    </div>
+    <div className='rogue-help'>
+      <div className='rogue-mark ignored'>
+        <AccessPointWiFiOutlined />
+      </div>
+      <div className='info'>{$t({ defaultMessage: 'Detecting Ignored rogue/ no rogues' })}</div>
+    </div>
+  </UI.TooltipContent>
 }

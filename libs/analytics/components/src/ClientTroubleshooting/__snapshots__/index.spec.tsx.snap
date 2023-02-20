@@ -12,19 +12,19 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px; justify-content: end;"
+        style="margin: -16px -8px -16px -8px; justify-content: end;"
       >
         <div
           class="ant-col ant-col-15"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-row"
+            class="ant-row ant-row-no-wrap"
             style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -144,8 +144,8 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -225,8 +225,8 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -309,121 +309,280 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
         </div>
         <div
           class="ant-col ant-col-24"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
           >
             <div
-              class="ant-collapse-item"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
+                class="ant-row ant-row-no-wrap"
+                style="margin: -8px -8px -8px -8px;"
               >
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex: 0 0 200px; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
-                    Connection Events
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Connection Events
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: not-allowed;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Roaming
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Connection Quality
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    />
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Network Incidents
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex-basis: auto; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 0;"
                   >
-                    Roaming
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="5"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="6"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="7"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="8"
+                        style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Quality
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Network Incidents
-                  </span>
-                </span>
               </div>
             </div>
           </div>
@@ -441,7 +600,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
           class="styledComponents__History-sc-hmshlr-0 jYwBlN"
         >
           <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 eaAsrm"
+            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
           >
             <span
               class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
@@ -460,7 +619,7 @@ exports[`ClientTroubleshootingTab should render correctly with search params 1`]
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 nXFBi"
+              class="styledComponents__HistoryContent-sc-hmshlr-2 wYYJy"
               style="height: 756px; width: 1280px;"
             >
               <div
@@ -560,19 +719,19 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px; justify-content: end;"
+        style="margin: -16px -8px -16px -8px; justify-content: end;"
       >
         <div
           class="ant-col ant-col-15"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-row"
+            class="ant-row ant-row-no-wrap"
             style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -652,8 +811,8 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -733,8 +892,8 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -817,121 +976,280 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
         </div>
         <div
           class="ant-col ant-col-24"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
           >
             <div
-              class="ant-collapse-item"
+              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
             >
               <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
+                class="ant-row ant-row-no-wrap"
+                style="margin: -8px -8px -8px -8px;"
               >
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex: 0 0 200px; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
-                    Connection Events
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Connection Events
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: not-allowed;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Roaming
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Connection Quality
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    />
+                    <div
+                      class="ant-col ant-col-3"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <svg
+                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        data-testid="PlusSquareOutlined"
+                        style="cursor: pointer;"
+                      />
+                    </div>
+                    <div
+                      class="ant-col ant-col-17"
+                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
+                      >
+                        Network Incidents
+                      </span>
+                    </div>
+                    <div
+                      class="ant-col ant-col-4"
+                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
+                    >
+                      <span
+                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
+                      >
+                        0
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div
-                  class="ant-collapse-expand-icon"
+                  class="ant-col"
+                  style="padding: 8px 8px 8px 8px; flex-basis: auto; min-width: 0;"
                 >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    class="ant-row"
+                    style="margin: -8px -8px -8px -8px; row-gap: 0;"
                   >
-                    Roaming
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="1"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="2"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="3"
+                        style="height: 66px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-24"
+                      style="padding: 8px 8px 8px 8px;"
+                    >
+                      <div
+                        _echarts_instance_="ec_mock"
+                        class="echarts-for-react "
+                        size-sensor-id="4"
+                        style="height: 96px; margin-bottom: 0px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;"
+                      >
+                        <div
+                          style="position: relative; width: 1280px; height: 800px; padding: 0px; margin: 0px; border-width: 0px;"
+                        >
+                          <canvas
+                            data-zr-dom-id="zr_0"
+                            height="800"
+                            style="position: absolute; left: 0px; top: 0px; width: 1280px; height: 800px; webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"
+                            width="1280"
+                          />
+                        </div>
+                        <div
+                          class=""
+                        />
+                        <object
+                          class="size-sensor-object"
+                          data="about:blank"
+                          style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
+                          tabindex="-1"
+                          type="text/html"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Quality
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Network Incidents
-                  </span>
-                </span>
               </div>
             </div>
           </div>
@@ -949,7 +1267,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
           class="styledComponents__History-sc-hmshlr-0 jYwBlN"
         >
           <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 eaAsrm"
+            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
           >
             <span
               class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
@@ -968,7 +1286,7 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 nXFBi"
+              class="styledComponents__HistoryContent-sc-hmshlr-2 wYYJy"
               style="height: 756px; width: 1280px;"
             >
               <div
@@ -1068,19 +1386,19 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
     >
       <div
         class="ant-row"
-        style="margin: -8px -8px -8px -8px; justify-content: end;"
+        style="margin: -16px -8px -16px -8px; justify-content: end;"
       >
         <div
           class="ant-col ant-col-15"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-row"
+            class="ant-row ant-row-no-wrap"
             style="margin: -3px -3px -3px -3px; justify-content: end;"
           >
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -1253,7 +1571,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
                         >
                           <button
-                            class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                            class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                             type="button"
                           >
                             <span>
@@ -1262,7 +1580,7 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
                           </button>
                           <button
                             ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                            class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
                             type="button"
                           >
                             <span>
@@ -1303,8 +1621,8 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -1384,8 +1702,8 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
               </div>
             </div>
             <div
-              class="ant-col ant-col-8"
-              style="padding: 3px 3px 3px 3px;"
+              class="ant-col"
+              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
             >
               <div
                 class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -1468,120 +1786,43 @@ exports[`ClientTroubleshootingTab should set search param on option selection 1`
         </div>
         <div
           class="ant-col ant-col-24"
-          style="padding: 8px 8px 8px 8px;"
+          style="padding: 16px 8px 16px 8px;"
         >
           <div
-            class="ant-collapse ant-collapse-icon-position-start ant-collapse-borderless ant-collapse-ghost"
+            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
           >
             <div
-              class="ant-collapse-item"
+              class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
             >
               <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
+                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
               >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
                 <span
-                  class="ant-collapse-header-text"
+                  aria-label="loader"
+                  role="img"
                 >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
+                  <div
+                    aria-busy="true"
+                    aria-live="polite"
+                    class="ant-spin ant-spin-lg ant-spin-spinning"
                   >
-                    Connection Events
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Roaming
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Connection Quality
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-collapse-item"
-            >
-              <div
-                aria-expanded="false"
-                class="ant-collapse-header"
-                role="button"
-                tabindex="0"
-              >
-                <div
-                  class="ant-collapse-expand-icon"
-                >
-                  <svg
-                    class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq ant-collapse-arrow"
-                    data-testid="PlusSquareOutlined"
-                  />
-                </div>
-                <span
-                  class="ant-collapse-header-text"
-                >
-                  <span
-                    class="styledComponents__TimelineTitle-sc-hmshlr-9 dVavPp"
-                  >
-                    Network Incidents
-                  </span>
+                    <span
+                      class="ant-spin-dot ant-spin-dot-spin"
+                    >
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                    </span>
+                  </div>
                 </span>
               </div>
             </div>

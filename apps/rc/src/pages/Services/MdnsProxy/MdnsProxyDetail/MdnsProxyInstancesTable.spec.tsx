@@ -31,7 +31,7 @@ describe('MdnsProxyInstancesTable', () => {
   it('should render the table view', async () => {
     render(
       <Provider>
-        <MdnsProxyInstancesTable />
+        <MdnsProxyInstancesTable apList={mockedApList.data.map(a => a.serialNumber)} />
       </Provider>, {
         route: { params, path: detailPath }
       }

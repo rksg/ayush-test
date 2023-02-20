@@ -51,10 +51,11 @@ describe('EditEdge general settings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
+    await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it('should be blocked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -62,7 +63,7 @@ describe('EditEdge general settings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await screen.findByText('Please enter SmartEdge Name')
@@ -76,23 +77,16 @@ describe('EditEdge general settings', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
-    await user.click(venueDropdown)
-    await user.click(await screen.findByText('Mock Venue 1'))
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
+    const tagsInput = screen.getByRole('textbox',
+      { name: 'Tags' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(tagsInput, { target: { value: '1,2,3' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
-    // EditEdge success should back to /devices/edge/list, use UI to test this case is normal
-    // but use jest always fail
-    // expect(mockedUsedNavigate).toHaveBeenCalledWith({
-    //   pathname: `/t/${params.tenantId}/devices/edge/list`,
-    //   hash: '',
-    //   search: ''
-    // })
   })
 
   it('cancel and go back to edge list', async () => {
@@ -144,10 +138,7 @@ describe('EditEdge general settings api fail', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/:serialNumber/edit/general-settings' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
-    await user.click(venueDropdown)
-    await user.click(await screen.findByText('Mock Venue 1'))
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })

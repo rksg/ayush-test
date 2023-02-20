@@ -1,25 +1,29 @@
 import { ApiInfo } from '../../apiService'
 
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
-  getAaaSetting: {
+  getPortals: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/aaaSetting'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
-  updateAaaSetting: {
+  deletePortals: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/portal/portalServiceProfiles'
+  },
+  deletePortal: {
+    method: 'delete',
+    url: '/api/portalServiceProfiles/:serviceId'
+  },
+  updatePortal: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/aaaSetting'
+    url: '/api/portalServiceProfiles/:serviceId'
   },
-  getAaaServerList: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/aaaServer/query'
-  },
-  addAaaServer: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer'
+  getPortal: {
+    method: 'get',
+    url: '/api/portalServiceProfiles/:serviceId'
   },
   savePortal: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/portal/deep?quickAck=true'
+    url: '/api/portalServiceProfiles'
   },
   getPortalNetworkInstances: {
     method: 'get',
@@ -27,6 +31,14 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileDetail: {
     method: 'get',
-    url: '/api/tenant/:tenantId/portal-service-profile/:serviceId'
+    url: '/api/portalServiceProfiles/:serviceId'
+  },
+  getPortalProfileList: {
+    method: 'get',
+    url: '/api/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort'
+  },
+  getPortalLang: {
+    method: 'get',
+    url: '/g/ui/tenant/:tenantId/locales/:messageName'
   }
 }

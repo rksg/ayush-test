@@ -6,11 +6,11 @@ import { ApRadioParamsDual5G } from './ApRadioParamsDual5G'
 export class ApRadioCustomization {
   apRadioParams24G: ApRadioParams24G
 
-  apRadioParams50G: ApRadioParams50G
+  apRadioParams50G?: ApRadioParams50G
 
-  apRadioParamsDual5G: ApRadioParamsDual5G
+  apRadioParamsDual5G?: ApRadioParamsDual5G
 
-  apRadioParams6G: ApRadioParams6G
+  apRadioParams6G?: ApRadioParams6G
 
   // True if 6 GHz is enabled
 

@@ -1,60 +1,90 @@
-import { APMeshRole }                       from '../constants'
-import { CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                           from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }         from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                        from '../models/DeviceGps'
-import { DhcpApInfo }                       from '../models/DhcpApInfo'
-import { ExternalAntenna }                  from '../models/ExternalAntenna'
-import { VenueLanPort }                     from '../models/VenueLanPort'
+import { APMeshRole }                                   from '../constants'
+import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
+import { ApDeep }                                       from '../models/ApDeep'
+import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
+import { DeviceGps }                                    from '../models/DeviceGps'
+import { DhcpApInfo }                                   from '../models/DhcpApInfo'
+import { ExternalAntenna }                              from '../models/ExternalAntenna'
+import { VenueLanPort }                                 from '../models/VenueLanPort'
 
 import { ApVenueStatusEnum } from '.'
 
+export interface IpSettings {
+  ipType?: string,
+  netmask?: string,
+  gateway?: string,
+  primaryDnsServer?: string,
+  secondaryDnsServer?: string
+}
+
+export interface APSystem extends IpSettings {
+  uptime?: number
+}
+
+export interface APNetworkSettings extends IpSettings {
+  ip?: string
+}
+
 export interface AP {
-  IP?: string
-  apMac?: string
+  IP?: string,
+  apMac?: string,
   apStatusData?: {
-    APRadio?: Array<RadioProperties>
-    cellularInfo: CelluarInfo
-    APSystem?: {
-      uptime?: number
-    }
+    APRadio?: Array<RadioProperties>,
+    cellularInfo: CelluarInfo,
+    APSystem?: APSystem,
+    lanPortStatus?: Array<LanPortStatusProperties>
   },
-  clients?: number
-  deviceGroupId: string
-  deviceGroupName?: string
-  deviceStatus: string
-  meshRole: string
-  model: string
-  name?: string
-  serialNumber: string
-  tags: string
-  venueId: string
-  venueName: string
-  description?: string
-  deviceGps?: DeviceGps
+  clients?: number,
+  deviceGroupId: string,
+  deviceGroupName?: string,
+  deviceStatus: string,
+  meshRole: string,
+  model: string,
+  name?: string,
+  serialNumber: string,
+  tags: string,
+  venueId: string,
+  venueName: string,
+  description?: string,
+  deviceGps?: DeviceGps,
   deviceStatusSeverity?: ApVenueStatusEnum,
-  lastSeenTime?: string
-  uptime?: string
-  password?: string
-  extIp?: string
-  deviceModelType?: string
-  fwVersion?: string
-  isMeshEnable?: boolean
+  lastSeenTime?: string,
+  uptime?: string,
+  password?: string,
+  extIp?: string,
+  deviceModelType?: string,
+  fwVersion?: string,
+  isMeshEnable?: boolean,
   rootAP?: {
-    name: string
+    name: string,
     serialNumber?: string
   }
-  hops?: number
-  apDownRssi?: number
-  apUpRssi: number
+  hops?: number,
+  apDownRssi?: number,
+  apUpRssi: number,
+  poePort?: string,
+  healthStatus?: string
 }
 
 export interface ApViewModel extends AP {
-  channel24?: RadioProperties
-  channel50?: RadioProperties
-  channelL50?: RadioProperties
-  channelU50?: RadioProperties
+  channel24?: RadioProperties,
+  channel50?: RadioProperties,
+  channelL50?: RadioProperties,
+  channelU50?: RadioProperties,
   channel60?: RadioProperties
+}
+
+export interface APExtended extends AP {
+  channel24?: string,
+  channel50?: string,
+  channelL50?: string,
+  channelU50?: string,
+  channel60?: string,
+  hasPoeStatus?: boolean,
+  isPoEStatusUp?: boolean,
+  poePortInfo?: string,
+  xPercent?: number,
+  yPercent?: number
 }
 
 export interface CelluarInfo {
@@ -130,7 +160,8 @@ export interface ApDetails {
   softDeleted: boolean
   model: string
   updatedDate: string
-  deviceGps?: DeviceGps
+  deviceGps?: DeviceGps,
+  position?: ApPosition
 }
 
 export interface ApGroup {
@@ -149,8 +180,8 @@ export interface AddApGroup {
 }
 
 export interface VenueDefaultApGroup {
-  id: string
-  isDefault: boolean
+  id: string,
+  isDefault: boolean,
   venueId: string,
   aps?: ApDeep[]
 }
@@ -258,7 +289,9 @@ export interface ApModel {
 	simCardSecondaryRoaming: boolean,
 	supportChannel144: boolean,
 	supportDual5gMode: boolean,
-	supportTriRadio: boolean
+	supportTriRadio: boolean,
+	maxChannelization5G?: number,
+	maxChannelization6G?: number
 }
 
 export interface PingAp {
@@ -266,12 +299,17 @@ export interface PingAp {
 }
 
 export interface RadioProperties {
-  Rssi: string;
-  txPower?: string;
-  channel: string;
-  band?: string;
-  radioId?: number
+  Rssi: string,
+  txPower?: string,
+  channel: string,
+  band?: string,
+  radioId?: number,
   operativeChannelBandwidth?: string
+}
+
+export interface LanPortStatusProperties {
+  phyLink: string,
+  port: string
 }
 
 export enum GpsFieldStatus {
@@ -281,13 +319,13 @@ export enum GpsFieldStatus {
 }
 
 export interface ApLanPort {
-  lanPorts: LanPort[]
+  lanPorts: LanPort[],
   useVenueSettings: boolean
 }
 
 export interface ApRadio {
-  enable24G: boolean
-  enable50G: boolean
+  enable24G: boolean,
+  enable50G: boolean,
   useVenueSettings: boolean
 }
 
@@ -344,4 +382,11 @@ export interface WifiApSetting {
   poeMode?: string;
   lanPorts?: LanPort[];
   lan?: LanPort[];
+}
+
+export interface ApDirectedMulticast {
+  useVenueSettings: boolean,
+  wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
 }

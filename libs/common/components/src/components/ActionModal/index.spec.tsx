@@ -202,6 +202,31 @@ describe('ActionModal', () => {
         })
       })
 
+      it('should open Confirm delete modal with passed props', async () => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: 'Network',
+            entityValue: 'Network 01'
+          },
+          okText: 'Delete'
+        })
+
+        await assertModalVisible({
+          className: 'ant-modal-confirm-confirm',
+          contents: [
+            'Delete "Network 01"?',
+            'Are you sure you want to delete this Network?'
+          ]
+        })
+
+        await assertButtonClicked({
+          label: 'Delete',
+          shouldClose: true
+        })
+      })
+
       it('should open Confirm bulk delete modal', async () => {
         showActionModal({
           type: 'confirm',

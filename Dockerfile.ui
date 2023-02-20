@@ -1,4 +1,5 @@
-FROM node:16.15.0-alpine as build-base
+ARG CI_SERVICE_BASE
+FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
 
@@ -12,6 +13,7 @@ RUN export $(cat ${ENV_FILE}) \
 
 # Install dependencies
 COPY package.json package-lock.json ./
+COPY patches ./patches
 RUN npm install
 
 COPY .eslintignore \
@@ -37,35 +39,59 @@ RUN export $(cat ${ENV_FILE}) \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-FROM build-base as acx-ui
-ENV NODE_OPTIONS=--max-old-space-size=8192
+FROM build-base as acx-ui-lint
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+RUN touch lint-done
+
+FROM build-base as acx-ui-tslint
 COPY tools/docker/tscValidator.sh ./tools/docker/tscValidator.sh
 RUN chmod +x tools/docker/tscValidator.sh
 RUN tools/docker/tscValidator.sh
-RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
-RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
-RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics --coverage --runInBand --verbose
+RUN touch tslint-done
 
 ###############################################################
-
 FROM node:14.21.1-alpine as build-locales
 
 WORKDIR /app
 
-COPY --from=acx-ui /app /app
+RUN apk add curl
+
+ARG ENV_FILE
+COPY ${ENV_FILE} .
+RUN export $(cat ${ENV_FILE}) \
+  && npm config set registry "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/npm/" \
+  && curl -u "${ARTI_USER}:${ARTI_PASSWORD}" "http://artifactory.cicd.rks-cloud.com/artifactory/api/npm/auth" >> ~/.npmrc
+
+COPY package.json ./
+RUN npm install react-intl lodash
+
+COPY apps ./apps
+COPY libs ./libs
 COPY tools/docker/locales ./tools/docker/locales
+
 RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
 
-###############################################################
+FROM build-base as build
 
-FROM acx-ui as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
 RUN node ./node_modules/.bin/nx run-many --target=build --all
 
 ###############################################################
+FROM build-base as acx-ui-tests
+ENV NODE_OPTIONS=--max-old-space-size=10240
 
+# Force dependency with lint & build stages
+COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
+COPY --from=acx-ui-tslint /app/tslint-done ./tslint-done
+COPY --from=build         /app/dist/apps   ./dist/apps
+
+RUN node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run analytics:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=50%
+RUN node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,analytics,rc-components --coverage --runInBand --verbose
+
+###############################################################
 FROM nginx:1.21.6-alpine
 
 WORKDIR /usr/share/nginx/html
@@ -79,7 +105,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/env.json.template \
   /etc/nginx/
 
-COPY --from=build /app/dist/apps ./
+COPY --from=acx-ui-tests /app/dist/apps ./
 RUN \
   # Move all other apps into main
   ls | grep -v main | xargs mv -t main && \

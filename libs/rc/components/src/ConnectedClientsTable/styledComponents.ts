@@ -5,3 +5,7 @@ export const IconContainer = styled.div`
     height: 24px
   }
 `
+export const ClientTableDiv = styled.div`
+  flex: initial;
+  padding-bottom: 20px;
+`

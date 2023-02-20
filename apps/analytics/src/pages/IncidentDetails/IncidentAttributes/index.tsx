@@ -136,6 +136,8 @@ export const IncidentAttributes = ({ incident, visibleFields }: {
       visible={visible==='client'}
       onClose={onClose}
       id={incident.id}
+      startTime={incident.startTime}
+      endTime={incident.endTime}
       impactedCount={incident.impactedClientCount as number}
     /> }
   </>

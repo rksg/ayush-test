@@ -18,10 +18,17 @@ import {
   wifiNetworkDetail,
   AddGuestPassErrorResponse,
   AllowedNetworkSingleList,
-  AddGuestPassWihtoutExpirationResponse
+  AddGuestPassWihtoutExpirationResponse,
+  network,
+  userProfile
 } from '../../../__tests__/fixtures'
 
-import { AddGuestDrawer, genUpdatedTemplate, getHumanizedLocale, getMomentLocale } from './addGuestDrawer'
+import {
+  AddGuestDrawer,
+  genUpdatedTemplate,
+  getHumanizedLocale,
+  getMomentLocale
+} from './addGuestDrawer'
 
 jest.mock('socket.io-client')
 
@@ -30,8 +37,16 @@ describe('Add Guest Drawer', () => {
 
   beforeEach(() => {
     mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
         res(ctx.json(GuestClient))
+      ),
+      rest.get(
+        CommonUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(userProfile))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
@@ -47,7 +62,7 @@ describe('Add Guest Drawer', () => {
       )
     )
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'tenant-id'
     }
   })
 
@@ -101,6 +116,7 @@ describe('Add Guest Drawer', () => {
     await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
 
     fireEvent.click(await screen.findByTestId('saveBtn'))
+    fireEvent.click(await screen.findByText('Yes, create guest pass'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should created guest without expiration period correctly', async () => {
@@ -383,6 +399,27 @@ describe('Add Guest Drawer', () => {
         <AddGuestDrawer visible={true} setVisible={jest.fn()} />
       </Provider>, { route: { params } }
     )
+
+    fireEvent.click(await screen.findByTestId('cancelBtn'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should validate duration correctly', async () => {
+    const { asFragment } = render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={jest.fn()} />
+      </Provider>, { route: { params } }
+    )
+
+    const duration = await screen.findByText('Pass is Valid for' )
+    await userEvent.type(duration, '366')
+    expect(await screen.findByText('Value must be between 1 and 365')).toBeVisible()
+
+    const unitCombo = await screen.findByTitle('Days')
+    fireEvent.mouseDown(unitCombo)
+    await userEvent.click(await screen.findByText('Hours'))
+
+    await userEvent.type(duration, '8761')
+    expect(await screen.findByText('Value must be between 1 and 8760')).toBeVisible()
 
     fireEvent.click(await screen.findByTestId('cancelBtn'))
     expect(asFragment()).toMatchSnapshot()

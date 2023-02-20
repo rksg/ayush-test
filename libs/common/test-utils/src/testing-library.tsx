@@ -1,10 +1,10 @@
 import { ReactElement } from 'react'
 
-import { render, RenderOptions, RenderHookOptions, renderHook } from '@testing-library/react'
-import { ConfigProvider }                                       from 'antd'
-import enUS                                                     from 'antd/lib/locale/en_US'
-import { IntlProvider }                                         from 'react-intl'
-import { generatePath, MemoryRouter, Params, Route, Routes }    from 'react-router-dom'
+import { render, RenderOptions, RenderHookOptions, renderHook, screen } from '@testing-library/react'
+import { ConfigProvider }                                               from 'antd'
+import enUS                                                             from 'antd/lib/locale/en_US'
+import { IntlProvider }                                                 from 'react-intl'
+import { generatePath, MemoryRouter, Params, Route, Routes }            from 'react-router-dom'
 
 type CustomOptions = {
   /**
@@ -21,6 +21,10 @@ type CustomOptions = {
      * Default to true
      */
     wrapRoutes?: boolean
+    /**
+     * Search paths
+     */
+    search?: string
   }
 }
 
@@ -85,4 +89,10 @@ function wrapper (options?: CustomOptions & { wrapper?: RenderOptions['wrapper']
 
     return wrappedUI
   }
+}
+
+export async function findTBody () {
+  return screen.findByRole('rowgroup', {
+    name: (name, element) => element.classList.contains('ant-table-tbody')
+  })
 }

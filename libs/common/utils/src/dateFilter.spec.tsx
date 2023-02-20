@@ -42,7 +42,7 @@ describe('useDateFilter', () => {
   it('sets period params when calling setDateFilter', async () => {
     function Component (props: { update: boolean }) {
       const filters = useDateFilter()
-      props.update && filters?.setDateFilter?.(getDateRangeFilter(DateRange.lastMonth))
+      props.update && filters?.setDateFilter?.(getDateRangeFilter(DateRange.last30Days))
       return <div>{JSON.stringify(filters)}</div>
     }
     const component = (update: boolean) => <BrowserRouter>
@@ -95,23 +95,21 @@ describe('defaultRanges', () => {
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      'Last 1 Hour': ['2021-12-31T23:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
       'Last 7 Days': ['2021-12-25T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Last Month': ['2021-12-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z'],
-      'Today': ['2022-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      'Last 30 Days': ['2021-12-02T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
     })
   })
 
   it('should return defaultRange when having subRange', () => {
-    const result = defaultRanges([DateRange.today])
+    const result = defaultRanges([DateRange.last24Hours])
     expect(
       Object.entries(result).reduce((agg, [key, values]) => {
         agg[key as keyof typeof result] = values.map((t) => t.toISOString())
         return agg
       }, {} as Record<string, string[]>)
     ).toStrictEqual({
-      Today: ['2022-01-01T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
+      'Last 24 Hours': ['2021-12-31T00:00:00.000Z', '2022-01-01T00:00:00.000Z']
     })
   })
 })
@@ -122,13 +120,7 @@ describe('getDateRangeFilter', () => {
   })
 
   afterAll(() => Date.now = original)
-  it('should return correct dateFilter for the given range', () => {
-    expect(getDateRangeFilter(DateRange.last1Hour)).toStrictEqual({
-      startDate: '2021-12-31T23:00:00+00:00',
-      endDate: '2022-01-01T00:00:00+00:00',
-      range: 'Last 1 Hour'
-    })
-  })
+
   it('should return correct dateFilter for the custom range', () => {
     expect(
       getDateRangeFilter(

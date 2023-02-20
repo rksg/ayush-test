@@ -32,7 +32,10 @@ describe('Connected Clients Table', () => {
   it('should render table: all columns', async () => {
     render(
       <Provider>
-        <ConnectedClientsTable showAllColumns={true}/>
+        <ConnectedClientsTable
+          showAllColumns={true}
+          setConnectedClientCount={jest.fn()}
+          searchString={''}/>
       </Provider>, {
         route: { params, path: '/:tenantId/users/aps/clients' }
       })

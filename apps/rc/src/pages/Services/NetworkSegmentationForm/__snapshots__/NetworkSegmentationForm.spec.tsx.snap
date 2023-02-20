@@ -138,7 +138,7 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
                     <div
                       class="ant-steps-item-title"
                     >
-                      Smart Edge
+                      SmartEdge
                     </div>
                   </div>
                 </div>
@@ -574,7 +574,7 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
               type="button"
             >
               <span>
@@ -593,7 +593,7 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW"
+                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
                   disabled=""
                   type="button"
                 >
@@ -606,7 +606,7 @@ exports[`NetworkSegmentationForm should create form successfully 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 bxQmA-d"
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
                   type="button"
                 >
                   <span>

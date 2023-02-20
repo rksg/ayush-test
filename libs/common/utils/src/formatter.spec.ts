@@ -1,6 +1,10 @@
 import moment from 'moment-timezone'
 
-import { formatter, formats, convertEpochToRelativeTime } from './formatter'
+import {
+  formatter,
+  formats,
+  convertEpochToRelativeTime,
+  convertDateTimeToSqlFormat } from './formatter'
 
 function testFormat (
   format: keyof typeof formats,
@@ -69,6 +73,21 @@ describe('formatter', () => {
     2.4: '2.4 GHz',
     5: '5 GHz'
   }))
+
+  it('hertzFormat', () => testFormat('hertzFormat', {
+    0: '0 Hz',
+    1: '1 Hz',
+    5: '5 Hz',
+    10: '1 daHz',
+    100: '1 hHz',
+    200: '2 hHz',
+    1000: '1 kHz',
+    3000: '3 kHz',
+    12000000: '12 MHz',
+    6000000000: '6 GHz',
+    7000000000000: '7 THz'
+  }))
+
   it('floatFormat', () => testFormat('floatFormat', {
     0.05: '0.05',
     0.0600: '0.06',
@@ -322,6 +341,11 @@ describe('formatter', () => {
           .toBe('string')
       })
     })
+    describe('convertDateTimeToSqlFormat', () => {
+      it('should convert date to sqlDateTimeFormat', () => {
+        expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
+          .toEqual('2022-12-16 02:35:00')
+      })
+    })
   })
 })
-

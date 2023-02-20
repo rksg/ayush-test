@@ -13,6 +13,9 @@ export const Wrapper = styled.div`
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
+  --acx-header-company-name-width: 175px;
+  --acx-header-company-name-right-space: 6px;
+  --acx-sidebar-left-space: 10px;
 
   .ant-pro-basicLayout {
     .ant-layout {
@@ -26,12 +29,12 @@ export const Wrapper = styled.div`
               a {
                 min-height: unset;
               }
-              padding: 0;
+              padding: 0 0 0  var(--acx-sidebar-left-space);
               width: var(--acx-sider-width);
               height: var(--acx-header-height);
               margin-bottom: 13px;
               align-items: center;
-              justify-content: center;
+              justify-content: left;
             }
             .ant-menu-submenu-arrow {
               display: none;
@@ -65,7 +68,7 @@ export const Wrapper = styled.div`
             font-size: var(--acx-headline-4-font-size);
             font-weight: var(--acx-headline-4-font-weight);
             border-left: 2px solid transparent;
-            padding-left: 18px !important;
+            padding-left: var(--acx-sidebar-left-space) !important;
             padding-right: 0;
             .ant-pro-menu-item {
               transition: opacity 0.2s ease-in-out;
@@ -92,7 +95,7 @@ export const Wrapper = styled.div`
               align-items: center;
               background-color: var(--acx-neutrals-80);
               border-left-color: transparent;
-              padding-left: 18px !important;
+              padding-left: calc(var(--acx-sidebar-left-space) + 2px) !important;
               padding-right: 0;
               font-size: var(--acx-headline-5-font-size);
               font-weight: var(--acx-headline-5-font-weight);
@@ -106,7 +109,7 @@ export const Wrapper = styled.div`
         }
         .ant-menu-item {
           border-left: 2px solid transparent;
-          padding-left: 18px !important;
+          padding-left: var(--acx-sidebar-left-space) !important;
           padding-right: 0;
           font-family: var(--acx-accent-brand-font);
           font-size: var(--acx-headline-4-font-size);
@@ -342,5 +345,19 @@ export const LayoutUI = {
   Divider: styled(LogoDivider)`
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
+  `,
+  CompanyName: styled.div`
+    line-height: var(--acx-body-4-line-height);
+    font-size: var(--acx-body-4-font-size);
+    font-weight: var(--acx-body-font-weight);
+    text-align: right;
+    max-width: var(--acx-header-company-name-width);
+    max-height: calc(2 * var(--acx-body-4-line-height));
+    overflow: hidden;
+    margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
+    padding-right: 9px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   `
 }

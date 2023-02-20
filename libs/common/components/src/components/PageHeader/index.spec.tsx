@@ -58,4 +58,16 @@ describe('PageHeader', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render page header without bottom padding', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Subtitle'
+          titleExtra={<div>Title Extra</div>}
+          footerSpacer={false}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })

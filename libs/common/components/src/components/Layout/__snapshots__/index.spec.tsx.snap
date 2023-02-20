@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 ggcIem"
+    class="styledComponents__Wrapper-sc-iwostn-0 CDNcy"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -150,6 +150,45 @@ exports[`Layout should render correctly 1`] = `
                       </span>
                     </a>
                   </span>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-inline"
+                  role="none"
+                >
+                  <div
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    role="menuitem"
+                    style="padding-left: 16px;"
+                    tabindex="-1"
+                  >
+                    <span
+                      class="ant-menu-title-content"
+                    >
+                      <a
+                        class=""
+                        href="/t/undefined/servicevalidation"
+                      >
+                        <span
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        >
+                          <svg
+                            data-testid="ServiceValidationOutlined"
+                          />
+                        </span>
+                        <span
+                          class="ant-pro-menu-item"
+                          title="Service Validation"
+                        >
+                          Service Validation
+                        </span>
+                      </a>
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
@@ -583,7 +622,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 ggcIem"
+    class="styledComponents__Wrapper-sc-iwostn-0 CDNcy"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -763,7 +802,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
 exports[`Layout should show tooltip when disabled 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 ggcIem"
+    class="styledComponents__Wrapper-sc-iwostn-0 CDNcy"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -916,6 +955,47 @@ exports[`Layout should show tooltip when disabled 1`] = `
                       </span>
                     </a>
                   </span>
+                </li>
+                <li
+                  class="ant-menu-submenu ant-menu-submenu-inline"
+                  role="none"
+                >
+                  <div
+                    aria-controls="rc-menu-uuid-test-/t/t-id/servicevalidation-popup"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="ant-menu-submenu-title"
+                    data-menu-id="rc-menu-uuid-test-/t/t-id/servicevalidation"
+                    role="menuitem"
+                    style="padding-left: 16px;"
+                    tabindex="-1"
+                  >
+                    <span
+                      class="ant-menu-title-content"
+                    >
+                      <a
+                        class=""
+                        href="/t/t-id/servicevalidation"
+                      >
+                        <span
+                          class="styledComponents__MenuIcon-sc-iwostn-5 styledComponents__MenuIconOutlined-sc-iwostn-6 bZgxDC cEzRxN"
+                        >
+                          <svg
+                            data-testid="ServiceValidationOutlined"
+                          />
+                        </span>
+                        <span
+                          class="ant-pro-menu-item"
+                          title="Service Validation"
+                        >
+                          Service Validation
+                        </span>
+                      </a>
+                    </span>
+                    <i
+                      class="ant-menu-submenu-arrow"
+                    />
+                  </div>
                 </li>
                 <li
                   class="ant-menu-item ant-menu-item-only-child"

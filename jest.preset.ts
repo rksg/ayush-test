@@ -2,15 +2,20 @@ process.env.TZ = 'UTC'
 const nxPreset = require('@nrwl/jest/preset')
 
 const esModules = [
+  'd3',
+  'd3-array',
+  'InternMap',
   'react-dnd',
   'dnd-core',
-  '@react-dnd'
+  '@react-dnd',
+  'escape-string-regexp'
 ].join('|')
 
 module.exports = {
   ...nxPreset,
   moduleNameMapper: {
-    '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`
+    '^antd/es/(.*)$': `${__dirname}/node_modules/antd/lib/$1`,
+    '^d3-(.*)$': `d3-$1/dist/d3-$1`
   },
   transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
   transform: {

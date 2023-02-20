@@ -44,6 +44,7 @@ export interface RogueOldApResponseType {
 export interface RogueAPDetectionTempType {
     id: string,
     name: string,
+    description?: string,
     venues: RogueVenue[],
     rules: number
 }
@@ -61,14 +62,16 @@ export interface VenueRoguePolicyType {
     policyName: string,
     enabled: boolean
   },
-  activate?: boolean
+  activate?: boolean,
+  rogueAps?: number
 }
 
 export interface RogueAPRule {
   name: string,
   priority?: number,
   type: RogueRuleType,
-  classification: RogueCategory
+  classification: RogueCategory,
+  moreInfo?: number | string
 }
 
 export interface RogueVenue {
@@ -91,12 +94,15 @@ export enum RogueRuleType {
   EXCESSIVE_POWER_RULE = 'ExcessivePowerRule',
   LOW_SNR_RULE = 'LowsnrRule',
   MAC_OUI_RULE = 'MacouiRule',
-  MAC_SPOOFING_RULE = 'MacspoofingRule',
+  MAC_SPOOFING_RULE = 'MacSpoofingRule',
   NULL_SSID_RULE = 'NullSSIDRule',
   RTS_ABUSE_RULE = 'RTSAbuseRule',
   SAME_NETWORK_RULE = 'SameNetworkRule',
   SSID_RULE = 'SsidRule',
-  SSID_SPOOFING_RULE = 'SsidSpoofingRule'
+  SSID_SPOOFING_RULE = 'SsidSpoofingRule',
+  CUSTOM_SNR_RULE = 'CustomSnrRule',
+  CUSTOM_SSID_RULE = 'CustomSsidRule',
+  CUSTOM_MAC_OUI_RULE = 'CustomMacOuiRule'
 }
 
 export enum RogueAPDetectionActionTypes {
@@ -128,6 +134,11 @@ export type RogueAPDetectionActionPayload = {
     policyName: string
   }
 } | {
+  type: RogueAPDetectionActionTypes.DESCRIPTION,
+  payload: {
+    description: string
+  }
+} | {
   type: RogueAPDetectionActionTypes.TAGS,
   payload: {
     tags: string[]
@@ -155,7 +166,7 @@ export type RogueAPDetectionActionPayload = {
 } | {
   type: RogueAPDetectionActionTypes.DEL_RULE,
   payload: {
-    name: string
+    name: string[]
   }
 } | {
   type: RogueAPDetectionActionTypes.MOVE_UP,
@@ -187,4 +198,8 @@ export type RogueAPDetectionActionPayload = {
     oldIndex: number,
     newIndex: number
   }
+}
+
+export enum RogueApConstant {
+  DefaultProfile = 'Default profile'
 }

@@ -44,15 +44,15 @@ export function transformApStatus ({ $t }: IntlShape, status: ApDeviceStatusEnum
 
     case ApDeviceStatusEnum.APPLYING_FIRMWARE:
       message = apView === APView.AP_LIST
-        ? $t({ defaultMessage: 'Operational - applying firmware' })
-        : $t({ defaultMessage: 'AP operational - applying firmware' })
+        ? $t({ defaultMessage: 'Applying firmware' })
+        : $t({ defaultMessage: 'AP - applying firmware' })
       deviceStatus = DeviceConnectionStatus.CONNECTED
       break
 
     case ApDeviceStatusEnum.APPLYING_CONFIGURATION:
       message = apView === APView.AP_LIST
-        ? $t({ defaultMessage: 'Operational - applying configuration' })
-        : $t({ defaultMessage: 'AP operational - applying configuration' })
+        ? $t({ defaultMessage: 'Applying configuration' })
+        : $t({ defaultMessage: 'AP - applying configuration' })
       deviceStatus = DeviceConnectionStatus.CONNECTED
       break
 

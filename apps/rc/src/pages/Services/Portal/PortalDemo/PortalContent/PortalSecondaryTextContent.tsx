@@ -1,14 +1,18 @@
 import { useState } from 'react'
 
+import TextArea from 'antd/lib/input/TextArea'
+
 import { Demo } from '@acx-ui/rc/utils'
 
 import { PortalDemoDefaultSize } from '../../../commonUtils'
-import * as UI                   from '../../styledComponents'
 import PortalImageTools          from '../PortalImageTools'
 import PortalPopover             from '../PortalPopover'
 
-export default function PortalSecondaryTextContent (props: {
+
+
+export default function PortalSeconPortalSecondaryTextContentdaryTextContent (props: {
   demoValue: Demo,
+  portalLang: { [key:string]:string },
   updateSecText: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
@@ -24,7 +28,7 @@ export default function PortalSecondaryTextContent (props: {
     size={demoValue.secondarySize}
     defaultSize={PortalDemoDefaultSize.secondarySize}
     updateDemoImg={(data) => {
-      updateSecText(data)
+      updateSecText({ ...data, text: demoValue.secondaryText })
     }}
   />
   return (
@@ -32,13 +36,16 @@ export default function PortalSecondaryTextContent (props: {
       content={secTools}
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
-    ><UI.FieldText
+    ><TextArea
+        value={demoValue.secondaryText||props.portalLang.secondaryText}
         placeholder='sectexthere'
-        style={{ cursor: cursor, outline: outline,
+        rows={4}
+        style={{ cursor: cursor, outline: outline, resize: 'none', border: 0,
           lineHeight: 16 * ((demoValue.secondarySize||
             PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
-          maxWidth: 425, color: demoValue.secondaryColor,
+          maxWidth: 425, color: demoValue.secondaryColor, minHeight: 60,
           fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
+        onChange={(e) => updateSecText({ text: e.target.value, show: true })}
         onMouseOver={() => {
           setCursor('pointer')
           setOutline(dashedOutline)
@@ -54,8 +61,7 @@ export default function PortalSecondaryTextContent (props: {
           setClicked(true)
           setOutline(dashedOutline)
         }}
-      >{demoValue.secondaryText}
-      </UI.FieldText>
+      />
     </PortalPopover>
   )
 }

@@ -11,7 +11,7 @@ import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
 import { useAddEdgeMutation } from '@acx-ui/rc/services'
-import { EdgeSaveData }       from '@acx-ui/rc/utils'
+import { EdgeGeneralSetting } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
@@ -22,10 +22,10 @@ const AddEdge = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToEdgeList = useTenantLink('/devices/edge/list')
-  const formRef = useRef<StepsFormInstance<EdgeSaveData>>()
+  const formRef = useRef<StepsFormInstance<EdgeGeneralSetting>>()
   const [addEdge] = useAddEdgeMutation()
 
-  const handleAddEdge = async (data: EdgeSaveData) => {
+  const handleAddEdge = async (data: EdgeGeneralSetting) => {
     try {
       // TODO when Tags component ready remove this
       const payload = { ...data, tags: [] as string[] }

@@ -5,6 +5,7 @@ import * as UI from '../styledComponents'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewTerms (props:{
+  portalLang: { [key:string]:string },
   isPreview?: boolean,
   demoValue: Demo,
   updateBtn?: (value: {
@@ -12,68 +13,65 @@ export default function PortalViewTerms (props:{
     color?: string, text?: string
   }) => void
 }) {
-  const { demoValue, updateBtn, isPreview } = props
-  const terms = 'Terms and Conditions ("Terms")</br>'+
-  'Last updated: January 29, 2019</br></br>'+
-  'Please read these Terms and Conditions ("Terms", "Terms and Conditions")'+
+  const { demoValue, updateBtn, isPreview, portalLang } = props
+  const terms = 'Last updated: January 29, 2019\n\n '+
+  'Please read these Terms and Conditions ("Terms", "Terms and Conditions") '+
   'carefully before using the www.whereiswaldo.com website (the "Service") '+
-  'operated by Who took my bananas ("us", "we", or "our").</br></br>'+
+  'operated by Who took my bananas ("us", "we", or "our").\n\n'+
   'Your access to and use of the Service is conditioned on your acceptance of '+
   'and compliance with these Terms. These Terms apply to all visitors, users and'+
-  'others who access or use the Service.</br></br>'+
+  'others who access or use the Service.\n\n'+
   'By accessing or using the Service you agree to be bound by these Terms. '+
   'If you disagree with any part of the terms then you may not access the Service. '+
   'The Terms and Conditions agreement for Who took my bananas has been created with '+
-  'the help of TermsFeed.</br></br>'+
-  'Links To Other Web Sites</br>'+
+  'the help of TermsFeed.\n\n'+
+  'Links To Other Web Sites\n'+
   'Our Service may contain links to third-party web sites or services that are not owned'+
-  'or controlled by Who took my bananas.</br></br>'+
+  'or controlled by Who took my bananas.\n\n'+
   'Who took my bananas has no control over, and assumes no responsibility for, the '+
   'content, privacy policies, or practices of any third party web sites or services. '+
   'You further acknowledge and agree that Who took my bananas shall not be responsible '+
   'or liable, directly or indirectly, for any damage or loss caused or alleged to be '+
   'caused by or in connection with use of or reliance on any such content, goods or '+
-  'services available on or through any such web sites or services.</br></br>'+
+  'services available on or through any such web sites or services.\n\n'+
   'We strongly advise you to read the terms and conditions and privacy policies of '+
-  'any third-party web sites or services that you visit.</br></br>'+
-  'Termination</br>'+
+  'any third-party web sites or services that you visit.\n\n'+
+  'Termination\n'+
   'We may terminate or suspend access to our Service immediately, without prior notice '+
   'or liability, for any reason whatsoever, including without limitation if you breach '+
-  'the Terms.</br></br>'+
+  'the Terms.\n\n'+
   'All provisions of the Terms which by their nature should survive termination shall '+
   'survive termination, including, without limitation, ownership provisions, warranty '+
-  'disclaimers, indemnity and limitations of liability.</br></br>'+
-  'Governing Law</br>'+
+  'disclaimers, indemnity and limitations of liability.\n\n'+
+  'Governing Law\n'+
   'These Terms shall be governed and construed in accordance with the laws of California, '+
-  'United States, without regard to its conflict of law provisions.</br></br>'+
+  'United States, without regard to its conflict of law provisions.\n\n'+
   'Our failure to enforce any right or provision of these Terms will not be considered '+
   'a waiver of those rights. If any provision of these Terms is held to be invalid or '+
   'unenforceable by a court, the remaining provisions of these Terms will remain in '+
   'effect. These Terms constitute the entire agreement between us regarding our Service, '+
   'and supersede and replace any prior agreements we might have between us regarding the '+
-  'Service.</br></br>'+
-  'Changes</br>'+
+  'Service.\n\n'+
+  'Changes\n'+
   'We reserve the right, at our sole discretion, to modify or replace these Terms at any '+
   'time. If a revision is material we will try to provide at least 15 days notice prior '+
   'to any new terms taking effect. What constitutes a material change will be determined '+
-  'at our sole discretion.</br></br>'+
+  'at our sole discretion.\n\n'+
   'By continuing to access or use our Service after those revisions become effective, '+
   'you agree to be bound by the revised terms. If you do not agree to the new terms, '+
-  'please stop using the Service.</br></br>'+
-  'Contact Us</br>'+
+  'please stop using the Service.\n\n'+
+  'Contact Us\n'+
   'If you have any questions about these Terms, please contact us.'
   return (
     <UI.ViewSectionNoBorder>
       <UI.ViewSectionTitle>
-        {'Terms and Conditions'}</UI.ViewSectionTitle>
-      <UI.ViewTextArea
-        dangerouslySetInnerHTML={{ __html: demoValue?.termsCondition || terms }}
-      ></UI.ViewTextArea>
+        {portalLang.tocTitle}</UI.ViewSectionTitle>
+      <UI.ViewTextArea value={demoValue?.termsCondition || terms} readOnly/>
       <PortalButtonContent
         demoValue={demoValue}
         isPreview={isPreview}
         updateButton={(data)=>updateBtn?.(data)}
-      >{'Back'}</PortalButtonContent>
+      >{portalLang.back}</PortalButtonContent>
     </UI.ViewSectionNoBorder>
 
   )

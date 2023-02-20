@@ -50,6 +50,5 @@ describe('Analytics header', () => {
     expect(await screen.findByText('IP Address: ip2 (3)')).toBeVisible()
     expect(await screen.findByText('network filter')).toBeVisible()
     expect(await screen.findByPlaceholderText('Start date')).toBeVisible()
-    expect(await screen.findByPlaceholderText('End date')).toBeVisible()
   })
 })

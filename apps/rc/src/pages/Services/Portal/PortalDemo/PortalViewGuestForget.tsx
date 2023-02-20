@@ -4,6 +4,7 @@ import * as UI from '../styledComponents'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 export default function PortalViewGuestForget (props: {
+  portalLang: { [key:string]:string },
   demoValue: Demo,
   isPreview?: boolean,
   updateBtn?: (value: {
@@ -11,58 +12,43 @@ export default function PortalViewGuestForget (props: {
     color?: string, text?: string
   }) => void
 }) {
-  const { demoValue, updateBtn, isPreview } = props
+  const { demoValue, updateBtn, isPreview, portalLang } = props
   return (
     <UI.ViewSection>
-      <UI.ViewSectionTitle>{'Forget Your Password?'}</UI.ViewSectionTitle>
-      <UI.FieldText>{
-        'Please follow the instructions' +
-          ' to receive a new password based on how it was provided to you originally'
-      }</UI.FieldText>
-
+      <UI.FieldTextBig>{portalLang.forgotPswdNote}</UI.FieldTextBig>
       <UI.ViewSectionTabs
         defaultActiveKey='text'
         type='card'
         size={'middle'}
       >
-        <UI.ViewSectionTabs.TabPane tab={'Text Message'} key='text'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
-            {
-              'Please enter the mobile phone number where you' +
-                ' received the original password to recieve a new one:'
-            }</UI.FieldText>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswdText} key='text'>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
+            {portalLang.forgotPswdTextDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
-            placeholder={'Mobile phone number'}></UI.FieldInput>
+            placeholder={portalLang.mobilePhone}></UI.FieldInput>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
             updateButton={(data) => updateBtn?.(data)}
-          >{'Get Password'}</PortalButtonContent>
+          >{portalLang.sendPswd}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
-        <UI.ViewSectionTabs.TabPane tab={'Email Message'} key='email'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
-            {
-              'Please enter the E-mail address where you received' +
-                ' the original password to receive a new one:'
-            }</UI.FieldText>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswdEmail} key='email'>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 50px 0 50px' }}>
+            {portalLang.forgotPswdEmailDesc}</UI.FieldTextMiddle>
           <UI.FieldInput
-            placeholder={'E-mail address'}></UI.FieldInput>
+            placeholder={portalLang.email}></UI.FieldInput>
           <PortalButtonContent
             demoValue={demoValue}
             isPreview={isPreview}
             updateButton={(data) => updateBtn?.(data)}
-          >{'Get Password'}</PortalButtonContent>
+          >{portalLang.sendPswd}</PortalButtonContent>
         </UI.ViewSectionTabs.TabPane>
-        <UI.ViewSectionTabs.TabPane tab={'Other'} key='other'>
-          <UI.FieldText style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>
-            {
-              'If you received a password for this network through another ' +
-                'channel (printout for example) please request a new code from the ' +
-                'person that provided it for your use'
-            }</UI.FieldText>
+        <UI.ViewSectionTabs.TabPane tab={portalLang.forgotPswOther} key='other'>
+          <UI.FieldTextMiddle style={{ textAlign: 'left', padding: '0 20px 0 20px' }}>
+            {portalLang.forgotPswOtherDesc}</UI.FieldTextMiddle>
         </UI.ViewSectionTabs.TabPane>
       </UI.ViewSectionTabs>
-      <UI.FieldTextLink>{'Back'}</UI.FieldTextLink>
+      <UI.FieldTextLink>{portalLang.back}</UI.FieldTextLink>
     </UI.ViewSection>
 
   )

@@ -8,9 +8,20 @@ import {
   checkVlanMember,
   checkValues,
   apNameRegExp,
+  dscpRegExp,
   gpsRegExp,
+  poeBudgetRegExp,
+  priorityRegExp,
+  whitespaceOnlyRegExp,
+  agreeRegExp,
+  nameCannotStartWithNumberRegExp,
+  cliVariableNameRegExp,
+  cliIpAddressRegExp,
+  subnetMaskPrefixRegExp,
+  specialCharactersRegExp,
   serialNumberRegExp,
-  targetHostRegExp
+  targetHostRegExp,
+  validateRecoveryPassphrasePart
 } from './validator'
 
 describe('validator', () => {
@@ -157,6 +168,32 @@ describe('validator', () => {
     })
   })
 
+  describe('validate recovery passphrase part', () => {
+    it('Should take care of recovery passphrase part correctly', async () => {
+      const result = validateRecoveryPassphrasePart('1234')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if recovery passphrase part is empty', async () => {
+      const result1 = validateRecoveryPassphrasePart('')
+      await expect(result1).rejects.toEqual('This field is invalid')
+    })
+
+    it('Should display error message if recovery passphrase part is only space', async () => {
+      const result1 = validateRecoveryPassphrasePart(' ')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part contains space', async () => {
+      const result1 = validateRecoveryPassphrasePart('12 55')
+      await expect(result1).rejects.toEqual('Passphrase cannot have space')
+    })
+
+    it('Should display error message if recovery passphrase part incorrectly', async () => {
+      const result1 = validateRecoveryPassphrasePart('125')
+      await expect(result1).rejects.toEqual('Passphrase part must be exactly 4 digits long')
+    })
+  })
+
   describe('targetHostRegExpExp', () => {
     it('Should take care of Serial Number values correctly', async () => {
       const result = targetHostRegExp('1.1.1.1')
@@ -165,6 +202,118 @@ describe('validator', () => {
     it('Should display error message if Serial Number values incorrectly', async () => {
       const result1 = targetHostRegExp('1.1.1.1.1')
       await expect(result1).rejects.toEqual('Please enter valid target host or IP address')
+    })
+  })
+
+  describe('poeBudgetRegExp', () => {
+    it('Should take care of Poe Budget values correctly', async () => {
+      const result = poeBudgetRegExp('2000')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Poe Budget values incorrectly', async () => {
+      const result1 = poeBudgetRegExp('10')
+      await expect(result1).rejects.toEqual('Poe Budget can only be from 1000 - 30000')
+    })
+  })
+
+  describe('dscpRegExp', () => {
+    it('Should take care of DSCP values correctly', async () => {
+      const result = dscpRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if DSCP values incorrectly', async () => {
+      const result1 = dscpRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 63')
+    })
+  })
+
+  describe('priorityRegExp', () => {
+    it('Should take care of Priority values correctly', async () => {
+      const result = priorityRegExp('6')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if Priority values incorrectly', async () => {
+      const result1 = priorityRegExp('66')
+      await expect(result1).rejects.toEqual('Enter a valid number between 0 and 7')
+    })
+  })
+
+  describe('whitespaceOnlyRegExp', () => {
+    it('Should take care of string with only white space correctly', async () => {
+      const result = whitespaceOnlyRegExp(' t e s t')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if value incorrectly', async () => {
+      const result1 = whitespaceOnlyRegExp(' ')
+      await expect(result1).rejects.toEqual('Whitespace chars only are not allowed')
+    })
+  })
+
+  describe('agreeRegExp', () => {
+    it('Should take care of agree value correctly', async () => {
+      const result = agreeRegExp('agree')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if agree value incorrectly', async () => {
+      const result1 = agreeRegExp('test')
+      await expect(result1).rejects.toEqual('Please type “AGREE”')
+    })
+  })
+
+  describe('nameCannotStartWithNumberRegExp', () => {
+    it('Should take care of name value correctly', async () => {
+      const result = nameCannotStartWithNumberRegExp('test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if name value incorrectly', async () => {
+      const result1 = nameCannotStartWithNumberRegExp('87test')
+      await expect(result1).rejects.toEqual('Name cannot start with a number')
+    })
+  })
+
+  describe('cliVariableNameRegExp', () => {
+    it('Should take care of name value correctly', async () => {
+      const result = cliVariableNameRegExp('test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if name value incorrectly', async () => {
+      const result1 = cliVariableNameRegExp('Q@Q')
+      await expect(result1).rejects.toEqual('Name may include only letters and numbers')
+    })
+  })
+
+  describe('cliIpAddressRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = cliIpAddressRegExp('1.1.1.1')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = cliIpAddressRegExp('1.1.1.255')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('subnetMaskPrefixRegExp', () => {
+    it('Should take care of subnet mask value correctly', async () => {
+      const result = subnetMaskPrefixRegExp('255.255.255.0')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if subnet mask value incorrectly', async () => {
+      const result1 = subnetMaskPrefixRegExp('254.255.255.0')
+      await expect(result1).rejects.toEqual(
+        'Please enter a valid Netmask based on the 255.255 mask prefix')
+    })
+  })
+
+  describe('specialCharactersRegExp', () => {
+    it('Should take care of string with special characters correctly', async () => {
+      const result = specialCharactersRegExp('test t$t-t._t')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if string value incorrectly', async () => {
+      const result1 = specialCharactersRegExp('test t@$t-t._t')
+      await expect(result1).rejects.toEqual(
+        'Special characters (other than space, $, -, . and _) are not allowed')
     })
   })
 })

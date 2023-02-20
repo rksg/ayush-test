@@ -21,7 +21,8 @@ import {
 import {
   ApDeep,
   AddApGroup,
-  checkObjectNotExists
+  checkObjectNotExists,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -97,6 +98,9 @@ export function ApGroupForm () {
   }
 
   const nameValidator = async (value: string) => {
+    if (value.trim() === '') {
+      return trailingNorLeadingSpaces(value)
+    }
     const venueId = formRef.current?.getFieldValue('venueId')
     if (venueId) {
       const payload = {
@@ -157,7 +161,8 @@ export function ApGroupForm () {
                 </>}
                 initialValue={null}
                 rules={[{
-                  required: true
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select venue' })
                 }]}
                 children={<Select
                   options={[

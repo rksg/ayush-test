@@ -15,7 +15,7 @@ export function MdnsProxyOverview (props: MdnsProxyOverviewProps) {
   return (
     <Card>
       <Card.Title>{$t({ defaultMessage: 'Forwarding Rules' })}</Card.Title>
-      <Typography.Paragraph>{data.forwardingRules?.length}</Typography.Paragraph>
+      <Typography.Paragraph>{data.rules?.length}</Typography.Paragraph>
     </Card>
   )
 }

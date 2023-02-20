@@ -27,7 +27,7 @@ export const wifiCallingFormReducer = (
     case WifiCallingActionTypes.UPDATE_ENTIRE_EPDG:
       return {
         ...state,
-        ePDG: action.payload
+        ePDG: [...action.payload]
       }
     case WifiCallingActionTypes.ADD_EPDG:
       if (!state.ePDG) {
@@ -65,12 +65,11 @@ export const wifiCallingFormReducer = (
         })
       }
     case WifiCallingActionTypes.DELETE_EPDG:
-      state.ePDG.splice(action.payload.id, 1)
+      const updateEpdg = [...state.ePDG]
+      updateEpdg.splice(action.payload.id, 1)
       return {
         ...state,
-        ePDG: [
-          ...state.ePDG
-        ]
+        ePDG: [...updateEpdg]
       }
     case WifiCallingActionTypes.ADD_NETWORK_ID:
       action.payload.networkIds.map((networkId, networkIndex) => {

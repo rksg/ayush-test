@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo }   from '@acx-ui/rc/utils'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen
@@ -45,10 +45,11 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
+    await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('should be blcoked when required field is empty', async () => {
+  it('should be blocked when required field is empty', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -56,10 +57,28 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    user.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByRole('combobox', { name: 'Venue' })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Venue')
     await screen.findByText('Please enter SmartEdge Name')
     await screen.findByText('Please enter Serial Number')
+  })
+
+  it('should be blocked when length of field value is exceed', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    fireEvent.change(edgeNameInput, { target: { value: '12345678901234567890123456789012345678901234567890123456789012345' } })
+    const serialNumberInput = screen.getByRole('textbox', { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: '12345678901234567890123456789012345' } })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
+    expect(await screen.findByText('serialNumber must be up to 34 characters')).toBeVisible()
   })
 
   it('should add edge successfully', async () => {
@@ -70,7 +89,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
@@ -78,6 +97,7 @@ describe('AddEdge', () => {
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    fireEvent.change(screen.getByRole('textbox', { name: 'Tags' }), { target: { value: 'a,b' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     // AddEdge success should back to /devices/edge/list, use UI to test this case is normal
     // but use jest always fail
@@ -96,7 +116,7 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/devices/edge/list`,
       hash: '',
@@ -132,7 +152,7 @@ describe('AddEdge api fail', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
     const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })

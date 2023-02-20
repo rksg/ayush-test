@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, defaultComDisplay, Portal }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, defaultComDisplay, Portal, PortalUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -12,44 +12,43 @@ import Logo                      from '../../../../assets/images/portal-demo/Ruc
 import { PortalDemoDefaultSize } from '../../commonUtils'
 
 import { PortalForm } from './PortalForm'
-
 const portalResponse: Portal = {
   id: '1',
   serviceName: 'test111',
   network: [],
-  demo: {
-    backgroundColor: 'var(--acx-primary-white)',
-    backgroundImage: '',
+  content: {
+    bgColor: 'var(--acx-primary-white)',
+    bgImage: '',
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: 'var(--acx-primary-black)',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
-    photoSize: PortalDemoDefaultSize.photoSize,
+    photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
-    logoSize: PortalDemoDefaultSize.logoSize,
+    logoRatio: PortalDemoDefaultSize.logoRatio,
     secondaryText: 'Lorem ipsum dolor sit amet, '+
     'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
     secondaryColor: 'var(--acx-primary-black)',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: 'var(--acx-accents-orange-50)',
-    poweredBackgroundColor: 'var(--acx-primary-white)',
+    poweredBgColor: 'var(--acx-primary-white)',
     poweredColor: 'var(--acx-primary-black)',
     poweredSize: PortalDemoDefaultSize.poweredSize,
     poweredImg: Powered,
-    poweredImgSize: PortalDemoDefaultSize.poweredImgSize,
-    wifi4EU: '',
+    poweredImgRatio: PortalDemoDefaultSize.poweredImgRatio,
     termsCondition: '',
     componentDisplay: defaultComDisplay ,
-    displayLang: 'English',
+    displayLangCode: 'en',
+    wifi4EUNetworkId: '',
     alternativeLang: {
-      Czech: true,
-      ChineseTraditional: false,
-      Finnish: true,
-      French: true,
-      German: true,
-      Greek: true,
-      Hungarian: true,
-      Italian: false
+      cs: false,
+      zh_TW: false,
+      fi: false,
+      fr: false,
+      de: false,
+      el: false,
+      hu: false,
+      it: false
     }
   }
 }
@@ -73,22 +72,70 @@ describe('PortalForm', () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.get(CommonUrlsInfo.getService.url,
+      rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {
           return res(ctx.json(portalResponse))
+        }),
+      rest.put(PortalUrlsInfo.updatePortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
         })
     )
 
-
-    const { asFragment } = render(<Provider><PortalForm /></Provider>, {
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
       route: { params }
     })
-
-    expect(asFragment()).toMatchSnapshot()
     fillInBeforeSettings('open portal edit test')
 
     await screen.findByRole('heading', { level: 3, name: 'Settings' })
-    await userEvent.click(screen.getByText('Reset'))
-    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+  it('should cancel successfully', async () => {
+    const cancelPortalRes: Portal = { ...portalResponse, content: { ...portalResponse.content,
+      componentDisplay: { ...portalResponse.content.componentDisplay, wifi4eu: true } }
+    }
+    const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0',
+      tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.get(PortalUrlsInfo.getPortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json(cancelPortalRes))
+        }),
+      rest.put(PortalUrlsInfo.updatePortal.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalLang.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
+        }),
+      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
+        })
+    )
+
+    render(<Provider><PortalForm editMode={true}/></Provider>, {
+      route: { params }
+    })
+
+    fillInBeforeSettings('open portal edit test')
+
+    await screen.findByRole('heading', { level: 3, name: 'Settings' })
+    await userEvent.click(await screen.findByText('Reset'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 })

@@ -14,8 +14,7 @@ import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import { WifiCallingDetailContextType }  from '@acx-ui/rc/utils'
 import { TenantLink }                    from '@acx-ui/react-router-dom'
 
-import WifiCallingDetailContent from './WifiCallingDetailContent'
-// import WifiCallingNetworks       from './WifiCallingNetworks'
+import WifiCallingDetailContent  from './WifiCallingDetailContent'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
 
 export const WifiCallingDetailContext = createContext({} as WifiCallingDetailContextType)

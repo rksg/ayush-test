@@ -89,7 +89,7 @@ export const ccdReasonCodes = [
   {
     id: 17,
     code: 'CCD_REASON_NACK',
-    text: defineMessage({ defaultMessage: "Recv\\'d DHCP NAK" })
+    text: defineMessage({ defaultMessage: "Recv'd DHCP NAK" })
   },
   {
     id: 18,

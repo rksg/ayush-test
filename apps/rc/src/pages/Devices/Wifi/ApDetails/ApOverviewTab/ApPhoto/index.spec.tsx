@@ -12,11 +12,15 @@ import { apDetails, apRadio, apViewModel, apPhoto, apNoPhoto, apSampleImage, wif
 import * as CropImage from './cropImage'
 
 import { ApPhoto } from '.'
-const params = {
-  venueId: 'venue-id',
-  tenantId: 'tenant-id',
-  serialNumber: 'serial-number'
-}
+
+jest.mock('../../ApContext', () => ({
+  useApContext: () => ({
+    venueId: 'venue-id',
+    tenantId: 'tenant-id',
+    serialNumber: 'serial-number'
+  })
+}))
+
 module.exports = {
   src: '/app/sample.png',
   height: 293,
@@ -35,61 +39,67 @@ describe('ApPhoto', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(apViewModel))
+        (_, res, ctx) => res(ctx.json(apViewModel))
       ),
       rest.get(
         WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (req, res, ctx) => res(ctx.json(apDetails))
+        (_, res, ctx) => res(ctx.json(apDetails))
       ),
       rest.get(
         WifiUrlsInfo.getApRadioCustomization.url,
-        (req, res, ctx) => res(ctx.json(apRadio))
+        (_, res, ctx) => res(ctx.json(apRadio))
       ),
       rest.get(
         WifiUrlsInfo.getApPhoto.url,
-        (req, res, ctx) => res(ctx.json(apPhoto))
+        (_, res, ctx) => res(ctx.json(apPhoto))
       ),
       rest.delete(
         WifiUrlsInfo.deleteApPhoto.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         WifiUrlsInfo.getWifiCapabilities.url,
-        (req, res, ctx) => res(ctx.json(wifiCapabilities))
-      )
-      ,rest.all(
-        '/app/sample.png',
-        (req, res, ctx) => res(ctx.body(apSampleImage))
+        (_, res, ctx) => res(ctx.json(wifiCapabilities))
       ),
-      rest.all(
+      rest.get(
+        '*/app/sample.png',
+        (_, res, ctx) => res(ctx.body(apSampleImage))
+      ),
+      rest.get(
         'blob:http://localhost/6f5a9d30-b9f8-496f-b9a7-1d5e763c4c3c',
-        (req, res, ctx) => res(ctx.body(apSampleImage))
+        (_, res, ctx) => res(ctx.body(apSampleImage))
       )
     )
   })
   it('should render correctly', async () => {
+
     apViewModel.data[0].model = ''
-    render(<Provider><ApPhoto /></Provider>, { route: { params } })
+    render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const dot1 = screen.getByTestId('dot1')
+    const dot1 = await screen.findByTestId('dot1')
     fireEvent.click(dot1)
-    const image1 = screen.getByTestId('image1')
+    const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
-    const zoomIn = screen.getByTestId('image-zoom-in')
+    const zoomIn = await screen.findByTestId('image-zoom-in')
     fireEvent.click(zoomIn)
-    const applyButton = screen.getByRole('button', { name: 'Apply' })
+    const zoomOut = await screen.findByTestId('image-zoom-out')
+    fireEvent.click(zoomOut)
+    const zoomSlider = await screen.findByRole('slider')
+    zoomSlider.focus()
+    fireEvent.keyPress(zoomSlider, { key: 'Right', code: 39, charCode: 39 })
+    const applyButton = await screen.findByRole('button', { name: 'Apply' })
     expect(applyButton).toBeVisible()
     fireEvent.click(applyButton)
   })
   it('should delete image correctly', async () => {
     apViewModel.data[0].model = ''
-    render(<Provider><ApPhoto /></Provider>, { route: { params } })
+    render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const dot1 = screen.getByTestId('dot1')
+    const dot1 = await screen.findByTestId('dot1')
     fireEvent.click(dot1)
-    const image1 = screen.getByTestId('image1')
+    const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
-    const deleteBtn = screen.getByTestId('delete')
+    const deleteBtn = await screen.findByTestId('delete')
     fireEvent.click(deleteBtn)
   })
   it('should render default image correctly', async () => {
@@ -97,16 +107,16 @@ describe('ApPhoto', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApPhoto.url,
-        (req, res, ctx) => res(ctx.json(apNoPhoto))
+        (_, res, ctx) => res(ctx.json(apNoPhoto))
       )
     )
-    render(<Provider><ApPhoto /></Provider>, { route: { params } })
+    render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const gallery = screen.getByTestId('gallery')
+    const gallery = await screen.findByTestId('gallery')
     fireEvent.click(gallery)
   })
   it('should upload photo correctly', async () => {
-    const { asFragment } = render(<Provider><ApPhoto /></Provider>, { route: { params } })
+    const { asFragment } = render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
     jest.spyOn(CropImage, 'createImage')

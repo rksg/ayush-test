@@ -9,9 +9,14 @@ import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation } from '@acx-ui/rc/services'
-import { ConfigurationProfile, ProfileTypeEnum, networkWifiIpRegExp, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams }                                                from '@acx-ui/react-router-dom'
-import { getIntl }                                                                              from '@acx-ui/utils'
+import {
+  ConfigurationProfile,
+  ProfileTypeEnum,
+  networkWifiIpRegExp,
+  VenueSwitchConfiguration
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { getIntl }                               from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext } from '../../index'
 
@@ -159,6 +164,17 @@ export function GeneralSettingForm () {
     }
   }
 
+  const validatorUniqueDns = (dns: string[], value: string) => {
+    const matchDns = dns.filter((item: string) => {
+      return item === value
+    }).length
+    return matchDns > 1
+      ? Promise.reject(
+        $t({ defaultMessage: "DNS is invalid since it's not unique" })
+      )
+      : Promise.resolve()
+  }
+
   return (
     <Loader states={[{
       isLoading: venueSwitchSetting.isLoading || configProfiles.isLoading,
@@ -191,7 +207,7 @@ export function GeneralSettingForm () {
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >
                       {selectedProfiles?.length > 1
-                        ? `${selectedProfiles?.length} 
+                        ? `${selectedProfiles?.length}
                           ${$t({ defaultMessage: 'CLI profiles selected' })}`
                         : (selectedProfiles?.length
                           ? `${selectedProfiles[0]?.name} (${selectedProfiles[0]?.profileType})`
@@ -248,6 +264,9 @@ export function GeneralSettingForm () {
                       }, {
                         validator: (_, value) => networkWifiIpRegExp(value),
                         message: $t({ defaultMessage: 'Please enter valid DNS Server IPs' })
+                      }, {
+                        validator: (_, value) =>
+                          validatorUniqueDns((formRef?.current?.getFieldsValue().dns ?? []), value)
                       }]}
                       validateFirst
                       children={

@@ -16,11 +16,12 @@ import {
   Network,
   onSocketActivityChanged,
   RequestPayload,
-  showActivityMessage,
+  onActivityMessageReceived,
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
 
@@ -28,7 +29,7 @@ export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'clientApi',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest'],
+  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
   endpoints: () => ({ })
 })
 
@@ -48,7 +49,7 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: {
             fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
-              id: clientList.data.map(item => item.clientMac)
+              id: clientList?.data.map(item => item.clientMac)
             }
           }
         }
@@ -60,7 +61,8 @@ export const clientApi = baseClientApi.injectEndpoints({
         return clientListQuery.data
           ? { data: aggregatedList }
           : { error: clientListQuery.error as FetchBaseQueryError }
-      }
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }]
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -77,7 +79,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          showActivityMessage(msg,
+          onActivityMessageReceived(msg,
             [
               'RegeneratePass',
               'DisableGuest',
@@ -194,7 +196,8 @@ export const clientApi = baseClientApi.injectEndpoints({
             })
           }
         }
-      }
+      },
+      providesTags: [{ type: 'HistoricalClient', id: 'LIST' }]
     }),
     getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
       query: ({ params, payload }) => {
@@ -224,6 +227,19 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    importGuestPass: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     })
   })
 })
@@ -231,7 +247,7 @@ export const clientApi = baseClientApi.injectEndpoints({
 export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   metaList:TableResult<ClientListMeta>) => {
   const data:ClientList[] = []
-  clientList.data.forEach(client => {
+  clientList?.data.forEach(client => {
     const meta = metaList?.data?.find(
       i => i.clientMac === client.clientMac
     )
@@ -267,11 +283,13 @@ export const {
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,
+  useLazyGetClientListQuery,
   useGetGuestsMutation,
   useDeleteGuestsMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery
+  useLazyGetHistoricalStatisticsReportsQuery,
+  useImportGuestPassMutation
 } = clientApi

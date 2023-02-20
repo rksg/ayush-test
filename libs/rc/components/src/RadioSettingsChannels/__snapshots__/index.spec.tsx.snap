@@ -4,9 +4,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
 <DocumentFragment>
   <div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
-      data-testid="lower5GButton"
-      style="width: 234px;"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+      style="width: 250px;"
       type="button"
     >
       <span>
@@ -14,9 +13,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__Button5G-sc-a5e24y-5 iICpmb eOGJcb"
-      data-testid="upper5GButton"
-      style="width: 474px;"
+      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButton5G-sc-a5e24y-5 iICpmb YcLbK"
+      style="width: 506px;"
       type="button"
     >
       <span>
@@ -25,9 +23,8 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
     </button>
   </div>
   <button
-    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 eAazoW styledComponents__BarButton-sc-a5e24y-4 styledComponents__ButtonDFS-sc-a5e24y-6 iICpmb lkAuIw"
-    data-testid="dfsButton"
-    style="width: 474px; left: 120px;"
+    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY styledComponents__BarButton-sc-a5e24y-4 styledComponents__BarButtonDFS-sc-a5e24y-6 iICpmb iZSRbR"
+    style="width: 506px; left: 128px;"
     type="button"
   >
     <span>
@@ -57,7 +54,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                 class="ant-form-item-control-input-content"
               >
                 <div
-                  class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 gRZSfg group-4"
+                  class="ant-checkbox-group styledComponents__CheckboxGroup-sc-a5e24y-3 crslfK group-4"
                   id="apRadioParams24G_allowedChannels"
                 >
                   <label

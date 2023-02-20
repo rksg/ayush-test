@@ -5,12 +5,6 @@ import { render,
 
 import { DevicesWidget } from '.'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 describe('Devices widget', () => {
   it('should render loader and then chart', async () => {
     const params = {
@@ -18,7 +12,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -31,7 +25,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')

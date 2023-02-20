@@ -1,9 +1,18 @@
 /* eslint-disable max-len */
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
-import { isEqual, includes }                from 'lodash'
+import {
+  isEqual,
+  includes,
+  remove,
+  split
+}                from 'lodash'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { IpUtilsService } from './ipUtilsService'
+
+
+const Netmask = require('netmask').Netmask
 
 export function networkWifiIpRegExp (value: string) {
   const { $t } = getIntl()
@@ -17,7 +26,7 @@ export function networkWifiIpRegExp (value: string) {
 export function serverIpAddressRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
-  if (value!=='' && !re.test(value)) {
+  if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
   }
   return Promise.resolve()
@@ -52,7 +61,16 @@ export function URLRegExp (value: string) {
   }
   return Promise.resolve()
 }
-
+export function URLProtocolRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
+  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$')
+  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}
 export function domainNameRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -62,7 +80,32 @@ export function domainNameRegExp (value: string) {
   }
   return Promise.resolve()
 }
+export function domainsNameRegExp (value: string[], required: boolean) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  if(!required) {
+    return Promise.resolve()
+  }
+  const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
+  const isValid = value?.every?.(domain => {
+    return !(required && !re.test(domain))
+  })
 
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+}
+
+export function walledGardensRegExp (value:string) {
+  const { $t } = getIntl()
+  if (!value) {
+    return Promise.resolve()
+  }
+  const walledGardens = value.split('\n')
+  const walledGardenRegex = new RegExp(/^(((\*\.){0,1})(([a-zA-Z0-9*]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.){1,})([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]){1,}(((\/[0-9]{1,2}){0,1}|(\s+(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){2,}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))))$/)
+  const isValid = walledGardens.every(walledGarden=>{
+    return !(walledGarden.trim()&&!walledGardenRegex.test(walledGarden.trim()))
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.walledGarden))
+}
 export function syslogServerRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -158,7 +201,7 @@ export function excludeExclamationRegExp (value: string) {
 
 export function excludeQuoteRegExp (value: string) {
   const { $t } = getIntl()
-  const re = new RegExp(/^(?:(?!")(?!\s).)*$/)
+  const re = new RegExp(/^(?:(?!").)*$/)
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.excludeQuoteRegExp))
   }
@@ -253,6 +296,73 @@ export function checkVlanMember (value: string) {
   return Promise.reject($t(validationMessages.invalid))
 }
 
+export function checkVlanPoolMembers (value: string) {
+  const { $t } = getIntl()
+  if (value.length === 0) {
+    return Promise.resolve()
+  }
+
+  const vlanMembers = split(value, ',')
+  remove(vlanMembers, v => v.trim() === '')
+  vlanMembers.sort((f: string, s: string) => {
+    const ff = split(f, '-')
+    const ss = split(s, '-')
+    return (+ff[0] > +ss[0]) ? 1 : -1
+  })
+
+  if (vlanMembers.length === 0) {
+    return Promise.resolve()
+  }
+
+  // vlan mumbers size should not exceed 16
+  const vlanMembersMaxSize = 16
+  if (vlanMembers.length > vlanMembersMaxSize) {
+    return Promise.reject($t(validationMessages.vlanMembersMaxSize))
+  }
+
+  const vlanMembersMaxNumber = 64
+  const vlanMemberRegex = /^(?:[2-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?(?: *, *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4])(?: *- *(?:[1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-8][0-9]|409[0-4]))?)*$/
+  let nextMember
+  let previousMember = 0
+  let totalNumberOfVlanMembers = 0
+  for (let vlanMember of vlanMembers) {
+    vlanMember = vlanMember.trim()
+
+    // verify the validity of VLAN member based on regex
+    if (!vlanMemberRegex.test(vlanMember)) {
+      return Promise.reject($t(validationMessages.invalidVlanMember))
+    }
+
+    /** verify the validity of VLAN members based on vlan mumbers rules:
+     * vlan mumbers range -> start value must be less than the end value
+     * Overlapping between the vlan members is not allowed
+     * vlan mumbers number should not exceed 64
+     */
+    const membersRange = split(vlanMember, '-')
+    nextMember = +membersRange[0]
+    totalNumberOfVlanMembers++
+    if (previousMember >= nextMember) {
+      return Promise.reject($t(validationMessages.vlanMembersOverlapping))
+    }
+
+    if (membersRange.length === 2) {
+      previousMember = nextMember
+      nextMember = +membersRange[1]
+
+      if (previousMember >= nextMember) {
+        return Promise.reject($t(validationMessages.invalidVlanMemberRange))
+      }
+      totalNumberOfVlanMembers += nextMember - previousMember
+    }
+    previousMember = nextMember
+
+    if (totalNumberOfVlanMembers > vlanMembersMaxNumber) {
+      return Promise.reject($t(validationMessages.vlanMembersMaxLength))
+    }
+  }
+
+  return Promise.resolve()
+}
 export function checkValues (value: string, checkValue: string, checkEqual?: boolean) {
   const { $t } = getIntl()
   const valid = checkEqual ? isEqual(value, checkValue) : !isEqual(value, checkValue)
@@ -311,6 +421,29 @@ export function MacAddressFilterRegExp (value: string){
   return Promise.resolve()
 }
 
+export function MacRegistrationFilterRegExp (value: string){
+  const { $t } = getIntl()
+  const HYPHEN_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6})-([0-9A-Fa-f]{6})$/)
+  const COLON_2_GROUPS = new RegExp(/^([0-9A-Fa-f]{6}):([0-9A-Fa-f]{6})$/)
+  const COLON_6_GROUPS = new RegExp(/^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$/)
+  const HYPHEN_6_GROUPS = new RegExp(/^([0-9A-Fa-f]{2}-){5}([0-9A-Fa-f]{2})$/)
+  const DOTS_3_GROUPS = new RegExp(/^([0-9A-Fa-f]{4}[.]){2}([0-9A-Fa-f]{4})$/)
+  const HYPHEN_3_GROUPS = new RegExp(/^([0-9A-Fa-f]{4}[-]){2}([0-9A-Fa-f]{4})$/)
+  const NO_DELIMITER = new RegExp(/^[0-9A-Fa-f]{12}$/)
+  if (value && !
+  (HYPHEN_2_GROUPS.test(value) ||
+      COLON_2_GROUPS.test(value) ||
+      COLON_6_GROUPS.test(value) ||
+      HYPHEN_6_GROUPS.test(value) ||
+      DOTS_3_GROUPS.test(value) ||
+      HYPHEN_3_GROUPS.test(value) ||
+      NO_DELIMITER.test(value))
+  ) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
+
 export function emailRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
@@ -336,6 +469,107 @@ export function phoneRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function poeBudgetRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp ('^([1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[12][0-9]{4}|30000)$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.poeBudget))
+  }
+  return Promise.resolve()
+}
+
+export function dscpRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^([0-9]|[1-5][0-9]|6[0-3])$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.dscp))
+  }
+  return Promise.resolve()
+}
+
+export function priorityRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^([0-7])$')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.priority))
+  }
+  return Promise.resolve()
+}
+
+export function whitespaceOnlyRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('\\S')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.whitespaceOnly))
+  }
+  return Promise.resolve()
+}
+
+export function agreeRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^agree$', 'i')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.agree))
+  }
+  return Promise.resolve()
+}
+
+export function nameCannotStartWithNumberRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([0-9][A-Za-z0-9]*)$/)
+
+  if (value && re.test(value)) {
+    return Promise.reject($t(validationMessages.nameCannotStartWithNumber))
+  }
+  return Promise.resolve()
+}
+
+export function cliVariableNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[A-Za-z0-9]*$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.nameInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function cliIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-2][0-3]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function subnetMaskPrefixRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(^255\.255\.(0|128|192|224|24[08]|25[245])\.0$)|(^255\.255\.255\.(0|128|192|224|24[08]|252)$)/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMaskBased255_255))
+  }
+  return Promise.resolve()
+}
+
+export function specialCharactersRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ -]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function ValidatePhoneNumber (phoneNumber: string) {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
@@ -357,28 +591,169 @@ export function ValidatePhoneNumber (phoneNumber: string) {
   return true
 }
 
-export function validateRadioChannel (channelMethod: string | undefined, channels: string[]){
-  if(typeof channelMethod === 'undefined'){
-    return
-  }
+export const convertIpToLong = (ipAddress: string): number => {
+  const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+  return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+}
 
+export const countIpSize = (startIpAddress: string, endIpAddress: string) => {
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+  return endLong - startLong + 1
+}
+
+export function countIpMaxRange (startIpAddress: string, endIpAddress: string) {
   const { $t } = getIntl()
-  if(channels.length === 0){
-    if(channelMethod === 'MANUAL'){
-      return Promise.reject($t({ defaultMessage: 'Please select one channel' }))
-    }else{
-      return Promise.reject($t({ defaultMessage: 'Please select at least two channels' }))
-    }
-  }
-  if(channelMethod === 'MANUAL'){
-    if (channels.length !== 1) {
-      return Promise.reject($t(validationMessages.oneRadioChannel))
-    }
-  }else{
-    if (channels.length < 2) {
-      return Promise.reject($t(validationMessages.twoRadioChannels))
-    }
+  const maxRange = 1000
+
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+
+  const numIp = endLong - startLong + 1
+
+  if (numIp <= 0) {
+    return Promise.reject($t(validationMessages.ipRangeInvalid))
+  } else if (numIp > maxRange) {
+    return Promise.reject($t(validationMessages.ipRangeExceed, { range: maxRange }))
   }
   return Promise.resolve()
+}
+
+export function IpInSubnetPool (ipAddress: string, subnetAddress:string, subnetMask:string) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  const subnetInfo = getSubnetInfo(subnetAddress, subnetMask)
+  const firstIpLong = convertIpToLong(subnetInfo.first)
+  const lastIpLong = convertIpToLong(subnetInfo.last)
+  const testIpLong = convertIpToLong(ipAddress)
+
+  if (testIpLong < firstIpLong || testIpLong > lastIpLong) {
+    return Promise.reject($t(validationMessages.ipNotInSubnetPool))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchIpAddress (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchSubnetIpAddress (ipAddress: string, subnetAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const ICX_SUBNET_MASK_PATTERN='^(((255\\.){3}(252|248|240|224|192|128|0+))|((255\\.){2}(255|254|252|248|240|224|192|128|0+)\\.0)|((255\\.)(255|254|252|248|240|224|192|128|0+)(\\.0+){2})|((255|254|252|248|240|224|192|128+)(\\.0+){3}))$'
+  const subnetRegexp = new RegExp(ICX_SUBNET_MASK_PATTERN)
+  if (!subnetRegexp.test(subnetAddress)) {
+    return Promise.reject($t(validationMessages.switchIpInvalid))
+  }else if(IpUtilsService.isBroadcastAddress(ipAddress, subnetAddress)){
+    return Promise.reject($t(validationMessages.switchBroadcastAddressInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchGatewayIpAddress (ipAddress: string, subnetAddress: string, gatewayAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const IP_VALIDATION_PATTERN='(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$)'
+  const ipRegexp = new RegExp(IP_VALIDATION_PATTERN)
+  if (!ipRegexp.test(gatewayAddress)) {
+    return Promise.reject($t(validationMessages.switchDefaultGatewayInvalid))
+  }else if(!IpUtilsService.isInSameSubnet(ipAddress, subnetAddress, gatewayAddress)){
+    return Promise.reject($t(validationMessages.switchSameSubnetInvalid))
+  }
+  return Promise.resolve()
+}
+
+// eslint-disable-next-line max-len
+export const IP_SUBNET_VALIDATION_PATTERN='^(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\.(\\b([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\b)\\/([1-9]|[12]\\d|3[0-2])$'
+
+export function validateSwitchStaticRouteIp (ipAddress: string) {
+  const { $t } = getIntl()
+  const ipRegexp = new RegExp(IP_SUBNET_VALIDATION_PATTERN)
+  if (!ipRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteIpInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteNextHop (ipAddress: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const nextHopRegexp = new RegExp(/^((1\.){3}([1-9]|[1-9]\d|[12]\d\d)|(1\.){2}([2-9]|[1-9]\d|[12]\d\d)\.([1-9]?\d|[12]\d\d)|1\.([2-9]|[1-9]\d|[12]\d\d)(\.([1-9]?\d|[12]\d\d)){2}|([2-9]|[1-9]\d|1\d\d|2[01]\d|22[0-3])(\.([1-9]?\d|[12]\d\d)){3})$/)
+  if (!nextHopRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteNextHopInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  const { $t } = getIntl()
+  const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
+  if (!adRegexp.test(ipAddress)) {
+    return Promise.reject($t(validationMessages.switchStaticRouteAdminDistanceInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function validateRecoveryPassphrasePart (value: string) {
+  const { $t } = getIntl()
+
+  if (!value) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+
+  const spaceRegex = new RegExp(/.*\s+.*/)
+  if (spaceRegex.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePartSpace))
+  }
+
+  const re = new RegExp(/^([0-9]{4})$/)
+  if (!re.test(value)) {
+    return Promise.reject($t(validationMessages.recoveryPassphrasePart))
+  }
+
+  return Promise.resolve()
+}
+
+export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
+  secondIpAddress: string, secondSubnetMask:string ) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  let result = false
+  let firstSubnetInfo
+  let secondSubnetInfo
+  try {
+    firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
+    secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+  } catch (error) {
+    // ignore invalid case
+    return Promise.resolve()
+  }
+
+  const firstStartLong = convertIpToLong(firstSubnetInfo.first)
+  const firstEndLong = convertIpToLong(firstSubnetInfo.last)
+  const secondStartLong = convertIpToLong(secondSubnetInfo.first)
+  const secondEndLong = convertIpToLong(secondSubnetInfo.last)
+
+  if(secondStartLong < firstStartLong) {
+    result = secondEndLong > firstStartLong
+  } else {
+    result = secondStartLong < firstEndLong
+  }
+
+  return result ? Promise.reject($t(validationMessages.subnetOverlapping))
+    : Promise.resolve()
 
 }

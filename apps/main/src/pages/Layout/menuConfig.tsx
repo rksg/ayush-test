@@ -1,15 +1,15 @@
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { LayoutProps, LayoutUI, genPlaceholder } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { LayoutProps, LayoutUI, genPlaceholder }    from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined as AIOutlinedBase,
   AISolid as AISolidBase,
   AccountCircleOutlined,
   AccountCircleSolid,
   AdminOutlined,
-  AdminSolid as AdminSolidBase,
+  AdminSolid,
   CalendarDateOutlined,
   CalendarDateSolid,
   DevicesOutlined,
@@ -25,17 +25,21 @@ import {
   ServicesOutlined,
   ServicesSolid as ServicesSolidBase,
   SpeedIndicatorOutlined,
-  SpeedIndicatorSolid
+  SpeedIndicatorSolid,
+  ServiceValidationSolid,
+  ServiceValidationOutlined
 } from '@acx-ui/icons'
+import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
-const AdminSolid = styled(AdminSolidBase)`${LayoutUI.iconSolidOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
 export function useMenuConfig () {
   const { $t } = useIntl()
+  const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+
   const config: LayoutProps['menuConfig'] = [
     {
       path: '/dashboard',
@@ -73,15 +77,65 @@ export function useMenuConfig () {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
-      activeIcon: CalendarDateSolid,
-      disabled: !useIsSplitOn(Features.TIMELINE)
+      activeIcon: CalendarDateSolid
     },
+    ...(useIsTierAllowed('ANLT-ADV') ? [{
+      path: '/serviceValidation',
+      name: $t({ defaultMessage: 'Service Validation' }),
+      inactiveIcon: ServiceValidationOutlined,
+      activeIcon: ServiceValidationSolid,
+      routes: [
+        {
+          path: '/serviceValidation/networkHealth',
+          name: $t({ defaultMessage: 'Network Health' })
+        }
+      ],
+      disabled: !showSV
+    }] : []),
     {
       path: '/reports',
       name: $t({ defaultMessage: 'Reports' }),
       inactiveIcon: ReportsOutlined,
       activeIcon: ReportsSolid,
-      disabled: true
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/overview',
+          name: $t({ defaultMessage: 'Overview' })
+        },
+        {
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/wlans',
+          name: $t({ defaultMessage: 'WLANs' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        },
+        {
+          path: '/reports/airtime',
+          name: $t({ defaultMessage: 'Airtime Utilization' })
+        }
+      ]
     },
     genPlaceholder(),
     {
@@ -99,27 +153,52 @@ export function useMenuConfig () {
         [
           {
             path: '/devices/wifi',
-            name: $t({ defaultMessage: 'WiFi' })
+            name: $t({ defaultMessage: 'Wi-Fi' })
           },
           {
             path: '/devices/switch',
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
-          }
+          },
+          ...useIsSplitOn(Features.EDGES) ? [{
+            path: '/devices/edge/list',
+            name: $t({ defaultMessage: 'Edge' })
+          }] : []
         ]
     },
     {
       path: '/networks',
       name: $t({ defaultMessage: 'Networks' }),
       inactiveIcon: NetworksOutlined,
-      activeIcon: NetworksSolid
+      activeIcon: NetworksSolid,
+      routes: [
+        {
+          path: '/networks/wireless',
+          name: $t({ defaultMessage: 'Wireless Networks' })
+        },
+        {
+          path: '/networks/wired/profiles',
+          name: $t({ defaultMessage: 'Wired Networks' }),
+          disabled: !useIsSplitOn(Features.UNRELEASED)
+        }
+      ]
     },
     {
       path: '/services',
       name: $t({ defaultMessage: 'Services' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
-      disabled: !useIsSplitOn(Features.SERVICES)
+      disabled: !useIsSplitOn(Features.SERVICES),
+      routes: [
+        {
+          path: getServiceListRoutePath(true),
+          name: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          path: getServiceCatalogRoutePath(true),
+          name: $t({ defaultMessage: 'Service Catalog' })
+        }
+      ]
     },
     {
       path: '/policies',
@@ -136,12 +215,17 @@ export function useMenuConfig () {
       routes: [
         {
           path: '/users/wifi',
-          name: $t({ defaultMessage: 'WiFi' })
+          name: $t({ defaultMessage: 'Wi-Fi' })
         },
         {
           path: '/users/switch',
           name: $t({ defaultMessage: 'Switch' }),
           disabled: !useIsSplitOn(Features.USERS)
+        },
+        {
+          path: '/users/persona-management',
+          name: $t({ defaultMessage: 'Persona Management' }),
+          disabled: !useIsSplitOn(Features.SERVICES)
         }
       ]
     },
@@ -151,7 +235,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: true
+      disabled: !useIsSplitOn(Features.UNRELEASED)
     }
   ]
   return config

@@ -3,10 +3,10 @@ import { useContext } from 'react'
 import { Col, Form, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm, Subtitle } from '@acx-ui/components'
+import { StepsForm, Subtitle }           from '@acx-ui/components'
+import { MdnsProxyForwardingRulesTable } from '@acx-ui/rc/components'
 
-import MdnsProxyFormContext              from '../MdnsProxyForm/MdnsProxyFormContext'
-import { MdnsProxyForwardingRulesTable } from '../MdnsProxyForm/MdnsProxyForwardingRulesTable'
+import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
 import { MdnsProxySummaryVenues } from './MdnsProxySummaryVenue'
 
@@ -26,25 +26,19 @@ export function MdnsProxySummary () {
           <Col span={24}>
             <Subtitle level={4}>{ $t({ defaultMessage: 'Settings' }) }</Subtitle>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               label={$t({ defaultMessage: 'Service Name:' })}
               children={currentData.name}
             />
           </Col>
-          <Col span={8}>
-            <Form.Item
-              label={$t({ defaultMessage: 'Tags:' })}
-              children={currentData.tags}
-            />
-          </Col>
-          <Col span={16}>
+          <Col span={20}>
             <Form.Item
               label={$t({ defaultMessage: 'Forwarding Rules:' })}
             >
               <MdnsProxyForwardingRulesTable
                 readonly={true}
-                rules={currentData.forwardingRules}
+                rules={currentData.rules}
               />
             </Form.Item>
           </Col>
@@ -55,7 +49,7 @@ export function MdnsProxySummary () {
               { $t({ defaultMessage: 'Venues & APs ({apCount})' }, { apCount: totalApCount }) }
             </Subtitle>
           </Col>
-          <Col span={10}>
+          <Col span={14}>
             <MdnsProxySummaryVenues scope={currentData.scope ?? []} />
           </Col>
         </Row>

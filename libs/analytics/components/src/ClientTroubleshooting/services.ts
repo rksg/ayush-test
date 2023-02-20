@@ -14,12 +14,24 @@ export type ConnectionEvent = {
   failedMsgId: string | null,
   code: string| null,
   apName: string,
-  path: NetworkPath
+  path: NetworkPath,
+  ssid?: string | null,
+  messageIds?: Array<string>
 }
+
+export type ConnectionQuality = {
+  start: string,
+  end: string,
+  rss?: number | null,
+  snr?: number | null,
+  throughput?: number | null,
+  avgTxMCS?: number | null
+}
+
 export type ClientInfoData = {
   connectionDetailsByAp: object[]
   connectionEvents: ConnectionEvent[]
-  connectionQualities: object[]
+  connectionQualities: ConnectionQuality[]
   incidents: Incident[]
 }
 interface Response <ClientInfoData> {

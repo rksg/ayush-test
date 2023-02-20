@@ -1,35 +1,36 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
-  MdnsProxyForwardingRuleTypeEnum,
+  QosPriorityEnum,
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType
 } from '@acx-ui/rc/utils'
 
 export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Portal' }),
-  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP' }),
+  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'DHCP for Wi-Fi' }),
+  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'DHCP for SmartEdge' }),
   [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Wi-Fi Calling' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'mDNS Proxy' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'DPSK' }),
-  [ServiceType.NETWORK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' })
+  [ServiceType.NETWORK_SEGMENTATION]: defineMessage({ defaultMessage: 'Network Segmentation' }),
+  [ServiceType.WEBAUTH_SWITCH]: defineMessage(
+    { defaultMessage: 'Network Segmentation Auth Page for Switch' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)' }),
   [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
+  [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   // eslint-disable-next-line max-len
-  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over WiFi' }),
+  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over Wi-Fi' }),
   [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
-    { defaultMessage: 'Controls network traffic by different segments' })
-}
-export const serviceTechnologyLabelMapping: Record<ServiceTechnology, MessageDescriptor> = {
-  [ServiceTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [ServiceTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
+    { defaultMessage: 'Controls network traffic by different segments' }),
+  [ServiceType.WEBAUTH_SWITCH]: defineMessage(
+    { defaultMessage: 'Network Segmentation Auth Page for Switch Description' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),
@@ -41,36 +42,9 @@ export const serviceAdminStateLabelMapping: Record<ServiceAdminState, MessageDes
 }
 
 // eslint-disable-next-line max-len
-export const mdnsProxyForwardingRuleTypeLabelMapping: Record<MdnsProxyForwardingRuleTypeEnum, MessageDescriptor> = {
-  [MdnsProxyForwardingRuleTypeEnum.AIRDISK]: defineMessage({ defaultMessage: 'AirDisk' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPLAY]: defineMessage({ defaultMessage: 'AirPlay' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.AIRPORT_MANAGEMENT]: defineMessage({ defaultMessage: 'Airport Management' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRPRINT]: defineMessage({ defaultMessage: 'AirPrint' }),
-  [MdnsProxyForwardingRuleTypeEnum.AIRTUNES]: defineMessage({ defaultMessage: 'AirTunes' }),
-  [MdnsProxyForwardingRuleTypeEnum.APPLETV]: defineMessage({ defaultMessage: 'Apple TV' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_FILE_SHARING]: defineMessage({ defaultMessage: 'Apple File Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.APPLE_MOBILE_DEVICES]: defineMessage({ defaultMessage: 'Apple Mobile Devices' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.GOOGLE_CHROMECAST]: defineMessage({ defaultMessage: 'Google Chromecast' }),
-  [MdnsProxyForwardingRuleTypeEnum.ICLOUD_SYNC]: defineMessage({ defaultMessage: 'iCloud Sync' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_REMOTE]: defineMessage({ defaultMessage: 'iTunes Remote' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.ITUNES_SHARING]: defineMessage({ defaultMessage: 'iTunes Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
-  // eslint-disable-next-line max-len
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_FILE_SHARING]: defineMessage({ defaultMessage: 'Secure File Sharing' }),
-  [MdnsProxyForwardingRuleTypeEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
-  [MdnsProxyForwardingRuleTypeEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [MdnsProxyForwardingRuleTypeEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+export const wifiCallingQosPriorityLabelMapping: Record<QosPriorityEnum, MessageDescriptor> = {
+  [QosPriorityEnum.WIFICALLING_PRI_VOICE]: defineMessage({ defaultMessage: 'Voice' }),
+  [QosPriorityEnum.WIFICALLING_PRI_VIDEO]: defineMessage({ defaultMessage: 'Video' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BE]: defineMessage({ defaultMessage: 'Best Effort' }),
+  [QosPriorityEnum.WIFICALLING_PRI_BG]: defineMessage({ defaultMessage: 'Background' })
 }

@@ -15,6 +15,7 @@ import RogueAPDetectionForm        from './RogueAPDetectionForm'
 import RogueAPDetectionSettingForm from './RogueAPDetectionSettingForm'
 
 
+
 const policyListContent = [
   {
     id: 'policyId1',
@@ -124,6 +125,8 @@ describe('RogueAPDetectionSettingForm', () => {
     expect(screen.getByRole('columnheader', {
       name: /category/i
     })).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
   })
 
   it('should render RogueAPDetectionSettingForm with editMode successfully', async () => {

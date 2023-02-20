@@ -30,6 +30,9 @@ const params = {
   serialNumber: 'ap-serialNumber',
   activeTab: 'overview'
 }
+jest.mock('../ApContext', () => ({
+  useApContext: () => params
+}))
 
 describe('ApOverviewTab', () => {
   beforeEach(() => {
@@ -37,25 +40,25 @@ describe('ApOverviewTab', () => {
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
-        (req, res, ctx) => res(ctx.json(apDetailData))
+        (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(apViewModel))
+        (_, res, ctx) => res(ctx.json(apViewModel))
       )
     )
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (req, res, ctx) => res(ctx.json(apDetails))
+        (_, res, ctx) => res(ctx.json(apDetails))
       )
     )
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getVenue.url,
-        (req, res, ctx) => res(ctx.json({
+        (_, res, ctx) => res(ctx.json({
           address: {
             latitude: 37.4112751,
             longitude: -122.0191908
@@ -66,13 +69,13 @@ describe('ApOverviewTab', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApLanPorts.url,
-        (req, res, ctx) => res(ctx.json(apLanPorts))
+        (_, res, ctx) => res(ctx.json(apLanPorts))
       )
     )
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApRadioCustomization.url,
-        (req, res, ctx) => res(ctx.json(apRadio))
+        (_, res, ctx) => res(ctx.json(apRadio))
       )
     )
   })

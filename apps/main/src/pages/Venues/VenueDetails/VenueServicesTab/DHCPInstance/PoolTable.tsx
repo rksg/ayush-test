@@ -6,85 +6,78 @@ import _                          from 'lodash'
 import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Table, TableProps, showActionModal } from '@acx-ui/components'
+import { Table, TableProps, showActionModal, Loader, Tooltip } from '@acx-ui/components'
 import {
-  useVenueDHCPProfileQuery,
-  useGetDHCPProfileQuery,
-  useVenueActivePoolsQuery,
-  useActivateDHCPPoolMutation } from '@acx-ui/rc/services'
-import { DHCPPool }   from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { formatter }  from '@acx-ui/utils'
+  useVenueDHCPPoolsQuery,
+  useActivateDHCPPoolMutation,
+  useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
+import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
+import { formatter }         from '@acx-ui/utils'
+
+import { ReadonlySwitch } from './styledComponents'
+
+
 
 
 export default function VenuePoolTable (){
   const params = useParams()
   const { $t } = useIntl()
 
-  const [tableData, setTableData] = useState<DHCPPool[]>()
+  const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
-  const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
+
+  const venueDHCPPools = useVenueDHCPPoolsQuery({
     params
-  })
-
-  const { data: dhcpProfile } = useGetDHCPProfileQuery({
-    params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
-  })
-
-  const { data: activeList } = useVenueActivePoolsQuery({
-    params: { serviceId: venueDHCPProfile?.serviceProfileId, venueId: params.venueId }
   })
 
 
   const [activateDHCPPool] = useActivateDHCPPoolMutation()
+  const [deactivateDHCPPool] = useDeactivateDHCPPoolMutation()
 
-  const setActivePool = async (dhcppoolId:string, activated:boolean)=>{
-    await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+
+  const setActivePool = async (dhcppoolId:string, active:boolean)=>{
+
+    if(active){
+      await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }else{
+      await deactivateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+    }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
         return {
           ...item,
-          activated
+          active
         }
       }else{
         return item
       }
     })
+
     setTableData(updateActive)
   }
 
 
-
   useEffect(() => {
-    const mergedData = dhcpProfile?.dhcpPools.map( item => {
-      const index = _.findIndex(activeList, poolId => poolId === item.id)
-      return {
-        ...item,
-        activated: index!==-1
-      }
-    })
-    setTableData(mergedData)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeList, dhcpProfile])
+    if(venueDHCPPools.data){
+      setTableData(venueDHCPPools.data)
+    }
+  }, [venueDHCPPools.data])
 
-
-  const columns: TableProps<DHCPPool>['columns'] = [
+  const columns: TableProps<VenueDHCPPoolInst>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Pool Name' }),
-      dataIndex: 'venue',
-      sorter: true,
-      render: function (_data, row) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
-        )
-      }
+      dataIndex: 'name',
+      sorter: true
     },
     {
-      key: 'APs',
+      key: 'startIpAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
-      dataIndex: 'aps'
+      dataIndex: 'startIpAddress',
+      render: function (_data, row) {
+        return $t({ defaultMessage: '{start} - {end}' },
+          { start: row.startIpAddress, end: row.endIpAddress })
+      }
     },
     {
       key: 'subnetMask',
@@ -99,7 +92,7 @@ export default function VenuePoolTable (){
         const MINUTE = 1000 * 60
         const HOUR = MINUTE * 60
         return formatter('longDurationFormat')
-        (_.parseInt(rowData.leaseTimeHours)* HOUR + _.parseInt(rowData.leaseTimeMinutes) * MINUTE)
+        (((rowData.leaseTimeHours || 0) * HOUR) + ((rowData.leaseTimeMinutes || 0) * MINUTE))
       }
     },
     {
@@ -107,15 +100,26 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'DNS IP' }),
       dataIndex: 'primaryDnsIp',
       render: (data, rowData)=>
-        <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />
+        (rowData.primaryDnsIp && rowData.secondaryDnsIp) ?
+          <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />:''
     },
     {
       key: 'id',
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (id, row) => {
+        let hasOtherActive = true
+        if(row.active===true){
+          hasOtherActive = _.some(tableData, o => o.active && o.id !== id)
+        }
+        if(!hasOtherActive){
+          return <Tooltip placement='topLeft'
+            title={$t({ defaultMessage: 'At least one pool must be active' })}
+            arrowPointAtCenter><ReadonlySwitch checked/></Tooltip>
+        }
+
         const switchRef = <Switch
-          checked={row.activated}
+          checked={row.active}
           onChange={(checked)=>{
             const activeMsg =
             $t({ defaultMessage: 'Are you sure you want to activate this DHCP Pool?' })
@@ -142,10 +146,15 @@ export default function VenuePoolTable (){
   ]
 
   return (
-    <Table
-      columns={columns}
-      dataSource={tableData}
-      rowKey='id'
-    />
+    <Loader states={[{
+      isLoading: venueDHCPPools.isLoading,
+      isFetching: venueDHCPPools.isFetching
+    }]}>
+      <Table
+        columns={columns}
+        dataSource={tableData}
+        rowKey='id'
+      />
+    </Loader>
   )
 }

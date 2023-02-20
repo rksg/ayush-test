@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Descriptions should render 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 fNUlwo"
+  >
+    <div
+      class="ant-descriptions-view"
+    >
+      <table>
+        <tbody>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  S/N
+                </span>
+                <span
+                  class="ant-descriptions-item-content"
+                >
+                  932173000117
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</DocumentFragment>
+`;

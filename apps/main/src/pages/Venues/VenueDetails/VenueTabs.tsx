@@ -13,6 +13,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/`)
   const navigate = useNavigate()
   const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
+  const enabledServices = useIsSplitOn(Features.SERVICES)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -21,11 +22,11 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     })
 
   const data = props.venueDetail
-  const [clientsCount, devicesCount, networksCount, servicesCount] = [
-    data?.totalClientCount ?? 0,
+  const [clientsCount, devicesCount, networksCount] = [
+    (data?.totalClientCount ? Number(data.totalClientCount) : 0) +
+      (data?.switchClients?.totalCount ?? 0),
     (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),
-    data?.activeNetworkCount ?? 0,
-    0
+    data?.activeNetworkCount ?? 0
   ]
 
   return (
@@ -39,10 +40,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='analytics'
       />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
-        </Tooltip>}
+        tab={$t({ defaultMessage: 'Clients ({clientsCount})' }, { clientsCount })}
         key='clients'
       />
       <Tabs.TabPane
@@ -54,19 +52,13 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
         key='networks'
       />
       <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
-        </Tooltip>}
+        disabled={!enabledServices}
+        tab={enabledServices
+          ? $t({ defaultMessage: 'Services' })
+          : <Tooltip title={$t(notAvailableMsg)}>{$t({ defaultMessage: 'Services' })}</Tooltip>}
         key='services'
       />
-      <Tabs.TabPane
-        disabled
-        tab={<Tooltip title={$t(notAvailableMsg)}>
-          {$t({ defaultMessage: 'Timeline' })}
-        </Tooltip>}
-        key='timeline'
-      />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )
 }

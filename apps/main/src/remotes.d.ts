@@ -16,3 +16,8 @@ declare module 'msp/Routes' {
   function Routes (): React.ReactElement
   export = Routes
 }
+declare module 'reports/Routes' {
+  // refer to modulefederation.config.js for correct mapping
+  function Routes (): React.ReactElement
+  export = Routes
+}

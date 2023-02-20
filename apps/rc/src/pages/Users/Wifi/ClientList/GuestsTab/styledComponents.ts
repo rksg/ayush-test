@@ -56,3 +56,9 @@ export const FooterDiv = styled.div`
     justify-content: start;
   }
 `
+
+export const IconContainer = styled.div`
+  svg {
+    height: 24px
+  }
+`

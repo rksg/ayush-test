@@ -3,14 +3,13 @@ import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 export enum DateRange {
-  today = 'Today',
-  last1Hour = 'Last 1 Hour',
   last24Hours = 'Last 24 Hours',
   last7Days = 'Last 7 Days',
-  lastMonth = 'Last Month',
+  last30Days = 'Last 30 Days',
   custom = 'Custom',
 }
 
+type Ranges = Record<string, [moment.Moment, moment.Moment]>
 let ranges = defaultRanges()
 
 export const resetRanges = () => { ranges = defaultRanges() }
@@ -23,21 +22,13 @@ export function getDateRangeFilter (
   const [startDate, endDate] =
     range === DateRange.custom && start && end
       ? [start, end]
-      : (ranges as Record<string, [moment.Moment, moment.Moment]>)[range].map(
+      : ((ranges as Ranges)[range] ?? ranges[DateRange.last24Hours]).map(
         (date: moment.Moment) => date.format()
       )
   return { startDate, endDate, range }
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
-    [DateRange.last1Hour]: [
-      moment().subtract(1, 'hours').seconds(0),
-      moment().seconds(0)
-    ],
-    [DateRange.today]: [
-      moment().startOf('day').seconds(0),
-      moment().seconds(0)
-    ],
     [DateRange.last24Hours]: [
       moment().subtract(1, 'days').seconds(0),
       moment().seconds(0)
@@ -46,8 +37,8 @@ export function defaultRanges (subRange?: DateRange[]) {
       moment().subtract(7, 'days').seconds(0),
       moment().seconds(0)
     ],
-    [DateRange.lastMonth]: [
-      moment().subtract(1, 'month').seconds(0),
+    [DateRange.last30Days]: [
+      moment().subtract(30, 'days').seconds(0),
       moment().seconds(0)
     ]
   }
@@ -70,22 +61,20 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
-  [DateRange.today]: defineMessage({
-    defaultMessage: 'Today'
-  }),
-  [DateRange.last1Hour]: defineMessage({
-    defaultMessage: 'Last 1 Hour'
-  }),
   [DateRange.last24Hours]: defineMessage({
     defaultMessage: 'Last 24 Hours'
   }),
   [DateRange.last7Days]: defineMessage({
     defaultMessage: 'Last 7 Days'
   }),
-  [DateRange.lastMonth]: defineMessage({
-    defaultMessage: 'Last Month'
+  [DateRange.last30Days]: defineMessage({
+    defaultMessage: 'Last 30 Days'
   }),
   [DateRange.custom]: defineMessage({
     defaultMessage: 'Custom'
   })
+}
+
+export function getCurrentDate (format: string) {
+  return moment().format(format)
 }

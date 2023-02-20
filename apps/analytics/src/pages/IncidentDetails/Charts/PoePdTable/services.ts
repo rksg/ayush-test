@@ -7,6 +7,7 @@ export interface Response {
   incident: {
     impactedEntities: {
       name: string
+      serial: string
       mac: string
       ports: {
         portNumber: string
@@ -18,6 +19,7 @@ export interface Response {
 
 export interface ImpactedSwitch {
   name: string
+  serial: string
   mac: string
   portNumber: string
   eventTime: string
@@ -36,6 +38,7 @@ export const impactedApi = dataApi.injectEndpoints({
             incident(id: $id) {
               impactedEntities: getImpactedSwitches(n: $n, search: $search) {
                 name
+                serial
                 mac
                 ports {
                   portNumber
@@ -54,6 +57,7 @@ export const impactedApi = dataApi.injectEndpoints({
             return {
               name: datum.name,
               mac: datum.mac,
+              serial: datum.serial,
               portNumber: result.portNumber,
               eventTime: (new Date(timestamp)).toISOString(),
               key: datum.name + index

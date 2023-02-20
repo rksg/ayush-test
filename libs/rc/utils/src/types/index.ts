@@ -1,7 +1,6 @@
 import {
   ServiceAdminState,
   ServiceStatus,
-  ServiceTechnology,
   ServiceType,
   ApDeviceStatusEnum,
   GuestNetworkTypeEnum,
@@ -9,6 +8,7 @@ import {
   NetworkTypeEnum,
   QosPriorityEnum
 } from '../constants'
+import { EdgeStatusSeverityEnum }        from '../models'
 import { AAAWlanAdvancedCustomization }  from '../models/AAAWlanAdvancedCustomization'
 import { DpskWlanAdvancedCustomization } from '../models/DpskWlanAdvancedCustomization'
 import { NetworkVenue }                  from '../models/NetworkVenue'
@@ -16,8 +16,10 @@ import { OpenWlanAdvancedCustomization } from '../models/OpenWlanAdvancedCustomi
 import { PskWlanAdvancedCustomization }  from '../models/PskWlanAdvancedCustomization'
 import { TrustedCAChain }                from '../models/TrustedCAChain'
 
-import { ApModel } from './ap'
-import { EPDG }    from './services'
+import { ApModel }                     from './ap'
+import { EdgeStatusSeverityStatistic } from './edge'
+import { EPDG }                        from './services'
+import { SwitchStatusEnum }            from './switch'
 
 export * from './ap'
 export * from './venue'
@@ -25,17 +27,29 @@ export * from './network'
 export * from './any-network'
 export * from './user'
 export * from './services'
+export * from './policies'
 export * from './msp'
 export * from './edge'
-export * from './policies'
-export * from './portalService'
 export * from './client'
 export * from './components'
 export * from './switch'
+export * from './mfa'
+export * from './administration'
+export * from './timeline'
+export * from './persona'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string
   response?:{}
+}
+
+export interface CommonErrorsResult<T> {
+  data: {
+    errors: T[];
+    requestId: string;
+  };
+  status: number;
 }
 
 export interface Network {
@@ -96,7 +110,7 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
@@ -129,84 +143,6 @@ export interface AlarmMeta {
 }
 
 export type Alarm = AlarmBase & AlarmMeta
-
-export interface Activity {
-  admin: {
-    name: string
-    email: string
-    ip: string
-    id: string
-    interface: string
-  }
-  descriptionData: { name: string, value:string }[]
-  descriptionTemplate: string
-  endDatetime: string
-  notification: { enabled: boolean, type: string }
-  product: string
-  requestId: string
-  severity: string
-  startDatetime: string
-  status: string
-  steps: {
-    id: string,
-    description: string,
-    status: string,
-    progressType: string
-    startDatetime: string
-    endDatetime: string
-  }[]
-tenantId: string
-useCase: string
-}
-
-export interface EventBase {
-  apMac: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  macAddress: string
-  message: string
-  name: string
-  product: string
-  radio: string
-  raw_event: string
-  serialNumber: string
-  severity: string
-  venueId: string
-}
-
-export interface EventMeta {
-  id: EventBase['id']
-  apGroupId: string
-  apName: string
-  isApExists: boolean
-  isSwitchExists: boolean
-  isVenueExists: boolean
-  switchName: string
-  venueName: string
-}
-
-export type Event = EventBase & EventMeta
-
-export interface AdminLogBase {
-  adminName: string
-  entity_id: string
-  entity_type: string
-  event_datetime: string
-  id: string
-  message: string
-  raw_event: string
-  severity: string
-}
-
-export interface AdminLogMeta {
-  id: AdminLogBase['id']
-  isApExists: boolean
-  isSwitchExists: boolean
-}
-
-export type AdminLog = AdminLogBase & AdminLogMeta
 
 export enum EventSeverityEnum {
   CRITICAL = 'Critical',
@@ -241,15 +177,6 @@ export enum ApVenueStatusEnum {
   OPERATIONAL = '2_Operational',
   REQUIRES_ATTENTION = '3_RequiresAttention',
   TRANSIENT_ISSUE = '4_TransientIssue'
-}
-
-export enum SwitchStatusEnum {
-  NEVER_CONTACTED_CLOUD = 'PREPROVISIONED',
-  INITIALIZING = 'INITIALIZING',
-  APPLYING_FIRMWARE = 'APPLYINGFIRMWARE',
-  OPERATIONAL = 'ONLINE',
-  DISCONNECTED = 'OFFLINE',
-  STACK_MEMBER_NEVER_CONTACTED = 'STACK_MEMBER_PREPROVISIONED'
 }
 
 export type ChartData = {
@@ -306,6 +233,7 @@ export interface Dashboard {
       },
       totalCount: number;
     },
+    edges?: EdgeStatusSeverityStatistic,
     venues?: {
       summary: {
         [prop: string]: number;
@@ -345,6 +273,17 @@ export interface Dashboard {
         totalCount: number
       }
     }> | undefined,
+    totalCount: number
+  };
+  edges?: {
+    edgesStatus: Array<{
+      [prop: string]: {
+        edgeStatus: {
+          [ key in EdgeStatusSeverityEnum]?: number
+        },
+        totalCount: number
+      }
+    }>,
     totalCount: number
   };
   venues?: Array<{
@@ -399,7 +338,6 @@ export interface Service {
   type: ServiceType
   status: ServiceStatus
   adminState: ServiceAdminState
-  technology: ServiceTechnology
   scope: number
   health: string
   tags: string[]
@@ -435,6 +373,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
@@ -476,14 +415,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse {
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number
@@ -495,18 +434,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
-}
-
-export interface EventMeta {
-  apName: string,
-  id: string,
-  isApExists: boolean,
-  isClientExists: boolean,
-  isVenueExists: boolean,
-  networkId: string,
-  venueName: string,
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {
@@ -519,4 +448,52 @@ export interface ClientStatistic {
   userTraffic5GBytes: number;
   userTraffic6GBytes: number;
   userTraffic24GBytes: number;
+}
+
+export const GridInactiveRowDataFlag = 'inactiveRow'
+export interface GridDataRow {
+  inactiveTooltip?: string;
+  [GridInactiveRowDataFlag]?: boolean;
+}
+
+export interface PaginationQueryResult<T> {
+  page: number
+  pageSize: number
+  totalCount: number
+  content: T[]
+}
+
+export interface PlmMessageBanner {
+  createdBy: string,
+  createdDate: string,
+  description: string,
+  endTime: string,
+  id: string,
+  startTime: string,
+  tenantType: string,
+  updatedDate: string
+}
+
+export enum SWITCH_CLIENT_TYPE {
+  AP = 'WLAN_AP',
+  ROUTER = 'ROUTER'
+}
+
+export interface SwitchClient {
+  id: string
+  clientMac: string
+  clientIpv4Addr: string
+  clientIpv6Addr: string
+  clientName: string
+  clientDesc: string
+  clientType: SWITCH_CLIENT_TYPE
+  switchId: string
+  switchName: string
+  switchPort: string
+  switchSerialNumber: string
+  clientVlan: string
+  vlanName: string
+  venueId: string
+  venueName: string
+  isRuckusAP: boolean
 }

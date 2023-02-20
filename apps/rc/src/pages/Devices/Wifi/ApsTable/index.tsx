@@ -9,16 +9,38 @@ import {
   Dropdown,
   PageHeader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ApTable, CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
-import { useImportApMutation }               from '@acx-ui/rc/services'
-import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                   from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
+import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
 
 export default function ApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ importVisible, setImportVisible ] = useState(false)
+
+  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  } }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+    })
+  })
+
+  const { apgroupFilterOptions } = useApGroupsListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: { isDefault: [false] }
+  } }, {
+    selectFromResult: ({ data }) => ({
+      apgroupFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+    })
+  })
 
   const [ importCsv, importResult ] = useImportApMutation()
 
@@ -46,9 +68,7 @@ export default function ApsTable () {
       label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'AP' })}</TenantLink>
     }, {
       key: 'import-from-file',
-      label: $t({ defaultMessage: 'Import from file' }),
-      title: $t(notAvailableMsg),
-      disabled: !useIsSplitOn(Features.DEVICES)
+      label: $t({ defaultMessage: 'Import from file' })
     }, {
       key: 'ap-group',
       label: <TenantLink to='devices/apgroups/add'>
@@ -59,7 +79,7 @@ export default function ApsTable () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'WiFi' })}
+        title={$t({ defaultMessage: 'Wi-Fi' })}
         extra={[
           <Dropdown overlay={addMenu} key='addMenu'>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
@@ -67,16 +87,23 @@ export default function ApsTable () {
         ]}
       />
       <ApTable
+        searchable={true}
+        filterables={{
+          venueId: venueFilterOptions,
+          deviceGroupId: apgroupFilterOptions
+        }}
         rowSelection={{
           type: 'checkbox'
         }}
       />
-      <ImportCsvDrawer type='AP'
+      <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        temlateLink={importTemplateLink}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
         visible={importVisible}
+        isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}
         importRequest={(formData)=>{
           importCsv({ params: { tenantId }, payload: formData })

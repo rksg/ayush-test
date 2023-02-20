@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { DpskUrls }                               from '@acx-ui/rc/utils'
+import { DpskBaseUrl }                            from '@acx-ui/rc/utils'
 import { Provider }                               from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
@@ -14,7 +14,7 @@ describe('DpskSettingsForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        DpskUrls.getDpskList.url,
+        DpskBaseUrl,
         (req, res, ctx) => res(ctx.json({ ...mockedDpskList }))
       )
     )

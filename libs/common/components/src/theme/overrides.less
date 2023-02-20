@@ -79,6 +79,12 @@
     }
   }
 
+  .ant-divider {
+    &.ant-divider-horizontal {
+      margin: var(--acx-descriptions-space) 0;
+    }
+  }
+
   .ant-drawer {
     --acx-drawer-top-space: calc(var(--acx-header-height) + 16px);
     margin-top: var(--acx-drawer-top-space);
@@ -819,6 +825,27 @@
   .gm-style-iw-d {
     overflow: hidden !important;
     max-height: 255px !important;
+  }
+
+  // Data Studio embedded reports iframe
+  .acx-report > iframe {
+    width: 100%;
+    height: 100vh;
+    border: none;
+  }
+
+  // CodeMirror hints
+  .CodeMirror-hints {
+    font-size: 12px;
+    li {
+      padding: 4px;
+      background: transparent;
+      color: var(--acx-accents-blue-50);
+      &:hover {
+        background: transparent;
+        color: var(--acx-accents-blue-60);
+      }
+    }
   }
 }
 

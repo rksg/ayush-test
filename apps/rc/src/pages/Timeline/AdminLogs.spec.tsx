@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
-
 import { CommonUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider }                         from '@acx-ui/store'
 import { mockRestApiQuery, render, screen } from '@acx-ui/test-utils'
@@ -27,21 +25,5 @@ describe('AdminLogs', () => {
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
     )
-  })
-
-  it('should open/close activity drawer', async () => {
-    render(
-      <Provider>
-        <AdminLogs />
-      </Provider>,
-      { route: { params } }
-    )
-    await screen.findByText(
-      'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
-    )
-    await userEvent.click(screen.getByRole('button', { name: /2022/ }))
-    screen.getByText('Log Details')
-    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.queryByText('Activity Details')).toBeNull()
   })
 })

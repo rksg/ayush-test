@@ -45,6 +45,12 @@ export const Button = styled(AntButton)<{ $customType: string | null }>`
       background-color: var(--acx-primary-white);
       svg { path { stroke: var(--acx-neutrals-40); } }
     }
+
+    &.ant-btn-link:not(.ant-btn-icon-only) {
+      &, &:hover, &:focus {
+        color: var(--acx-neutrals-40);
+      }
+    }
   }
 
   &.ant-btn-link:not(.ant-btn-icon-only) {

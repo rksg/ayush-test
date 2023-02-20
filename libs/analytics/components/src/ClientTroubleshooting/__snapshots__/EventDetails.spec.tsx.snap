@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventDetails renders Details correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__DetailsWrapper-sc-hmshlr-18 iSVCpe"
+  >
+    <span
+      class="styledComponents__CloseIconContainer-sc-hmshlr-21 aVPBT"
+    >
+      <svg
+        data-testid="CloseSymbol"
+      />
+    </span>
+    <h3
+      class="styledComponents__Header-sc-hmshlr-19 ekMGOe"
+    >
+      Connection Event Details
+    </h3>
+    <div
+      class="styledComponents__Body-sc-hmshlr-22 hxQxoy"
+    >
+      <div
+        class="styledComponents__ListDetails-sc-hmshlr-24 hNUQrw"
+      >
+        <div
+          class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+        >
+          <div
+            class="ant-descriptions-view"
+          >
+            <table>
+              <tbody>
+                <tr
+                  class="ant-descriptions-row"
+                >
+                  <td
+                    class="ant-descriptions-item"
+                    colspan="1"
+                  >
+                    <div
+                      class="ant-descriptions-item-container"
+                    >
+                      <span
+                        class="ant-descriptions-item-label"
+                      >
+                        label1
+                      </span>
+                      <span
+                        class="ant-descriptions-item-content"
+                      >
+                        value1
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr
+                  class="ant-descriptions-row"
+                >
+                  <td
+                    class="ant-descriptions-item"
+                    colspan="1"
+                  >
+                    <div
+                      class="ant-descriptions-item-container"
+                    >
+                      <span
+                        class="ant-descriptions-item-label"
+                      >
+                        label2
+                      </span>
+                      <span
+                        class="ant-descriptions-item-content"
+                      >
+                        value2
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

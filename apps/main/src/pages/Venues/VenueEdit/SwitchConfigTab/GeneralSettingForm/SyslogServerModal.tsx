@@ -37,12 +37,26 @@ export function SyslogServerModal (props: {
     }
   }
 
+  const validatorUniqueServerIp = () => {
+    setFormData({ ...formData, ...form.getFieldsValue() })
+    return formData?.syslogPrimaryServer == formData?.syslogSecondaryServer
+      ? Promise.reject(
+        $t({ defaultMessage: 'Server IP should not be duplicated.' })
+      )
+      : Promise.resolve()
+  }
+
   return <Modal
     title={$t({ defaultMessage: 'Syslog Server Configuration' })}
     visible={formState?.syslogModalvisible}
     destroyOnClose={true}
     onOk={onOk}
     onCancel={() => {
+      setFormData({
+        ...formData,
+        syslogPrimaryServer: undefined,
+        syslogSecondaryServer: undefined
+      })
       setFormState({
         ...formState,
         syslogModalvisible: false
@@ -69,7 +83,8 @@ export function SyslogServerModal (props: {
         label={$t({ defaultMessage: 'Server 2 IP Address' })}
         name='syslogSecondaryServer'
         rules={[
-          { validator: (_, value) => syslogServerRegExp(value) }
+          { validator: (_, value) => syslogServerRegExp(value) },
+          { validator: () => validatorUniqueServerIp() }
         ]}
         initialValue={formData.syslogSecondaryServer}
         children={<Input />}

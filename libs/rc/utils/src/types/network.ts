@@ -1,8 +1,6 @@
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
-  PassphraseExpirationEnum,
-  PassphraseFormatEnum,
   WlanSecurityEnum
 } from '../constants'
 import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomization'
@@ -17,6 +15,7 @@ import { Radius }                         from '../models/Radius'
 
 export interface CreateNetworkFormFields {
   name: string;
+  ssid?: string;
   description?: string;
   type: NetworkTypeEnum;
   isCloudpathEnabled?: boolean;
@@ -69,6 +68,8 @@ export interface NetworkDetail {
   },
 }
 
+export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolationAllowlistId'>
+
 export interface NetworkSaveData {
   id?: string;
   name?: string;
@@ -85,6 +86,10 @@ export interface NetworkSaveData {
   venues?: NetworkVenue[];
   redirectUrl?: string;
   guestPortal?: GuestPortal;
+  portalServiceProfileId?: string;
+  authRadiusId?: string;
+  accountingRadiusId?: string;
+  enableDhcp?: boolean;
   wlan?: {
     ssid?: string;
     vlanId?: number;
@@ -109,12 +114,39 @@ export interface NetworkSaveData {
   dpskWlanSecurity?: WlanSecurityEnum;
   authRadius?: Radius;
   accountingRadius?: Radius;
-  passphraseLength?: number;
-  passphraseFormat?: PassphraseFormatEnum;
-  expiration?: PassphraseExpirationEnum;
-  dpskPassphraseGeneration?: {
-    length?: number;
-    format?: PassphraseFormatEnum;
-    expiration?: PassphraseExpirationEnum;
+  dpskServiceProfileId?: string;
+}
+export interface ExternalProviders{
+  providers: Providers[]
+}
+export interface Providers{
+  customExternalProvider: boolean,
+  name: string,
+  regions: Regions[]
+}
+export interface Regions{
+  name: string,
+  showAnalyticsData: boolean,
+  captivePortalUrl: string,
+  redirectUrl: string,
+  authRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
+  },
+  accountingRadius?: {
+    primary: {
+      ip: string;
+      port: string;
+    };
+    secondary: {
+      ip: string;
+      port: string;
+    };
   }
 }

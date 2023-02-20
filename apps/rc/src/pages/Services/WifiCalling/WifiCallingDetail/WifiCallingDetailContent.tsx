@@ -7,6 +7,9 @@ import { useParams }       from 'react-router-dom'
 // import { StackedBarChart }                  from '@acx-ui/components'
 import { Card, GridCol, GridRow }        from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
+import { QosPriorityEnum }               from '@acx-ui/rc/utils'
+
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
 
 const WifiCallingDetailContent = () => {
   const params = useParams()
@@ -39,19 +42,29 @@ const WifiCallingDetailContent = () => {
           <Card.Title>
             {$t({ defaultMessage: 'Description' })}
           </Card.Title>
-          <Paragraph>{data.description}</Paragraph>
+          <Paragraph>
+            <div style={{ overflowWrap: 'anywhere' }}>
+              {data.description}
+            </div>
+          </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Service Name' })}
           </Card.Title>
-          <Paragraph>{data.serviceName}</Paragraph>
+          <Paragraph>
+            <div style={{ overflowWrap: 'anywhere' }}>
+              {data.serviceName}
+            </div>
+          </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Qos Priority' })}
           </Card.Title>
-          <Paragraph>{data.qosPriority}</Paragraph>
+          <Paragraph>{$t(
+            wifiCallingQosPriorityLabelMapping[data.qosPriority as QosPriorityEnum])
+          }</Paragraph>
         </GridCol>
         <GridCol col={{ span: 10 }}>
           <Card.Title style={{ width: 'maxContent' }}>
@@ -59,7 +72,8 @@ const WifiCallingDetailContent = () => {
           </Card.Title>
           <>
             {data.epdgs?.map(epdg => {
-              return <div key={`${epdg.domain}`}>{epdg.domain} ({epdg.ip})</div>
+              const ipString = epdg.ip ? `(${epdg.ip})` : ''
+              return <div key={`${epdg.domain}`}>{epdg.domain} {ipString}</div>
             })}
           </>
         </GridCol>

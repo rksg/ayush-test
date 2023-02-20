@@ -1,0 +1,1151 @@
+import { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+
+import {
+  DatePicker,
+  Form,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Select,
+  Space,
+  Switch,
+  Typography
+} from 'antd'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
+
+import {
+  Button,
+  GoogleMap,
+  PageHeader,
+  showToast,
+  StepsForm,
+  StepsFormInstance,
+  Subtitle
+} from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { SearchOutlined }         from '@acx-ui/icons'
+import {
+  useAddCustomerMutation,
+  useMspEcAdminListQuery,
+  useUpdateCustomerMutation,
+  useGetMspEcQuery,
+  // useGetMspEcDelegatedAdminsQuery,
+  useGetMspEcSupportQuery,
+  useEnableMspEcSupportMutation,
+  useDisableMspEcSupportMutation,
+  useMspAssignmentSummaryQuery,
+  useMspAssignmentHistoryQuery,
+  useGetUserProfileQuery
+} from '@acx-ui/rc/services'
+import {
+  Address,
+  dateDisplayText,
+  DateFormatEnum,
+  DateSelectionEnum,
+  emailRegExp,
+  MspAdministrator,
+  MspEc,
+  MspEcData,
+  roleDisplayText,
+  RolesEnum,
+  EntitlementUtil,
+  MspAssignmentHistory,
+  MspAssignmentSummary,
+  MspEcDelegatedAdmins,
+  MspIntegratorDelegated
+} from '@acx-ui/rc/utils'
+import {
+  useNavigate,
+  useTenantLink,
+  useParams
+} from '@acx-ui/react-router-dom'
+import {
+  AccountType
+} from '@acx-ui/utils'
+
+import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+// eslint-disable-next-line import/order
+import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
+import { StartSubscriptionModal } from '../StartSubscriptionModal'
+import * as UI                    from '../styledComponents'
+
+interface AddressComponent {
+  long_name?: string;
+  short_name?: string;
+  types?: Array<string>;
+}
+
+interface EcFormData {
+    name: string,
+    address: Address,
+    service_effective_date: string,
+    service_expiration_date: string,
+    admin_email: string,
+    admin_firstname: string,
+    admin_lastname: string,
+    admin_role: RolesEnum,
+    wifiLicense: number,
+    switchLicense: number
+}
+
+export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
+  // array reverse applied since search should be done from general to specific, google provides from vice-versa
+  const reversedAddrComponents = addressComponents.reverse()
+  /** Step 1. Looking for locality / sublocality_level_X / postal_town */
+  let cityComponent = reversedAddrComponents.find(el => {
+    return el.types?.includes('locality')
+      || el.types?.some((t: string) => /sublocality_level_[1-5]/.test(t))
+      || el.types?.includes('postal_town')
+  })
+  /** Step 2. If nothing found, proceed with administrative_area_level_2-5 / neighborhood
+   * administrative_area_level_1 excluded from search since considered as `political state`
+   */
+  if (!cityComponent) {
+    cityComponent = reversedAddrComponents.find(el => {
+      return el.types?.includes('neighborhood')
+        || el.types?.some((t: string) => /administrative_area_level_[2-5]/.test(t))
+    })
+  }
+  const stateComponent = addressComponents
+    .find(el => el.types?.includes('administrative_area_level_1'))
+  // Address in some country doesn't have city and state component, we will use the country as the default value of the city.
+  if (!cityComponent && !stateComponent) {
+    cityComponent = { long_name: country }
+  }
+  return {
+    city: cityComponent? cityComponent.long_name: '',
+    state: stateComponent ? stateComponent.long_name : null
+  }
+}
+
+export const addressParser = async (place: google.maps.places.PlaceResult) => {
+  const address: Address = {}
+  address.addressLine = place.formatted_address
+  const countryObj = place?.address_components?.find(
+    el => el.types.includes('country')
+  )
+  const country = countryObj?.long_name ?? ''
+  address.country = country
+  if (place && place.address_components) {
+    const cityObj = retrieveCityState(
+      place.address_components,
+      country
+    )
+    if (cityObj) {
+      address.city = cityObj.state
+        ? `${cityObj.city}, ${cityObj.state}` : cityObj.city
+    }
+  }
+  return { address }
+}
+
+const defaultAddress: Address = {
+  addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
+  city: 'Sunnyvale, California',
+  country: 'United States',
+  latitude: 37.4112751,
+  longitude: -122.0191908,
+  timezone: 'America/Los_Angeles'
+}
+
+export function ManageCustomer () {
+  const intl = useIntl()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+
+  const navigate = useNavigate()
+  const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
+  const formRef = useRef<StepsFormInstance<EcFormData>>()
+  const dateFormat = DateFormatEnum.UserDateFormat
+  const { action, status, tenantId, mspEcTenantId } = useParams()
+
+  const [isTrialMode, setTrialMode] = useState(false)
+  const [isTrialActive, setTrialActive] = useState(false)
+  const [trialSelected, setTrialSelected] = useState(true)
+  const [ecSupportEnabled, setEcSupport] = useState(false)
+  const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
+  const [mspInstaller, setInstaller] = useState([] as MspEc[])
+  const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
+  const [availableLicense, setAvailableLicense] = useState([] as MspAssignmentSummary[])
+  const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
+  const [assignedWifiLicense, setWifiLicense] = useState(0)
+  const [assignedSwitchLicense, setSwitchLicense] = useState(0)
+  const [customDate, setCustomeDate] = useState(true)
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
+  const [drawerInstallerVisible, setDrawerInstallerVisible] = useState(false)
+  const [startSubscriptionVisible, setStartSubscriptionVisible] = useState(false)
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
+  const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [formData, setFormData] = useState({} as Partial<EcFormData>)
+
+  const [addCustomer] = useAddCustomerMutation()
+  const [updateCustomer] = useUpdateCustomerMutation()
+
+  const { Option } = Select
+  const { Paragraph } = Typography
+  const isEditMode = action === 'edit'
+  const isTrialEditMode = action === 'edit' && status === 'Trial'
+
+  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
+  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data } =
+      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  // const { data: delegatedAdmins } = useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } })
+  const { data: ecAdministrators } =
+      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const { data: ecSupport } =
+      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  const [
+    enableMspEcSupport
+  ] = useEnableMspEcSupportMutation()
+
+  const [
+    disableMspEcSupport
+  ] = useDisableMspEcSupportMutation()
+
+  useEffect(() => {
+    if (licenseSummary) {
+      checkAvailableLicense(licenseSummary)
+    }
+
+    if (isEditMode && data && licenseAssignment) {
+      if (ecAdministrators) {
+        setMspEcAdmins(ecAdministrators)
+      }
+      if (ecSupport && ecSupport.length > 0 ) {
+        setEcSupport(true)
+      }
+      const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
+      setAssignedLicense(assigned)
+      const wifi = assigned.filter(en => en.deviceType === 'MSP_WIFI' && en.status === 'VALID')
+      const wLic = wifi.length > 0 ? wifi[0].quantity : 0
+      const sw = assigned.filter(en => en.deviceType === 'MSP_SWITCH' && en.status === 'VALID')
+      const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
+
+      formRef.current?.setFieldsValue({
+        name: data?.name,
+        service_effective_date: data?.service_effective_date,
+        wifiLicense: wLic,
+        switchLicense: sLic
+        // service_expiration_date: data?.service_expiration_date
+      })
+      formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
+      data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
+      status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
+
+      setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
+      setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
+      setWifiLicense(wLic)
+      setSwitchLicense(sLic)
+      // updateAddress(data?.street_address as Address)
+      // }
+    }
+
+    if (!isEditMode) { // Add mode
+      const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
+      formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
+      if (userProfile) {
+        const administrator = [] as MspAdministrator[]
+        administrator.push ({
+          id: userProfile.adminId,
+          lastName: userProfile.lastName,
+          name: userProfile.firstName,
+          email: userProfile.email,
+          role: userProfile.role as RolesEnum,
+          detailLevel: userProfile.detailLevel
+        })
+        setAdministrator(administrator)
+      }
+      setSubscriptionStartDate(moment().format(dateFormat))
+      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+    }
+  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+  const [sameCountry, setSameCountry] = useState(true)
+  const addressValidator = async (value: string) => {
+    const isSameValue = value ===
+      formRef.current?.getFieldsValue(['address', 'addressLine']).address?.addressLine
+    if (isEditMode && !_.isEmpty(value) && isSameValue && !sameCountry) {
+      return Promise.reject(
+        `${intl.$t({ defaultMessage: 'Address must be in ' })} `
+      )
+    }
+    return Promise.resolve()
+  }
+
+  const fieldValidator = async (value: string, remainingDevices: number) => {
+    const ecData = formRef.current?.getFieldsValue() as EcFormData
+    setSwitchLicense(ecData?.switchLicense)
+    setWifiLicense(ecData?.wifiLicense)
+    if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
+      return Promise.reject(
+        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+      )
+    }
+    return Promise.resolve()
+  }
+
+  const addressOnChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+    updateAddress({})
+    const autocomplete = new google.maps.places.Autocomplete(event.target)
+    autocomplete.addListener('place_changed', async () => {
+      const place = autocomplete.getPlace()
+      const { address } = await addressParser(place)
+      const isSameCountry = true//data && (data?.address.country === address.country) || false
+      setSameCountry(isSameCountry)
+      let errorList = []
+      if (isEditMode && !isSameCountry) {
+        errorList.push(
+          `${intl.$t({ defaultMessage: 'Address must be in ' })} `)
+      }
+      formRef.current?.setFields([{
+        name: ['address', 'addressLine'],
+        value: place.formatted_address,
+        errors: errorList
+      }])
+      updateAddress(address)
+    })
+  }
+
+  const ecSupportOnChange = (checked: boolean) => {
+    if (checked) {
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support enabled' })
+          })
+          setEcSupport(true)
+        })
+    } else {
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+        .then(() => {
+          showToast({
+            type: 'success',
+            content: intl.$t({ defaultMessage: 'EC support disabled' })
+          })
+          setEcSupport(false)
+        })
+    }
+  }
+
+  const handleAddCustomer = async (values: EcFormData) => {
+    try {
+      const ecFormData = { ...values }
+      const today = EntitlementUtil.getServiceStartDate()
+      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const assignLicense = trialSelected
+        ? { trialAction: 'ACTIVATE' }
+        : { assignments: [{
+          quantity: ecFormData.wifiLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
+        {
+          quantity: ecFormData.switchLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_SWITCH'
+        }] }
+      const delegations= [] as MspEcDelegatedAdmins[]
+      mspAdmins.forEach((admin: MspAdministrator) => {
+        delegations.push({
+          msp_admin_id: admin.id,
+          msp_admin_role: admin.role
+        })
+      })
+      const customer: MspEcData = {
+        tenant_type: 'MSP_EC',
+        name: ecFormData.name,
+        street_address: ecFormData.address.addressLine as string,
+        service_effective_date: today,
+        service_expiration_date: expirationDate,
+        admin_email: ecFormData.admin_email,
+        admin_firstname: ecFormData.admin_firstname,
+        admin_lastname: ecFormData.admin_lastname,
+        admin_role: ecFormData.admin_role,
+        admin_delegations: delegations,
+        licenses: assignLicense
+      }
+      const ecDelegations=[] as MspIntegratorDelegated[]
+      if (mspIntegrator.length > 0) {
+        ecDelegations.push({
+          delegation_type: AccountType.MSP_INTEGRATOR,
+          delegation_id: mspIntegrator[0].id
+        })
+      }
+      if (mspInstaller.length > 0) {
+        ecDelegations.push({
+          delegation_type: AccountType.MSP_INSTALLER,
+          delegation_id: mspInstaller[0].id
+        })
+      }
+      if (ecDelegations.length > 0) {
+        customer.delegations = ecDelegations
+      }
+
+      const result =
+      await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      if (result) {
+      // const ecTenantId = result.tenant_id
+      }
+      navigate(linkToCustomers, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  const handleEditCustomer = async (values: EcFormData) => {
+    try {
+      const ecFormData = { ...values }
+      const today = EntitlementUtil.getServiceStartDate()
+      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      let assignLicense =
+      isTrialEditMode ? {
+        subscription_start_date: today,
+        subscription_end_date: expirationDate,
+        assignments: [{
+          quantity: ecFormData.wifiLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
+        {
+          quantity: ecFormData.switchLicense,
+          action: 'ADD',
+          isTrial: false,
+          deviceType: 'MSP_SWITCH'
+        }]
+      } : {
+        subscription_start_date: today,
+        subscription_end_date: expirationDate,
+        assignments: [{
+          quantity: ecFormData.wifiLicense,
+          assignmentId: getAssignmentId('MSP_WIFI'),
+          action: 'MODIFY',
+          isTrial: false,
+          deviceType: 'MSP_WIFI'
+        },
+        {
+          quantity: ecFormData.switchLicense,
+          assignmentId: getAssignmentId('MSP_SWITCH'),
+          action: 'MODIFY',
+          isTrial: false,
+          deviceSubtype: 'ICX',
+          deviceType: 'MSP_SWITCH'
+        }]
+      }
+      const customer: MspEcData = {
+        tenant_type: 'MSP_EC',
+        name: ecFormData.name,
+        street_address: ecFormData.address.addressLine as string,
+        service_effective_date: today,
+        service_expiration_date: expirationDate
+      }
+      if (!isTrialMode) {
+        customer.licenses = assignLicense
+      }
+
+      await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+      navigate(linkToCustomers, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
+
+  const selectedMspAdmins = (selected: MspAdministrator[]) => {
+    setAdministrator(selected)
+  }
+
+  const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
+    (tenantType === AccountType.MSP_INTEGRATOR) ? setIntegrator(selected) : setInstaller(selected)
+  }
+
+  const displayMspAdmins = () => {
+    if (!mspAdmins || mspAdmins.length === 0)
+      return '--'
+    return <>
+      {mspAdmins.map(admin =>
+        <UI.AdminList>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+        </UI.AdminList>
+      )}
+    </>
+  }
+
+  const displayIntegrator = () => {
+    const value = !mspIntegrator || mspIntegrator.length === 0 ? '--' : mspIntegrator[0].name
+    return value
+  }
+
+  const displayInstaller = () => {
+    const value = !mspInstaller || mspInstaller.length === 0 ? '--' : mspInstaller[0].name
+    return value
+  }
+
+  const displayCustomerAdmins = () => {
+    if (mspEcAdmins.length === 1) {
+      return <>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Name' })}
+        >
+          <Paragraph>{mspEcAdmins[0].name}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Email' })}
+        >
+          <Paragraph>{mspEcAdmins[0].email}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Role' })}
+        >
+          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+        </Form.Item>
+      </>
+    }
+    return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
+      {mspEcAdmins.map(admin =>
+        <UI.AdminList>
+          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+        </UI.AdminList>
+      )}
+    </div>
+  }
+
+  const startSubscription = (startDate: Date) => {
+    if (startDate) {
+      const dateString = moment(startDate).format(dateFormat)
+      setSubscriptionStartDate(dateString)
+      setTrialMode(false)
+    }
+  }
+
+  const checkAvailableLicense = (entitlements: MspAssignmentSummary[]) => {
+    const available = entitlements.filter(p => p.remainingDevices > 0)
+    setAvailableLicense(available)
+  }
+
+  const getAssignmentId = (deviceType: string) => {
+    const license = assignedLicense.filter(en => en.deviceType === deviceType)
+    return license.length > 0 ? license[0].id : 0
+  }
+
+  const MspAdminsForm = () => {
+    return <>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+        <Form.Item children={<div>{displayMspAdmins()}</div>} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>
+          }
+        />
+      </UI.FieldLabelAdmins>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+        <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
+        <Form.Item children={displayIntegrator()} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => setDrawerIntegratorVisible(true)}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>}
+        />
+      </UI.FieldLabelAdmins>
+      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
+        <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
+        <Form.Item children={displayInstaller()} />
+        <Form.Item
+          children={<UI.FieldTextLink onClick={() => setDrawerInstallerVisible(true)}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>}
+        />
+      </UI.FieldLabelAdmins>
+    </>
+  }
+
+  const CustomerAdminsForm = () => {
+    if (isEditMode) {
+      return <><Subtitle level={3}>
+        { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
+      <Form.Item children={displayCustomerAdmins()} />
+      </>
+    } else {
+      return <><Subtitle level={3}>
+        { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
+      <Form.Item
+        name='admin_email'
+        label={intl.$t({ defaultMessage: 'Email' })}
+        style={{ width: '300px' }}
+        rules={[
+          { required: true },
+          { validator: (_, value) => emailRegExp(value) },
+          { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='admin_firstname'
+        label={intl.$t({ defaultMessage: 'First Name' })}
+        rules={[{ required: true }]}
+        children={<Input />}
+        style={{ display: 'inline-block', width: '150px' ,paddingRight: '10px' }}
+      />
+      <Form.Item
+        name='admin_lastname'
+        label={intl.$t({ defaultMessage: 'Last Name' })}
+        rules={[ { required: true } ]}
+        children={<Input />}
+        style={{ display: 'inline-block', width: '150px',paddingLeft: '10px' }}
+      />
+      <Form.Item
+        name='admin_role'
+        label={intl.$t({ defaultMessage: 'Role' })}
+        style={{ width: '300px' }}
+        rules={[{ required: true }]}
+        initialValue={RolesEnum.PRIME_ADMIN}
+        children={
+          <Select>
+            {
+              Object.entries(RolesEnum).map(([label, value]) => (
+                <Option
+                  key={label}
+                  value={value}>{intl.$t(roleDisplayText[value])}
+                </Option>
+              ))
+            }
+          </Select>
+        }
+      />
+      </>
+    }
+  }
+
+  const WifiSubscription = () => {
+    const wifiLicenses = availableLicense.filter(p => p.deviceType === 'MSP_WIFI')
+    let remainingDevices = 0
+    wifiLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
+        <Form.Item
+          name='wifiLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => fieldValidator(value, remainingDevices) }
+          ]}
+          children={<Input type='number'/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
+
+  const SwitchSubscription = () => {
+    const switchLicenses = availableLicense.filter(p => p.deviceType === 'MSP_SWITCH')
+    let remainingDevices = 0
+    switchLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingDevices += lic.remainingDevices
+    })
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+        <Form.Item
+          name='switchLicense'
+          label=''
+          initialValue={0}
+          rules={[
+            { required: true },
+            { validator: (_, value) => fieldValidator(value, remainingDevices) }
+          ]}
+          children={<Input type='number'/>}
+          style={{ paddingRight: '20px' }}
+        />
+        <label>devices out of {remainingDevices} available</label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
+
+  const EnableSupportForm = () => {
+    return <>
+      <div>
+        <h4 style={{ display: 'inline-block', marginTop: '38px', marginRight: '25px' }}>
+          {intl.$t({ defaultMessage: 'Enable access to RUCKUS One support' })}</h4>
+        <Switch defaultChecked={ecSupportEnabled} onChange={ecSupportOnChange}/></div>
+      <div><label>
+        {intl.$t({ defaultMessage: 'If checked, Ruckus support team is granted a temporary' +
+  ' administrator-level access for 21 days.' })}</label>
+      </div>
+      <label>
+        {intl.$t({ defaultMessage: 'Enable when requested by Ruckus support team.' })}</label>
+    </>
+  }
+
+  function expirationDateOnChange (props: unknown, expirationDate: string) {
+    setSubscriptionEndDate(expirationDate)
+  }
+
+  const onSelectChange = (value: string) => {
+    if (value === DateSelectionEnum.CUSTOME_DATE) {
+      // setSubscriptionEndDate('')
+      setCustomeDate(true)
+    } else {
+      if (value === DateSelectionEnum.THIRTY_DAYS) {
+        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
+        setSubscriptionEndDate(moment().add(60,'days').format(dateFormat))
+      } else if (value === DateSelectionEnum.NINETY_DAYS) {
+        setSubscriptionEndDate(moment().add(90,'days').format(dateFormat))
+      } else if (value === DateSelectionEnum.ONE_YEAR) {
+        setSubscriptionEndDate(moment().add(1,'years').format(dateFormat))
+      } else if (value === DateSelectionEnum.THREE_YEARS) {
+        setSubscriptionEndDate(moment().add(3,'years').format(dateFormat))
+      } else if (value === DateSelectionEnum.FIVE_YEARS) {
+        setSubscriptionEndDate(moment().add(5,'years').format(dateFormat))
+      }
+      setCustomeDate(false)
+    }
+  }
+
+  const EditCustomerSubscriptionForm = () => {
+    const trialSubscriptionSubtitle = isTrialActive
+      ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
+      : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
+    return <>
+      {isTrialMode && <div>
+        <Subtitle level={3} style={{ display: 'inline-block' }}>
+          {trialSubscriptionSubtitle}</Subtitle>
+        <Button
+          type='primary'
+          style={{ display: 'inline-block', marginLeft: '80px' }}
+          onClick={() => setStartSubscriptionVisible(true)}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}
+        </Button>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
+          <label>{assignedWifiLicense}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+          <label>{assignedSwitchLicense}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{subscriptionStartDate}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{subscriptionEndDate}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!isTrialMode && <div>
+        <Subtitle level={3}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <WifiSubscription />
+        <SwitchSubscription />
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{subscriptionStartDate}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            children={
+              <DatePicker
+                format={dateFormat}
+                disabled={!customDate}
+                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                onChange={expirationDateOnChange}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+    </>
+  }
+
+  const CustomerSubscription = () => {
+    return <>
+      <h4>{intl.$t({ defaultMessage: 'Start service in' })}</h4>
+      <Form.Item
+        name='trialMode'
+        initialValue={true}
+      >
+        <Radio.Group onChange={(e: RadioChangeEvent) => {setTrialSelected(e.target.value)}}>
+          <Space direction='vertical'>
+            <Radio
+              value={true}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Trial Mode' }) }
+            </Radio>
+            <Radio
+              style={{ marginTop: '2px', marginBottom: '50px' }}
+              value={false}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Paid Subscription' }) }
+            </Radio>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+
+      {trialSelected && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{subscriptionStartDate}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{subscriptionEndDate}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!trialSelected && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <WifiSubscription />
+        <SwitchSubscription />
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{subscriptionStartDate}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            children={
+              <DatePicker
+                format={dateFormat}
+                disabled={!customDate}
+                defaultValue={moment(subscriptionEndDate, dateFormat)}
+                onChange={expirationDateOnChange}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate></div>}
+    </>
+  }
+
+  const CustomerSummary = () => {
+    const intl = useIntl()
+    const { Paragraph } = Typography
+    const wifiAssigned = trialSelected ? '25' : assignedWifiLicense
+    const switchAssigned = trialSelected ? '25' : assignedSwitchLicense
+
+    return (
+      <>
+        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Summary' })}</Subtitle>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Customer Name' })}
+        >
+          <Paragraph>{formData?.name}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Address' })}
+        >
+          <Paragraph>{address.addressLine}</Paragraph>
+        </Form.Item>
+
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+        >
+          <Paragraph>{displayMspAdmins()}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Integrator' })}
+        >
+          <Paragraph>{displayIntegrator()}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Installer' })}
+        >
+          <Paragraph>{displayInstaller()}</Paragraph>
+        </Form.Item>
+
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
+        >
+          <Paragraph>{formData?.admin_firstname} {formData?.admin_lastname}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Email' })}
+        >
+          <Paragraph>{formData?.admin_email}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Role' })}
+        >
+          {formData?.admin_role &&
+          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+        </Form.Item>
+
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Wi-Fi Subscriptions' })}
+        >
+          <Paragraph>{wifiAssigned}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Switch Subscriptions' })}
+        >
+          <Paragraph>{switchAssigned}</Paragraph>
+        </Form.Item>
+        <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
+        >
+          <Paragraph>{subscriptionEndDate}</Paragraph>
+        </Form.Item></>
+    )
+  }
+  const TrialBanner = () => {
+    const title = isTrialActive ? 'The account is in Trial Mode'
+      : 'This account is in an Inactive State.'
+    return (isTrialMode ?
+      <UI.OtpLabel
+        style={{
+          fontSize: 'var(--acx-body-4-font-size)',
+          color: 'var(--acx-primary-white)',
+          backgroundColor: 'var(--acx-primary-black)'
+        }}>
+        {intl.$t({
+          defaultMessage: `
+            {title}`
+        }, { title })}
+        <Button type='link'
+          style={{ fontSize: 'var(--acx-body-4-font-size)',
+            color: 'var(--acx-accents-orange-30)', float: 'left' }}
+          onClick={() => setStartSubscriptionVisible(true)}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}</Button>
+      </UI.OtpLabel>
+      : <h4>
+      </h4>)
+  }
+
+  return (
+    <>
+      <PageHeader
+        title={!isEditMode ?
+          intl.$t({ defaultMessage: 'Add Customer Account' }) :
+          intl.$t({ defaultMessage: 'Customer Account' })
+        }
+        titleExtra={<TrialBanner></TrialBanner>}
+        breadcrumb={[
+          { text: intl.$t({ defaultMessage: ' Customers' }),
+            link: '/dashboard/mspcustomers', tenantType: 'v' }
+        ]}
+      />
+      <StepsForm
+        formRef={formRef}
+        onFinish={isEditMode ? handleEditCustomer : handleAddCustomer}
+        onCancel={() => navigate(linkToCustomers)}
+        buttonLabel={{ submit: isEditMode ?
+          intl.$t({ defaultMessage: 'Save' }):
+          intl.$t({ defaultMessage: 'Add Customer' }) }}
+      >
+        {isEditMode && <StepsForm.StepForm>
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+          <Form.Item
+            name='name'
+            label={intl.$t({ defaultMessage: 'Customer Name' })}
+            style={{ width: '300px' }}
+            rules={[{ required: true }]}
+            validateFirst
+            hasFeedback
+            children={<Input />}
+          />
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Address' })}
+            name={['address', 'addressLine']}
+            style={{ width: '300px' }}
+            rules={[{
+              required: isMapEnabled ? true : false
+            }, {
+              validator: (_, value) => addressValidator(value),
+              validateTrigger: 'onBlur'
+            }
+            ]}
+          >
+            <Input
+              allowClear
+              placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+              prefix={<SearchOutlined />}
+              onChange={addressOnChange}
+              data-testid='address-input'
+              disabled={!isMapEnabled}
+              value={address.addressLine}
+            />
+          </Form.Item >
+          <Form.Item hidden>
+            <GoogleMap libraries={['places']} />
+          </Form.Item>
+
+          <MspAdminsForm></MspAdminsForm>
+          <Subtitle level={3}>
+            { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
+          <Form.Item children={displayCustomerAdmins()} />
+          <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
+          <EnableSupportForm></EnableSupportForm>
+        </StepsForm.StepForm>}
+
+        {!isEditMode && <>
+          <StepsForm.StepForm
+            name='accountDetail'
+            title={intl.$t({ defaultMessage: 'Account Details' })}
+            onFinish={async (data) => {
+              const accDetail = { ...data }
+              setFormData(accDetail)
+              return true
+            }}
+          >
+            <Subtitle level={3}>
+              { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+            <Form.Item
+              name='name'
+              label={intl.$t({ defaultMessage: 'Customer Name' })}
+              style={{ width: '300px' }}
+              rules={[{ required: true }]}
+              validateFirst
+              hasFeedback
+              children={<Input />}
+            />
+            <Form.Item
+              label={intl.$t({ defaultMessage: 'Address' })}
+              name={['address', 'addressLine']}
+              style={{ width: '300px' }}
+              rules={[{
+                required: isMapEnabled ? true : false
+              }, {
+                validator: (_, value) => addressValidator(value),
+                validateTrigger: 'onBlur'
+              }
+              ]}
+            >
+              <Input
+                allowClear
+                placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+                prefix={<SearchOutlined />}
+                onChange={addressOnChange}
+                data-testid='address-input'
+                disabled={!isMapEnabled}
+                value={address.addressLine}
+              />
+            </Form.Item >
+            <Form.Item hidden>
+              <GoogleMap libraries={['places']} />
+            </Form.Item>
+
+            <MspAdminsForm></MspAdminsForm>
+            <CustomerAdminsForm></CustomerAdminsForm>
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm name='subscriptions'
+            title={intl.$t({ defaultMessage: 'Subscriptions' })}>
+            <CustomerSubscription />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm name='summary'
+            title={intl.$t({ defaultMessage: 'Summary' })}>
+            <CustomerSummary />
+          </StepsForm.StepForm>
+        </>}
+
+      </StepsForm>
+
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={selectedMspAdmins}
+        tenantId={mspEcTenantId}
+      />}
+      {drawerIntegratorVisible && <SelectIntegratorDrawer
+        visible={drawerIntegratorVisible}
+        tenantType={AccountType.MSP_INTEGRATOR}
+        setVisible={setDrawerIntegratorVisible}
+        setSelected={selectedIntegrators}
+      />}
+      {drawerInstallerVisible && <SelectIntegratorDrawer
+        visible={drawerInstallerVisible}
+        tenantType={AccountType.MSP_INSTALLER}
+        setVisible={setDrawerInstallerVisible}
+        setSelected={selectedIntegrators}
+      />}
+      {startSubscriptionVisible && <StartSubscriptionModal
+        isActive={isTrialActive}
+        visible={startSubscriptionVisible}
+        setVisible={setStartSubscriptionVisible}
+        setStartDate={startSubscription}
+      />}
+    </>
+  )
+}

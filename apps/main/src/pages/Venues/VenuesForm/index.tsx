@@ -136,7 +136,7 @@ export function VenuesForm () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const { tenantId, venueId, action } = useParams()
-  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+  const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
 
   useEffect(() => {
     if (data) {
@@ -271,11 +271,14 @@ export function VenuesForm () {
               <Form.Item
                 name='name'
                 label={intl.$t({ defaultMessage: 'Venue Name' })}
-                rules={[{
-                  required: true
-                },{
-                  validator: (_, value) => nameValidator(value)
-                }]}
+                rules={[
+                  { type: 'string', required: true },
+                  { min: 2 },
+                  { max: 32 },
+                  {
+                    validator: (_, value) => nameValidator(value)
+                  }
+                ]}
                 validateFirst
                 hasFeedback
                 children={<Input />}
@@ -285,7 +288,7 @@ export function VenuesForm () {
                 label={intl.$t({ defaultMessage: 'Description' })}
                 children={<Input.TextArea rows={2} maxLength={180} />}
               />
-              {/*
+              {/* // TODO: Waiting for TAG feature support
               <Form.Item
               name='tags'
               label='Tags:'

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { venueApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
@@ -82,5 +83,16 @@ describe('NetworkingTab', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should show Directed Multicast if feature flag is On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><NetworkingTab /></Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    await waitFor(() => screen.findByText('Multicast Traffic from:'))
+    await userEvent.click(screen.getByTestId('network-switch'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 })

@@ -1,32 +1,76 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Form, Radio, RadioChangeEvent, Space, Switch } from 'antd'
-import { useIntl }                                      from 'react-intl'
-
-import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
-  // useLazyApListQuery,
-  // useGetVenueCapabilitiesQuery,
+  Col,
+  Divider,
+  Form,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Switch } from 'antd'
+import { includes, isEmpty } from 'lodash'
+import { useIntl }           from 'react-intl'
+import styled                from 'styled-components/macro'
+
+import { Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { ApRadioTypeEnum,
+  channelBandwidth24GOptions,
+  channelBandwidth5GOptions,
+  channelBandwidth6GOptions,
+  SelectItemOption,
+  SingleRadioSettings }                               from '@acx-ui/rc/components'
+import {
+  useLazyApListQuery,
+  useGetVenueCapabilitiesQuery,
   useGetDefaultRadioCustomizationQuery,
+  useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation
 } from '@acx-ui/rc/services'
 import {
-  VenueDefaultRegulatoryChannelsForm
+  APExtended,
+  VenueRadioCustomization
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../..'
 
-import { Radio24GHz }     from './Radio24GHz'
-import { Radio5GHz }      from './Radio5GHz'
-import { Radio6GHz }      from './Radio6GHz'
-import { RadioLower5GHz } from './RadioLower5GHz'
-import { RadioUpper5GHz } from './RadioUpper5GHz'
+
+const displayWidth = '40px'
+const RadioLegends = styled.div`
+  position: relative;
+  padding-top: 2em;
+  .legends {
+    position: absolute;
+    display: grid;
+    grid-template-columns: 209px 272px 92px;
+    grid-column-gap: 11px;
+    height: 16px;
+
+    .legend {
+      border: 1px dashed var(--acx-neutrals-50);
+      border-bottom: none;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      position: relative;
+
+      .legend-display {
+        position: absolute;
+        width: ${displayWidth};
+        height: 20px;
+        top: -10px;
+        left: calc(50% - ${displayWidth}/2);
+        text-align: center;
+        background: white;
+        font-weight: 300;
+      }
+    }
+  }
+`
 
 export function RadioSettings () {
   const { $t } = useIntl()
@@ -40,19 +84,42 @@ export function RadioSettings () {
 
   const { tenantId, venueId } = useParams()
 
-  const formRef = useRef<StepsFormInstance<VenueDefaultRegulatoryChannelsForm>>()
-  const [triBandRadio, setTriBandRadio] = useState(false)
-  const [radioBandManagement, setRadioBandManagement] = useState(true)
-  // const [triBandApModels, setTriBandApModels] = useState<string[]>([])
+  const formRef = useRef<StepsFormInstance<VenueRadioCustomization>>()
+  const [isTriBandRadio, setIsTriBandRadio] = useState(false)
+  const [isDual5gMode, setIsDual5gMode] = useState(true)
 
-  // const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
+  const [support24GChannels, setSupport24GChannels] = useState<any>({})
+  const [support5GChannels, setSupport5GChannels] = useState<any>({})
+  const [support6GChannels, setSupport6GChannels] = useState<any>({})
+  const [support5GLowerChannels, setSupport5GLowerChannels] = useState<any>({})
+  const [support5GUpperChannels, setSupport5GUpperChannels] = useState<any>({})
+
+  const [bandwidth24GOptions, setBandwidth24GOptions] = useState<SelectItemOption[]>([])
+  const [bandwidth5GOptions, setBandwidth5GOptions] = useState<SelectItemOption[]>([])
+  const [bandwidth6GOptions, setBandwidth6GOptions] = useState<SelectItemOption[]>([])
+  const [bandwidthLower5GOptions, setBandwidthLower5GOptions] = useState<SelectItemOption[]>([])
+  const [bandwidthUpper5GOptions, setBandwidthUpper5GOptions] = useState<SelectItemOption[]>([])
+
+  const [isLower5gInherit, setIsLower5gInherit] = useState(true)
+  const [isUpper5gInherit, setIsUpper5gInherit] = useState(true)
+
+  const [triBandApModels, setTriBandApModels] = useState<string[]>([])
+  const [hasTriBandAps, setHasTriBandAps] = useState(false)
+
+  const { data: venueCaps } = useGetVenueCapabilitiesQuery({ params: { tenantId, venueId } })
 
   const { data: tripleBandRadioSettingsData } =
     useGetVenueTripleBandRadioSettingsQuery({ params: { tenantId, venueId } })
 
-  const { data: defaultChannelsData } =
+  // available channels from this venue country code
+  const { data: supportChannelsData } =
+    useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+
+  // default radio data
+  const { data: defaultRadioSettingsData } =
     useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
 
+  // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
     useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
 
@@ -61,69 +128,113 @@ export function RadioSettings () {
 
   const [ updateVenueTripleBandRadioSettings ] = useUpdateVenueTripleBandRadioSettingsMutation()
 
-  // const [apList] = useLazyApListQuery()
+  const [ apList ] = useLazyApListQuery()
 
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
-  // const triBandApModelNames = _.isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
-  // let filters = { model: triBandApModelNames }
+  const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
+    const bandwidthList = Object.keys(availableChannels)
+    return bandwidthOptions.filter((option: SelectItemOption) => {
+      const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
 
-  // if (venueId?.length) {
-  //   filters = Object.assign(filters, { venueId })
-  // }
-  // const payload = {
-  //   fields: ['name', 'model', 'venueId', 'id'],
-  //   pageSize: 10000,
-  //   sortField: 'name',
-  //   sortOrder: 'ASC',
-  //   url: '/api/viewmodel/{tenantId}/aps',
-  //   filters
-  // }
+      return includes(bandwidthList, bandwidth)
+    })
+  }
+
+  const getSupport5GBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
+    const { indoor = {}, outdoor = {} } = availableChannels
+    const indoorBandwidthList = Object.keys(indoor)
+    const outdoorBandwidthList = Object.keys(outdoor)
+    return bandwidthOptions.filter((option: SelectItemOption) => {
+      const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
+
+      return includes(indoorBandwidthList, bandwidth) || includes(outdoorBandwidthList, bandwidth)
+    })
+  }
 
   useEffect(() => {
-    // TODO
-    // if(venueCaps){
-    //   setTriBandApModels(venueCaps?.apModels
-    //     .filter(apCapability => apCapability.supportTriRadio === true)
-    //     .map(triBandApCapability => triBandApCapability.model) as string[])
-    // }
+    if (supportChannelsData) {
+      const supportCh24g = supportChannelsData['2.4GChannels'] || {}
+      const supportCh5g = supportChannelsData['5GChannels'] || {}
+      const supportCh6g = supportChannelsData['6GChannels'] || {}
+      const supportChLower5g = supportChannelsData['5GLowerChannels'] || {}
+      const supportChUpper5g = supportChannelsData['5GUpperChannels'] || {}
 
-    if(tripleBandRadioSettingsData){
-      setTriBandRadio(tripleBandRadioSettingsData.enabled)
-      // TODO
-      // try{
-      //   const apListData = apList({ params: { tenantId }, payload })
-      //   if(apListData){
-      //     apListData.unwrap().then((data)=>{
-      //       const hasTriBandAp = data.some((ap: AP) => ap.venueId === venueId)
-      //       setTriBandRadio(hasTriBandAp)
-      //     })
-      //   }
-      // }catch(e){ return e }
+      setSupport24GChannels(supportCh24g)
+      setSupport5GChannels(supportCh5g)
+      setSupport6GChannels(supportCh6g)
+      setSupport5GLowerChannels(supportChLower5g)
+      setSupport5GUpperChannels(supportChUpper5g)
+
+      setBandwidth24GOptions(getSupportBandwidth(channelBandwidth24GOptions, supportCh24g))
+      setBandwidth5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g))
+      setBandwidth6GOptions(getSupportBandwidth(channelBandwidth6GOptions, supportCh6g))
+      setBandwidthLower5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g))
+      setBandwidthUpper5GOptions(getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g))
     }
 
-    if(venueSavedChannelsData){
-      setEditRadioContextData({ radioData: venueSavedChannelsData })
-      formRef?.current?.setFieldsValue(venueSavedChannelsData)
-      setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
+  }, [supportChannelsData])
+
+  useEffect(() => {
+    if (venueCaps) {
+      let apModels = venueCaps.apModels
+        .filter(apCapability => apCapability.supportTriRadio === true)
+        .map(triBandApCapability => triBandApCapability.model) as string[]
+
+      setTriBandApModels(apModels)
+    }
+  }, [venueCaps])
+
+  useEffect(() => {
+    const triBandApModelNames = isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
+    let filters = { model: triBandApModelNames, venueId: [venueId] }
+
+    const payload = {
+      fields: ['name', 'model', 'venueId', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      url: '/api/viewmodel/{tenantId}/aps',
+      filters
+    }
+
+    if (apList) {
+      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
+        const { data } = res || {}
+        if (data) {
+          const findAp = data.some((ap: APExtended) => ap.venueId === venueId)
+          setHasTriBandAps(findAp)
+        }
+      })
+    }
+  }, [triBandApModels])
+
+  useEffect(() => {
+
+    const triBandEnabled = !!(triBandRadioFeatureFlag && tripleBandRadioSettingsData?.enabled)
+    setIsTriBandRadio(hasTriBandAps || triBandEnabled)
+
+    const setRadioFormData = (data: VenueRadioCustomization) => {
+      setEditRadioContextData({ radioData: data })
+      formRef?.current?.setFieldsValue(data)
+
+      const dual5GData = data?.radioParamsDual5G
+      setIsDual5gMode(!!dual5GData?.enabled)
+      setIsLower5gInherit(!!dual5GData?.inheritParamsLower5G)
+      setIsUpper5gInherit(!!dual5GData?.inheritParamsUpper5G)
+
       setEditRadioContextData({
         ...editRadioContextData,
         radioData: formRef.current?.getFieldsValue(),
         updateWifiRadio: handleUpdateRadioSettings
       })
-    }else if(defaultChannelsData){
-      setEditRadioContextData({ radioData: defaultChannelsData })
-      formRef?.current?.setFieldsValue(defaultChannelsData)
-      setRadioBandManagement(formRef?.current?.getFieldValue(['radioParamsDual5G', 'enabled']))
-      setEditRadioContextData({
-        ...editRadioContextData,
-        radioData: formRef.current?.getFieldsValue(),
-        updateWifiRadio: handleUpdateRadioSettings
-      })
     }
-  }, [tripleBandRadioSettingsData,
-    defaultChannelsData, venueSavedChannelsData,
-    triBandRadioFeatureFlag, setEditRadioContextData])
+
+    if (venueSavedChannelsData){
+      setRadioFormData(venueSavedChannelsData)
+    }
+  }, [tripleBandRadioSettingsData, venueSavedChannelsData,
+    triBandRadioFeatureFlag, hasTriBandAps])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
@@ -131,46 +242,134 @@ export function RadioSettings () {
     setCurrentTab(tab)
   }
 
-  const onRadioChange = (e: RadioChangeEvent) => {
-    setRadioBandManagement(e.target.value)
-    if(e.target.value){
+  const onTriBandTypeRadioChange = (e: RadioChangeEvent) => {
+    setIsDual5gMode(e.target.value)
+    /* if(e.target.value){
       formRef.current?.setFieldValue(['radioParamsDual5G', 'enabled'], true)
-    }
+    } */
     onTabChange('Normal24GHz')
   }
 
-  const handleUpdateRadioSettings =
-  async (formData: VenueDefaultRegulatoryChannelsForm) => {
-    formData.radioParams50G.allowedIndoorChannels =
-      formRef.current?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
-    formData.radioParams50G.allowedOutdoorChannels =
-      formRef.current?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
-    if(formData.radioParamsDual5G){
-      updateVenueTripleBandRadioSettings({
-        params: { tenantId, venueId },
-        payload: { enabled: formData.radioParamsDual5G.enabled }
-      })
-      formData.radioParamsDual5G.radioParamsLower5G.allowedIndoorChannels =
-        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-          'allowedIndoorChannels'])
-      formData.radioParamsDual5G.radioParamsLower5G.allowedOutdoorChannels =
-        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
-          'allowedOutdoorChannels'])
-      formData.radioParamsDual5G.radioParamsUpper5G.allowedIndoorChannels =
-        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-          'allowedIndoorChannels'])
-      formData.radioParamsDual5G.radioParamsUpper5G.allowedOutdoorChannels =
-        formRef.current?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
-          'allowedOutdoorChannels'])
+  const onLower5gTypeChange = (e: RadioChangeEvent) => {
+    setIsLower5gInherit(e.target.value)
+  }
+
+  const onUpper5gTypeChange = (e: RadioChangeEvent) => {
+    setIsUpper5gInherit(e.target.value)
+  }
+
+  const update5gData = (formData: VenueRadioCustomization) => {
+    const { radioParams50G } = formData
+    const curForm = formRef.current
+
+    if (radioParams50G) {
+      const combineChannels = radioParams50G.combineChannels
+      const indoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedIndoorChannels'])
+      const outdoorChannels = curForm?.getFieldValue(['radioParams50G', 'allowedOutdoorChannels'])
+
+      radioParams50G.allowedIndoorChannels = indoorChannels
+      radioParams50G.allowedOutdoorChannels = (combineChannels)? indoorChannels : outdoorChannels
+    }
+  }
+
+  const updateDual5gData = (formData: VenueRadioCustomization) => {
+    const { radioParamsDual5G } = formData
+    const curForm = formRef.current
+
+    if (!radioParamsDual5G) {
+      return
     }
 
-    updateVenueRadioCustomization({
-      params: { tenantId, venueId },
-      payload: formData
-    })
+    const { radioParamsLower5G, radioParamsUpper5G } = radioParamsDual5G
+    const isSupportLower5G = bandwidthLower5GOptions.length > 0
+    const isSupportUpper5G = bandwidthUpper5GOptions.length > 0
+
+    if (isSupportLower5G) {
+      if (radioParamsLower5G) {
+        radioParamsLower5G.allowedIndoorChannels =
+          // eslint-disable-next-line max-len
+          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+            'allowedIndoorChannels'])
+        radioParamsLower5G.allowedOutdoorChannels =
+          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsLower5G',
+            'allowedOutdoorChannels'])
+      }
+    } else {
+      if (isDual5gMode) {
+        radioParamsDual5G.inheritParamsLower5G = false
+      } else {
+        delete radioParamsDual5G.inheritParamsLower5G
+      }
+      delete radioParamsDual5G.radioParamsLower5G
+    }
+
+    if (isSupportUpper5G) {
+      if (radioParamsUpper5G) {
+        radioParamsUpper5G.allowedIndoorChannels =
+          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+            'allowedIndoorChannels'])
+        radioParamsUpper5G.allowedOutdoorChannels =
+          curForm?.getFieldValue(['radioParamsDual5G', 'radioParamsUpper5G',
+            'allowedOutdoorChannels'])
+      }
+    } else {
+      if (isDual5gMode) {
+        radioParamsDual5G.inheritParamsUpper5G = false
+      } else {
+        delete radioParamsDual5G.inheritParamsUpper5G
+      }
+      delete radioParamsDual5G.radioParamsUpper5G
+    }
+  }
+
+  const update6gData = (formData: VenueRadioCustomization) => {
+    const { radioParams6G } = formData
+    const curForm = formRef.current
+    const isSupport6g = bandwidth6GOptions.length > 0
+
+    if (!radioParams6G) {
+      return
+    }
+
+    if (isSupport6g) {
+      radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
+    } else {
+      delete formData.radioParams6G
+    }
+  }
+
+  const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
+
+    update5gData(formData)
+
+    if (isTriBandRadio) {
+      updateDual5gData(formData)
+      update6gData(formData)
+    } else {
+      delete formData.radioParamsDual5G
+      delete formData.radioParams6G
+    }
+
+    try {
+      await updateVenueTripleBandRadioSettings({
+        params: { tenantId, venueId },
+        payload: { enabled: isTriBandRadio }
+      }).unwrap()
+
+      await updateVenueRadioCustomization({
+        params: { tenantId, venueId },
+        payload: formData
+      }).unwrap()
+    }catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const handleChange = () => {
+
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'radio',
@@ -184,6 +383,60 @@ export function RadioSettings () {
     })
   }
 
+  const handleResetDefaultSettings = (radioType: ApRadioTypeEnum) => {
+    let currentData = formRef.current?.getFieldsValue()
+    let defaultRadioData
+
+    if (!defaultRadioSettingsData || !currentData) {
+      return
+    }
+
+    switch (radioType) {
+      case ApRadioTypeEnum.Radio24G:
+        defaultRadioData = defaultRadioSettingsData.radioParams24G
+        if (defaultRadioData) {
+          currentData.radioParams24G = defaultRadioData
+          formRef.current?.setFieldsValue(currentData)
+          handleChange()
+        }
+        break
+      case ApRadioTypeEnum.Radio5G:
+        defaultRadioData = defaultRadioSettingsData.radioParams50G
+        if (defaultRadioData) {
+          currentData.radioParams50G = defaultRadioData
+          formRef.current?.setFieldsValue(currentData)
+          handleChange()
+        }
+        break
+      case ApRadioTypeEnum.Radio6G:
+        defaultRadioData = defaultRadioSettingsData.radioParams6G
+        if (defaultRadioData) {
+          currentData.radioParams6G = defaultRadioData
+          formRef.current?.setFieldsValue(currentData)
+          handleChange()
+        }
+        break
+      case ApRadioTypeEnum.RadioLower5G:
+        defaultRadioData = defaultRadioSettingsData.radioParamsDual5G?.radioParamsLower5G
+        if (defaultRadioData && currentData.radioParamsDual5G) {
+          currentData.radioParamsDual5G.radioParamsLower5G = defaultRadioData
+          formRef.current?.setFieldsValue(currentData)
+          handleChange()
+        }
+        break
+      case ApRadioTypeEnum.RadioUpper5G:
+        defaultRadioData = defaultRadioSettingsData.radioParamsDual5G?.radioParamsUpper5G
+        if (defaultRadioData && currentData.radioParamsDual5G) {
+          currentData.radioParamsDual5G.radioParamsUpper5G = defaultRadioData
+          formRef.current?.setFieldsValue(currentData)
+          handleChange()
+        }
+        break
+      default:
+        return
+    }
+  }
+
   return (
     <Loader states={[{ isLoading: isLoadingVenueData, isFetching: isUpdatingVenueRadio }]}>
       <StepsForm
@@ -191,15 +444,17 @@ export function RadioSettings () {
         onFormChange={handleChange}
       >
         <StepsForm.StepForm data-testid='radio-settings'>
-          {triBandRadioFeatureFlag &&
-            <StepsForm.FieldLabel width='max-content'>
-              {$t({ defaultMessage: 'Tri-band radio settings' })}
-              <Space>
+          <Row gutter={20}>
+            <Col span={10}>
+              {triBandRadioFeatureFlag &&
+              <>
+                {$t({ defaultMessage: 'Tri-band radio settings' })}
                 <Switch
-                  checked={triBandRadio}
+                  disabled={hasTriBandAps}
+                  checked={isTriBandRadio}
                   onClick={(checked, event) => {
                     event.stopPropagation()
-                    setTriBandRadio(checked)
+                    setIsTriBandRadio(checked)
                     setEditContextData({
                       ...editContextData,
                       unsavedTabKey: 'radio',
@@ -209,41 +464,56 @@ export function RadioSettings () {
                   }}
                   style={{ marginLeft: '20px' }}
                 />
-                <Tooltip
+                <Tooltip.Question
                 // eslint-disable-next-line max-len
                   title={$t({ defaultMessage: 'These settings apply only to AP models that support tri-band, such as R760 and R560' })}
                   placement='bottom'
+                />
+              </>
+              }
+              {triBandRadioFeatureFlag && isTriBandRadio &&
+              <div style={{ marginTop: '1em' }}>
+                <span>{$t({ defaultMessage: 'R760 radio bands management' })}</span>
+                <Form.Item
+                  name={['radioParamsDual5G', 'enabled']}
+                  initialValue={true}
                 >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
-              </Space>
-            </StepsForm.FieldLabel>
-          }
-          {triBandRadioFeatureFlag && triBandRadio &&
-          <Form.Item
-            name={['radioParamsDual5G', 'enabled']}
-            label='R760 radio bands management'
-            style={{ marginTop: '16px' }}
-            initialValue={true}
-          >
-            <Radio.Group onChange={onRadioChange}>
-              <Radio value={true}>
-                {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
-              </Radio>
+                  <Radio.Group onChange={onTriBandTypeRadioChange}>
+                    <Radio value={true}>
+                      {$t({ defaultMessage: 'Split 5GHz into lower and upper bands' })}
+                    </Radio>
 
-              <Radio value={false}>
-                {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
-              </Radio>
-            </Radio.Group>
-          </Form.Item>
+                    <Radio value={false}>
+                      {$t({ defaultMessage: 'Use 5 and 6 Ghz bands' })}
+                    </Radio>
+                  </Radio.Group>
+                </Form.Item>
+              </div>
+              }
+            </Col>
+          </Row>
+          {isTriBandRadio &&
+            <RadioLegends>
+              { isDual5gMode &&
+                <div className='legends'>
+                  <div></div>
+                  <div className='legend'>
+                    <div className='legend-display'>R760</div>
+                  </div>
+                  <div className='legend'>
+                    <div className='legend-display'>R560</div>
+                  </div>
+                </div>
+              }
+            </RadioLegends>
           }
           <Tabs onChange={onTabChange}
             activeKey={currentTab}
             type='third'
-            style={{ marginTop: triBandRadioFeatureFlag ? '5em' : '' }}>
+          >
             <Tabs.TabPane tab={$t({ defaultMessage: '2.4 GHz' })} key='Normal24GHz' />
             <Tabs.TabPane tab={$t({ defaultMessage: '5 GHz' })} key='Normal5GHz' />
-            { triBandRadio && radioBandManagement &&
+            { isTriBandRadio && isDual5gMode &&
                   <>
                     <Tabs.TabPane
                       tab={$t({ defaultMessage: 'Lower 5 GHz' })}
@@ -253,33 +523,113 @@ export function RadioSettings () {
                       key='Upper5GHz' />
                   </>
             }
-            { triBandRadio &&
+            { isTriBandRadio &&
                 <Tabs.TabPane tab={$t({ defaultMessage: '6 GHz' })} key='Normal6GHz' />
             }
           </Tabs>
           <div style={{ display: currentTab === 'Normal24GHz' ? 'block' : 'none' }}>
-            <Radio24GHz />
+            <SingleRadioSettings
+              testId='radio-24g-tab'
+              radioType={ApRadioTypeEnum.Radio24G}
+              supportChannels={support24GChannels}
+              bandwidthOptions={bandwidth24GOptions}
+              editContext={VenueEditContext}
+              onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
-            <Radio5GHz />
+            <SingleRadioSettings
+              testId='radio-5g-tab'
+              radioType={ApRadioTypeEnum.Radio5G}
+              supportChannels={support5GChannels}
+              bandwidthOptions={bandwidth5GOptions}
+              editContext={VenueEditContext}
+              onResetDefaultValue={handleResetDefaultSettings} />
           </div>
-          { triBandRadio &&<div style={{ display: triBandRadio &&
+          { isTriBandRadio &&<div style={{ display: isTriBandRadio &&
                 currentTab === 'Normal6GHz' ? 'block' : 'none' }}>
-            <Radio6GHz />
+            <SingleRadioSettings
+              testId='radio-6g-tab'
+              radioType={ApRadioTypeEnum.Radio6G}
+              supportChannels={support6GChannels}
+              bandwidthOptions={bandwidth6GOptions}
+              editContext={VenueEditContext}
+              onResetDefaultValue={handleResetDefaultSettings} />
           </div>
           }
-          { triBandRadio && radioBandManagement &&
+          { isTriBandRadio && isDual5gMode &&
             <>
               <div style={{
-                display: triBandRadio && radioBandManagement &&
+                display: isTriBandRadio && isDual5gMode &&
                   currentTab === 'Lower5GHz' ? 'block' : 'none'
               }}>
-                <RadioLower5GHz />
-              </div><div style={{
-                display: triBandRadio && radioBandManagement &&
+                <Row gutter={20}>
+                  <Col span={8}>
+                    <Form.Item
+                      label={$t({ defaultMessage: '5GHz settings:' })}
+                      name={['radioParamsDual5G', 'inheritParamsLower5G']}
+                    >
+                      <Radio.Group defaultValue={true} onChange={onLower5gTypeChange}>
+                        <Radio value={true}>
+                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
+                        </Radio>
+
+                        <Radio value={false}>
+                          {$t({ defaultMessage: 'Custom Settings' })}
+                        </Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <Divider style={{ marginTop: '5px' }}/>
+                  </Col>
+                </Row>
+                <SingleRadioSettings
+                  testId='radio-l5g-tab'
+                  inherit5G={isLower5gInherit}
+                  radioType={ApRadioTypeEnum.RadioLower5G}
+                  supportChannels={support5GLowerChannels}
+                  bandwidthOptions={bandwidthLower5GOptions}
+                  editContext={VenueEditContext}
+                  onResetDefaultValue={handleResetDefaultSettings} />
+              </div>
+              <div style={{
+                display: isTriBandRadio && isDual5gMode &&
                   currentTab === 'Upper5GHz' ? 'block' : 'none'
               }}>
-                <RadioUpper5GHz />
+                <Row gutter={20}>
+                  <Col span={8}>
+                    <Form.Item
+                      label={$t({ defaultMessage: '5GHz settings:' })}
+                      name={['radioParamsDual5G', 'inheritParamsUpper5G']}
+                      initialValue={true}
+                    >
+                      <Radio.Group onChange={onUpper5gTypeChange}>
+                        <Radio value={true}>
+                          {$t({ defaultMessage: 'Inherit from 5GHz' })}
+                        </Radio>
+
+                        <Radio value={false}>
+                          {$t({ defaultMessage: 'Custom Settings' })}
+                        </Radio>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={12}>
+                    <Divider style={{ marginTop: '5px' }}/>
+                  </Col>
+                </Row>
+                <SingleRadioSettings
+                  testId='radio-u5g-tab'
+                  inherit5G={isUpper5gInherit}
+                  radioType={ApRadioTypeEnum.RadioUpper5G}
+                  supportChannels={support5GUpperChannels}
+                  bandwidthOptions={bandwidthUpper5GOptions}
+                  editContext={VenueEditContext}
+                  onResetDefaultValue={handleResetDefaultSettings} />
               </div>
             </>
           }

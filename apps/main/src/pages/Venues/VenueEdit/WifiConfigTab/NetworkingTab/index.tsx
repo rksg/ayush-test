@@ -1,14 +1,19 @@
 import { useContext } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Button, Space } from 'antd'
+import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
-import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { AnchorLayout, showToast, StepsForm, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                  from '@acx-ui/icons'
+import { VenueApModelCellular }                        from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                       from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
+import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
 
@@ -18,6 +23,7 @@ export interface NetworkingSettingContext {
   meshData: { mesh: boolean },
   updateCellular: ((cellularData: VenueApModelCellular) => void),
   updateMesh: ((check: boolean) => void),
+  updateDirectedMulticast: (() => void),
   updateLanPorts: (() => void),
   discardLanPorts?: (() => void)
 }
@@ -28,6 +34,8 @@ export function NetworkingTab () {
   const { venueId } = params
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
+
+  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const {
     editContextData,
@@ -64,11 +72,35 @@ export function NetworkingTab () {
   //   content: 'Client Isolation Allowlist Content'
   }]
 
+  if (supportDirectedMulticast) {
+    items.push({
+      title: $t({ defaultMessage: 'Directed Multicast' }),
+      content: <>
+        <StepsForm.SectionTitle id='directed-multicast'>
+          {<Space align='baseline'>
+            { $t({ defaultMessage: 'Directed Multicast' }) }
+            <Tooltip
+              title={$t( directedMulticastInfo )}
+              placement='right'>
+              <Button type='text'
+                style={{ height: '18px', width: '18px' }}
+                icon={
+                  <QuestionMarkCircleOutlined style={{ height: 'inherit', width: 'inherit' }}/>}
+              />
+            </Tooltip>
+          </Space>
+          }
+        </StepsForm.SectionTitle>
+        <DirectedMulticast />
+      </> })
+  }
+
   const handleUpdateAllSettings = async () => {
     try {
       await editNetworkingContextData?.updateLanPorts?.()
       await editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
       await editNetworkingContextData?.updateMesh?.(editNetworkingContextData.meshData.mesh)
+      await editNetworkingContextData?.updateDirectedMulticast?.()
       setEditContextData({
         ...editContextData,
         unsavedTabKey: 'networking',

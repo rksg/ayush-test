@@ -10,6 +10,7 @@ import {
   mapCodeToReason,
   mapCodeToAttempt,
   MapElement,
+  mapDisconnectCodeToReason,
   mapCodeToFailureText
 } from './reasonCodeMap'
 
@@ -61,6 +62,21 @@ describe('mapCodeToReason', () => {
   })
   it('renders code if nothing matches', () => {
     expect(renderHook(() => mapCodeToReason('abc', useIntl())).result.current).toEqual('abc')
+  })
+})
+
+describe('mapDisconnectCodeToReason', () => {
+  it('renders text for given code', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('2'))).toEqual('Previous authentication no longer valid')
+    })
+  })
+  it('renders Unknown if nothing matches', () => {
+    renderHook(() => {
+      const { $t } = useIntl()
+      expect($t(mapDisconnectCodeToReason('222'))).toEqual('Unknown')
+    })
   })
 })
 

@@ -25,7 +25,7 @@ export interface WifiCallingFormContextType {
   ePDG: EPDG[],
   networkIds: string[]
   networksName: string[],
-  epdgs?: EPDG[]
+  epdgs: EPDG[]
 }
 
 export interface EPDG {

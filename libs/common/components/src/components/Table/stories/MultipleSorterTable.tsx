@@ -10,6 +10,7 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     key: 'math',
     title: 'Math Score',
     dataIndex: 'math',
+    align: 'center',
     sorter: {
       compare: (a, b) => a.math - b.math,
       multiple: 3
@@ -19,6 +20,7 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     key: 'english',
     title: 'English Score',
     dataIndex: 'english',
+    align: 'center',
     sorter: {
       compare: (a, b) => a.english - b.english,
       multiple: 2
@@ -28,6 +30,7 @@ const basicColumns: TableProps<typeof basicData[0]>['columns'] = [
     key: 'chinese',
     title: 'Chinese Score',
     dataIndex: 'chinese',
+    align: 'center',
     sorter: {
       compare: (a, b) => a.chinese - b.chinese,
       multiple: 1

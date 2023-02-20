@@ -4,8 +4,8 @@ import { screen }       from '@testing-library/react'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { render }                                                                from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorplanContext, FloorPlanDto, NetworkDeviceType, RogueCategory, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { render }                                                                                                 from '@acx-ui/test-utils'
 
 
 import NetworkDevices from '.'
@@ -24,6 +24,18 @@ const deviceData = [{
     xPercent: 65.20548,
     yPercent: 9.839357,
     networkDeviceType: NetworkDeviceType.ap
+  },
+  {
+    deviceStatus: ApDeviceStatusEnum.OPERATIONAL,
+    floorplanId: '94bed28abef24175ab58a3800d01e24b',
+    id: '302002015733',
+    name: '3 02002015736',
+    serialNumber: '302002015732',
+    xPercent: 65.20548,
+    yPercent: 9.839357,
+    networkDeviceType: NetworkDeviceType.rogue_ap,
+    rogueCategory: { Malicious: 10 },
+    rogueCategoryType: RogueCategory.MALICIOUS
   }],
   switches: [{
     deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
@@ -67,9 +79,29 @@ describe('Floor Plans Nework Devices', () => {
       networkDevices={{ '94bed28abef24175ab58a3800d01e24a': deviceData[0] }}
       galleryMode={false}
       contextAlbum={false}
-      context='Ap'/></DndProvider>)
+      context={FloorplanContext.ap}/></DndProvider>)
 
-    expect(await screen.findByTestId('SignalUp')).toBeVisible()
+    const devices = await screen.findAllByTestId('SignalUp')
+
+    expect(devices[0]).toBeVisible()
+  })
+
+  it('should render rogue Ap correctly', async () => {
+
+    await render(<DndProvider backend={HTML5Backend}><NetworkDevices
+      networkDevicesVisibility={networkDeviceType}
+      selectedFloorPlan={floorplan}
+      networkDevices={{ '94bed28abef24175ab58a3800d01e24a': deviceData[0] }}
+      galleryMode={false}
+      contextAlbum={false}
+      context={FloorplanContext.ap}
+      showRogueAp={true}/></DndProvider>)
+
+    const devices = await screen.findAllByTestId('SignalUp')
+    const devicesCount = await screen.findByTestId('rogueApBadge')
+
+    expect(devices[0]).toBeVisible()
+    expect(devicesCount.innerHTML).toBe('10')
   })
 
 })

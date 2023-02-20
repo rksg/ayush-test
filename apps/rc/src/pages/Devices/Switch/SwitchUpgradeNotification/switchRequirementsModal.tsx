@@ -1,0 +1,177 @@
+/* eslint-disable max-len */
+import { Button, cssStr, Modal, Subtitle } from '@acx-ui/components'
+import { getIntl }                         from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
+export function SwitchRequirementsModal (props: {
+    modalVisible: boolean
+    setModalVisible: (visible: boolean) => void,
+}) {
+  const { $t } = getIntl()
+  const onClose = () => {
+    props.setModalVisible(false)
+  }
+  const switchImgUrl = 'https://support.ruckuswireless.com/software_terms_and_conditions/2915-ruckus-icx-fastiron-08-0-95ca-ga-software-release-zip'
+  const useUpgradeVedioUrl = 'https://www.youtube.com/watch?v=wDdeUBzwfNI'
+  const upgradeProcessUrl = 'https://docs.arris.com/bundle/fastiron-08092-upgradeguide/page/GUID-C8148B03-D98C-4F4D-939C-9111CECB0601.html'
+  return (
+
+    <Modal
+      width={760}
+      title={$t({ defaultMessage: 'Add Switch: Hardware & Configuration Requirements' })}
+      visible={props.modalVisible}
+      okText={$t({ defaultMessage: 'Generate' })}
+      destroyOnClose={true}
+      onCancel={onClose}
+      footer={[
+        <Button
+          style={{ width: '83px' }}
+          key='okBtn'
+          type='secondary'
+          onClick={onClose}
+        >
+          {$t({ defaultMessage: 'OK' })}
+        </Button>
+      ]}
+    >
+      <Subtitle level={4}>
+        {$t({ defaultMessage: 'Upgrading the switch' })}</Subtitle>
+      <body>
+        {$t({ defaultMessage: 'For switches that do not have a ‘cloud ready label’ or switches running version older than FastIron 08.0.90d, use one of the following methods to upgrade the switches to 09.0.10e ( UFI router image for factory default switches).' })}
+        <UI.List>
+          <UI.ListItems>
+            {$t({ defaultMessage: 'Download FastIron 09.0.10e firmware (use UFI router image) from the following link:' })}
+            <br />
+            <a target='_blank'
+              href={switchImgUrl}
+              rel='noreferrer'> { switchImgUrl } </a>
+          </UI.ListItems>
+
+          <UI.ListItems>
+            {$t({ defaultMessage: 'For a USB upgrade, use the procedure outlined at one of the following links:' })}
+            <br />
+            <a target='_blank'
+              href={useUpgradeVedioUrl}
+              rel='noreferrer'> {useUpgradeVedioUrl} {$t({ defaultMessage: '(video)' })}</a>
+          </UI.ListItems>
+
+          <UI.ListItems>
+            {$t({ defaultMessage: 'For a TFTP upgrade, follow the procedure outlined in the ' })}
+            <a target='_blank'
+              href={upgradeProcessUrl}
+              rel='noreferrer'> {$t({ defaultMessage: 'Upgrade Process' })} </a>
+            {$t({ defaultMessage: ' from the RUCKUS FastIron Software Upgrade Guide.' })}
+          </UI.ListItems>
+        </UI.List>
+      </body>
+
+      <Subtitle level={5}>
+        {$t({ defaultMessage: 'Steps' })}
+      </Subtitle>
+      <body>
+        <UI.OrderList>
+          <UI.ListItems>
+            {$t({ defaultMessage: 'Check the current running version via switch CLI using the ‘Show version’ command.' })}
+          </UI.ListItems>
+          <UI.ListItems>
+            {$t({ defaultMessage: 'Use a direct upgrade to UFI or a 2 step upgrade to UFI depending on the current version.' })}
+            &ensp;
+            <span style={{ fontWeight: cssStr('--acx-body-font-weight-bold') }}>
+              {$t({ defaultMessage: 'Firmware must always be copied to primary flash partition as shown in the example.' })}
+            </span>
+          </UI.ListItems>
+          <UI.OrderList type={'a'}>
+            <UI.ListItems>
+              {$t({ defaultMessage: 'Switches running 08.0.80 and above can be directly upgraded to 09.0.10e UFI router image' })}
+              <br />
+              {$t({ defaultMessage: 'Example:' })}
+              <UI.CommandRectengle>
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010e.bin primary
+              </UI.CommandRectengle>
+            </UI.ListItems>
+            <UI.ListItems>
+              {$t({ defaultMessage: 'Switches running 08.0.70x or older releases need to go through a 2 step upgrade process.' })}
+              <br />
+              {$t({ defaultMessage: 'Example:' })}
+              <UI.CommandRectengle>
+                copy tftp flash &lt;TFTP server IP address&gt; SPR08090d.bin primary
+                <br />
+                reload
+                <br />
+                copy tftp flash &lt;TFTP server IP address&gt; SPR09010e.bin primary
+              </UI.CommandRectengle>
+            </UI.ListItems>
+          </UI.OrderList>
+          <UI.ListItems>
+            {$t({ defaultMessage: 'After upgrade, check the version again and make sure the switch is running UFI image.' })}
+            <UI.CommandRectengle style={{ marginLeft: '20px' }}>
+              SSH@7150-C12P#show version   <br />
+              Copyright (c) Ruckus Networks, Inc. All rights reserved.   <br />
+              UNIT 1: compiled on Apr 6 2021 at 01:30:48 labeled as SPR09010e  <br />
+              (33554432 bytes) from Primary SPR09010e.bin (UFI)
+            </UI.CommandRectengle>
+          </UI.ListItems>
+        </UI.OrderList>
+      </body>
+
+      <UI.SubTitle4 level={4}>
+        {$t({ defaultMessage: 'Connecting the switch to Cloud' })}</UI.SubTitle4>
+
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'Factory-default ICX switches and ICX switches with pre-existing configuration use different methods to connect to the RUCKUS Cloud.' })}
+      </UI.DescriptionBody>
+
+      <UI.SubTitle4 level={4} style={{ marginTop: '20px' }}>
+        {$t({ defaultMessage: 'Factory Default Switches' })}</UI.SubTitle4>
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'There are two options to connect the Ruckus Switch to the Cloud:' })}
+      </UI.DescriptionBody>
+
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'Ruckus recommends that the ICX switch obtain an IP address from a DHCP server for connecting to the cloud.' })}
+        <br />
+        {$t({ defaultMessage: 'If DHCP is used to connect to the Ruckus Cloud, the ICX switch automatically creates default VLAN 1 and router Interface VE1 with the IP addresses obtained from the DHCP server.' })}
+      </UI.DescriptionBody>
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'In the absence of a DHCP server, use the manager network-config wizard to connect to the cloud. Refer to "The Static IP Configuration Wizard" in this guide for more information.' })}
+        <br/>
+        {$t({ defaultMessage: 'The manager network-config wizard automatically creates router interface VE1 after the wizard completes.' })}
+      </UI.DescriptionBody>
+
+      <UI.SubTitle4 level={4}>
+        {$t({ defaultMessage: 'Switches with Pre-existing Configuration' })}
+      </UI.SubTitle4>
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'For switches with existing configuration, "manager registrar" should be present in the running configuration of the switch. Use the manager registrar-query-restart command on the switch CLI to initiate cloud discovery followed by a manager reset command to establish a connection with the Cloud.' })}
+      </UI.DescriptionBody>
+
+
+
+      <UI.SubTitle4 level={4}>
+        {$t({ defaultMessage: 'Upon Connection' })}
+      </UI.SubTitle4>
+
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'Once the ICX switch is connected to the Ruckus Cloud:' })}
+        <br />
+        {$t({ defaultMessage: 'If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied.' })}
+        <br />
+        {$t({ defaultMessage: 'Ruckus Cloud assigns a username and password to the switch once it is managed by the Ruckus Cloud. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from the Ruckus Cloud GUI under the Venue’s ‘Switch Settings’.' })}
+      </UI.DescriptionBody>
+
+      <Subtitle level={5}>
+        {$t({ defaultMessage: 'NOTE' })}</Subtitle>
+
+      <UI.DescriptionBody>
+        {$t({ defaultMessage: 'The credentials are applicable for factory-default switches only. For switches with pre-existing configuration, you can continue using the existing authentication credentials configured on the switches.' })}
+      </UI.DescriptionBody>
+
+      <UI.DescriptionBody style={{ color: cssStr('--acx-semantics-red-60') }}>
+        {$t({ defaultMessage: 'Switches must be kept on 09.0.10e release for Cloud version 21.11. No manual upgrade to a later ICX firmware should be performed unless directed by Ruckus support. When a new cloud version becomes available, any required change in switch firmware will be handled by the Cloud automatically.' })}
+      </UI.DescriptionBody>
+
+    </Modal>
+  )
+
+}
+

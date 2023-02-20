@@ -4,7 +4,7 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SyslogUrls }                                                        from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -16,7 +16,9 @@ import {
   venueData,
   venueLanPorts,
   venueLed,
-  venueSwitchSetting
+  venueSwitchSetting,
+  venueSyslog,
+  syslogServerProfiles
 } from '../__tests__/fixtures'
 
 import { VenueEdit } from './index'
@@ -70,6 +72,12 @@ async function updateMeshNetwork () {
   await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 }
 
+async function updateSyslogProfile () {
+  fireEvent.mouseDown(await screen.findByRole('combobox'))
+  const option = screen.getByText('SyslogProfile2')
+  await userEvent.click(option)
+}
+
 describe('VenueEdit - handle unsaved/invalid changes modal', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -99,7 +107,13 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       rest.put(CommonUrlsInfo.updateVenueMesh.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json(switchConfigProfile[0])))
+        (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
+      rest.get(CommonUrlsInfo.getVenueSyslogAp.url,
+        (_, res, ctx) => res(ctx.json(venueSyslog))),
+      rest.post(CommonUrlsInfo.updateVenueSyslogAp.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(SyslogUrls.getSyslogPolicyList.url,
+        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
     )
   })
 
@@ -221,4 +235,45 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       await showUnsavedChangesModal('Networking', true)
     })
   })
+
+  describe('Servers', () => {
+    const params = {
+      tenantId: 'tenant-id',
+      venueId: 'venue-id',
+      activeTab: 'wifi',
+      activeSubTab: 'servers'
+    }
+    beforeEach(async () => {
+      jest.mock('react', () => ({
+        ...jest.requireActual('react'),
+        useRef: jest.fn(() => ({
+          current: jest.fn(() => null)
+        }))
+      }))
+    })
+    afterEach(() => {
+      Modal.destroyAll()
+    })
+    it('should open unsaved changes modal and handle changes discarded', async () => {
+      render(<Provider><VenueEdit /></Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitFor(() => screen.findByText('Enable Server'))
+      await updateSyslogProfile()
+      fireEvent.click(await screen.findByText('Back to venue details'))
+      await showUnsavedChangesModal('Servers', false)
+    })
+    it('should open unsaved changes modal and handle changes saved', async () => {
+      render(<Provider><VenueEdit /></Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+      await waitFor(() => screen.findByText('Enable Server'))
+      await updateSyslogProfile()
+      fireEvent.click(await screen.findByText('Back to venue details'))
+      await showUnsavedChangesModal('Servers', true)
+    })
+
+  })
+
 })

@@ -7,9 +7,15 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useCreateWifiCallingServiceMutation }            from '@acx-ui/rc/services'
-import { CreateNetworkFormFields, EPDG, QosPriorityEnum } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
+import { useCreateWifiCallingServiceMutation } from '@acx-ui/rc/services'
+import {
+  CreateNetworkFormFields,
+  EPDG,
+  getServiceRoutePath,
+  QosPriorityEnum,
+  ServiceOperation,
+  ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 import WifiCallingFormValidate                 from '../WifiCallingFormValidate'
@@ -32,6 +38,7 @@ const WifiCallingForm = () => {
   const ePDG:EPDG[] = []
   const networkIds:string[] = []
   const networksName:string[] = []
+  const epdgs:EPDG[] = []
 
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -41,7 +48,8 @@ const WifiCallingForm = () => {
     tags,
     description,
     networkIds,
-    networksName
+    networksName,
+    epdgs
   })
 
   const [ createWifiCallingService ] = useCreateWifiCallingServiceMutation()
@@ -66,12 +74,16 @@ const WifiCallingForm = () => {
       <PageHeader
         title={$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            // eslint-disable-next-line max-len
+            link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <StepsForm<CreateNetworkFormFields>
         formRef={formRef}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => navigate(linkToServices, { replace: true })}
         onFinish={handleAddWifiCallingService}
       >
         <StepsForm.StepForm<CreateNetworkFormFields>

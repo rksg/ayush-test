@@ -12,6 +12,13 @@ jest.mock('@acx-ui/components', () => ({
     data-testid='config-provider'
   />
 }))
+jest.mock('@acx-ui/rc/components', () => ({
+  UserProfileProvider: (props: { children: React.ReactNode }) => <div
+    {...props}
+    data-testid='user-profile-provider'
+  />
+}))
+
 
 describe('bootstrap.init', () => {
   it('renders correctly', async () => {

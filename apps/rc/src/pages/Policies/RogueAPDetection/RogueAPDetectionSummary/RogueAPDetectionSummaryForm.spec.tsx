@@ -29,7 +29,7 @@ const initState = {
     priority: 1
   }],
   tags: ['tag1', 'tag2', 'tag3'],
-  description: ''
+  description: 'desc1'
 } as RogueAPDetectionContextType
 
 describe('RogueAPDetectionSummaryForm', () => {
@@ -45,7 +45,7 @@ describe('RogueAPDetectionSummaryForm', () => {
     )
     expect(screen.getByText('policyName1')).toBeInTheDocument()
     expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('tag1, tag2, and tag3')).toBeInTheDocument()
+    expect(screen.getByText('desc1')).toBeInTheDocument()
     expect(screen.getByText('venueName1')).toBeInTheDocument()
 
     expect(asFragment()).toMatchSnapshot()

@@ -86,7 +86,8 @@ const initState = {
   tags: [],
   description: '',
   networkIds: [],
-  networksName: []
+  networksName: [],
+  epdgs: []
 }
 
 const mockedUseNavigate = jest.fn()
@@ -131,7 +132,7 @@ describe('WifiCallingConfigureForm', () => {
   })
 
   it('should render wifiCallingConfigureForm successfully', async () => {
-    const { asFragment } = render(
+    render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
         dispatch: jest.fn()
@@ -165,8 +166,6 @@ describe('WifiCallingConfigureForm', () => {
     await screen.findByRole('heading', { name: 'Scope', level: 3 })
 
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render form successfully then click the cancel button', async () => {

@@ -30,6 +30,7 @@ describe('EdgeSettingForm', () => {
         <EdgeSettingForm />
       </Provider>, { route: { params } }
     )
+    await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -39,6 +40,7 @@ describe('EdgeSettingForm', () => {
         <EdgeSettingForm isEdit />
       </Provider>, { route: { params } }
     )
+    await screen.findByRole('combobox', { name: 'Venue' })
     expect(asFragment()).toMatchSnapshot()
   })
 
@@ -49,7 +51,7 @@ describe('EdgeSettingForm', () => {
         <EdgeSettingForm />
       </Provider>, { route: { params } }
     )
-    const venueDropdown = screen.getByRole('combobox', { name: 'Venue' })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await screen.findByText('Mock Venue 1')
     await screen.findByText('Mock Venue 2')
@@ -62,7 +64,7 @@ describe('EdgeSettingForm', () => {
         <EdgeSettingForm />
       </Provider>, { route: { params } }
     )
-    const serialNumberInput = screen.getByRole('textbox',
+    const serialNumberInput = await screen.findByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: '96_serial_number_test' } })
     expect(asFragment()).toMatchSnapshot()

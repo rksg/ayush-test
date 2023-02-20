@@ -21,10 +21,10 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
 
 export const portalComponentsValue: Record<PortalComponentsEnum, MessageDescriptor> = {
   [PortalComponentsEnum.Logo]: defineMessage({ defaultMessage: 'Logo' }),
-  [PortalComponentsEnum.WelcomeText]: defineMessage({ defaultMessage: 'Welcome text' }),
+  [PortalComponentsEnum.Welcome]: defineMessage({ defaultMessage: 'Welcome text' }),
   [PortalComponentsEnum.Photo]: defineMessage({ defaultMessage: 'Photo' }),
   [PortalComponentsEnum.SecondaryText]: defineMessage({ defaultMessage: 'Secondary text' }),
   [PortalComponentsEnum.TermsConditions]: defineMessage({ defaultMessage: 'Terms & conditions' }),
   [PortalComponentsEnum.PoweredBy]: defineMessage({ defaultMessage: 'Powered By' }),
-  [PortalComponentsEnum.WiFi4EU]: defineMessage({ defaultMessage: 'WiFi4EU Snippet' })
+  [PortalComponentsEnum.Wifi4eu]: defineMessage({ defaultMessage: 'WiFi4EU Snippet' })
 }

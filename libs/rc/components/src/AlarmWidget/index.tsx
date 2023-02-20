@@ -62,14 +62,14 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
 }
 
 export function AlarmWidget () {
-  const basePath = useTenantLink('/')
+  const basePath = useTenantLink('/devices')
   const navigate = useNavigate()
   const { $t } = useIntl()
 
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
-      ? `aps/${alarm.serialNumber}/TODO`
-      : `switches/${alarm.serialNumber}/TODO`
+      ? `wifi/${alarm.serialNumber}/details/overview`
+      : `switch/${alarm.switchMacAddress}/${alarm.serialNumber}/details/overview`
 
     navigate({
       ...basePath,
@@ -97,7 +97,7 @@ export function AlarmWidget () {
     },
     pagination: {
       pageSize: 5,
-      current: 1,
+      page: 1,
       total: 0
     }
   })
@@ -108,7 +108,7 @@ export function AlarmWidget () {
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
-            data && data.length > 0
+            (data && data.length > 0) && (alarmQuery.data?.data && alarmQuery.data?.data.length>0)
               ? <>
                 <DonutChart
                   style={{ width, height: height / 3 }}

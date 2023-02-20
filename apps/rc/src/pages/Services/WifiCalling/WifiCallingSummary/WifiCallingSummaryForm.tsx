@@ -3,10 +3,11 @@ import { useContext } from 'react'
 import { Form, Col, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }       from '@acx-ui/components'
+import { QosPriorityEnum } from '@acx-ui/rc/utils'
 
-
-import WifiCallingFormContext from '../WifiCallingFormContext'
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+import WifiCallingFormContext                 from '../WifiCallingFormContext'
 
 const WifiCallingSummaryForm = () => {
   const { Paragraph } = Typography
@@ -30,14 +31,14 @@ const WifiCallingSummaryForm = () => {
               <Paragraph>{state.serviceName.toString()}</Paragraph>
             </Form.Item>
           </Col>
-          <Col span={6}>
-            <Form.Item
-              name='tags'
-              label={$t({ defaultMessage: 'Tags' })}
-            >
-              <Paragraph>{state.tags?.join(', ')}</Paragraph>
-            </Form.Item>
-          </Col>
+          {/*<Col span={6}>*/}
+          {/*  <Form.Item*/}
+          {/*    name='tags'*/}
+          {/*    label={$t({ defaultMessage: 'Tags' })}*/}
+          {/*  >*/}
+          {/*    <Paragraph>{state.tags?.join(', ')}</Paragraph>*/}
+          {/*  </Form.Item>*/}
+          {/*</Col>*/}
           <Col span={6}>
             <Form.Item
               name='description'
@@ -52,7 +53,9 @@ const WifiCallingSummaryForm = () => {
           name='qosPriority'
           label={$t({ defaultMessage: 'QoS Priority' })}
         >
-          <Paragraph>{state.qosPriority}</Paragraph>
+          <Paragraph>{$t(
+            wifiCallingQosPriorityLabelMapping[state.qosPriority as QosPriorityEnum])
+          }</Paragraph>
         </Form.Item>
 
         <Form.Item
@@ -61,7 +64,8 @@ const WifiCallingSummaryForm = () => {
         >
           <>
             {state.ePDG.map(ePDG => {
-              return <div key={`${ePDG.domain}`}>{ePDG.domain} ({ePDG.ip})</div>
+              const ipString = ePDG.ip ? `(${ePDG.ip})` : ''
+              return <div key={`${ePDG.domain}`}>{ePDG.domain} {ipString}</div>
             })}
           </>
 

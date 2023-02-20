@@ -17,7 +17,7 @@ interface DatePickerFooterProps {
   showTimePicker?: boolean;
   setRange: React.Dispatch<React.SetStateAction<DateRangeType>>;
   range: DateRangeType;
-  setIsCalenderOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCalendarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   defaultValue: DateRangeType;
   onDateApply: Function;
 }
@@ -47,7 +47,7 @@ export const DatePickerFooter = ({
   range,
   defaultValue,
   setRange,
-  setIsCalenderOpen,
+  setIsCalendarOpen,
   onDateApply
 }: DatePickerFooterProps) => {
   const onButtonClick = (type: string) => {
@@ -60,7 +60,7 @@ export const DatePickerFooter = ({
         range: DateRange.custom
       })
     }
-    setIsCalenderOpen(false)
+    setIsCalendarOpen(false)
   }
   const onTimePickerSelect = (config: typeof timePickerConfig[number], time: Moment) => {
     if (config.range === 'startDate' && time && time.isAfter(range.endDate)) {

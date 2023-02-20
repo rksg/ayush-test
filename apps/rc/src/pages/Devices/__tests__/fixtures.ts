@@ -541,6 +541,237 @@ export const r650Cap = {
   ]
 }
 
+export const r760Ap = {
+  serialNumber: '392172001829',
+  apGroupId: 'c4d022174e8347a0b2c5a52fa11eb85a',
+  venueId: '4910e33b100d42da97fba46d89a8fc0f',
+  radio: {
+    apRadioParams24G: {
+      manualChannel: 0,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      }
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    useVenueSettings: true
+  },
+  name: 'R760-eric',
+  softDeleted: false,
+  model: 'R760',
+  updatedDate: '2022-11-30T01:46:54.199+0000'
+}
+
+export const r560Ap = {
+  serialNumber: '472106000021',
+  apGroupId: 'd88ed8e79740473e904165bddf665192',
+  venueId: '4910e33b100d42da97fba46d89a8fc0f',
+  bonjourGateway: {
+    rules: [
+      {
+        enabled: true,
+        service: 'ICLOUD_SYNC',
+        fromVlan: 5,
+        toVlan: 10
+      }
+    ]
+  },
+  radio: {
+    apRadioParams24G: {
+      manualChannel: 0,
+      channelBandwidth: 'AUTO',
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParams50G: {
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    apRadioParamsDual5G: {
+      enabled: true,
+      radioParamsLower5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      },
+      radioParamsUpper5G: {
+        channelBandwidth: 'AUTO',
+        manualChannel: 0,
+        txPower: 'MAX',
+        method: 'BACKGROUND_SCANNING',
+        changeInterval: 33
+      }
+    },
+    apRadioParams6G: {
+      manualChannel: 0,
+      method: 'CHANNELFLY',
+      channelBandwidth: 'AUTO',
+      bssMinRate6G: 'HE_MCS_0',
+      mgmtTxRate6G: '6',
+      txPower: 'MAX',
+      changeInterval: 33
+    },
+    useVenueSettings: true
+  },
+  name: 'R560-eric',
+  softDeleted: false,
+  model: 'R560',
+  updatedDate: '2022-12-20T07:51:25.612+0000'
+}
+
+export const triBandApCap = {
+  version: '6.2.0.99.1486',
+  apModels: [
+    { model: 'R560',
+      allowCbandCountry: ['GB'],
+      allowDfsCountry: ['US', 'SG'],
+      canSupportCellular: false,
+      canSupportLacp: true,
+      canSupportPoeMode: true,
+      canSupportPoeOut: false,
+      capabilityScore: 288,
+      has160MHzChannelBandwidth: true,
+      isOutdoor: false,
+      lanPortPictureDownloadUrl:
+        'https://fakeLanportPic/wifi/firmware/6.2.0.99.1486/r560.jpg',
+      lanPorts: [
+        {
+          id: '1',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: false,
+          supportDisable: true,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }, {
+          id: '2',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: true,
+          supportDisable: false,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+
+        }
+      ],
+      ledOn: true,
+      lldpAdInterval: 30,
+      lldpEnable: true,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      maxChannelization5G: 80,
+      maxChannelization6G: 160,
+      maxChannelization24G: 40,
+      pictureDownloadUrl:
+        'https://fakeApPic/wifi/firmware/6.2.0.99.1486/r560.jpg',
+      poeModeCapabilities: ['Auto', '802.3at', '802.3bt-Class_5'],
+      requireOneEnabledTrunkPort: true,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      support11AX: true,
+      supportChannel144: true,
+      supportDual5gMode: false,
+      supportTriRadio: true
+    },
+    { model: 'R760',
+      allowCbandCountry: ['GB'],
+      allowDfsCountry: ['US', 'SG'],
+      canSupportCellular: false,
+      canSupportLacp: true,
+      canSupportPoeMode: true,
+      canSupportPoeOut: false,
+      capabilityScore: 288,
+      has160MHzChannelBandwidth: true,
+      isOutdoor: false,
+      lanPortPictureDownloadUrl:
+        'https://fakeLanPortPic/wifi/firmware/6.2.0.99.1486/r760.jpg',
+      lanPorts: [
+        {
+          id: '1',
+          defaultTyp: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: false,
+          supportDisable: true,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }, {
+          id: '2',
+          defaultType: 'TRUNK',
+          isPoeOutPort: false,
+          isPoePort: true,
+          supportDisable: false,
+          trunkPortOnly: false,
+          untagId: 1,
+          vlanMembers: '1-4094'
+        }
+      ],
+      ledOn: true,
+      lldpAdInterval: 30,
+      lldpEnable: true,
+      lldpHoldTime: 120,
+      lldpMgmtEnable: true,
+      maxChannelization5G: 160,
+      maxChannelization6G: 160,
+      maxChannelization24G: 40,
+      pictureDownloadUrl:
+        'https://fakeApPic/wifi/firmware/6.2.0.99.1486/r760.jpg',
+      poeModeCapabilities: ['Auto', '802.3at', '802.3bt-Class_5'],
+      requireOneEnabledTrunkPort: true,
+      simCardPrimaryEnabled: true,
+      simCardPrimaryRoaming: true,
+      simCardSecondaryEnabled: true,
+      simCardSecondaryRoaming: true,
+      support11AX: true,
+      supportChannel144: true,
+      supportDual5gMode: true,
+      supportTriRadio: true
+    }
+  ]
+}
+
 export const apRadio = {
   apRadioParams24G: {
     manualChannel: 0,
@@ -670,66 +901,22 @@ export const venueSetting = {
     radioParams6G: {
       method: 'CHANNELFLY',
       scanInterval: 20,
-      allowedChannels:
-        // eslint-disable-next-line max-len
-        [
-          '1',
-          '5',
-          '9',
-          '13',
-          '17',
-          '21',
-          '25',
-          '29',
-          '33',
-          '37',
-          '41',
-          '45',
-          '49',
-          '53',
-          '57',
-          '61',
-          '65',
-          '69',
-          '73',
-          '77',
-          '81',
-          '85',
-          '89',
-          '93',
-          '97',
-          '101',
-          '105',
-          '109',
-          '113',
-          '117',
-          '121',
-          '125',
-          '129',
-          '133',
-          '137',
-          '141',
-          '145',
-          '149',
-          '153',
-          '157',
-          '161',
-          '165',
-          '169',
-          '173',
-          '177',
-          '181',
-          '185',
-          '189',
-          '193',
-          '197',
-          '201',
-          '205',
-          '209',
-          '213',
-          '217',
-          '221'
-        ],
+      allowedChannels: [
+        '1', '5', '9', '13',
+        '17', '21', '25', '29',
+        '33', '37', '41', '45',
+        '49', '53', '57', '61',
+        '65', '69', '73', '77',
+        '81', '85', '89', '93',
+        '97', '101', '105', '109',
+        '113', '117', '121', '125',
+        '129', '133', '137', '141',
+        '145', '149', '153', '157',
+        '161', '165', '169', '173',
+        '177', '181', '185', '189',
+        '193', '197', '201', '205',
+        '209', '213', '217', '221'
+      ],
       channelBandwidth: 'AUTO',
       bssMinRate6G: 'HE_MCS_0',
       mgmtTxRate6G: '6',
@@ -741,14 +928,7 @@ export const venueSetting = {
       radioParamsLower5G: {
         allowedIndoorChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
         allowedOutdoorChannels: [
-          '36',
-          '40',
-          '44',
-          '48',
-          '52',
-          '56',
-          '60',
-          '64'
+          '36', '40', '44', '48', '52', '56', '60', '64'
         ],
         channelBandwidth: 'AUTO',
         method: 'BACKGROUND_SCANNING',
@@ -1029,30 +1209,12 @@ export const apDeviceRadio = {
   },
   apRadioParams50G: {
     allowedChannels: [
-      '36',
-      '40',
-      '44',
-      '48',
-      '52',
-      '56',
-      '60',
-      '64',
-      '100',
-      '104',
-      '108',
-      '112',
-      '116',
-      '120',
-      '124',
-      '128',
-      '132',
-      '136',
-      '140',
-      '144',
-      '149',
-      '153',
-      '157',
-      '161'
+      '36', '40', '44', '48',
+      '52', '56', '60', '64',
+      '100','104', '108', '112',
+      '116', '120', '124', '128',
+      '132', '136', '140', '144',
+      '149', '153', '157', '161'
     ],
     channelBandwidth: 'AUTO',
     manualChannel: 0,
@@ -1074,22 +1236,10 @@ export const apDeviceRadio = {
     },
     radioParamsUpper5G: {
       allowedChannels: [
-        '100',
-        '104',
-        '108',
-        '112',
-        '116',
-        '120',
-        '124',
-        '128',
-        '132',
-        '136',
-        '140',
-        '144',
-        '149',
-        '153',
-        '157',
-        '161'
+        '100', '104', '108', '112',
+        '116', '120', '124', '128',
+        '132', '136', '140', '144',
+        '149', '153', '157', '161'
       ],
       channelBandwidth: 'AUTO',
       manualChannel: 0,
@@ -1102,62 +1252,20 @@ export const apDeviceRadio = {
     manualChannel: 0,
     method: 'CHANNELFLY',
     allowedChannels: [
-      '1',
-      '5',
-      '9',
-      '13',
-      '17',
-      '21',
-      '25',
-      '29',
-      '33',
-      '37',
-      '41',
-      '45',
-      '49',
-      '53',
-      '57',
-      '61',
-      '65',
-      '69',
-      '73',
-      '77',
-      '81',
-      '85',
-      '89',
-      '93',
-      '97',
-      '101',
-      '105',
-      '109',
-      '113',
-      '117',
-      '121',
-      '125',
-      '129',
-      '133',
-      '137',
-      '141',
-      '145',
-      '149',
-      '153',
-      '157',
-      '161',
-      '165',
-      '169',
-      '173',
-      '177',
-      '181',
-      '185',
-      '189',
-      '193',
-      '197',
-      '201',
-      '205',
-      '209',
-      '213',
-      '217',
-      '221'
+      '1', '5', '9', '13',
+      '17', '21', '25', '29',
+      '33', '37', '41', '45',
+      '49', '53', '57', '61',
+      '65', '69', '73', '77',
+      '81', '85', '89', '93',
+      '97', '101', '105', '109',
+      '113', '117', '121', '125',
+      '129', '133', '137', '141',
+      '145', '149', '153', '157',
+      '161', '165', '169', '173',
+      '177', '181', '185', '189',
+      '193', '197', '201', '205',
+      '209', '213', '217', '221'
     ],
     channelBandwidth: 'AUTO',
     bssMinRate6G: 'HE_MCS_0',
@@ -1166,6 +1274,87 @@ export const apDeviceRadio = {
     changeInterval: 33
   },
   enable6G: false,
+  useVenueSettings: false,
+  enable24G: true,
+  enable50G: true
+}
+
+export const apR760DeviceRadio = {
+  apRadioParams24G: {
+    manualChannel: 0,
+    allowedChannels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'],
+    channelBandwidth: 'AUTO',
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParams50G: {
+    allowedChannels: [
+      '36', '40', '44', '48',
+      '52', '56', '60', '64',
+      '100','104', '108', '112',
+      '116', '120', '124', '128',
+      '132', '136', '140', '144',
+      '149', '153', '157', '161'
+    ],
+    channelBandwidth: 'AUTO',
+    manualChannel: 0,
+    txPower: 'MAX',
+    method: 'BACKGROUND_SCANNING',
+    changeInterval: 33
+  },
+  apRadioParamsDual5G: {
+    enabled: false,
+    lower5gEnabled: true,
+    upper5gEnabled: true,
+    radioParamsLower5G: {
+      allowedChannels: ['36', '40', '44', '48', '52', '56', '60', '64'],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    },
+    radioParamsUpper5G: {
+      allowedChannels: [
+        '100', '104', '108', '112',
+        '116', '120', '124', '128',
+        '132', '136', '140', '144',
+        '149', '153', '157', '161'
+      ],
+      channelBandwidth: 'AUTO',
+      manualChannel: 0,
+      txPower: 'MAX',
+      method: 'BACKGROUND_SCANNING',
+      changeInterval: 33
+    }
+  },
+  apRadioParams6G: {
+    manualChannel: 0,
+    method: 'CHANNELFLY',
+    allowedChannels: [
+      '1', '5', '9', '13',
+      '17', '21', '25', '29',
+      '33', '37', '41', '45',
+      '49', '53', '57', '61',
+      '65', '69', '73', '77',
+      '81', '85', '89', '93',
+      '97', '101', '105', '109',
+      '113', '117', '121', '125',
+      '129', '133', '137', '141',
+      '145', '149', '153', '157',
+      '161', '165', '169', '173',
+      '177', '181', '185', '189',
+      '193', '197', '201', '205',
+      '209', '213', '217', '221'
+    ],
+    channelBandwidth: 'AUTO',
+    bssMinRate6G: 'HE_MCS_0',
+    mgmtTxRate6G: '6',
+    txPower: 'MAX',
+    changeInterval: 33
+  },
+  enable6G: true,
   useVenueSettings: false,
   enable24G: true,
   enable50G: true
@@ -2301,7 +2490,7 @@ export const validRadioChannels = {
   }
 }
 
-export const apRadioCustomization = {
+export const venueRadioCustomization = {
   radioParams6G: {
     method: 'CHANNELFLY',
     scanInterval: 10,
@@ -2574,4 +2763,90 @@ export const deviceAps = {
       deviceModelType: 'Indoor'
     }
   ]
+}
+
+export const portlistData = {
+  data: [{
+    adminStatus: 'Up',
+    broadcastIn: '436434',
+    broadcastOut: '2432',
+    cloudPort: true,
+    crcErr: '0',
+    deviceStatus: 'ONLINE',
+    id: '38-45-3b-3b-b8-10_1-1-1',
+    inDiscard: '0',
+    inErr: '0',
+    lagId: '0',
+    lagName: '',
+    multicastIn: '348193',
+    multicastOut: '19730',
+    name: 'GigabitEthernet1/1/1',
+    neighborName: 'HP1920S_6F_DC_F3_8U_10.206.2.4',
+    opticsType: '1 Gbits per second copper',
+    outErr: '0',
+    poeEnabled: true,
+    poeTotal: 0,
+    poeType: 'n/a',
+    poeUsed: 0,
+    portId: '38-45-3b-3b-b8-10_1-1-1',
+    portIdentifier: '1/1/1',
+    portSpeed: '1 Gb/sec',
+    signalIn: 0,
+    signalOut: 0,
+    stack: false,
+    status: 'Up',
+    switchMac: '38:45:3b:3b:b8:10',
+    switchModel: 'ICX7650-48ZP',
+    switchName: 'ICX7650-48ZP Router',
+    switchSerial: '38:45:3b:3b:b8:10',
+    switchUnitId: 'EZC4312T00C',
+    syncedSwitchConfig: true,
+    unTaggedVlan: '1',
+    unitState: 'ONLINE',
+    unitStatus: 'Standalone',
+    usedInFormingStack: false,
+    vlanIds: '1'
+  }, {
+    adminStatus: 'Up',
+    broadcastIn: '0',
+    broadcastOut: '0',
+    cloudPort: false,
+    crcErr: '0',
+    deviceStatus: 'ONLINE',
+    id: '38-45-3b-3b-b8-11_1-1-2',
+    inDiscard: '0',
+    inErr: '0',
+    lagId: '1',
+    lagName: 'test1',
+    multicastIn: '0',
+    multicastOut: '0',
+    name: 'GigabitEthernet1/1/2',
+    neighborName: '',
+    opticsType: '1 Gbits per second copper',
+    outErr: '0',
+    poeEnabled: true,
+    poeTotal: 0,
+    poeType: 'n/a',
+    poeUsed: 0,
+    portId: '38-45-3b-3b-b8-11_1-1-2',
+    portIdentifier: '1/1/2',
+    portSpeed: 'link down or no traffic',
+    signalIn: 0,
+    signalOut: 0,
+    stack: false,
+    status: 'Down',
+    switchMac: '38:45:3b:3b:b8:10',
+    switchModel: 'ICX7650-48ZP',
+    switchName: 'ICX7650-48ZP Router',
+    switchSerial: '38:45:3b:3b:b8:10',
+    switchUnitId: 'EZC4312T00C',
+    syncedSwitchConfig: true,
+    unTaggedVlan: '1',
+    unitState: 'ONLINE',
+    unitStatus: 'Standalone',
+    usedInFormingStack: false,
+    vlanIds: '1'
+  }],
+  page: 1,
+  totalCount: 2
 }

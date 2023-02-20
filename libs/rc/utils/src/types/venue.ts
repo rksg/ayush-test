@@ -11,8 +11,12 @@ import { VenueSyslog }                                                          
 
 
 import { ApStatusDetails, LanPort } from './ap'
+import { RogueCategory }            from './policies'
+import { ConfigurationHistory }     from './switch'
 
-import { ApVenueStatusEnum, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
+
+
 
 export interface VenueDetailHeader {
 	activeLteNetworkCount: number,
@@ -44,6 +48,7 @@ export interface VenueDetailHeader {
 		},
 		totalCount: number
 	},
+	edges: EdgeStatusSeverityStatistic,
 	totalClientCount: string
 	venue: VenueDetail
 }
@@ -128,10 +133,35 @@ export interface NetworkDevice {
 	yPercent?: number;
 	position?: NetworkDevicePosition;
 	isActive?: boolean;
-	rogueCategory?: string;
+	rogueCategory?: Record<RogueCategory, number>;
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+}
+
+export interface RogueApInfo {
+	deviceColor: string;
+    rogueSnrClass?: string;
+    rogueApTooltips?: string;
+	allrogueApTooltipRequired?: boolean;
+	allVenueRogueApTooltipAttr?: AllVenueRogueApTooltipAttr,
+	specificRogueApTooltipAttr?: SpecificRogueApTooltipAttr,
+    drawRogueApItem?: boolean;
+    showRogueTotalNumber?: boolean;
+}
+
+export interface AllVenueRogueApTooltipAttr {
+	totalRogueNumber: number,
+    deviceName: string,
+    categoryNames: string[],
+	categoryNums?: number[];
+}
+
+export interface SpecificRogueApTooltipAttr{
+	activatedBarIndex: number,
+	deviceName: string,
+	macAddress: string,
+	snr: number
 }
 
 export enum RogueDeviceCategoryType {
@@ -298,6 +328,13 @@ export interface Acl {
 	aclRules: AclRule[]
 }
 
+export interface JwtToken {
+	access_token: string,
+	expires_in: string,
+	id_token: string,
+	type: string
+}
+
 export interface SwitchModelSlot {
 	slotNumber: number,
 	enable: boolean,
@@ -322,7 +359,9 @@ export interface Vlan {
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
-	vlanName?: string
+	vlanName?: string,
+  untaggedPorts?: string,
+  taggedPorts?: string
 }
 
 export interface ConfigurationProfile {
@@ -345,56 +384,56 @@ export interface TriBandSettings {
 }
 export interface VenueDefaultRegulatoryChannels {
   '2.4GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   },
   '5GChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GLowerChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '5GUpperChannels': {
-	dfs: {
-	  [key: string]: string[]
-	},
-	indoor: {
-	  [key: string]: string[]
-	},
-	outdoor: {
-	  [key: string]: string[]
-	}
+    dfs: {
+      [key: string]: string[]
+    },
+    indoor: {
+      [key: string]: string[]
+		},
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   '6GChannels': {
-	[key: string]: string[]
+    [key: string]: string[]
   }
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
-  radioParams24G: {
+	radioParams24G: {
 		allowedChannels: string[],
 		channelBandwidth: string,
 		method: string,
 		changeInterval: number,
 		scanInterval: number,
 		txPower: string
-  },
-  radioParams50G: {
+	},
+	radioParams50G: {
 		combineChannels: boolean,
 		allowedIndoorChannels: string[],
 		allowedOutdoorChannels: string[],
@@ -403,11 +442,11 @@ export interface VenueDefaultRegulatoryChannelsForm {
 		changeInterval: number,
 		scanInterval: number,
 		txPower: string
-  },
-  radioParamsDual5G: {
+	},
+	radioParamsDual5G?: {
 		enabled: boolean,
-		inheritParamsLower5G: boolean,
-		radioParamsLower5G: {
+		inheritParamsLower5G?: boolean,
+		radioParamsLower5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -417,8 +456,8 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			scanInterval: number,
 			txPower: string
 		},
-		inheritParamsUpper5G: boolean,
-		radioParamsUpper5G: {
+		inheritParamsUpper5G?: boolean,
+		radioParamsUpper5G?: {
 			combineChannels: boolean,
 			allowedIndoorChannels: string[],
 			allowedOutdoorChannels: string[],
@@ -428,61 +467,63 @@ export interface VenueDefaultRegulatoryChannelsForm {
 			scanInterval: number,
 			txPower: string
 		}
-  },
-	radioParams6G: {
-	  method: string,
-	  scanInterval: number,
-	  allowedChannels: string[],
-	  channelBandwidth: string,
-	  bssMinRate6G: string,
-	  mgmtTxRate6G: string,
-	  changeInterval: number,
-	  txPower: string
+	},
+	radioParams6G?: {
+		method: string,
+		scanInterval: number,
+		allowedChannels: string[],
+		channelBandwidth: string,
+		bssMinRate6G: string,
+		mgmtTxRate6G: string,
+		changeInterval: number,
+		txPower: string
 	}
 }
 
 export interface ApRadioChannelsForm {
-  apRadioParams24G: {
-	allowedChannels: string[],
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	txPower: string
-  },
-  apRadioParams50G: {
-	allowedChannels: string[],
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	txPower: string
-  },
-  apRadioParams6G: {
-	bssMinRate6G: string,
-	changeInterval: number,
-	channelBandwidth: string,
-	manualChannel: number,
-	method: string,
-	mgmtTxRate6G: string,
-	txPower: string
-  },
-  apRadioParamsDual5G: {
-	enabled: boolean,
-	radioParamsLower5G: {
-	  changeInterval: number,
-	  channelBandwidth: string,
-	  manualChannel: number,
-	  method: string,
-	  txPower: string
+	apRadioParams24G: {
+		allowedChannels: string[],
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		txPower: string
 	},
-	radioParamsUpper5G: {
-	  changeInterval: number,
-	  channelBandwidth: string,
-	  manualChannel: number,
-	  method: string,
-	  txPower: string
-	}
+	apRadioParams50G: {
+		allowedChannels: string[],
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		txPower: string
+	},
+	apRadioParams6G: {
+		bssMinRate6G: string,
+		changeInterval: number,
+		channelBandwidth: string,
+		manualChannel: number,
+		method: string,
+		mgmtTxRate6G: string,
+		txPower: string
+	},
+	apRadioParamsDual5G: {
+		enabled: boolean,
+		lower5gEnabled: boolean,
+		radioParamsLower5G: {
+			changeInterval: number,
+			channelBandwidth: string,
+			manualChannel: number,
+			method: string,
+			txPower: string
+		},
+		radioParamsUpper5G: {
+			changeInterval: number,
+			channelBandwidth: string,
+			manualChannel: number,
+			method: string,
+			txPower: string
+		},
+		upper5gEnabled: boolean
   },
   enable6G: boolean,
   enable24G: boolean,
@@ -601,4 +642,121 @@ export interface LocalUser {
   password: string,
   authPort: number,
   purpose: string
+}
+
+export interface VenueDirectedMulticast {
+  wiredEnabled: boolean,
+  wirelessEnabled: boolean,
+  networkEnabled: boolean
+}
+
+export interface VenueConfigHistoryDetailResp {
+	response: {
+		list: ConfigurationHistory[]
+	}
+}
+
+export enum LoadBalancingMethodEnum {
+  CLIENT_COUNT = 'BASED_ON_CLIENT_COUNT',
+  CAPCITY = 'BASED_ON_CAPACITY'
+}
+
+export enum SteeringModeEnum {
+  BASIC = 'BASIC',
+  PROACTIVE = 'PROACTIVE',
+  STRICT = 'STRICT'
+}
+
+export interface VenueLoadBalancing {
+  enabled: boolean,
+  loadBalancingMethod: LoadBalancingMethodEnum,
+  bandBalancingEnabled: true,
+  bandBalancingClientPercent24G: number,
+  steeringMode: SteeringModeEnum
+}
+
+export interface Node {
+    type?: DeviceTypes;
+    name: string;
+    category: number | string;
+    id?: string;
+    mac?: string;
+    serial?: string;
+    serialNumber?: string;
+    states?: DeviceStates,
+    childCount?: number;
+    symbol?: string;
+    symbolOffset?: Array<number>;
+	status?: DeviceStatus;
+	label?: string;
+}
+
+export interface UINode {
+	id: string,
+    label?: string,
+    config: Node,
+    depth?: number,
+    expanded?: boolean,
+	x?: number,
+	y?: number
+}
+export interface Link {
+    source: string;
+    target: string;
+	from: string;
+    to: string;
+    connectionType?: string;
+    connectionStatus?: ConnectionStatus; // this needs to be enum
+    connectionStates?: ConnectionStates; // this needs to be enum
+    poeEnabled?: boolean;
+    linkSpeed?: string;
+    poeUsed?: number;
+    poeTotal?: number;
+    connectedPort?: string;
+	angle?: number;
+}
+export interface GraphData {
+    type: string;
+    categories: Array<Object>;
+    nodes: Array<Node>;
+    edges: Array<Link>;
+}
+
+export interface TopologyData {
+	nodes: Array<Node>;
+    edges: Array<Link>;
+}
+
+export enum ConnectionStatus {
+	Good='Good',
+    Degraded='Degraded',
+    Unknown='Unknown'
+}
+
+export enum DeviceStatus {
+	Operational='Operational',
+	Disconnected='Disconnected',
+	Degraded='Degraded',
+    Unknown='Unknown'
+}
+
+export enum DeviceStates {
+	Regular='Regular',
+	Hover='Hover',
+}
+
+export enum ConnectionStates {
+	Regular='Regular',
+	Hover='Hover',
+}
+
+export enum DeviceTypes {
+	Switch='Switch',
+	SwitchStack='SwitchStack',
+	Ap='Ap',
+	ApWired='ApWired',
+	ApMeshRoot='ApMeshRoot',
+	ApMesh='ApMesh',
+	Unknown='Unknown',
+	Cloud='Cloud'
 }

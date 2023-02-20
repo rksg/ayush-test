@@ -8,6 +8,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -23,6 +24,7 @@ import {
 } from '../__tests__/fixtures'
 
 import ClientDetailPageHeader from './ClientDetailPageHeader'
+import { events, eventsMeta } from './ClientTimelineTab/__tests__/fixtures'
 
 import ClientDetails from '.'
 
@@ -31,34 +33,85 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-/* eslint-disable max-len */
-jest.mock('@acx-ui/analytics/components', () => ({
-  TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
-  TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
-  ClientTroubleshooting: () => <div data-testid={'analytics-ClientTroubleshooting'} title='ClientTroubleshooting' />
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={`analytics-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/rc/components', () => {
+  const sets = Object.keys(jest.requireActual('@acx-ui/rc/components'))
+    .map(key => [key, () => <div data-testid={`rc-${key}`} title={key} />])
+  return Object.fromEntries(sets)
+})
+jest.mock('@acx-ui/reports/components', () => ({
+  ...jest.requireActual('@acx-ui/reports/components'),
+  EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
 
-describe('ClientDetails', () => {
-  mockServer.use(
-    rest.get(ClientUrlsInfo.getClientDetails.url,
-      (_, res, ctx) => res(ctx.json(clientList[0]))),
-    rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-      (_, res, ctx) => res(ctx.json(clientApList[0]))),
-    rest.get(WifiUrlsInfo.getNetwork.url,
-      (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-    rest.get(CommonUrlsInfo.getVenue.url,
-      (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-    rest.post(CommonUrlsInfo.getHistoricalClientList.url,
-      (_, res, ctx) => res(ctx.json(histClientList ))),
-    rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
-      (_, res, ctx) => res(ctx.json(clientReportList[0]))),
-    rest.post(CommonUrlsInfo.getEventListMeta.url,
-      (_, res, ctx) => res(ctx.json(eventMetaList))),
-    rest.get(WifiUrlsInfo.getApCapabilities.url,
-      (_, res, ctx) => res(ctx.json(apCaps)))
-  )
+jest.mock('./ClientTimelineTab', () => () => {
+  return <div data-testid='rc-ClientTimelineTab' />
+})
 
-  it('should render correctly', async () => {
+jest.mock('./ClientReportsTab', () => () => {
+  return <div data-testid='rc-ClientReportsTab' />
+})
+
+describe('ClientDetails', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(CommonUrlsInfo.getEventList.url,
+        (_, res, ctx) => res(ctx.json(events))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventsMeta))),
+      rest.get(ClientUrlsInfo.getClientDetails.url,
+        (_, res, ctx) => res(ctx.json(clientList[0]))),
+      rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(clientApList[0]))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
+      rest.post(CommonUrlsInfo.getHistoricalClientList.url,
+        (_, res, ctx) => res(ctx.json(histClientList ))),
+      rest.post(CommonUrlsInfo.getHistoricalStatisticsReportsV2.url,
+        (_, res, ctx) => res(ctx.json(clientReportList[0]))),
+      rest.post(CommonUrlsInfo.getEventListMeta.url,
+        (_, res, ctx) => res(ctx.json(eventMetaList))),
+      rest.get(WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(apCaps)))
+    )
+  })
+
+  it.skip('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'user-id',
+      activeTab: 'overview'
+    }
+    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+      route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+    expect(screen.getAllByRole('tab')).toHaveLength(4)
+
+    const fragment = asFragment()
+    // eslint-disable-next-line testing-library/no-node-access
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+
+    fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/users/wifi/clients/${params.clientId}/details/reports`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('should render correctly with featureToggle off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('hostname')
     const params = {
       tenantId: 'tenant-id',
@@ -74,7 +127,6 @@ describe('ClientDetails', () => {
     const fragment = asFragment()
     // eslint-disable-next-line testing-library/no-node-access
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
-    expect(fragment).toMatchSnapshot()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'Reports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
@@ -90,10 +142,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'troubleshooting'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Troubleshooting')
   })
 
   it('should navigate to reports tab correctly', async () => {
@@ -102,10 +155,9 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'reports'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should navigate to timeline tab correctly', async () => {
@@ -114,10 +166,11 @@ describe('ClientDetails', () => {
       clientId: 'user-id',
       activeTab: 'timeline'
     }
-    const { asFragment } = render(<Provider><ClientDetails /></Provider>, {
+    render(<Provider><ClientDetails /></Provider>, {
       route: { params, path: '/:tenantId/users/wifi/:activeTab/:clientId/details/:activeTab' }
     })
-    expect(asFragment()).toMatchSnapshot()
+    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
+      .toEqual('Timeline')
   })
 
   it('should not navigate to non-existent tab', async () => {

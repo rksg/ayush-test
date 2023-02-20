@@ -181,7 +181,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
         )
       }
     },
@@ -195,11 +195,11 @@ export function VenueNetworksTab () {
         row={row}
       />
     },
-    {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health'
-    },
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health'
+    // },
     {
       key: 'activated',
       title: $t({ defaultMessage: 'Activated' }),

@@ -1,0 +1,128 @@
+import { rest } from 'msw'
+
+import { ExpirationType, MacRegListUrlsInfo }                                       from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+
+import MacRegistrationListsTable from './index'
+
+
+const list = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool-1',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
+      name: 'Registration pool-2',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: true,
+      expirationDate: '2022-11-02T06:59:59Z',
+      registrationCount: 6,
+      expirationType: ExpirationType.SPECIFIED_DATE
+    },
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc69',
+      name: 'Registration pool-3',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: true,
+      expirationType: ExpirationType.DAYS_AFTER_TIME,
+      expirationOffset: 5,
+      registrationCount: 6
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 3,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 3,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
+describe('MacRegistrationListsTable', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        (req, res, ctx) => res(ctx.json(list))
+      )
+    )
+  })
+
+  it('should render correctly', async () => {
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row1 = await screen.findByRole('row', { name: /Registration pool-1/ })
+    expect(row1).toHaveTextContent('5')
+
+    const row = await screen.findByRole('row', { name: /registration pool-1/i })
+    fireEvent.click(within(row).getByRole('radio'))
+  })
+
+  it('should delete selected row', async () => {
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
+    fireEvent.click(within(row).getByRole('radio'))
+
+    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    fireEvent.click(deleteButton)
+
+    await screen.findByText('Delete "Registration pool-1"?')
+
+    fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
+      { target: { value: 'Delete' } })
+
+    const deleteListsButton = await screen.findByText('Delete List')
+    expect(deleteListsButton).toBeInTheDocument()
+    fireEvent.click(deleteListsButton)
+  })
+
+  it('should edit selected row', async () => {
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
+    fireEvent.click(within(row).getByRole('radio'))
+
+    const editButton = screen.getByRole('button', { name: /Edit/i })
+    fireEvent.click(editButton)
+  })
+
+})

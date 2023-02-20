@@ -98,15 +98,24 @@ describe('Drawer', () => {
     it('should render form footer', async () => {
       const mockOnCancel = jest.fn()
       const mockOnSave = jest.fn()
+
       const { asFragment } = render(
         <Drawer.FormFooter
           onCancel={mockOnCancel}
-          onSave={mockOnSave}
+          onSave={async (checked) => {
+            mockOnSave(checked)
+
+            // Simulate the async request to verify the loading indicator
+            await new Promise(r => setTimeout(r, 500))
+          }}
         />
       )
       expect(asFragment()).toMatchSnapshot()
       fireEvent.click(screen.getByRole('button', { name: 'Save' }))
       expect(mockOnSave).toBeCalledWith(false)
+
+      expect(await screen.findByRole('button', { name: 'loading Save' })).toBeInTheDocument()
+
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
       expect(mockOnCancel).toBeCalled()
     })
@@ -114,6 +123,8 @@ describe('Drawer', () => {
     it('should handle add another checkbox events', async () => {
       const mockOnCancel = jest.fn()
       const mockOnSave = jest.fn()
+      mockOnSave.mockReturnValue(Promise.resolve())
+
       render(
         <Drawer.FormFooter
           showAddAnother={true}

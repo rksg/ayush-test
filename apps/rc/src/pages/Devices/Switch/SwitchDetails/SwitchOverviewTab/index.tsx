@@ -1,9 +1,104 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
+
+import { AnalyticsFilter, useAnalyticsFilter }                                   from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
+import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
+import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
+import { isRouter, SwitchViewModel, SWITCH_TYPE }                                from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
+
+import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
+import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
+import { SwitchOverviewPorts }           from './SwitchOverviewPorts'
+import { SwitchOverviewRouteInterfaces } from './SwitchOverviewRouteInterfaces'
+import { SwitchOverviewVLANs }           from './SwitchOverviewVLANs'
 
 export function SwitchOverviewTab () {
   const { $t } = useIntl()
-
-  return (
-    <>{ $t({ defaultMessage: 'Overview' })}</>
+  const params = useParams()
+  const { filters } = useAnalyticsFilter()
+  const [ switchFilter, setSwitchFilter ] = useState(null as unknown as AnalyticsFilter)
+  const [ switchDetail, setSwitchDetail ] = useState(null as unknown as SwitchViewModel)
+  const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
+  const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
+  const { data: venue } = useGetVenueQuery({
+    params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
+  { skip: !switchDetailQuery.isSuccess })
+  const { data: stackMember } = useStackMemberListQuery({ params,
+    payload: {
+      fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
+        'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
+      filters: { activeUnitId: [params.serialNumber] } } },
+  { skip: !switchDetailQuery.isSuccess })
+  const navigate = useNavigate()
+  const basePath = useTenantLink(
+    `/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/`
   )
+
+  useEffect(() => {
+    if(switchDetailQuery.data && venue && stackMember) {
+      setSwitchDetail({
+        ...switchDetailQuery.data,
+        venueDescription: venue.description,
+        unitDetails: stackMember?.data
+      })
+      setSupportRoutedInterfaces(isRouter(switchDetailQuery.data?.switchType || SWITCH_TYPE.SWITCH))
+    }
+  }, [switchDetailQuery.data, venue, stackMember])
+
+  useEffect(() => {
+    if(switchDetail) {
+      setSwitchFilter({
+        ...filters,
+        path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
+      })
+    }
+  }, [switchDetail, filters])
+
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+
+
+  return <>
+    <GridRow>
+      <GridCol col={{ span: 24 }} style={{ height: '148px' }}>
+        <Loader states={[{ isLoading: !switchFilter || !switchDetail }]}>
+          { switchFilter && switchDetail &&
+          <SwitchInfoWidget
+            switchDetail={switchDetail as SwitchViewModel}
+            filters={switchFilter} /> }
+        </Loader>
+      </GridCol>
+    </GridRow>
+
+    <Tabs onChange={onTabChange}
+      activeKey={params.activeSubTab}
+      type='card'
+      style={{ marginTop: '25px' }}
+    >
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
+        <SwitchOverviewPanel filters={switchFilter} />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
+        <SwitchOverviewPorts />
+      </Tabs.TabPane>
+      {supportRoutedInterfaces &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
+          <SwitchOverviewRouteInterfaces />
+        </Tabs.TabPane>
+      }
+      <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
+        <SwitchOverviewVLANs />
+      </Tabs.TabPane>
+      <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
+        <SwitchOverviewACLs />
+      </Tabs.TabPane>
+    </Tabs>
+  </>
 }

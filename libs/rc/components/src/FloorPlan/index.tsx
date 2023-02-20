@@ -1,16 +1,16 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { Dropdown, Empty, Space } from 'antd'
-import { clone, get, isEmpty }    from 'lodash'
-import { DndProvider }            from 'react-dnd'
-import { HTML5Backend }           from 'react-dnd-html5-backend'
-import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Dropdown, Empty, Space }           from 'antd'
+import { clone, get, isEmpty }              from 'lodash'
+import { DndProvider }                      from 'react-dnd'
+import { HTML5Backend }                     from 'react-dnd-html5-backend'
+import { useIntl }                          from 'react-intl'
+import { Location, useLocation, useParams } from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                                                                                                                                                                                                       from '@acx-ui/components'
-import { BulbOutlined }                                                                                                                                                                                                                          from '@acx-ui/icons'
-import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
-import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                 from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal }                                                                                                                                                                                                                                from '@acx-ui/components'
+import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }                                                                                                                                                                                                                from '@acx-ui/icons'
+import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                                          from '@acx-ui/rc/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -33,6 +33,8 @@ export const NetworkDeviceContext = createContext<Function | null>(null)
 
 export function FloorPlan () {
   const params = useParams()
+  const location: Location = useLocation()
+
   const floorPlanQuery = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
   const [showGalleryView, setShowGalleryView] = useState(false)
@@ -49,6 +51,7 @@ export function FloorPlan () {
   const [unplacedDevicesState, setUnplacedDevicesState]
   = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
+  const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
 
   const defaultDevices = {
     ap: [],
@@ -84,7 +87,9 @@ export function FloorPlan () {
       queryData.sort(sortByFloorNumber)
       const _selectedFP = updatedFloorPlanName ?
         queryData.filter((floor) => floor.name === updatedFloorPlanName)[0]
-        : queryData[0]
+        : (location?.state) ? (location.state as {
+            param: { floorplan: FloorPlanDto }
+        }).param?.floorplan : queryData[0]
 
       setTimeout(() => {
         setFloorPlans(queryData)
@@ -98,7 +103,7 @@ export function FloorPlan () {
       const _networkDevicesVisibility: NetworkDeviceType[] = [...networkDevicesVisibility]
       for (let deviceType in NetworkDeviceType) {
         if (deviceType === NetworkDeviceType.rogue_ap) {
-          continue // rouge ap is not controlled(placed) by user
+          continue // rogue ap is not controlled(placed) by user
         }
         const _deviceType = deviceType as keyof typeof NetworkDeviceType
         const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
@@ -140,6 +145,8 @@ export function FloorPlan () {
     updateCloudpathServerPosition,
     { isLoading: isUpdateCloudpathServerPosition }
   ] = useUpdateCloudpathServerPositionMutation()
+
+  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
   const galleryViewHandler = () => {
     setShowGalleryView(true)
@@ -315,6 +322,10 @@ export function FloorPlan () {
     setCloseOverlay(flag)
   }
 
+  function showRogueAps () {
+    setShowRogueAp(!showRogueAp)
+  }
+
   return (
     <Loader states={[floorPlanQuery,
       { isLoading: false, isFetching: isDeleteFloorPlanUpdating },
@@ -327,7 +338,9 @@ export function FloorPlan () {
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
           <DndProvider backend={HTML5Backend}>
-            <UI.FloorPlanContainer>
+            <UI.FloorPlanContainer style={{
+              backgroundColor: (!showGalleryView && showRogueAp) ? 'rgba(0, 0, 0, 0.4)' : ''
+            }}>
               { showGalleryView ?
                 <GalleryView
                   setCoordinates={setCoordinates}
@@ -343,9 +356,18 @@ export function FloorPlan () {
                   deleteFloorPlan={onDeleteFloorPlan}
                   onAddEditFloorPlan={onAddEditFloorPlan}
                   networkDevices={devicesByFlooplanId}
-                  networkDevicesVisibility={networkDevicesVisibility}/>
+                  networkDevicesVisibility={networkDevicesVisibility}
+                  showRogueAp={showRogueAp}/>
               }
               <UI.StyledSpace size={24}>
+                { venueRogueApData?.enabled && <UI.RogueApButton key='rogueApBtn'
+                  size='small'
+                  type='link'
+                  icon={showRogueAp ? <EyeSlashOutlined/> : <EyeOpenOutlined/>}
+                  onClick={showRogueAps} >
+                  {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
+                    : $t({ defaultMessage: 'View Rogue APs' })}
+                </UI.RogueApButton> }
                 <AddEditFloorplanModal
                   buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
                   onAddEditFloorPlan={onAddEditFloorPlan}
@@ -354,7 +376,7 @@ export function FloorPlan () {
                   onVisibleChange={onVisibleChange}
                   visible={closeOverlay}
                   disabled={
-                    (!showGalleryView && unplacedDevicesCount) ? false : true}
+                    (!showGalleryView && unplacedDevicesCount && !showRogueAp) ? false : true}
                   overlay={
                     <UnplacedDevices {..._props} closeDropdown={closeDropdown}/>}>
                   <Button

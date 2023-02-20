@@ -1,9 +1,7 @@
-import { useIntl } from 'react-intl'
+import { SwitchClientsTable } from '@acx-ui/rc/components'
 
 export function SwitchClientsTab () {
-  const { $t } = useIntl()
-
   return (
-    <>{ $t({ defaultMessage: 'Clients' })}</>
+    <SwitchClientsTable />
   )
 }

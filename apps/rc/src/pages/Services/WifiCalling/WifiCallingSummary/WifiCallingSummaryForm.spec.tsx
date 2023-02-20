@@ -18,8 +18,18 @@ const ePDG: EPDG[] = [{
   domain: 'init.aaa.com',
   ip: '10.10.10.10'
 }]
+const ePDGNoIp: EPDG[] = [{
+  domain: 'init.aaa.com'
+}]
 const networkIds: string[] = ['nwId1', 'nwId2']
 const networksName: string[] = ['nwName1', 'nwName2']
+const epdgs: EPDG[] = [{
+  domain: 'init.aaa.com',
+  ip: '10.10.10.10'
+}]
+const epdgsNoIp: EPDG[] = [{
+  domain: 'init.aaa.com'
+}]
 
 const initState = {
   serviceName,
@@ -29,7 +39,20 @@ const initState = {
   tags,
   description,
   networkIds,
-  networksName
+  networksName,
+  epdgs
+} as WifiCallingFormContextType
+
+const initStateNoIp = {
+  serviceName,
+  profileName,
+  ePDG: ePDGNoIp,
+  qosPriority,
+  tags,
+  description,
+  networkIds,
+  networksName,
+  epdgs: epdgsNoIp
 } as WifiCallingFormContextType
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -41,7 +64,7 @@ const setWifiCallingSummary = jest.fn()
 
 describe('WifiCallingSummaryForm', () => {
   it('should render form successfully', async () => {
-    const { asFragment } = render(
+    render(
       <WifiCallingFormContext.Provider value={{
         state: initState,
         dispatch: setWifiCallingSummary
@@ -52,10 +75,23 @@ describe('WifiCallingSummaryForm', () => {
     )
     expect(screen.getByText('serviceNameId1')).toBeInTheDocument()
     expect(screen.getByText('description1')).toBeInTheDocument()
-    expect(screen.getByText('WIFICALLING_PRI_VOICE')).toBeInTheDocument()
-    expect(screen.getByText('tag1, tag2, tag3')).toBeInTheDocument()
+    expect(screen.getByText('Voice')).toBeInTheDocument()
     expect(screen.getByText('init.aaa.com (10.10.10.10)')).toBeInTheDocument()
+  })
 
-    expect(asFragment()).toMatchSnapshot()
+  it('should render form successfully without ip', async () => {
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initStateNoIp,
+        dispatch: setWifiCallingSummary
+      }}>
+        <WifiCallingSummaryForm />
+      </WifiCallingFormContext.Provider>,
+      { wrapper }
+    )
+    expect(screen.getByText('serviceNameId1')).toBeInTheDocument()
+    expect(screen.getByText('description1')).toBeInTheDocument()
+    expect(screen.getByText('Voice')).toBeInTheDocument()
+    expect(screen.getByText('init.aaa.com')).toBeInTheDocument()
   })
 })

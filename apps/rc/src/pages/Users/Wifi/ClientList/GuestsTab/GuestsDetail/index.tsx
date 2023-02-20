@@ -1,14 +1,26 @@
 import { useEffect, useState } from 'react'
 
-import { Divider, Dropdown, Form, Menu, MenuProps, Space } from 'antd'
-import moment                                              from 'moment-timezone'
-import { useIntl }                                         from 'react-intl'
+import { Divider,
+  Dropdown,
+  Menu,
+  MenuProps,
+  Space } from 'antd'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
-import { Button, cssStr, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { ArrowExpand }                       from '@acx-ui/icons'
-import { useGetGuestsListQuery }             from '@acx-ui/rc/services'
+
 import {
+  Button,
+  cssStr,
+  Table,
+  TableProps,
+  Descriptions
+} from '@acx-ui/components'
+import { ArrowExpand }           from '@acx-ui/icons'
+import { ClientHealthIcon }      from '@acx-ui/rc/components'
+import { useGetGuestsListQuery } from '@acx-ui/rc/services'
+import {
+  getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
@@ -22,10 +34,10 @@ import {
   renderExpires,
   renderGuestType
 } from '../GuestsTable'
+import * as UI from '../styledComponents'
 
 import { GenerateNewPasswordModal } from './generateNewPasswordModal'
 import { useGuestActions }          from './guestActions'
-
 
 interface GuestDetailsDrawerProps {
   currentGuest: Guest,
@@ -99,21 +111,29 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     return row.guestStatus
   }
 
+  const renderMaxNumberOfClients = function (value?: number) {
+    return value ? (value === -1) ? $t({ defaultMessage: 'Unlimited' }) : value : '0'
+  }
+
   const columns: TableProps<GuestClient>['columns'] = [
     {
       key: 'osType',
       title: $t({ defaultMessage: 'OS' }),
       dataIndex: 'osType',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: function (data) {
+        return <UI.IconContainer>{getOsTypeIcon(data as string)}</UI.IconContainer>
+      }
     }, {
       key: 'healthCheckStatus',
       title: $t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: false,
-      defaultSortOrder: 'ascend'
-      // render: function (data, row) {} //TODO: Wait for connected clients
+      defaultSortOrder: 'ascend',
+      render: (data, row) => {
+        return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
+      }
     }, {
       key: 'clientMac',
       title: $t({ defaultMessage: 'MAC Address' }),
@@ -212,93 +232,92 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         guestDetail.guestStatus === GuestStatusEnum.DISABLED) {
           return false
         } else if (guestDetail.guestStatus === GuestStatusEnum.EXPIRED
-          && (item.key === 'disableGuest' || item.key === 'enableGuest'
-            || item.key === 'generatePassword')) {
+          && (item.key === 'disableGuest' || item.key === 'enableGuest')) {
           return false
         }
+
+        if (item.key === 'generatePassword') {
+          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+              guestDetail.networkId && !guestDetail.socialLogin)
+        }
+
         return true
       })}
     />
   )
 
-  return (<Form
-    labelCol={{ span: 10 }}
-    labelAlign='left' >
-    <div style={{
-      textAlign: 'right'
-    }}>
-      {useIsSplitOn(Features.DEVICES) &&
-        <Dropdown overlay={menu} key='actions'>
-          <Button type='secondary'>
-            <Space>
-              {$t({ defaultMessage: 'Actions' })}
-              <ArrowExpand />
-            </Space>
-          </Button>
-        </Dropdown>
-      }
+  return (<>
+    <div style={{ textAlign: 'right' }}>
+      <Dropdown overlay={menu} key='actions'>
+        <Button type='secondary'>
+          <Space>
+            {$t({ defaultMessage: 'Actions' })}
+            <ArrowExpand />
+          </Space>
+        </Button>
+      </Dropdown>
     </div>
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Type:' })}
-      children={renderGuestType(guestDetail.guestType)} />
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Type' })}
+        children={renderGuestType(guestDetail.guestType)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Name:' })}
-      children={guestDetail.name} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Name' })}
+        children={guestDetail.name} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Mobile Phone:' })}
-      children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Mobile Phone' })}
+        children={transformDisplayText(guestDetail.mobilePhoneNumber)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Email:' })}
-      children={transformDisplayText(guestDetail.emailAddress)} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Email' })}
+        children={transformDisplayText(guestDetail.emailAddress)} />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Notes:' })}
-      children={transformDisplayText(guestDetail.notes)} />
-
-    <Divider />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Allowed Network:' })}
-      children={renderAllowedNetwork(guestDetail)} />
-
-    {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
-    <Form.Item
-      label={$t({ defaultMessage: 'Guest Created:' })}
-      children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Access Expires:' })}
-      children={renderExpires(guestDetail)} />
-
-    <Form.Item
-      label={$t({ defaultMessage: 'Max. Number of Clients:' })}
-      children={guestDetail.maxNumberOfClients || '0'} />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Notes' })}
+        children={transformDisplayText(guestDetail.notes)} />
+    </Descriptions>
 
     <Divider />
 
-    <Form.Item
-      label={$t({ defaultMessage: 'Status:' })}
-      children={renderStatus(guestDetail)} />
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Allowed Network' })}
+        children={renderAllowedNetwork(guestDetail)} />
+
+      {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Guest Created' })}
+        children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
+
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Access Expires' })}
+        children={renderExpires(guestDetail)} />
+
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Max. Number of Clients' })}
+        children={renderMaxNumberOfClients(guestDetail.maxNumberOfClients)} />
+    </Descriptions>
+
+    <Divider />
+
+    <Descriptions>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Status' })}
+        children={renderStatus(guestDetail)} />
+    </Descriptions>
 
     {guestDetail.clients &&
       <Table
         columns={columns}
         dataSource={guestDetail.clients}
-        pagination={false}
       />}
 
     <GenerateNewPasswordModal {...{
       generateModalVisible, setGenerateModalVisible, guestDetail, tenantId
-    }}
-    />
-  </Form>
-  )
+    }} />
+  </>)
 }
-
-
-
-

@@ -3,7 +3,9 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
+
+import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
 
 import { Table, TableProps } from '.'
 
@@ -24,7 +26,8 @@ type TestRow = {
   key: string,
   name: string,
   age: number,
-  address: string
+  address: string,
+  isFirstLevel?: boolean
 }
 
 describe('Table component', () => {
@@ -61,6 +64,40 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should only render pagination when total items exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { total: 11 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ total: 9 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should only render pagination when dataSource length exceeds default page size', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      pagination: { defaultPageSize: 2 }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const pagination = await screen.findByRole('listitem', { name: /1/i })
+    expect(pagination).toBeVisible()
+
+    rerender(<Table {...props} pagination={{ defaultPageSize: 10 }} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
+  it('should not render pagination when dataSource is undefined', async () => {
+    const props: TableProps<TestRow> = { columns: testColumns }
+    render(<Table {...props} />)
+    expect(screen.queryByRole('listitem', { name: /1/i })).toBeNull()
+  })
+
   it('renders compact table', () => {
     const { asFragment } = render(<Table
       type='compact'
@@ -77,6 +114,23 @@ describe('Table component', () => {
       dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders no selected bar table', async () => {
+    const props: TableProps<TestRow> = {
+      columns: testColumns,
+      dataSource: testData,
+      rowSelection: {
+        type: 'radio',
+        defaultSelectedRowKeys: ['1']
+      }
+    }
+    const { rerender } = render(<Table {...props} />)
+    const alert = await screen.findByRole('alert')
+
+    expect(alert).toBeVisible()
+    rerender(<Table {...props} tableAlertRender={false} />)
+    expect(alert).not.toBeVisible()
   })
 
   it('renders table with ellipsis column', async () => {
@@ -157,8 +211,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -193,8 +246,7 @@ describe('Table component', () => {
       rowSelection={{ selectedRowKeys: ['1', '2'] }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -239,8 +291,7 @@ describe('Table component', () => {
       rowSelection={{ type: 'radio', onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -265,8 +316,7 @@ describe('Table component', () => {
       }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -286,8 +336,7 @@ describe('Table component', () => {
       rowSelection={{ defaultSelectedRowKeys: ['1', '3'], onChange }}
     />)
 
-    const tbody = (await screen.findAllByRole('rowgroup'))
-      .find(element => element.classList.contains('ant-table-tbody'))!
+    const tbody = await findTBody()
 
     expect(tbody).toBeVisible()
 
@@ -298,6 +347,51 @@ describe('Table component', () => {
     fireEvent.click(await body.findByText('Will Smith'))
     expect(selectedRows.filter(el => el.checked)).toHaveLength(2)
     expect(onChange).toBeCalledTimes(2)
+  })
+
+  it('Repeated key data: rowKey funciton single select row click', async () => {
+    const treeData = [
+      { key: '1',
+        name: 'John Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true,
+        children: [
+          {
+            key: '1',
+            name: 'Will Smith',
+            age: 32,
+            address: 'sample address',
+            isFirstLevel: false
+          }
+        ]
+      },
+      { key: '2',
+        name: 'Jane Doe',
+        age: 32,
+        address: 'sample address',
+        isFirstLevel: true
+      }
+    ]
+    const onChange = jest.fn()
+    render(<Table
+      columns={testColumns}
+      dataSource={treeData}
+      rowKey={(record)=> record.key + (!record.isFirstLevel ? 'child' : '')}
+      rowSelection={{ type: 'radio', onChange }}
+    />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const body = within(tbody)
+    fireEvent.click(await body.findByText(testData[1].name))
+    // to ensure it doesn't get unselected
+    fireEvent.click(await body.findByText(testData[1].name))
+    const selectedRow = (await body.findAllByRole('radio')) as HTMLInputElement[]
+    expect(selectedRow.filter(el => el.checked)).toHaveLength(1)
+    expect(onChange).toBeCalledTimes(1)
   })
 
   it('calls onResetState', async () => {
@@ -346,10 +440,44 @@ describe('Table component', () => {
     expect(actions[0].onClick).toBeCalled()
   })
 
+  it('renders action dropdown', async () => {
+    const actions = [
+      { label: 'Action 1', onClick: jest.fn() },
+      { label: 'Action 2', onClick: jest.fn() },
+      {
+        label: 'Action 3',
+        onClick: jest.fn(),
+        dropdownMenu: {
+          onClick: jest.fn(),
+          items: [{ key: 'item1', label: 'Item 1', onClick: jest.fn() }]
+        }
+      }
+    ]
+
+    render(<Table
+      actions={actions}
+      columns={testColumns}
+      dataSource={testData}
+    />)
+
+    const dropdown = await screen.findByRole('button', { name: actions[2].label })
+    expect(dropdown).toBeVisible()
+    expect(actions[2].onClick).not.toBeCalled()
+    fireEvent.click(dropdown)
+    expect(actions[2].onClick).not.toBeCalled()
+
+    const dropdownItem = await screen.findByText('Item 1')
+    expect(actions[2].dropdownMenu?.onClick).not.toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).not.toBeCalled()
+    fireEvent.click(dropdownItem)
+    expect(actions[2].dropdownMenu?.onClick).toBeCalled()
+    expect(actions[2].dropdownMenu?.items[0].onClick).toBeCalled()
+  })
+
   it('renders disabled action items', async () => {
     const actions = [
       { label: 'Action 1', disabled: true, onClick: jest.fn() },
-      { label: 'Action 2', disabled: true, onClick: jest.fn() }
+      { label: 'Action 2', disabled: true, tooltip: 'can not action', onClick: jest.fn() }
     ]
 
     render(<Table
@@ -361,6 +489,11 @@ describe('Table component', () => {
     const action1 = await screen.findByRole('button', { name: actions[0].label })
     expect(action1).toBeVisible()
     expect(actions[0].onClick).not.toBeCalled()
+    const action2 = await screen.findByRole('button', { name: actions[1].label })
+    fireEvent.mouseOver(action2)
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('can not action')
+    })
   })
 
   it('hides rowAction when visible == false', async () => {
@@ -416,10 +549,12 @@ describe('Table component', () => {
   })
 
   it('disabled row action button and add tooltip', async () => {
-    const [onEdit, onDelete] = [jest.fn(), jest.fn()]
+    const [onEdit, onDelete, onBackup] = [jest.fn(), jest.fn(), jest.fn()]
     const rowActions: TableProps<TestRow>['rowActions'] = [
       { label: 'Edit', onClick: onEdit },
-      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' }
+      { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
+      { label: 'Backup', onClick: onBackup,
+        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
     ]
 
     render(<Table
@@ -433,6 +568,11 @@ describe('Table component', () => {
     fireEvent.click(within(row1).getByRole('checkbox'))
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     expect(deleteButton).toBeDisabled()
+    const backupButton = screen.getByRole('button', { name: /backup/i })
+    expect(backupButton).not.toBeDisabled()
+    const row2 = await screen.findByRole('row', { name: /jane/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+    expect(backupButton).toBeDisabled()
   })
 
   it('add row action button tooltip', async () => {
@@ -459,83 +599,6 @@ describe('Table component', () => {
   })
 
   describe('search & filter', () => {
-    const filteredColumns = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        filterable: true,
-        searchable: true
-      },
-      {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-        filterable: true
-      },
-      {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        searchable: true
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-        searchable: true
-      }
-    ]
-
-    const filteredData = [
-      {
-        key: '1',
-        name: 'John Doe',
-        age: 32,
-        description: 'John Doe living at sample address',
-        address: 'sample address',
-        children: [
-          {
-            key: '1.1',
-            name: 'Fred Mayers',
-            age: 27,
-            description: 'Fred Mayers is a good guy',
-            address: 'Fred lives alone'
-          }
-        ]
-      },
-      {
-        key: '2',
-        name: 'Jane Doe',
-        age: 33,
-        description: 'Jane Doe living at new address',
-        address: 'new address'
-      },
-      {
-        key: '3',
-        name: 'Jordan Doe',
-        age: 33,
-        description: '',
-        address: 'another address',
-        children: [
-          {
-            key: '3.1',
-            name: 'Dawn Soh',
-            age: 22,
-            description: 'Dawn just graduated college',
-            address: 'none, had moved out of the dorm'
-          },
-          {
-            key: '3.2',
-            name: 'Edna Wee',
-            age: 22,
-            description: 'Edna loves to run',
-            address: 'living abroad in America'
-          }
-        ]
-      }
-    ]
-
     it('search input with terms', async () => {
       render(<Table
         columns={filteredColumns}
@@ -543,20 +606,22 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
       const validSearchTerm = 'John Doe'
-      const input = await screen.findByPlaceholderText('Search Name, Description, Address')
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
       fireEvent.change(input, { target: { value: validSearchTerm } })
+      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
 
-      expect(await screen.findAllByText(validSearchTerm)).toHaveLength(2)
-
-      const childSearchTerm = 'edna'
-      fireEvent.change(input, { target: { value: childSearchTerm } })
-      expect(await screen.findAllByText('Jordan Doe')).toHaveLength(1)
+      fireEvent.change(input, { target: { value: 'edna' } })
+      expect(await screen.findAllByText('Jane')).toHaveLength(1)
+      expect(await screen.findAllByText('Jordan')).toHaveLength(1)
 
       const buttons = await screen.findAllByRole('button')
-      expect(buttons).toHaveLength(5)
-      fireEvent.click(buttons[1])
+      expect(buttons).toHaveLength(4)
+      fireEvent.click(buttons[2])
+      fireEvent.click(buttons[3])
+      expect(await screen.findAllByText('Edna')).toHaveLength(3)
 
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
     })
 
     it('filtering inputs & searching', async () => {
@@ -566,14 +631,13 @@ describe('Table component', () => {
         rowSelection={{ selectedRowKeys: [] }}
       />)
 
-      const tbody = (await screen.findAllByRole('rowgroup'))
-        .find(element => element.classList.contains('ant-table-tbody'))!
+      const tbody = await findTBody()
 
       expect(tbody).toBeVisible()
       const body = within(tbody)
       const before =
         (await body.findAllByRole('checkbox', { hidden: false })) as HTMLInputElement[]
-      expect(before).toHaveLength(3)
+      expect(before).toHaveLength(4)
 
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters).toHaveLength(2)
@@ -592,6 +656,236 @@ describe('Table component', () => {
       expect(after).toHaveLength(1)
       expect(await screen.findByRole('img', { name: 'check', hidden: true }))
         .toBeInTheDocument()
+    })
+
+    it('should highlight when search', async () => {
+      const { asFragment } = render(<Table columns={filteredColumns} dataSource={filteredData} />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelectorAll('mark')).toHaveLength(1)
+    })
+
+    it('should highlight with custom render', async () => {
+      const renderFn = jest.fn()
+      const columns = [ ...filteredColumns.slice(0,3), {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        searchable: true,
+        render: renderFn
+      }]
+      render(<Table columns={columns} dataSource={filteredData} />)
+      expect(renderFn).toBeCalled()
+    })
+
+    it('should highlight with custom highlighter', async () => {
+      const customHighlighter = jest.fn(() => 'highlighted')
+      const renderFn = jest.fn((_, row , __, highlightFn) =>
+        highlightFn(row.address, customHighlighter)
+      )
+      const columns = [ ...filteredColumns.slice(0,3), {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        searchable: true,
+        render: renderFn
+      }]
+      render(<Table columns={columns} dataSource={filteredData} />)
+      const validSearchTerm = 'sample address'
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: validSearchTerm } })
+
+      await screen.findByText('highlighted')
+      expect(customHighlighter).toBeCalled()
+    })
+
+    it('should call debounced/onFilterChange when filter/search updated', async () => {
+      const onFilterChange = jest.fn()
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        onFilterChange={onFilterChange}
+      />)
+
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'J' } })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).not.toBeCalled()
+
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).toBeCalledTimes(1)
+
+      fireEvent.change(input, { target: { value: '' } })
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      const nameFilter = filters[0]
+      fireEvent.keyDown(nameFilter, { key: 'John Doe', code: 'John Doe' })
+      await new Promise((r)=>{setTimeout(r, 1000)})
+      expect(onFilterChange).toBeCalledTimes(2)
+    })
+
+    it('should not do local filter/search when enableApiFilter', async () => {
+      render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        enableApiFilter={true}
+      />)
+      const input = await screen
+        .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      fireEvent.change(input, { target: { value: 'John Doe' } })
+      expect(await screen.findAllByText('Jordan')).toHaveLength(1)
+    })
+  })
+
+  describe('show/hide columnSort', () => {
+    const basicColumns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name'
+      },
+      {
+        title: 'Age',
+        dataIndex: 'age',
+        key: 'age'
+      },
+      {
+        title: 'Distance',
+        dataIndex: 'distance',
+        key: 'distance'
+      },
+      {
+        title: 'Address 1',
+        dataIndex: 'address1',
+        key: 'address1'
+      },
+      {
+        title: 'Address 2',
+        dataIndex: 'address2',
+        key: 'address2'
+      },
+      {
+        title: 'Address 3',
+        dataIndex: 'address3',
+        key: 'address3'
+      },
+      {
+        title: 'Address 4',
+        dataIndex: 'address4',
+        key: 'address4'
+      },
+      {
+        title: 'Address 5',
+        dataIndex: 'address5',
+        key: 'address5'
+      },
+      {
+        title: 'Address 6',
+        dataIndex: 'address6',
+        key: 'address6'
+      }
+    ]
+
+    const basicData = [
+      {
+        key: '1',
+        name: 'John Doe',
+        age: 32,
+        distance: 32,
+        address1: 'sample address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '2',
+        name: 'Jane Doe',
+        age: 33,
+        distance: 33,
+        address1: 'new address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      },
+      {
+        key: '3',
+        name: 'Will Smith',
+        age: 45,
+        distance: 45,
+        address1: 'address',
+        address2: 'sample address',
+        address3: 'sample address',
+        address4: 'sample address',
+        address5: 'sample address',
+        address6: 'sample address'
+      }
+    ]
+
+    const columnState = {
+      // eslint-disable-next-line no-console
+      onChange: jest.fn(),
+      defaultValue: {
+        name: true,
+        age: true,
+        address1: true,
+        address2: true,
+        address3: true,
+        address4: true,
+        distance: true,
+        address5: false,
+        address6: true
+      }
+    }
+    const props = {
+      columns: basicColumns,
+      dataSource: basicData,
+      columnState: columnState
+    }
+
+
+    it('hide the columnSort', async () => {
+      render(<Table {...props} columnState={{ ...columnState, hidden: true }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = within(listToolbar).queryByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeNull()
+    })
+
+    it('show the columnSort by default', async () => {
+      render(<Table {...props} columnState={{ ...columnState }} />)
+
+      const listToolbar = await screen.findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar')
+        }
+      })
+
+      const listToolBarItem = await within(listToolbar).findByRole('generic', {
+        name: (name, element) => {
+          return element.classList.contains('ant-pro-table-list-toolbar-setting-item')
+        }
+      })
+
+      expect(listToolBarItem).toBeTruthy()
     })
   })
 })

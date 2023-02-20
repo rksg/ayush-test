@@ -37,7 +37,8 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 <div
                   class="ant-space-item"
                 >
-                  <div
+                  <svg
+                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
@@ -62,7 +63,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
               style="display: block; height: 800px; width: 1280px;"
             >
               <div
-                style="text-align: center; padding: 8px 0px;"
+                style="text-align: center;"
               >
                 <div
                   class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
@@ -150,7 +151,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
 
 exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: contentSwitcher 1`] = `
 <div
-  style="text-align: center; padding: 8px 0px;"
+  style="text-align: center;"
 >
   <div
     class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"

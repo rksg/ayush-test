@@ -2,6 +2,8 @@ import { SingleValueType } from 'rc-cascader/lib/Cascader'
 
 import { showToast } from '../../Toast'
 
+import type { CheckboxValueType } from 'antd/es/checkbox/Group'
+
 export const helper = (val?: SingleValueType | SingleValueType[]) => {
   if (val && Array.isArray(val)) {
     let ret = ''
@@ -18,10 +20,13 @@ export const helper = (val?: SingleValueType | SingleValueType[]) => {
 }
 
 export const onApply = (
-  selectedOptions?: SingleValueType | SingleValueType[] | undefined
+  selectedOptions?: SingleValueType | SingleValueType[],
+  radioBandsSelected?: CheckboxValueType[]
 ) => {
   showToast({
     type: 'success',
-    content: `Cascader Options Selected: ${helper(selectedOptions)}`
+    content: `Options Selected: ${helper(selectedOptions)}
+     | Radio Bands Selected: ${radioBandsSelected?.length ? radioBandsSelected : 'none' }
+    `
   })
 }

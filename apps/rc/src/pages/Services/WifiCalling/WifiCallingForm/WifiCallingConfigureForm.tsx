@@ -40,6 +40,7 @@ const WifiCallingConfigureForm = () => {
   const ePDG:EPDG[] = []
   const networkIds:string[] = []
   const networksName:string[] = []
+  const epdgs:EPDG[] = []
 
   const formRef = useRef<StepsFormInstance<CreateNetworkFormFields>>()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -49,7 +50,8 @@ const WifiCallingConfigureForm = () => {
     tags,
     description,
     networkIds,
-    networksName
+    networksName,
+    epdgs
   })
 
   const handleUpdateWifiCallingService = async () => {

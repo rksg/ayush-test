@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
@@ -10,17 +10,45 @@ import {
 } from '@acx-ui/components'
 import {
   WorldSolid,
-  ArrowExpand,
-  AccountCircleSolid,
-  NotificationSolid,
-  QuestionMarkCircleSolid
+  ArrowExpand
 } from '@acx-ui/icons'
-import { Outlet, TenantLink } from '@acx-ui/react-router-dom'
+import {
+  ActivityButton,
+  AlarmsButton,
+  HelpButton,
+  UserButton
+} from '@acx-ui/main/components'
+import {
+  CloudMessageBanner,
+  useUserProfileContext
+} from '@acx-ui/rc/components'
+import {
+  useGetTenantDetailQuery
+} from '@acx-ui/rc/services'
+import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 
 function Layout () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [tenantType, setTenantType] = useState('')
+
+  const { data } = useGetTenantDetailQuery({ params: { tenantId } })
+  const { data: userProfile } = useUserProfileContext()
+  const companyName = userProfile?.companyName
+
+  useEffect(() => {
+    if (data && userProfile) {
+      if (userProfile?.support) {
+        setTenantType('SUPPORT')
+      } else {
+        setTenantType(data.tenantType)
+      }
+    }
+  }, [data, userProfile])
+
+
   const regionMenu = <Menu
     selectable
     defaultSelectedKeys={['US']}
@@ -32,8 +60,13 @@ function Layout () {
   />
   return (
     <LayoutComponent
-      menuConfig={useMenuConfig()}
-      content={<Outlet />}
+      menuConfig={useMenuConfig(tenantType)}
+      content={
+        <>
+          <CloudMessageBanner />
+          <Outlet />
+        </>
+      }
       leftHeaderContent={
         <Dropdown overlay={regionMenu}>{(selectedKeys) =>
           <LayoutUI.DropdownText>
@@ -44,10 +77,11 @@ function Layout () {
         }</Dropdown>
       }
       rightHeaderContent={<>
-        <LayoutUI.Divider />
-        <LayoutUI.ButtonSolid icon={<NotificationSolid />} />
-        <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} />
-        <LayoutUI.ButtonSolid icon={<AccountCircleSolid />} />
+        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
+        <AlarmsButton/>
+        <ActivityButton/>
+        <HelpButton/>
+        <UserButton/>
       </>}
     />
   )

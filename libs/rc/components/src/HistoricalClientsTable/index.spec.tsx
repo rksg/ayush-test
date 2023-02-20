@@ -12,12 +12,6 @@ import {
 
 import { HistoricalClientsTable } from '.'
 
-jest.mock('@acx-ui/icons', () => {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 const histClientList = {
   totalCount: 2,
   page: 1,
@@ -80,7 +74,10 @@ describe('HistoricalClientsTable', () => {
       tenantId: 'tenant-id'
     }
     const { asFragment } = render(<Provider>
-      <HistoricalClientsTable searchString='24' />
+      <HistoricalClientsTable
+        searchString='24'
+        setHistoricalClientCount={jest.fn()}
+        id={'historicalClient'} />
     </Provider>, {
       route: { params, path: '/:tenantId' }
     })

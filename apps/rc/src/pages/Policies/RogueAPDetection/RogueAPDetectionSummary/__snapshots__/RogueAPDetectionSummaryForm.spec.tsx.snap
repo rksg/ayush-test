@@ -82,10 +82,10 @@ exports[`RogueAPDetectionSummaryForm should render form successfully 1`] = `
               >
                 <label
                   class=""
-                  for="tags"
-                  title="Tags"
+                  for="description"
+                  title="Description"
                 >
-                  Tags
+                  Description
                 </label>
               </div>
               <div
@@ -99,9 +99,9 @@ exports[`RogueAPDetectionSummaryForm should render form successfully 1`] = `
                   >
                     <div
                       class="ant-typography"
-                      id="tags"
+                      id="description"
                     >
-                      tag1, tag2, and tag3
+                      desc1
                     </div>
                   </div>
                 </div>

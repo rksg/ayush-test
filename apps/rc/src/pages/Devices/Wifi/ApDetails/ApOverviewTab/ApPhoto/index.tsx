@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 
 import { Upload, Image } from 'antd'
-import { useParams }     from 'react-router-dom'
 
 import { Card, Loader, showToast } from '@acx-ui/components'
 import {
@@ -12,7 +11,8 @@ import {
 } from '@acx-ui/rc/services'
 import { getIntl } from '@acx-ui/utils'
 
-import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.jpg'
+import PlaceHolder      from '../../../../../../assets/images/ap-models-images/placeholder.svg'
+import { useApContext } from '../../ApContext'
 
 import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
 import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
@@ -24,7 +24,7 @@ export function ApPhoto () {
   const [visible, setVisible] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [activeImage, setActiveImage] = useState<boolean[]>([false])
-  const params = useParams()
+  const params = useApContext()
 
   const apViewModelPayload = {
     entityType: 'aps',

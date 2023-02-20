@@ -20,7 +20,7 @@ exports[`AP List Table should render table 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              WiFi
+              Wi-Fi
             </h1>
           </span>
         </div>
@@ -34,7 +34,7 @@ exports[`AP List Table should render table 1`] = `
               class="ant-space-item"
             >
               <button
-                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 eAazoW ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
+                class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger styledComponents__Dropdown-sc-spsy1x-0 islLOF"
                 type="button"
               >
                 <span>

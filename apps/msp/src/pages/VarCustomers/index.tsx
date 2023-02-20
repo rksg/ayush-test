@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
@@ -20,22 +21,24 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
 
 
 const transformApUtilization = (row: VarCustomer) => {
-  const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-    en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
-  if (entitlement.length > 0) {
-    const apEntitlement = entitlement[0]
-    const quantity = parseInt(apEntitlement.quantity, 10)
-    const consumed = parseInt(apEntitlement.consumed, 10)
-    if (quantity > 0) {
-      const value =
+  if (row.entitlements) {
+    const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
+      en.entitlementDeviceType === EntitlementNetworkDeviceType.WIFI)
+    if (entitlement.length > 0) {
+      const apEntitlement = entitlement[0]
+      const quantity = parseInt(apEntitlement.quantity, 10)
+      const consumed = parseInt(apEntitlement.consumed, 10)
+      if (quantity > 0) {
+        const value =
       (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
-      return value
-    } else {
-      return '0%'
+        return value
+      } else {
+        return '0%'
+      }
     }
   }
   return '0%'
@@ -44,27 +47,31 @@ const transformApUtilization = (row: VarCustomer) => {
 const transformNextExpirationDate = (row: VarCustomer) => {
   let expirationDate = '--'
   let toBeRemoved = ''
-  const entitlements = row.entitlements
-  let target: DelegationEntitlementRecord
-  entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
-    target = entitlement
-    const consumed = parseInt(entitlement.quantity, 10)
-    const quantity = parseInt(entitlement.quantity, 10)
-    if (consumed > 0 || quantity > 0) {
-      if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
-        target = entitlement
+  if (row.entitlements) {
+    const entitlements = row.entitlements
+    let target: DelegationEntitlementRecord
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      target = entitlement
+      const consumed = parseInt(entitlement.quantity, 10)
+      const quantity = parseInt(entitlement.quantity, 10)
+      if (consumed > 0 || quantity > 0) {
+        if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
+          target = entitlement
+        }
       }
-    }
-    expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
-    toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
-      parseInt(target.toBeRemovedQuantity, 10))
-  })
+      expirationDate = moment(target.expirationDate).format(DateFormatEnum.UserDateFormat)
+      toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
+        parseInt(target.toBeRemovedQuantity, 10))
+    })
+  }
 
   return `${expirationDate} (${toBeRemoved})`
 }
 
 export function VarCustomers () {
   const { $t } = useIntl()
+
+  const { data: userProfile } = useUserProfileContext()
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {
@@ -74,9 +81,10 @@ export function VarCustomers () {
       searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
-      render: function (data) {
+      render: function (data, row, _, highlightFn) {
+        const to = `${getBasePath()}/t/${row.tenantId}`
         return (
-          <TenantLink to={''}>{data}</TenantLink>
+          <Link to={to}>{highlightFn(data as string)}</Link>
         )
       }
     },
@@ -91,7 +99,6 @@ export function VarCustomers () {
       dataIndex: 'alarmCount',
       key: 'alarmCount',
       sorter: true,
-      align: 'center',
       render: function (data) {
         return (
           <TenantLink to={''}>{data}</TenantLink>
@@ -103,7 +110,6 @@ export function VarCustomers () {
       dataIndex: 'activeIncindents',
       key: 'activeIncindents',
       sorter: true,
-      align: 'center',
       render: function () {
         return 0
       }
@@ -112,15 +118,13 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
       key: 'wifiLicenses',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
       key: 'wifiLicensesUtilization',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformApUtilization(row)
       }
@@ -129,21 +133,21 @@ export function VarCustomers () {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
       key: 'switchLicenses',
-      sorter: true,
-      align: 'center'
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Next License Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
-      align: 'center',
       render: function (data, row) {
         return transformNextExpirationDate(row)
       }
     }
   ]
 
+  const delegationType =
+    userProfile?.support ? ['DELEGATION_TYPE_SUPPORT'] : ['DELEGATION_TYPE_VAR']
   const varCustomerPayload = {
     searchString: '',
     fields: [
@@ -159,7 +163,7 @@ export function VarCustomers () {
     searchTargetFields: ['tenantName', 'tenantEmail'],
     filters: {
       status: ['DELEGATION_STATUS_ACCEPTED'],
-      delegationType: ['DELEGATION_TYPE_VAR'],
+      delegationType: delegationType,
       isValid: [true]
     }
   }
@@ -177,16 +181,19 @@ export function VarCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
         />
       </Loader>
     )
   }
 
+  const title = userProfile?.support
+    ? $t({ defaultMessage: 'RUCKUS Customers' }) : $t({ defaultMessage: 'VAR Customers' })
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'VAR Customers' })}
+        title={title}
         extra={[
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>

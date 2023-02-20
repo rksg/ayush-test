@@ -17,6 +17,10 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/guest-user'
   },
+  importGuestPass: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/guest-user/import'
+  },
   enableGuests: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'

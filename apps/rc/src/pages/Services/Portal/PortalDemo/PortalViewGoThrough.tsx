@@ -6,7 +6,8 @@ export default function PortalViewGoThrough (props:{
   demoValue: Demo,
   isPreview?:boolean,
   updateBtn?: (value: { url?: string, size?: number, show?: boolean,
-    color?:string, text?:string }) => void
+    color?:string, text?:string }) => void,
+  portalLang: { [key:string]:string }
 }) {
   const { demoValue, updateBtn, isPreview } = props
   return (
@@ -14,7 +15,7 @@ export default function PortalViewGoThrough (props:{
       demoValue={demoValue}
       isPreview={isPreview}
       updateButton={(data)=>updateBtn?.(data)}
-    >{'Connect To Wi-Fi'}</PortalButtonContent>
+    >{props.portalLang.connectToWifi}</PortalButtonContent>
   )
 }
 

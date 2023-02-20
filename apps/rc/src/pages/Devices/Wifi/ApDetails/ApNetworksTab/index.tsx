@@ -12,6 +12,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { useApContext } from '../ApContext'
+
 const defaultPayload = {
   searchString: '',
   fields: [
@@ -22,9 +24,11 @@ const defaultPayload = {
 
 export function ApNetworksTab () {
   const { $t } = useIntl()
+  const apiParams = useApContext() as Record<string, string>
   const tableQuery = useTableQuery({
     useQuery: useApNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    apiParams
   })
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
@@ -37,7 +41,9 @@ export function ApNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (disabledType.includes(row.nwSubType as NetworkTypeEnum)) ? data :(
-          <TenantLink to={`/networks/${row.id}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>
+            {data}
+          </TenantLink>
         )
       }
     }, {
@@ -64,18 +70,20 @@ export function ApNetworksTab () {
           $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: row.vlanPool?.name ?? '' }) :
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
       }
-    }, {
-      key: 'health',
-      title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'health',
-      sorter: true
-    },
-    {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      sorter: true
-    }]
+    }
+    // { // TODO: Waiting for HEALTH feature support
+    //   key: 'health',
+    //   title: $t({ defaultMessage: 'Health' }),
+    //   dataIndex: 'health',
+    //   sorter: true
+    // },
+    // { // TODO: Waiting for TAG feature support
+    //   key: 'tags',
+    //   title: $t({ defaultMessage: 'Tags' }),
+    //   dataIndex: 'tags',
+    //   sorter: true
+    // }
+    ]
   }, [$t])
 
   return (

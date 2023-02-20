@@ -18,14 +18,15 @@ describe('Venue DHCP Instance', () => {
     mockServer.use(...handlers)
 
     const params = { tenantId: 'tenant-id', venueId: '3b11bcaffd6f4f4f9b2805b6fe24bf8b' }
-    const { asFragment } = render(<Provider><DHCPInstance /></Provider>, {
+    render(<Provider><DHCPInstance /></Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/venue-details/services' }
     })
 
-    await screen.findByText('service 1')
-    await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
-
-    expect(asFragment()).toMatchSnapshot()
+    await screen.findByText('abcd')
+    const buttonmanage = screen.getByRole('button', { name: 'Manage Local Service' })
+    await userEvent.click(buttonmanage)
+    await new Promise((r)=>{setTimeout(r, 500)})
+    await userEvent.click(screen.getByRole('button', { name: 'Add gateway' }))
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     await userEvent.click(screen.getByRole('button', { name: 'Manage Local Service' }))
@@ -40,8 +41,8 @@ describe('Venue DHCP Instance', () => {
     activeButton = await screen.findByText('Confirm')
     fireEvent.click(activeButton)
 
-    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
-    jest.setTimeout(100)
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (2 Online)' }))
   })
 
 })

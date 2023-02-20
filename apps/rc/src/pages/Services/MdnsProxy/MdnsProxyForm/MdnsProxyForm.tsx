@@ -1,13 +1,23 @@
 import { useEffect, useState } from 'react'
 
-import _                   from 'lodash'
-import { useIntl }         from 'react-intl'
-import { Path, useParams } from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsForm }              from '@acx-ui/components'
-import { useAddMdnsProxyMutation, useGetMdnsProxyQuery } from '@acx-ui/rc/services'
-import { MdnsProxyFormData, getServiceListRoutePath }    from '@acx-ui/rc/utils'
-import { useTenantLink, useNavigate }                    from '@acx-ui/react-router-dom'
+import { PageHeader, showToast, StepsForm } from '@acx-ui/components'
+import {
+  useAddMdnsProxyMutation,
+  useGetMdnsProxyQuery,
+  useUpdateMdnsProxyMutation
+} from '@acx-ui/rc/services'
+import {
+  MdnsProxyFormData,
+  getServiceRoutePath,
+  ServiceType,
+  ServiceOperation,
+  CatchErrorResponse
+} from '@acx-ui/rc/utils'
+import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
 import { MdnsProxyScope }   from '../MdnsProxyScope/MdnsProxyScope'
 import { MdnsProxySummary } from '../MdnsProxySummary/MdnsProxySummary'
@@ -24,11 +34,13 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const servicesPath = useTenantLink('/services')
-  const servicesTablePath: Path = useTenantLink(getServiceListRoutePath(true))
+  const serviceTablePath = useTenantLink(getServiceRoutePath({
+    type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
+  }))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
+  const [ updateMdnsProxy ] = useUpdateMdnsProxyMutation()
 
   useEffect(() => {
     if (dataFromServer && editMode) {
@@ -47,13 +59,20 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
 
   const saveData = async (editMode: boolean, data: MdnsProxyFormData) => {
     try {
-      const payload = editMode ? data : _.omit(data, 'id')
-      await addMdnsProxy({ params, payload }).unwrap()
-      navigate(servicesTablePath, { replace: true })
-    } catch {
+      if (editMode) {
+        await updateMdnsProxy({ params, payload: _.omit(data, 'id') }).unwrap()
+      } else {
+        await addMdnsProxy({ params, payload: data }).unwrap()
+      }
+
+      navigate(serviceTablePath, { replace: true })
+    } catch (error) {
+      const errorResponse = error as CatchErrorResponse
+      const errorMsg = errorResponse.data?.errors?.map(error => error.message).join('<br />')
+
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -66,13 +85,16 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
           : $t({ defaultMessage: 'Add mDNS Proxy Service' })
         }
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+          }
         ]}
       />
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(servicesPath)}
+          onCancel={() => navigate(serviceTablePath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm

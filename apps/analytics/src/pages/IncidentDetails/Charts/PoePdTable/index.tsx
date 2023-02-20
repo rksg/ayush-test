@@ -1,27 +1,31 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useIntl, defineMessage } from 'react-intl'
 
-import { defaultSort, dateSort, sortProp } from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, Card } from '@acx-ui/components'
-import { TenantLink }                      from '@acx-ui/react-router-dom'
-import { formatter }                       from '@acx-ui/utils'
+import { defaultSort, dateSort, sortProp }          from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, Card, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { formatter, notAvailableMsg }               from '@acx-ui/utils'
 
 import { usePoePdTableQuery, ImpactedSwitch } from './services'
 
 import type { ChartProps } from '../types.d'
 
-export const PoePdTable: React.FC<ChartProps> = (props) => {
+export function PoePdTable (props: ChartProps) {
   const { $t } = useIntl()
-
+  const isSwitchEnabled = useIsSplitOn(Features.DEVICES)
   const queryResults = usePoePdTableQuery({ id: props.incident.id })
-
   const columnHeaders: TableProps<ImpactedSwitch>['columns'] = useMemo(() => [
     {
       title: $t(defineMessage({ defaultMessage: 'Switch Name' })),
       dataIndex: 'name',
       key: 'name',
-      render: (_, value) => <TenantLink to={'TODO'}>{value.name}</TenantLink>,
+      render: (_, { mac, serial, name }, __, highlightFn) => isSwitchEnabled
+        ? <TenantLink to={`devices/switch/${mac.toLowerCase()}/${serial}/details/overview`}>
+          {highlightFn(name)}
+        </TenantLink>
+        : <Tooltip title={$t(notAvailableMsg)}>{highlightFn(name)}</Tooltip>,
       fixed: 'left',
       sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
@@ -64,5 +68,3 @@ export const PoePdTable: React.FC<ChartProps> = (props) => {
     </Loader>
   )
 }
-
-export default PoePdTable

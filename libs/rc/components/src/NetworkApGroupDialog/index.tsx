@@ -316,7 +316,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 )}
               </Form.List>
 
-              <Radio value={2}>{$t({ defaultMessage: 'Select APs by tag' })}
+              {/* <Radio value={2}>{$t({ defaultMessage: 'Select APs by tag' })} // TODO: Waiting for TAG feature support
                 <UI.RadioDescription>{$t({ defaultMessage: 'This network will be only applied to APs with the tags.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
@@ -332,7 +332,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     </Select>
                   </Form.Item>
                 )}
-              </Form.Item>
+              </Form.Item> */}
             </Space>
           </Radio.Group>
         </Form.Item>
