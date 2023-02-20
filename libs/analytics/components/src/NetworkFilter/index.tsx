@@ -10,7 +10,7 @@ import {
   Incident } from '@acx-ui/analytics/utils'
 import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
 import { useReportsFilter }                  from '@acx-ui/reports/utils'
-import { NetworkPath }                       from '@acx-ui/utils'
+import { NetworkPath, getIntl }              from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
@@ -149,17 +149,17 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
     return acc
   }, [] )
 
-const getFilterData = (
+export const getNetworkFilterData = (
   data: Child[],
-  $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode:string,
+  filterMode: FilterMode,
   replaceWithId?: boolean
 ): Option[] => {
+  const { $t } = getIntl()
   const venues: { [key: string]: Option } = {}
   for (const { id, name, path, aps, switches } of data) {
     const shouldPushVenue = ()=>{
-      if(filterMode==='both')
+      if(filterMode === 'both')
         return true
       if(filterMode === 'ap' && aps?.length)
         return true
@@ -318,7 +318,7 @@ function ConnectedNetworkFilter (
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
-        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes,
+        getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
           filterMode, replaceWithId) : [],
       ...rest
     })
