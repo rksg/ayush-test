@@ -71,16 +71,18 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
 
   useEffect(() => {
     if (embeddedMode) {
-      form.setFieldValue('enableLayer2', embeddedObject?.l2AclPolicyId)
+      form.setFieldValue('enableLayer2', Boolean(embeddedObject?.l2AclPolicyId))
       form.setFieldValue('l2AclPolicyId', embeddedObject?.l2AclPolicyId)
-      form.setFieldValue('enableLayer3', embeddedObject?.l3AclPolicyId)
+      form.setFieldValue('enableLayer3', Boolean(embeddedObject?.l3AclPolicyId))
       form.setFieldValue('l3AclPolicyId', embeddedObject?.l3AclPolicyId)
-      form.setFieldValue('enableDeviceOs', embeddedObject?.devicePolicyId)
+      form.setFieldValue('enableDeviceOs', Boolean(embeddedObject?.devicePolicyId))
       form.setFieldValue('devicePolicyId', embeddedObject?.devicePolicyId)
-      form.setFieldValue('enableApplications', embeddedObject?.applicationPolicyId)
+      form.setFieldValue('enableApplications', Boolean(embeddedObject?.applicationPolicyId))
       form.setFieldValue('applicationPolicyId', embeddedObject?.applicationPolicyId)
       form.setFieldValue(
-        'enableClientRateLimit', embeddedObject?.uplinkLimit || embeddedObject?.downlinkLimit
+        'enableClientRateLimit', Boolean(
+          embeddedObject?.uplinkLimit || embeddedObject?.downlinkLimit
+        )
       )
       form.setFieldValue(['rateLimiting', 'uplinkLimit'], embeddedObject?.uplinkLimit ?? 0)
       form.setFieldValue(['rateLimiting', 'enableUploadLimit'],

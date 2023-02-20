@@ -21,13 +21,17 @@ import {
   useAccessControlProfileListQuery, useAddAccessControlProfileMutation
 } from '@acx-ui/rc/services'
 import {
+  AccessControlFormFields,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
 
 
-import { convertToPayload }     from '../../../../Policies/AccessControl/AccessControlForm/AccessControlForm'
+import {
+  convertToPayload,
+  genAclPayloadObject
+} from '../../../../Policies/AccessControl/AccessControlForm/AccessControlForm'
 import AccessControlSettingForm from '../../../../Policies/AccessControl/AccessControlForm/AccessControlSettingForm'
 import ApplicationDrawer        from '../../../../Policies/AccessControl/AccessControlForm/ApplicationDrawer'
 import DeviceOSDrawer           from '../../../../Policies/AccessControl/AccessControlForm/DeviceOSDrawer'
@@ -114,7 +118,7 @@ function SaveAsAcProfileButton () {
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
-  const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
+  const formRef = useRef<StepsFormInstance<AccessControlFormFields>>()
 
   return (
     <>
@@ -129,14 +133,17 @@ function SaveAsAcProfileButton () {
         visible={visible}
         type={ModalType.ModalStepsForm}
       >
-        <StepsForm<AccessControlProfile>
+        <StepsForm<AccessControlFormFields>
           formRef={formRef}
           onCancel={() => setVisible(false)}
           onFinish={async () => {
             try {
+              const aclPayloadObject = genAclPayloadObject(
+                formRef.current?.getFieldsValue() as AccessControlFormFields
+              )
               await createAclProfile({
                 params: params,
-                payload: convertToPayload(false, formRef, params.policyId)
+                payload: convertToPayload(false, aclPayloadObject, params.policyId)
               }).unwrap()
 
               setVisible(false)
@@ -184,7 +191,8 @@ function SaveAsAcProfileButton () {
 }
 
 function getAccessControlProfile <
-  Key extends keyof Omit<AccessControlProfile, 'name' | 'id' | 'rateLimiting'>,
+  // eslint-disable-next-line max-len
+  Key extends keyof Omit<AccessControlProfile, 'name' | 'id' | 'rateLimiting' | 'description' | 'policyName'>,
   Policies extends Array<{ id: string, name: string }>
 > (
   policies: Policies | undefined,
