@@ -266,6 +266,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'ACL Name' })}
           name='name'
+          data-testid='aclName'
           rules={[
             { required: true },
             { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) }

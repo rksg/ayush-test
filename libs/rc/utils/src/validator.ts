@@ -9,9 +9,9 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { AclTypeEnum }    from './constants'
 import { IpUtilsService } from './ipUtilsService'
-import { AclTypeEnum } from './constants'
-import { Acl } from './types'
+import { Acl }            from './types'
 
 
 const Netmask = require('netmask').Netmask
