@@ -99,6 +99,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
   addVenue: {
     method: 'post',
     // newApi: true,
@@ -346,5 +350,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  getTopology: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
   }
 }
