@@ -180,6 +180,7 @@ export function ManageCustomer () {
   const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
   const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
@@ -285,21 +286,6 @@ export function ManageCustomer () {
         `${intl.$t({ defaultMessage: 'Invalid number' })} `
       )
     }
-    return Promise.resolve()
-  }
-
-  const accountValidator = async () => {
-    const ecData = formRef.current?.getFieldsValue() as EcFormData
-    const admin = [] as MspAdministrator[]
-    admin.push ({
-      id: '1',
-      lastName: ecData.admin_lastname,
-      name: ecData.admin_firstname,
-      email: ecData.admin_email,
-      role: ecData.admin_role,
-      detailLevel: ''
-    })
-    setMspEcAdmins(admin)
     return Promise.resolve()
   }
 
@@ -626,7 +612,7 @@ export function ManageCustomer () {
         name='admin_role'
         label={intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
-        rules={[{ required: true }, { validator: () => accountValidator() }]}
+        rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
         children={
           <Select>
@@ -923,7 +909,7 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Name' })}
         >
-          <Paragraph>{'name'}</Paragraph>
+          <Paragraph>{formData?.name}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Address' })}
@@ -950,18 +936,18 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
         >
-          <Paragraph>{mspEcAdmins[0]?.name} {mspEcAdmins[0]?.lastName}</Paragraph>
+          <Paragraph>{formData?.admin_firstname} {formData?.admin_lastname}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Email' })}
         >
-          <Paragraph>{mspEcAdmins[0]?.email}</Paragraph>
+          <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          {mspEcAdmins[0]?.role &&
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0]?.role])}</Paragraph>}
+          {formData?.admin_role &&
+          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
         </Form.Item>
 
         <Form.Item
@@ -1072,58 +1058,67 @@ export function ManageCustomer () {
           <EnableSupportForm></EnableSupportForm>
         </StepsForm.StepForm>}
 
-        {!isEditMode && <StepsForm.StepForm name='accountDetail'
-          title={intl.$t({ defaultMessage: 'Account Details' })}>
-          <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
-          <Form.Item
-            name='name'
-            label={intl.$t({ defaultMessage: 'Customer Name' })}
-            style={{ width: '300px' }}
-            rules={[{ required: true }]}
-            validateFirst
-            hasFeedback
-            children={<Input />}
-          />
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Address' })}
-            name={['address', 'addressLine']}
-            style={{ width: '300px' }}
-            rules={[{
-              required: isMapEnabled ? true : false
-            }, {
-              validator: (_, value) => addressValidator(value),
-              validateTrigger: 'onBlur'
-            }
-            ]}
+        {!isEditMode && <>
+          <StepsForm.StepForm
+            name='accountDetail'
+            title={intl.$t({ defaultMessage: 'Account Details' })}
+            onFinish={async (data) => {
+              const accDetail = { ...data }
+              setFormData(accDetail)
+              return true
+            }}
           >
-            <Input
-              allowClear
-              placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-              prefix={<SearchOutlined />}
-              onChange={addressOnChange}
-              data-testid='address-input'
-              disabled={!isMapEnabled}
-              value={address.addressLine}
+            <Subtitle level={3}>
+              { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+            <Form.Item
+              name='name'
+              label={intl.$t({ defaultMessage: 'Customer Name' })}
+              style={{ width: '300px' }}
+              rules={[{ required: true }]}
+              validateFirst
+              hasFeedback
+              children={<Input />}
             />
-          </Form.Item >
-          <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
-          </Form.Item>
+            <Form.Item
+              label={intl.$t({ defaultMessage: 'Address' })}
+              name={['address', 'addressLine']}
+              style={{ width: '300px' }}
+              rules={[{
+                required: isMapEnabled ? true : false
+              }, {
+                validator: (_, value) => addressValidator(value),
+                validateTrigger: 'onBlur'
+              }
+              ]}
+            >
+              <Input
+                allowClear
+                placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+                prefix={<SearchOutlined />}
+                onChange={addressOnChange}
+                data-testid='address-input'
+                disabled={!isMapEnabled}
+                value={address.addressLine}
+              />
+            </Form.Item >
+            <Form.Item hidden>
+              <GoogleMap libraries={['places']} />
+            </Form.Item>
 
-          <MspAdminsForm></MspAdminsForm>
-          <CustomerAdminsForm></CustomerAdminsForm>
-        </StepsForm.StepForm>}
+            <MspAdminsForm></MspAdminsForm>
+            <CustomerAdminsForm></CustomerAdminsForm>
+          </StepsForm.StepForm>
 
-        {!isEditMode && <StepsForm.StepForm name='subscriptions'
-          title={intl.$t({ defaultMessage: 'Subscriptions' })}>
-          <CustomerSubscription />
-        </StepsForm.StepForm>}
+          <StepsForm.StepForm name='subscriptions'
+            title={intl.$t({ defaultMessage: 'Subscriptions' })}>
+            <CustomerSubscription />
+          </StepsForm.StepForm>
 
-        {!isEditMode && <StepsForm.StepForm name='summary'
-          title={intl.$t({ defaultMessage: 'Summary' })}>
-          <CustomerSummary />
-        </StepsForm.StepForm>}
+          <StepsForm.StepForm name='summary'
+            title={intl.$t({ defaultMessage: 'Summary' })}>
+            <CustomerSummary />
+          </StepsForm.StepForm>
+        </>}
 
       </StepsForm>
 
