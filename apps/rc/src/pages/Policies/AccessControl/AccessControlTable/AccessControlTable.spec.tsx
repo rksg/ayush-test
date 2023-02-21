@@ -75,7 +75,7 @@ describe('AccessControlTable', () => {
   })
 
   // TODO Should implement this after API is ready
-  xit('should delete selected row', async () => {})
+  it.todo('should delete selected row')
 
   it('should navigate to the Edit view', async () => {
     render(

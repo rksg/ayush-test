@@ -30,9 +30,12 @@ import { ApForm }                  from './pages/Devices/Wifi/ApForm'
 import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
 import Wired                       from './pages/Networks/wired'
+import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
+import AAAPolicyDetail             from './pages/Policies/AAA/AAADetail'
+import AAAForm                     from './pages/Policies/AAA/AAAForm/AAAForm'
 import AAATable                    from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
@@ -171,6 +174,11 @@ function NetworkRoutes () {
       <Route
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
+      />
+      <Route path='networks/wired/onDemandCli/add' element={<CliTemplateForm />} />
+      <Route
+        path='networks/wired/onDemandCli/:templateId/:action'
+        element={<CliTemplateForm />}
       />
       <Route
         path='networks/wireless/:networkId/:action'
@@ -340,6 +348,21 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+        element={<AAAForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+        element={<AAAForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+        element={<AAAPolicyDetail/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
         element={<RogueAPDetectionTable />}
       />
@@ -426,7 +449,13 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />} />
+        element={<AAATable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
+        element={<ClientIsolationDetail />}
+      />
     </Route>
   )
 }

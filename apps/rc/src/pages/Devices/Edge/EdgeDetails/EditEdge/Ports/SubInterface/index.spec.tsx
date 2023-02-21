@@ -50,7 +50,7 @@ describe('EditEdge ports - sub-interface', () => {
     )
   })
 
-  it('no ports', async () => {
+  it('no SubInterface', async () => {
     render(
       <Provider>
         <SubInterface data={[]} />
@@ -60,6 +60,7 @@ describe('EditEdge ports - sub-interface', () => {
           path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
+    expect(await screen.findByText('No data to display')).toBeVisible()
   })
 
   it('should create SubInterface successfully', async () => {
@@ -87,7 +88,7 @@ describe('EditEdge ports - sub-interface', () => {
         }
       })
     await user.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    const vlanInput = await screen.findByRole('textbox', { name: 'VLAN' })
+    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '2' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
   })
@@ -110,7 +111,7 @@ describe('EditEdge ports - sub-interface', () => {
     fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
     const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
     fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
-    const vlanInput = await screen.findByRole('textbox', { name: 'VLAN' })
+    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '2' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
   })
@@ -129,7 +130,7 @@ describe('EditEdge ports - sub-interface', () => {
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
     await user.click(await screen.findByRole('button', { name: 'Edit' }))
-    const vlanInput = await screen.findByRole('textbox', { name: 'VLAN' })
+    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
     fireEvent.change(vlanInput, { target: { value: '999' } })
     await user.click(screen.getByRole('button', { name: 'Apply' }))
   })

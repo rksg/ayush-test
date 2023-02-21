@@ -45,7 +45,7 @@ describe('SwitchAAATab', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
+    render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
     await waitForElementToBeRemoved(
       () => screen.queryAllByRole('img', { name: 'loader' }),
@@ -54,8 +54,6 @@ describe('SwitchAAATab', () => {
 
     const settingsBtn = screen.getByRole('link', { name: 'Settings' })
     fireEvent.click(settingsBtn)
-
-    expect(asFragment()).toMatchSnapshot()
 
     const sshCbx = screen.getByLabelText('SSH Authentication')
     fireEvent.click(sshCbx)

@@ -187,6 +187,14 @@ jest.mock('./pages/Users/Persona/PersonaGroupDetails', () => () => {
   return <div data-testid='PersonaGroupDetails' />
 })
 
+jest.mock('./pages/Policies/AAA/AAAForm/AAAForm', () => () => {
+  return <div data-testid='AAAPolicyForm' />
+})
+
+jest.mock('./pages/Policies/AAA/AAADetail', () => () => {
+  return <div data-testid='AAAPolicyDetail' />
+})
+
 jest.mock('./pages/Policies/AccessControl/AccessControlForm/AccessControlForm', () => () => {
   return <div data-testid='AccessControlForm' />
 })
@@ -580,6 +588,60 @@ describe('RcRoutes: Policies', () => {
     })
 
     expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+  })
+
+  test('should navigate to Client Isolation details page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('ClientIsolationDetail')).toBeVisible()
+  })
+
+  test('should navigate to edit ACCESS_CONTROL page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT, policyId: 'POLICY_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AccessControlForm')).toBeVisible()
+  })
+  test('should navigate to create AAA Policy page', async () => {
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE }),
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
+  })
+
+  test('should navigate to edit AAA Policy page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AAAPolicyForm')).toBeVisible()
+  })
+  test('should navigate to AAA Policy details page', async () => {
+    let path = getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })
+    path = path.replace(':policyId', 'policyId')
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByTestId('AAAPolicyDetail')).toBeVisible()
   })
 
   test('should navigate to AAA table', async () => {
