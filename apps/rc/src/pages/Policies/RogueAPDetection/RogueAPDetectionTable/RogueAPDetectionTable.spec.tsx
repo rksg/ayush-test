@@ -28,7 +28,7 @@ const mockTableResult = {
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My Rogue AP Detection 1',
     type: 'Rogue AP Detection',
-    scope: '5'
+    scope: '0'
   }]
 }
 
