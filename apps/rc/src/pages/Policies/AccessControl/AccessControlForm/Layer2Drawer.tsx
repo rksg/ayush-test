@@ -168,6 +168,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const handleAddAction = () => {
+    console.log(macAddressList, MAC_ADDRESS_LIMIT)
     if (macAddressList.length === MAC_ADDRESS_LIMIT) {
       showToast({
         type: 'error',
@@ -512,20 +513,26 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
-                if (addressTags.length
-                  && macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT
-                ) {
-                  setMacAddressList([...macAddressList, ...addressTags.map(tag => {
-                    return {
-                      macAddress: tag
-                    }
-                  })])
-                } else {
+                if (!addressTags.length) {
                   showToast({
                     type: 'error',
                     duration: 10,
-                    content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+                    content: $t({ defaultMessage: 'No validate MAC Address could add' })
                   })
+                } else {
+                  if (macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT) {
+                    setMacAddressList([...macAddressList, ...addressTags.map(tag => {
+                      return {
+                        macAddress: tag
+                      }
+                    })])
+                  } else {
+                    showToast({
+                      type: 'error',
+                      duration: 10,
+                      content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+                    })
+                  }
                 }
 
                 handleRuleDrawerClose()
