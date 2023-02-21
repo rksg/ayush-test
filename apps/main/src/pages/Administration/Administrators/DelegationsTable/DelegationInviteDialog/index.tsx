@@ -13,7 +13,7 @@ import {
 import {
   emailRegExp,
   CommonErrorsResult,
-  catchErrorDetails
+  CatchErrorDetails
 } from '@acx-ui/rc/utils'
 
 interface DelegationInviteDialogProps {
@@ -63,7 +63,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
 
             handleCancel()
           } catch(error) {
-            const respData = error as CommonErrorsResult<catchErrorDetails>
+            const respData = error as CommonErrorsResult<CatchErrorDetails>
             const errors = respData.data.errors
 
             // invitation failed
@@ -72,7 +72,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
         }
       })
     } catch(error) {
-      const respData = error as CommonErrorsResult<catchErrorDetails>
+      const respData = error as CommonErrorsResult<CatchErrorDetails>
       const errors = respData.data.errors
 
       // find VAR delegation failed
@@ -80,7 +80,7 @@ const DelegationInviteDialog = (props: DelegationInviteDialogProps) =>{
     }
   }
 
-  const handleInvitaionFailed = (error: catchErrorDetails[]) => {
+  const handleInvitaionFailed = (error: CatchErrorDetails[]) => {
     const errorMsgs = error.map(e => e.message)
 
     const mailNotValidErr = error.find(e => e.code === 'TNT-10301')

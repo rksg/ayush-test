@@ -21,7 +21,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  catchErrorDetails,
+  CatchErrorDetails,
   emailRegExp
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -71,7 +71,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
     return Boolean(_.find(registerUsersList, { email }))
   }
 
-  const handleSubmitFailed = (error: CommonErrorsResult<catchErrorDetails>) => {
+  const handleSubmitFailed = (error: CommonErrorsResult<CatchErrorDetails>) => {
     const errData = error.data.errors
     let title = $t({ defaultMessage: 'Admin could not be added' })
     let message
@@ -150,7 +150,7 @@ const AddAdministratorDialog = (props: AddAdministratorDialogProps) => {
       await addAdmin({ params, payload }).unwrap()
       handleCancel()
     } catch(error) {
-      const respData = error as CommonErrorsResult<catchErrorDetails>
+      const respData = error as CommonErrorsResult<CatchErrorDetails>
       handleSubmitFailed(respData)
     }
   }
