@@ -5,6 +5,7 @@ import { isEqual }                                  from 'lodash'
 
 import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { ConfigurationOutlined }                                   from '@acx-ui/icons'
+import { useHasRoles }                                             from '@acx-ui/rbac'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -187,7 +188,7 @@ export function GeneralSettingForm () {
           ...basePath,
           pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
         })}
-        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+        buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm
           layout='horizontal'

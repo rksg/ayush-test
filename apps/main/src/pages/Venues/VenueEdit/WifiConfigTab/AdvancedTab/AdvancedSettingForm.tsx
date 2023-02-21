@@ -10,8 +10,10 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
+
 import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
+import { useHasRoles }                                             from '@acx-ui/rbac'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -210,7 +212,7 @@ export function AdvancedSettingForm () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <Row>

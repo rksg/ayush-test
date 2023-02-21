@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { useHasRoles }                           from '@acx-ui/rbac'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
@@ -60,7 +61,7 @@ export function ServerTab () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <AnchorLayout items={items} offsetTop={275} />
@@ -68,4 +69,3 @@ export function ServerTab () {
     </StepsForm>
   )
 }
-

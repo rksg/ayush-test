@@ -4,13 +4,13 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { useHasRoles }                                           from '@acx-ui/rbac'
 import { useUpdateAAASettingMutation }                           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
 
 
 import { AAAServers }  from './AAAServers'
 import { AAASettings } from './AAASettings'
-
 
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
@@ -118,7 +118,7 @@ export function SwitchAAATab () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
-      buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
+      buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save AAA' }) }}
     >
       <AnchorLayout items={anchorItems} offsetTop={275} />
     </StepsForm>

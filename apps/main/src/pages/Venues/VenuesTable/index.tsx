@@ -233,13 +233,13 @@ export const VenueTable = (
 
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
-    label: $t({ defaultMessage: 'Edit' }),
+    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
     }
   },
   {
-    label: $t({ defaultMessage: 'Delete' }),
+    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
