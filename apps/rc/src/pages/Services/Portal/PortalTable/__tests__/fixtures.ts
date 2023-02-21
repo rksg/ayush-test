@@ -38,11 +38,5 @@ export const mockedPortalList = {
       }
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  paging: { page: 1, pageSize: 10, totalCount: 1 }
 }

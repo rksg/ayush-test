@@ -23,7 +23,8 @@ describe('Portal Instance Page', () => {
     mockServer.use(
       rest.get(
         PortalUrlsInfo.getPortalProfileList.url,
-        (req, res, ctx) => res(ctx.json({ content: portalListWithPhoto }))
+        (req, res, ctx) => res(ctx.json({ content: portalListWithPhoto,
+          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
       ),
       rest.post(
         PortalUrlsInfo.getPortalProfileList.url,
@@ -38,7 +39,8 @@ describe('Portal Instance Page', () => {
   })
 
   it('should render instance page', async () => {
-    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const params = { networkId: 'UNKNOWN-NETWORK-ID',
+      tenantId: 'tenant-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {
