@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                                              from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                   from '@acx-ui/rc/utils'
+import { Provider }                                      from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
 import { MspCustomers } from '.'
 
@@ -128,10 +128,9 @@ describe('MspCustomers', () => {
   })
   it('should render page header and grid layout', async () => {
     render(<Provider><MspCustomers /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(await screen.findByText('MSP Customers')).toBeVisible()
+    expect(await screen.findByText('Manage own account')).toBeVisible()
+    expect(await screen.findByText('Add Customer')).toBeVisible()
   })
   it('should render table', async () => {
     const { asFragment } = render(
@@ -141,7 +140,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Add Customer')
     await screen.findByText('ec 111')
 
@@ -165,8 +163,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getByRole('radio'))
 
@@ -184,8 +180,6 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getByRole('radio'))
