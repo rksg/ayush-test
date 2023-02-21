@@ -1,16 +1,26 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Col, Form, Switch, Tooltip } from 'antd'
-import { useIntl }                         from 'react-intl'
-
+import { MailFilled, PhoneFilled } from '@ant-design/icons'
 import {
-  StepsForm,
+  Row,
+  Col,
+  Form,
+  Switch,
+  Tooltip,
+  FormInstance
+} from 'antd'
+import { useIntl } from 'react-intl'
+
+import { showToast } from '@acx-ui/components'
+import {
   Subtitle
 } from '@acx-ui/components'
 import {
   useGetMfaAdminDetailsQuery,
-  useGetMfaTenantDetailsQuery
+  useGetMfaTenantDetailsQuery,
+  useDisableMFAMethodMutation
 } from '@acx-ui/rc/services'
+import { MFAMethod } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -18,138 +28,210 @@ import {
 import { AuthApp }         from './AuthApp'
 import { OneTimePassword } from './OneTimePassword'
 import { RecoveryCodes }   from './RecoveryCodes'
-import { OtpLabel }        from './styledComponents'
 import * as UI             from './styledComponents'
 
-export const MultiFactor = () => {
+
+export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
+  const { formRef } = props
   const { $t } = useIntl()
-  const { tenantId } = useParams()
-  const [recoveryCodeVisible, setRecoveryCodeVisible] = useState(false)
-  const [authAppVisible, setAuthAppVisible] = useState(false)
   const [otpVisible, setOtpVisible] = useState(false)
-  const [mfaStatus, setMfaStatus] = useState(false)
-  const [mfaRecoveryCode, setRecoveryCode] = useState([] as string[])
-  const [mfaUserId, setUserId] = useState('')
-  const [mfaSmsToggle, setSmsToggle] = useState(false)
-  const [mfaAuthAppToggle, setAuthAppToggle] = useState(false)
-  const [contactId, setContactId] = useState('')
-  const [mfaSmsConfigured, setSmsConfigured] = useState(false)
-  const [mfaAuthAppConfigured, setAuthAppConfigured] = useState(false)
+  const [authAppVisible, setAuthAppVisible] = useState(false)
+  const [disableMFAMethod] = useDisableMFAMethodMutation()
 
-  const smsSublabel = $t({ defaultMessage: 'We will send you a code via SMS or Email' })
-  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
-  const { data: details } =
-  useGetMfaAdminDetailsQuery({ params: { userId: mfaUserId } }, { skip: !data })
-
-  useEffect(() => {
-    if (data) {
-      setMfaStatus(data.enabled)
-      setRecoveryCode(data.recoveryCodes ? data.recoveryCodes : [])
-      setUserId(data.userId)
+  const onChangeSms = async (checked: boolean) => {
+    if (checked) {
+      setOtpVisible(true)
+      return
     }
-    if (details) {
-      setContactId(details?.contactId ? details?.contactId : smsSublabel )
-      const sms = details?.mfaMethods.includes('SMS') || details?.mfaMethods.includes('EMAIL')
-      const mobile = details?.mfaMethods.includes('MOBILEAPP')
-      setSmsConfigured(sms)
-      setAuthAppConfigured(mobile)
-      setSmsToggle(sms)
-      setAuthAppToggle(mobile)
-    }
-  }, [data, details])
 
-  const onChangeSms = (checked: boolean) => {
-    setSmsToggle(false)
-    setOtpVisible(checked)
+    const { mfaMethods } = formRef.getFieldsValue(true)
+
+    try {
+      const mfaMethod = mfaMethods.includes(MFAMethod.SMS)
+        ? MFAMethod.SMS : MFAMethod.EMAIL
+      await disableMFAMethod({ params: { mfaMethod } }).unwrap()
+      setOtpVisible(checked)
+    } catch {
+      // TODO: handle disable failed error?
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
-  const onChangeAuthApp = (checked: boolean) => {
-    setAuthAppToggle(false)
-    setAuthAppVisible(checked)
+  const onChangeAuthApp = async (checked: boolean) => {
+    if (checked) {
+      setAuthAppVisible(true)
+      return
+    }
+
+    try {
+      await disableMFAMethod({
+        params: {
+          mfaMethod: MFAMethod.MOBILEAPP
+        }
+      }).unwrap()
+
+      setAuthAppVisible(checked)
+    } catch {
+      // TODO: handle disable failed error?
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const warningTooltip = (show: boolean) => {
     return show ? $t({ defaultMessage: 'You must set at least one authentication methed.' }) : ''
   }
 
-  const AuthenticationMethod = () => {
-    return (
+  return (
+    <>
       <Row gutter={20}>
         <Col span={8}>
           <Subtitle level={5} >
-            { $t({ defaultMessage: 'Set authentication method' }) }</Subtitle>
+            { $t({ defaultMessage: 'Set authentication method' }) }
+          </Subtitle>
           <UI.FieldLabel2 width='275px'>
-            <OtpLabel>
-              {$t({ defaultMessage: 'One Time Password (OTP)' })}
-              {contactId}
-            </OtpLabel>
-            <Tooltip title={warningTooltip(mfaSmsToggle && !mfaAuthAppToggle)}>
-              <Form.Item
-                name='otp_toggle'
-                children={
-                  <Switch
-                    disabled={mfaSmsToggle && !mfaAuthAppToggle}
-                    checked={mfaSmsToggle}
-                    onChange={onChangeSms}></Switch>}
-              />
-            </Tooltip>
             <Form.Item
-              name='set_otp'
-              children={<UI.FieldTextLink onClick={()=>setOtpVisible(true)}>
-                {mfaSmsConfigured
-                  ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Set' })}
-              </UI.FieldTextLink>
-              }
-            />
+              noStyle
+              shouldUpdate={(prevValues, currentValues) => {
+                return prevValues.contactId !== currentValues.contactId ||
+                prevValues.mfaMethods !== currentValues.mfaMethods
+              }}
+            >
+              {({ getFieldValue }) => {
+                const contactId = getFieldValue('contactId')
+                const PrefixIcon = getFieldValue('smsToggle') ? MailFilled : PhoneFilled
+
+                return <UI.OtpLabel>
+                  {$t({ defaultMessage: 'One Time Password (OTP)' })}
+                  {
+                    contactId ?
+                      (<UI.PrefixIconWrapper><PrefixIcon />{contactId}</UI.PrefixIconWrapper>)
+                      : $t({ defaultMessage: 'We will send you a code via SMS or Email' })
+                  }
+                </UI.OtpLabel>
+              }}
+            </Form.Item>
+            <Form.Item
+              dependencies={['mfaMethods']}
+            >
+              {({ getFieldValue }) => {
+                const disable = getFieldValue('smsToggle')
+                             && !getFieldValue('authAppToggle')
+
+                return <Tooltip title={warningTooltip(disable)}>
+                  <Switch
+                    disabled={disable}
+                    checked={getFieldValue('smsToggle')}
+                    onChange={onChangeSms}/>
+                </Tooltip>
+              }}
+            </Form.Item>
+            <Form.Item
+              dependencies={['mfaMethods']}
+            >
+              {({ getFieldValue }) => {
+                const enabledMethods = getFieldValue('mfaMethods')
+                const smsConfigured = enabledMethods?.includes(MFAMethod.SMS) ||
+                               enabledMethods?.includes(MFAMethod.EMAIL)
+
+                return (<UI.FieldTextLink
+                  onClick={()=>setOtpVisible(true)}
+                >
+                  {smsConfigured
+                    ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Set' })}
+                </UI.FieldTextLink>)
+              }}
+            </Form.Item>
           </UI.FieldLabel2>
 
           <UI.FieldLabel2 width='275px'>
-            <OtpLabel>
+            <UI.OtpLabel>
               {$t({ defaultMessage: 'Authentication App' })}
               {$t({ defaultMessage: 'You’ll receive a login code via an authentication app' })}
-            </OtpLabel>
-            <Tooltip title={warningTooltip(mfaAuthAppToggle && !mfaSmsToggle)}>
-              <Form.Item
-                name='auth_toggle'
-                children={<Switch
-                  disabled={mfaAuthAppToggle && !mfaSmsToggle}
-                  checked={mfaAuthAppToggle}
-                  onChange={onChangeAuthApp}></Switch>}
-              />
-            </Tooltip>
+            </UI.OtpLabel>
             <Form.Item
-              name='set_auth'
-              children={<UI.FieldTextLink onClick={()=>setAuthAppVisible(true)}>
-                {mfaAuthAppConfigured
-                  ? $t({ defaultMessage: 'Add App' }) : $t({ defaultMessage: 'Set' })}
-              </UI.FieldTextLink>
-              }
-            />
-          </UI.FieldLabel2>
+              dependencies={['mfaMethods']}
+            >
+              {({ getFieldValue }) => {
+                const disable = getFieldValue('authAppToggle')
+                             && !getFieldValue('smsToggle')
 
+                return <Tooltip title={warningTooltip(disable)}>
+                  <Switch
+                    disabled={disable}
+                    checked={getFieldValue('authAppToggle')}
+                    onChange={onChangeAuthApp}/>
+                </Tooltip>
+              }}
+            </Form.Item>
+            <Form.Item
+              dependencies={['mfaMethods']}
+            >
+              {({ getFieldValue }) => {
+                const enabledMethods = getFieldValue('mfaMethods')
+                const authAppConfigured = enabledMethods?.includes(MFAMethod.MOBILEAPP)
+
+                return (<UI.FieldTextLink
+                  onClick={()=>setAuthAppVisible(true)}
+                >
+                  {authAppConfigured
+                    ? $t({ defaultMessage: 'Add App' }) : $t({ defaultMessage: 'Set' })}
+                </UI.FieldTextLink>)
+              }}
+            </Form.Item>
+          </UI.FieldLabel2>
         </Col>
       </Row>
-    )
-  }
+      <Form.Item
+        noStyle
+        dependencies={['userId']}
+      >
+        {({ getFieldValue }) => {
+          const userId = getFieldValue('userId')
 
-  const BackupAuthenticationMethod = () => {
-    return (
+          return <>
+            {(authAppVisible && userId) ? <AuthApp
+              visible={authAppVisible}
+              setVisible={setAuthAppVisible}
+              userId={userId}
+            /> : ''}
+
+            {(otpVisible && userId) ? <OneTimePassword
+              visible={otpVisible}
+              setVisible={setOtpVisible}
+              userId={userId}
+            />:''}
+          </>
+        }}
+      </Form.Item>
+    </>
+  )
+}
+
+export const BackupAuthenticationMethod = (props: { recoveryCodes: string[] }) => {
+  const { recoveryCodes } = props
+  const { $t } = useIntl()
+  const [visible, setVisible] = useState(false)
+
+  return (
+    <>
       <Row gutter={20}>
         <Col span={8}>
           <Subtitle level={5} style={{ marginTop: '16px' }}>
             { $t({ defaultMessage: 'Backup authentication method' }) }</Subtitle>
           <UI.FieldLabel width='275px'>
-            <OtpLabel>
+            <UI.OtpLabel>
               {$t({ defaultMessage: 'Recovery Codes' })}
               {'User recovery codes to log in if you can’t receive a verification code via ' +
-               'email, SMS, or an auth app'}
-            </OtpLabel>
+             'email, SMS, or an auth app'}
+            </UI.OtpLabel>
             <Form.Item
-              name='email_format'
-              rules={[{
-                required: false
-              }]}
-              children={<UI.FieldTextLink onClick={()=>setRecoveryCodeVisible(true)}>
+              children={<UI.FieldTextLink onClick={()=>setVisible(true)}>
                 {$t({ defaultMessage: 'See' })}
               </UI.FieldTextLink>
               }
@@ -157,52 +239,65 @@ export const MultiFactor = () => {
           </UI.FieldLabel>
         </Col>
       </Row>
-    )
-  }
+      {visible && <RecoveryCodes
+        visible={visible}
+        setVisible={setVisible}
+        recoveryCode={recoveryCodes}
+      />}
+    </>
+  )
+}
+
+export const MultiFactor = () => {
+  const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [form] = Form.useForm()
+  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
+  const { data: details } =
+  useGetMfaAdminDetailsQuery({ params: { userId: data?.userId } }, { skip: !data })
+
+  useEffect(() => {
+    const smsEnabled = details?.mfaMethods.includes(MFAMethod.SMS) ||
+                    details?.mfaMethods.includes(MFAMethod.EMAIL)
+    const mobileEnabled = details?.mfaMethods.includes(MFAMethod.MOBILEAPP)
+
+    form.setFieldsValue({
+      ...data,
+      ...details,
+      smsToggle: smsEnabled,
+      authAppToggle: mobileEnabled
+    })
+  }, [form, data, details])
+
+  const mfaStatus = data?.enabled
 
   return (
-    <>
-      <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        //   onFinish={async () => handleCancel()}
-        //   onCancel={async () => handleCancel()}
-      >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Subtitle level={4}>
-                { $t({ defaultMessage: 'Multi-Factor Authentication' }) }</Subtitle>
-              <Form.Item style={{ marginTop: '14px' }}
-                name='mfa_status'
-                label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
-                tooltip={$t({ defaultMessage:
+    <Form
+      form={form}
+      layout='vertical'
+    >
+      <Row gutter={20}>
+        <Col span={8}>
+          <Subtitle level={4}>
+            { $t({ defaultMessage: 'Multi-Factor Authentication' }) }
+          </Subtitle>
+          <Form.Item style={{ marginTop: '14px' }}
+            label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
+            tooltip={$t({ defaultMessage:
                   'This option is controlled by the Prime-Administrator(s) of this account.' +
                   'If they turn it on, you will be able to manage here your authentication ' +
                   'settings' })}
-                children={
-                  <label>{mfaStatus ? 'On' : 'Off'}</label>
-                }
-              />
-            </Col>
-          </Row>
-          {mfaStatus && <AuthenticationMethod />}
-          {mfaStatus && <BackupAuthenticationMethod />}
-        </StepsForm.StepForm>
-      </StepsForm>
-      {recoveryCodeVisible &&<RecoveryCodes
-        visible={recoveryCodeVisible}
-        setVisible={setRecoveryCodeVisible}
-        recoveryCode={mfaRecoveryCode}
+          >
+            <label>
+              {mfaStatus ? $t({ defaultMessage: 'On' }) : $t({ defaultMessage: 'Off' })}
+            </label>
+          </Form.Item>
+        </Col>
+      </Row>
+      {mfaStatus && <AuthenticationMethod formRef={form} />}
+      {mfaStatus && <BackupAuthenticationMethod
+        recoveryCodes={data.recoveryCodes ? data.recoveryCodes : []}
       />}
-      {authAppVisible &&<AuthApp
-        visible={authAppVisible}
-        setVisible={setAuthAppVisible}
-        userId={mfaUserId}
-      />}
-      {otpVisible &&<OneTimePassword
-        visible={otpVisible}
-        setVisible={setOtpVisible}
-      />}
-    </>
+    </Form>
   )
 }

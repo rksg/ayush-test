@@ -1,98 +1,135 @@
 
 import { useState } from 'react'
 
-import { Form, Input, Modal } from 'antd'
-import { useIntl }            from 'react-intl'
+import { Form, Input, Modal, Button } from 'antd'
+import { FieldData }                  from 'rc-field-form/lib/interface'
+import { useIntl }                    from 'react-intl'
 
 import {
-  useResendEcInvitationMutation
+  useMfaResendOTPMutation,
+  useSetupMFAAccountMutation
 } from '@acx-ui/rc/services'
 import {
-  emailRegExp
+  MFAMethod
 } from '@acx-ui/rc/utils'
 
+import { OTPMethodProps } from '../OneTimePassword'
 
 interface VerifyCodeModalProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
-//   tenantId: string
+  onCancel: () => void
+  onSuccess: () => void,
+  data: OTPMethodProps
 }
 
 export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
+  const { visible, onCancel, data, onSuccess } = props
   const { $t } = useIntl()
-  const { visible, setVisible } = props
-  //   const { visible, setVisible, tenantId } = props
-  const [disabledResendButton, disableButton] = useState(true)
-
   const [form] = Form.useForm()
+  const [isValid, setIsValid] = useState(false)
+  const [failedMessage, setFailedMessage] = useState('')
 
-  const formContent = <Form
-    form={form}
-    layout='vertical'
-    validateTrigger='onChange'
-    onFieldsChange={() => {
-      const { email } = form.getFieldsValue()
-      const hasErrors = form.getFieldsError().map(item => item.errors).flat().length > 0
-      !(email && !hasErrors ) ? disableButton(true) : disableButton(false)
-    }}
-    onFinish={() => setVisible(false)}
-  >
-    <Form.Item
-      label={$t({ defaultMessage:
-        'Enter the verification code that was sent to' })}
-      name='email'
-      rules={[
-        { validator: (_, value) => emailRegExp(value) },
-        { message: $t({ defaultMessage: 'Please enter a valid email address!' }) }
-      ]}
-    >
-      {<Input style={{ width: '210px' }}/>}
-    </Form.Item>
-    <div style={{ marginTop: '30px', marginBottom: '25px' }}>
-      <label >Didn't get it? </label>
-      <label style={{ cursor: 'pointer', color: 'var(--acx-accents-blue-50)' }}
-        onClick={()=>(true)}
-      >Resend</label>
-    </div>
-  </Form>
+  const [setupMFAAccount] = useSetupMFAAccountMutation()
+  const [ resendOPT, { isLoading: isResending }] = useMfaResendOTPMutation()
 
-  const [
-    // resendInvitation
-    // { isLoading: isDeleteEcUpdating }
-  ] = useResendEcInvitationMutation()
+  const handleFieldsChange = (changedFields: FieldData[]) => {
+    const value = changedFields[0].value
+    const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
+    setIsValid(value && !hasErrors)
+  }
 
-  const handleOk = () => {
-    // const { email } = form.getFieldsValue()
-    // const payload = {
-    //   admin_email: email,
-    //   resend: false
-    // }
-    // resendInvitation({ payload, params: { mspEcTenantId: tenantId } })
-    //   .then(() => {
-    //     setVisible(false)
-    //     form.resetFields()
-    //   })
-    setVisible(false)
+  const handleSubmit = async () => {
+    const formValues = form.getFieldsValue()
+    const { verificationCode } = formValues
+
+    let payload = {
+      contactId: data.data,
+      method: data.type,
+      otp: verificationCode
+    }
+
+    try {
+      await setupMFAAccount({
+        params: {
+          userId: data.userId
+        },
+        payload
+      }).unwrap()
+
+      onSuccess()
+    } catch {
+      // eslint-disable-next-line max-len
+      setFailedMessage($t({ defaultMessage: 'Looks like you entered an incorrect code. Please try again.' }))
+    }
+  }
+
+  const handleResend = async () => {
+    try {
+      await resendOPT({
+        params: {
+          userId: data.userId
+        }
+      }).unwrap()
+    } catch {
+      setFailedMessage($t({ defaultMessage: 'Resend Verification Error. Please try again.' }))
+    }
   }
 
   const handleCancel = () => {
-    setVisible(false)
+    onCancel()
+    setFailedMessage('')
+    setIsValid(false)
     form.resetFields()
   }
 
   return (
     <Modal
-      title={$t({ defaultMessage: 'Verify your Email Address' })}
+      title={data.type === MFAMethod.EMAIL ?
+        $t({ defaultMessage: 'Verify your Email Address' }) :
+        $t({ defaultMessage: 'Verify your Mobile Number' })}
       width={496}
       visible={visible}
       okText={$t({ defaultMessage: 'Verify' })}
       onCancel={handleCancel}
-      onOk={handleOk}
+      onOk={() => form.submit()}
       okButtonProps={{
-        disabled: disabledResendButton
+        disabled: !isValid || isResending
       }}
     >
-      {formContent}
+      <Form
+        form={form}
+        layout='vertical'
+        onFieldsChange={handleFieldsChange}
+        onFinish={handleSubmit}
+      >
+        <Form.Item
+          label={$t({ defaultMessage: 'Enter the verification code that was sent to' })}
+          name='verificationCode'
+          rules={[
+            { required: true }
+          ]}
+          {...(isValid && failedMessage !== '' ? {
+            validateStatus: 'error',
+            help: failedMessage
+          } : undefined)}
+
+        >
+          {<Input style={{ width: '210px' }}/>}
+        </Form.Item>
+        <div style={{ marginTop: '30px', marginBottom: '25px' }}>
+          <label>
+            {$t({ defaultMessage: 'Didn\'t get it?' })}
+          </label>
+          <Button
+            type='link'
+            disabled={isResending}
+            onClick={handleResend}
+            style={{ color: 'var(--acx-accents-blue-50)' }}
+          >
+            {$t({ defaultMessage: 'Resend' })}
+          </Button>
+        </div>
+      </Form>
     </Modal>
   )
 }

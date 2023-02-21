@@ -5,7 +5,7 @@ import styled                                         from 'styled-components/ma
 
 import { Card, showActionModal, showToast } from '@acx-ui/components'
 import { SpaceWrapper }                     from '@acx-ui/rc/components'
-import { useUpdateMFAAccountMutation }      from '@acx-ui/rc/services'
+import { useToggleMFAMutation }             from '@acx-ui/rc/services'
 import { MFAStatus, MFASession }            from '@acx-ui/rc/utils'
 import { useParams }                        from '@acx-ui/react-router-dom'
 
@@ -25,7 +25,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
   const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
   const params = useParams()
-  const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
+  const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -46,7 +46,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
         : $t({ defaultMessage: 'Disable MFA' }),
       onOk: async () => {
         try {
-          await updateMFAAccount({
+          await toggleMFA({
             params: {
               tenantId: params.tenantId,
               enable: isChecked + ''

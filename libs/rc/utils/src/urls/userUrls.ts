@@ -23,11 +23,11 @@ export const UserUrlsInfo: { [key: string]: ApiInfo } = {
   },
   mfaResendOTP: {
     method: 'post',
-    url: '/mfa/resendOTP/admin/:tenantId'
+    url: '/mfa/resendOTP/admin/:userId'
   },
-  updateMFAAccount: {
+  toggleMFA: {
     method: 'put',
-    url: '/mfa/setupTenant/tenant/:tenantId/enable'
+    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
   },
   getMfaMasterCode: {
     method: 'get',

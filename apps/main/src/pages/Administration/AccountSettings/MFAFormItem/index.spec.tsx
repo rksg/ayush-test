@@ -2,8 +2,8 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
-import { Provider  }                         from '@acx-ui/store'
+import { UserUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
+import { Provider  }               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,7 +22,7 @@ describe('Enable MFA Checkbox', () => {
   beforeEach(() => {
     mockServer.use(
       rest.put(
-        AdministrationUrlsInfo.updateMFAAccount.url,
+        UserUrlsInfo.toggleMFA.url,
         (_req, res, ctx) => res(ctx.status(200))
       )
     )
@@ -103,7 +103,7 @@ describe('Enable MFA Checkbox', () => {
   it('should display error when click to disable MFA', async () => {
     mockServer.use(
       rest.put(
-        AdministrationUrlsInfo.updateMFAAccount.url,
+        UserUrlsInfo.toggleMFA.url,
         (_req, res, ctx) => res(ctx.status(500), ctx.json(null))
       )
     )

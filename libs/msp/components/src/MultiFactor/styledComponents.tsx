@@ -1,12 +1,10 @@
 import { Space }       from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { EnvelopClosedSolid } from '@acx-ui/icons'
-
-export const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
+export const PrefixIconWrapper = styled.span`
+  span[role="img"] {
+    margin-right: 8px;
+  }
 `
 export const OtpLabel = styled(Space).attrs({ direction: 'vertical', size: 0 })`
   margin-bottom: 16px;
@@ -38,4 +36,36 @@ export const FieldLabel2 = styled.div<{ width: string }>`
   display: grid;
   grid-template-columns: ${props => props.width} 43px 70px;
   align-items: baseline;
+`
+
+export const QRCodeImgWrapper = styled(Space)`
+  padding: 20px 0 10px;
+
+  & img {
+    width: 135px;
+  }
+`
+
+export const AuthAppDrawerStyle = css`
+  div.ant-typography {
+    padding-top: var(--acx-descriptions-space);
+    margin-bottom: 0;
+  }
+
+  .ant-typography.hasTooltip {
+    border-bottom: 1px dotted grey;
+  }
+
+  .ant-typography ol li {
+    margin-top: 13px;
+    font-size: var(--acx-body-4-font-size);
+  }
+
+  span.ant-typography + .ant-form-item {
+    margin-top: 10px;
+
+    input {
+      width: 210px;
+    }
+  }
 `

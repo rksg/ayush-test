@@ -17,34 +17,6 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/admin'
   },
-  // getMfaAdminDetails: {
-  //   method: 'get',
-  //   url: '/mfa/admin/:userId'
-  // },
-  // mfaRegisterAdmin: {
-  //   method: 'post',
-  //   url: '/mfa/registerAdmin/:userId'
-  // },
-  // mfaRegisterPhone: {
-  //   method: 'post',
-  //   url: '/mfa/registerPhone/:userId'
-  // },
-  // setupMFAAccount: {
-  //   method: 'post',
-  //   url: '/mfa/setupAdmin/admin/:userId'
-  // },
-  // mfaResendOTP: {
-  //   method: 'post',
-  //   url: '/mfa/resendOTP/admin/:tenantId'
-  // },
-  updateMFAAccount: {
-    method: 'put',
-    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
-  },
-  getMfaTenantDetails: {
-    method: 'get',
-    url: '/mfa/tenant/:tenantId'
-  },
   getAdministrators: {
     method: 'get',
     url: '/api/tenant/:tenantId/admin'

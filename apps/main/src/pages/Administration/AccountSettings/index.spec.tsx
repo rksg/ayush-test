@@ -3,10 +3,10 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { administrationApi, mspApi }                   from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider, store  }                            from '@acx-ui/store'
+import { UserProfileContext, UserProfileContextProps }       from '@acx-ui/rc/components'
+import { administrationApi, mspApi }                         from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo, UserUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                  from '@acx-ui/store'
 import {
   render,
   screen,
@@ -61,7 +61,7 @@ describe('Account Settings', () => {
         (_req, res, ctx) => res(ctx.json(fakeRecoveryPassphrase))
       ),
       rest.get(
-        AdministrationUrlsInfo.getMfaTenantDetails.url,
+        UserUrlsInfo.getMfaTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
       ),
       rest.get(

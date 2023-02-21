@@ -17,7 +17,6 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
-  baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
   baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi
@@ -77,7 +76,6 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
-    [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
@@ -106,7 +104,6 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
-      mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,

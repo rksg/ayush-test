@@ -11,14 +11,15 @@ import {
   UserSettings,
   UserProfile,
   UserUrlsInfo,
-  CloudVersion
+  CloudVersion,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
-  tagTypes: ['UserProfile'],
+  tagTypes: ['UserProfile', 'Mfa'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -106,7 +107,8 @@ export const userApi = baseUserApi.injectEndpoints({
       transformResponse (mfaDetail: MfaDetailStatus) {
         mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
         return mfaDetail
-      }
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     getMfaAdminDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => {
@@ -121,7 +123,17 @@ export const userApi = baseUserApi.injectEndpoints({
       transformResponse (mfaDetail: MfaDetailStatus) {
         mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
         return mfaDetail
-      }
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    toggleMFA: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserUrlsInfo.toggleMFA, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
     //   query: ({ params }) => {
@@ -142,7 +154,7 @@ export const userApi = baseUserApi.injectEndpoints({
     // }),
     mfaRegisterAdmin: build.mutation<MfaOtpMethod, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.mfaRegisterAdmin, params)
+        const req = createHttpRequest(UserUrlsInfo.mfaRegisterAdmin, params)
         return {
           ...req,
           body: payload
@@ -156,8 +168,36 @@ export const userApi = baseUserApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    setupMFAAccount: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.setupMFAAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    mfaResendOTP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.mfaResendOTP, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    disableMFAMethod: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.disableMFAMethod, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     })
-
   })
 })
 export const {
@@ -166,5 +206,13 @@ export const {
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetPlmMessageBannerQuery
+  useGetPlmMessageBannerQuery,
+  useSetupMFAAccountMutation,
+  useToggleMFAMutation,
+  useGetMfaAdminDetailsQuery,
+  useGetMfaTenantDetailsQuery,
+  useMfaRegisterAdminMutation,
+  useMfaRegisterPhoneQuery,
+  useMfaResendOTPMutation,
+  useDisableMFAMethodMutation
 } = userApi

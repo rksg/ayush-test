@@ -1,4 +1,7 @@
+import { MFAStatus, MFAMethod } from '../models/MFAEnum'
+
 import { RolesEnum } from './msp'
+
 
 export interface UserSettings {
   [key: string]: string
@@ -50,9 +53,9 @@ export enum DetailLevel {
 
 export interface MfaDetailStatus {
   contactId?: string;
-  mfaMethods: string[];
+  tenantStatus: MFAStatus
+  mfaMethods: MFAMethod[]
   recoveryCodes: string[];
-  tenantStatus: string;
   userId: string;
   enabled: boolean;
 }

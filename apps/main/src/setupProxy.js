@@ -11,82 +11,52 @@ const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
 module.exports = async function setupProxy (app) {
   const localDataApi = new Promise((resolve) => {
     https
-      .get(LOCAL_MLISA_URL, () => { resolve('up') })
-      .on('error', () => { resolve('down') })
+      .get(LOCAL_MLISA_URL, () => {
+        resolve('up')
+      })
+      .on('error', () => {
+        resolve('down')
+      })
   })
-  if (await localDataApi === 'up') {
-    app.use(createProxyMiddleware(
-      '/api/a4rc',
-      {
+  if ((await localDataApi) === 'up') {
+    app.use(
+      createProxyMiddleware('/api/a4rc', {
         target: LOCAL_MLISA_URL,
         changeOrigin: true,
         onProxyReq: (proxyReq, req) => {
-          proxyReq.setHeader('x-mlisa-tenant-id',
-            req.headers['x-mlisa-tenant-id'] || req.headers.referer.match(/t\/([0-9a-f]{32})/)[1])
-          proxyReq.setHeader('x-mlisa-user-role',
-            req.headers['x-mlisa-user-role'] || 'alto-report-only')
-          proxyReq.setHeader('x-mlisa-user-id', req.headers['x-mlisa-user-id'] || 'some-id')
+          proxyReq.setHeader(
+            'x-mlisa-tenant-id',
+            req.headers['x-mlisa-tenant-id'] ||
+              req.headers.referer.match(/t\/([0-9a-f]{32})/)[1]
+          )
+          proxyReq.setHeader(
+            'x-mlisa-user-role',
+            req.headers['x-mlisa-user-role'] || 'alto-report-only'
+          )
+          proxyReq.setHeader(
+            'x-mlisa-user-id',
+            req.headers['x-mlisa-user-id'] || 'some-id'
+          )
         }
-      }
-    ))
+      })
+    )
   }
-
-  app.use(createProxyMiddleware(
-    '/docs',
-    {
-      target: 'https://docs.cloud.ruckuswireless.com',
+  app.use(
+    createProxyMiddleware('/api/websocket/socket.io', {
+      target: CLOUD_URL,
       changeOrigin: true,
-      pathRewrite: { '^/docs': '/' }
-    }
-  ))
-
-  app.use(createProxyMiddleware(
-    '/api/websocket/socket.io',
-    {
-      target: CLOUD_URL, changeOrigin: true, ws: true,
-      onProxyReq: function (request) {
+      ws: true,
+      onProxyReqWs: function (request) {
+        console.log('onProxyReqWs:')
         request.setHeader('origin', CLOUD_URL)
       }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/api',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/g',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/mfa',
-    { target: CLOUD_URL, changeOrigin: true,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/**',
-    {
-      target: CLOUD_URL.replace('//', '//api.'),
-      changeOrigin: true,
-      secure: false,
-      onProxyReq: function (request) {
-        request.setHeader('origin', CLOUD_URL)
-      }
-    }
-  ))
-  app.use(createProxyMiddleware(
-    '/mfa',
-    { target: CLOUD_URL, changeOrigin: true }
-  ))
+    })
+  )
+  app.use(
+    createProxyMiddleware('/api', { target: CLOUD_URL, changeOrigin: true })
+  )
+  app.use(
+    createProxyMiddleware('/mfa', { target: CLOUD_URL, changeOrigin: true })
+  )
   return app
 }

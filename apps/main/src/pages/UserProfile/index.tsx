@@ -4,9 +4,9 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Tabs,
-  Tooltip
+  Tabs
 } from '@acx-ui/components'
+import { MultiFactor }                  from '@acx-ui/msp/components'
 import { useUserProfileContext }        from '@acx-ui/rc/components'
 import { useUpdateUserProfileMutation } from '@acx-ui/rc/services'
 import {
@@ -19,7 +19,6 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import {
   RecentLogin
@@ -60,8 +59,6 @@ export function UserProfile () {
       pathname: location.from
     }, { replace: true })
   }
-
-  const showNotification = false
 
   const UserData = () => {
     return (
