@@ -7,8 +7,9 @@ import { useIntl }                                                             f
 import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
 import { Button, Modal }                                              from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
+import { SelectConnectedClientsTable }                                from '@acx-ui/rc/components'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
+import { ClientList, MacAddressFilterRegExp, MacRegistrationPool }    from '@acx-ui/rc/utils'
 
 import { PersonaDeviceItem } from './PersonaDevicesForm'
 
@@ -20,18 +21,20 @@ enum DevicesImportMode {
 interface DevicesImportDialogProps {
   visible: boolean,
   onCancel: () => void,
-  onSubmit: (data: Extract<PersonaDeviceItem, ['macAddress', 'hostname']>[]) => void,
-  personaGroupId?: string
+  onSubmit: (data: Pick<PersonaDeviceItem, 'macAddress' | 'hostname'>[]) => void,
+  personaGroupId?: string,
+  selectedMacAddress: string[]
 }
 
 export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
   const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
+  const [selectedClients, setSelectedClients] = useState<ClientList[]>([])
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel, personaGroupId } = props
+  const { visible, onSubmit, onCancel, personaGroupId, selectedMacAddress } = props
   const subTitle = `The devices will be added to MAC Registration List
   (${macRegistrationPool?.name ?? noDataSymbol}) which is associated with this persona`
 
@@ -53,12 +56,22 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
 
   const triggerSubmit = () => {
     // FIXME: need to filter unique device items, but it have type issue
-    form.validateFields()
-      .then(values => {
-        // console.log('Current dialog fields value = ', values)
-        onSubmit(values.devices ?? [])
+    switch (importMode) {
+      case DevicesImportMode.Manually:
+        form.validateFields()
+          .then(values => {
+            // console.log('Current dialog fields value = ', values)
+            onSubmit(values.devices ?? [])
+            onModalCancel()
+          })
+        break
+      case DevicesImportMode.FromClientDevices:
+        const selectedDevices = selectedClients
+          .map(({ clientMac, hostname }) => ({ macAddress: clientMac, hostname }))
+        onSubmit(selectedDevices)
         onModalCancel()
-      })
+        break
+    }
   }
 
   const onImportModeChange = (e: RadioChangeEvent) => {
@@ -103,7 +116,13 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
       </Form>
 
       {importMode === DevicesImportMode.FromClientDevices
-        ? <div>{$t({ defaultMessage: 'Import from client table' })}</div>
+        ? <SelectConnectedClientsTable
+          visible={visible}
+          onRowChange={(_, selectedRows) => {setSelectedClients(selectedRows)}}
+          getCheckboxProps={(row) => ({
+            disabled: selectedMacAddress.includes(row.clientMac.toUpperCase())
+          })}
+        />
         : <ImportManuallyForm form={form}/>
       }
     </Modal>

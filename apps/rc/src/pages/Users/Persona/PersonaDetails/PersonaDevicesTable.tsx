@@ -1,17 +1,23 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { noDataSymbol }                                                    from '@acx-ui/analytics/utils'
-import { showActionModal, Table, TableProps, Subtitle, Loader, showToast } from '@acx-ui/components'
-import { SuccessSolid }                                                    from '@acx-ui/icons'
-import { useAddPersonaDevicesMutation, useDeletePersonaDevicesMutation }   from '@acx-ui/rc/services'
-import { Persona, PersonaDevice }                                          from '@acx-ui/rc/utils'
+import { noDataSymbol }                                                                         from '@acx-ui/analytics/utils'
+import { showActionModal, Table, TableProps, Subtitle, Loader, showToast, Tooltip }             from '@acx-ui/components'
+import { SuccessSolid }                                                                         from '@acx-ui/icons'
+import { OSIconContainer }                                                                      from '@acx-ui/rc/components'
+import { useAddPersonaDevicesMutation, useDeletePersonaDevicesMutation, useGetClientListQuery } from '@acx-ui/rc/services'
+import { getOsTypeIcon, Persona, PersonaDevice, useTableQuery }                                 from '@acx-ui/rc/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
 
+const defaultPayload = {
+  searchString: '',
+  searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
+  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName', 'apName']
+}
 
 export function PersonaDevicesTable (props: {
   persona?: Persona,
@@ -20,6 +26,39 @@ export function PersonaDevicesTable (props: {
   const { $t } = useIntl()
   const { persona, title } = props
   const [modelVisible, setModelVisible] = useState(false)
+  const [dataSource, setDataSource] = useState<PersonaDevice[]>(persona?.devices ?? [])
+
+  const clientListQuery = useTableQuery({
+    useQuery: useGetClientListQuery,
+    defaultPayload: {
+      ...defaultPayload,
+      ...persona
+        ? { filters: { clientMac: persona.devices?.map(d => d.macAddress.replaceAll('-', ':')) } }
+        : {}
+    },
+    option: {
+      skip: !persona
+    }
+  })
+
+  useEffect(() => {
+    if (!clientListQuery.data || !persona) return
+
+    // Combine client data and persona devices data
+    const personaDevices = persona?.devices?.map(device => {
+      // PersonaMAC format: AB-AB-AB-AB-AB-AB
+      // ClientMAC format: ab:ab:ab:ab:ab:ab
+      const deviceMac = device.macAddress.replaceAll('-', ':')
+      const client = clientListQuery.data?.data
+        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+
+      return client
+        ? { ...device, os: client.osType, deviceName: client.hostname }
+        : device
+    }) ?? []
+
+    setDataSource(personaDevices)
+  }, [clientListQuery.data, persona])
 
   const [
     addPersonaDevicesMutation,
@@ -57,7 +96,14 @@ export function PersonaDevicesTable (props: {
       key: 'os',
       dataIndex: 'os',
       align: 'center',
-      title: $t({ defaultMessage: 'OS' })
+      title: $t({ defaultMessage: 'OS' }),
+      render: (data) => {
+        return <OSIconContainer>
+          <Tooltip title={data}>
+            { getOsTypeIcon(data as string) }
+          </Tooltip>
+        </OSIconContainer>
+      }
     },
     {
       key: 'macAddress',
@@ -124,7 +170,7 @@ export function PersonaDevicesTable (props: {
     setModelVisible(false)
   }
 
-  const handleModalSubmit = (data: Extract<PersonaDeviceItem, ['macAddress', 'hostname']>[]) => {
+  const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     addPersonaDevicesMutation({
       params: { groupId: persona?.groupId, id: persona?.id },
       payload: data
@@ -151,7 +197,7 @@ export function PersonaDevicesTable (props: {
       <Table
         rowKey={'macAddress'}
         columns={columns}
-        dataSource={persona?.devices}
+        dataSource={dataSource}
         rowActions={rowActions}
         actions={actions}
         rowSelection={{ type: 'checkbox' }}
@@ -161,6 +207,7 @@ export function PersonaDevicesTable (props: {
       <PersonaDevicesImportDialog
         visible={modelVisible}
         personaGroupId={persona?.groupId}
+        selectedMacAddress={persona?.devices?.map(d => d.macAddress.replaceAll('-', ':')) ?? []}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
       />
