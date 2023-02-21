@@ -44,7 +44,7 @@ export default function RogueAPDetectionTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name, scope }], clearSelection) => {
-        if (scope !== 0 || name === DEFAULT_PROFILE) {
+        if (Number(scope) !== 0 || name === DEFAULT_PROFILE) {
           showActionModal({
             type: 'error',
             content: $t({
