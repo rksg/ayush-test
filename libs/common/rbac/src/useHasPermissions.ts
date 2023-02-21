@@ -1,12 +1,12 @@
-import { useGetTenantAllowedOperations }   from '@acx-ui/rc/components'
-import { getJwtTokenPayload, getTenantId } from '@acx-ui/utils'
+import { useGetTenantAllowedOperations } from '@acx-ui/rc/components'
+import { getJwtTokenPayload }            from '@acx-ui/utils'
 
 import { RolesMappingDic } from './role-mapping'
 
 export function useHasPermissions (buttonId: string): boolean {
   let isAllowed = false
   let { tenantId } = getJwtTokenPayload()
-  
+
   const allowedOperation: string[] = useGetTenantAllowedOperations(tenantId)
   if (RolesMappingDic.hasOwnProperty(buttonId)) {
     const actions = RolesMappingDic[buttonId]
