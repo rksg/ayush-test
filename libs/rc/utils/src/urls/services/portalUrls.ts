@@ -35,7 +35,7 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/api/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort'
+    url: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort'
   },
   getPortalLang: {
     method: 'get',

@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
+  useGetDHCPProfileListQuery,
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
   useGetPortalProfileListQuery,
@@ -44,9 +45,7 @@ export default function MyServices () {
     {
       type: ServiceType.DHCP,
       category: RadioCardCategory.WIFI,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
-      })
+      tableQuery: useGetDHCPProfileListQuery({ params })
     },
     {
       type: ServiceType.EDGE_DHCP,

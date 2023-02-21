@@ -1,31 +1,17 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteDHCPServiceMutation, useServiceListQuery }              from '@acx-ui/rc/services'
+import { useDeleteDHCPServiceMutation, useGetDHCPProfileListQuery }       from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  DHCPSaveData
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [ServiceType.DHCP]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
 
 export default function DHCPTable () {
   const { $t } = useIntl()
@@ -33,22 +19,24 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
-
+  const DHCP_LIMIT_NUMBER = 32
   const tableQuery = useTableQuery({
-    useQuery: useServiceListQuery,
-    defaultPayload
+    useQuery: useGetDHCPProfileListQuery,
+    defaultPayload: {
+
+    }
   })
 
-  const rowActions: TableProps<Service>['rowActions'] = [
+  const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
+      onClick: ([{ id, serviceName }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Service' }),
-            entityValue: name
+            entityValue: serviceName
           },
           onOk: () => {
             deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
@@ -88,12 +76,15 @@ export default function DHCPTable () {
         extra={[
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ]}
       />
       <Loader states={[tableQuery]}>
-        <Table<Service>
+        <Table<DHCPSaveData>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -110,11 +101,11 @@ export default function DHCPTable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<Service>['columns'] = [
+  const columns: TableProps<DHCPSaveData>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
-      dataIndex: 'name',
+      dataIndex: 'serviceName',
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
@@ -131,11 +122,24 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'pools',
+      title: $t({ defaultMessage: 'DHCP Pools' }),
+      dataIndex: 'dhcpPools',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: function (data, row) {
+        return row.dhcpPools.length
+      }
+    },
+    {
+      key: 'venues',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'usage',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return row.venueIds?.length || 0
+      }
     }
   ]
 

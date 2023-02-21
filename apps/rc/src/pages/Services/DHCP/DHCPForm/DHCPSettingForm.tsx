@@ -51,7 +51,7 @@ export function SettingForm (props: DHCPFormProps) {
   const id = Form.useWatch<string>('id', form)
 
   const nameValidator = async (value: string) => {
-    const list = (await getDHCPProfileList({ params }).unwrap())
+    const list = (await getDHCPProfileList({ params }).unwrap()).data
       .filter(dhcpProfile => dhcpProfile.id !== id)
       .map(dhcpProfile => ({ serviceName: dhcpProfile.serviceName }))
     // eslint-disable-next-line max-len

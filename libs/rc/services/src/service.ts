@@ -48,7 +48,9 @@ import {
   WebAuthTemplate,
   AccessSwitch,
   DistributionSwitch,
-  downloadFile
+  downloadFile,
+  NewAPITableResult,
+  transferNewResToTableResult
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -166,12 +168,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
+    getDHCPProfileList: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfiles, params)
-        return{
+        const req = createHttpRequest(
+          DHCPUrls.getDHCPProfiles,
+          params)
+
+        return {
           ...req
         }
+      },
+      transformResponse (result: DHCPSaveData[]) {
+        return { data: result, totalCount: result.length, page: 0 }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -634,8 +642,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
-      transformResponse (result: NewTableResult<Portal>) {
-        return transferToTableResult<Portal>(result)
+      transformResponse (result: NewAPITableResult<Portal>) {
+        return transferNewResToTableResult<Portal>(result)
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

@@ -59,15 +59,18 @@ const VenueDHCPForm = (props: {
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
-
+  const DHCP_LIMIT_NUMBER = 32
   const getSelectedDHCPMode = ()=> {
-    if(dhcpProfileList && dhcpServiceID){
-      return dhcpProfileList[_.findIndex(dhcpProfileList, { id: dhcpServiceID })].dhcpMode
+    if(dhcpProfileList?.data && dhcpServiceID){
+      return dhcpProfileList.data[_.findIndex(dhcpProfileList.data,
+        { id: dhcpServiceID })].dhcpMode
     }else{
       return DHCPConfigTypeEnum.SIMPLE
     }
   }
-
+  const isMaxNumberReached = ()=>{
+    return dhcpProfileList&&dhcpProfileList.data.length >= DHCP_LIMIT_NUMBER
+  }
 
   useEffect(() => {
     if(apList?.data) setFilteredAPs(apList?.data)
@@ -197,7 +200,7 @@ const VenueDHCPForm = (props: {
             setDHCPServiceID(val as string)
           }}
           placeholder={$t({ defaultMessage: 'Select Service...' })}>
-            {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
+            {dhcpProfileList?.data.map( (dhcp:DHCPSaveData) =>
               <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
               </Option>
@@ -205,12 +208,20 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={{ marginLeft: 10 }}
-          to={useTenantLink('/services/dhcp/create')}
-          state={{
-            origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
-            param: { showConfig: true }
-          }}>
+        <Link style={isMaxNumberReached() ?
+          { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }:
+          { marginLeft: 10 }}
+        onClick={(e)=>{
+          if(isMaxNumberReached()){
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+        to={useTenantLink('/services/dhcp/create')}
+        state={{
+          origin: useTenantLink(`/venues/${params.venueId}/venue-details/services`),
+          param: { showConfig: true }
+        }}>
           {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         </Link>
 
