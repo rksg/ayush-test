@@ -122,7 +122,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       const getGuestData = async () => {
         const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
           .unwrap()).data || []
-        if (list.length == 1) {
+        if (list.length === 1) {
           setGuestDetail(list[0])
         }
       }
@@ -167,7 +167,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' && <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -176,7 +177,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' && <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -534,7 +536,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   </>
 }
 
-function GuestDetails({guestDetail, clientMac}: {
+function GuestDetails ({ guestDetail, clientMac }: {
                         guestDetail: Guest
                         clientMac: string
                       }) {
@@ -575,10 +577,13 @@ function GuestDetails({guestDetail, clientMac}: {
       // TODO
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
-        children={ guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(client =>
-          <TenantLink to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
-            {client.clientMac}
-          </TenantLink>) || '--'}
+        children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(
+          client =>
+            <TenantLink
+              // eslint-disable-next-line max-len
+              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
+              {client.clientMac}
+            </TenantLink>) || '--'}
       />
     </Descriptions>
   </>
