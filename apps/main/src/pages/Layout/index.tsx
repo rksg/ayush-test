@@ -10,7 +10,8 @@ import {
   ActivityButton,
   AlarmsButton,
   HelpButton,
-  UserButton
+  UserButton,
+  LicenseBanner
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -19,9 +20,7 @@ import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components
 import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
 
-import LicenseBar        from './LicenseBar'
 import { useMenuConfig } from './menuConfig'
-import RegionButton      from './RegionButton'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
@@ -48,7 +47,7 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </Link> }
-          <LicenseBar/>
+          <LicenseBanner/>
         </UI.LeftHeaderWrapper>
       }
 

@@ -16,7 +16,8 @@ import {
   ActivityButton,
   AlarmsButton,
   HelpButton,
-  UserButton
+  UserButton,
+  LicenseBanner
 } from '@acx-ui/main/components'
 import {
   CloudMessageBanner,
@@ -27,7 +28,8 @@ import {
 } from '@acx-ui/rc/services'
 import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { useMenuConfig } from './menuConfig'
+import { useMenuConfig }     from './menuConfig'
+import { LeftHeaderWrapper } from './styledComponents'
 
 function Layout () {
   const { $t } = useIntl()
@@ -67,7 +69,7 @@ function Layout () {
           <Outlet />
         </>
       }
-      leftHeaderContent={
+      leftHeaderContent={<LeftHeaderWrapper>
         <Dropdown overlay={regionMenu}>{(selectedKeys) =>
           <LayoutUI.DropdownText>
             <LayoutUI.Icon children={<WorldSolid />} />
@@ -75,6 +77,8 @@ function Layout () {
             <LayoutUI.Icon children={<ArrowExpand />} />
           </LayoutUI.DropdownText>
         }</Dropdown>
+        <LicenseBanner isMSPUser={true}/>
+      </LeftHeaderWrapper>
       }
       rightHeaderContent={<>
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>

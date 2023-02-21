@@ -1,6 +1,7 @@
 import {
   EntitlementDeviceType,
-  EntitlementDeviceSubType
+  EntitlementDeviceSubType,
+  LicenseBannerTypeEnum
 } from './msp'
 
 
@@ -18,15 +19,12 @@ export interface Entitlement {
 
 export interface EntitlementBanner {
   deviceCount: number;
-  deviceSubType: EntitlementDeviceSubType;
   deviceType: EntitlementDeviceType;
   effectDate: string;
   effectDays: number;
   multipleLicense: boolean;
-  totalActiveDevices: 0;
-  totalRALicense:0;
+  type: LicenseBannerTypeEnum;
 }
-
 
 export interface EntitlementSummary {
   deviceType: EntitlementDeviceType;
