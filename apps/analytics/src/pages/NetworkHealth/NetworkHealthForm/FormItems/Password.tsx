@@ -5,8 +5,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsFormNew,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
 import { authMethodsByCode }    from '../../authMethods'
@@ -24,7 +23,7 @@ function fieldOfCode (code?: NetworkHealthFormDto['authenticationMethod']) {
 const useField = () => {
   const { $t } = useIntl()
   const { editMode, form, initialValues } = useStepFormContext<NetworkHealthFormDto>()
-  const code = useWatch('authenticationMethod', form)
+  const code = Form.useWatch('authenticationMethod', form)
 
   const field = fieldOfCode(code)
   const previousField = fieldOfCode(initialValues?.authenticationMethod)

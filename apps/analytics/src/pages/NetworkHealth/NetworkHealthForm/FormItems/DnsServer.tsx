@@ -5,8 +5,7 @@ import { defineMessage, useIntl }    from 'react-intl'
 
 import {
   StepsFormNew,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
 import { NetworkHealthFormDto } from '../../types'
@@ -19,8 +18,8 @@ const label = defineMessage({ defaultMessage: 'DNS Server' })
 const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const [isCustom, value] = [
-    useWatch('isDnsServerCustom', form),
-    useWatch(name, form)
+    Form.useWatch('isDnsServerCustom', form),
+    Form.useWatch(name, form)
   ]
 
   return { form, isCustom, value }

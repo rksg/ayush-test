@@ -78,6 +78,7 @@ export const renderForm = (
     }
     const onValuesChange = () => setOk(false)
     const formProps = { form, initialValues, onFinish, onValuesChange }
+    const keys = new Set(Object.keys(valuesToUpdate).concat(Object.keys(initialValues)))
 
     // eslint-disable-next-line testing-library/no-node-access
     const child = props.children
@@ -87,7 +88,7 @@ export const renderForm = (
       {ok ? <div data-testid='form-values'>{JSON.stringify(form.getFieldsValue(true))}</div> : null}
       {/* TODO: might be a source of bug for the StepsFormNew when previous page rely on useWatch to update another value */}
       {/* It is required to have fields render in order for useWatch to trigger */}
-      {Object.keys(valuesToUpdate).map(key => <Form.Item
+      {Array.from(keys).map(key => <Form.Item
         key={key}
         name={key}
         children={<Input />}

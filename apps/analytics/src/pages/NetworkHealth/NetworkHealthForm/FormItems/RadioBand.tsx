@@ -6,8 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   StepsFormNew,
   Tooltip,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/utils'
 
@@ -26,8 +25,8 @@ export function RadioBand () {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
 
   const [clientType, radio] = [
-    useWatch('clientType', form),
-    useWatch(name, form)
+    Form.useWatch('clientType', form),
+    Form.useWatch(name, form)
   ]
 
   const tooltipTitle = $t({ defaultMessage: '6 GHz is not supported for Virtual Client test' })

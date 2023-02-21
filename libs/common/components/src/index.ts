@@ -42,8 +42,7 @@ export * from './components/StepsForm'
 export {
   StepsForm as StepsFormNew,
   useStepFormContext,
-  createStepsFormContext,
-  useWatch
+  createStepsFormContext
 } from './components/StepsFormNew'
 export type {
   FieldSummaryProps,
