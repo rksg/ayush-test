@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, SwitchUrlsInfo }                from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { switchApi }                                                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { profilesExistResponse, familyModels, venues, profile }      from './__tests__/fixtures'
 import { ConfigurationProfileForm }                                  from './ConfigurationProfileForm'
@@ -23,6 +25,7 @@ const configureProfileContextValues = {
 
 describe('Wired', () => {
   beforeEach(() => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json({}))),
@@ -35,6 +38,11 @@ describe('Wired', () => {
       rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(profile)))
     )
+  })
+
+
+  afterEach(() => {
+    Modal.destroyAll()
   })
 
 
@@ -78,25 +86,24 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await screen.findByRole('img', { name: 'loading' })
-    await screen.findByRole('img', { name: 'check-circle' })
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Default VLAN settings' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Default VLAN settings' }))
     const dvIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(dvIdInput, { target: { value: '1' } })
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /ACLs/ })
-    fireEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
+    await screen.findByRole('heading', { level: 3, name: /ACLs/i })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
     const aclNameInput = await screen.findByLabelText('ACL Name')
     fireEvent.change(aclNameInput, { target: { value: '1' } })
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
@@ -128,13 +135,12 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await screen.findByRole('img', { name: 'loading' })
-    await screen.findByRole('img', { name: 'check-circle' })
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+    await userEvent.click(await screen.findByRole('button', { name: /Add VLAN/i }))
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
     await userEvent.click((await screen.findByTestId('dhcpSnooping')))
@@ -147,7 +153,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Trusted Ports/ })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     const dialog = await screen.findByRole('dialog')
     const family = await screen.findByText('ICX-7150')
     await userEvent.click(family)
@@ -167,6 +173,13 @@ describe('Wired', () => {
 
     const venueSwitch = await screen.findAllByRole('switch')
     await userEvent.click(venueSwitch[0])
+    await userEvent.click(venueSwitch[1])
+    await userEvent.click(venueSwitch[0])
+
+    const venueCheckbox = await screen.findAllByRole('checkbox')
+    await userEvent.click(venueCheckbox[0])
+    await userEvent.click(await screen.findByRole('button', { name: 'Deactivate' }) )
+    await userEvent.click(await screen.findByRole('button', { name: 'Activate' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /Summary/ })
@@ -194,17 +207,16 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await screen.findByRole('img', { name: 'loading' })
-    await screen.findByRole('img', { name: 'check-circle' })
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
-    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+    await screen.findByRole('heading', { level: 3, name: /VLANs/i })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     const dialog = await screen.findAllByRole('dialog')
     const family = await screen.findByText('ICX-7150')
     await userEvent.click(family)
@@ -261,8 +273,7 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await screen.findByRole('img', { name: 'loading' })
-    await screen.findByRole('img', { name: 'check-circle' })
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -301,17 +312,16 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await screen.findByRole('img', { name: 'loading' })
-    await screen.findByRole('img', { name: 'check-circle' })
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
     const vIdInput = await screen.findByLabelText('VLAN ID')
     fireEvent.change(vIdInput, { target: { value: '1' } })
 
-    fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     const dialog = await screen.findAllByRole('dialog')
     const family = await screen.findByText('ICX-7150')
     await userEvent.click(family)
@@ -348,5 +358,61 @@ describe('Wired', () => {
 
     const finishButton = await screen.findAllByRole('button', { name: /Finish/ })
     await userEvent.click(finishButton[1])
+  })
+
+  it('should render create Switch Configuration Profile with extended acl correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
+
+    const profileNameInput = await screen.findByLabelText('Profile Name')
+    fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+    const profileDescInput = await screen.findByLabelText('Profile Description')
+    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
+    fireEvent.blur(profileNameInput)
+    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await screen.findByRole('heading', { level: 3, name: /VLANs/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
+    const vIdInput = await screen.findByLabelText('VLAN ID')
+    fireEvent.change(vIdInput, { target: { value: '1' } })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Default VLAN settings' }))
+    const dvIdInput = await screen.findByLabelText('VLAN ID')
+    fireEvent.change(dvIdInput, { target: { value: '1' } })
+    await userEvent.click(await screen.findByRole('button', { name: 'Save' }) )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await screen.findByRole('heading', { level: 3, name: /ACLs/ })
+    await userEvent.click(await screen.findByRole('button', { name: 'Add ACL' }))
+    const aclNameInput = await screen.findByLabelText('ACL Name')
+    fireEvent.change(aclNameInput, { target: { value: '100' } })
+    const extendedOption = await screen.findByLabelText('Extended')
+    await userEvent.click(extendedOption)
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
+
+    // const row = await screen.findByRole('row', { name: /100/i })
+    // await userEvent.click(within(row).getByRole('radio'))
+    // await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+    // await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await screen.findByRole('heading', { level: 3, name: /Venues/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
+    await screen.findByRole('heading', { level: 3, name: /Summary/ })
+
+    await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
   })
 })
