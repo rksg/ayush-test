@@ -119,7 +119,7 @@ describe('SyslogDetailView', () => {
       }
     )
 
-    await screen.findByText(/test-venue/i)
+    await screen.findByText('test-venue')
 
     await screen.findByRole('cell', {
       name: 'test-venue2'
@@ -150,8 +150,6 @@ describe('SyslogDetailView', () => {
     )
 
     await screen.findByText(/Primary Server/i)
-
-    // screen.getByText(1)
 
     await screen.findByText(/configure/i)
   })
