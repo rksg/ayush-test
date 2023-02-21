@@ -789,7 +789,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { max: 64 }
+          { validator: (_, value) => portRegExp(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
