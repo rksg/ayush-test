@@ -11,7 +11,7 @@ import {
   screen,
   fireEvent,
   within,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -136,7 +136,9 @@ describe('Cli Template Form - Add', () => {
     await screen.findByRole('heading', { level: 3, name: 'Switches' })
     await userEvent.click(await screen.findByText('My-Venue'))
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     const row1 = await screen.findByRole('row', { name: /7150stack/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
@@ -306,7 +308,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     expect(await screen.findByText(/Read this before you start/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
@@ -339,7 +343,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -362,7 +368,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -381,7 +389,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -404,7 +414,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -453,7 +465,9 @@ describe('Cli Template Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -471,7 +485,9 @@ describe('Cli Template Form - Edit', () => {
     render(<Provider><CliTemplateForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })

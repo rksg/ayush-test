@@ -22,7 +22,8 @@ import {
   getFilters,
   TableQuery,
   RequestPayload,
-  SwitchStatusEnum
+  SwitchStatusEnum,
+  isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -87,6 +88,7 @@ export function SwitchTable (props : {
     serialNumber: '',
     switchName: ''
   })
+  const [stackTooltip, setStackTooltip] = useState('')
 
   const columns: TableProps<SwitchRow>['columns'] = [{
     key: 'name',
@@ -204,9 +206,29 @@ export function SwitchTable (props : {
     }
   }, {
     label: $t({ defaultMessage: 'Stack Switches' }),
-    disabled: true,
-    onClick: () => {
-      // TODO:
+    tooltip: stackTooltip, // TODO: tooltip won't show when button is disabled
+    disabled: (rows) => {
+      const modelFamily = rows[0]?.model?.split('-')[0]
+      const venueId = rows[0]?.venueId
+      const notOperational = rows.find(i =>
+        !isStrictOperationalSwitch(i?.deviceStatus, i?.configReady, i?.syncedSwitchConfig ?? false))
+      const invalid = rows.find(i =>
+        i?.model.split('-')[0] !== modelFamily || i?.venueId !== venueId)
+      const hasStack = rows.find(i => i.isStack || i.formStacking)
+      setStackTooltip('')
+
+      if(!!hasStack) {
+        setStackTooltip($t({ defaultMessage: 'Switches should be standalone' }))
+      } else if(!!notOperational) {
+        setStackTooltip($t({ defaultMessage: 'Switch must be operational before you can stack switches' }))
+      } else if(!!invalid) {
+        setStackTooltip($t({ defaultMessage: 'Switches should belong to the same model family and venue' }))
+      }
+
+      return !!notOperational || !!invalid || !!hasStack
+    },
+    onClick: (selectedRows) => {
+      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.id).join('_')}/add`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

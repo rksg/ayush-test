@@ -155,6 +155,7 @@ function DeviceRoutes () {
       <Route path='devices/switch/:action' element={<SwitchForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>

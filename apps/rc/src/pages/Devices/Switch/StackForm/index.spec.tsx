@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { apApi, venueApi }                from '@acx-ui/rc/services'
+import { apApi, switchApi, venueApi }     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
@@ -11,6 +11,7 @@ import {
   render,
   screen,
   fireEvent,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -20,7 +21,8 @@ import {
   successResponse,
   editStackData,
   editStackDetail,
-  editStackMembers
+  editStackMembers,
+  standaloneSwitches
 } from '../__tests__/fixtures'
 
 import { StackForm } from '.'
@@ -52,6 +54,7 @@ describe('Switch Stack Form - Add', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
     initialize()
     mockServer.use(
       rest.get(CommonUrlsInfo.getApGroupList.url,
@@ -59,7 +62,9 @@ describe('Switch Stack Form - Add', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.post(SwitchUrlsInfo.addSwitch.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(editStackDetail)))
     )
   })
   afterEach(() => {
@@ -172,9 +177,55 @@ describe('Switch Stack Form - Add', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
   })
+  it('should handle add stack by stack switches', async () => {
+    const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
+      venueId: 'venue-id', stackList: 'c0:c5:20:aa:32:79_FEK3230S3A0'
+    }
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
+    })
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
+      ),
+      rest.post(SwitchUrlsInfo.convertToStack.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+
+    expect(await screen.findByText('FEK3224R07X')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+  })
+
+  it('should handle error occurred for stack switches', async () => {
+    const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
+      venueId: 'switch-id', stackList: 'c0:c5:20:aa:32:79_FEK3230S3A0'
+    }
+    render(<Provider><StackForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
+    })
+
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))
+      ),
+      rest.post(SwitchUrlsInfo.convertToStack.url,
+        (_, res, ctx) => res(ctx.status(404), ctx.json({})))
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+
+    expect(await screen.findByText('FEK3224R07X')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+    expect(await screen.findByText('An error occurred')).toBeVisible()
+  })
 })
-
-
 
 describe('Switch Stack Form - Edit', () => {
   const params = { tenantId: 'tenant-id', switchId: 'FEK4124R28X', action: 'edit' }

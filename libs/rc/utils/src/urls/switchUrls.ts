@@ -87,6 +87,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
     // newApi: false
   },
+  convertToStack: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/ConvertToStack'
+  },
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
