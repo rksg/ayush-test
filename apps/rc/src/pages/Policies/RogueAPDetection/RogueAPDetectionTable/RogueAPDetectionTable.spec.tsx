@@ -102,7 +102,7 @@ describe('RogueAPDetectionTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
