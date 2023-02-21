@@ -59,7 +59,8 @@ export function IpSettings () {
   useEffect(() => {
 
     if (currentAP && getApIpSettings && !getApIpSettings.isLoading) {
-      const { primaryDnsServer, secondaryDnsServer } = currentAP.apStatusData?.APSystem || {}
+      const { primaryDnsServer, secondaryDnsServer,
+        gateway, ipType, netmask } = currentAP.apStatusData?.APSystem || {}
 
       setDynamicIpAddr(currentAP.IP || '')
       setDynamicDns1(primaryDnsServer || '')
@@ -68,11 +69,12 @@ export function IpSettings () {
       let ipSettings = getApIpSettings.data
       if (!ipSettings) {
         ipSettings = {
-          ipType: IpTypeEnum.DYNAMIC,
-          ip: '',
-          netmask: '',
-          gateway: '',
-          primaryDnsServer: ''
+          ipType: (ipType === 'static')? IpTypeEnum.STATIC : IpTypeEnum.DYNAMIC,
+          ip: currentAP.IP || '',
+          netmask: netmask || '',
+          gateway: gateway || '',
+          primaryDnsServer: primaryDnsServer || '',
+          secondaryDnsServer: secondaryDnsServer || ''
         }
       }
       setCurrentIpType(ipSettings.ipType || IpTypeEnum.DYNAMIC)
