@@ -43,7 +43,7 @@ describe('validator', () => {
     })
     it('Should display error message if domain name values incorrectly', async () => {
       const result = domainNameRegExp('testcom')
-      await expect(result).rejects.toEqual('This field is invalid')
+      await expect(result).rejects.toEqual('Please enter a valid domain')
     })
   })
 
