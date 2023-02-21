@@ -9,9 +9,9 @@ type Props = {scopeId:string, registrationId:string}
 export const TemplateSelectionWidget = (props: Props) => {
   const { $t } = useIntl()
 
-
+  console.log("Template Scope Id in widget: ", props.scopeId)
   const templateScopeRequest = useGetTemplateScopeByIdQuery({
-    prams: { templateScopeId: props.scopeId }
+    params: { templateScopeId: props.scopeId }
   })
 
   let content

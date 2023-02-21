@@ -1,6 +1,7 @@
 import { ApiInfo } from '../apiService'
 
-export const msgTemplateBaseUrl = '/api/msgTemplate'
+// TODO: update this when I change the root path?
+export const msgTemplateBaseUrl = '/msgtemplate'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
