@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input, Space } from 'antd'
+import { useIntl }            from 'react-intl'
 
 import {
   Button,
@@ -112,18 +112,23 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'passphrase',
       sorter: false,
       render: function (data) {
-        return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
-            readOnly
-            bordered={false}
-            value={data as string}
-          />
-          <Button
-            type='link'
-            icon={<CopyOutlined />}
-            onClick={() => navigator.clipboard.writeText(data as string)}
-          />
-        </div>
+        return (
+          <Space
+            direction='horizontal'
+            size={2}
+            onClick={(e)=> {e.stopPropagation()}}>
+            <Input.Password
+              readOnly
+              bordered={false}
+              value={data as string}
+            />
+            <Button
+              type='link'
+              icon={<CopyOutlined />}
+              onClick={() => navigator.clipboard.writeText(data as string)}
+            />
+          </Space>
+        )
       }
     },
     {
