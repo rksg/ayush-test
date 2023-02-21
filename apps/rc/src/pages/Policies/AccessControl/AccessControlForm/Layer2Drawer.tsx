@@ -415,6 +415,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           dataSource={macAddressList}
           rowKey='macAddress'
           actions={actions}
+          columnState={{ hidden: true }}
         />
       </Form.Item>
     </Form>
