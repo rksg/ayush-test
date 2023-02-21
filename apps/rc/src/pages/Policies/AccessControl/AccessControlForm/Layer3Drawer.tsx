@@ -99,6 +99,49 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
+const DEFAULT_LAYER3_RULES = [
+  {
+    priority: 1,
+    description: 'Allow DHCP',
+    access: 'ALLOW',
+    protocol: 'ANYPROTOCOL',
+    source: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: ''
+    },
+    destination: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: '67'
+    }
+  },
+  {
+    priority: 2,
+    description: 'Allow DNS',
+    access: 'ALLOW',
+    protocol: 'ANYPROTOCOL',
+    source: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: ''
+    },
+    destination: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: '53'
+    }
+  }
+]
+
 const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -107,7 +150,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
-  const [layer3RuleList, setLayer3RuleList] = useState([] as Layer3Rule[])
+  const [layer3RuleList, setLayer3RuleList] = useState(DEFAULT_LAYER3_RULES as Layer3Rule[])
   const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
