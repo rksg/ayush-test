@@ -41,6 +41,8 @@ export class EntitlementUtil {
         return 'ICX 7650'
       case EntitlementDeviceSubType.ICX78:
         return 'ICX 7850'
+      case EntitlementDeviceSubType.ICX82:
+        return 'ICX 8200'
       case EntitlementDeviceSubType.ICXTEMP:
       case EntitlementDeviceSubType.ICX_ANY:
       case EntitlementDeviceSubType.MSP_WIFI_TEMP:

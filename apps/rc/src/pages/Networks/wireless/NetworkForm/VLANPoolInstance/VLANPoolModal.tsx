@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button }             from '@acx-ui/components'
-import { VLANPoolPolicyType } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType } from '@acx-ui/components'
+import { VLANPoolPolicyType }       from '@acx-ui/rc/utils'
 
 
 import VLANPoolForm from '../../../../Policies/VLANPool/VLANPoolForm/VLANPoolForm'
@@ -30,14 +30,13 @@ export default function VLANPoolModal (props:{
       <Button type='link' onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Pool' })}
       </Button>
-      <UI.Drawer
+      <Modal
         title={$t({ defaultMessage: 'Add VLAN Pool' })}
         visible={visible}
-        onClose={onClose}
+        type={ModalType.ModalStepsForm}
         mask={true}
         children={getContent}
         destroyOnClose={true}
-        width={'calc( 100% - var(--acx-sider-width))'}
       />
     </UI.ButtonContainer>
   )

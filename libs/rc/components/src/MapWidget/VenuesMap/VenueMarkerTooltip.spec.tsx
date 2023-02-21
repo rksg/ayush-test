@@ -18,10 +18,10 @@ const withoutCounts = {
 }
 
 const paths = [
-  'devices/wifi',
-  'users/wifi/clients',
-  'devices/switch',
-  'users/switch/clients'
+  'venue-details/devices',
+  'venue-details/clients/wifi',
+  'venue-details/devices/switch',
+  'venue-details/clients/switch'
 ]
 
 const common = {
@@ -106,7 +106,7 @@ describe('Venue Marker Tooltip', () => {
       fireEvent.click(link)
       expect(onNavigateMock).lastCalledWith({
         path: paths[i],
-        venueId: undefined
+        venueId: '7ae27179b7b84de89eb7e56d9b15943d'
       })
     })
 
