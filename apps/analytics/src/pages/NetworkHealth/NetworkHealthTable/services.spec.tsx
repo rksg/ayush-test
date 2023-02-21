@@ -36,7 +36,7 @@ describe('networkHealth query', () => {
       data: { allServiceGuardSpecs: [] }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkHealth.initiate({})
+      api.endpoints.networkHealth.initiate()
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual([])
@@ -45,7 +45,7 @@ describe('networkHealth query', () => {
   it('should return correct data', async () => {
     mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', { data: expectedResult })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.networkHealth.initiate({})
+      api.endpoints.networkHealth.initiate()
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.allServiceGuardSpecs)

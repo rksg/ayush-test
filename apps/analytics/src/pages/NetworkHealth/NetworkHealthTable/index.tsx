@@ -33,7 +33,7 @@ export const getAPsUnderTest = (total: number, pending: number) => {
 
 export const getLastResult = (total: number, success: number, pending: number) => {
   return total ? (
-   pending ?'In progress...' : `${formatter('percentFormatRound')(success/total)} pass`
+    pending ?'In progress...' : `${formatter('percentFormatRound')(success/total)} pass`
   ) : noDataSymbol
 }
 

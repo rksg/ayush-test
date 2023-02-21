@@ -701,7 +701,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/serviceValidation/networkHealth/1"
+                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/serviceValidation/networkHealth/tests/1"
                                 >
                                   testCase 1
                                 </a>
@@ -729,7 +729,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                10
+                                10 APs
                               </td>
                               <td
                                 class="ant-table-cell"
@@ -768,11 +768,7 @@ exports[`Network Health Table should render table with valid input 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                <a
-                                  href="/t/a27e3eb0bd164e01ae731da8d976d3b1/serviceValidation/networkHealth/2"
-                                >
-                                  testCase 2
-                                </a>
+                                testCase 2
                               </td>
                               <td
                                 class="ant-table-cell"
