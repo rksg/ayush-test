@@ -762,7 +762,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params)
         return {
           ...req,
           body: payload
@@ -772,7 +772,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params)
         return {
           ...req
         }
@@ -781,7 +781,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     syslogPolicy: build.query<SyslogContextType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
         return {
           ...req
         }
@@ -790,7 +790,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params)
         return {
           ...req,
           body: payload
@@ -800,7 +800,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params)
         return {
           ...req,
           body: payload

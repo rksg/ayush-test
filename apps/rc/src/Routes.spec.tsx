@@ -557,8 +557,7 @@ describe('RcRoutes: Policies', () => {
   })
 
   test('should navigate to detail SYSLOG page', async () => {
-    let path = getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })
-    path = path.replace(':policyId', 'policyId')
+    const path = getPolicyDetailsLink({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
     render(<Provider><RcRoutes /></Provider>, {
       route: {
         path: '/t/tenantId/' + path,

@@ -9,9 +9,9 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { getPolicyListRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink, PolicyOperation }                                       from '@acx-ui/rc/utils'
-import { TenantLink }                                                                  from '@acx-ui/react-router-dom'
+import { getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink, PolicyOperation }                                   from '@acx-ui/rc/utils'
+import { TenantLink }                                                              from '@acx-ui/react-router-dom'
 
 
 import SyslogDetailContent from './SyslogDetailContent'
@@ -30,7 +30,8 @@ const SyslogDetailView = () => {
       <PageHeader
         title={policyName}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Syslog' }),
+            link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
         extra={policyName !== SyslogConstant.DefaultProfile ? [
           <TenantLink to={getPolicyDetailsLink({

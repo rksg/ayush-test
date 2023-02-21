@@ -36,7 +36,7 @@ const SyslogDetailContent = () => {
           </Card.Title>
           <Paragraph>
             {`${data.server}
-            :${data.port?.toString()} ${data.protocol?.toString()}`}
+            :${data.port} ${data.protocol}`}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
@@ -45,20 +45,20 @@ const SyslogDetailContent = () => {
           </Card.Title>
           <Paragraph>
             {`${data.secondaryServer}
-            :${data.secondaryPort?.toString()} ${data.secondaryProtocol?.toString()}`}
+            :${data.secondaryPort} ${data.secondaryProtocol}`}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Event Facility' })}
           </Card.Title>
-          <Paragraph>{data.facility?.toString()}</Paragraph>
+          <Paragraph>{data.facility}</Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Send Logs' })}
           </Card.Title>
-          <Paragraph>{data.flowLevel?.toString()}</Paragraph>
+          <Paragraph>{data.flowLevel}</Paragraph>
         </GridCol>
       </GridRow>
     </Card>
