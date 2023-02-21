@@ -1,0 +1,175 @@
+import { useState } from 'react'
+
+import { Empty }     from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import {
+  Button,
+  showActionModal,
+  Table,
+  TableProps,
+  Subtitle,
+  Loader
+} from '@acx-ui/components'
+import {
+  useGetDelegationsQuery,
+  useRevokeInvitationMutation
+} from '@acx-ui/rc/services'
+import {
+  AdministrationDelegationStatus,
+  Delegation,
+  getDelegetionStatusIntlString
+} from '@acx-ui/rc/utils'
+
+import * as UI from '../styledComponents'
+
+import DelegationInviteDialog from './DelegationInviteDialog'
+
+
+export interface AdministrationDelegationsTableProps {
+  isSupport: boolean;
+}
+
+export const AdministrationDelegationsTable = (props: AdministrationDelegationsTableProps) => {
+  const { isSupport } = props
+  const { $t } = useIntl()
+  const params = useParams()
+  const [showDialog, setShowDialog] = useState(false)
+  const [isTenantLocked, setIsTenantLocked] = useState(false)
+  const [revokeInvitation] = useRevokeInvitationMutation()
+
+  const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
+
+  const hasDelegations = Boolean(data?.length)
+
+  const handleClickInviteDelegation = () => {
+    setShowDialog(true)
+  }
+
+  const delegationRevokeInvitation= (rowData: Delegation) => {
+    setIsTenantLocked(true)
+
+    const paramValues = {
+      tenantId: params.tenantId,
+      delegationId: rowData.id
+    }
+
+    try {
+      revokeInvitation({ params: paramValues, callback: () => {
+        setIsTenantLocked(false)
+      } }).unwrap()
+    } catch {
+      setIsTenantLocked(false)
+    }
+  }
+
+  const handleClickRevokeInvitation = (rowData: Delegation) => () => {
+    const isCancel = (rowData.status === AdministrationDelegationStatus.INVITED
+        || rowData.status === AdministrationDelegationStatus.REJECTED)
+
+    showActionModal({
+      type: 'confirm',
+      // eslint-disable-next-line max-len
+      title: isCancel ? $t({ defaultMessage: 'Cancel invitation?' }) : $t({ defaultMessage: 'Revoke Access' }),
+      content: isCancel
+      // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Are you sure you want to cancel the invitation of 3rd party administrator {name}?' }, { name: rowData.delegatedToName })
+      // eslint-disable-next-line max-len
+        : $t({ defaultMessage: 'Are you sure you want to revoke access of partner {name}?' }, { name: rowData.delegatedToName }),
+      okText: isCancel
+        ? $t({ defaultMessage: 'Cancel Invitation' })
+        : $t({ defaultMessage: 'Yes, revoke access' }),
+      cancelText: isCancel
+        ? $t({ defaultMessage: 'Keep invitation' })
+        : $t({ defaultMessage: 'No, keep access grant' }),
+      onOk: () => {
+        delegationRevokeInvitation(rowData)
+      }
+    })
+  }
+
+  const columns: TableProps<Delegation>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Partner Name' }),
+      key: 'delegatedToName',
+      dataIndex: 'delegatedToName',
+      render: (data, row) => {
+        return row.delegatedToName
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      dataIndex: 'status',
+      render: (_, row) => {
+        return $t(getDelegetionStatusIntlString(row.status))
+      }
+    }
+  ]
+
+  // TODO: rbacService.isRoleAllowed('RevokeInvitationButton')
+  if (!isSupport) {
+    columns.push({
+      title: $t({ defaultMessage: 'Action' }),
+      key: 'action',
+      dataIndex: 'action',
+      render: (_, row) => {
+        return <Button
+          onClick={handleClickRevokeInvitation(row)}
+          disabled={isTenantLocked}
+        >
+          {
+            row.status === AdministrationDelegationStatus.ACCEPTED
+              ? $t({ defaultMessage: 'Revoke access' })
+              : $t({ defaultMessage: 'Cancel invitation' })
+          }
+        </Button>
+      }
+    })
+  }
+
+
+  const tableActions = []
+  if (isSupport === false) {
+    tableActions.push({
+      /* TODO: hide: !rbacService.isRoleAllowed('Invite3rdPartyButton') */
+      label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
+      disabled: hasDelegations,
+      onClick: handleClickInviteDelegation
+    })
+  }
+
+  return (
+    <Loader states={[
+      { isLoading: isLoading,
+        isFetching: isFetching
+      }
+    ]}>
+      <UI.TableTitleWrapper direction='vertical'>
+        <Subtitle level={4}>
+          {$t({ defaultMessage: '3rd Party Administrator' })}
+        </Subtitle>
+        <Subtitle level={5}>
+          {$t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
+        </Subtitle>
+      </UI.TableTitleWrapper>
+
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey='id'
+        locale={{
+          // eslint-disable-next-line max-len
+          emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
+        }}
+        actions={tableActions}
+      />
+
+      <DelegationInviteDialog
+        visible={showDialog}
+        setVisible={setShowDialog}
+      />
+    </Loader>
+  )
+}
