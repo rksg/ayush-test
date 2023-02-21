@@ -1,15 +1,12 @@
-import { Input as AntInput, ButtonProps } from 'antd'
-import styled                             from 'styled-components/macro'
+import { Input as AntInput } from 'antd'
+import styled                from 'styled-components/macro'
 
 import {
   LayoutUI,
   Button
 }                        from '@acx-ui/components'
 import {
-  SendMessageOutlined,
-  BulbSolid,
-  BulbOffSolid,
-  WarningCircle
+  SendMessageOutlined
 }                          from '@acx-ui/icons'
 
 export const Home = styled(LayoutUI.DropdownText)`
