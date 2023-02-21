@@ -7,8 +7,7 @@ import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitForElementToBeRemoved
+  screen
 } from '@acx-ui/test-utils'
 
 import { LicenseBanner } from '.'
