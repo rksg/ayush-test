@@ -15,26 +15,25 @@ import styled from 'styled-components/macro'
 
 import {
   Button,
-  ContentSwitcher, ContentSwitcherProps,
+  ContentSwitcher,
+  ContentSwitcherProps,
   Drawer,
   Fieldset,
   GridCol,
   GridRow,
-  showActionModal, showToast,
+  showActionModal,
+  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }             from '@acx-ui/icons'
-import {
-  useAddL3AclPolicyMutation,
-  useGetL3AclPolicyQuery,
-  useL3AclPolicyListQuery
-} from '@acx-ui/rc/services'
+import { Drag }                                                                       from '@acx-ui/icons'
+import { useAddL3AclPolicyMutation, useGetL3AclPolicyQuery, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
   Layer3ProtocolType,
   MacAddressFilterRegExp,
+  portRegExp,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
@@ -213,7 +212,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         access: l3Rule.access,
         description: l3Rule.description,
         priority: l3Rule.priority,
-        protocol: 'l3Rule.protocol',
+        protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
         source: { ...l3Rule.source },
         destination: { ...l3Rule.destination }
       }))] as Layer3Rule[])
@@ -273,7 +272,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
-      key: 'protocol'
+      key: 'protocol',
+      render: (data, row) => {
+        const protocol = row.protocol ?? Layer3ProtocolType.ANYPROTOCOL
+        return $t(layer3ProtocolLabelMapping[protocol as keyof typeof Layer3ProtocolType])
+      }
     },
     {
       dataIndex: 'sort',
@@ -401,7 +404,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 access: rule.access,
                 source: { ..._.omitBy(rule.source, _.isEmpty) },
                 destination: { ..._.omitBy(rule.destination, _.isEmpty) },
-                description: rule.description
+                description: rule.description,
+                protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
               }
             })],
             description: null
@@ -696,12 +700,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.ICMP && <DrawerFormItem
+      {/* eslint-disable-next-line max-len */}
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { max: 64 }
+          { validator: (_, value) => portRegExp(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
@@ -778,7 +783,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.ICMP && <DrawerFormItem
+      {/* eslint-disable-next-line max-len */}
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
