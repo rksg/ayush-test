@@ -1,9 +1,28 @@
 import { Form, Input } from 'antd'
+import { RuleObject }  from 'antd/lib/form'
 import { useIntl }     from 'react-intl'
 
-import { ipDomainValidator } from './validator'
+import { domainNameRegExp, networkWifiIpRegExp } from '@acx-ui/rc/utils'
+import { getIntl, validationMessages }           from '@acx-ui/utils'
 
 import type { FormItemProps } from 'antd'
+
+function isRejected <T,> (p: PromiseSettledResult<T>): p is PromiseRejectedResult {
+  return p.status === 'rejected'
+}
+
+async function ipDomainValidator (rule: RuleObject, value: string) {
+  const { $t } = getIntl()
+  const results = await Promise.allSettled([
+    networkWifiIpRegExp(value),
+    domainNameRegExp(value)
+  ])
+
+  const errors = results.filter(isRejected).map(p => p.reason)
+  if (errors.length < 2) return
+
+  throw $t(validationMessages.ipDomain)
+}
 
 type IPDomainFieldProps = Required<
   Pick<FormItemProps, 'name' | 'label'>

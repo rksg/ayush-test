@@ -78,7 +78,7 @@ export function domainNameRegExp (value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
   if (value && !re.test(value)) {
-    return Promise.reject($t(validationMessages.invalid))
+    return Promise.reject($t(validationMessages.domain))
   }
   return Promise.resolve()
 }
@@ -93,7 +93,7 @@ export function domainsNameRegExp (value: string[], required: boolean) {
     return !(required && !re.test(domain))
   })
 
-  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
 
 export function walledGardensRegExp (value:string) {
