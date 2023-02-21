@@ -6,15 +6,13 @@ import { RolesMappingDic } from './role-mapping'
 export function useHasPermissions (buttonId: string): boolean {
   let isAllowed = false
   let { tenantId } = getJwtTokenPayload()
-  if (!tenantId) {
+  if (!tenantId) { // when jwt FF is disabled
     tenantId = getTenantId()
   }
   const data: string[] = useGetTenantAllowedOperations(tenantId)
   if (RolesMappingDic.hasOwnProperty(buttonId)) {
     const actions = RolesMappingDic[buttonId]
-    actions.forEach(el => {
-      isAllowed = isAllowed || data.filter(op => op === el.action).length > 0
-    })
+    isAllowed = actions.some(el => data.includes(el.action))
   }
   return isAllowed
 }
