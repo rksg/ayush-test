@@ -11,12 +11,11 @@ import {
 } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
-
 export function AaaSummaryForm (props: {
   summaryData: NetworkSaveData
 }) {
-  const { $t } = useIntl()
   const { summaryData } = props
+  const { $t } = useIntl()
   return (<>
     {get(summaryData, 'authRadius.primary.ip') !== undefined && <>
       {$t({ defaultMessage: 'Authentication Service' })}
@@ -34,15 +33,11 @@ export function AaaSummaryForm (props: {
     </>}
   </>)
 }
-
 function AaaServerFields ({ serverType, data }: {
   serverType: AaaServerTypeEnum,
   data: NetworkSaveData
 }) {
   const { $t } = useIntl()
-  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
-    data.enableSecondaryAuthServer :
-    data.enableSecondaryAcctServer
 
   const enableProxy = serverType === AaaServerTypeEnum.AUTHENTICATION ?
     data.enableAuthProxy : data.enableAccountingProxy
@@ -53,7 +48,7 @@ function AaaServerFields ({ serverType, data }: {
       serverType={serverType}
       order={AaaServerOrderEnum.PRIMARY}
     />
-    {enableSecondaryServer && <AaaServerData
+    {data[serverType]?.secondary && <AaaServerData
       data={data}
       serverType={serverType}
       order={AaaServerOrderEnum.SECONDARY}
@@ -66,7 +61,6 @@ function AaaServerFields ({ serverType, data }: {
       children={$t(contents.states.disabled)} />
   </>)
 }
-
 function AaaServerData ({ order, data, serverType }: {
   data: NetworkSaveData,
   serverType: AaaServerTypeEnum
