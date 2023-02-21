@@ -696,7 +696,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <DrawerFormItem
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.ICMP && <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -706,7 +706,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
         />}
-      />
+      /> }
     </Fieldset>
     <Fieldset
       label={$t({ defaultMessage: 'Destination' })}
@@ -778,7 +778,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <DrawerFormItem
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.ICMP && <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
@@ -788,7 +788,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
         />}
-      />
+      /> }
     </Fieldset>
   </Form>
 
