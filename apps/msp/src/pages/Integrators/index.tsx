@@ -16,6 +16,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
+  AssignEcDrawer,
   ResendInviteModal
 } from '@acx-ui/msp/components'
 import {
@@ -53,8 +54,10 @@ const defaultPayload = {
 export function Integrators () {
   const { $t } = useIntl()
 
+  const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
+  const [tenantType, setTenantType] = useState('')
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -86,20 +89,24 @@ export function Integrators () {
       dataIndex: 'assignedMspEcList',
       key: 'assignedMspEcList',
       sorter: true,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setTenantType(data.tenantType)
+            if (!drawerEcVisible) setDrawerEcVisible(true)
+          }
+        }
+      },
       render: function (data, row) {
-        return transformAssignedCustomerCount(row)
+        return <Link to=''>{transformAssignedCustomerCount(row)}</Link>
       }
     },
     {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
-      sorter: true,
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Account Admins' }),
@@ -206,6 +213,12 @@ export function Integrators () {
         ]}
       />
       <IntegratorssTable />
+      {setDrawerEcVisible && <AssignEcDrawer
+        visible={drawerEcVisible}
+        setVisible={setDrawerEcVisible}
+        tenantId={tenantId}
+        tenantType={tenantType}
+      />}
       <ResendInviteModal
         visible={modalVisible}
         setVisible={setModalVisible}

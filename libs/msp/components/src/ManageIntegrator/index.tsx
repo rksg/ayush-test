@@ -33,12 +33,12 @@ import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
-  useMspAdminListQuery,
+  // useMspAdminListQuery,
   useMspCustomerListQuery,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
-  useGetMspEcDelegatedAdminsQuery,
+  // useGetMspEcDelegatedAdminsQuery,
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useGetUserProfileQuery
@@ -170,7 +170,6 @@ export function ManageIntegrator () {
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
-  const [isAssignedEcDrawer, setAssignedEcDrawer] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
   const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
@@ -192,10 +191,10 @@ export function ManageIntegrator () {
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
-  const { data: Administrators } =
-      useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
-  const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+  // const { data: Administrators } =
+  //     useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
+  // const { data: delegatedAdmins } =
+  //     useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
 
@@ -208,13 +207,6 @@ export function ManageIntegrator () {
       if (ecAdministrators) {
         setMspEcAdmins(ecAdministrators)
       }
-      // if (delegatedAdmins && Administrators) {
-      //   const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      //   const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
-
-      //   setAdministrator(selAdmins)
-
-      // }
 
       const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
       setAssignedLicense(assigned)
@@ -234,7 +226,6 @@ export function ManageIntegrator () {
 
       setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
       setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
-      setAssignedEcDrawer(true)
     }
 
     if (!isEditMode) { // Add mode
@@ -257,14 +248,13 @@ export function ManageIntegrator () {
     }
   }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
-  useEffect(() => {
-    if (delegatedAdmins && Administrators) {
-      const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
-      // displayMspAdmins(selAdmins)
-      setAdministrator(selAdmins)
-    }
-  }, [delegatedAdmins, Administrators])
+  // useEffect(() => {
+  //   if (delegatedAdmins && Administrators) {
+  //     const admins = delegatedAdmins?.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+  //     const selAdmins = Administrators.filter(rec => admins.includes(rec.id))
+  //     setAdministrator(selAdmins)
+  //   }
+  // }, [delegatedAdmins, Administrators])
 
   const [sameCountry, setSameCountry] = useState(true)
   const addressValidator = async (value: string) => {
@@ -1067,7 +1057,6 @@ export function ManageIntegrator () {
       />}
       {drawerAssignedEcVisible && <AssignEcDrawer
         visible={drawerAssignedEcVisible}
-        isDrawer={isAssignedEcDrawer}
         setVisible={setDrawerAssignedEcVisible}
         tenantId={mspEcTenantId}
         tenantType={tenantType}

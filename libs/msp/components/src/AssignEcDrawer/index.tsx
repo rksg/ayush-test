@@ -1,7 +1,8 @@
 import { Key, useState } from 'react'
 
 import {
-  Form
+  Form,
+  Input
   // Radio,
   // RadioChangeEvent,
   // Space
@@ -24,10 +25,12 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { AccountType } from '@acx-ui/utils'
+
+import * as UI from '../styledComponents'
 
 interface IntegratorDrawerProps {
   visible: boolean
-  isDrawer: boolean
   setVisible: (visible: boolean) => void
   tenantId?: string
   tenantType?: string
@@ -36,9 +39,8 @@ interface IntegratorDrawerProps {
 export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, isDrawer, setVisible, tenantId, tenantType } = props
+  const { visible, setVisible, tenantId, tenantType } = props
   const [resetField, setResetField] = useState(false)
-  // const [typeSelected, setTypeSelected] = useState(true)
   const [form] = Form.useForm()
 
   const isSkip = tenantId === undefined
@@ -172,29 +174,30 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {/* <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
-    <Form.Item
-      name='type'
-      initialValue={true}
-    >
-      <Radio.Group onChange={(e: RadioChangeEvent) => {setTypeSelected(e.target.value)}}>
-        <Space direction='vertical'>
-          <Radio
-            value={true}
-            disabled={false}>
-            { $t({ defaultMessage: 'Limited to' }) }
-          </Radio>
-          <Radio
-            style={{ marginTop: '2px', marginBottom: '50px' }}
-            value={false}
-            disabled={false}>
-            { $t({ defaultMessage: 'Not Limited' }) }
-          </Radio>
-        </Space>
-      </Radio.Group>
-    </Form.Item> */}
+    <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+    {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
+    {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
+      <label>Limited To</label>
+      <Form.Item
+        name='number_of_days'
+        initialValue={'7'}
+        rules={[{ validator: (_, value) =>
+        {
+          if(parseInt(value, 10) > 60 || parseInt(value, 10) < 1) {
+            return Promise.reject(
+              `${$t({ defaultMessage: 'Invalid number' })} `
+            )
+          }
+          return Promise.resolve()
+        }
+        }]}
+        children={<Input type='number'/>}
+        style={{ marginLeft: '10px', paddingRight: '20px' }}
+      />
+      <label>Day(s) (1..60)</label>
+    </UI.FieldLabelAccessPeriod>}
 
-    <Subtitle level={4}>
+    <Subtitle level={4} style={{ marginTop: '20px' }}>
       { $t({ defaultMessage: 'Select customer accounts to assign to this integrator:' }) }
     </Subtitle>
 
@@ -210,17 +213,15 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   ]
 
   return (
-    isDrawer ?
-      <Drawer
-        title={'Manage Customers Assigned'}
-        onBackClick={onClose}
-        visible={visible}
-        onClose={onClose}
-        children={content}
-        footer={footer}
-        destroyOnClose={resetField}
-        width={'800'}
-      /> : <>{content}</>
-
+    <Drawer
+      title={'Manage Customers Assigned'}
+      onBackClick={onClose}
+      visible={visible}
+      onClose={onClose}
+      children={content}
+      footer={footer}
+      destroyOnClose={resetField}
+      width={'800'}
+    />
   )
 }
