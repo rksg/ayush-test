@@ -5,8 +5,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsFormNew,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
 import { authMethodsByCode }    from '../../authMethods'
@@ -17,7 +16,7 @@ const label = defineMessage({ defaultMessage: 'Username' })
 
 const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const code = useWatch('authenticationMethod', form)
+  const code = Form.useWatch('authenticationMethod', form)
 
   const spec = authMethodsByCode[code]
   const field = spec?.fields.find(field => field.key === name)

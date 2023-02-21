@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
-import { screen } from '@acx-ui/test-utils'
+import { screen, within } from '@acx-ui/test-utils'
 
 import { renderForm }           from '../../__tests__/fixtures'
 import { AuthenticationMethod } from '../../types'
 
 import { Username } from './Username'
 
-const { click } = userEvent
+const { click, type } = userEvent
 
 describe('Username', () => {
   it('renders field based on selected authentication method', async () => {
@@ -17,7 +17,7 @@ describe('Username', () => {
       }
     })
 
-    expect(screen.getByRole('textbox')).toBeVisible()
+    expect(within(screen.getByTestId('field')).getByRole('textbox')).toBeVisible()
   })
 
   it('renders null for authentication method not needing username', async () => {
@@ -45,13 +45,15 @@ describe('Username', () => {
     const value = 'username'
     renderForm(<Username />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
-        wlanUsername: value
+        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE
       },
       valuesToUpdate: {
         authenticationMethod: AuthenticationMethod.OPEN_AUTH
       }
     })
+
+    const field = within(screen.getByTestId('field')).getByRole('textbox')
+    await type(field, value)
 
     const submit = screen.getByRole('button', { name: 'Submit' })
 

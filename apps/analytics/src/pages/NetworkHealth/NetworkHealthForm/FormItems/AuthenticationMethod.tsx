@@ -6,8 +6,7 @@ import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import {
   StepsFormNew,
   Tooltip,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
 import {
@@ -27,8 +26,8 @@ export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const [code, clientType] = [
-    useWatch(name, form),
-    useWatch('clientType', form)
+    Form.useWatch(name, form),
+    Form.useWatch('clientType', form)
   ]
   const methods = authMethodsByClientType[clientType]
 
