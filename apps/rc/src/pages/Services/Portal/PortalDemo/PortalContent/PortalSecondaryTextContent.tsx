@@ -10,8 +10,9 @@ import PortalPopover             from '../PortalPopover'
 
 
 
-export default function PortalSecondaryTextContent (props: {
+export default function PortalSeconPortalSecondaryTextContentdaryTextContent (props: {
   demoValue: Demo,
+  portalLang: { [key:string]:string },
   updateSecText: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
@@ -36,7 +37,7 @@ export default function PortalSecondaryTextContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><TextArea
-        value={demoValue.secondaryText}
+        value={demoValue.secondaryText||props.portalLang.secondaryText}
         placeholder='sectexthere'
         rows={4}
         style={{ cursor: cursor, outline: outline, resize: 'none', border: 0,

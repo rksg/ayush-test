@@ -16,11 +16,6 @@ export function AaaServer ( props: {
   const { serverType, summaryData } = props
   const primaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.PRIMARY])
   const secondaryTitle = intl.$t(contents.aaaServerTypes[AaaServerOrderEnum.SECONDARY])
-
-  const enableSecondaryServer = serverType === AaaServerTypeEnum.AUTHENTICATION ?
-    summaryData.enableSecondaryAuthServer :
-    summaryData.enableSecondaryAcctServer
-
   return (
     <React.Fragment>
       {getAaaServerData(
@@ -31,7 +26,7 @@ export function AaaServer ( props: {
         intl
       )}
       {
-        enableSecondaryServer &&
+        summaryData?.[serverType]?.secondary &&
           getAaaServerData(
             secondaryTitle,
             `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+

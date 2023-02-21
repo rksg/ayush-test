@@ -18,7 +18,7 @@ import {
   Service,
   getServiceListRoutePath,
   getServiceRoutePath,
-  catchErrorResponse
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -63,7 +63,7 @@ export default function MdnsProxyTable () {
             deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
               .then(clearSelection)
               .catch(error => {
-                const errorResponse = error as catchErrorResponse
+                const errorResponse = error as CatchErrorResponse
                 // eslint-disable-next-line max-len
                 const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
 

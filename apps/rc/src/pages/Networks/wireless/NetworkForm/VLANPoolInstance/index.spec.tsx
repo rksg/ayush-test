@@ -49,14 +49,14 @@ describe('VLAN Pool Instance Page', () => {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Add Pool'))
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
     await userEvent.click(await screen.findByText('Add Pool'))
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Policy Name' }),'create test')
     await userEvent.type(await screen.findByRole('textbox', { name: 'VLANs' }),
       '8')
     await userEvent.click(await screen.findByText('Finish'))
-    await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(await screen.findByTitle('test1'))
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    await userEvent.click((await screen.findAllByTitle('test1'))[0])
   })
 })
