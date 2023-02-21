@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { MspUrlsInfo }                                   from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                              from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { MspCustomers } from '.'
 
@@ -140,6 +140,7 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Add Customer')
     await screen.findByText('ec 111')
 
@@ -164,9 +165,9 @@ describe('MspCustomers', () => {
       })
 
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(await within(row).findByRole('radio'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = await screen.findByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "ec 111"?')
@@ -184,7 +185,8 @@ describe('MspCustomers', () => {
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const resendInviteButton = screen.getByRole('button', { name: /Resend Invitation Email/i })
+    // eslint-disable-next-line max-len
+    const resendInviteButton = await screen.findByRole('button', { name: /Resend Invitation Email/i })
     fireEvent.click(resendInviteButton)
   })
 })
