@@ -13,8 +13,6 @@ interface StaticRoutesDrawerProps {
   mac: string
   visible: boolean
   setVisible: (visible: boolean) => void
-  addSubInterface?: (data: EdgeSubInterface) => void
-  editSubInterface?: (data: EdgeSubInterface) => void
   data?: EdgeSubInterface
 }
 
