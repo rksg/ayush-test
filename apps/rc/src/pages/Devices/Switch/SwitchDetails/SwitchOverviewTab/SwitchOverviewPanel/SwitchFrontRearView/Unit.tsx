@@ -1,5 +1,5 @@
-import { Button } from '@acx-ui/components'
-import { useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
+import { Button, showActionModal } from '@acx-ui/components'
+import { useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
@@ -10,7 +10,6 @@ import { SwitchDetailsContext } from '../../..'
 import { FrontViewSlot } from './FrontViewSlot'
 import { RearView } from './RearView'
 import * as UI             from './styledComponents'
-
 interface SlotMember {
   isStack: boolean
   data: StackMember[]
@@ -95,13 +94,14 @@ export function Unit (props:{
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-
+  const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const { serialNumber, switchMac } = switchDetail
 
   const { $t } = useIntl()
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
   const [ isRearView, setIsRearView ] = useState(false)
+  const [ enableDeleteStackMember, setEnableDeleteStackMember ] = useState(false)
   const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
   const [ rearSlots, setRearSlots ] = useState(null as unknown as number[])
   const [ unit, setUnit ] = useState(defaultUnit)
@@ -133,6 +133,8 @@ export function Unit (props:{
     if (member) {
       const unitData = genUnit(member)
       setUnit(unitData as unitType)
+      setEnableDeleteStackMember(isStack && isEmpty(member.unitStatus) && !unitData.unitStatus.needAck &&
+        (member.serialNumber !== serialNumber))
       caculateIcxModules(unitData)
       if ((isOnline || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
            && _.isInteger(member.unitId)) {
@@ -293,6 +295,21 @@ export function Unit (props:{
     setIsRearView(!isRearView)
   }
 
+  const onClickRemove = () => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Switch' }),
+        entityValue: unit.model,
+        numOfEntities: 1
+      },
+      onOk: () => {
+        deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } })
+      }
+    })
+  }
+
   const ViewModeButton = <Button 
       type='link' 
       size='small'
@@ -335,6 +352,17 @@ export function Unit (props:{
         </>
       }
       <div className='view-button'>
+        {
+          enableDeleteStackMember && 
+          <Button 
+            type='link' 
+            size='small'
+            style={{ paddingRight: '20px'}}
+            onClick={onClickRemove}
+          >
+            {$t({ defaultMessage: 'Remove' })}
+          </Button>
+        }
         {!isSwitchOperational && !isRearView ? 
           <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
             <span>{ViewModeButton}</span>

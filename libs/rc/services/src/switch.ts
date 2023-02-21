@@ -119,7 +119,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -130,6 +131,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    deleteStackMember: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteStackMember, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' },
+      // { type: 'Switch', id: 'FrontView' }, { type: 'Switch', id: 'RearView' }
+      ]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -155,7 +167,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags:[{ type: 'Switch', id: 'Detail' }]
     }),
     switchFrontView: build.query<SwitchFrontView, RequestPayload>({
       query: ({ params }) => {
@@ -166,7 +179,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags:[{ type: 'Switch', id: 'FrontView' }]
     }),
     switchRearView: build.query<SwitchRearView, RequestPayload>({
       query: ({ params }) => {
@@ -177,7 +191,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags:[{ type: 'Switch', id: 'RearView' }]
     }),
     switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -885,6 +900,7 @@ export const {
   useSwitchListQuery,
   useStackMemberListQuery,
   useDeleteSwitchesMutation,
+  useDeleteStackMemberMutation,
   useSwitchDetailHeaderQuery,
   useLazySwitchDetailHeaderQuery,
   useLazySwitchFrontViewQuery,

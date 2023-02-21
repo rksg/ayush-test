@@ -5,9 +5,7 @@ import styled from 'styled-components/macro'
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
   height: 24px;
-  // padding: 0 16px;
-  // display: flex;
-  // justify-content: space-between;
+  display: flex;
   
   .unit-header {
     background-color: var(--acx-primary-black);
@@ -16,7 +14,6 @@ export const TitleBar = styled.div`
     width: 24px;
     line-height: 24px;
     text-align: center;
-    float: left;
 
     &.operational {
       background-color: var(--acx-semantics-green-50);
@@ -25,20 +22,24 @@ export const TitleBar = styled.div`
 
   .model {
     width: 180px;
-    float: left;
-    padding: 3px 20px 3px 8px;
+    padding: 0 20px 0 8px;
+    line-height: 24px;
   }
 
   .icon {
-    float: left;
+    padding: 2px;
   }
 
   .status {
+    font-size: 12px;
+    line-height: 24px;
     padding-right: 20px;
   }
 
   .view-button{
-    float: right;
+    flex-grow: 1;
+    text-align: end;
+    padding: 1px 25px 0 0;
   }
 `
 
@@ -138,7 +139,7 @@ export const TagsSolidIcon = styled(TagsSolid)`
 `
 
 export const SettingsIcon = styled(ConfigurationOutlined)`
-  height: 14px;
+  height: 18px;
 `
 
 const getRearColor = (rearColor: string) => {
