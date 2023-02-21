@@ -36,6 +36,7 @@ import {
   NetworkVenue,
   NetworkSaveData
 } from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import * as UI       from './styledComponents'
 import { VlanInput } from './VlanInput'
@@ -219,17 +220,31 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
           </Form.Item>
           <Tooltip title={errorTooltip}>
             <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
-              <Checkbox disabled={apgroup.validationError} >{apGroupName}</Checkbox>
+              <Checkbox disabled={apgroup.validationError}
+                onChange={() => { form.validateFields() }}>{apGroupName}</Checkbox>
             </UI.FormItemRounded>
           </Tooltip>
         </Col>
         <Col span={8}>
           <UI.FormItemRounded>
-            { selected && (<VlanInput apgroup={apgroup} wlan={wlan} onChange={handleVlanInputChange}/>) }
+            { selected &&
+            (<VlanInput apgroup={apgroup} wlan={wlan} onChange={handleVlanInputChange}/>) }
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
-          <UI.FormItemRounded name={[name, 'radioTypes']}>
+          <UI.FormItemRounded
+            name={[name, 'radioTypes']}
+            rules={[
+              {
+                validator: (obj, value) => {
+                  const { $t } = getIntl()
+                  if (form.getFieldsValue().apgroups[name].selected && _.isEmpty(value)) {
+                    return Promise.reject($t({ defaultMessage: 'Please enter Radio Band' }))
+                  }
+                  return Promise.resolve()
+                }
+              }
+            ]}>
             { selected && (
               <RadioSelect />
             )}
@@ -240,8 +255,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   }
 
   const onOk = () => {
-    setLoading(true)
-    form.submit()
+    form.validateFields()
+      .then(() => {
+        setLoading(true)
+        form.submit()
+      })
+      .catch(() => {
+        return
+      })
   }
 
   return (
@@ -267,7 +288,19 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         // onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
       >
-        <Form.Item name='selectionType'>
+        <Form.Item name='selectionType'
+          rules={[
+            {
+              validator: (obj, value) => {
+                const { $t } = getIntl()
+                if (value === 1 &&
+                  form.getFieldsValue().apgroups.filter((i: { selected: boolean }) => i.selected).length === 0) {
+                  return Promise.reject($t({ defaultMessage: 'Please select AP Group' }))
+                }
+                return Promise.resolve()
+              }
+            }
+          ]}>
           <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
@@ -282,6 +315,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                     </Form.Item>
                     <Form.Item name='allApGroupsRadioTypes'
                       label={$t({ defaultMessage: 'Radio Band' })}
+                      rules={[{ required: true }]}
                       labelCol={{ span: 5 }}>
                       <RadioSelect />
                     </Form.Item>
