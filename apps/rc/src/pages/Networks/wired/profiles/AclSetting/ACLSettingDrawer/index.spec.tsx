@@ -1,15 +1,12 @@
 import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
 import { switchApi } from '@acx-ui/rc/services'
 import {
-  Acl,
-  SwitchUrlsInfo
-} from '@acx-ui/rc/utils'
-import { Provider, store }                                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, renderHook, screen, within } from '@acx-ui/test-utils'
+  Acl } from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { fireEvent, render, renderHook, screen, within } from '@acx-ui/test-utils'
 
 import { ACLSettingDrawer } from '.'
 
@@ -39,10 +36,6 @@ jest.mock('antd', () => {
 describe('ACLSettingDrawer', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
-    mockServer.use(
-      rest.post(SwitchUrlsInfo.addAcl.url,
-        (_, res, ctx) => res(ctx.json({})))
-    )
   })
 
   it('should close drawer', async () => {

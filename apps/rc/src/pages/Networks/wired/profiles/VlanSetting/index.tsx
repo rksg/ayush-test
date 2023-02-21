@@ -118,6 +118,7 @@ export function VlanSetting () {
                   .includes(option.vlanId)
               })
             )
+            setDrawerEditMode(false)
             clearSelection()
           }
         })

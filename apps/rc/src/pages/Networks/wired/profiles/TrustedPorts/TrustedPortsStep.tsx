@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 
 import { Row, Col, Form, Select } from 'antd'
-import _                          from 'lodash'
 
 import { Card }        from '@acx-ui/components'
 import { TrustedPort } from '@acx-ui/rc/utils'

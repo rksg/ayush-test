@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI,

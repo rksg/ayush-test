@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 
 import { Switch, Row, Col, Form } from 'antd'
-import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
 import {
@@ -13,7 +12,7 @@ import {
 } from '@acx-ui/components'
 import {
   useGetCliFamilyModelsQuery,
-  useNetworkVenueListQuery } from '@acx-ui/rc/services'
+  useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   Venue
@@ -23,27 +22,13 @@ import { useParams } from '@acx-ui/react-router-dom'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
 
 const defaultPayload = {
-  searchString: '',
-  fields: [
-    'name',
-    'id',
-    'description',
-    'city',
-    'country',
-    'networks',
-    'aggregatedApStatus',
-    'radios',
-    'aps',
-    'activated',
-    'vlan',
-    'scheduling',
-    'switches',
-    'switchClients',
-    'latitude',
-    'longitude',
-    'mesh',
-    'status'
-  ]
+  fields: ['check-all', 'name', 'city', 'country', 'switchProfileName',
+    'switches', 'activated', 'switchProfileId', 'status', 'id'],
+  page: 1,
+  pageSize: 25,
+  sortField: 'name',
+  sortOrder: 'ASC',
+  searchString: ''
 }
 
 const defaultArray: Venue[] = []
@@ -54,15 +39,13 @@ export function VenueSetting () {
   const form = Form.useFormInstance()
   const { currentData, editMode } = useContext(ConfigurationProfileFormContext)
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
-    apiParams: { networkId: 'UNKNOWN-NETWORK-ID' },
+    useQuery: useVenuesListQuery,
     defaultPayload
   })
 
   const { data: venueAppliedToCli } = useGetCliFamilyModelsQuery({ params })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
-
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -87,12 +70,25 @@ export function VenueSetting () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
-      onClick: () => {
+      onClick: (rows) => {
+        const tmpTableData = tableData.map(item => (
+          { ...item, activated: { isActivated: rows.map(row => row.id).includes(item.id) } }))
+        setTableData(tmpTableData)
+        const mergedList = [
+          ...venueList, ...rows.map(row => row.id).filter(item => !venueList.includes(item))]
+        setVenueList(mergedList)
+        form.setFieldValue('venues', mergedList)
       }
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
-      onClick: () => {
+      onClick: (rows) => {
+        const tmpTableData = tableData.map(item => (
+          { ...item, activated: { isActivated: rows.map(row => row.id).includes(item.id) } }))
+        setTableData(tmpTableData)
+        const filterList = venueList.filter(item => !rows.map(row=>row.id).includes(item))
+        setVenueList(filterList)
+        form.setFieldValue('venues', filterList)
       }
     }
   ]
@@ -172,7 +168,7 @@ export function VenueSetting () {
     ]}>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsForm.Title children={$t({ defaultMessage: 'VLANs' })} />
+          <StepsForm.Title children={$t({ defaultMessage: 'Venues' })} />
           <Table
             rowKey='id'
             rowActions={rowActions}

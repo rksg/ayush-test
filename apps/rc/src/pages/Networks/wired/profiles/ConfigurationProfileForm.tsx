@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { showToast, StepsForm, PageHeader, StepsFormInstance, Loader } from '@acx-ui/components'
+import { StepsForm, PageHeader, StepsFormInstance, Loader } from '@acx-ui/components'
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
   useSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { showGeneralError, SwitchConfigurationProfile, Vlan } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
 
 import { AclSetting }                  from './AclSetting'
 import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
@@ -91,11 +90,8 @@ export function ConfigurationProfileForm () {
     try {
       await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
       navigate(linkToProfiles, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch(err) {
+      showGeneralError(err)
     }
   }
 
@@ -103,11 +99,8 @@ export function ConfigurationProfileForm () {
     try {
       await updateSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
       navigate(linkToProfiles, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (err) {
+      showGeneralError(err)
     }
   }
 

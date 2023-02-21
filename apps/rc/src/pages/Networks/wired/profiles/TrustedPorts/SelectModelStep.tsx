@@ -3,7 +3,6 @@ import { useState, useEffect, SetStateAction } from 'react'
 
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
 import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
-import _                                                                         from 'lodash'
 
 import { Card, Tooltip }                                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
@@ -53,7 +52,6 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       slots: [],
       trustedPortType: TrustedPortTypeEnum.ALL
     })
-  const [markedPorts, setMarkedPorts] = useState<PortsType[]>([])
 
   const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
@@ -217,7 +215,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     }
   }
 
-  const onModuleChange = (value: string) => {
+  const onModuleChange = () => {
     getSlots(family, model)
     setTrustedPorts({ ...trustedPorts, slots: [] })
     updateModelPortData(family, model)
@@ -285,14 +283,12 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
-      let markedPortsInSameSlot =
-        markedPorts.filter((p: { slotNumber: number }) => p.slotNumber === slotNumber)
       const slotData = {
         slotNumber: slotNumber,
         enable: slotEnable,
         option: slotOption,
         slotPortInfo: slotPortInfo,
-        portStatus: generatePortData(totalPortNumber, markedPortsInSameSlot)
+        portStatus: generatePortData(totalPortNumber)
       }
 
       const slotIndex = trustedPorts.slots?.findIndex(
@@ -317,14 +313,10 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     }
   }
 
-  const generatePortData = (totalNumber: string, markedPorts: PortsType[]) => {
+  const generatePortData = (totalNumber: string) => {
     let ports = []
     for (let i = 1; i <= Number(totalNumber); i++) {
-      let markPortIndex = markedPorts.findIndex((p: { portNumber: number }) => p.portNumber === i)
       let port = { portNumber: i, portTagged: '' }
-      if (markPortIndex !== -1) {
-        port.portTagged = markedPorts[markPortIndex].portTagged
-      }
       ports.push(port)
     }
     return ports

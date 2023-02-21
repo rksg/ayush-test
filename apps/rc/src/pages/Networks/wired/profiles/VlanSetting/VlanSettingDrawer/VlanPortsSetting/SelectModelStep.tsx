@@ -3,7 +3,6 @@ import { useState, useEffect, SetStateAction, useContext } from 'react'
 
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
 import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
-import _                                                                         from 'lodash'
 
 import { Card, Tooltip }                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
@@ -25,19 +24,11 @@ export interface PortsType {
   portTagged: string
 }
 
-export const generatePortData = (totalNumber: string) => {
-  let ports = []
-  for (let i = 1; i <= Number(totalNumber); i++) {
-    let port = { portNumber: i, portTagged: '' }
-    ports.push(port)
-  }
-  return ports
-}
-
-export function SelectModelStep () {
+export function SelectModelStep (props: { editMode: boolean }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues, editMode } = useContext(VlanPortsContext)
+  const { vlanSettingValues } = useContext(VlanPortsContext)
+  const { editMode } = props
 
   const [families, setFamilies] = useState<ModelsType[]>([])
   const [models, setModels] = useState<ModelsType[]>([])
@@ -103,7 +94,7 @@ export function SelectModelStep () {
       setEnableSlot4(selectedEnable4.enable)
       checkIfModuleFixed(selectedFamily, selectedModel)
     }
-  }, [ICX_MODELS_MODULES, vlanSettingValues, editMode])
+  }, [ICX_MODELS_MODULES, vlanSettingValues])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
@@ -196,7 +187,6 @@ export function SelectModelStep () {
 
   const onModelChange = (e: RadioChangeEvent) => {
     modelChangeAction(family, e.target.value)
-    setVlanSettingValues({ ...vlanSettingValues, family, model: e.target.value })
   }
 
   const modelChangeAction = (family: string, model: string) => {
@@ -230,6 +220,7 @@ export function SelectModelStep () {
         form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
+    onModuleChange()
   }
 
   const onModuleChange = () => {
@@ -285,7 +276,7 @@ export function SelectModelStep () {
       let slotPortInfo: string = ''
 
       if (slotOptions.length > 1) {
-        if (slotOption === '') {
+        if (slotOption === '' || slotOption === undefined) {
           slotOption = slotOptions[0].value
         }
         slotPortInfo = slotOption
@@ -315,7 +306,7 @@ export function SelectModelStep () {
       if (slotIndex === -1) {
         tmpModelPortData.slots.push(slotData)
       } else {
-        if(switchFamilyModels.slots[slotIndex]){
+        if(switchFamilyModels.slots){
           tmpModelPortData.slots[slotIndex] = slotData
         }
       }
@@ -323,11 +314,20 @@ export function SelectModelStep () {
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
-      tmpModelPortData.model = selectedFamily + '-' + selectedModel
+      tmpModelPortData.model = family + '-' + selectedModel
       setSwitchFamilyModels(tmpModelPortData)
 
       form.setFieldValue('switchFamilyModels', tmpModelPortData)
     }
+  }
+
+  const generatePortData = (totalNumber: string) => {
+    let ports = []
+    for (let i = 1; i <= Number(totalNumber); i++) {
+      let port = { portNumber: i, portTagged: '' }
+      ports.push(port)
+    }
+    return ports
   }
 
   return (

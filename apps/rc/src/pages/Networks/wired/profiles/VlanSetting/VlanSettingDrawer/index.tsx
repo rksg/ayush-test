@@ -163,7 +163,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         setRuleList(
           ruleList?.filter((option: { model: string }) => {
             return !selectedRows
@@ -172,6 +172,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           })
         )
         setSelected(undefined)
+        clearSelection()
       }
     }
   ]
@@ -182,6 +183,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     }else{
       setMulticastVersionDisabled(true)
     }
+  }
+
+  const onCancel = () => {
+    setSelected(undefined)
+    setOpenModal(false)
   }
 
   const onSaveVlan = (values: SwitchModelPortData) => {
@@ -350,7 +356,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         open={openModal}
         editRecord={selected}
         currrentRecords={ruleList}
-        onCancel={() => setOpenModal(false)}
+        onCancel={onCancel}
         onSave={onSaveVlan}
         vlanList={vlansList}
       />

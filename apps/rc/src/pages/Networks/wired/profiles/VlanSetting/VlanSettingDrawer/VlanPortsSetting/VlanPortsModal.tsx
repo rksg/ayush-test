@@ -38,6 +38,7 @@ export function VlanPortsModal (props: {
 }) {
   const { $t } = useIntl()
   const { open, editRecord, onSave, onCancel, vlanList } = props
+  console.log(props)
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -140,7 +141,7 @@ export function VlanPortsModal (props: {
                 {$t({ defaultMessage: 'No model selected' })}
               </Typography.Text>
             }
-            <SelectModelStep />
+            <SelectModelStep editMode={editRecord !== undefined}/>
           </StepsForm.StepForm>
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Untagged Ports' })}
