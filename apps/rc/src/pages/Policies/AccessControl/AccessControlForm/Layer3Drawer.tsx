@@ -57,7 +57,7 @@ export interface Layer3DrawerProps {
   },
   isOnlyViewMode?: boolean,
   editMode?: editModeProps,
-  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 interface Layer3NetworkCol {
@@ -784,7 +784,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   return (
     <>
-      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l3AclPolicyId']}
@@ -824,18 +833,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow> : <Button
-        type='link'
-        size={'small'}
-        onClick={() => {
-          if (isOnlyViewMode) {
-            setVisible(true)
-            setQueryPolicyId(onlyViewMode.id)
-          }
-        }
-        }>
-        {onlyViewMode.viewText}
-      </Button> }
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}

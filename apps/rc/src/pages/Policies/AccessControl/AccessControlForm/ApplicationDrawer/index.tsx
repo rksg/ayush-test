@@ -54,7 +54,7 @@ export interface ApplicationDrawerProps {
   },
   isOnlyViewMode?: boolean,
   editMode?: editModeProps,
-  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 export interface ApplicationsRule {
@@ -494,7 +494,16 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   return (
     <>
-      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button> : <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'applicationPolicyId']}
@@ -534,18 +543,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow> : <Button
-        type='link'
-        size={'small'}
-        onClick={() => {
-          if (isOnlyViewMode) {
-            setVisible(true)
-            setQueryPolicyId(onlyViewMode.id)
-          }
-        }
-        }>
-        {onlyViewMode.viewText}
-      </Button> }
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}

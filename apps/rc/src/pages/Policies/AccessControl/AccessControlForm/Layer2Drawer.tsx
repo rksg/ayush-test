@@ -35,7 +35,7 @@ export interface Layer2DrawerProps {
   },
   isOnlyViewMode?: boolean
   editMode?: editModeProps,
-  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 const RuleContentWrapper = styled.div`
@@ -476,7 +476,16 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   return (
     <>
-      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l2AclPolicyId']}
@@ -516,18 +525,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow> : <Button
-        type='link'
-        size={'small'}
-        onClick={() => {
-          if (isOnlyViewMode) {
-            setVisible(true)
-            setQueryPolicyId(onlyViewMode.id)
-          }
-        }
-        }>
-        {onlyViewMode.viewText}
-      </Button> }
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}

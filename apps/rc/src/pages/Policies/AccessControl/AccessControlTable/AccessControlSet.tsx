@@ -180,6 +180,7 @@ function useColumns (
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
@@ -200,6 +201,7 @@ function useColumns (
       key: 'l2AclPolicy',
       title: $t({ defaultMessage: 'Layer 2' }),
       dataIndex: 'l2AclPolicy',
+      align: 'left',
       sorter: true,
       render: function (data, row) {
         let aclPolicy = accessControlList.find(acl => acl.id === row.id)
@@ -217,6 +219,7 @@ function useColumns (
       key: 'l3AclPolicy',
       title: $t({ defaultMessage: 'Layer 3' }),
       dataIndex: 'l3AclPolicy',
+      align: 'left',
       sorter: true,
       render: function (data, row) {
         let aclPolicy = accessControlList.find(acl => acl.id === row.id)
@@ -234,6 +237,7 @@ function useColumns (
       key: 'devicePolicy',
       title: $t({ defaultMessage: 'Device & OS' }),
       dataIndex: 'devicePolicy',
+      align: 'left',
       sorter: true,
       render: function (data, row) {
         let aclPolicy = accessControlList.find(acl => acl.id === row.id)
@@ -252,6 +256,7 @@ function useColumns (
       key: 'applicationPolicy',
       title: $t({ defaultMessage: 'Applications' }),
       dataIndex: 'applicationPolicy',
+      align: 'left',
       sorter: true,
       render: function (data, row) {
         let aclPolicy = accessControlList.find(acl => acl.id === row.id)
@@ -273,6 +278,7 @@ function useColumns (
       key: 'clientRateLimit',
       title: $t({ defaultMessage: 'Client Rate Limit' }),
       dataIndex: 'clientRateLimit',
+      align: 'left',
       sorter: true,
       render: function (data, row) {
         let aclPolicy = accessControlList.find(acl => acl.id === row.id)
@@ -283,6 +289,7 @@ function useColumns (
       key: 'scope',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'scope',
+      align: 'center',
       sorter: true
     }
   ]
@@ -309,8 +316,12 @@ const ClientRateLimitComponent = (props: { aclPolicy: AccessControlInfoType | un
     : UNLIMITED
 
   return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-    <div style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'UP:  ' })}</div><div>{uplink}</div>
-    <div style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'DOWN:' })}</div><div>{downlink}</div>
+    <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
+      {$t({ defaultMessage: 'UP:  ' })}
+    </div><div>{uplink}</div>
+    <div style={{ textAlign: 'left', fontWeight: 'bold' }}>
+      {$t({ defaultMessage: 'DOWN:' })}
+    </div><div>{downlink}</div>
   </div>
 }
 

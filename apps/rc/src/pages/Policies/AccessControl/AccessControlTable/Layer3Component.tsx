@@ -117,6 +117,7 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
@@ -133,18 +134,21 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
+      align: 'left',
       sorter: true
     },
     {
       key: 'rulesCount',
       title: $t({ defaultMessage: 'Rules' }),
       dataIndex: 'rulesCount',
+      align: 'center',
       sorter: true
     },
     {
       key: 'networksCount',
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networksCount',
+      align: 'center',
       sorter: true
     }
   ]

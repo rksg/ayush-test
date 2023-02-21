@@ -22,12 +22,18 @@ export default function AccessControlTable () {
         })
       }
       breadcrumb={[
-        // eslint-disable-next-line max-len
-        { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+        {
+          text: $t({ defaultMessage: 'Policies & Profiles' }),
+          link: getPolicyListRoutePath(true)
+        }
       ]}
       extra={[
-        // eslint-disable-next-line max-len
-        <TenantLink to={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })} key='add'>
+        <TenantLink
+          to={getPolicyRoutePath({
+            type: PolicyType.ACCESS_CONTROL,
+            oper: PolicyOperation.CREATE
+          })}
+          key='add'>
           <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
         </TenantLink>
       ]}

@@ -51,7 +51,7 @@ export interface DeviceOSDrawerProps {
   },
   isOnlyViewMode?: boolean,
   editMode?: editModeProps,
-  setEditMode?: (editMode: { id: string, isEdit: boolean }) => void
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -435,7 +435,16 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   return (
     <>
-      { !isOnlyViewMode ? <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
@@ -476,18 +485,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow> : <Button
-        type='link'
-        size={'small'}
-        onClick={() => {
-          if (isOnlyViewMode) {
-            setVisible(true)
-            setQueryPolicyId(onlyViewMode.id)
-          }
-        }
-        }>
-        {onlyViewMode.viewText}
-      </Button> }
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
