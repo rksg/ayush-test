@@ -88,7 +88,8 @@ export default function DpskPassphraseManagement () {
       key: 'username',
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
-      sorter: true
+      sorter: true,
+      ellipsis: true
     },
     {
       key: 'numberOfDevices',
