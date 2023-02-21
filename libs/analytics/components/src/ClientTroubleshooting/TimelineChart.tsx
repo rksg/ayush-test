@@ -51,7 +51,9 @@ import {
   INCIDENTS,
   ALL
 } from './config'
+import * as UI                             from './styledComponents'
 import { getQualityColor, labelFormatter } from './util'
+
 
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -501,7 +503,7 @@ export function TimelineChart ({
   }, [option, sharedChartName])
 
   return (
-    <>
+    <UI.ChartWrapper>
       <ReactECharts
         {...{
           ...props,
@@ -527,6 +529,6 @@ export function TimelineChart ({
           style={{ top: -24, right: 8 }}
         />
       )}
-    </>
+    </UI.ChartWrapper>
   )
 }

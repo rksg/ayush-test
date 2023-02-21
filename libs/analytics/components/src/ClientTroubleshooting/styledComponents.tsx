@@ -270,3 +270,9 @@ export const StepLabel = styled.p`
   margin-bottom: 0px;
   font-size: var(--acx-body-5-font-size);
 `
+
+export const ChartWrapper = styled.div`
+  path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
+    cursor: pointer;
+  }
+`
