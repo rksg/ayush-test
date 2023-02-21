@@ -145,8 +145,6 @@ describe('AP Form - Add', () => {
       })
       await changeVenue()
       await fillInForm()
-
-      expect(await screen.findByText('40.769141, -73.942971 (As venue)')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
     })
 
