@@ -80,7 +80,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     })
   }
 
-  const handleProtocol = (protocol: string) => {
+  const handleProtocol = (protocol: ProtocolEnum) => {
     dispatch({
       type: SyslogActionTypes.PROTOCOL,
       payload: {
@@ -123,7 +123,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     })
   }
 
-  const handleSecondaryProtocol = (protocol: string) => {
+  const handleSecondaryProtocol = (protocol: ProtocolEnum) => {
     dispatch({
       type: SyslogActionTypes.SECONDARYPROTOCOL,
       payload: {
@@ -214,6 +214,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
           hasFeedback
           initialValue={state.policyName}
           children={<Input
+            data-testid='name'
             style={{ width: '490px' }}
             onChange={(event => {handlePolicyName(event.target.value)})}
           />}

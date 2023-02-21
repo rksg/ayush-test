@@ -4,7 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps } from '@acx-ui/components'
-import { useVenueSyslogPolicyQuery }    from '@acx-ui/rc/services'
+import { useGetVenueSyslogListQuery }   from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
   SyslogActionTypes,
@@ -121,11 +121,11 @@ const SyslogVenueTable = () => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: useVenueSyslogPolicyQuery,
+    useQuery: useGetVenueSyslogListQuery,
     defaultPayload
   })
 
-  const basicData = tableQuery.data?.data.map((venue) => {
+  const basicData = tableQuery.data?.data?.map((venue) => {
     return {
       id: venue.id,
       name: venue.name,

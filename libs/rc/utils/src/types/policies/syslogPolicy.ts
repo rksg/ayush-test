@@ -24,10 +24,10 @@ export interface SyslogContextType {
   policyName: string,
   server: string,
   port: string,
-  protocol: string,
-  secondaryServer: string,
-  secondaryPort: string,
-  secondaryProtocol: string,
+  protocol: ProtocolEnum,
+  secondaryServer?: string,
+  secondaryPort?: string,
+  secondaryProtocol?: ProtocolEnum,
   facility: FacilityEnum,
   priority: PriorityEnum,
   flowLevel: FlowLevelEnum,
@@ -97,7 +97,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.PROTOCOL,
   payload: {
-    protocol: string
+    protocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.SECONDARYSERVER,
@@ -112,7 +112,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.SECONDARYPROTOCOL,
   payload: {
-    secondaryProtocol: string
+    secondaryProtocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.FACILITY,

@@ -816,6 +816,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    getVenueSyslogList: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     })
   })
 })
@@ -889,5 +899,6 @@ export const {
   useDelSyslogPolicyMutation,
   useUpdateSyslogPolicyMutation,
   useVenueSyslogPolicyQuery,
-  useGetSyslogPolicyListQuery
+  useGetSyslogPolicyListQuery,
+  useGetVenueSyslogListQuery
 } = policyApi

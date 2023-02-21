@@ -5,10 +5,19 @@ import { act, fireEvent } from '@testing-library/react'
 import userEvent          from '@testing-library/user-event'
 import { rest }           from 'msw'
 
-import { policyApi }                                               from '@acx-ui/rc/services'
-import { RogueApUrls, SyslogContextType, SyslogUrls, SyslogVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                         from '@acx-ui/store'
-import { mockServer, render, screen }                              from '@acx-ui/test-utils'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  ProtocolEnum,
+  FacilityEnum,
+  PriorityEnum,
+  FlowLevelEnum,
+  RogueApUrls,
+  SyslogContextType,
+  SyslogUrls,
+  SyslogVenue
+} from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
@@ -106,13 +115,13 @@ const initState = {
   policyName: '',
   server: '',
   port: '',
-  protocol: '',
+  protocol: ProtocolEnum.TCP,
   secondaryServer: '',
   secondaryPort: '',
-  secondaryProtocol: '',
-  facility: '',
-  priority: '',
-  flowLevel: '',
+  secondaryProtocol: ProtocolEnum.TCP,
+  facility: FacilityEnum.KEEP_ORIGINAL,
+  priority: PriorityEnum.ALL,
+  flowLevel: FlowLevelEnum.ALL,
   venues: [] as SyslogVenue[]
 } as SyslogContextType
 
@@ -150,7 +159,7 @@ describe('SyslogForm', () => {
 
   it('should render SyslogForm successfully', async () => {
     mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
@@ -190,43 +199,51 @@ describe('SyslogForm', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'policyTestName-modify' } })
 
-    fireEvent.change(screen.getByTestId('server'),
-      { target: { value: '1.1.1.2' } })
+    // fireEvent.change(screen.getByTestId('server'),
+    //   { target: { value: '1.1.1.2' } })
+    await userEvent.type(await screen.findByTestId('server'), '1.1.1.2')
 
-    fireEvent.change(screen.getByTestId('port'),
-      { target: { value: '514' } })
+    // fireEvent.change(screen.getByTestId('port'),
+    //   { target: { value: '514' } })
+    await userEvent.type(await screen.findByTestId('port'), '514')
 
-    fireEvent.change(screen.getByTestId('server2'),
-      { target: { value: '1.1.1.1' } })
+    // fireEvent.change(screen.getByTestId('server2'),
+    //   { target: { value: '1.1.1.1' } })
+    await userEvent.type(await screen.findByTestId('server2'), '1.1.1.3')
 
-    fireEvent.change(screen.getByTestId('port2'),
-      { target: { value: '514' } })
+    // fireEvent.change(screen.getByTestId('port2'),
+    //   { target: { value: '514' } })
+    await userEvent.type(await screen.findByTestId('port2'), '514')
 
-    fireEvent.change(screen.getByTestId('selectProtocol'), {
-      target: { value: 'UDP' }
-    })
+    // fireEvent.change(screen.getByTestId('selectProtocol'), {
+    //   target: { value: 'UDP' }
+    // })
+    await userEvent.selectOptions(await screen.findByTestId('selectProtocol'), 'UDP')
 
-    fireEvent.change(screen.getByTestId('selectProtocol2'), {
-      target: { value: 'UDP' }
-    })
+    // fireEvent.change(screen.getByTestId('selectProtocol2'), {
+    //   target: { value: 'UDP' }
+    // })
+    await userEvent.selectOptions(await screen.findByTestId('selectProtocol2'), 'TCP')
 
-    fireEvent.change(screen.getByTestId('selectFacility'), {
-      target: { value: 'LOCAL0' }
-    })
+    // fireEvent.change(screen.getByTestId('selectFacility'), {
+    //   target: { value: 'LOCAL0' }
+    // })
+    await userEvent.selectOptions(await screen.findByTestId('selectFacility'), 'LOCAL0')
 
-    fireEvent.change(screen.getByTestId('selectFlowLevel'), {
-      target: { value: 'ALL' }
-    })
+    // fireEvent.change(screen.getByTestId('selectFlowLevel'), {
+    //   target: { value: 'ALL' }
+    // })
+    await userEvent.selectOptions(await screen.findByTestId('selectFlowLevel'), 'ALL')
 
     expect(screen.getByText(/next/i)).not.toBeDisabled()
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     expect(await screen
       .findByText(/Select the venues where the syslog server will be applie/i))
       .toBeInTheDocument()
 
     expect(screen.getByText(/next/i)).not.toBeDisabled()
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     expect(await screen.findByText(/venues \(0\)/i)).toBeInTheDocument()
 
@@ -273,16 +290,19 @@ describe('SyslogForm', () => {
 
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyTestName-modify' } })
+    // fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+    //   { target: { value: 'policyTestName-modify' } })
+    await userEvent.type(await screen.findByTestId('name'), 'modify name')
 
-    fireEvent.change(screen.getByTestId('server'),
-      { target: { value: '1.1.1.1' } })
+    // fireEvent.change(screen.getByTestId('server'),
+    //   { target: { value: '1.1.1.1' } })
+    await userEvent.type(await screen.findByTestId('server'), '1.1.1.2')
 
-    fireEvent.change(screen.getByTestId('port'),
-      { target: { value: '514' } })
+    // fireEvent.change(screen.getByTestId('port'),
+    //   { target: { value: '514' } })
+    await userEvent.type(await screen.findByTestId('port'), '514')
 
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     const finishBtn = await screen.findByRole('button', { name: 'Finish' })
 

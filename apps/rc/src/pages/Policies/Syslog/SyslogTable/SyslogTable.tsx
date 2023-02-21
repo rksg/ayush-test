@@ -16,7 +16,7 @@ import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-rout
 const defaultPayload = {
   searchString: '',
   filters: {
-    type: [PolicyType.SYSLOG]
+    type: ['Syslog Server']
   },
   fields: [
     'id',

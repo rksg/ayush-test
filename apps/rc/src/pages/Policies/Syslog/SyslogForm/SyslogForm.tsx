@@ -9,8 +9,11 @@ import {
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
-  catchErrorResponse,
+  CatchErrorResponse,
+  PolicyType,
+  PolicyOperation,
   getPolicyListRoutePath,
+  getPolicyRoutePath,
   FacilityEnum,
   FlowLevelEnum,
   PriorityEnum,
@@ -102,7 +105,7 @@ const SyslogForm = (props: SyslogFormProps) => {
       }
       navigate(linkToPolicies, { replace: true })
     } catch(error) {
-      const errorResponse = error as catchErrorResponse
+      const errorResponse = error as CatchErrorResponse
       showToast({
         type: 'error',
         content: (<div>
@@ -120,7 +123,8 @@ const SyslogForm = (props: SyslogFormProps) => {
           ? $t({ defaultMessage: 'Edit Syslog Server' })
           : $t({ defaultMessage: 'Add Syslog Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'Syslog' }),
+            link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
       />
       <StepsForm<SyslogContextType>

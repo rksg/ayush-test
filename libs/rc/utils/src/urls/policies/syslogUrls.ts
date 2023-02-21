@@ -28,5 +28,9 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
   getVenueSyslogPolicy: {
     method: 'post',
     url: '/api/venues/:tenantId/syslogServerProfileSettings'
+  },
+  getVenueSyslogList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue'
   }
 }
