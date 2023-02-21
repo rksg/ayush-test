@@ -145,7 +145,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       align: 'right',
       render: (data, row: { macAddress: string }) => {
         return <div>
-          { _.isNil(layer2PolicyInfo) && <DeleteSolid
+          { !isViewMode() && <DeleteSolid
             data-testid={row.macAddress}
             height={21}
             onClick={() => handleDelAction(row.macAddress)}
@@ -230,7 +230,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           return result.status === 'fulfilled' && result.value !== ''
         }).map(result=> (result as { status: 'fulfilled', value: string }).value)
 
-        if (addAddressTags.length !== results.length) {
+        if (results.findIndex(result => result.status === 'rejected') !== -1) {
           showToast({
             type: 'error',
             duration: 10,
