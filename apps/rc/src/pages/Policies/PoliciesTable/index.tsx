@@ -8,7 +8,6 @@ import {
   useDelRoguePolicyMutation,
   usePolicyListQuery,
   useDeleteAAAPolicyMutation,
-  useDeleteAccessControlProfileMutation
   useDeleteAccessControlProfileMutation,
   useDelL2AclPolicyMutation,
   useDelL3AclPolicyMutation,
