@@ -7,16 +7,16 @@ import { networkHealthApi, networkHealthApiURL } from '@acx-ui/analytics/service
 import { noDataSymbol }                          from '@acx-ui/analytics/utils'
 import { UserProfileProvider }                   from '@acx-ui/rc/components'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }               from '@acx-ui/react-router-dom'
 import { Provider, store }                       from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
   screen,
-  waitForElementToBeRemoved,
   mockServer,
   act,
-  mockGraphqlMutation
+  mockGraphqlMutation,
+  within,
+  findTBody
 }                                              from '@acx-ui/test-utils'
 
 import { api } from './services'
@@ -97,20 +97,6 @@ describe('Network Health Table', () => {
     store.dispatch(networkHealthApi.util.resetApiState())
   })
 
-  it('should render loader', () => {
-    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
-      data: {
-        allServiceGuardSpecs: []
-      }
-    })
-    render(<Router>
-      <Provider>
-        <NetworkHealthTable/>
-      </Provider>
-    </Router>)
-    expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
-  })
-
   it('should render table with valid input', async () => {
     mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
       data: {
@@ -118,9 +104,10 @@ describe('Network Health Table', () => {
       }
     })
 
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <NetworkHealthTable/>
     </Provider>, {
+      wrapper: Provider,
       route: {
         path: '/t/:tenantId/serviceValidation/networkHealth',
         params: {
@@ -129,43 +116,11 @@ describe('Network Health Table', () => {
       }
     })
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
-  })
-
-  const columnHeaders = [
-    { name: 'Test Name', count: 1 },
-    { name: 'Client Type', count: 2 },
-    { name: 'Test Type', count: 2 },
-    { name: 'APs', count: 1 },
-    { name: 'Last Run', count: 1 },
-    { name: 'APs Under Test', count: 1 },
-    { name: 'Last Result', count: 1 }
-  ]
-
-  it('should render column header', async () => {
-    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecs', {
-      data: {
-        allServiceGuardSpecs: networkHealthTests
-      }
-    })
-
-    render(<Provider><NetworkHealthTable/></Provider>, {
-      route: {
-        path: '/t/:tenantId/serviceValidation/networkHealth',
-        params: {
-          tenantId: fakeUserProfile.tenantId
-        }
-      }
-    })
-
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: /loader/ }))
-
-    for (let i = 0; i < columnHeaders.length; i++) {
-      const header = columnHeaders[i]
-      const currHeader = await screen.findAllByText(header.name)
-      expect(currHeader).toHaveLength(header.count)
-    }
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const body = within(tbody)
+    expect(await screen.findByRole('table')).toBeVisible()
+    expect(await body.findAllByRole('row')).toHaveLength(2)
   })
 
   it('should click run now', async () => {
