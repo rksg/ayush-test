@@ -1,4 +1,4 @@
-import { Button, showActionModal } from '@acx-ui/components'
+import { Button, Descriptions, Drawer, showActionModal } from '@acx-ui/components'
 import { useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
 import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -10,11 +10,6 @@ import { SwitchDetailsContext } from '../../..'
 import { FrontViewSlot } from './FrontViewSlot'
 import { RearView } from './RearView'
 import * as UI             from './styledComponents'
-interface SlotMember {
-  isStack: boolean
-  data: StackMember[]
-}
-
 interface unitType {
   switchUnit: number
   model: string
@@ -53,19 +48,6 @@ const defaultUnit: unitType = {
   }
 }
 
-const icxModulesConst : {
-  specialMaxSlots: { [index:string]: number },
-  maxSlots: { [index:number]: number },
-  rearSlots: { [index:number]: number[] }
-} = {
-  specialMaxSlots: { 'ICX7150-48ZP': 2 },
-  //discribe the model maximum slots count
-  maxSlots: { 715012: 3, 715024: 3, 715048: 3, 725024: 2, 725048: 2, 745024: 4, 745048: 4,
-              755024: 3, 755048: 3, 765048: 3, 785032: 3, 785048: 2 },
-  //includes (the following slots ports in the rear side)
-  rearSlots: { 745024: [3, 4], 745048: [3, 4], 765048: [3] }
-}
-
 /** 
  * GUI: Front View
  *    _______________________________________
@@ -99,11 +81,9 @@ export function Unit (props:{
   const { serialNumber, switchMac } = switchDetail
 
   const { $t } = useIntl()
-  const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
+  const [ visible, setVisible ] = useState(false)
   const [ isRearView, setIsRearView ] = useState(false)
   const [ enableDeleteStackMember, setEnableDeleteStackMember ] = useState(false)
-  const [ maxSlotsCount, setMaxSlotsCount ] = useState(null as unknown as number)
-  const [ rearSlots, setRearSlots ] = useState(null as unknown as number[])
   const [ unit, setUnit ] = useState(defaultUnit)
   const [ portView, setPortView ] = useState({
     slots: [{
@@ -135,7 +115,6 @@ export function Unit (props:{
       setUnit(unitData as unitType)
       setEnableDeleteStackMember(isStack && isEmpty(member.unitStatus) && !unitData.unitStatus.needAck &&
         (member.serialNumber !== serialNumber))
-      caculateIcxModules(unitData)
       if ((isOnline || member.deviceStatus === SwitchStatusEnum.DISCONNECTED) 
            && _.isInteger(member.unitId)) {
         getSwitchPortDetail(switchMac as string, serialNumber as string, member.unitId?.toString() as string)
@@ -271,21 +250,6 @@ export function Unit (props:{
     return ackMsg;
   }
 
-  const caculateIcxModules = (unit: any) => {
-    if (Number(icxModulesConst.specialMaxSlots[unit.model]) > 0) {
-      setMaxSlotsCount(icxModulesConst.specialMaxSlots[unit.model])
-    } else if (Number(icxModulesConst.maxSlots[unit.model.replace(/\D+/g, '')]) > 0) {
-      setMaxSlotsCount(icxModulesConst.maxSlots[unit.model.replace(/\D+/g, '')])
-    }
-    if (!isNaN(icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')] as unknown as number) &&
-        (undefined !== icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')])) {
-      setRearSlots(icxModulesConst.rearSlots[unit.model.replace(/\D+/g, '')])
-    }
-  }
-
-  const isSwitchOperational = isOperationalSwitch(switchDetail.deviceStatus as SwitchStatusEnum, 
-    switchDetail.syncedSwitchConfig)
-
   const getPortLabel = (slot: any) => {
     const slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1]);
     return getSwitchPortLabel(member.model as string, slotNumber)
@@ -310,10 +274,14 @@ export function Unit (props:{
     })
   }
 
+  const onClickUnit = () => {
+    setVisible(true)
+  }
+
   const ViewModeButton = <Button 
       type='link' 
       size='small'
-      disabled={!isSwitchOperational}
+      disabled={!isOnline}
       onClick={onClickViewMode}
     >
     { isRearView ? $t({ defaultMessage: 'Front View' }) : $t({ defaultMessage: 'Rear View' }) }
@@ -327,12 +295,20 @@ export function Unit (props:{
         {
           isOnline 
           ? <>
-              <div>{unit.switchUnit}</div>
-              <div>{unit.model}</div>
-              { unit.unitStatus.needAck 
-                ? <div>{unit.unitStatus.ackMsg}</div>
-                : <span>{unit.poeUsage.used} / {unit.poeUsage.total} ({unit.poeUsage.percentage})</span>
-              }
+              <div className={isOnline ? 'unit-header operational' : 'unit-header'}>{unit.switchUnit}</div>
+              <div className='model'>{unit.model}</div>
+              <div className='status'>
+                { unit.unitStatus && unit.unitStatus.needAck 
+                  ? unit.unitStatus.ackMsg
+                  : <span className='unit-button' onClick={onClickUnit}>
+                      {unit.unitStatus.activeStatus}
+                    </span>
+                }
+              </div>
+              <div className='icon'>
+                <UI.RearPowerIcon />
+              </div>
+              <div className='status'>{unit.poeUsage.used} / {unit.poeUsage.total} ({unit.poeUsage.percentage})</div>
             </>
           : <>
               <div className='unit-header'>{unit.switchUnit}</div>
@@ -346,7 +322,6 @@ export function Unit (props:{
                   : unit.unitStatus.activeStatus
                 }
               </div>
-            
             </>
         }
         </>
@@ -363,7 +338,7 @@ export function Unit (props:{
             {$t({ defaultMessage: 'Remove' })}
           </Button>
         }
-        {!isSwitchOperational && !isRearView ? 
+        {!isOnline && !isRearView ? 
           <Tooltip title={$t({defaultMessage: 'Switch must be operational before you can see rear view'})}>
             <span>{ViewModeButton}</span>
           </Tooltip> :
@@ -394,6 +369,50 @@ export function Unit (props:{
             }
           </>
       }
+       {visible && <UnitDrawer
+        switchUnit={unit}
+        visible={visible}
+        onClose={()=>setVisible(false)}
+      /> }
     </UI.UnitWrapper>
   </div>
+}
+
+function UnitDrawer(props:{
+  switchUnit: unitType,
+  visible: boolean,
+  onClose: () => void
+}) {
+  const { $t } = useIntl()
+  const { switchUnit, visible, onClose } = props
+  return <Drawer
+  width={'450px'}
+  title={$t({ defaultMessage: 'Switch {model}' }, {model: switchUnit.model})}
+  visible={visible}
+  onClose={onClose}
+  children={
+    <Descriptions labelWidthPercent={50}>
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Stack membership' })}
+        children={switchUnit.unitStatus.activeStatus}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Stack ID' })}
+        children={switchUnit.stackId}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Status' })}
+        children={switchUnit.unitStatus.status}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Model' })}
+        children={switchUnit.model}
+      />
+      <Descriptions.Item
+        label={$t({ defaultMessage: 'Serial number' })}
+        children={switchUnit.serialNumber}
+      />
+    </Descriptions>
+  }
+/>
 }
