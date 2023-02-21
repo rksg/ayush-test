@@ -1,7 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import { List }               from 'antd'
-import { flatten }            from 'lodash'
+import { EChartsType }        from 'echarts'
+import { findIndex, flatten } from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
@@ -26,7 +27,8 @@ type HistoryContentProps = {
   data?: ClientInfoData,
   filters: Filters | null,
   setEventState: (event: DisplayEvent) => void,
-  setVisible: (visible: boolean) => void
+  setVisible: (visible: boolean) => void,
+  chartsRef: RefObject<EChartsType[]>
 }
 
 type FormattedEvent = {
@@ -72,12 +74,44 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 const renderItem = (
   item: IncidentDetails | FormattedEvent,
   handler: CallableFunction,
-  setVisible: CallableFunction
+  setVisible: CallableFunction,
+  chartRefs: RefObject<EChartsType[]>
 ) => {
   const onClick = () => {
     if (item && (item as FormattedEvent).event) {
-      handler((item as FormattedEvent).event)
-      setVisible((prev: boolean) => !prev)
+      const event = (item as FormattedEvent).event
+      const key = event.key
+      const charts = chartRefs.current
+      if (charts && charts.length > 0) {
+        const active = charts.filter(chart => !chart.isDisposed())
+        const options = active.map(chart => chart.getOption())
+        const activeSeries = options.map(option => (option as { series: object[] }).series)
+        const activeData = activeSeries.map(series => (series as { data: object }[])[0].data)
+        const allSeriesIndex = activeData.map(data =>
+          findIndex(data as [number, string, number | object][], (elem) => {
+            return typeof elem[2] != 'number' && (elem[2] as { key: string }).key === key
+          }))
+        const targetIndex = allSeriesIndex.findIndex(elem => elem > -1)
+        const dataIndex = allSeriesIndex[targetIndex]
+        const selectedChart = active[targetIndex]
+        const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
+        const targetDot = dots[dataIndex]
+        if (targetDot && targetDot.getBoundingClientRect) {
+          const clientX = targetDot.getBoundingClientRect().x
+          const clientY = targetDot.getBoundingClientRect().y
+          const popoverChild = document.querySelector('div[data-testid="popover-child"]')
+          if (!popoverChild) return
+          const { x, y, width } = popoverChild.getBoundingClientRect()
+          const calcX = clientX - (x + width / 2)
+          const calcY = clientY - y
+          handler({
+            ...(item as FormattedEvent).event,
+            x: -calcX,
+            y: -calcY
+          })
+          setVisible(true)
+        }
+      }
     }
   }
   const Item = <List.Item title={item.title}>
@@ -101,7 +135,8 @@ export function History (props : HistoryContentProps) {
     data,
     filters,
     setEventState,
-    setVisible
+    setVisible,
+    chartsRef
   } = props
   const histData = transformData(data!, filters!, intl)
   return (
@@ -125,7 +160,7 @@ export function History (props : HistoryContentProps) {
             <List
               itemLayout='horizontal'
               dataSource={histData}
-              renderItem={(item) => renderItem(item, setEventState, setVisible)}
+              renderItem={(item) => renderItem(item, setEventState, setVisible, chartsRef)}
             />
           </UI.HistoryContent>
         )}

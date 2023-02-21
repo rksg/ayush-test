@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Row, Col }               from 'antd'
+import { connect }                from 'echarts'
+import ReactECharts               from 'echarts-for-react'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Select, Button, Loader }             from '@acx-ui/components'
@@ -12,6 +14,8 @@ import { History }                                   from './EventsHistory'
 import { TimeLine }                                  from './EventsTimeline'
 import { useClientInfoQuery }                        from './services'
 import * as UI                                       from './styledComponents'
+
+import type { EChartsType } from 'echarts'
 
 export type Filters = {
   category?: [];
@@ -30,12 +34,39 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const filters = read()
   const [eventState, setEventState] = useState({} as DisplayEvent)
   const [visible, setVisible] = useState(false)
+  const sharedChartName = 'eventTimeSeriesGroup'
+  const chartsRef = useRef<EChartsType[]>([])
+  chartsRef.current = []
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = sharedChartName
+      chartsRef.current.push(instance)
+    }
+  }
+
+  useEffect(() => {
+    const isChartActive = (chart: EChartsType) => chart && chart.isDisposed && !chart.isDisposed()
+    connect(sharedChartName)
+    const charts = chartsRef.current
+    const active = charts.filter(isChartActive)
+    connect(active)
+
+    return () => {
+      const remainingCharts = charts.filter(isChartActive)
+      /* istanbul ignore next */
+      remainingCharts.forEach(chart => chart.dispose())
+      chartsRef.current = []
+    }
+  }, [])
 
   const Chart = useMemo(() => () => <TimeLine
     data={results.data}
     filters={filters}
     setEventState={setEventState}
     setVisible={setVisible}
+    sharedChartName={sharedChartName}
+    connectChart={connectChart}
   />, [results.data, filters])
 
   return (
@@ -124,6 +155,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               filters={filters}
               setEventState={setEventState}
               setVisible={setVisible}
+              chartsRef={chartsRef}
             />
           </Loader>
         </Col>
