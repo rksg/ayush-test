@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { ContentSwitcher, ContentSwitcherProps, Tabs } from '@acx-ui/components'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { Tabs }                                  from '@acx-ui/components'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueRogueAps } from './VenueRogueAps'
-import { VenueSwitch }   from './VenueSwitch'
-import { VenueWifi }     from './VenueWifi'
+import { VenueSwitch } from './VenueSwitch'
+import { VenueWifi }   from './VenueWifi'
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
@@ -22,26 +21,6 @@ export function VenueDevicesTab () {
     })
   }
 
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [
-    {
-      label: $t({ defaultMessage: 'APs List' }),
-      value: 'apsList',
-      children: <VenueWifi />
-    },
-    {
-      label: $t({ defaultMessage: 'AP Groups' }),
-      value: 'apGroups',
-      disabled: !useIsSplitOn(Features.DEVICES),
-      children: <span>apGroups</span>
-    },
-    {
-      label: $t({ defaultMessage: 'Rogue APs' }),
-      value: 'rogueAps',
-      disabled: !useIsSplitOn(Features.SERVICES),
-      children: <VenueRogueAps />
-    }
-  ]
-
   return (
     <Tabs activeKey={activeSubTab}
       defaultActiveKey='wifi'
@@ -52,12 +31,7 @@ export function VenueDevicesTab () {
           <AutoSizer>
             {({ height, width }) => (
               <div style={{ width, height }}>
-                <ContentSwitcher
-                  defaultValue='apsList'
-                  tabDetails={tabDetails}
-                  size='small'
-                  align='left'
-                />
+                <VenueWifi />
               </div>
             )}
           </AutoSizer>

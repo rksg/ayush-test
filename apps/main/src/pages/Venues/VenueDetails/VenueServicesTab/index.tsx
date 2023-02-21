@@ -3,9 +3,11 @@ import { useIntl } from 'react-intl'
 import { Tabs }                    from '@acx-ui/components'
 import { PolicyType, ServiceType } from '@acx-ui/rc/utils'
 
+
 import ClientIsolationAllowList from './ClientIsolationAllowList'
 import DHCPInstance             from './DHCPInstance'
 import MdnsProxyInstances       from './MdnsProxyInstances'
+import { VenueRogueAps }        from './VenueRogueAps'
 
 export function VenueServicesTab () {
   const { $t } = useIntl()
@@ -30,6 +32,12 @@ export function VenueServicesTab () {
         key={PolicyType.CLIENT_ISOLATION}
       >
         <ClientIsolationAllowList />
+      </Tabs.TabPane>
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Rogue Aps' })}
+        key={'rogueAps'}
+      >
+        <VenueRogueAps />
       </Tabs.TabPane>
     </Tabs>
   )

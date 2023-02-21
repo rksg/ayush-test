@@ -85,6 +85,7 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
+        align: 'left',
         searchable: true
       },
       {
@@ -107,12 +108,14 @@ export function VenueRogueAps () {
         key: 'classificationPolicyName',
         title: intl.$t({ defaultMessage: 'Classification Profile' }),
         dataIndex: 'classificationPolicyName',
+        align: 'left',
         sorter: true
       },
       {
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'SSID' }),
         dataIndex: 'ssid',
+        align: 'left',
         sorter: true
       },
       {
@@ -120,13 +123,13 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
         sorter: true,
-        align: 'center'
+        align: 'left'
       },
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
         dataIndex: 'band',
-        align: 'center'
+        align: 'left'
       },
       {
         key: 'closestAp_snr',
@@ -175,7 +178,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         sorter: true,
-        align: 'center',
+        align: 'left',
         render: (data, row) => {
           return row.locatable
             ? <VenueMarkerRed />
