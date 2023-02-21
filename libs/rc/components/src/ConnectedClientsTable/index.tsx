@@ -149,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       render: (data, row) =>
         (
-          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
         )
     },
     {

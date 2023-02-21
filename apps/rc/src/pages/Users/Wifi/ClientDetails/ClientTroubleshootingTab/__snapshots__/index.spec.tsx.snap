@@ -287,7 +287,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                 >
                   <div
                     class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 3px;"
+                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
                   >
                     <div
                       class="ant-col ant-col-3"

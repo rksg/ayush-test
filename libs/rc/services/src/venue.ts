@@ -51,7 +51,8 @@ import {
   RogueOldApResponseType,
   VenueRadioCustomization,
   VenueDirectedMulticast,
-  VenueLoadBalancing
+  VenueLoadBalancing,
+  TopologyData
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -100,6 +101,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
     addVenue: build.mutation<VenueExtended, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.addVenue, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
+    }),
+    newAddVenue: build.mutation<VenueExtended, RequestPayload>({ //Only for IT test
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.newAddVenue, params)
         return {
           ...req,
           body: payload
@@ -202,14 +213,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     deleteVenue: build.mutation<Venue, RequestPayload>({
       query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
-          const req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
+        if (payload) { //delete multiple rows
+          let req = createHttpRequest(CommonUrlsInfo.deleteVenues, params)
           return {
             ...req,
             body: payload
           }
-        }else{ //delete single row
-          const req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+        } else { //delete single row
+          let req = createHttpRequest(CommonUrlsInfo.deleteVenue, params)
+          req.url = 'https://api.intalto.ruckuswireless.com/venues/' + (params?.tenantId)
           return {
             ...req
           }
@@ -890,6 +902,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }]
+    }),
+    getTopology: build.query<TopologyData, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
+
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: { data: TopologyData[] }) => {
+        return result?.data[0] as TopologyData
+      }
     })
   })
 })
@@ -898,6 +922,7 @@ export const {
   useVenuesListQuery,
   useLazyVenuesListQuery,
   useAddVenueMutation,
+  useNewAddVenueMutation,
   useGetVenueQuery,
   useLazyGetVenueQuery,
   useGetVenuesQuery,
@@ -973,5 +998,6 @@ export const {
   useGetVenueConfigHistoryDetailQuery,
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
-  useUpdateVenueLoadBalancingMutation
+  useUpdateVenueLoadBalancingMutation,
+  useGetTopologyQuery
 } = venueApi

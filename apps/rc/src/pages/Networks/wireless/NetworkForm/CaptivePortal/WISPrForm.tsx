@@ -57,6 +57,18 @@ export function WISPrForm () {
       form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
     }
     if((editMode || cloneMode) && data){
+      if(data.guestPortal?.wisprPage?.accountingRadius){
+        form.setFieldValue('accountingRadius',
+          data.guestPortal.wisprPage.accountingRadius)
+        form.setFieldValue('accountingRadiusId',
+          data.guestPortal.wisprPage.accountingRadius.id)
+      }
+      if(data.guestPortal?.wisprPage?.authRadius){
+        form.setFieldValue('authRadius',
+          data.guestPortal.wisprPage.authRadius)
+        form.setFieldValue('authRadiusId',
+          data.guestPortal.wisprPage.authRadius.id)
+      }
       form.setFieldsValue({ ...data })
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
@@ -383,6 +395,7 @@ export function WISPrForm () {
         />
         <Form.Item
           hidden
+          initialValue={[]}
           name={['guestPortal','walledGardens']}
         />
         {!regionOption && isOtherProvider &&<AuthAccServerSetting/>}

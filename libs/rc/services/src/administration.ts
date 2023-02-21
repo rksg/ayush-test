@@ -18,13 +18,16 @@ import {
   NotificationEndpoint,
   ClientConfig,
   RadiusClientConfigUrlsInfo,
-  RadiusServerSetting
+  RadiusServerSetting,
+  EntitlementSummary,
+  Entitlement,
+  NewEntitlementSummary
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['Administration', 'RadiusClientConfig'],
+  tagTypes: ['Administration', 'License', 'RadiusClientConfig'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -249,6 +252,37 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
     }),
+    getEntitlementSummary: build.query<EntitlementSummary[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementSummary, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      transformResponse: (response) => {
+        return AdministrationUrlsInfo.getEntitlementSummary.newApi ?
+          (response as NewEntitlementSummary).summary : response as EntitlementSummary[]
+      }
+    }),
+    getEntitlementsList: build.query<Entitlement[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementsList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }]
+    }),
+    refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'License', id: 'LIST' }]
+    }),
     // TODO: backend is not support activity message now, and will add if function be completed.
     UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
       query: ({ payload }) => {
@@ -295,6 +329,9 @@ export const {
   useUpdateRecipientMutation,
   useDeleteNotificationRecipientsMutation,
   useDeleteNotificationRecipientMutation,
+  useGetEntitlementSummaryQuery,
+  useGetEntitlementsListQuery,
+  useRefreshEntitlementsMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery
