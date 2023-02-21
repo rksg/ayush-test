@@ -344,7 +344,8 @@ export const ConnectedClientsTable = (props: {
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
-    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+    params.serialNumber ? { serialNumber: [params.serialNumber] } :
+      params.apId ? { serialNumber: [params.apId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
