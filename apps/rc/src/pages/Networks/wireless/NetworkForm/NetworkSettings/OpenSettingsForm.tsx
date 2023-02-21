@@ -8,8 +8,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }       from '@acx-ui/components'
-import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { StepsForm }              from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
@@ -19,16 +19,19 @@ import { CloudpathServerForm }     from './CloudpathServerForm'
 
 const { useWatch } = Form
 
-export function OpenSettingsForm (props: {
-  saveState: NetworkSaveData
-}) {
+export function OpenSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
 
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled
+        isCloudpathEnabled: data.isCloudpathEnabled,
+        enableAccountingService: data.accountingRadius,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])
@@ -37,7 +40,6 @@ export function OpenSettingsForm (props: {
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
-        {!(editMode) && <NetworkMoreSettingsForm wlanData={props.saveState} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -64,19 +66,20 @@ function SettingsForm () {
     }
     setData && setData({ ...data, isCloudpathEnabled: checked })
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch disabled={editMode} onChange={onCloudPathChange} />
+          <Switch disabled={editMode||disableAAA} onChange={onCloudPathChange} />
         </Form.Item>
         <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
       </Form.Item>
 
       {isCloudpathEnabled && <CloudpathServerForm />}
+      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
     </>
   )
 }

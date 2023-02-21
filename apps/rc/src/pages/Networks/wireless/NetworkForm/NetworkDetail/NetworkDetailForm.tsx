@@ -34,7 +34,9 @@ export function NetworkDetailForm () {
     editMode,
     cloneMode,
     data,
-    setData
+    setData,
+    modalMode,
+    createType
   } = useContext(NetworkFormContext)
 
   const [differentSSID, setDifferentSSID] = useState(false)
@@ -121,11 +123,11 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: disableAAA },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
@@ -206,7 +208,7 @@ export function NetworkDetailForm () {
           children={<TextArea rows={4} maxLength={64} />}
         />
         <Form.Item>
-          {( !editMode && !cloneMode ) &&
+          {( !editMode && !cloneMode && !modalMode ) &&
             <Form.Item
               name='type'
               label={intl.$t({ defaultMessage: 'Network Type' })}
@@ -234,6 +236,15 @@ export function NetworkDetailForm () {
               <>
                 <h4 className='ant-typography'>{type && intl.$t(networkTypes[type])}</h4>
                 <label>{type && intl.$t(networkTypesDescription[type])}</label>
+              </>
+            </Form.Item>
+          }
+          {modalMode &&
+            <Form.Item name='type' label='Network Type'>
+              <>
+                <h4 className='ant-typography'>
+                  {createType && intl.$t(networkTypes[createType])}</h4>
+                <label>{createType && intl.$t(networkTypesDescription[createType])}</label>
               </>
             </Form.Item>
           }

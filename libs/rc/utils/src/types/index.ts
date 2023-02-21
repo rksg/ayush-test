@@ -45,6 +45,14 @@ export interface CommonResult {
   response?:{}
 }
 
+export interface CommonErrorsResult<T> {
+  data: {
+    errors: T[];
+    requestId: string;
+  };
+  status: number;
+}
+
 export interface Network {
   id: string
   name: string
@@ -103,13 +111,12 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  deepVenue?: any
+  deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
@@ -409,14 +416,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse {
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number

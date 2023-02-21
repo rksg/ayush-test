@@ -5,7 +5,7 @@ import {
 } from './msp'
 
 
-export interface Entitlement {
+export interface LicenseEntitlement {
   id: string;
   deviceType: EntitlementDeviceType;
   deviceSubType: EntitlementDeviceSubType;
@@ -26,11 +26,3 @@ export interface EntitlementBanner {
   type: LicenseBannerTypeEnum;
 }
 
-export interface EntitlementSummary {
-  deviceType: EntitlementDeviceType;
-  deviceSubType?: EntitlementDeviceSubType;
-  quantity: number;
-  effectiveDate: string;
-  expirationDate: string;
-  remainingDays: number;
-}

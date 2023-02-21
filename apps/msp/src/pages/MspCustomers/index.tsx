@@ -158,7 +158,7 @@ export function MspCustomers () {
       render: function (data, row, _, highlightFn) {
         const to = `${getBasePath()}/t/${row.id}`
         return (
-          <Link to={to}>{highlightFn(data as string)}</Link>
+          (row.status === 'Active') ? <Link to={to}>{highlightFn(data as string)}</Link> : data
         )
       }
     },
@@ -384,6 +384,7 @@ export function MspCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
@@ -407,6 +408,7 @@ export function MspCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
         />
       </Loader>

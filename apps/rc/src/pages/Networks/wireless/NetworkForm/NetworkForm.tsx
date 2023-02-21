@@ -1,30 +1,25 @@
 import { useState, useRef, useEffect } from 'react'
 
-import _                                     from 'lodash'
-import { defineMessage, useIntl, IntlShape } from 'react-intl'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
 import {
   PageHeader,
   showToast,
-  showActionModal,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import {
   useAddNetworkMutation,
   useGetNetworkQuery,
-  useUpdateNetworkMutation,
-  useLazyValidateRadiusQuery
+  useUpdateNetworkMutation
 } from '@acx-ui/rc/services'
 import {
-  CreateNetworkFormFields,
   NetworkTypeEnum,
   NetworkSaveData,
-  RadiusErrorsType,
-  RadiusValidate,
-  RadiusValidateErrors,
   GuestNetworkTypeEnum,
-  Demo
+  Demo,
+  GuestPortal
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -32,16 +27,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { GuestPassForm }    from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm } from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }   from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }   from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }   from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }        from './CaptivePortal/WISPrForm'
-import {
-  multipleConflictMessage,
-  radiusErrorMessage
-} from './contentsMap'
+import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }               from './CaptivePortal/WISPrForm'
 import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
 import NetworkFormContext          from './NetworkFormContext'
 import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -59,7 +51,7 @@ import {
 } from './parser'
 import PortalInstance from './PortalInstance'
 import { Venues }     from './Venues/Venues'
-//import PortalInstance from './PortalInstance'
+
 
 const settingTitle = defineMessage({
   defaultMessage: `{type, select,
@@ -78,7 +70,24 @@ const onboardingTitle = defineMessage({
     other {Onboarding}
   }`
 })
-export default function NetworkForm () {
+const minutesMapping: { [key:string]:number }={
+  hours: 60,
+  days: 1440,
+  minutes: 1
+}
+interface GuestMore {
+  guestPortal?: GuestPortal,
+  userSessionTimeoutUnit?: string,
+  macCredentialsDurationUnit?: string,
+  lockoutPeriodUnit?: string
+
+}
+export default function NetworkForm (props:{
+  modalMode?: boolean,
+  createType?: NetworkTypeEnum,
+  modalCallBack?: ()=>void
+}) {
+  const { modalMode, createType, modalCallBack } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks')
@@ -88,12 +97,11 @@ export default function NetworkForm () {
 
   const [addNetwork] = useAddNetworkMutation()
   const [updateNetwork] = useUpdateNetworkMutation()
-  const [getValidateRadius] = useLazyValidateRadiusQuery()
   const formRef = useRef<StepsFormInstance<NetworkSaveData>>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
-    type: NetworkTypeEnum.OPEN,
+    type: createType || NetworkTypeEnum.OPEN,
     isCloudpathEnabled: false,
     venues: []
   })
@@ -105,7 +113,9 @@ export default function NetworkForm () {
     } else {
       delete saveState.cloudpathServerId
     }
-
+    if(!editMode&&!saveState.enableAccountingService){
+      delete saveState.accountingRadius
+    }
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
     updateSaveState({ ...saveState, ...newSavedata })
@@ -124,6 +134,32 @@ export default function NetworkForm () {
     }
   }, [data])
 
+  const handleGuestMoreSetting = (data:GuestMore)=>{
+    if(data.guestPortal){
+      if(data.guestPortal.userSessionTimeout&&data.userSessionTimeoutUnit)
+        data.guestPortal={
+          ...data.guestPortal,
+          userSessionTimeout: data.guestPortal.userSessionTimeout*
+          minutesMapping[data.userSessionTimeoutUnit]
+        }
+      if(data.lockoutPeriodUnit&&data.guestPortal.lockoutPeriod){
+        data.guestPortal={
+          ...data.guestPortal,
+          lockoutPeriod: data.guestPortal.lockoutPeriod*
+          minutesMapping[data.lockoutPeriodUnit]
+        }
+      }
+      if(data.macCredentialsDurationUnit&&data.guestPortal.macCredentialsDuration){
+        data.guestPortal={
+          ...data.guestPortal,
+          macCredentialsDuration: data.guestPortal.macCredentialsDuration*
+          minutesMapping[data.macCredentialsDurationUnit]
+        }
+      }
+    }
+    return data
+  }
+
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     if(!data.guestPortal?.socialIdentities?.facebook){
       delete data.guestPortal?.socialIdentities?.facebook
@@ -140,8 +176,6 @@ export default function NetworkForm () {
     const tmpGuestPageState = {
       enableDhcp: _.isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
       guestPortal: {
-        ...saveState?.guestPortal,
-        ...data.guestPortal,
         //other properties value
         enableSelfService: true,
         endOfDayReauthDelay: false,
@@ -150,7 +184,9 @@ export default function NetworkForm () {
         macCredentialsDuration: 240,
         maxDevices: 1,
         userSessionGracePeriod: 60,
-        userSessionTimeout: 1440
+        userSessionTimeout: 1440,
+        ...saveState?.guestPortal,
+        ...data.guestPortal
       },
       wlan: {
         ...saveState.wlan,
@@ -164,7 +200,20 @@ export default function NetworkForm () {
     if(!tmpGuestPageState.guestPortal.redirectUrl){
       delete tmpGuestPageState.guestPortal.redirectUrl
     }
-    updateSaveData({ ...saveState, ...tmpGuestPageState } as NetworkSaveData)
+    if(tmpGuestPageState.guestPortal.wisprPage){
+      if(data.authRadius){
+        tmpGuestPageState.guestPortal.wisprPage.authRadius = { ...data.authRadius }
+      }
+      if(data.accountingRadius){
+        tmpGuestPageState.guestPortal.wisprPage.accountingRadius = { ...data.accountingRadius }
+      }
+    }
+    if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath){
+      delete data.authRadius
+      delete data.accountingRadius
+      delete data.enableAccountingService
+    }
+    updateSaveData({ ...data, ...saveState, ...tmpGuestPageState } as NetworkSaveData)
     return true
   }
 
@@ -172,7 +221,7 @@ export default function NetworkForm () {
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -192,7 +241,7 @@ export default function NetworkForm () {
       deleteUnnecessaryFields()
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -200,106 +249,19 @@ export default function NetworkForm () {
       })
     }
   }
-
-  const checkIpsValues = async (newData: Partial<CreateNetworkFormFields>) => {
-    const payload = {
-      networkId: saveState?.id,
-      networkType: newData?.type?.toUpperCase(),
-      ...newData
-    }
-    const { error } = await getValidateRadius({ params, payload }, true)
-    return error as RadiusValidate ?? null
-  }
-
-  const checkRadiusError = async (
-    newData: Partial<CreateNetworkFormFields>,
-    error: RadiusValidate
-  ) => {
-    const { status, data } = error
-    if (status === 404) { return false }
-
-    if (status === 422) {
-      showActionModal({
-        type: 'error',
-        title: intl.$t({ defaultMessage: 'Server Configuration Conflict' }),
-        content: data.errors[0].message
-      })
-      return true
-    }
-
-    if (data?.errors) {
-      const radiusType = ['accountingRadius', 'authRadius']
-      const errors = data?.errors
-      const errorList = errors.reduce((
-        result: Record<string, boolean | number>,
-        error: RadiusValidateErrors,
-        index: number
-      ) => {
-        const key = error.object?.split('.')[1]
-        const msgArray = error.message.split('Authentication Profile')
-        msgArray.forEach((item, index) => {
-          if (item?.includes('multiple conflict')) {
-            const key = `${radiusType[index]}MultipleConflict`
-            result[key] = true
-          }
-        })
-        result[key] = index
-        return result
-      }, {} as Record<string, boolean | number>)
-
-      const conflictErrors = Object.keys(errorList)?.filter(x => x.includes('MultipleConflict'))
-      const radiusErrors = radiusType.filter(x => Object.keys(errorList).includes(x))
-        .map(x => x.split('Radius')[0].toUpperCase())
-
-      if (conflictErrors.length) {
-        const keys = conflictErrors.map(k => k.split('Radius')[0].toUpperCase())
-        const conflictMessage = keys.length === 2
-          ? multipleConflictMessage[RadiusErrorsType.AUTH_AND_ACC]
-          : multipleConflictMessage[keys[0] as RadiusErrorsType]
-
-        showActionModal({
-          type: 'error',
-          title: intl.$t({ defaultMessage: 'Server Configuration Conflict' }),
-          content: intl.$t(conflictMessage)
-        })
-      } else if (radiusErrors.length) {
-        const errorMessage = radiusErrors.length === 2
-          ? intl.$t( radiusErrorMessage[RadiusErrorsType.AUTH_AND_ACC] )
-          : intl.$t( radiusErrorMessage[radiusErrors[0] as RadiusErrorsType] )
-
-        showConfigConflictModal(
-          errorMessage,
-          newData,
-          errors,
-          errorList,
-          formRef?.current,
-          saveState,
-          updateSaveData,
-          editMode,
-          intl
-        )
-      } else {
-        showActionModal({
-          type: 'error',
-          title: intl.$t({ defaultMessage: 'Occured Error' }),
-          content: errors[0].message
-        })
-      }
-      return true
-    }
-    return false
-  }
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? intl.$t({ defaultMessage: 'Edit Network' })
           : intl.$t({ defaultMessage: 'Create New Network' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'Networks' }), link: '/networks' }
         ]}
-      />
+      />}
       <NetworkFormContext.Provider value={{
+        modalMode,
+        createType,
         editMode,
         cloneMode,
         data: saveState,
@@ -308,7 +270,7 @@ export default function NetworkForm () {
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => navigate(linkToNetworks)}
+          onCancel={() => modalMode? modalCallBack?.() : navigate(linkToNetworks)}
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
           <StepsForm.StepForm
@@ -316,7 +278,14 @@ export default function NetworkForm () {
             title={intl.$t({ defaultMessage: 'Network Details' })}
             onFinish={async (data) => {
               const detailsSaveData = transferDetailToSave(data)
-              updateSaveData(detailsSaveData)
+              if(modalMode&&createType){
+                detailsSaveData.type = createType
+              }
+              if(createType === NetworkTypeEnum.CAPTIVEPORTAL){
+                updateSaveData({ ...detailsSaveData,
+                  guestPortal: { guestNetworkType: GuestNetworkTypeEnum.GuestPass } })
+              }
+              else updateSaveData(detailsSaveData)
               return true
             }}
           >
@@ -327,35 +296,26 @@ export default function NetworkForm () {
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
-              if(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-                 (editMode||cloneMode))return true
-              const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
-                          || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
-              const radiusValidate = !data.cloudpathServerId && radiusChanged
-                ? await checkIpsValues(data) : false
-              const hasRadiusError = radiusValidate
-                ? await checkRadiusError(data, radiusValidate) : false
-
-              if (!hasRadiusError) {
+              if (!(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+                (editMode || cloneMode))) {
                 const settingData = {
                   ...{ type: saveState.type },
                   ...data
                 }
                 let settingSaveData = tranferSettingsToSave(settingData, editMode)
-                if(!editMode) {
+                if (!editMode) {
                   settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                 }
                 updateSaveData(settingSaveData)
-                return true
               }
-              return false
+              return true
             }}
           >
-            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.DPSK && <DpskSettingsForm saveState={saveState}/>}
-            {saveState.type === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
-            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm saveState={saveState}/>}
+            {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
+            {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
+            {(saveState.type || createType) === NetworkTypeEnum.DPSK && <DpskSettingsForm />}
+            {(saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL && <PortalTypeForm/>}
+            {saveState.type === NetworkTypeEnum.PSK && <PskSettingsForm />}
 
           </StepsForm.StepForm>
           { saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -363,7 +323,9 @@ export default function NetworkForm () {
                 name='onboarding'
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
-                  handlePortalWebPage(data)
+                  delete data.walledGardensString
+                  const dataMore = handleGuestMoreSetting(data)
+                  handlePortalWebPage(dataMore)
                   return true
                 }}
               >
@@ -372,7 +334,7 @@ export default function NetworkForm () {
                 {saveState?.guestPortal?.guestNetworkType===
                  GuestNetworkTypeEnum.SelfSignIn&&<SelfSignInForm />}
                 {saveState?.guestPortal?.guestNetworkType===
-                 GuestNetworkTypeEnum.Cloudpath&&<div>cloud path</div>}
+                 GuestNetworkTypeEnum.Cloudpath&&<CloudpathForm/>}
                 {saveState?.guestPortal?.guestNetworkType===
                  GuestNetworkTypeEnum.HostApproval&&<HostApprovalForm />}
                 {saveState?.guestPortal?.guestNetworkType===
@@ -386,7 +348,8 @@ export default function NetworkForm () {
               name='moreSettings'
               title={intl.$t({ defaultMessage: 'More Settings' })}
               onFinish={async (data) => {
-                const settingSaveData = transferMoreSettingsToSave(data, saveState)
+                const dataMore = handleGuestMoreSetting(data)
+                const settingSaveData = transferMoreSettingsToSave(dataMore, saveState)
 
                 updateSaveData(settingSaveData)
                 return true
@@ -431,104 +394,3 @@ export default function NetworkForm () {
   )
 }
 
-
-function showConfigConflictModal (
-  message: string,
-  data: Partial<CreateNetworkFormFields>,
-  errors: RadiusValidateErrors[],
-  errorList: Record<string, boolean | number>,
-  form: StepsFormInstance<NetworkSaveData> | undefined,
-  saveState: NetworkSaveData,
-  updateSaveData: Function,
-  editMode: boolean,
-  intl: IntlShape
-) {
-  const authIndex = _.get(errorList, 'authRadius') as number
-  const accountIndex = _.get(errorList, 'accountingRadius') as number
-
-  const handleExisting = async () => {
-    let resetFields = [] as string[]
-    const authErrors = authIndex > -1 && errors[authIndex].value
-    const accountErrors = accountIndex > -1 && errors[accountIndex].value
-    const updateField = ['primary', 'secondary',
-      'tlsEnabled', 'cnSanIdentity', 'ocspUrl', 'trustedCAChain']
-
-    // remove Secondary Server setting
-    if (authErrors) resetFields.push('enableSecondaryAuthServer', 'authRadius')
-    if (accountErrors) resetFields.push('enableSecondaryAcctServer', 'accountingRadius')
-    if (resetFields.length) {
-      resetFields.forEach(x => delete data[x as keyof CreateNetworkFormFields])
-      form?.resetFields(resetFields)
-    }
-
-    const authRadius = authErrors && updateField.reduce((result, key) => {
-      const value = authErrors[key as keyof RadiusValidateErrors['value']]
-      return value ? { ...result, [key]: value } : result
-    }, {})
-
-    const accountingRadius = accountErrors && updateField.reduce((result, key) => {
-      const value = accountErrors[key as keyof RadiusValidateErrors['value']]
-      return value ? { ...result, [key]: value } : result
-    }, {})
-
-    let saveData = {
-      ...tranferSettingsToSave({
-        ...saveState,
-        ...data
-      }, editMode),
-      ...authRadius && { authRadius },
-      ...accountingRadius && { accountingRadius }
-    } as Partial<CreateNetworkFormFields>
-
-    // update form value
-    form?.setFieldsValue({
-      ...form?.getFieldsValue(),
-      ...saveData
-    })
-
-    if(!editMode) {
-      saveData = transferMoreSettingsToSave(data, saveData)
-    }
-    updateSaveData(saveData)
-    form?.submit()
-  }
-
-  const handleOverride = async () => {
-    const settingData = {
-      ...{ type: saveState.type },
-      ...data
-    }
-    let settingSaveData = tranferSettingsToSave(settingData, editMode)
-    if(!editMode) {
-      settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
-    }
-    updateSaveData(settingSaveData)
-  }
-
-  showActionModal({
-    type: 'warning',
-    width: 600,
-    title: intl.$t({ defaultMessage: 'Server Configuration Conflict' }),
-    content: message,
-    customContent: {
-      action: 'CUSTOM_BUTTONS',
-      buttons: [{
-        text: intl.$t({ defaultMessage: 'Cancel' }),
-        type: 'link',
-        key: 'cancel'
-      }, {
-        text: intl.$t({ defaultMessage: 'Use existing server configuration' }),
-        type: 'primary',
-        key: 'existing',
-        closeAfterAction: true,
-        handler: handleExisting
-      }, {
-        text: intl.$t({ defaultMessage: 'Override the conflicting server configuration' }),
-        type: 'primary',
-        key: 'override',
-        closeAfterAction: true,
-        handler: handleOverride
-      }]
-    }
-  })
-}
