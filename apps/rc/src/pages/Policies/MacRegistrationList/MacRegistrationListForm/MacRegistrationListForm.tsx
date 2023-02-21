@@ -61,11 +61,22 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         // policyId
       }
       await addMacRegList({ payload: saveData }).unwrap()
+
+      showToast({
+        type: 'success',
+        content: intl.$t(
+          { defaultMessage: 'List {name} was added' },
+          { name: saveData.name }
+        )
+      })
+
       navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -83,11 +94,22 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         params: { policyId },
         payload: saveData
       }).unwrap()
+
+      showToast({
+        type: 'success',
+        content: intl.$t(
+          { defaultMessage: 'List {name} was updated' },
+          { name: saveData.name }
+        )
+      })
+
       navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }

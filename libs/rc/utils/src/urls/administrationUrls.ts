@@ -112,5 +112,21 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNotificationRecipient: {
     method: 'delete',
     url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
+  },
+  getEntitlementSummary: {
+    method: 'get',
+    newApi: false,
+    url: '/entitlements/summaries',
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary'
+  },
+  getEntitlementsList: {
+    method: 'get',
+    newApi: false,
+    url: '/entitlements',
+    oldUrl: '/api/tenant/:tenantId/entitlement'
+  },
+  refreshLicensesData: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/entitlement/internal-refresh'
   }
 }

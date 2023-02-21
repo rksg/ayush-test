@@ -16,6 +16,7 @@ export enum Features {
   USERS = 'acx-ui-users',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'acx-ui-edges-toggle',
+  EDGE_EARLY_BETA = 'smartedge-early-beta-deploy',
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',

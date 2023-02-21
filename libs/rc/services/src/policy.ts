@@ -727,7 +727,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     uploadMacRegistration: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, {
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, {
           'Content-Type': undefined,
           'Accept': '*/*'
         })
