@@ -7,6 +7,7 @@ import { Card, Loader, Subtitle, Tooltip, Descriptions }                       f
 import { WifiSignal }                                                          from '@acx-ui/rc/components'
 import {
   useLazyGetApQuery,
+  useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
   useLazyGetVenueQuery
   // TODO:
@@ -22,7 +23,8 @@ import {
   NetworkSaveData,
   transformQosPriorityType,
   QosPriorityEnum,
-  VenueExtended
+  VenueExtended,
+  Guest
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { formatter }             from '@acx-ui/utils'
@@ -48,6 +50,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getAp] = useLazyGetApQuery()
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
+  const [getGuestsList] = useLazyGetGuestsListQuery()
+  const [guestDetail, setGuestDetail] = useState({} as Guest)
 
   // TODO: dpsk
   // const [getDpskPassphraseByQuery] = useLazyGetDpskPassphraseByQueryQuery()
@@ -58,6 +62,36 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
+
+      const payload = {
+        searchString: clientDetails.clientMac,
+        searchTargetFields: [
+          'devicesMac'
+        ],
+        fields: [
+          'creationDate',
+          'name',
+          'mobilePhoneNumber',
+          'emailAddress',
+          'guestType',
+          'ssid',
+          'expiryDate',
+          'guestStatus',
+          'id',
+          'networkId',
+          'maxNumberOfClients',
+          'devicesMac',
+          'guestStatus',
+          'socialLogin',
+          'clients'
+        ],
+        filters: {
+          includeExpired: [
+            true
+          ]
+        }
+      }
+
       const getApData = async () => {
         try {
           apData = await getAp({
@@ -85,6 +119,14 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         }
       }
 
+      const getGuestData = async () => {
+        const list = (await getGuestsList({ params: { tenantId: tenantId }, payload }, true)
+          .unwrap()).data || []
+        if (list.length === 1) {
+          setGuestDetail(list[0])
+        }
+      }
+
       const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
       ) => {
         setNetworkType(networkData?.type || '')
@@ -98,6 +140,10 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           enableLinkToNetwork: !!networkData,
           enableLinkToVenue: !!venueData
         })
+
+        if ('guest' === networkData?.type) {
+          getGuestData()
+        }
       }
 
       getApData()
@@ -113,7 +159,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
     }
   }, [clientDetails])
 
-  const getProperties = (clientStatus: string, networkType: string) => {
+  const getProperties = (clientStatus: string, networkType: string, clientMac: string) => {
     let obj = null
     switch (clientStatus) {
       case ClientStatusEnum.CONNECTED:
@@ -121,7 +167,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           <ClientDetails client={client} />,
           <OperationalData client={client} />,
           <Connection client={client} />,
-          (networkType === 'guest' && <GuestDetails />),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -130,7 +177,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         obj = [
           <ClientDetails client={client} />,
           <LastSession client={client} />,
-          (networkType === 'guest' && <GuestDetails />),
+          (networkType === 'guest' &&
+            <GuestDetails guestDetail={guestDetail} clientMac={clientMac}/>),
           (networkType === 'dpsk' && <DpskPassphraseDetails />),
           <WiFiCallingDetails client={client} />
         ]
@@ -151,7 +199,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
     <Loader states={[{
       isLoading: !Object.keys(client).length
     }]}>
-      { getProperties(clientStatus, networkType) }
+      { getProperties(clientStatus, networkType, clientDetails.clientMac) }
     </Loader>
   </Card>
 }
@@ -488,8 +536,10 @@ function LastSession ({ client }: { client: ClientExtended }) {
   </>
 }
 
-// TODO
-function GuestDetails () {
+function GuestDetails ({ guestDetail, clientMac }: {
+                        guestDetail: Guest
+                        clientMac: string
+                      }) {
   const { $t } = getIntl()
   return <>
     <Subtitle level={4}>
@@ -498,35 +548,42 @@ function GuestDetails () {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Name' })}
-        children={'--'}
+        children={guestDetail?.name || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Mobile Phone' })}
-        children={'--'}
+        children={guestDetail?.mobilePhoneNumber || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Email' })}
-        children={'--'}
+        children={guestDetail?.emailAddress || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Notes' })}
-        children={'--'}
+        children={guestDetail?.notes || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={'--'}
+        children={formatter('dateTimeFormat')(guestDetail?.creationDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Expires' })}
-        children={'--'}
+        children={formatter('dateTimeFormat')(guestDetail?.expiryDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Max no. of clients' })}
-        children={'--'}
+        children={guestDetail?.maxNumberOfClients || '--'}
       />
+      // TODO
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
-        children={'--'}
+        children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(
+          client =>
+            <TenantLink
+              // eslint-disable-next-line max-len
+              to={`/users/wifi/clients/${client.clientMac}/details/overview?hostname=${client.hostname}`}>
+              {client.clientMac}
+            </TenantLink>) || '--'}
       />
     </Descriptions>
   </>

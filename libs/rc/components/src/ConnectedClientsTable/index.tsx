@@ -149,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       sorter: true,
       render: (data, row) =>
         (
-          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
         )
     },
     {
@@ -344,7 +344,8 @@ export const ConnectedClientsTable = (props: {
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
-    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+    params.serialNumber ? { serialNumber: [params.serialNumber] } :
+      params.apId ? { serialNumber: [params.apId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({

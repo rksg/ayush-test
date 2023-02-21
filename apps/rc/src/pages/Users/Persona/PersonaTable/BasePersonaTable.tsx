@@ -1,12 +1,16 @@
 import { useState } from 'react'
 
+import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
+  useLazyDownloadPersonasQuery,
+  useImportPersonasMutation,
   useDeletePersonasMutation
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
@@ -129,11 +133,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const { colProps } = props
   const { personaGroupId } = useParams()
   const columns = useColumns(colProps)
+  const [uploadCsvDrawerVisible, setUploadCsvDrawerVisible] = useState(false)
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
     data: {} as Partial<Persona> | undefined
   })
+  const [downloadCsv] = useLazyDownloadPersonasQuery()
+  const [uploadCsv, uploadCsvResult] = useImportPersonasMutation()
   const [deletePersonas, { isLoading: isDeletePersonasUpdating }] = useDeletePersonasMutation()
 
   const personaListQuery = useTableQuery({
@@ -144,6 +151,42 @@ export function BasePersonaTable (props: PersonaTableProps) {
     }
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toastDetailErrorMessage = (error: any) => {
+    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+    })
+  }
+
+  const importPersonas = async (formData: FormData, values: object) => {
+    const { groupId } = values as { groupId: string }
+    try {
+      await uploadCsv({
+        params: { groupId: personaGroupId ?? groupId },
+        payload: formData
+      }).unwrap()
+      setUploadCsvDrawerVisible(false)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toastDetailErrorMessage(error)
+    }
+  }
+
+  const downloadPersona = () => {
+    downloadCsv({
+      params: { groupId: personaGroupId },
+      payload: personaListQuery.payload
+    }).unwrap().catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export Personas.' })
+      })
+    })
+  }
+
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Persona' }),
@@ -151,6 +194,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
         // if user is under PersonaGroup page, props groupId into Drawer
         setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
       }
+    },
+    {
+      label: $t({ defaultMessage: 'Import From File' }),
+      onClick: () => setUploadCsvDrawerVisible(true)
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: downloadPersona
     }
   ]
 
@@ -246,6 +297,27 @@ export function BasePersonaTable (props: PersonaTableProps) {
         visible={drawerState.visible}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
       />
+      <ImportFileDrawer
+        title={$t({ defaultMessage: 'Import from file' })}
+        visible={uploadCsvDrawerVisible}
+        isLoading={uploadCsvResult.isLoading}
+        type='Persona'
+        acceptType={['csv']}
+        maxSize={CsvSize['5MB']}
+        maxEntries={512}
+        templateLink='assets/templates/persona_import_template.csv'
+        importRequest={importPersonas}
+        onClose={() => setUploadCsvDrawerVisible(false)}
+      >
+        <Form.Item
+          name='groupId'
+          rules={[{ required: true }]}
+          initialValue={personaGroupId}
+          label={$t({ defaultMessage: 'Persona Group' })}
+        >
+          <PersonaGroupSelect disabled={!!personaGroupId}/>
+        </Form.Item>
+      </ImportFileDrawer>
     </Loader>
   )
 }
