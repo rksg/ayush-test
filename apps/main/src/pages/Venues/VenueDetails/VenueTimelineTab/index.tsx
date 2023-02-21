@@ -50,8 +50,8 @@ const Events = () => {
 }
 
 const Activities = () => {
+  const { venueId } = useParams()
   const { startDate, endDate } = useDateFilter()
-  const { networkId } = useParams()
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -66,10 +66,7 @@ const Activities = () => {
         'descriptionTemplate',
         'descriptionData',
         'severity'
-      ],
-      filters: {
-        networkId: [ networkId ]
-      }
+      ]
     },
     sorter: activityDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
@@ -80,7 +77,9 @@ const Activities = () => {
       ...tableQuery.payload,
       filters: {
         fromTime: startDate,
-        toTime: endDate
+        toTime: endDate,
+        entityType: 'CLIENT',
+        entityId: venueId
       }
     })
   }, [startDate, endDate])

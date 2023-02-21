@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
-import { useNavigate, useParams }                    from 'react-router-dom'
+import { useNavigate }                               from 'react-router-dom'
 
 import { Tabs }           from '@acx-ui/components'
 import {
@@ -52,8 +52,8 @@ const Events = () => {
 }
 
 const Activities = () => {
+  const { serialNumber } = useApContext()
   const { startDate, endDate } = useDateFilter()
-  const { networkId } = useParams()
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -67,10 +67,7 @@ const Activities = () => {
         'descriptionTemplate',
         'descriptionData',
         'severity'
-      ],
-      filters: {
-        networkId: [ networkId ]
-      }
+      ]
     },
     sorter: activityDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
@@ -81,14 +78,19 @@ const Activities = () => {
       ...tableQuery.payload,
       filters: {
         fromTime: startDate,
-        toTime: endDate
+        toTime: endDate,
+        entityType: 'AP',
+        entityId: serialNumber
       }
     })
   }, [startDate, endDate])
 
-  return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']} hiddenColumn={['product']}/>
+  return <ActivityTable
+    tableQuery={tableQuery}
+    filterables={['status']}
+    hiddenColumn={['product']}
+  />
 }
-
 
 const tabs : {
   key: TimelineTypes,

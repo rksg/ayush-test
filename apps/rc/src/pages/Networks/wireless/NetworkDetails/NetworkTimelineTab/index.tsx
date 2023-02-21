@@ -40,9 +40,14 @@ const Events = () => {
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
 
+// "filters":{
+//   "entityType": "AP",
+//   "entityId": "1234"
+// }
+
 const Activities = () => {
-  const { startDate, endDate } = useDateFilter()
   const { networkId } = useParams()
+  const { startDate, endDate } = useDateFilter()
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -56,10 +61,7 @@ const Activities = () => {
         'descriptionTemplate',
         'descriptionData',
         'severity'
-      ],
-      filters: {
-        networkId: [ networkId ]
-      }
+      ]
     },
     sorter: activityDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
@@ -70,12 +72,18 @@ const Activities = () => {
       ...tableQuery.payload,
       filters: {
         fromTime: startDate,
-        toTime: endDate
+        toTime: endDate,
+        entityType: 'NETWORK',
+        entityId: networkId
       }
     })
   }, [startDate, endDate])
 
-  return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']} hiddenColumn={['product']}/>
+  return <ActivityTable
+    tableQuery={tableQuery}
+    filterables={['status']}
+    hiddenColumn={['product']}
+  />
 }
 
 const tabs : {
