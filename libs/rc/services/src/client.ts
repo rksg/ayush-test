@@ -274,6 +274,7 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 }
 export const {
   useGetGuestsListQuery,
+  useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
   useGetClientDetailsQuery,

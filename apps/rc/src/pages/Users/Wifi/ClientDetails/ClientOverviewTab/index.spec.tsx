@@ -21,7 +21,8 @@ import {
   clientNetworkList,
   clientReportList,
   eventMetaList,
-  histClientList
+  histClientList,
+  GuestClient
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -251,8 +252,14 @@ describe('ClientOverviewTab', () => {
               ...clientNetworkList[0],
               type: 'guest',
               name: null
-            }))
-          )
+            }))),
+          rest.post(CommonUrlsInfo.getGuestsList.url,
+            (_, res, ctx) => res(ctx.json({
+              ...GuestClient,
+              data: [{
+                ...GuestClient.data[3]
+              }]
+            })))
         )
         const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
@@ -349,8 +356,14 @@ describe('ClientOverviewTab', () => {
               ...clientNetworkList[0],
               type: 'guest',
               name: null
-            }))
-          )
+            }))),
+          rest.post(CommonUrlsInfo.getGuestsList.url,
+            (_, res, ctx) => res(ctx.json({
+              ...GuestClient,
+              data: [{
+                ...GuestClient.data[3]
+              }]
+            })))
         )
         const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: {
