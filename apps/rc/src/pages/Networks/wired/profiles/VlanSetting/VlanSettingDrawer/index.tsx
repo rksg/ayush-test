@@ -242,7 +242,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={setIpv4DhcpSnooping} />}
+            children={<Switch onChange={setIpv4DhcpSnooping} data-testid='dhcpSnooping' />}
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
@@ -259,7 +259,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={setArpInspection} />}
+            children={<Switch onChange={setArpInspection} data-testid='arpInspection' />}
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>

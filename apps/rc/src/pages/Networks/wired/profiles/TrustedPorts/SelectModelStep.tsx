@@ -53,12 +53,13 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       trustedPortType: TrustedPortTypeEnum.ALL
     })
 
-  const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  // const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   useEffect(() => {
     if(ICX_MODELS_MODULES){
       const familiesData = Object.keys(ICX_MODELS_MODULES).filter(key=> {
-        return !switchSupportIcx8200FF && key !== 'ICX8200'
+        return key !== 'ICX8200'
+        // return !switchSupportIcx8200FF && key !== 'ICX8200' //TODO
       }).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })

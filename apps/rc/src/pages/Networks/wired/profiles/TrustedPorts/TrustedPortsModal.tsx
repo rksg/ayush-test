@@ -54,7 +54,11 @@ export function TrustedPortsModal (props: {
         editMode={!!editRecord}
         onCancel={onCancel}
         onFinish={async (data) => {
-          onSave(data)
+          if(data.trustedPorts.trustPorts){
+            onSave(data)
+            return true
+          }
+          return false
         }}
         buttonLabel={{ submit: editRecord ?
           $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Finish' }) }}

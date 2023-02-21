@@ -9,7 +9,7 @@ import { useVenuesListQuery } from '@acx-ui/rc/services'
 import { Venue }              from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 
-import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
+import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
 const defaultPayload = {
   searchString: '',

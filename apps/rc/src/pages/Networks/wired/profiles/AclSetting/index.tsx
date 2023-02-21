@@ -10,7 +10,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
+import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { ACLSettingDrawer } from './ACLSettingDrawer'
 

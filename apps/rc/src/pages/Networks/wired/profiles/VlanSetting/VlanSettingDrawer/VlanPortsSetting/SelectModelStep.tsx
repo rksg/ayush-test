@@ -57,12 +57,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
       untaggedPorts: []
     })
 
-  const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
+  //const switchSupportIcx8200FF = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200)
 
   useEffect(() => {
     if(ICX_MODELS_MODULES){
       const familiesData = Object.keys(ICX_MODELS_MODULES).filter(key=> {
-        return !switchSupportIcx8200FF && key !== 'ICX8200'
+        return key !== 'ICX8200'
+        // return !switchSupportIcx8200FF && key !== 'ICX8200' //TODO
       }).map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
@@ -386,6 +387,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 valuePropName='checked'
                 children={
                   <Checkbox
+                    data-testid='module2Checkbox'
                     children={$t({ defaultMessage: 'Module 2' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot2') }}
                   />
@@ -413,6 +415,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 valuePropName='checked'
                 children={
                   <Checkbox
+                    data-testid='module3Checkbox'
                     children={$t({ defaultMessage: 'Module 3' })}
                     onChange={(e)=>{ onCheckChange(e, 'slot3') }}
                   />

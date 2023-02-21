@@ -2,15 +2,14 @@ import { useContext, useState, useEffect } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
-import { StepsForm }                          from '@acx-ui/components'
+import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
 import {
   Vlan,
   SwitchModel,
   SpanningTreeProtocolName } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
+import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { DefaultVlanDrawer } from './DefaultVlanDrawer'
 import { VlanSettingDrawer } from './VlanSettingDrawer'
@@ -84,7 +83,7 @@ export function VlanSetting () {
   }
 
   const handleSetDefaultVlan = (data: Vlan) => {
-    const vlans = form.getFieldValue('vlans')
+    const vlans = form.getFieldValue('vlans') || []
     form.setFieldValue('vlans', [...vlans, data])
     setDefaultVlan(data)
     return true

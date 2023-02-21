@@ -11,13 +11,13 @@ import {
 import { showGeneralError, SwitchConfigurationProfile, Vlan } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
 
-import { AclSetting }                  from './AclSetting'
-import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
-import { GeneralSetting }              from './GeneralSetting'
-import { Summary }                     from './Summary'
-import { TrustedPorts }                from './TrustedPorts'
-import { VenueSetting }                from './VenueSetting'
-import { VlanSetting }                 from './VlanSetting'
+import { AclSetting }                      from './AclSetting'
+import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
+import { GeneralSetting }                  from './GeneralSetting'
+import { Summary }                         from './Summary'
+import { TrustedPorts }                    from './TrustedPorts'
+import { VenueSetting }                    from './VenueSetting'
+import { VlanSetting }                     from './VlanSetting'
 
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()

@@ -9,7 +9,7 @@ import { useLazyValidateUniqueProfileNameQuery }    from '@acx-ui/rc/services'
 import { checkObjectNotExists, excludeSpaceRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 
-import ConfigurationProfileFormContext from './ConfigurationProfileFormContext'
+import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
 const profileListPayload = {
   url: '/api/viewmodel/{tenantId}/switch/profilelist',

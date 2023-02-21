@@ -6,7 +6,6 @@ export interface ConfigurationProfileType {
   editMode: boolean
   currentData: SwitchConfigurationProfile
 }
-const ConfigurationProfileFormContext = createContext({} as ConfigurationProfileType)
 
-export default ConfigurationProfileFormContext
+export const ConfigurationProfileFormContext = createContext({} as ConfigurationProfileType)
 

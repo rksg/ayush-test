@@ -7,7 +7,7 @@ import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/component
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
-import ConfigurationProfileFormContext from '../ConfigurationProfileFormContext'
+import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
 import { TrustedPortsModal } from './TrustedPortsModal'
 
@@ -48,7 +48,7 @@ export function TrustedPorts () {
     dataIndex: 'trustPorts',
     key: 'trustPorts',
     render: (data) => {
-      const taggedPorts = (data as string[])?.join(', ')
+      const taggedPorts = ((data || []) as string[])?.join(', ')
       return taggedPorts
     }
   }]

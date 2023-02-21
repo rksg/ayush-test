@@ -88,6 +88,8 @@ export function TrustedPortsStep (props: {
                 <Form.Item
                   name={['trustedPorts', 'trustPorts']}
                   label={<label>{$t({ defaultMessage: 'You may select up to 4 ports' })}</label>}
+                  rules={[{ required: true }]}
+                  data-testid='trustPortsList'
                   children={
                     <Select
                       mode='multiple'
