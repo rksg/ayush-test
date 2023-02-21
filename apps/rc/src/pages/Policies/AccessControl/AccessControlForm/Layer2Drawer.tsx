@@ -168,7 +168,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const handleAddAction = () => {
-    console.log(macAddressList, MAC_ADDRESS_LIMIT)
     if (macAddressList.length === MAC_ADDRESS_LIMIT) {
       showToast({
         type: 'error',
@@ -219,8 +218,26 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     let inputValue = event.target.value
     for (const char of split) {
       if (event.target.value.toString().includes(char)) {
-        inputValue = event.target.value.toString().split(char)[0]
-        await handleInputConfirm(inputValue)
+        let inputValues = event.target.value.toString().split(char).map(async (inputValue) => {
+          const macAddressValidation = await MacAddressFilterRegExp(inputValue.trim())
+          if (addressTags.indexOf(inputValue.trim()) === -1 && macAddressValidation === undefined) {
+            return Promise.resolve(inputValue.trim())
+          }
+          return Promise.reject()
+        })
+        const results = await Promise.allSettled(inputValues)
+        const addAddressTags = results.filter(result => {
+          return result.status === 'fulfilled' && result.value !== ''
+        }).map(result=> (result as { status: 'fulfilled', value: string }).value)
+
+        if (addAddressTags.length !== results.length) {
+          showToast({
+            type: 'error',
+            duration: 10,
+            content: $t({ defaultMessage: 'invalided or existing MAC Address' })
+          })
+        }
+        setAddressTags([...addressTags, ...addAddressTags])
         inputValue = ''
       }
     }
@@ -235,7 +252,10 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       const macAddressValidation = await MacAddressFilterRegExp(inputValue)
       // eslint-disable-next-line max-len
       if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressValidation === undefined) {
-        setAddressTags([...addressTags, inputValue])
+        await new Promise((resolve) => {
+          setAddressTags([...addressTags, inputValue])
+          return resolve
+        })
       } else {
         showToast({
           type: 'error',
@@ -250,8 +270,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         content: $t({ defaultMessage: 'invalided or existing MAC Address' })
       })
     }
-
-    setInputValue('')
   }
 
   const actions = !isViewMode() ? [{
