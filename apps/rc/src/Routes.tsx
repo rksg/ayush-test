@@ -191,7 +191,7 @@ function NetworkRoutes () {
         element={<ConfigurationProfileForm />}
       />
       <Route
-        path='networks/wired/profiles/:profileId/:action'
+        path='networks/wired/profiles/regular/:profileId/:action'
         element={<ConfigurationProfileForm />}
       />
     </Route>

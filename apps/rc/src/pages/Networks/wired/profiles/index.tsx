@@ -49,7 +49,7 @@ export function ProfilesTab () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        navigate(`${selectedRows[0].id}/edit`, { replace: false })
+        navigate(`regular/${selectedRows[0].id}/edit`, { replace: false })
       }
     },
     {

@@ -59,12 +59,12 @@ export default function MyPolicies () {
         ]}
       />
       <GridRow>
-        {policies.filter(policy => !policy.disabled).map(policy => {
+        {policies.filter(policy => !policy.disabled).map((policy, index) => {
           return (
             <GridCol col={{ span: 6 }}>
               <RadioCard
                 type={'default'}
-                key={policy.type}
+                key={`${policy.type}_${index}`}
                 value={policy.type}
                 title={$t({
                   defaultMessage: '{name} ({count})'
