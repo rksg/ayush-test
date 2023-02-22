@@ -32,7 +32,6 @@ import {
   AccessStatus,
   CommonResult,
   Layer3ProtocolType,
-  MacAddressFilterRegExp,
   portRegExp,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
