@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { act, fireEvent } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { Form }           from 'antd'
-import { rest }           from 'msw'
+import { fireEvent } from '@testing-library/react'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { rest }      from 'msw'
 
-import { policyApi } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
   RogueAPRule,
@@ -14,7 +13,7 @@ import {
   RogueRuleType,
   RogueVenue
 } from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
+import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
@@ -245,14 +244,40 @@ const addRule = async (ruleName: string, type: RogueRuleType, classification: Ro
   }
 }
 
-describe('RogueAPDetectionForm', () => {
-  beforeEach(() => {
-    act(() => {
-      store.dispatch(policyApi.util.resetApiState())
-    })
+const addRuleWithoutEdit = async (
+  ruleName: string, type: RogueRuleType, classification: RogueCategory
+) => {
+  await userEvent.click(screen.getByRole('button', {
+    name: /add rule/i
+  }))
+
+  await screen.findByText(/add classification rule/i)
+
+  await userEvent.type(screen.getByRole('textbox', { name: /rule name/i }), ruleName)
+
+  fireEvent.change(screen.getByTestId('selectRogueRule'), {
+    target: { value: type }
   })
 
-  it.skip('should render RogueAPDetectionForm successfully and edit rule', async () => {
+  if (type === RogueRuleType.CUSTOM_SNR_RULE
+    || type === RogueRuleType.CUSTOM_SSID_RULE
+    || type === RogueRuleType.CUSTOM_MAC_OUI_RULE) {
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: new RegExp(rogueRuleActionMap[type].name)
+    }), rogueRuleActionMap[type].value)
+  }
+
+  fireEvent.change(screen.getByTestId('selectRogueCategory'), {
+    target: { value: classification }
+  })
+
+  await userEvent.click(screen.getByText('Add'))
+
+  await userEvent.click(screen.getAllByRole('button', { name: 'Cancel' })[1])
+}
+
+describe('RogueAPDetectionForm', () => {
+  it('should render RogueAPDetectionForm successfully and edit rule', async () => {
     mockServer.use(rest.post(
       RogueApUrls.getVenueRoguePolicy.url,
       (_, res, ctx) => res(
@@ -357,19 +382,10 @@ describe('RogueAPDetectionForm', () => {
     expect(screen.getAllByText('Scope')).toBeTruthy()
     expect(screen.getAllByText('Summary')).toBeTruthy()
 
-    fireEvent.change(await screen.findByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'test' } })
-
-    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: '' } })
-
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
       { target: { value: 'policyTestName-modify' } })
 
-    fireEvent.change(screen.getByRole('textbox', { name: /description/i }),
-      { target: { value: 'desc1' } })
-
-    await addRule('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+    await addRuleWithoutEdit('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
 
     await screen.findByText('rule1')
 
