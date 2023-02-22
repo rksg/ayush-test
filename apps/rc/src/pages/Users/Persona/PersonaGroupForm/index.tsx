@@ -113,7 +113,6 @@ export function PersonaGroupForm (props: {
           </Col>
           <Col span={2}>
             <Button
-              data-testid={'addDpskModalBtn'}
               type={'link'}
               onClick={() => setDpskModalVisible(true)}
             >
@@ -140,7 +139,6 @@ export function PersonaGroupForm (props: {
           </Col>
           <Col span={2}>
             <Button
-              data-testid={'addMacModalBtn'}
               type={'link'}
               onClick={() => setMacModalVisible(true)}
             >
