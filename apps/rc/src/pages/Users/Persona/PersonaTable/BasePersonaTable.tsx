@@ -225,6 +225,21 @@ export function BasePersonaTable (props: PersonaTableProps) {
             entityValue: selectedItems[0].name,
             numOfEntities: selectedItems.length
           },
+          content:
+            $t({
+              // Display warning while one of the Persona contains devices.
+              defaultMessage: `{hasDevices, select,
+              true {The Persona contains devices in the MAC registration list.}
+              other {}
+              }
+              Are you sure you want to delete {count, plural,
+              one {this}
+              other {these}
+              } Persona?`
+            }, {
+              hasDevices: !!selectedItems.find(p => (p?.deviceCount ?? 0) > 0),
+              count: selectedItems.length
+            }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
             const names = selectedItems.map(({ name }) => name).join(', ')
