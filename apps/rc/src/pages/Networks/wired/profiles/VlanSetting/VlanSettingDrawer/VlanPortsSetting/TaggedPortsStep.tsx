@@ -100,7 +100,7 @@ export function TaggedPortsStep () {
         left: box.left + window.scrollX
       }
 
-      Array.from({ length: portsModule1.length }, (_, i) => {
+      Array.from({ length: portsModule1.length }).forEach((_,i) => {
         const itemKey = `tagged_module1_${i}`
         const item = document.getElementById(itemKey)
         if(item){
@@ -114,7 +114,7 @@ export function TaggedPortsStep () {
         }
       })
 
-      Array.from({ length: portsModule2.length }, (_, i) => {
+      Array.from({ length: portsModule2.length }).forEach((_,i) => {
         const itemKey = `tagged_module2_${i}`
         const item = document.getElementById(itemKey)
         if(item){
@@ -129,7 +129,7 @@ export function TaggedPortsStep () {
       })
 
 
-      Array.from({ length: portsModule3.length }, (_, i) => {
+      Array.from({ length: portsModule3.length }).forEach((_,i) => {
         const itemKey = `tagged_module3_${i}`
         const item = document.getElementById(itemKey)
         if(item){
