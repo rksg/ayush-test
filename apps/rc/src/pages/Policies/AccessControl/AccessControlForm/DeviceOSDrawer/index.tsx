@@ -26,6 +26,11 @@ const { Option } = Select
 
 const { useWatch } = Form
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
 export interface DeviceOSRule {
   ruleName: string,
   deviceType: string,
@@ -39,7 +44,14 @@ export interface DeviceOSRule {
 }
 
 export interface DeviceOSDrawerProps {
-  inputName?: string[]
+  inputName?: string[],
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean,
+  editMode?: editModeProps,
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -79,7 +91,13 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false,
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {}
+  } = props
   const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -122,9 +140,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const { data: devicePolicyInfo } = useGetDevicePolicyQuery(
     {
-      params: { ...params, devicePolicyId: devicePolicyId }
+      params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
     },
-    { skip: devicePolicyId === '' || devicePolicyId === undefined }
+    { skip: !isOnlyViewMode && (devicePolicyId === '' || devicePolicyId === undefined) }
   )
 
   const isViewMode = () => {
@@ -132,11 +150,22 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
+    if (editMode) {
+      return !editMode.isEdit
+    }
+
     return !_.isNil(devicePolicyInfo)
   }
 
   useEffect(() => {
-    if (isViewMode() && devicePolicyInfo) {
+    if (editMode.isEdit && editMode.id !== '') {
+      setVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (devicePolicyInfo) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
@@ -229,6 +258,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     setVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
 
@@ -402,7 +436,16 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
@@ -443,7 +486,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
@@ -486,6 +529,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

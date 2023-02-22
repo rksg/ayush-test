@@ -43,8 +43,20 @@ import { layer3ProtocolLabelMapping } from '../../contentsMap'
 const { useWatch } = Form
 const { Option } = Select
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
 export interface Layer3DrawerProps {
-  inputName?: string[]
+  inputName?: string[],
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean,
+  editMode?: editModeProps,
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 interface Layer3NetworkCol {
@@ -144,7 +156,13 @@ const DEFAULT_LAYER3_RULES = [
 const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false,
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {}
+  } = props
   const [visible, setVisible] = useState(false)
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
@@ -191,9 +209,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
     {
-      params: { ...params, l3AclPolicyId: l3AclPolicyId }
+      params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
     },
-    { skip: l3AclPolicyId === '' || l3AclPolicyId === undefined }
+    { skip: !isOnlyViewMode && (l3AclPolicyId === '' || l3AclPolicyId === undefined) }
   )
 
   const isViewMode = () => {
@@ -201,11 +219,22 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
+    if (editMode) {
+      return !editMode.isEdit
+    }
+
     return !_.isNil(layer3PolicyInfo)
   }
 
   useEffect(() => {
-    if (isViewMode() && layer3PolicyInfo) {
+    if (editMode.isEdit && editMode.id !== '') {
+      setVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (layer3PolicyInfo) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => ({
@@ -343,6 +372,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     setVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
   const handleLayer3Rule = () => {
@@ -804,7 +838,16 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l3AclPolicyId']}
@@ -844,7 +887,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
@@ -884,6 +927,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
