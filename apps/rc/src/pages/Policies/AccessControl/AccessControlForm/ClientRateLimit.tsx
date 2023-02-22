@@ -65,6 +65,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
                 tooltipVisible={false}
                 style={{ width: '245px' }}
                 defaultValue={DEFAULT_VALUE}
+                step={0.1}
                 min={1}
                 max={200}
                 marks={{
@@ -100,6 +101,7 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
                 tooltipVisible={false}
                 style={{ width: '245px' }}
                 defaultValue={DEFAULT_VALUE}
+                step={0.1}
                 min={1}
                 max={200}
                 marks={{
