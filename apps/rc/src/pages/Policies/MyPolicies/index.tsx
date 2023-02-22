@@ -61,7 +61,7 @@ export default function MyPolicies () {
       <GridRow>
         {policies.filter(policy => !policy.disabled).map(policy => {
           return (
-            <GridCol col={{ span: 6 }}>
+            <GridCol key={policy.type} col={{ span: 6 }}>
               <RadioCard
                 type={'default'}
                 key={policy.type}
