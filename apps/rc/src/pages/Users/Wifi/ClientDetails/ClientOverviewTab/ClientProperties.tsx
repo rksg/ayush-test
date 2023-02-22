@@ -574,7 +574,6 @@ function GuestDetails ({ guestDetail, clientMac }: {
         label={$t({ defaultMessage: 'Max no. of clients' })}
         children={guestDetail?.maxNumberOfClients || '--'}
       />
-      // TODO
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
         children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(

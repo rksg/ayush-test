@@ -3411,7 +3411,11 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -11310,7 +11314,11 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
