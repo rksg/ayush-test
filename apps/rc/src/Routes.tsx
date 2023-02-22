@@ -34,6 +34,8 @@ import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliT
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
+import AAAPolicyDetail             from './pages/Policies/AAA/AAADetail'
+import AAAForm                     from './pages/Policies/AAA/AAAForm/AAAForm'
 import AAATable                    from './pages/Policies/AAA/AAATable/AAATable'
 import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
 import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
@@ -346,6 +348,21 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+        element={<AAAForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+        element={<AAAForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+        element={<AAAPolicyDetail/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
         element={<RogueAPDetectionTable />}
       />
@@ -422,22 +439,17 @@ function PolicyRoutes () {
         element={<ClientIsolationForm editMode={true}/>}
       />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
-        element={<ClientIsolationDetail />}
-      />
-      <Route
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })}
         element={<ClientIsolationTable />}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
+        element={<AAATable />}
+      />
+      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
         element={<ClientIsolationDetail />}
-      />
-      <Route
-        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />}
       />
     </Route>
   )
