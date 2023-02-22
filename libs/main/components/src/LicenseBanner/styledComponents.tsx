@@ -18,9 +18,9 @@ export const LicenseContainer = styled.div`
   align-items: flex-start;
   border-radius: 4px;
   flex-direction: column;
-  border: 1px solid #ea7600;
+  border: 1px solid var(--acx-accents-orange-55);
   position: absolute;
-  top: 3px;
+  top: 8px;
 `
 export const LicenseContainerSingle = styled.div.attrs((props: { expired: boolean }) => props)`
   display: flex;
@@ -73,13 +73,12 @@ export const SubTips = styled.div.attrs((props: { expired: boolean }) => props)`
 `
 
 export const ActiveBtn = styled(Button).attrs({ type: 'link' })<
-ButtonProps & { expired?: boolean, bold?:boolean }
+ButtonProps & { expired?: boolean }
 >`
   height: 20px;
   color: ${props => props.expired ?
     'var(--acx-primary-white);':'var(--acx-accents-orange-50);' }
-  font-weight: ${props => props.bold ?
-    'var(--acx-subtitle-5-font-weight);':'var(--acx-subtitle-6-font-weight);'}
+  font-weight: var(--acx-subtitle-5-font-weight);
   font-size: 12px;
 `
 
@@ -134,8 +133,22 @@ export const Expired = styled(WarningCircle)`
     stroke: var(--acx-accents-orange-55);
   }
 `
+export const WarnIcon = styled(WarningCircle).attrs((props: { isCritical: boolean }) => props)`
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block;
+  path:nth-child(3) {
+    stroke: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+  }
+  path:nth-child(4) {
+    stroke: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+    fill: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+  }
+`
+
+
 export const LicenseGrid = styled.div.attrs((props: { expired: boolean,
-  showBorder: boolean, }) => props)`
+  isWhiteBorder: boolean, }) => props)`
   display: flex;
   align-items: end;
   background-color: ${props => props.expired ?
@@ -143,7 +156,8 @@ export const LicenseGrid = styled.div.attrs((props: { expired: boolean,
   height: 42px;
   padding-bottom: 4px;
   width: 100%;
-  border-top: ${props => props.showBorder ? '1px solid rgba(86,87,88,0.7);':';'}
+  border-top: ${props => props.isWhiteBorder ?
+    '1px solid rgba(86,87,88,0.7);':'1px solid rgba(255,255,255,0.4);'}
 `//border color: var(--acx-neutrals-70);
 
 export const WarningBtnContainer = styled.div`
@@ -152,15 +166,16 @@ export const WarningBtnContainer = styled.div`
   padding-right: 10px;
   justify-content: space-between;
 `
-export const LicenseWarningBtn = styled.div.attrs((props: { expanded: boolean }) => props)`
+// eslint-disable-next-line max-len
+export const LicenseWarningBtn = styled.div.attrs((props: { isCritical: boolean, isExpanded:boolean }) => props)`
   cursor: pointer;
   display: flex;
-  background-color: ${props => props.expanded ?
-    'var(--acx-neutrals-90);' : 'var(--acx-accents-orange-55);'}
+  background-color: ${props => props.isCritical ?
+    'var(--acx-accents-orange-55);' : 'var(--acx-neutrals-90);'}
   height: 40px;
   width:100%;
   align-items: center;
-  border-radius: 4px;
+  border-radius: ${props => (props.isExpanded && props.isCritical) ? ';':'4px;'}
 `
 export const CaretDown = styled(CaretDownSolid)`
   path:nth-child(2) {

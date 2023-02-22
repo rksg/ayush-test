@@ -10,6 +10,10 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
+import {
+  HeaderContext
+} from '@acx-ui/main/components'
+
 import { LicenseBanner } from '.'
 
 const list = [
@@ -38,7 +42,7 @@ const list = [
     deviceSubType: null,
     deviceType: 'SWITCH',
     effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 53,
+    effectDays: 54,
     multipleLicense: false,
     type: 'INITIAL'
   },
@@ -102,6 +106,35 @@ const list = [
   }]
 
 
+  describe('License Single Component', () => {
+    let params: { tenantId: string }
+    beforeEach(async () => {
+      params = {
+        tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
+      }
+      mockServer.use(
+        rest.get(
+          LicenseUrlsInfo.getEntitlementsBanners.url,
+          (req, res, ctx) => res(ctx.json([list[0]]))
+        )
+      )
+    })
+
+    it('should render Single License Banner Correctly', async () => {
+      render(
+        <Provider>
+          <HeaderContext.Provider value={{
+            searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
+            <LicenseBanner/>
+          </HeaderContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/dashboard' }
+        })
+      expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
+
+    })
+  })
+
 describe('License Banner Component', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -123,7 +156,10 @@ describe('License Banner Component', () => {
   it('should render License Banner', async () => {
     render(
       <Provider>
-        <LicenseBanner />
+        <HeaderContext.Provider value={{
+          searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
+          <LicenseBanner />
+        </HeaderContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })
@@ -135,42 +171,18 @@ describe('License Banner Component', () => {
   it('should render License Banner for MSP', async () => {
     render(
       <Provider>
-        <LicenseBanner isMSPUser={true}/>
+        <HeaderContext.Provider value={{
+          searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
+          <LicenseBanner isMSPUser={true}/>
+        </HeaderContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })
 
     await userEvent.click((await screen.findByTestId('arrowBtn')))
     expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
-    expect(await screen.findByText('Subscription for 40 APs will expire in 53 days')).toBeVisible()
+    expect(await screen.findByText('MSP subscription about to expire in 53 days')).toBeVisible()
 
   })
 
-})
-
-
-describe('License Single Component', () => {
-  let params: { tenantId: string }
-  beforeEach(async () => {
-    params = {
-      tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
-    }
-    mockServer.use(
-      rest.get(
-        LicenseUrlsInfo.getEntitlementsBanners.url,
-        (req, res, ctx) => res(ctx.json([list[0]]))
-      )
-    )
-  })
-
-  it('should render Single License Banner Correctly', async () => {
-    render(
-      <Provider>
-        <LicenseBanner/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/dashboard' }
-      })
-    expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
-
-  })
 })

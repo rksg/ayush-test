@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -11,7 +13,8 @@ import {
   AlarmsButton,
   HelpButton,
   UserButton,
-  LicenseBanner
+  LicenseBanner,
+  HeaderContext
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -30,6 +33,9 @@ function Layout () {
   const showHomeButton = isDelegationMode() || userProfile?.var
   const { $t } = useIntl()
 
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
+  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -47,12 +53,18 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </Link> }
-          <LicenseBanner/>
+          <HeaderContext.Provider value={{
+            searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+            <LicenseBanner/>
+          </HeaderContext.Provider>
         </UI.LeftHeaderWrapper>
       }
 
       rightHeaderContent={<>
-        <SearchBar />
+        <HeaderContext.Provider value={{
+          searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+          <SearchBar />
+        </HeaderContext.Provider>
         <LayoutUI.Divider />
         {isDelegationMode()
           ? <MspEcDropdownList/>
