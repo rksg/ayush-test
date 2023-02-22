@@ -22,16 +22,16 @@ const AAAInstance = (props:{
   const params = useParams()
   const form = Form.useFormInstance()
   const radiusValue = Form.useWatch(props.type)
-  const { data } = useGetAAAPolicyListQuery({ params })
-  const aaaServices = data?.map(m => ({ label: m.name, value: m.id })) ?? []
+  const { data: aaaListQuery } = useGetAAAPolicyListQuery({ params })
+  const aaaServices = aaaListQuery?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [aaaList, setAaaList]= useState(aaaServices)
   const [aaaData, setAaaData]= useState([] as AAATempType[])
   useEffect(()=>{
-    if(data){
-      setAaaData([...data])
-      setAaaList(data?.map(m => ({ label: m.name, value: m.id })))
+    if(aaaListQuery?.data){
+      setAaaData([...aaaListQuery.data])
+      setAaaList(aaaListQuery.data.map(m => ({ label: m.name, value: m.id })))
     }
-  },[data])
+  },[aaaListQuery])
   const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   return (
     <>
@@ -66,7 +66,9 @@ const AAAInstance = (props:{
             setAaaData([...aaaData])
             form.setFieldValue(props.type+'Id', data.id)
             form.setFieldValue(props.type, data)
-          }}/>
+          }}
+          aaaCount={aaaData.length}
+          />
         </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',

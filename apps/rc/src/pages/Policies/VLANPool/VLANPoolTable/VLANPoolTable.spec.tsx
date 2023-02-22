@@ -3,12 +3,12 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VlanPoolUrls
+  VlanPoolUrls,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -21,16 +21,12 @@ import {
 
 import VLANPoolTable from './VLANPoolTable'
 
-const mockTableResult = {
-  totalCount: 1,
-  page: 1,
-  data: [{
-    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-    name: 'My Client Isolation 1',
-    type: 'Client Isolation',
-    scope: '5'
-  }]
-}
+const mockTableResult = [{
+  id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+  name: 'My Client Isolation 1',
+  type: 'Client Isolation',
+  scope: '5'
+}]
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -55,8 +51,8 @@ describe('VLANPoolTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
+      rest.get(
+        WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -71,7 +67,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const targetName = mockTableResult.data[0].name
+    const targetName = mockTableResult[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add VLAN Pool/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
@@ -98,7 +94,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockTableResult[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -123,7 +119,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockTableResult[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

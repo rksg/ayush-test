@@ -11,13 +11,15 @@ import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
 
 export default function AAAPolicyModal (props:{
-  updateInstance: (value:AAAPolicyType) => void
+  updateInstance: (value:AAAPolicyType) => void,
+  aaaCount: number
 }) {
-  const { updateInstance }=props
+  const { updateInstance, aaaCount }=props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
   }
+  const AAA_LIMIT_NUMBER = 32
   const [visible, setVisible]=useState(false)
   const getContent = <AAAForm networkView={true}
     edit={false}
@@ -31,7 +33,7 @@ export default function AAAPolicyModal (props:{
       <Button type='link'
         title={disableAAA?$t(notAvailableMsg):''}
         onClick={()=>setVisible(true)}
-        disabled={disableAAA}>
+        disabled={aaaCount>=AAA_LIMIT_NUMBER || disableAAA}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal

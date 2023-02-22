@@ -10,13 +10,15 @@ import VLANPoolForm from '../../../../Policies/VLANPool/VLANPoolForm/VLANPoolFor
 import * as UI      from '../styledComponents'
 
 export default function VLANPoolModal (props:{
-  updateInstance: (value:VLANPoolPolicyType) => void
+  updateInstance: (value:VLANPoolPolicyType) => void,
+  vlanCount: number
 }) {
-  const { updateInstance }=props
+  const { updateInstance, vlanCount }=props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
   }
+  const VLAN_LIMIT_NUMBER = 64
   const [visible, setVisible]=useState(false)
   const getContent = <VLANPoolForm networkView={true}
     edit={false}
@@ -27,7 +29,10 @@ export default function VLANPoolModal (props:{
 
   return (
     <UI.ButtonContainer>
-      <Button type='link' onClick={()=>setVisible(true)}>
+      <Button type='link'
+        onClick={()=>setVisible(true)}
+        disabled={vlanCount>=VLAN_LIMIT_NUMBER}
+      >
         {$t({ defaultMessage: 'Add Pool' })}
       </Button>
       <Modal

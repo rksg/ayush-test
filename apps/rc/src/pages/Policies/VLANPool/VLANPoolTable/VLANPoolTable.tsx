@@ -1,30 +1,19 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelVLANPoolPolicyMutation, usePolicyListQuery }               from '@acx-ui/rc/services'
+import { useDelVLANPoolPolicyMutation, useGetVLANPoolPolicyListQuery }    from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  VLANPoolPolicyType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.VLAN_POOL]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
 }
 
 export default function VLANPoolTable () {
@@ -33,13 +22,13 @@ export default function VLANPoolTable () {
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
-
+  const VLAN_LIMIT_NUMBER = 64
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+    useQuery: useGetVLANPoolPolicyListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<VLANPoolPolicyType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -76,7 +65,10 @@ export default function VLANPoolTable () {
       <PageHeader
         title={
           $t({
-            defaultMessage: 'VLAN Pools'
+            defaultMessage: 'VLAN Pools ({count})'
+          },
+          {
+            count: tableQuery.data?.totalCount
           })
         }
         breadcrumb={[
@@ -86,12 +78,15 @@ export default function VLANPoolTable () {
         extra={[
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add VLAN Pool' })}</Button>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= VLAN_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add VLAN Pool' })}</Button>
           </TenantLink>
         ]}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<VLANPoolPolicyType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -108,7 +103,7 @@ export default function VLANPoolTable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<VLANPoolPolicyType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -129,11 +124,13 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'vlanMembers',
+      title: $t({ defaultMessage: 'VLANs' }),
+      dataIndex: 'vlanMembers',
       sorter: true,
-      align: 'center'
+      render: (data) =>{
+        return data?.toString()
+      }
     }
   ]
 

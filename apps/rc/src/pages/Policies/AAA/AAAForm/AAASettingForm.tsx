@@ -28,7 +28,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
   const [enableSecondaryServer, type ] =
     [useWatch('enableSecondaryServer'), useWatch('type')]
   const nameValidator = async (value: string) => {
-    const list = (await getAAAPolicyList({ params }).unwrap())
+    const list = (await getAAAPolicyList({ params }).unwrap()).data
       .filter(policy => policy.id !== params.policyId)
       .map(policy => ({ name: policy.name }))
     return checkObjectNotExists(list, { name: value } ,

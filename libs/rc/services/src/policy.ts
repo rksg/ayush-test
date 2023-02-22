@@ -370,19 +370,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    getAAAPolicyList: build.query<AAATempType[], RequestPayload>({
+    getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      transformResponse (result: AAATempType[]) {
+        return { data: result, totalCount: result.length, page: 0 }
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AAA Policy Profile',
-            'Update AAA Policy Profile'
+            'Add AAA Policy',
+            'UpdateAAAPolicyProfile',
+            'DeleteAAAPolicy'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -663,14 +667,30 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
+    getVLANPoolPolicyList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(WifiUrlsInfo.getVlanPools, params, RKS_NEW_UI)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      transformResponse (result: VLANPoolPolicyType[]) {
+        return { data: result, totalCount: result.length, page: 0 }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool',
+            'PatchVlanPool',
+            'DeleteVlanPools'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
