@@ -632,7 +632,8 @@ describe('util', () => {
           seriesKey: 'all',
           state: 'join',
           timestamp: '2022-11-14T06:33:31.524Z',
-          ttc: null
+          ttc: null,
+          key: 'first_event'
         }
       ])
     })

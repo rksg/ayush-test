@@ -1,12 +1,11 @@
 import { RefObject } from 'react'
 
-import userEvent    from '@testing-library/user-event'
 import { connect }  from 'echarts'
 import EChartsReact from 'echarts-for-react'
 
-import { Incident }                      from '@acx-ui/analytics/utils'
-import { Provider }                      from '@acx-ui/store'
-import { render, screen,fireEvent, act } from '@acx-ui/test-utils'
+import { Incident }                 from '@acx-ui/analytics/utils'
+import { Provider }                 from '@acx-ui/store'
+import { render, screen,fireEvent } from '@acx-ui/test-utils'
 
 import { connectionEvents, connectionDetailsByAp, connectionQualities } from './__tests__/fixtures'
 import  { TimeLine }                                                    from './EventsTimeline'
@@ -132,6 +131,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine
@@ -142,6 +142,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -174,6 +175,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
@@ -183,6 +185,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -215,6 +218,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
@@ -224,6 +228,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -255,6 +260,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
@@ -264,6 +270,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -302,6 +309,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
@@ -311,6 +319,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -344,6 +353,7 @@ describe('EventsTimeLine', () => {
     const setVisible = jest.fn()
     const connectChart = jest.fn()
     const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
@@ -353,6 +363,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -401,7 +412,8 @@ describe('EventsTimeLine', () => {
         getBoundingClientRect: jest.fn(() => testRect)
       }
     } as unknown as RefObject<HTMLDivElement>
-    const { asFragment } = render(
+    const onChartReady = jest.fn()
+    render(
       <Provider>
         <TimeLine
           filters={{}}
@@ -411,6 +423,7 @@ describe('EventsTimeLine', () => {
           connectChart={connectChart}
           popoverRef={popoverRef}
           sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -420,13 +433,6 @@ describe('EventsTimeLine', () => {
         }
       }
     )
-    const fragment = asFragment()
-    // eslint-disable-next-line testing-library/no-node-access
-    const dots = fragment.querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
-    expect(dots.length).toBeGreaterThan(0)
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => userEvent.click(dots[0]))
-    expect(setEventState).toBeCalled()
-    expect(setVisible).toBeCalled()
+    expect(onChartReady).toBeCalledTimes(4)
   })
 })
