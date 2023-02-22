@@ -4,10 +4,18 @@ import { act }  from '@testing-library/react'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { policyApi }                                  from '@acx-ui/rc/services'
-import { SyslogContextType, SyslogUrls, SyslogVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                            from '@acx-ui/store'
-import { mockServer, render, screen }                 from '@acx-ui/test-utils'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  ProtocolEnum,
+  FacilityEnum,
+  PriorityEnum,
+  FlowLevelEnum,
+  SyslogContextType,
+  SyslogUrls,
+  SyslogVenue
+} from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
@@ -57,27 +65,28 @@ const initState = {
   policyName: '',
   server: '',
   port: '',
-  protocol: '',
+  protocol: ProtocolEnum.TCP,
   secondaryServer: '',
   secondaryPort: '',
-  secondaryProtocol: '',
-  facility: '',
-  priority: '',
-  flowLevel: '',
+  secondaryProtocol: ProtocolEnum.TCP,
+  facility: FacilityEnum.KEEP_ORIGINAL,
+  priority: PriorityEnum.ALL,
+  flowLevel: FlowLevelEnum.ALL,
   venues: [] as SyslogVenue[]
 } as SyslogContextType
+
 
 const initStateEditMode = {
   policyName: '',
   server: '',
   port: '',
-  protocol: '',
+  protocol: ProtocolEnum.TCP,
   secondaryServer: '',
   secondaryPort: '',
-  secondaryProtocol: '',
-  facility: '',
-  priority: '',
-  flowLevel: '',
+  secondaryProtocol: ProtocolEnum.TCP,
+  facility: FacilityEnum.KEEP_ORIGINAL,
+  priority: PriorityEnum.ALL,
+  flowLevel: FlowLevelEnum.ALL,
   venues: [] as SyslogVenue[]
 } as SyslogContextType
 

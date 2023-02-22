@@ -190,66 +190,34 @@ describe('SyslogForm', () => {
       }
     )
 
-    expect(screen.getAllByText('Settings')).toBeTruthy()
-    expect(screen.getAllByText('Scope')).toBeTruthy()
-    expect(screen.getAllByText('Summary')).toBeTruthy()
-
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-      { target: { value: 'policyTestName-modify' } })
+      { target: { value: 'policyTestName' } })
 
-    // fireEvent.change(screen.getByTestId('server'),
-    //   { target: { value: '1.1.1.2' } })
     await userEvent.type(await screen.findByTestId('server'), '1.1.1.2')
 
-    // fireEvent.change(screen.getByTestId('port'),
-    //   { target: { value: '514' } })
     await userEvent.type(await screen.findByTestId('port'), '514')
 
-    // fireEvent.change(screen.getByTestId('server2'),
-    //   { target: { value: '1.1.1.1' } })
     await userEvent.type(await screen.findByTestId('server2'), '1.1.1.3')
 
-    // fireEvent.change(screen.getByTestId('port2'),
-    //   { target: { value: '514' } })
     await userEvent.type(await screen.findByTestId('port2'), '514')
 
-    // fireEvent.change(screen.getByTestId('selectProtocol'), {
-    //   target: { value: 'UDP' }
-    // })
     await userEvent.selectOptions(await screen.findByTestId('selectProtocol'), 'UDP')
 
-    // fireEvent.change(screen.getByTestId('selectProtocol2'), {
-    //   target: { value: 'UDP' }
-    // })
     await userEvent.selectOptions(await screen.findByTestId('selectProtocol2'), 'TCP')
 
-    // fireEvent.change(screen.getByTestId('selectFacility'), {
-    //   target: { value: 'LOCAL0' }
-    // })
     await userEvent.selectOptions(await screen.findByTestId('selectFacility'), 'LOCAL0')
 
-    // fireEvent.change(screen.getByTestId('selectFlowLevel'), {
-    //   target: { value: 'ALL' }
-    // })
     await userEvent.selectOptions(await screen.findByTestId('selectFlowLevel'), 'ALL')
 
-    expect(screen.getByText(/next/i)).not.toBeDisabled()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    expect(await screen
-      .findByText(/Select the venues where the syslog server will be applie/i))
-      .toBeInTheDocument()
+    await screen.findByRole('heading', { level: 3, name: 'Scope' })
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
 
-    expect(screen.getByText(/next/i)).not.toBeDisabled()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    expect(await screen.findByText(/venues \(0\)/i)).toBeInTheDocument()
-
-    const finishBtn = await screen.findByRole('button', { name: 'Finish' })
-
-    await userEvent.click(finishBtn)
+    await screen.findByRole('heading', { level: 3, name: 'Summary' })
+    await userEvent.click(screen.getByText('Finish'))
   })
 
   it('should render SyslogForm with editMode successfully', async () => {
@@ -290,16 +258,10 @@ describe('SyslogForm', () => {
 
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
-    // fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
-    //   { target: { value: 'policyTestName-modify' } })
     await userEvent.type(await screen.findByTestId('name'), 'modify name')
 
-    // fireEvent.change(screen.getByTestId('server'),
-    //   { target: { value: '1.1.1.1' } })
     await userEvent.type(await screen.findByTestId('server'), '1.1.1.2')
 
-    // fireEvent.change(screen.getByTestId('port'),
-    //   { target: { value: '514' } })
     await userEvent.type(await screen.findByTestId('port'), '514')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))

@@ -77,7 +77,7 @@ describe('SyslogVenueTable', () => {
 
   it('should render SyslogVenueTable successfully', async () => {
     mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
@@ -115,7 +115,7 @@ describe('SyslogVenueTable', () => {
 
   it('render SyslogVenueTable with maximum venue', async () => {
     mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTables)
       )
