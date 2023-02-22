@@ -8,7 +8,7 @@ import { noDataSymbol, sortProp, defaultSort }                   from '@acx-ui/a
 import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
 import { useUserProfileContext }                                 from '@acx-ui/rc/components'
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
-import { formatter }                                             from '@acx-ui/utils'
+import { formatter, intlFormats }                                from '@acx-ui/utils'
 
 import * as contents                 from '../contents'
 import { useMutationResponseEffect } from '../services'
@@ -16,30 +16,8 @@ import { ClientType, TestType }      from '../types'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery, useNetworkHealthRunMutation } from './services'
 
-export const getLastRun = (result: string) => {
-  if (result) {
-    return formatter('dateTimeFormatWithSeconds')(result)
-  } else {
-    return noDataSymbol
-  }
-}
-
-export const getAPsUnderTest = (total: number, pending: number) => {
-  const completedTest = total - pending
-  return total ? (
-    pending ? `${completedTest} of ${total} APs tested` : `${total} APs`
-  ) : noDataSymbol
-}
-
-export const getLastResult = (total: number, success: number, pending: number) => {
-  return total ? (
-    pending ?'In progress...' : `${formatter('percentFormatRound')(success/total)} pass`
-  ) : noDataSymbol
-}
-
 export function NetworkHealthTable () {
-  const intl = useIntl()
-  const { $t } = intl
+  const { $t } = useIntl()
   const queryResults = useNetworkHealthQuery()
   const navigate = useNavigate()
   const networkHealthPath = useTenantLink('/serviceValidation/networkHealth/')
@@ -60,6 +38,28 @@ export function NetworkHealthTable () {
       content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
     })
   }, [$t]))
+
+  const getLastRun = (result: string) =>
+    result ? formatter('dateTimeFormatWithSeconds')(result)
+      : noDataSymbol
+
+  const getAPsUnderTest = (total: number, pending: number) => {
+    const completeCount = total - pending
+    return total ?
+      pending ?
+        $t({ defaultMessage:
+          '{completeCount} of {total} {total, plural, one {AP} other {APs}} tested'
+        }, { total, completeCount })
+        : $t({ defaultMessage: '{total} {total, plural, one {AP} other {APs}}' }, { total })
+      : noDataSymbol
+  }
+
+  const getLastResult = (total: number, success: number, pending: number) =>
+    total ? (
+      pending ?
+        $t(defineMessage({ defaultMessage: 'In progress...' }))
+        : ($t(intlFormats.percentFormatRound, { value: success/total }))
+    ) : noDataSymbol
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
@@ -112,7 +112,7 @@ export function NetworkHealthTable () {
       searchable: true,
       render: (value, row) => row.tests.items[0]?.summary.apsTestedCount ?
         <TenantLink to={
-          `/serviceValidation/networkHealth/tests/${row.tests.items[0]?.id}`
+          `/serviceValidation/networkHealth/${row.id}/tests/${row.tests.items[0]?.id}`
         }>
           {value}
         </TenantLink> : value

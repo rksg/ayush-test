@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { networkHealthApi, networkHealthApiURL } from '@acx-ui/analytics/services'
-import { noDataSymbol }                          from '@acx-ui/analytics/utils'
 import { UserProfileProvider }                   from '@acx-ui/rc/components'
 import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
@@ -21,7 +20,7 @@ import {
 
 import { api } from './services'
 
-import { useGetAPsUnderTest, useGetLastResult, getLastRun, NetworkHealthTable } from './index'
+import { NetworkHealthTable } from './index'
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -148,9 +147,6 @@ describe('Network Health Table', () => {
     mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', {
       data: { runServiceGuardTest: expected }
     })
-    // await act(async () => {
-    //   await new Promise((resolve) => setTimeout(resolve, 1000))
-    // })
     await userEvent.click(await screen.findByRole('button', { name: /run now/i }))
     expect(await screen.findByText('Network Health test running')).toBeVisible()
   })
@@ -262,15 +258,9 @@ describe('Network Health Table', () => {
         }
       }
     })
-    // await act(async () => {
-    //   await new Promise((resolve) => setTimeout(resolve, 1000))
-    // })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    // await act(async () => {
-    //   await new Promise((resolve) => setTimeout(resolve, 1000))
-    // })
     expect(await mockedNavigate).toBeCalledWith(
       `/t/${fakeUserProfile.tenantId}/serviceValidation/networkHealth/` +
       `${networkHealthTests[0].id}/edit`
@@ -372,57 +362,5 @@ describe('Network Health Table', () => {
 
     await userEvent.click(await screen.findByText(/delete test/i))
     expect(await screen.findByText('Network Health test deleted')).toBeVisible()
-  })
-
-  it('should return getLastRun results correctly', () => {
-    const time = '2023-02-06T08:16:51.316Z'
-    const result = getLastRun(time)
-    expect(result).toEqual('Feb 06 2023 08:16:51')
-  })
-  it('should return noDataSymbol for getLastRun', () => {
-    const time = ''
-    const result = getLastRun(time)
-    expect(result).toEqual(noDataSymbol)
-  })
-
-  it('should return useGetAPsUnderTest results correctly when pending tests', () => {
-    const total = 10
-    const pending = 5
-    const result = useGetAPsUnderTest(total, pending)
-    expect(result).toEqual('5 of 10 APs tested')
-  })
-  it('should return useGetAPsUnderTest results correctly when 0 pending', () => {
-    const total = 10
-    const pending = 0
-    const result = useGetAPsUnderTest(total, pending)
-    expect(result).toEqual('10 APs')
-  })
-  it('should return noDataSymbol for useGetAPsUnderTest', () => {
-    const total = 0
-    const pending = 0
-    const result = useGetAPsUnderTest(total, pending)
-    expect(result).toEqual(noDataSymbol)
-  })
-
-  it('should return useGetLastResult results correctly when 0 pending', () => {
-    const total = 20
-    const success = 10
-    const pending = 0
-    const result = useGetLastResult(total, success, pending)
-    expect(result).toEqual('50% pass')
-  })
-  it('should return useGetLastResult results correctly when pending tests', () => {
-    const total = 20
-    const success = 10
-    const pending = 5
-    const result = useGetLastResult(total, success, pending)
-    expect(result).toEqual('In progress...')
-  })
-  it('should return noDataSymbol for useGetLastResult', () => {
-    const total = 0
-    const success = 0
-    const pending = 0
-    const result = useGetLastResult(total, success, pending)
-    expect(result).toEqual(noDataSymbol)
   })
 })
