@@ -53,12 +53,11 @@ const testEvent = {
 describe('TimelineChartComponent', () => {
   describe('useDotClick', () => {
     it('should handle echart ref unavailable', () => {
-      const eChartsRef = {} as RefObject<ReactECharts>
+      const eChartsRef = undefined as unknown as RefObject<ReactECharts>
       const onDotClick = jest.fn()
-      const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
+      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
       expect(onDotClick).not.toBeCalled()
-      expect(setSelected).not.toBeCalled()
     })
     it('should handle dot onClick', () => {
       const testRect = {
@@ -96,13 +95,13 @@ describe('TimelineChartComponent', () => {
         }
       } as RefObject<ReactECharts>
       const onDotClick = jest.fn()
-      const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
+      const popoverRef = { current: {
+        getBoundingClientRect: jest.fn(() => testRect)
+      } } as unknown as RefObject<HTMLDivElement>
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
-      expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 10, y: 20 })
-      expect(setSelected).toBeCalledTimes(1)
-      expect(setSelected).toBeCalledWith(testParams.data[2])
+      expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 30, y: 10 })
     })
     it('should not handle onClick for other element', () => {
       const testParams = {
@@ -120,11 +119,10 @@ describe('TimelineChartComponent', () => {
         }
       } as RefObject<ReactECharts>
       const onDotClick = jest.fn()
-      const setSelected = jest.fn()
-      renderHook(() => useDotClick(eChartsRef, onDotClick, setSelected), { wrapper: BrowserRouter })
+      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).not.toBeCalled()
-      expect(setSelected).not.toBeCalled()
     })
   })
   describe('getSeriesItemColor', () => {
