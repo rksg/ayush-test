@@ -92,8 +92,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   },
   getSwitchConfigBackupList: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
+    method: 'post',
+    url: '/switches/:switchId/configBackups/query'
   },
   addBackup: {
     method: 'post',
@@ -176,8 +176,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/vePorts'
   },
   getSwitchAcls: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
+    method: 'post',
+    url: '/switches/:switchId/acls/query'
   },
   getVlanListBySwitchLevel: {
     method: 'post',
