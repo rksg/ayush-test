@@ -7,10 +7,9 @@ import {
   StepsFormNew,
   useStepFormContext
 } from '@acx-ui/components'
+import { networkWifiIpRegExp } from '@acx-ui/rc/utils'
 
 import { NetworkHealthFormDto } from '../../types'
-
-import { ipValidator } from './validator'
 
 const name = 'dnsServer' as const
 const label = defineMessage({ defaultMessage: 'DNS Server' })
@@ -51,7 +50,7 @@ export function DnsServer () {
           label={$t(label)}
           rules={[
             { required: true },
-            { validator: ipValidator }
+            { validator: (_, value) => networkWifiIpRegExp(value) }
           ]}
           children={<Input
             placeholder={$t({ defaultMessage: 'Enter an IP address' })}

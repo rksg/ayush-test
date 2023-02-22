@@ -6,7 +6,8 @@ import {
   DpskUrls,
   PersonaUrls,
   MacRegListUrlsInfo,
-  PersonaBaseUrl
+  PersonaBaseUrl,
+  ClientUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
@@ -68,6 +69,18 @@ describe('Persona Details', () => {
       rest.get(
         DpskUrls.getDpsk.url,
         (req, res, ctx) => res(ctx.json(mockDpskPool))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{
+          osType: 'Windows',
+          clientMac: '28:B3:71:28:78:50',
+          ipAddress: '10.206.1.93',
+          Username: '24418cc316df',
+          hostname: 'LP-XXXXX',
+          venueName: 'UI-TEST-VENUE',
+          apName: 'UI team ONLY'
+        }] }))
       )
     )
     params = {
@@ -100,7 +113,7 @@ describe('Persona Details', () => {
   it('should add devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesTable hasMacPool persona={mockPersona} title={'Devices'} />
+        <PersonaDevicesTable persona={mockPersona} title={'Devices'} />
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
@@ -156,7 +169,7 @@ describe('Persona Details', () => {
   it('should delete selected devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesTable hasMacPool persona={mockPersona} title={'Devices'}/>
+        <PersonaDevicesTable persona={mockPersona} title={'Devices'}/>
       </Provider>, {
         // eslint-disable-next-line max-len
         route: { params, path: '/:tenantId/users/persona-management/persona-group/:personaGroupId/persona/:personaId' }
