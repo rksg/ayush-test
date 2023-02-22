@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { useHasRoles }                     from '@acx-ui/rbac'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -19,7 +20,6 @@ import { useParams }                                              from '@acx-ui/
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'
-import { useHasRoles } from '@acx-ui/rbac'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
