@@ -40,11 +40,6 @@ const Events = () => {
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
 
-// "filters":{
-//   "entityType": "AP",
-//   "entityId": "1234"
-// }
-
 const Activities = () => {
   const { networkId } = useParams()
   const { startDate, endDate } = useDateFilter()
