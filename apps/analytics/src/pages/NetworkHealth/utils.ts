@@ -5,7 +5,7 @@ import { intlFormats }  from '@acx-ui/utils'
 
 import { NetworkHealthTest } from './types'
 
-export interface StatsFromSummary {
+export interface StatsFromSummary extends NetworkHealthTest {
   isOngoing?: boolean
   apsUnderTest?: number
   apsFinishedTest?: number

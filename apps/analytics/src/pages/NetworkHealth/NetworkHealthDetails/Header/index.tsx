@@ -4,10 +4,10 @@ import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/utils'
 
-import { authMethodsByCode }                                      from '../../authMethods'
-import { useNetworkHealthTest }                                   from '../../services'
-import { NetworkHealthTest }                                      from '../../types'
-import { formatApsUnderTest, formatLastResult, statsFromSummary } from '../../utils'
+import { authMethodsByCode }                                                        from '../../authMethods'
+import { useNetworkHealthTest }                                                     from '../../services'
+import { NetworkHealthTest }                                                        from '../../types'
+import { StatsFromSummary, formatApsUnderTest, formatLastResult, statsFromSummary } from '../../utils'
 
 import { ReRunButton }   from './ReRunTestButton'
 import { TestRunButton } from './TestRunButton'
@@ -28,7 +28,7 @@ const getHeaderData = (details: NetworkHealthTest) => {
 interface Subtitle {
   key: string,
   title: MessageDescriptor,
-  format?: (details: NetworkHealthTest, $t: IntlShape['$t']) => string
+  format?: (details: StatsFromSummary, $t: IntlShape['$t']) => string
 }
 
 const subtitles: Subtitle[] = [
