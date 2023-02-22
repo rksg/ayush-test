@@ -117,7 +117,6 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
 
       {importMode === DevicesImportMode.FromClientDevices
         ? <SelectConnectedClientsTable
-          visible={visible}
           onRowChange={(_, selectedRows) => {setSelectedClients(selectedRows)}}
           getCheckboxProps={(row) => ({
             disabled: selectedMacAddress.includes(row.clientMac.toUpperCase())

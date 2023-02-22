@@ -15,7 +15,6 @@ export const OSIconContainer = styled.div`
 `
 
 export interface SelectConnectedDevicesProps {
-  visible: boolean
   onRowChange: (_: Key[], selectedRows: ClientList[]) => void,
   getCheckboxProps?: (row: ClientList) => object
 }
@@ -28,14 +27,11 @@ const defaultPayload = {
 
 export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps) {
   const { $t } = useIntl()
-  const { visible, onRowChange, getCheckboxProps } = props
+  const { onRowChange, getCheckboxProps } = props
 
   const tableQuery = useTableQuery({
     useQuery: useGetClientListQuery,
-    defaultPayload,
-    option: {
-      skip: !visible
-    }
+    defaultPayload
   })
 
   const columns: TableProps<ClientList>['columns'] = [
