@@ -664,7 +664,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => MacAddressFilterRegExp(value) }
+                    { validator: (_, value) => serverIpAddressRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
@@ -744,7 +744,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
-                    }
+                    },
+                    { validator: (_, value) => serverIpAddressRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -755,7 +756,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify mask' })
-                    }
+                    },
+                    { validator: (_, value) => subnetMaskIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
@@ -774,7 +776,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               rules={[
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
-                }) }
+                }) },
+                { validator: (_, value) => serverIpAddressRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
