@@ -291,6 +291,18 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
     {enableAccessControlProfile && <Form.Item
       label={$t({ defaultMessage: 'Access Control Policy' })}
       name={['wlan','advancedCustomization','accessControlProfileId']}
+      rules={[
+        { validator: async () => {
+          if (!form.getFieldValue(['wlan','advancedCustomization','accessControlProfileId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'If you enable the access control, access control policy could not be empty'
+            }))
+          }
+
+          return Promise.resolve()
+        } }
+      ]}
     >
       <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
         style={{ width: '180px' }}
@@ -540,6 +552,55 @@ function AccessControlConfigForm () {
         }
       </div>
     </>}
+
+    <Form.Item
+      name='checkPolicyMessage'
+      rules={[
+        { validator: async () => {
+          if (form.getFieldValue(['wlan','advancedCustomization','l2AclEnable'])
+            && !form.getFieldValue(['wlan','advancedCustomization','l2AclPolicyId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Layer 2 policy could not be empty'
+            }))
+          }
+
+          if (form.getFieldValue(['wlan','advancedCustomization','l3AclEnable'])
+            && !form.getFieldValue(['wlan','advancedCustomization','l3AclPolicyId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Layer 3 policy could not be empty'
+            }))
+          }
+
+          if (form.getFieldValue('enableDeviceOs')
+            && !form.getFieldValue(['wlan','advancedCustomization','devicePolicyId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Device & OS policy could not be empty'
+            }))
+          }
+
+          if (form.getFieldValue(['wlan','advancedCustomization','applicationPolicyEnable'])
+            && !form.getFieldValue(['wlan','advancedCustomization','applicationPolicyId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Application policy could not be empty'
+            }))
+          }
+
+          if (form.getFieldValue('enableClientRateLimit')
+            && !form.getFieldValue('enableUploadLimit')
+            && !form.getFieldValue('enableDownloadLimit')) {
+            return Promise.reject($t({
+              defaultMessage: 'One of the client rate limit setting should be chosen'
+            }))
+          }
+
+          return Promise.resolve()
+        } }
+      ]}
+    />
   </>)
 
 }

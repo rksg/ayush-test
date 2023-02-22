@@ -122,7 +122,7 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
                   && !form.getFieldValue(['rateLimiting', 'enableUploadLimit'])
                   && !form.getFieldValue(['rateLimiting', 'enableDownloadLimit'])) {
                 return Promise.reject($t({
-                  defaultMessage: 'one of the client rate limit setting could not be empty'
+                  defaultMessage: 'One of the client rate limit setting should be chosen'
                 }))
               }
 
