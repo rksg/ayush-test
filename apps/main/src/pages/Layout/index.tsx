@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -11,30 +13,59 @@ import {
   UserButton
 } from '@acx-ui/main/components'
 import {
-  MspEcDropdownList
+  MspEcDropdownList,
+  MFASetupModal
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
-import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
+import { CloudMessageBanner, useUserProfileContext }                       from '@acx-ui/rc/components'
+import { useLazyGetMfaTenantDetailsQuery, useLazyGetMfaAdminDetailsQuery } from '@acx-ui/rc/services'
+import { isDelegationMode, MfaDetailStatus, TenantIdFromJwt }              from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet, useParams }                            from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import { Home }          from './styledComponents'
 
+
 function Layout () {
+  const params = useParams()
+  const[mfaDetails, setMfaDetails] = useState({} as MfaDetailStatus)
+  const[mfaSetupFinish, setMfaSetupFinish] = useState(false)
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
+  const [getMfaTenantDetails] = useLazyGetMfaTenantDetailsQuery()
+  const [getMfaAdminDetails] = useLazyGetMfaAdminDetailsQuery()
+
+  const handleMFASetupFinish = () => {
+    setMfaSetupFinish(true)
+  }
+
+  useEffect(() => {
+    const fetchMfaData = async () => {
+      const mfaTenantData = await getMfaTenantDetails({ params }).unwrap()
+      const mfaDetailsData = await getMfaAdminDetails({
+        params: {
+          userId: mfaTenantData?.userId
+        } }).unwrap()
+
+      setMfaDetails(mfaDetailsData)
+    }
+
+    fetchMfaData()
+  }, [getMfaAdminDetails, getMfaTenantDetails, params])
 
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
       content={
-        <>
-          <CloudMessageBanner />
-          <Outlet />
-        </>
-      }
+        mfaDetails.userId !== ''
+          ?((mfaDetails.enabled && mfaDetails.mfaMethods.length === 0 && mfaSetupFinish === false)
+            ? <MFASetupModal onFinish={handleMFASetupFinish} />
+            : <>
+              <CloudMessageBanner />
+              <Outlet />
+            </>)
+          :''}
       leftHeaderContent={
         showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
           <Home>

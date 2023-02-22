@@ -6,8 +6,8 @@ import { PhoneNumberUtil }                       from 'google-libphonenumber'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import { cssStr, Drawer, showToast }   from '@acx-ui/components'
-import { useMfaRegisterAdminMutation } from '@acx-ui/rc/services'
+import { cssNumber, Drawer, showToast } from '@acx-ui/components'
+import { useMfaRegisterAdminMutation }  from '@acx-ui/rc/services'
 import {
   phoneRegExp,
   emailRegExp,
@@ -100,7 +100,7 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
         onClose={onClose}
         footer={footer}
         destroyOnClose
-        width={'336'}
+        width={336}
       >
         <Form
           layout='vertical'
@@ -109,7 +109,7 @@ export const OneTimePassword = styled((props: OneTimePasswordProps) => {
         >
           <Space
             direction='vertical'
-            size={parseInt(cssStr('--acx-content-vertical-space'), 10)}
+            size={cssNumber('--acx-content-vertical-space')}
           >
             <label >
               { $t({ defaultMessage: 'Manage OTP (One-Time Password) delivery options:' }) }

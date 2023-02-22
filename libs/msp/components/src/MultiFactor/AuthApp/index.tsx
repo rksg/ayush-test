@@ -68,7 +68,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
       onClose={onClose}
       footer={footer}
       destroyOnClose
-      width={'336'}
+      width={336}
     >
       <Form layout='vertical' form={form} onFinish={handleSave}>
         <Typography>
@@ -132,7 +132,10 @@ export const AuthApp = styled((props: AuthAppProps) => {
                 <Form.Item
                   name='verificationCode'
                   rules={[
-                    { required: true }
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter verification code' })
+                    }
                   ]}
                 >
                   <Input

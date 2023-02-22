@@ -22,11 +22,15 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
 
   const { className, visible, setVisible, recoveryCode } = props
   const [form] = Form.useForm()
-  const { Paragraph } = Typography
+  const linebreakRecoveryCode = recoveryCode.join('\n')
 
   const onClose = () => {
     setVisible(false)
     form.resetFields()
+  }
+
+  const handleClickCopyCodes = () => {
+    navigator.clipboard.writeText(linebreakRecoveryCode)
   }
 
   return (
@@ -36,7 +40,7 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
       visible={visible}
       onClose={onClose}
       destroyOnClose
-      width={'336'}
+      width={336}
     >
       <SpaceWrapper
         direction='vertical'
@@ -48,7 +52,7 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
       'in a safe place.' }) }
         </Typography.Text>
         <TextArea
-          value={recoveryCode.join('\n')}
+          value={linebreakRecoveryCode}
           style={{
             fontSize: '12px',
             resize: 'none',
@@ -60,13 +64,13 @@ export const RecoveryCodes = styled((props: RecoveryCodeDrawerProps) => {
           readOnly={true}
         />
         <SpaceWrapper justifycontent='flex-end'>
-          <Paragraph
+          <Typography.Link
+            onClick={handleClickCopyCodes}
             copyable={{
-              text: recoveryCode.join('\n')
-            }}
-          >
+              text: linebreakRecoveryCode
+            }}>
             {$t({ defaultMessage: 'Copy Codes' })}
-          </Paragraph>
+          </Typography.Link>
         </SpaceWrapper>
       </SpaceWrapper>
     </Drawer>

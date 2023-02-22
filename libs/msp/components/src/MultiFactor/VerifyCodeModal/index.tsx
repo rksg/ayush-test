@@ -71,7 +71,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
         }
       }).unwrap()
     } catch {
-      setFailedMessage($t({ defaultMessage: 'Resend Verification Error. Please try again.' }))
+      setFailedMessage($t({ defaultMessage: 'Resend verification error. Please try again.' }))
     }
   }
 
@@ -103,10 +103,16 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
         onFinish={handleSubmit}
       >
         <Form.Item
-          label={$t({ defaultMessage: 'Enter the verification code that was sent to' })}
+          label={
+            $t({ defaultMessage: 'Enter the verification code that was sent to {contactID}' }
+              , { contactID: data.data })
+          }
           name='verificationCode'
           rules={[
-            { required: true }
+            {
+              required: true,
+              message: $t({ defaultMessage: 'Please enter verification code' })
+            }
           ]}
           {...(isValid && failedMessage !== '' ? {
             validateStatus: 'error',
@@ -114,7 +120,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
           } : undefined)}
 
         >
-          {<Input style={{ width: '210px' }}/>}
+          <Input style={{ width: '210px' }} />
         </Form.Item>
         <div style={{ marginTop: '30px', marginBottom: '25px' }}>
           <label>
