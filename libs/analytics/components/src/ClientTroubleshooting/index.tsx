@@ -131,6 +131,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   onVisibleChange={setVisible}
                   trigger='click'
                   placement='bottom'
+                  zIndex={4}
                   align={{
                     targetOffset: [
                       (eventState as unknown as { x: number }).x,
@@ -158,6 +159,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               chartsRef={chartsRef}
               visible={visible}
               eventState={eventState}
+              popoverRef={popoverRef}
             />
           </Loader>
         </Col>

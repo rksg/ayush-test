@@ -26,11 +26,12 @@ type HistoryContentProps = {
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
   filters: Filters | null,
-  setEventState?: (event: DisplayEvent) => void,
-  setVisible?: (visible: boolean) => void,
-  chartsRef?: RefObject<EChartsType[]>,
-  visible?: boolean,
-  eventState?: DisplayEvent
+  setEventState: (event: DisplayEvent) => void,
+  setVisible: (visible: boolean) => void,
+  chartsRef: RefObject<EChartsType[]>,
+  visible: boolean,
+  eventState: DisplayEvent,
+  popoverRef: RefObject<HTMLDivElement>
 }
 
 type FormattedEvent = {
@@ -75,49 +76,14 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 
 const renderItem = (
   item: IncidentDetails | FormattedEvent,
-  setEventState?: CallableFunction,
-  setVisible?: CallableFunction,
-  chartRefs?: RefObject<EChartsType[]>,
-  visible?: boolean,
-  eventState?: DisplayEvent
+  setEventState: CallableFunction,
+  setVisible: CallableFunction,
+  chartRefs: RefObject<EChartsType[]>,
+  visible: boolean,
+  eventState: DisplayEvent,
+  popoverRef: RefObject<HTMLDivElement>
 ) => {
-  const onClick = () => {
-    if (item && (item as FormattedEvent).event) {
-      const event = (item as FormattedEvent).event
-      const key = event.key
-      const charts = chartRefs && chartRefs.current
-      if (charts && charts.length > 0) {
-        const active = charts.filter(chart => !chart.isDisposed())
-        const options = active.map(chart => chart.getOption())
-        const activeSeries = options.map(option => (option as { series: object[] }).series)
-        const activeData = activeSeries.map(series => (series as { data: object }[])[0].data)
-        const allSeriesIndex = activeData.map(data =>
-          findIndex(data as [number, string, number | object][], (elem) => {
-            return typeof elem[2] != 'number' && (elem[2] as { key: string }).key === key
-          }))
-        const targetIndex = allSeriesIndex.findIndex(elem => elem > -1)
-        const dataIndex = allSeriesIndex[targetIndex]
-        const selectedChart = active[targetIndex]
-        const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
-        const targetDot = dots[dataIndex]
-        if (targetDot && targetDot.getBoundingClientRect) {
-          const clientX = targetDot.getBoundingClientRect().x
-          const clientY = targetDot.getBoundingClientRect().y
-          const popoverChild = document.querySelector('div[data-testid="popover-child"]')
-          if (!popoverChild) return
-          const { x, y, width } = popoverChild.getBoundingClientRect()
-          const calcX = clientX - (x + width / 2)
-          const calcY = clientY - y
-          setEventState && setEventState({
-            ...(item as FormattedEvent).event,
-            x: -calcX,
-            y: -calcY
-          })
-          setVisible && setVisible(true)
-        }
-      }
-    }
-  }
+  const onClick = onPanelClick(item, chartRefs, popoverRef, setEventState, setVisible)
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
       avatar={item.icon}
@@ -135,6 +101,52 @@ const renderItem = (
     </UI.HistoryItemWrapper>
 }
 
+export function onPanelClick (
+  item: IncidentDetails | FormattedEvent,
+  chartRefs: RefObject<EChartsType[]>,
+  popoverRef: RefObject<HTMLDivElement>,
+  setEventState: CallableFunction,
+  setVisible: CallableFunction) {
+  return () => {
+    if (item && (item as FormattedEvent).event) {
+      const event = (item as FormattedEvent).event
+      const key = event.key
+      const charts = chartRefs.current
+      if (charts && charts.length > 0) {
+        const active = charts.filter(chart => !chart.isDisposed())
+        const options = active.map(chart => chart.getOption())
+        const activeSeries = options.map(option => (option as { series: object[] } ).series)
+        const activeData = activeSeries.map(series => (series as { data: object } [])[0].data)
+        const allSeriesIndex = activeData
+          .map(data => findIndex(data as [number, string, number | object][], (elem) => {
+            return typeof elem[2] != 'number' && (elem[2] as { key: string } ).key === key
+          }))
+        const targetIndex = allSeriesIndex.findIndex(elem => elem > -1)
+        const dataIndex = allSeriesIndex[targetIndex]
+        const selectedChart = active[targetIndex]
+        const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
+        const targetDot = dots[dataIndex]
+        if (targetDot && targetDot.getBoundingClientRect) {
+          const clientX = targetDot.getBoundingClientRect().x
+          const clientY = targetDot.getBoundingClientRect().y
+          const popoverChild = popoverRef && popoverRef.current
+          if (!popoverChild)
+            return
+          const { x, y, width } = popoverChild.getBoundingClientRect()
+          const calcX = clientX - (x + width / 2)
+          const calcY = clientY - y
+          setEventState({
+            ...(item as FormattedEvent).event,
+            x: -calcX,
+            y: -calcY
+          })
+          setVisible(true)
+        }
+      }
+    }
+  }
+}
+
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
@@ -147,7 +159,8 @@ export function History (props : HistoryContentProps) {
     setVisible,
     chartsRef,
     visible,
-    eventState
+    eventState,
+    popoverRef
   } = props
   const histData = transformData(data!, filters!, intl)
   return (
@@ -172,8 +185,9 @@ export function History (props : HistoryContentProps) {
               itemLayout='horizontal'
               dataSource={histData}
               renderItem={(item) =>
-                renderItem(item, setEventState, setVisible, chartsRef, visible, eventState)
-              }
+                renderItem(
+                  item, setEventState, setVisible, chartsRef, visible, eventState, popoverRef
+                )}
             />
           </UI.HistoryContent>
         )}
