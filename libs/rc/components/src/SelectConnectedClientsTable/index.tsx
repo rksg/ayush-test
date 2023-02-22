@@ -8,7 +8,7 @@ import { useGetClientListQuery }                    from '@acx-ui/rc/services'
 import { ClientList, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
 
 
-export const OSIconContainer = styled.div`
+const OSIconContainer = styled.div`
   svg {
     height: 24px
   }
