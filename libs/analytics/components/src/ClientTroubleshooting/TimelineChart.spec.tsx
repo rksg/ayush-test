@@ -3,7 +3,6 @@ import React, { RefObject } from 'react'
 import { renderHook, act } from '@testing-library/react'
 import { ECharts }         from 'echarts'
 import ReactECharts        from 'echarts-for-react'
-import { BrowserRouter }   from 'react-router-dom'
 
 import { qualityDataObj, incidentDataObj, roamingDataObj }                from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData } from './config'
@@ -50,77 +49,100 @@ const testEvent = {
   category: 'slow',
   seriesKey: 'all'
 }
+
+function testHelpers (customSeries?: object) {
+  const testRect = {
+    x: 30,
+    y: 30,
+    width: 20,
+    height: 20,
+    top: 10,
+    right: 10,
+    bottom: 10,
+    left: 10
+  }
+  const defaultSeries = {
+    componentSubType: 'scatter',
+    data: [1654423052112, 'connectionEvents', testEvent],
+    event: {
+      event: {
+        clientX: 10,
+        clientY: 20,
+        currentTarget: {
+          getBoundingClientRect: jest.fn(() => testRect)
+        }
+      }
+    }
+  }
+  const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) =>
+    fn(customSeries ?? defaultSeries))
+  const mockOffFn = jest.fn()
+  const eChartsRef = {
+    current: {
+      getEchartsInstance: () => ({
+        on: (eventType: string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
+        off: (eventType: string, fn: Function) => mockOffFn(eventType, fn)
+      })
+    }
+  } as RefObject<ReactECharts>
+  return { testRect, eChartsRef, mockOnFn, testParams: defaultSeries }
+}
+
+const basePath = '/t/testPath'
 describe('TimelineChartComponent', () => {
   describe('useDotClick', () => {
     it('should handle echart ref unavailable', () => {
       const eChartsRef = undefined as unknown as RefObject<ReactECharts>
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(onDotClick).not.toBeCalled()
     })
-    it('should handle dot onClick', () => {
-      const testRect = {
-        x: 30,
-        y: 30,
-        width: 20,
-        height: 20,
-        top: 10,
-        right: 10,
-        bottom: 10,
-        left: 10
-      }
-
-      const testParams = {
-        componentSubType: 'scatter',
-        data: [1654423052112, 'connectionEvents', testEvent],
-        event: {
-          event: {
-            clientX: 10,
-            clientY: 20,
-            currentTarget: {
-              getBoundingClientRect: jest.fn(() => testRect)
-            }
-          }
-        }
-      }
-      const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
-      const mockOffFn = jest.fn()
-      const eChartsRef = {
-        current: {
-          getEchartsInstance: () => ({
-            on: (eventType: string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
-            off: (eventType: string, fn: Function) => mockOffFn(eventType, fn)
-          })
-        }
-      } as RefObject<ReactECharts>
+    it('should handle popover ref unavailable', () => {
+      const { eChartsRef } = testHelpers()
+      const onDotClick = jest.fn()
+      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
+      expect(onDotClick).not.toBeCalled()
+    })
+    it('should handle dot onClick for events', () => {
+      const { testRect, eChartsRef, mockOnFn, testParams } = testHelpers()
       const onDotClick = jest.fn()
       const popoverRef = { current: {
         getBoundingClientRect: jest.fn(() => testRect)
       } } as unknown as RefObject<HTMLDivElement>
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1) // for on
       expect(onDotClick).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledWith({ ...(testParams.data[2] as Event), x: 30, y: 10 })
+    })
+    it('should handle dot onClick for incidents', () => {
+      const params = {
+        componentSubType: 'custom',
+        seriesName: 'incidents',
+        data: [1234, 'all', 1234, { id: '1234' }]
+      }
+      const { eChartsRef, mockOnFn } = testHelpers(params)
+      const onDotClick = jest.fn()
+      const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
+      expect(mockOnFn).toBeCalled()
+      expect(onDotClick).toBeCalledTimes(0)
     })
     it('should not handle onClick for other element', () => {
       const testParams = {
         componentSubType: 'other',
         data: [1654423052112, 'connectionEvents', { id: 0 }]
       }
-      const mockOnFn = jest.fn((_: string, fn: (params: unknown) => void) => fn(testParams))
-      const mockOffFn = jest.fn()
-      const eChartsRef = {
-        current: {
-          getEchartsInstance: () => ({
-            on: (eventType: string, fn: (params: unknown) => void) => mockOnFn(eventType, fn),
-            off: (eventType: string, fn: Function) => mockOffFn(eventType, fn)
-          })
-        }
-      } as RefObject<ReactECharts>
+      const { mockOnFn, eChartsRef } = testHelpers(testParams)
       const onDotClick = jest.fn()
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
-      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef), { wrapper: BrowserRouter })
+      const navigate = jest.fn()
+      renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
       expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).not.toBeCalled()
     })

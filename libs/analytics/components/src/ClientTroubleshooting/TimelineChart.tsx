@@ -164,11 +164,10 @@ export function getBarColor (params: {
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
-  popoverRef: RefObject<HTMLDivElement> | undefined
+  popoverRef: RefObject<HTMLDivElement> | undefined,
+  navigate: CallableFunction,
+  basePath: string
 ) => {
-  const navigate = useNavigate()
-  const currentPath = useTenantLink('/')
-  const basePath = currentPath.pathname
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
       const typedParams = (params as
@@ -193,7 +192,6 @@ export const useDotClick = (
       if (params.componentSubType === 'custom' && typedParams.seriesName === 'incidents') {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        if (!id) return
         navigate(`${basePath}/analytics/incidents/${id}`)
       }
     },
@@ -313,7 +311,9 @@ export function TimelineChart ({
 }: TimelineChartProps) {
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
-
+  const navigate = useNavigate()
+  const currentPath = useTenantLink('/')
+  const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
@@ -322,8 +322,7 @@ export function TimelineChart ({
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
-
-  useDotClick(eChartsRef, onDotClick, popoverRef)
+  useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
 
   const mappedData = useMemo(() => mapping
     .slice()
@@ -388,11 +387,11 @@ export function TimelineChart ({
           width: 1
         }
       },
-      // use this formatter to add popover content
-      /* istanbul ignore next */
-      formatter: () => '',
+      // disable default tooltip formatter
+      formatter:
+        /* istanbul ignore next */
+        () => '',
       ...tooltipOptions(),
-      // Need to address test coverage for the postion
       position:
       /* istanbul ignore next */
         (point: [number, number]) => [point[0] + 10, mapping.length * 25]
@@ -521,14 +520,14 @@ export function TimelineChart ({
         opts={{ renderer: 'svg' }}
         key={index}
       />
-      {canResetZoom && showResetZoom && (
-        <ResetButton
-          size='small'
-          onClick={resetZoomCallback}
-          children={$t({ defaultMessage: 'Reset Zoom' })}
-          $disableLegend={true}
-          style={{ top: -24, right: 8 }}
-        />
+      {canResetZoom && showResetZoom
+      && (<ResetButton
+        size='small'
+        onClick={resetZoomCallback}
+        children={$t({ defaultMessage: 'Reset Zoom' })}
+        $disableLegend={true}
+        style={{ top: -24, right: 8 }}
+      />
       )}
     </UI.ChartWrapper>
   )
