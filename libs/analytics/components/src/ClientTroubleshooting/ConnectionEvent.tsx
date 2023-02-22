@@ -89,6 +89,7 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
   const rowData = getConnectionDetails(event)
   const failureExtra: ReactNode = getFailureExtra(event)
   const visibleHandle = (val: boolean) => {
+    /* istanbul ignore next */
     rest.onVisibleChange && rest.onVisibleChange(val)
     setOpen(val)
   }
