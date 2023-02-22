@@ -81,6 +81,13 @@ export const StyledMinusSquareOutlined = styled(MinusSquareOutlined)`
       stroke:var(--acx-accents-blue-50);
     }`
 
+export const StyledDisabledPlusSquareOutline = styled(PlusSquareOutlined)`
+    width: 16px;
+    path {
+      stroke:var(--acx-neutrals-50);
+    }
+`
+
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);

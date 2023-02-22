@@ -16,6 +16,7 @@ export enum Features {
   USERS = 'acx-ui-users',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   EDGES = 'acx-ui-edges-toggle',
+  EDGE_EARLY_BETA = 'smartedge-early-beta-deploy',
   CLIENT_TROUBLESHOOTING = 'acx-ui-client-troubleshooting-toggle',
   TIMELINE = 'acx-ui-timeline-toggle',
   NETWORK_SEGMENTATION='acx-ui-network-segmentation-toggle',
@@ -24,5 +25,6 @@ export enum Features {
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
-  AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle'
+  AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
+  NEW_API='acx-ui-new-api'
 }
