@@ -10,11 +10,11 @@ import { Row, Col, Form, Typography, Checkbox } from 'antd'
 import _                                        from 'lodash'
 
 import { Card, Tooltip } from '@acx-ui/components'
+import { SwitchSlot }    from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
-import { SwitchSlot } from '@acx-ui/rc/utils'
 
 export interface PortsType {
   label: string,
@@ -38,8 +38,8 @@ export function TaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
-      const slot1Data = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 1)
+      const slot1Data = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 1)
       if(slot1Data && slot1Data[0] && slot1Data[0].portStatus!== undefined){
         const portModule1List1 = slot1Data[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
@@ -47,8 +47,8 @@ export function TaggedPortsStep () {
         setPortsModule1(portModule1List1)
       }
 
-      const slot2Data = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 2)
+      const slot2Data = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 2)
       if(slot2Data && slot2Data[0] && slot2Data[0].portStatus!== undefined){
         const portModule1List2 = slot2Data[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
@@ -57,8 +57,8 @@ export function TaggedPortsStep () {
         setSlot2(slot2Data[0])
       }
 
-      const slot3Data = vlanSettingValues.switchFamilyModels?.slots.
-        filter(item => item.slotNumber === 3)
+      const slot3Data = vlanSettingValues.switchFamilyModels?.slots
+        .filter(item => item.slotNumber === 3)
       if(slot3Data && slot3Data[0] && slot3Data[0].portStatus!== undefined){
         const portModule1List3 = slot3Data[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),

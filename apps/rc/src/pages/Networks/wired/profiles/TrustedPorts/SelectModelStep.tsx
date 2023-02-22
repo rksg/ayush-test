@@ -4,8 +4,8 @@ import { useState, useEffect, SetStateAction } from 'react'
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
 import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
 
-import { Card, Tooltip }                                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { Card, Tooltip } from '@acx-ui/components'
+// import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, TrustedPort, TrustedPortTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                              from '@acx-ui/utils'
 
