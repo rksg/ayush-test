@@ -1,9 +1,12 @@
-import { StackMember, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
 import { useContext, useEffect, useState } from 'react'
+
+import { StackMember, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+
 import { SwitchDetailsContext } from '../../..'
+
+import * as UI  from './styledComponents'
 import { Unit } from './Unit'
-import * as UI             from './styledComponents'
 
 interface SlotMember {
   isStack: boolean
@@ -20,7 +23,7 @@ export function SwitchFrontRearView (props:{
   } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
-  
+
 
   useEffect(() => {
     if (stackMember && switchDetail) {
@@ -39,16 +42,16 @@ export function SwitchFrontRearView (props:{
       setSlotMember({
         isStack: false,
         data: [{
-            deviceStatus: switchDetail.deviceStatus,
-            id: serialNumber,
-            model: switchDetail.model,
-            serialNumber: switchDetail.serialNumber,
-            switchMac: switchDetail.switchMac,
-            unitId: 1,
-            unitStatus: '',
-            uptime: switchDetail.uptime,
-            venueName: switchDetail.venueName
-          } as unknown as StackMember]
+          deviceStatus: switchDetail.deviceStatus,
+          id: serialNumber,
+          model: switchDetail.model,
+          serialNumber: switchDetail.serialNumber,
+          switchMac: switchDetail.switchMac,
+          unitId: 1,
+          unitStatus: '',
+          uptime: switchDetail.uptime,
+          venueName: switchDetail.venueName
+        } as unknown as StackMember]
       })
     }
   }
@@ -57,9 +60,11 @@ export function SwitchFrontRearView (props:{
     {
       slotMember && slotMember.data.map((member, index) => (
         <UI.SwitchFrontRearViewWrapper key={index}>
-          <Unit member={member} index={index}
-            isStack={slotMember.isStack} isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL}/>
-        </UI.SwitchFrontRearViewWrapper>  
+          <Unit member={member}
+            index={index}
+            isStack={slotMember.isStack}
+            isOnline={member.deviceStatus === SwitchStatusEnum.OPERATIONAL}/>
+        </UI.SwitchFrontRearViewWrapper>
       ))
     }
   </>

@@ -179,7 +179,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      providesTags:[{ type: 'Switch', id: 'Detail' }]
+      providesTags: [{ type: 'Switch', id: 'Detail' }]
     }),
     switchFrontView: build.query<SwitchFrontView, RequestPayload>({
       query: ({ params }) => {

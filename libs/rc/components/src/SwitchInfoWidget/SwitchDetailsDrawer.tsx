@@ -33,13 +33,13 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
     const targetDevice = isStack ? unitDetails : switchDetail
     const model = _.isEmpty(_.get(targetDevice, 'model')) ?
       getSwitchModel(targetDevice?.activeSerial || '') : _.get(targetDevice, 'model')
-      setUnitDetial({
-        serialNumber: targetDevice?.activeSerial || '',
-        model: model || '',
-        stackMembership: _.get(targetDevice, 'unitStatus'),
-        stackId: _.get(targetDevice, 'unitId'),
-        fwVersion: switchDetail.firmware || ''
-      })
+    setUnitDetial({
+      serialNumber: targetDevice?.activeSerial || '',
+      model: model || '',
+      stackMembership: _.get(targetDevice, 'unitStatus'),
+      stackId: _.get(targetDevice, 'unitId'),
+      fwVersion: switchDetail.firmware || ''
+    })
   }
 
   useEffect(() => {

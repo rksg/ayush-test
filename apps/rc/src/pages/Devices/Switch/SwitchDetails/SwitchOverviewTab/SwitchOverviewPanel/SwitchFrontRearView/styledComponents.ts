@@ -1,6 +1,7 @@
-import { Descriptions } from '@acx-ui/components'
-import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
 import styled from 'styled-components/macro'
+
+import { Descriptions }                                                                                          from '@acx-ui/components'
+import { ConfigurationOutlined, FanSolid, PoeUsage, StackingPortSolid, TagsOutline, TagsSolid, UplinkPortSolid } from '@acx-ui/icons'
 
 export const TitleBar = styled.div`
   background: var(--acx-neutrals-10);
@@ -91,7 +92,7 @@ export const RearViewWrapper = styled.div`
 `
 
 const getPortColor = (portColor: string) => {
-  const colorMap:{[key:string]: string} = {
+  const colorMap:{ [key:string]: string } = {
     lightgray: 'var(--acx-neutrals-25)',
     gray: 'var(--acx-neutrals-50)',
     green: 'var(--acx-semantics-green-50)'
@@ -156,7 +157,7 @@ export const SettingsIcon = styled(ConfigurationOutlined)`
 `
 
 const getRearColor = (rearColor: string) => {
-  const colorMap:{[key:string]: string} = {
+  const colorMap:{ [key:string]: string } = {
     gray: 'var(--acx-neutrals-50)',
     red: 'var(--acx-semantics-red-60)',
     green: 'var(--acx-semantics-green-50)'
@@ -165,7 +166,7 @@ const getRearColor = (rearColor: string) => {
 }
 
 const getRearLabelColor = (labelColor: string) => {
-  const colorMap:{[key:string]: string} = {
+  const colorMap:{ [key:string]: string } = {
     gray: 'var(--acx-neutrals-50)',
     black: 'var(--acx-primary-black)'
   }

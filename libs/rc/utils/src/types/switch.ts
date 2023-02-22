@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus, PortTaggedEnum } from '../constants'
-import { PortSettingModel }          from '../models/PortSetting'
+import { PortSettingModel }                          from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
