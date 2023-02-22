@@ -203,11 +203,10 @@ export const useDotClick = (
     echartInstance.on('click', handler)
 
     return () => {
-      if (echartInstance && echartInstance.off) {
-        echartInstance.off('click', handler)
-      }
-      if (echartInstance && echartInstance.isDisposed && echartInstance.isDisposed()) {
-        echartInstance.dispose()
+      if (echartInstance && echartInstance.isDisposed && !echartInstance.isDisposed()) {
+        if (echartInstance && echartInstance.off) {
+          echartInstance.off('click', handler)
+        }
       }
     }
   }, [eChartsRef, handler])
@@ -261,8 +260,10 @@ export const useDataZoom = (
     })
     echartInstance.on('datazoom', onDatazoomCallback)
     return () => {
-      if (echartInstance && echartInstance.off) {
-        echartInstance.off('datazoom', onDatazoomCallback)
+      if (echartInstance && echartInstance.isDisposed && !echartInstance.isDisposed()) {
+        if (echartInstance && echartInstance.off) {
+          echartInstance.off('datazoom', onDatazoomCallback)
+        }
       }
     }
   })
@@ -307,6 +308,7 @@ export function TimelineChart ({
   index,
   sharedChartName,
   popoverRef,
+  onChartReady,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -495,8 +497,9 @@ export function TimelineChart ({
   }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, mappedData, hasData])
 
   useEffect(() => {
-    if (eChartsRef && eChartsRef.current) {
-      const instance = eChartsRef.current.getEchartsInstance()
+    const chart = eChartsRef && eChartsRef.current
+    if (chart) {
+      const instance = chart.getEchartsInstance()
       instance.setOption(option)
       connect(sharedChartName)
     }
@@ -519,6 +522,7 @@ export function TimelineChart ({
         option={option}
         opts={{ renderer: 'svg' }}
         key={index}
+        onChartReady={onChartReady}
       />
       {canResetZoom && showResetZoom
       && (<ResetButton

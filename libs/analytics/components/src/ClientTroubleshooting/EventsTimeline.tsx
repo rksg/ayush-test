@@ -1,6 +1,7 @@
 import React, { RefObject, useState } from 'react'
 
 import { Row, Col }                   from 'antd'
+import { EChartsType }                from 'echarts'
 import ReactECharts                   from 'echarts-for-react'
 import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
@@ -48,7 +49,8 @@ type TimeLineProps = {
   setVisible: (visible: boolean) => void,
   connectChart: (instance: ReactECharts) => void,
   sharedChartName: string,
-  popoverRef: RefObject<HTMLDivElement>
+  popoverRef: RefObject<HTMLDivElement>,
+  onChartReady: (instance: EChartsType) => void,
 }
 
 type CoordDisplayEvent = DisplayEvent & {
@@ -60,7 +62,8 @@ export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const {
-    data, filters, connectChart, sharedChartName, popoverRef, setEventState, setVisible
+    data, filters, connectChart, sharedChartName, onChartReady,
+    popoverRef, setEventState, setVisible
   } = props
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
@@ -240,6 +243,7 @@ export function TimeLine (props: TimeLineProps) {
                 chartRef={connectChart}
                 sharedChartName={sharedChartName}
                 popoverRef={popoverRef}
+                onChartReady={onChartReady}
               />
             </Col>
           ))}

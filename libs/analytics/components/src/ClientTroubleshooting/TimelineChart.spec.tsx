@@ -130,7 +130,7 @@ describe('TimelineChartComponent', () => {
       const popoverRef = undefined as unknown as RefObject<HTMLDivElement>
       const navigate = jest.fn()
       renderHook(() => useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath))
-      expect(mockOnFn).toBeCalled()
+      expect(mockOnFn).toBeCalledTimes(1)
       expect(onDotClick).toBeCalledTimes(0)
     })
     it('should not handle onClick for other element', () => {

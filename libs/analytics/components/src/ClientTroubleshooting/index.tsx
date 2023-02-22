@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Row, Col }               from 'antd'
-import { connect }                from 'echarts'
+import { connect, EChartsType }   from 'echarts'
 import ReactECharts               from 'echarts-for-react'
 import { useIntl, defineMessage } from 'react-intl'
 
@@ -15,7 +15,6 @@ import { TimeLine }                                  from './EventsTimeline'
 import { useClientInfoQuery }                        from './services'
 import * as UI                                       from './styledComponents'
 
-import type { EChartsType } from 'echarts'
 
 export type Filters = {
   category?: [];
@@ -37,30 +36,27 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const sharedChartName = 'eventTimeSeriesGroup'
   const popoverRef = useRef<HTMLDivElement>(null)
   const chartsRef = useRef<EChartsType[]>([])
-  chartsRef.current = []
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = sharedChartName
-      chartsRef.current.push(instance)
+      connect(sharedChartName)
     }
   }
-
+  const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
   useEffect(() => {
     const isChartActive = (chart: EChartsType) => chart && chart.isDisposed && !chart.isDisposed()
-    connect(sharedChartName)
     const charts = chartsRef.current
     const active = charts.filter(isChartActive)
     connect(active)
+    chartsRef.current = active
 
     return () => {
       const remainingCharts = charts.filter(isChartActive)
-      /* istanbul ignore next */
       remainingCharts.forEach(chart => chart.dispose())
       chartsRef.current = []
     }
   }, [])
-
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
@@ -120,6 +116,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   sharedChartName={sharedChartName}
                   connectChart={connectChart}
                   popoverRef={popoverRef}
+                  onChartReady={onChartReady}
                 />
                 <ConnectionEventPopover
                   key={Number(visible)}
@@ -132,8 +129,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   placement='bottom'
                   align={{
                     targetOffset: [
-                      (eventState as unknown as { x: number }).x ?? 0,
-                      (eventState as unknown as { y: number }).y ?? 0
+                      (eventState as unknown as { x: number }).x,
+                      (eventState as unknown as { y: number }).y
                     ]
                   }}
                 >

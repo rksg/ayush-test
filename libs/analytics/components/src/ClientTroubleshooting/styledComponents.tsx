@@ -275,7 +275,7 @@ export const StepLabel = styled.p`
 
 export const ChartWrapper = styled.div`
   path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
-    cursor: pointer;
+    cursor: pointer !important; 
   }
 `
 

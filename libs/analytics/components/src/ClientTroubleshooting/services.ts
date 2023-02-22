@@ -17,7 +17,7 @@ export type ConnectionEvent = {
   path: NetworkPath,
   ssid?: string | null,
   messageIds?: Array<string>,
-  key: string
+  key?: string
 }
 
 export type ConnectionQuality = {
