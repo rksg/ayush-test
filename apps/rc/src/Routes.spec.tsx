@@ -123,7 +123,7 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
-jest.mock('./pages/Services/NetworkSegmentationForm/NetworkSegmentationForm', () => () => {
+jest.mock('./pages/Services/NetworkSegmentation/AddNetworkSegmentation', () => () => {
   return <div data-testid='NetworkSegmentationForm' />
 })
 
