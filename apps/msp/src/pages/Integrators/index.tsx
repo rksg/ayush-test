@@ -201,7 +201,7 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Integrators' })}
+        title={$t({ defaultMessage: '3rd Party' })}
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>

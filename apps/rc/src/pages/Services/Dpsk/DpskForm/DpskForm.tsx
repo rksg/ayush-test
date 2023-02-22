@@ -28,7 +28,9 @@ import DpskSettingsForm                                               from './Dp
 import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './parser'
 
 interface DpskFormProps {
-  editMode?: boolean
+  editMode?: boolean,
+  modalMode?: boolean,
+  modalCallBack?: () => void
 }
 
 export default function DpskForm (props: DpskFormProps) {
@@ -37,7 +39,7 @@ export default function DpskForm (props: DpskFormProps) {
   // eslint-disable-next-line max-len
   const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
   const params = useParams()
-  const { editMode = false } = props
+  const { editMode = false, modalMode, modalCallBack } = props
 
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
@@ -64,7 +66,7 @@ export default function DpskForm (props: DpskFormProps) {
         await createDpsk({ payload: dpskSaveData }).unwrap()
       }
 
-      navigate(linkToServices, { replace: true })
+      modalMode ? modalCallBack?.() : navigate(linkToServices, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -75,21 +77,21 @@ export default function DpskForm (props: DpskFormProps) {
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit DPSK service' })
           : $t({ defaultMessage: 'Add DPSK service' })
         }
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'Services' }),
+            text: $t({ defaultMessage: 'DPSK' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
-      />
+      />}
       <StepsForm<CreateDpskFormFields>
         formRef={formRef}
-        onCancel={() => navigate(linkToServices)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToServices)}
         onFinish={saveData}
       >
         <StepsForm.StepForm<CreateDpskFormFields>
