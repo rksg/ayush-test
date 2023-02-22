@@ -30,7 +30,7 @@ describe('Select connected clients table', () => {
 
     render(
       <Provider>
-        <SelectConnectedClientsTable visible={true} onRowChange={onRowChangeFn} />
+        <SelectConnectedClientsTable onRowChange={onRowChangeFn} />
       </Provider>,
       { route: { params: { tenantId: 'mockedTenantId' } } }
     )
