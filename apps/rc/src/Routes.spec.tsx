@@ -556,6 +556,17 @@ describe('RcRoutes: Policies', () => {
     expect(screen.getByTestId('RogueAPDetectionForm')).toBeVisible()
   })
 
+  test('should navigate to detail SYSLOG page', async () => {
+    const path = getPolicyDetailsLink({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL, policyId: 'POLICY_ID' })
+    render(<Provider><RcRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/' + path,
+        wrapRoutes: false
+      }
+    })
+    expect(screen.getByText(/configure/i)).toBeVisible()
+  })
+
   test('should navigate to create MAC_REGISTRATION_LIST page', async () => {
     render(<Provider><RcRoutes /></Provider>, {
       route: {
