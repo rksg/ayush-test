@@ -27,7 +27,7 @@ export const ScoreValue = styled.span`
 `
 
 export const ScoreText = styled.span`
-  color: var(--acx-neutrals-60)
+  color: var(--acx-neutrals-60);
 `
 
 export const Pill = styled(BasePill)`

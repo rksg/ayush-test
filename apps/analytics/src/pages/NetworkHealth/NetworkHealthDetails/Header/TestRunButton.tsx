@@ -51,7 +51,7 @@ const TestRunTable = (
   return <UI.Menu
     items={[{
       key: 'table',
-      label: <Table type={'form'} columns={columns} dataSource={data} />
+      label: <Table type={'form'} columns={columns} dataSource={data} rowKey='id' />
     }]}
   />
 }
@@ -60,7 +60,7 @@ export const TestRunButton = () => {
   const { $t } = useIntl()
   const params = useParams<{ testId: string }>()
   const queryResults = useNetworkHealthRelatedTests()
-  return<Loader states={[queryResults]}>
+  return <Loader states={[queryResults]}>
     <Dropdown overlay={<TestRunTable data={queryResults.data || []}/>}>{() =>
       <Button>
         <Space>

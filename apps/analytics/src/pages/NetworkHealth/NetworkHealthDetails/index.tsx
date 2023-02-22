@@ -50,8 +50,8 @@ function NetworkHealthDetails () {
           link: '/serviceValidation/networkHealth'
         }]}
         extra={[
-          <ReRunButton/>,
-          <TestRunButton/>
+          <ReRunButton key='re-run' />,
+          <TestRunButton key='past-tests' />
         ]}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
