@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment        from 'moment-timezone'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
-import { noDataSymbol }                                                                         from '@acx-ui/analytics/utils'
-import { showActionModal, Table, TableProps, Subtitle, Loader, showToast, Tooltip }             from '@acx-ui/components'
-import { SuccessSolid }                                                                         from '@acx-ui/icons'
-import { OSIconContainer }                                                                      from '@acx-ui/rc/components'
-import { useAddPersonaDevicesMutation, useDeletePersonaDevicesMutation, useGetClientListQuery } from '@acx-ui/rc/services'
-import { getOsTypeIcon, Persona, PersonaDevice, useTableQuery }                                 from '@acx-ui/rc/utils'
+import { noDataSymbol }                                                             from '@acx-ui/analytics/utils'
+import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { OSIconContainer }                                                          from '@acx-ui/rc/components'
+import {
+  useAddPersonaDevicesMutation,
+  useDeletePersonaDevicesMutation,
+  useLazyGetClientListQuery
+} from '@acx-ui/rc/services'
+import { ClientList, getOsTypeIcon, Persona, PersonaDevice } from '@acx-ui/rc/utils'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -24,41 +29,44 @@ export function PersonaDevicesTable (props: {
   title?: string
 }) {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const { persona, title } = props
   const [modelVisible, setModelVisible] = useState(false)
   const [dataSource, setDataSource] = useState<PersonaDevice[]>(persona?.devices ?? [])
 
-  const clientListQuery = useTableQuery({
-    useQuery: useGetClientListQuery,
-    defaultPayload: {
-      ...defaultPayload,
-      ...persona
-        ? { filters: { clientMac: persona.devices?.map(d => d.macAddress.replaceAll('-', ':')) } }
-        : {}
-    },
-    option: {
-      skip: !persona
-    }
-  })
+  const [getClientList] = useLazyGetClientListQuery()
 
   useEffect(() => {
-    if (!clientListQuery.data || !persona) return
+    if (!persona?.devices) return
 
-    // Combine client data and persona devices data
-    const personaDevices = persona?.devices?.map(device => {
+    getClientList({
+      params: { tenantId },
+      payload: {
+        ...defaultPayload,
+        ...persona.devices
+          ? { filters: { clientMac: persona.devices.map(d => d.macAddress.replaceAll('-', ':')) } }
+          : {}
+      }
+    })
+      .then(result => {
+        if (!result.data?.data) return
+        setDataSource(aggregatePersonaDevices(result.data.data))
+      })
+  }, [persona?.devices])
+
+  const aggregatePersonaDevices = (clientList: ClientList[]) => {
+    return persona?.devices?.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
       const deviceMac = device.macAddress.replaceAll('-', ':')
-      const client = clientListQuery.data?.data
+      const client = clientList
         .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
 
       return client
         ? { ...device, os: client.osType, deviceName: client.hostname }
         : device
     }) ?? []
-
-    setDataSource(personaDevices)
-  }, [clientListQuery.data, persona])
+  }
 
   const [
     addPersonaDevicesMutation,
