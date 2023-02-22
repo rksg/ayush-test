@@ -84,10 +84,12 @@ describe('PortalForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
         }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
-        })
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => {
+        return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
+          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
+      })
     )
 
     render(<Provider><PortalForm editMode={true}/></Provider>, {
@@ -121,10 +123,12 @@ describe('PortalForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
         }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
-        })
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => {
+        return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
+          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
+      })
     )
 
     render(<Provider><PortalForm editMode={true}/></Provider>, {

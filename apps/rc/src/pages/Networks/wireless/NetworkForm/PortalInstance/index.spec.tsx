@@ -22,12 +22,14 @@ describe('Portal Instance Page', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalProfileList.url,
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
         (req, res, ctx) => res(ctx.json({ content: portalList,
           paging: { page: 1, pageSize: 10, totalCount: 1 } }))
       ),
       rest.post(
-        PortalUrlsInfo.getPortalProfileList.url,
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
         (req, res, ctx) => res(ctx.json({ }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,

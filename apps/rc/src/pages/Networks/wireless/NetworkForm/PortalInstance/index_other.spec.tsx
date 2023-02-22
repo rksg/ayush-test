@@ -27,7 +27,8 @@ describe('Portal Instance Page', () => {
           paging: { page: 1, pageSize: 10, totalCount: 1 } }))
       ),
       rest.post(
-        PortalUrlsInfo.getPortalProfileList.url,
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
         (req, res, ctx) => res(ctx.json({ }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
