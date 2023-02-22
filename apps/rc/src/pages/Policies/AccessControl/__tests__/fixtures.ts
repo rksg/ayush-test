@@ -3,10 +3,6 @@ export const aclDetail = {
     id: '36ec4826b5da48cc8118eda83aa4080f',
     enabled: true
   },
-  l3AclPolicy: {
-    id: '233d3182a1aa49ee9f50aeb039347021',
-    enabled: true
-  },
   name: 'acl-test',
   id: 'c9c0667abfe74ab7803999a793fd2bbe'
 }
