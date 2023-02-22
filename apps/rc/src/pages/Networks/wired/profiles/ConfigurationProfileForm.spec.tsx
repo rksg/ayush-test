@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                              from '@acx-ui/rc/services'
+import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
 import { Provider, store }                                        from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -26,25 +26,35 @@ const configureProfileContextValues = {
 describe('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json({}))),
+        (_, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(SwitchUrlsInfo.getSwitchProfileList.url,
-        (_, res, ctx) => res(ctx.json(profilesExistResponse))),
+        (_, res, ctx) => res(ctx.json(profilesExistResponse))
+      ),
       rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venues))),
+        (_, res, ctx) => res(ctx.json(venues))
+      ),
       rest.get(SwitchUrlsInfo.getCliFamilyModels.url,
-        (_, res, ctx) => res(ctx.json(familyModels))),
+        (_, res, ctx) => res(ctx.json(familyModels))
+      ),
       rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json(profile)))
+        (_, res, ctx) => res(ctx.json(profile))
+      ),
+      rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.put(SwitchUrlsInfo.updateSwitchConfigProfile.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
   })
-
 
   afterEach(() => {
     Modal.destroyAll()
   })
-
 
   it('should render Switch Configuration Profile form correctly', async () => {
     const params = {
@@ -262,7 +272,8 @@ describe('Wired', () => {
 
     const params = {
       tenantId: 'tenant-id',
-      profileId: 'b27ddd7be108495fb9175cec5930ce63'
+      profileId: 'b27ddd7be108495fb9175cec5930ce63',
+      action: 'edit'
     }
     render(
       <Provider>
@@ -270,7 +281,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/edit' }
+        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/:action' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -299,9 +310,7 @@ describe('Wired', () => {
     await userEvent.click(finishButton)
   })
 
-
-
-  it('should render Configuration Profile form with drag select VLAN ports correctly', async () => {
+  it('should render Profile form with drag select VLAN ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
