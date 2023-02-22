@@ -12,7 +12,7 @@ import {
   screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { aclList, layer2PolicyListResponse, layer2Response, layer3Response } from '../__tests__/fixtures';
+import { aclList, layer2PolicyListResponse, layer2Response } from '../__tests__/fixtures'
 
 import Layer2Component from './Layer2Component'
 
