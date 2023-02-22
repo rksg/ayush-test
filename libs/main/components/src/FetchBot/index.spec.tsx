@@ -10,7 +10,6 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import * as utils from '@acx-ui/utils'
 
 import { FetchBot } from './index'
 
@@ -133,7 +132,6 @@ describe('FetchBot',()=>{
     })
   })
   it('should throw error while calling generateToken method', async ()=>{
-    const jwtMock = jest.spyOn(utils,'getJwtToken').mockReturnValue('some-jwt-token')
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getUserProfile.url,
@@ -164,6 +162,5 @@ describe('FetchBot',()=>{
       error: 'Network request failed',
       details: {}
     })
-    jwtMock.mockRestore()
   })
 })

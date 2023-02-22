@@ -12,7 +12,6 @@ import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-import { getJwtToken }                       from '@acx-ui/utils'
 
 
 declare global {
@@ -85,31 +84,25 @@ export function FetchBot (props:FetchBotProps) {
   }, [])
   useEffect(()=>{
     window.generateToken = async function (callback){
-      const jwtToken = getJwtToken()
-      const userUrl = createHttpRequest (
+      const userProfileReq = createHttpRequest (
         CommonUrlsInfo.getUserProfile,
         { ...params }
       )
       try {
-        const userResp = await fetch(userUrl.url,{
-          headers: {
-            Authorization: jwtToken ? `Bearer ${jwtToken}` : ''
-          }
+        const userResp = await fetch(userProfileReq.url,{
+          headers: userProfileReq.headers
         })
         const userInfo = await userResp.json()
         statusCallback && statusCallback('user-profile-success')
         const { externalId: swuId } = userInfo
-        const authUrl = createHttpRequest (
+        const tokenReq = createHttpRequest (
           CommonUrlsInfo.fetchBotAuth,
           { ...params }
         )
         try {
-          const authResp = await fetch(authUrl.url,{
-            method: authUrl.method.toUpperCase(),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': jwtToken ? `Bearer ${jwtToken}` : ''
-            },
+          const authResp = await fetch(tokenReq.url,{
+            method: tokenReq.method,
+            headers: tokenReq.headers,
             body: JSON.stringify({ swuId })
           })
           const { idToken } = await authResp.json()
