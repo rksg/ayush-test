@@ -19,6 +19,7 @@ import { useParams }                                              from '@acx-ui/
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'
+import { useHasRoles } from '@acx-ui/rbac'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -107,7 +108,7 @@ export const NotificationsTable = () => {
   const rowActions: TableProps<NotificationRecipientUIModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      label: $t({ defaultMessage: 'Edit' }),
+      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
@@ -116,7 +117,7 @@ export const NotificationsTable = () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Delete' }),
+      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -145,7 +146,7 @@ export const NotificationsTable = () => {
   ]
 
   const tableActions = [{
-    label: $t({ defaultMessage: 'Add Recipient' }),
+    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Add Recipient' }),
     onClick: handleClickAddRecipient
   }]
 
