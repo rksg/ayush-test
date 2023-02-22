@@ -1,7 +1,7 @@
-
 import { useState } from 'react'
 
 import { Form, Input } from 'antd'
+import flat            from 'flat'
 
 import { createStepsFormContext } from '@acx-ui/components'
 import { Provider }               from '@acx-ui/store'
@@ -78,7 +78,6 @@ export const renderForm = (
     }
     const onValuesChange = () => setOk(false)
     const formProps = { form, initialValues, onFinish, onValuesChange }
-    const keys = new Set(Object.keys(valuesToUpdate).concat(Object.keys(initialValues)))
 
     // eslint-disable-next-line testing-library/no-node-access
     const child = props.children
@@ -88,9 +87,9 @@ export const renderForm = (
       {ok ? <div data-testid='form-values'>{JSON.stringify(form.getFieldsValue(true))}</div> : null}
       {/* TODO: might be a source of bug for the StepsFormNew when previous page rely on useWatch to update another value */}
       {/* It is required to have fields render in order for useWatch to trigger */}
-      {Array.from(keys).map(key => <Form.Item
+      {Object.keys(flat({ ...initialValues, ...valuesToUpdate })).map(key => <Form.Item
         key={key}
-        name={key}
+        name={key.split('.')}
         children={<Input />}
       />)}
       <button type='button' onClick={onSetValue}>Update</button>

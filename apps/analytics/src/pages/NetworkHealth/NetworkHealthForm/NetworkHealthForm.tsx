@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsFormNew, showToast } from '@acx-ui/components'
@@ -10,17 +11,22 @@ import { specToDto, useNetworkHealthSpecMutation } from '../services'
 import {
   Band,
   ClientType,
-  NetworkHealthFormDto,
-  TestType
+  NetworkHealthFormDto
 } from '../types'
 
 import { NetworkHealthFormAPsSelection } from './NetworkHealthFormAPsSelection'
 import { NetworkHealthFormSettings }     from './NetworkHealthFormSettings'
 import { NetworkHealthFormSummary }      from './NetworkHealthFormSummary'
 
-const initialValues: Partial<NetworkHealthFormDto> = {
-  type: TestType.OnDemand,
+export const initialValues: Partial<NetworkHealthFormDto> = {
   clientType: ClientType.VirtualClient,
+  schedule: {
+    type: 'service_guard',
+    timezone: moment.tz.guess(),
+    frequency: null,
+    day: null,
+    hour: null
+  },
   radio: Band.Band2_4,
   speedTestEnabled: false,
   isDnsServerCustom: false

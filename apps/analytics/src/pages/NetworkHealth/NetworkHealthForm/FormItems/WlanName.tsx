@@ -36,7 +36,7 @@ export function WlanName () {
     const ok = Promise.resolve()
     if (!name) return ok
     if (networks.names?.includes(name)) return ok
-    return Promise.reject($t({ defaultMessage: '"{name}" not exists' }, { name }))
+    return Promise.reject($t({ defaultMessage: '"{name}" does not exists' }, { name }))
   }
 
   return <Loader style={{ height: 'auto' }} states={[networks]}>
@@ -50,8 +50,8 @@ export function WlanName () {
       children={<Select
         status={networks.noData ? 'error' : undefined}
         placeholder={networks.noData
-          ? $t({ defaultMessage: 'No Networks found' })
-          : $t({ defaultMessage: 'Select a Network' })}
+          ? $t({ defaultMessage: 'No networks found' })
+          : $t({ defaultMessage: 'Select a network' })}
         children={networks.options}
       />}
     />

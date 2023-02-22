@@ -32,6 +32,13 @@ Object {
     ],
     "id": "spec-id",
     "name": "Test Name",
+    "schedule": Object {
+      "day": null,
+      "frequency": null,
+      "hour": null,
+      "timezone": "Asia/Tokyo",
+      "type": "service_guard",
+    },
     "type": "on-demand",
   },
 }
@@ -65,6 +72,13 @@ Object {
     ],
     "id": "spec-id",
     "name": "Test Name",
+    "schedule": Object {
+      "day": null,
+      "frequency": null,
+      "hour": null,
+      "timezone": "Asia/Tokyo",
+      "type": "service_guard",
+    },
     "type": "on-demand",
   },
 }
@@ -104,6 +118,13 @@ Object {
     ],
     "id": "spec-id",
     "name": "Test Name",
+    "schedule": Object {
+      "day": null,
+      "frequency": null,
+      "hour": null,
+      "timezone": "Asia/Tokyo",
+      "type": "service_guard",
+    },
     "type": "on-demand",
   },
 }
@@ -122,15 +143,23 @@ Object {
   },
   "pingAddress": "10.10.10.10",
   "radio": "6",
+  "schedule": Object {
+    "day": null,
+    "frequency": null,
+    "hour": null,
+    "timezone": "Africa/Abidjan",
+    "type": "service_guard",
+  },
   "tracerouteAddress": "10.10.10.10",
   "type": "on-demand",
+  "typeWithSchedule": "on-demand",
   "wlanName": "WLAN Name",
   "wlanPassword": "12345",
   "wlanUsername": "user",
 }
 `;
 
-exports[`specToDto process spec of GraphQL result to dto 1`] = `
+exports[`specToDto process spec of GraphQL result to dto for on-demand spec 1`] = `
 Object {
   "authenticationMethod": "WPA3_PERSONAL",
   "clientType": "virtual-wireless-client",
@@ -143,8 +172,16 @@ Object {
   },
   "pingAddress": "10.10.10.10",
   "radio": "6",
+  "schedule": Object {
+    "day": null,
+    "frequency": null,
+    "hour": null,
+    "timezone": "Africa/Abidjan",
+    "type": "service_guard",
+  },
   "tracerouteAddress": "10.10.10.10",
   "type": "on-demand",
+  "typeWithSchedule": "on-demand",
   "wlanName": "WLAN Name",
   "wlanPassword": "12345",
   "wlanUsername": "user",

@@ -35,6 +35,14 @@ export enum TestType {
   Scheduled = 'scheduled'
 }
 
+export enum ScheduleFrequency {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly'
+}
+
+export type TestTypeWithSchedule = TestType.OnDemand | ScheduleFrequency
+
 export enum Band {
   Band2_4 = '2.4',
   Band5 = '5',
@@ -46,12 +54,21 @@ export type NetworkHealthSpec = {
   name: string
   type: TestType
   clientType: ClientType
+  schedule: Schedule | null
   configs: NetworkHealthConfig[]
 }
 
+export type Schedule = {
+  type: 'service_guard'
+  timezone: string
+  frequency: ScheduleFrequency | null
+  day: number | null
+  hour: number | null
+}
+
 export type NetworkHealthConfig = {
-  id: string
-  specId: string
+  id?: string
+  specId?: string
   radio: Band
   authenticationMethod: string
   wlanName: string
@@ -62,14 +79,15 @@ export type NetworkHealthConfig = {
   dnsServer?: string
   tracerouteAddress?: string
   speedTestEnabled?: boolean
-  updatedAt: string // timestamp
-  createdAt: string // timestamp
+  updatedAt?: string // timestamp
+  createdAt?: string // timestamp
 }
 
 export type NetworkHealthFormDto = {
   id?: NetworkHealthSpec['id']
   isDnsServerCustom: boolean
-} & Pick<NetworkHealthSpec, 'name' | 'type' | 'clientType'>
+  typeWithSchedule: TestTypeWithSchedule
+} & Pick<NetworkHealthSpec, 'name' | 'type' | 'schedule' | 'clientType'>
   & Pick<NetworkHealthConfig, 'radio'
     | 'wlanName'
     | 'authenticationMethod'

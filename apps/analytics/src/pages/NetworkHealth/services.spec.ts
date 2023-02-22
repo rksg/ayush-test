@@ -17,9 +17,12 @@ import {
   Band,
   ClientType,
   TestType,
-  NetworkPaths
+  NetworkPaths,
+  Schedule,
+  ScheduleFrequency,
+  NetworkHealthFormDto,
+  NetworkHealthSpec
 } from './types'
-
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -45,7 +48,7 @@ describe('useNetworkHealthSpec', () => {
 
 describe('useNetworkHealthSpecMutation', () => {
   it('handles create mutation', async () => {
-    const dto = {
+    const dto: NetworkHealthFormDto = {
       isDnsServerCustom: true,
       dnsServer: '10.10.10.10',
       tracerouteAddress: '10.10.10.10',
@@ -56,6 +59,14 @@ describe('useNetworkHealthSpecMutation', () => {
       authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
       wlanPassword: '12345',
       wlanUsername: 'user',
+      schedule: {
+        type: 'service_guard',
+        timezone: 'Asia/Tokyo',
+        frequency: null,
+        day: null,
+        hour: null
+      },
+      typeWithSchedule: TestType.OnDemand,
       type: TestType.OnDemand,
       name: 'Test Name',
       // TODO:
@@ -81,7 +92,7 @@ describe('useNetworkHealthSpecMutation', () => {
   })
 
   it('handles update mutation', async () => {
-    const dto = {
+    const dto: NetworkHealthFormDto = {
       id: 'spec-id',
       isDnsServerCustom: true,
       dnsServer: '10.10.10.10',
@@ -93,6 +104,14 @@ describe('useNetworkHealthSpecMutation', () => {
       authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
       wlanPassword: '12345',
       wlanUsername: 'user',
+      schedule: {
+        type: 'service_guard',
+        timezone: 'Asia/Tokyo',
+        frequency: null,
+        day: null,
+        hour: null
+      },
+      typeWithSchedule: TestType.OnDemand,
       type: TestType.OnDemand,
       name: 'Test Name',
       // TODO:
@@ -124,8 +143,9 @@ describe('useNetworkHealthSpecMutation', () => {
 })
 
 describe('processDtoToPayload', () => {
-  const dto = {
+  const dto: NetworkHealthFormDto = {
     id: 'spec-id',
+    networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' },
     isDnsServerCustom: true,
     dnsServer: '10.10.10.10',
     tracerouteAddress: '10.10.10.10',
@@ -136,6 +156,14 @@ describe('processDtoToPayload', () => {
     authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
     wlanPassword: '12345',
     wlanUsername: 'user',
+    schedule: {
+      type: 'service_guard',
+      timezone: 'Asia/Tokyo',
+      frequency: null,
+      day: null,
+      hour: null
+    },
+    typeWithSchedule: TestType.OnDemand,
     type: TestType.OnDemand,
     name: 'Test Name'
   }
@@ -174,9 +202,10 @@ describe('processDtoToPayload', () => {
 })
 
 describe('specToDto', () => {
-  const spec = {
+  const spec: NetworkHealthSpec = {
     id: 'spec-id',
     clientType: ClientType.VirtualWirelessClient,
+    schedule: null,
     type: TestType.OnDemand,
     name: 'Test Name',
     configs: [{
@@ -196,9 +225,318 @@ describe('specToDto', () => {
       }
     }]
   }
-  it('process spec of GraphQL result to dto', () => {
+
+  it('process spec of GraphQL result to dto for on-demand spec', () => {
     const dto = specToDto(spec)
     expect(dto).toMatchSnapshot()
+  })
+
+  describe('process spec of GraphQL result to dto for scheduled spec', () => {
+    const scheduledSpec = { ...spec, type: TestType.Scheduled }
+    const mockDailySchedule: Schedule = {
+      type: 'service_guard',
+      frequency: ScheduleFrequency.Daily,
+      day: null,
+      hour: 1,
+      timezone: 'Asia/Singapore'
+    }
+    const mockWeeklySchedule: Schedule = {
+      type: 'service_guard',
+      frequency: ScheduleFrequency.Weekly,
+      day: 0,
+      hour: 2,
+      timezone: 'Asia/Singapore'
+    }
+    const mockMonthlySchedule: Schedule = {
+      type: 'service_guard',
+      frequency: ScheduleFrequency.Monthly,
+      day: 18,
+      hour: 20,
+      timezone: 'Asia/Singapore'
+    }
+    let specToDtoFn: (spec: NetworkHealthSpec) => NetworkHealthFormDto
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    describe('convert convert db timezone to local (UTC+5.5)', () => {
+      const timezone = 'Asia/Calcutta'
+      beforeEach(() => {
+        jest.resetModules()
+        jest.doMock('moment-timezone', () => {
+          const moment = jest.requireActual('moment-timezone')
+          moment.tz.guess = () => timezone
+          return moment
+        })
+        specToDtoFn = require('./services').specToDto
+        jest.useFakeTimers()
+        jest.setSystemTime(new Date(Date.parse('2021-05-01')))
+      })
+
+      it('should fetch day and time correctly for daily schedule from UTC+1', () => {
+        const dailySchedule = {
+          ...mockDailySchedule,
+          hour: 20,
+          timezone: 'Europe/London'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
+        const expectedResult = { ...dailySchedule, hour: 0.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC+9', () => {
+        const weeklySchedule = {
+          ...mockWeeklySchedule,
+          day: 0,
+          hour: 3,
+          timezone: 'Asia/Tokyo'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 6, hour: 23.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC-7', () => {
+        const weeklySchedule = {
+          ...mockWeeklySchedule,
+          day: 6,
+          hour: 20,
+          timezone: 'America/Vancouver'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 0, hour: 8.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC-4', () => {
+        const weeklySchedule = {
+          ...mockWeeklySchedule,
+          day: 6,
+          hour: 3,
+          timezone: 'America/New_York'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 6, hour: 12.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC-4', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 31,
+          hour: 23,
+          timezone: 'America/New_York'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 1, hour: 8.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC-7', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 1,
+          hour: 15,
+          timezone: 'America/Los_Angeles'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 2, hour: 3.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC+8', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 1,
+          hour: 1,
+          timezone: 'Asia/Singapore'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 31, hour: 22.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+    })
+
+    describe('convert convert db timezone to local (UTC-4) with DST', () => {
+      const timezone = 'America/New_York'
+      beforeEach(() => {
+        jest.resetModules()
+        jest.doMock('moment-timezone', () => {
+          const moment = jest.requireActual('moment-timezone')
+          moment.tz.guess = () => timezone
+          return moment
+        })
+        specToDtoFn = require('./services').specToDto
+        jest.useFakeTimers()
+        jest.setSystemTime(new Date(Date.parse('2021-05-01')))
+      })
+
+      it('should fetch day and time correctly for daily schedule from UTC+1', () => {
+        const dailySchedule: Schedule = {
+          ...mockDailySchedule,
+          hour: 4.25,
+          timezone: 'Europe/London'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
+        const expectedResult = { ...dailySchedule, hour: 23.25 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC+5.5', () => {
+        const weeklySchedule: Schedule = {
+          ...mockWeeklySchedule,
+          day: 1,
+          hour: 2,
+          timezone: 'Asia/Calcutta'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 0, hour: 16.5 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC-7', () => {
+        const weeklySchedule = {
+          ...mockWeeklySchedule,
+          day: 6,
+          hour: 23,
+          timezone: 'America/Vancouver'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 0, hour: 2 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for weekly schedule from UTC+1', () => {
+        const weeklySchedule = {
+          ...mockWeeklySchedule,
+          day: 0,
+          hour: 1,
+          timezone: 'Europe/London'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+        const expectedResult = { ...weeklySchedule, day: 6, hour: 20 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC-7', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 31,
+          hour: 23,
+          timezone: 'America/Vancouver'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 1, hour: 2 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC+8 (AM)', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 1,
+          hour: 10,
+          timezone: 'Asia/Singapore'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 31, hour: 22 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+
+      it('should fetch day and time correctly for monthly schedule from UTC+8 (PM)', () => {
+        const monthlySchedule = {
+          ...mockMonthlySchedule,
+          day: 15,
+          hour: 20,
+          timezone: 'Asia/Singapore'
+        }
+        const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+        const expectedResult = { ...monthlySchedule, day: 15, hour: 8 }
+        expect(dto.schedule).toEqual(expectedResult)
+      })
+    })
+
+    describe('max timezone difference', () => {
+      describe('-26 hours', () => {
+        const timezone = 'Etc/GMT+12'
+        beforeEach(() => {
+          jest.resetModules()
+          jest.doMock('moment-timezone', () => {
+            const moment = jest.requireActual('moment-timezone')
+            moment.tz.guess = () => timezone
+            return moment
+          })
+          specToDtoFn = require('./services').specToDto
+          jest.useFakeTimers()
+        })
+
+        it('should fetch day and time correctly for weekly schedule', () => {
+          jest.setSystemTime(new Date(Date.parse('2021-09-01')))
+          const weeklySchedule = {
+            ...mockWeeklySchedule,
+            day: 0,
+            hour: 0,
+            timezone: 'Etc/GMT-14'
+          }
+          const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+          const expectedResult = { ...weeklySchedule, day: 5, hour: 22 }
+          expect(dto.schedule).toEqual(expectedResult)
+        })
+
+        it('should fetch day and time correctly for monthly schedule', () => {
+          jest.setSystemTime(new Date(Date.parse('2021-02-01')))
+          const monthlySchedule = {
+            ...mockMonthlySchedule,
+            day: 1,
+            hour: 1,
+            timezone: 'Etc/GMT-14'
+          }
+          const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+          const expectedResult = { ...monthlySchedule, day: 30, hour: 23 }
+          expect(dto.schedule).toEqual(expectedResult)
+        })
+      })
+
+      describe('26 hours', () => {
+        const timezone = 'Etc/GMT-14'
+        beforeEach(() => {
+          jest.resetModules()
+          jest.doMock('moment-timezone', () => {
+            const moment = jest.requireActual('moment-timezone')
+            moment.tz.guess = () => timezone
+            return moment
+          })
+          specToDtoFn = require('./services').specToDto
+          jest.useFakeTimers()
+        })
+
+        it('should fetch day and time correctly for weekly schedule', () => {
+          jest.setSystemTime(new Date(Date.parse('2021-04-01')))
+          const weeklySchedule = {
+            ...mockWeeklySchedule,
+            day: 0,
+            hour: 23,
+            timezone: 'Etc/GMT+12'
+          }
+          const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
+          const expectedResult = { ...weeklySchedule, day: 2, hour: 1 }
+          expect(dto.schedule).toEqual(expectedResult)
+        })
+
+        it('should fetch day and time correctly for monthly schedule', () => {
+          jest.setSystemTime(new Date(Date.parse('2021-06-01')))
+          const monthlySchedule = {
+            ...mockMonthlySchedule,
+            day: 31,
+            hour: 23,
+            timezone: 'Etc/GMT+12'
+          }
+          const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
+          const expectedResult = { ...monthlySchedule, day: 2, hour: 1 }
+          expect(dto.schedule).toEqual(expectedResult)
+        })
+      })
+    })
   })
 
   it('handles path without AP list', () => {

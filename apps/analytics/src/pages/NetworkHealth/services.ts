@@ -1,9 +1,13 @@
 import { gql } from 'graphql-request'
 import _       from 'lodash'
+import moment  from 'moment-timezone'
 
 import { networkHealthApi }     from '@acx-ui/analytics/services'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { APListNode, PathNode } from '@acx-ui/utils'
+
+import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'
+import { TestType, ScheduleFrequency } from './types'
 
 import type {
   APListNodes,
@@ -11,8 +15,7 @@ import type {
   NetworkHealthSpec,
   NetworkNodes,
   NetworkPaths,
-  MutationResult,
-  NetworkHealthConfig
+  MutationResult
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -134,7 +137,7 @@ export function processDtoToPayload (dto: NetworkHealthFormDto) {
   const spec = {
     // TODO:
     // Add `networkPaths` into `configKeys` when APsSelection input available
-    ..._.omit(dto, configKeys.concat(['isDnsServerCustom', 'networkPaths'])),
+    ..._.omit(dto, configKeys.concat(['typeWithSchedule', 'isDnsServerCustom', 'networkPaths'])),
     configs: [{
       ..._.pick(dto, configKeys),
       networkPaths: { networkNodes: stringToNetworkNodes(dto.networkPaths.networkNodes) }
@@ -143,24 +146,43 @@ export function processDtoToPayload (dto: NetworkHealthFormDto) {
   return { spec }
 }
 
-export function specToDto (spec?: Pick<NetworkHealthSpec, 'id' | 'clientType' | 'name' | 'type'> & {
-  configs: Pick<
-    NetworkHealthConfig,
-    'authenticationMethod' | 'dnsServer' | 'pingAddress' | 'radio' | 'speedTestEnabled' |
-    'tracerouteAddress' | 'wlanName' | 'wlanPassword' | 'wlanUsername' |
-    'networkPaths'
-  >[]
-}): NetworkHealthFormDto | undefined {
+const mod = (a: number, b: number) => ((a % b) + b) % b
+
+export function specToDto (spec?: NetworkHealthSpec): NetworkHealthFormDto | undefined {
   if (!spec) return undefined
+
   const networkPaths = {
     networkNodes: networkNodesToString(spec.configs[0].networkPaths.networkNodes)
   }
+  const localTimezone = moment.tz.guess()
+  const localSchedule = { ...(spec.schedule! || initialValues.schedule) }
+  const { frequency, day, hour, timezone } = localSchedule
+  const typeWithSchedule = spec.type === TestType.OnDemand ? TestType.OnDemand : frequency!
+
+  if (frequency) {
+    const db = moment().tz(timezone!).format('YYYY-MM-DDTHH:mm')
+    const local = moment().tz(localTimezone).format('YYYY-MM-DDTHH:mm')
+    const differenceInHours = moment(local).diff(moment(db), 'hour', true)
+    const totalHours = hour! + differenceInHours
+    const rolloverHours = totalHours > 0 ? totalHours - 24 : Math.abs(totalHours)
+    const differenceInDays = Math.ceil(rolloverHours / 24) * Math.sign(totalHours)
+    localSchedule.hour = mod(totalHours, 24)
+    if (frequency === ScheduleFrequency.Weekly) {
+      localSchedule.day = mod(day! + differenceInDays, 7)
+    }
+    if (frequency === ScheduleFrequency.Monthly) {
+      localSchedule.day = mod(day! - 1 + differenceInDays, 31) + 1
+    }
+  }
+
   return {
+    typeWithSchedule,
     isDnsServerCustom: Boolean(spec.configs[0].dnsServer),
     // TODO:
     // Take `networkPaths` from `spec.configs[0]` when APsSelection input available
     networkPaths,
     ..._.pick(spec, ['id', 'name', 'type', 'clientType']),
+    schedule: localSchedule,
     ..._.pick(spec.configs[0], [
       'radio',
       'wlanName',
