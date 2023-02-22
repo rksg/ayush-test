@@ -55,6 +55,7 @@ export function PersonaDevicesTable (props: {
   }, [persona?.devices])
 
   const aggregatePersonaDevices = (clientList: ClientList[]) => {
+    // Combine client data and persona devices data
     return persona?.devices?.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
