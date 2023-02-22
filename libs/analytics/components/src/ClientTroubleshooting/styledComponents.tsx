@@ -1,3 +1,5 @@
+import { ElementType } from 'react'
+
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -275,4 +277,15 @@ export const ChartWrapper = styled.div`
   path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
     cursor: pointer;
   }
+`
+
+type HistoryItemWrapperProp = ElementType<HTMLDivElement> & {
+  $selected: boolean
+}
+
+export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperProp) => props)`
+  ${({ $selected }) => $selected && css`
+    background-color: var(--acx-accents-blue-30);
+  `
+}
 `

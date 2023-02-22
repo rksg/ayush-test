@@ -93,7 +93,6 @@ export const transformEvents = (
       ...data,
       type: event === 'EVENT_CLIENT_ROAMING' ? TYPES.ROAMING : TYPES.CONNECTION_EVENTS,
       key: time + mac + eventType + index,
-      name: time + mac + eventType + index,
       start: time,
       end: time,
       ssid,

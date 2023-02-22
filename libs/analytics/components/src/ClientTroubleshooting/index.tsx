@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Row, Col }               from 'antd'
 import { connect }                from 'echarts'
@@ -60,15 +60,6 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     }
   }, [])
 
-  const Chart = useMemo(() => () => <TimeLine
-    data={results.data}
-    filters={filters}
-    setEventState={setEventState}
-    setVisible={setVisible}
-    sharedChartName={sharedChartName}
-    connectChart={connectChart}
-  />, [results.data, filters])
-
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
@@ -120,7 +111,14 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
           <Col span={24}>
             <UI.TimelineLoaderWrapper>
               <Loader states={[results]}>
-                <Chart key='timeline-chart'/>
+                <TimeLine
+                  data={results.data}
+                  filters={filters}
+                  setEventState={setEventState}
+                  setVisible={setVisible}
+                  sharedChartName={sharedChartName}
+                  connectChart={connectChart}
+                />
                 <ConnectionEventPopover
                   key={Number(visible)}
                   arrowPointAtCenter
@@ -148,7 +146,6 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         <Col span={6}>
           <Loader states={[results]} >
             <History
-              key='event-history'
               setHistoryContentToggle={setHistoryContentToggle}
               historyContentToggle
               data={results.data}
@@ -156,6 +153,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               setEventState={setEventState}
               setVisible={setVisible}
               chartsRef={chartsRef}
+              visible={visible}
+              eventState={eventState}
             />
           </Loader>
         </Col>

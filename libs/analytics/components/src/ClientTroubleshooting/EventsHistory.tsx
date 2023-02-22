@@ -28,7 +28,9 @@ type HistoryContentProps = {
   filters: Filters | null,
   setEventState: (event: DisplayEvent) => void,
   setVisible: (visible: boolean) => void,
-  chartsRef: RefObject<EChartsType[]>
+  chartsRef: RefObject<EChartsType[]>,
+  visible: boolean,
+  eventState: DisplayEvent
 }
 
 type FormattedEvent = {
@@ -75,7 +77,9 @@ const renderItem = (
   item: IncidentDetails | FormattedEvent,
   handler: CallableFunction,
   setVisible: CallableFunction,
-  chartRefs: RefObject<EChartsType[]>
+  chartRefs: RefObject<EChartsType[]>,
+  visible: boolean,
+  eventState: DisplayEvent
 ) => {
   const onClick = () => {
     if (item && (item as FormattedEvent).event) {
@@ -123,7 +127,12 @@ const renderItem = (
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : <div onClick={onClick}>{Item}</div>
+    : <UI.HistoryItemWrapper
+      onClick={onClick}
+      $selected={visible && (eventState.key === (item as FormattedEvent).event.key)}
+    >
+      {Item}
+    </UI.HistoryItemWrapper>
 }
 
 export function History (props : HistoryContentProps) {
@@ -136,7 +145,9 @@ export function History (props : HistoryContentProps) {
     filters,
     setEventState,
     setVisible,
-    chartsRef
+    chartsRef,
+    visible,
+    eventState
   } = props
   const histData = transformData(data!, filters!, intl)
   return (
@@ -160,7 +171,9 @@ export function History (props : HistoryContentProps) {
             <List
               itemLayout='horizontal'
               dataSource={histData}
-              renderItem={(item) => renderItem(item, setEventState, setVisible, chartsRef)}
+              renderItem={(item) =>
+                renderItem(item, setEventState, setVisible, chartsRef, visible, eventState)
+              }
             />
           </UI.HistoryContent>
         )}
