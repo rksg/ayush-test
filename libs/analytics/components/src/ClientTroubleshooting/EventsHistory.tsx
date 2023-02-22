@@ -26,11 +26,11 @@ type HistoryContentProps = {
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
   filters: Filters | null,
-  setEventState: (event: DisplayEvent) => void,
-  setVisible: (visible: boolean) => void,
-  chartsRef: RefObject<EChartsType[]>,
-  visible: boolean,
-  eventState: DisplayEvent
+  setEventState?: (event: DisplayEvent) => void,
+  setVisible?: (visible: boolean) => void,
+  chartsRef?: RefObject<EChartsType[]>,
+  visible?: boolean,
+  eventState?: DisplayEvent
 }
 
 type FormattedEvent = {
@@ -75,17 +75,17 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 
 const renderItem = (
   item: IncidentDetails | FormattedEvent,
-  handler: CallableFunction,
-  setVisible: CallableFunction,
-  chartRefs: RefObject<EChartsType[]>,
-  visible: boolean,
-  eventState: DisplayEvent
+  setEventState?: CallableFunction,
+  setVisible?: CallableFunction,
+  chartRefs?: RefObject<EChartsType[]>,
+  visible?: boolean,
+  eventState?: DisplayEvent
 ) => {
   const onClick = () => {
     if (item && (item as FormattedEvent).event) {
       const event = (item as FormattedEvent).event
       const key = event.key
-      const charts = chartRefs.current
+      const charts = chartRefs && chartRefs.current
       if (charts && charts.length > 0) {
         const active = charts.filter(chart => !chart.isDisposed())
         const options = active.map(chart => chart.getOption())
@@ -108,12 +108,12 @@ const renderItem = (
           const { x, y, width } = popoverChild.getBoundingClientRect()
           const calcX = clientX - (x + width / 2)
           const calcY = clientY - y
-          handler({
+          setEventState && setEventState({
             ...(item as FormattedEvent).event,
             x: -calcX,
             y: -calcY
           })
-          setVisible(true)
+          setVisible && setVisible(true)
         }
       }
     }
@@ -129,7 +129,7 @@ const renderItem = (
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
     : <UI.HistoryItemWrapper
       onClick={onClick}
-      $selected={visible && (eventState.key === (item as FormattedEvent).event.key)}
+      $selected={visible && (eventState?.key === (item as FormattedEvent).event.key)}
     >
       {Item}
     </UI.HistoryItemWrapper>
