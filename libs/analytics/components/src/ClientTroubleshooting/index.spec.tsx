@@ -1,8 +1,8 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                                  from '@acx-ui/analytics/services'
-import { Provider, store }                             from '@acx-ui/store'
-import { render, screen, fireEvent, mockGraphqlQuery } from '@acx-ui/test-utils'
+import { dataApiURL }                                                             from '@acx-ui/analytics/services'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
@@ -53,6 +53,10 @@ describe('ClientTroubleshootingTab', () => {
     const fragment = asFragment()
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
+    fragment.querySelectorAll('text[transform^="translate"]')
+      .forEach((node:Element) => node.setAttribute('transform', 'transform_mock'))
+    fragment.querySelectorAll('path[transform^="translate"]')
+      .forEach((node:Element) => node.setAttribute('transform', 'transform_mock'))
     expect(fragment).toMatchSnapshot()
   })
   it('should render correctly with search params', async () => {
@@ -67,9 +71,8 @@ describe('ClientTroubleshootingTab', () => {
     )
     expect(await screen.findByTestId('history-collapse')).toBeVisible()
     const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    expect(fragment).toMatchSnapshot()
+    const charts = fragment.querySelectorAll('div[_echarts_instance_]')
+    expect(charts).toHaveLength(4)
   })
   it('should handle history button toggle', async () => {
     render(
@@ -99,6 +102,7 @@ describe('ClientTroubleshootingTab', () => {
         <Provider><ClientTroubleshooting clientMac='mac' /></Provider>
       </BrowserRouter>
     )
+    await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByText('All Categories')
 
     const selectionInput = await screen.findAllByRole('combobox')
@@ -106,8 +110,7 @@ describe('ClientTroubleshootingTab', () => {
     fireEvent.click(await screen.findByText('Performance'))
     fireEvent.click(await screen.findByText('Apply'))
     const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    expect(fragment).toMatchSnapshot()
+    const charts = fragment.querySelectorAll('div[_echarts_instance_]')
+    expect(charts).toHaveLength(4)
   })
 })

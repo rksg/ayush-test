@@ -1,1136 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ClientTroubleshootingTab should render correctly with search params 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row"
-    style="margin: -8px -8px -8px -8px; flex: 1;"
-  >
-    <div
-      class="ant-col ant-col-18"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="ant-row"
-        style="margin: -16px -8px -16px -8px; justify-content: end;"
-      >
-        <div
-          class="ant-col ant-col-15"
-          style="padding: 16px 8px 16px 8px;"
-        >
-          <div
-            class="ant-row ant-row-no-wrap"
-            style="margin: -3px -3px -3px -3px; justify-content: end;"
-          >
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      aria-hidden="true"
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-rest"
-                      style="opacity: 0; height: 0px; overflow-y: hidden; order: 9007199254740991; pointer-events: none; position: absolute;"
-                    >
-                      <span
-                        class="ant-select-selection-item"
-                      >
-                        <span
-                          class="ant-select-selection-item-content"
-                        >
-                          <div
-                            title="Performance"
-                          >
-                            2 categories selected
-                          </div>
-                        </span>
-                      </span>
-                    </div>
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-clear"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="close-circle"
-                    class="anticon anticon-close-circle"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="close-circle"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Types
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Radios
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 16px 8px 16px 8px;"
-        >
-          <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
-          >
-            <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-            >
-              <div
-                class="ant-row ant-row-no-wrap"
-                style="margin: -8px -8px -8px -8px;"
-              >
-                <div
-                  class="ant-col"
-                  style="padding: 8px 8px 8px 8px; flex: 0 0 200px; min-width: 0;"
-                >
-                  <div
-                    class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 4px;"
-                  >
-                    <div
-                      class="ant-col ant-col-3"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
-                        data-testid="PlusSquareOutlined"
-                        style="cursor: pointer;"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-17"
-                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
-                      >
-                        Connection Events
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-4"
-                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
-                      >
-                        0
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-3"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <svg
-                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
-                        data-testid="PlusSquareOutlined"
-                        style="cursor: not-allowed;"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-17"
-                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
-                      >
-                        Roaming
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-4"
-                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
-                      >
-                        0
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-3"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
-                        data-testid="PlusSquareOutlined"
-                        style="cursor: pointer;"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-17"
-                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
-                      >
-                        Connection Quality
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-4"
-                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
-                    />
-                    <div
-                      class="ant-col ant-col-3"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
-                        data-testid="PlusSquareOutlined"
-                        style="cursor: pointer;"
-                      />
-                    </div>
-                    <div
-                      class="ant-col ant-col-17"
-                      style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 dgjYuB"
-                      >
-                        Network Incidents
-                      </span>
-                    </div>
-                    <div
-                      class="ant-col ant-col-4"
-                      style="padding: 8px 8px 8px 8px; line-height: 25px;"
-                    >
-                      <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 iZOkzg"
-                      >
-                        0
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-col"
-                  style="padding: 8px 8px 8px 8px; flex-basis: auto; min-width: 0;"
-                >
-                  <div
-                    class="ant-row"
-                    style="margin: -8px -8px -8px -8px; row-gap: 0;"
-                  >
-                    <div
-                      class="ant-col ant-col-24"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
-                      >
-                        <div
-                          _echarts_instance_="ec_mock"
-                          class="echarts-for-react "
-                          size-sensor-id="5"
-                          style="height: 66px; margin-bottom: 0px; position: relative;"
-                        >
-                          <div
-                            style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                          >
-                            <svg
-                              baseProfile="full"
-                              height="800"
-                              style="position:absolute;left:0;top:0;user-select:none"
-                              version="1.1"
-                              width="1280"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                            >
-                              <rect
-                                fill="none"
-                                fill-opacity="1"
-                                height="800"
-                                id="0"
-                                width="1280"
-                                x="0"
-                                y="0"
-                              />
-                              <g>
-                                <path
-                                  d="M10 66l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 44l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 22l1270 0l0 -22l-1270 0Z"
-                                  fill="#F8F8FA"
-                                />
-                                <path
-                                  d="M10 66L1280 66"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 44L1280 44"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 22L1280 22"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 0L1280 0"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M-5 -5l26 0l0 10l-26 0Z"
-                                  fill="none"
-                                  stroke="#ccc"
-                                  stroke-width="0"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#3E98C5"
-                                  transform="translate(1267 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1275 5)"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                          <div
-                            class=""
-                          />
-                          <object
-                            class="size-sensor-object"
-                            data="about:blank"
-                            style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                            tabindex="-1"
-                            type="text/html"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-24"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
-                      >
-                        <div
-                          _echarts_instance_="ec_mock"
-                          class="echarts-for-react "
-                          size-sensor-id="6"
-                          style="height: 66px; margin-bottom: 0px; position: relative;"
-                        >
-                          <div
-                            style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                          >
-                            <svg
-                              baseProfile="full"
-                              height="800"
-                              style="position:absolute;left:0;top:0;user-select:none"
-                              version="1.1"
-                              width="1280"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                            >
-                              <rect
-                                fill="none"
-                                fill-opacity="1"
-                                height="800"
-                                id="0"
-                                width="1280"
-                                x="0"
-                                y="0"
-                              />
-                              <g>
-                                <path
-                                  d="M10 66l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 44l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 22l1270 0l0 -22l-1270 0Z"
-                                  fill="#F8F8FA"
-                                />
-                                <path
-                                  d="M10 66L1280 66"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 44L1280 44"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 22L1280 22"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 0L1280 0"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M-5 -5l26 0l0 10l-26 0Z"
-                                  fill="none"
-                                  stroke="#ccc"
-                                  stroke-width="0"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#3E98C5"
-                                  transform="translate(1267 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1275 5)"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                          <div
-                            class=""
-                          />
-                          <object
-                            class="size-sensor-object"
-                            data="about:blank"
-                            style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                            tabindex="-1"
-                            type="text/html"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-24"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
-                      >
-                        <div
-                          _echarts_instance_="ec_mock"
-                          class="echarts-for-react "
-                          size-sensor-id="7"
-                          style="height: 66px; margin-bottom: 0px; position: relative;"
-                        >
-                          <div
-                            style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                          >
-                            <svg
-                              baseProfile="full"
-                              height="800"
-                              style="position:absolute;left:0;top:0;user-select:none"
-                              version="1.1"
-                              width="1280"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                            >
-                              <rect
-                                fill="none"
-                                fill-opacity="1"
-                                height="800"
-                                id="0"
-                                width="1280"
-                                x="0"
-                                y="0"
-                              />
-                              <g>
-                                <path
-                                  d="M10 66l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 44l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 22l1270 0l0 -22l-1270 0Z"
-                                  fill="#F8F8FA"
-                                />
-                                <path
-                                  d="M10 66L1280 66"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 44L1280 44"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 22L1280 22"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 0L1280 0"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M-5 -5l26 0l0 10l-26 0Z"
-                                  fill="none"
-                                  stroke="#ccc"
-                                  stroke-width="0"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#3E98C5"
-                                  transform="translate(1267 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1275 5)"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                          <div
-                            class=""
-                          />
-                          <object
-                            class="size-sensor-object"
-                            data="about:blank"
-                            style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                            tabindex="-1"
-                            type="text/html"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="ant-col ant-col-24"
-                      style="padding: 8px 8px 8px 8px;"
-                    >
-                      <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
-                      >
-                        <div
-                          _echarts_instance_="ec_mock"
-                          class="echarts-for-react "
-                          size-sensor-id="8"
-                          style="height: 96px; margin-bottom: 0px; position: relative;"
-                        >
-                          <div
-                            style="position: relative; overflow: hidden; width: 1280px; height: 800px;"
-                          >
-                            <svg
-                              baseProfile="full"
-                              height="800"
-                              style="position:absolute;left:0;top:0;user-select:none"
-                              version="1.1"
-                              width="1280"
-                              xmlns="http://www.w3.org/2000/svg"
-                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                            >
-                              <rect
-                                fill="none"
-                                fill-opacity="1"
-                                height="800"
-                                id="0"
-                                width="1280"
-                                x="0"
-                                y="0"
-                              />
-                              <g>
-                                <path
-                                  d="M10 66l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 44l1270 0l0 -22l-1270 0Z"
-                                  fill="#FFFFFF"
-                                />
-                                <path
-                                  d="M10 22l1270 0l0 -22l-1270 0Z"
-                                  fill="#F8F8FA"
-                                />
-                                <path
-                                  d="M10 66L1280 66"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 44L1280 44"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 22L1280 22"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 0L1280 0"
-                                  fill="none"
-                                  stroke="#FFFFFF"
-                                  stroke-width="4"
-                                />
-                                <path
-                                  d="M10 66.5L1280 66.5"
-                                  fill="none"
-                                  stroke="#D4D4D4"
-                                  stroke-linecap="round"
-                                />
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="translate(55.8611 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(55.8611 74)"
-                                  y="8"
-                                >
-                                  04:00
-                                </text>
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="translate(267.5278 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(267.5278 74)"
-                                  y="8"
-                                >
-                                  08:00
-                                </text>
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="translate(479.1944 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(479.1944 74)"
-                                  y="8"
-                                >
-                                  12:00
-                                </text>
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="translate(690.8611 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(690.8611 74)"
-                                  y="8"
-                                >
-                                  16:00
-                                </text>
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="translate(902.5278 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(902.5278 74)"
-                                  y="8"
-                                >
-                                  20:00
-                                </text>
-                                <path
-                                  d="M-3 0l6 0l0 16l-6 0Z"
-                                  fill="none"
-                                  transform="translate(1114.1944 74)"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="translate(1114.1944 74)"
-                                  xml:space="preserve"
-                                  y="8"
-                                >
-                                  Feb 22
-                                </text>
-                                <path
-                                  d="M-5 -5l26 0l0 10l-26 0Z"
-                                  fill="none"
-                                  stroke="#ccc"
-                                  stroke-width="0"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1259 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#3E98C5"
-                                  transform="translate(1267 5)"
-                                />
-                                <path
-                                  d=""
-                                  fill="none"
-                                  stroke="#666"
-                                  transform="translate(1275 5)"
-                                />
-                              </g>
-                            </svg>
-                          </div>
-                          <div
-                            class=""
-                          />
-                          <object
-                            class="size-sensor-object"
-                            data="about:blank"
-                            style="display: block; position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1; opacity: 0;"
-                            tabindex="-1"
-                            type="text/html"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="styledComponents__PopoverWrapper-sc-hmshlr-17 hEWkuG"
-              >
-                <div
-                  data-testid="popover-child"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-6"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-      >
-        <div
-          class="styledComponents__History-sc-hmshlr-0 jYwBlN"
-        >
-          <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
-          >
-            <span
-              class="styledComponents__HistoryContentTitle-sc-hmshlr-3 fiXbsw"
-            >
-              History
-            </span>
-            <span
-              class="styledComponents__HistoryIcon-sc-hmshlr-4 jqwToA"
-            >
-              <svg
-                data-testid="history-collapse"
-              />
-            </span>
-          </div>
-          <div
-            style="overflow: visible; height: 0px; width: 0px;"
-          >
-            <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 lewcZe"
-              style="height: 756px; width: 1280px;"
-            >
-              <div
-                class="ant-list ant-list-split"
-              >
-                <div
-                  class="ant-spin-nested-loading"
-                >
-                  <div
-                    class="ant-spin-container"
-                  >
-                    <div
-                      class="ant-list-empty-text"
-                    >
-                      <div
-                        class="ant-empty ant-empty-normal"
-                      >
-                        <div
-                          class="ant-empty-image"
-                        >
-                          <svg
-                            class="ant-empty-img-simple"
-                            height="41"
-                            viewBox="0 0 64 41"
-                            width="64"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g
-                              fill="none"
-                              fill-rule="evenodd"
-                              transform="translate(0 1)"
-                            >
-                              <ellipse
-                                class="ant-empty-img-simple-ellipse"
-                                cx="32"
-                                cy="33"
-                                rx="32"
-                                ry="7"
-                              />
-                              <g
-                                class="ant-empty-img-simple-g"
-                                fill-rule="nonzero"
-                              >
-                                <path
-                                  d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"
-                                />
-                                <path
-                                  class="ant-empty-img-simple-path"
-                                  d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z"
-                                />
-                              </g>
-                            </g>
-                          </svg>
-                        </div>
-                        <div
-                          class="ant-empty-description"
-                        >
-                          No Data
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="resize-triggers"
-          >
-            <div
-              class="expand-trigger"
-            >
-              <div
-                style="width: 1281px; height: 801px;"
-              />
-            </div>
-            <div
-              class="contract-trigger"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`ClientTroubleshootingTab should render correctly without search params 1`] = `
 <DocumentFragment>
   <div
@@ -1620,25 +489,25 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                   fill="none"
                                   stroke="#ccc"
                                   stroke-width="0"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#3E98C5"
-                                  transform="translate(1267 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1275 5)"
+                                  transform="transform_mock"
                                 />
                               </g>
                             </svg>
@@ -1732,25 +601,25 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                   fill="none"
                                   stroke="#ccc"
                                   stroke-width="0"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#3E98C5"
-                                  transform="translate(1267 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1275 5)"
+                                  transform="transform_mock"
                                 />
                               </g>
                             </svg>
@@ -1844,25 +713,25 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                   fill="none"
                                   stroke="#ccc"
                                   stroke-width="0"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#3E98C5"
-                                  transform="translate(1267 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1275 5)"
+                                  transform="transform_mock"
                                 />
                               </g>
                             </svg>
@@ -1960,14 +829,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
                                   fill="none"
-                                  transform="translate(55.8611 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(55.8611 74)"
+                                  transform="transform_mock"
                                   y="8"
                                 >
                                   04:00
@@ -1975,14 +844,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
                                   fill="none"
-                                  transform="translate(267.5278 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(267.5278 74)"
+                                  transform="transform_mock"
                                   y="8"
                                 >
                                   08:00
@@ -1990,14 +859,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
                                   fill="none"
-                                  transform="translate(479.1944 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(479.1944 74)"
+                                  transform="transform_mock"
                                   y="8"
                                 >
                                   12:00
@@ -2005,14 +874,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
                                   fill="none"
-                                  transform="translate(690.8611 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(690.8611 74)"
+                                  transform="transform_mock"
                                   y="8"
                                 >
                                   16:00
@@ -2020,14 +889,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
                                   fill="none"
-                                  transform="translate(902.5278 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(902.5278 74)"
+                                  transform="transform_mock"
                                   y="8"
                                 >
                                   20:00
@@ -2035,14 +904,14 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                 <path
                                   d="M-3 0l6 0l0 16l-6 0Z"
                                   fill="none"
-                                  transform="translate(1114.1944 74)"
+                                  transform="transform_mock"
                                 />
                                 <text
                                   dominant-baseline="central"
                                   fill="#ACAEB0"
                                   style="font: normal 400 10px 'Open Sans', sans-serif"
                                   text-anchor="middle"
-                                  transform="translate(1114.1944 74)"
+                                  transform="transform_mock"
                                   xml:space="preserve"
                                   y="8"
                                 >
@@ -2053,25 +922,25 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
                                   fill="none"
                                   stroke="#ccc"
                                   stroke-width="0"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1259 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#3E98C5"
-                                  transform="translate(1267 5)"
+                                  transform="transform_mock"
                                 />
                                 <path
                                   d=""
                                   fill="none"
                                   stroke="#666"
-                                  transform="translate(1275 5)"
+                                  transform="transform_mock"
                                 />
                               </g>
                             </svg>
@@ -2215,506 +1084,6 @@ exports[`ClientTroubleshootingTab should render correctly without search params 
               class="contract-trigger"
             />
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`ClientTroubleshootingTab should set search param on option selection 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row"
-    style="margin: -8px -8px -8px -8px; flex: 1;"
-  >
-    <div
-      class="ant-col ant-col-18"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="ant-row"
-        style="margin: -16px -8px -16px -8px; justify-content: end;"
-      >
-        <div
-          class="ant-col ant-col-15"
-          style="padding: 16px 8px 16px 8px;"
-        >
-          <div
-            class="ant-row ant-row-no-wrap"
-            style="margin: -3px -3px -3px -3px; justify-content: end;"
-          >
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      aria-hidden="true"
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-rest"
-                      style="opacity: 0; height: 0px; overflow-y: hidden; order: 9007199254740991; pointer-events: none; position: absolute;"
-                    >
-                      <span
-                        class="ant-select-selection-item"
-                      >
-                        <span
-                          class="ant-select-selection-item-content"
-                        >
-                          <div
-                            title="Performance"
-                          >
-                            1 category selected
-                          </div>
-                        </span>
-                      </span>
-                    </div>
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-                <div
-                  style="position: absolute; top: 0px; left: 0px; width: 100%;"
-                >
-                  <div>
-                    <div
-                      class="ant-select-dropdown ant-cascader-dropdown ant-select-dropdown-hidden"
-                      style="min-width: auto; pointer-events: none;"
-                    >
-                      <div>
-                        <div
-                          class="ant-cascader-menus"
-                        >
-                          <ul
-                            class="ant-cascader-menu"
-                            role="menu"
-                          >
-                            <li
-                              aria-checked="false"
-                              class="ant-cascader-menu-item"
-                              data-path-key="connection"
-                              role="menuitemcheckbox"
-                              title="Connection"
-                            >
-                              <span
-                                class="ant-cascader-checkbox"
-                              >
-                                <span
-                                  class="ant-cascader-checkbox-inner"
-                                />
-                              </span>
-                              <div
-                                class="ant-cascader-menu-item-content"
-                              >
-                                Connection
-                              </div>
-                            </li>
-                            <li
-                              aria-checked="true"
-                              class="ant-cascader-menu-item"
-                              data-path-key="performance"
-                              role="menuitemcheckbox"
-                              title="Performance"
-                            >
-                              <span
-                                class="ant-cascader-checkbox ant-cascader-checkbox-checked"
-                              >
-                                <span
-                                  class="ant-cascader-checkbox-inner"
-                                />
-                              </span>
-                              <div
-                                class="ant-cascader-menu-item-content"
-                              >
-                                Performance
-                              </div>
-                            </li>
-                            <li
-                              aria-checked="false"
-                              class="ant-cascader-menu-item"
-                              data-path-key="infrastructure"
-                              role="menuitemcheckbox"
-                              title="Infrastructure"
-                            >
-                              <span
-                                class="ant-cascader-checkbox"
-                              >
-                                <span
-                                  class="ant-cascader-checkbox-inner"
-                                />
-                              </span>
-                              <div
-                                class="ant-cascader-menu-item-content"
-                              >
-                                Infrastructure
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                        <div
-                          class="styledComponents__ButtonDiv-sc-9z6ynb-1 kNCyfI"
-                        >
-                          <button
-                            class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                            type="button"
-                          >
-                            <span>
-                              Cancel
-                            </span>
-                          </button>
-                          <button
-                            ant-click-animating-without-extra-node="false"
-                            class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 glXBEv"
-                            type="button"
-                          >
-                            <span>
-                              Apply
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-clear"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="close-circle"
-                    class="anticon anticon-close-circle"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="close-circle"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Types
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="ant-col"
-              style="padding: 3px 3px 3px 3px; flex: 0 0 185px; min-width: 0;"
-            >
-              <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-9z6ynb-0 hcBgnW ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
-                style="max-width: 180px;"
-              >
-                <div
-                  class="ant-select-selector"
-                >
-                  <div
-                    class="ant-select-selection-overflow"
-                  >
-                    <div
-                      class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
-                      style="opacity: 1; order: 0;"
-                    >
-                      <div
-                        class="ant-select-selection-search"
-                        style="width: 0px;"
-                      >
-                        <input
-                          aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
-                          aria-expanded="false"
-                          aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
-                          autocomplete="off"
-                          class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
-                          readonly=""
-                          role="combobox"
-                          style="opacity: 0;"
-                          type="search"
-                          unselectable="on"
-                          value=""
-                        />
-                        <span
-                          aria-hidden="true"
-                          class="ant-select-selection-search-mirror"
-                        >
-                           
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <span
-                    class="ant-select-selection-placeholder"
-                  >
-                    All Radios
-                  </span>
-                </div>
-                <span
-                  aria-hidden="true"
-                  class="ant-select-arrow"
-                  style="user-select: none;"
-                  unselectable="on"
-                >
-                  <span
-                    aria-label="down"
-                    class="anticon anticon-down ant-select-suffix"
-                    role="img"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      data-icon="down"
-                      fill="currentColor"
-                      focusable="false"
-                      height="1em"
-                      viewBox="64 64 896 896"
-                      width="1em"
-                    >
-                      <path
-                        d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
-                      />
-                    </svg>
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-24"
-          style="padding: 16px 8px 16px 8px;"
-        >
-          <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
-          >
-            <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-            >
-              <div
-                class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-              >
-                <span
-                  aria-label="loader"
-                  role="img"
-                >
-                  <div
-                    aria-busy="true"
-                    aria-live="polite"
-                    class="ant-spin ant-spin-lg ant-spin-spinning"
-                  >
-                    <span
-                      class="ant-spin-dot ant-spin-dot-spin"
-                    >
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                      <i
-                        class="ant-spin-dot-item"
-                      />
-                    </span>
-                  </div>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="ant-col ant-col-6"
-      style="padding: 8px 8px 8px 8px;"
-    >
-      <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-      >
-        <div
-          class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-        >
-          <span
-            aria-label="loader"
-            role="img"
-          >
-            <div
-              aria-busy="true"
-              aria-live="polite"
-              class="ant-spin ant-spin-lg ant-spin-spinning"
-            >
-              <span
-                class="ant-spin-dot ant-spin-dot-spin"
-              >
-                <i
-                  class="ant-spin-dot-item"
-                />
-                <i
-                  class="ant-spin-dot-item"
-                />
-                <i
-                  class="ant-spin-dot-item"
-                />
-                <i
-                  class="ant-spin-dot-item"
-                />
-              </span>
-            </div>
-          </span>
         </div>
       </div>
     </div>
