@@ -8,11 +8,12 @@ import { noDataSymbol, sortProp, defaultSort }                   from '@acx-ui/a
 import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
 import { useUserProfileContext }                                 from '@acx-ui/rc/components'
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
-import { formatter, intlFormats }                                from '@acx-ui/utils'
+import { formatter }                                             from '@acx-ui/utils'
 
-import * as contents                 from '../contents'
-import { useMutationResponseEffect } from '../services'
-import { ClientType, TestType }      from '../types'
+import * as contents                                                                from '../contents'
+import { useMutationResponseEffect }                                                from '../services'
+import { ClientType, NetworkHealthTest, TestType }                                  from '../types'
+import { formatApsUnderTest, formatLastResult, StatsFromSummary, statsFromSummary } from '../utils'
 
 import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery, useNetworkHealthRunMutation } from './services'
 
@@ -39,27 +40,24 @@ export function NetworkHealthTable () {
     })
   }, [$t]))
 
+  const getTableData = (details: ServiceGuardSpec) => {
+    const summary = details.tests?.items[0]?.summary || {}
+    const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
+    } = statsFromSummary(summary as NetworkHealthTest['summary'])
+    return { ...details,
+      ...(isOngoing && { isOngoing }),
+      ...(apsUnderTest !== undefined && { apsUnderTest }),
+      ...(apsFinishedTest !== undefined && { apsFinishedTest }),
+      ...(lastResult !== undefined && { lastResult })
+    }
+  }
+
+  const tableData = queryResults.data && queryResults.data[0].tests
+    ? getTableData(queryResults.data[0]) : {} as StatsFromSummary
+
   const getLastRun = (result: string) =>
     result ? formatter('dateTimeFormatWithSeconds')(result)
       : noDataSymbol
-
-  const getAPsUnderTest = (total: number, pending: number) => {
-    const completeCount = total - pending
-    return total ?
-      pending ?
-        $t({ defaultMessage:
-          '{completeCount} of {total} {total, plural, one {AP} other {APs}} tested'
-        }, { total, completeCount })
-        : $t({ defaultMessage: '{total} {total, plural, one {AP} other {APs}}' }, { total })
-      : noDataSymbol
-  }
-
-  const getLastResult = (total: number, success: number, pending: number) =>
-    total ? (
-      pending ?
-        $t(defineMessage({ defaultMessage: 'In progress...' }))
-        : ($t(intlFormats.percentFormatRound, { value: success/total }))
-    ) : noDataSymbol
 
   const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
     {
@@ -155,22 +153,13 @@ export function NetworkHealthTable () {
       key: 'apsUnderTest',
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
       dataIndex: ['tests', 'items'],
-      render: (value: React.ReactNode) => {
-        const total = _.get(value, '[0].summary.apsTestedCount')
-        const pending = _.get(value, '[0].summary.apsPendingCount')
-        return getAPsUnderTest(total, pending)
-      }
+      render: () => formatApsUnderTest(tableData, $t)
     },
     {
       key: 'lastResult',
       title: $t(defineMessage({ defaultMessage: 'Last Result' })),
       dataIndex: ['tests', 'items'],
-      render: (value: React.ReactNode) => {
-        const total = _.get(value, '[0].summary.apsTestedCount')
-        const success = _.get(value, '[0].summary.apsSuccessCount')
-        const pending = _.get(value, '[0].summary.apsPendingCount')
-        return getLastResult(total, success, pending)
-      }
+      render: () => formatLastResult(tableData, $t)
     }
   ], [])
 
