@@ -32,6 +32,7 @@ export default function RogueAPDetectionTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const DEFAULT_PROFILE = 'Default profile'
   const [ deleteFn ] = useDelRoguePolicyMutation()
 
   const tableQuery = useTableQuery({
@@ -42,18 +43,29 @@ export default function RogueAPDetectionTable () {
   const rowActions: TableProps<Policy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
-          }
-        })
+      onClick: ([{ id, name, scope }], clearSelection) => {
+        if (Number(scope) !== 0 || name === DEFAULT_PROFILE) {
+          showActionModal({
+            type: 'error',
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'This policy has been applied in network or it is default profile policy.'
+            })
+          })
+          clearSelection()
+        } else {
+          showActionModal({
+            type: 'confirm',
+            customContent: {
+              action: 'DELETE',
+              entityName: $t({ defaultMessage: 'Policy' }),
+              entityValue: name
+            },
+            onOk: () => {
+              deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+            }
+          })
+        }
       }
     },
     {
@@ -98,6 +110,7 @@ export default function RogueAPDetectionTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
@@ -116,6 +129,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
