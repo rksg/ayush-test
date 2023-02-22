@@ -112,7 +112,7 @@ export function StackedAreaChart <
         ...legendOptions(),
         textStyle: legendTextStyleOptions(),
         formatter: legendFormatter || '{name}' ,
-        data: initialData.map(datum => datum[legendProp]) as unknown as string[]
+        data: initialData.reverse().map(datum => datum[legendProp]) as unknown as string[]
       }
     }),
     tooltip: {
@@ -152,7 +152,7 @@ export function StackedAreaChart <
       step: type === 'step' ? 'start' : false,
       symbol: 'none',
       lineStyle: { width: 0 },
-      areaStyle: { opacity: 1 }
+      areaStyle: { opacity: 0.9 }
     })),
     toolbox: {
       feature: {

@@ -35,7 +35,7 @@ export function EmbeddedReport (props: ReportProps) {
   * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://devalto.ruckuswireless.com' // Dev
+    ? 'https://alto.local.mlisa.io' // Dev
     : window.location.origin // Production
 
   useEffect(() => {

@@ -3,15 +3,24 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData }                           from '@acx-ui/analytics/utils'
-import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                                from '@acx-ui/utils'
+import { AnalyticsFilter, getSeriesData } from '@acx-ui/analytics/utils'
+import {
+  HistoricalCard,
+  Loader, StackedAreaChart,
+  NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { formatter } from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
 type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
-export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilter }) {
+ConnectedClientsOverTime.defaultProps = {
+  vizType: 'line'
+}
+
+export function ConnectedClientsOverTime ({
+  filters, vizType
+}: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Bands' }) },
@@ -33,10 +42,15 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults.data}
-              />
+              vizType === 'area' ?
+                <StackedAreaChart
+                  style={{ width, height }}
+                  data={queryResults.data}
+                /> :
+                <MultiLineTimeSeriesChart
+                  style={{ width, height }}
+                  data={queryResults.data}
+                />
               : <NoData/>
           )}
         </AutoSizer>

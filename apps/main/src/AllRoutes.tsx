@@ -6,6 +6,7 @@ import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import Administration    from './pages/Administration'
 import AnalyticsBase     from './pages/Analytics'
 import Dashboard         from './pages/Dashboard'
+import Dashboardv2       from './pages/Dashboardv2'
 import DevicesBase       from './pages/Devices'
 import Layout            from './pages/Layout'
 import NetworksBase      from './pages/Networks'
@@ -34,6 +35,7 @@ function AllRoutes () {
       <Route path='t/:tenantId' element={<Layout />}>
         <Route index element={<TenantNavigate replace to='/dashboard' />} />
         <Route path='dashboard' element={<Dashboard />} />
+        <Route path='dashboardv2' element={<Dashboardv2 />} />
         <Route path='userprofile' element={<UserProfile />} />
         <Route path='analytics/*' element={<AnalyticsBase />}>
           <Route path='*' element={<AnalyticsRoutes />} />

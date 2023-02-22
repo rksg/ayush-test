@@ -1,21 +1,26 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData, AnalyticsFilter }                           from '@acx-ui/analytics/utils'
-import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                                from '@acx-ui/utils'
+import { getSeriesData, AnalyticsFilter }                                             from '@acx-ui/analytics/utils'
+import { HistoricalCard, Loader, StackedAreaChart, NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+import { formatter }                                                                  from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
   TrafficByVolumeData
 } from './services'
 
-
 type Key = keyof Omit<TrafficByVolumeData, 'time'>
 
 export { TrafficByVolumeWidget as TrafficByVolume }
 
-function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
+TrafficByVolumeWidget.defaultProps = {
+  vizType: 'line'
+}
+
+function TrafficByVolumeWidget ({
+  filters, vizType
+}: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'totalTraffic_all', name: $t({ defaultMessage: 'All Bands' }) },
@@ -35,11 +40,17 @@ function TrafficByVolumeWidget ({ filters }: { filters : AnalyticsFilter }) {
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults.data}
-                dataFormatter={formatter('bytesFormat')}
-              />
+              vizType === 'area' ?
+                <StackedAreaChart
+                  style={{ width, height }}
+                  data={queryResults.data.reverse()}
+                  dataFormatter={formatter('bytesFormat')}
+                /> :
+                <MultiLineTimeSeriesChart
+                  style={{ width, height }}
+                  data={queryResults.data}
+                  dataFormatter={formatter('bytesFormat')}
+                />
               : <NoData/>
           )}
         </AutoSizer>
