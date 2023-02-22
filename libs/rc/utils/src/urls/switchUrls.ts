@@ -45,6 +45,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber'
   },
+  acknowledgeSwitch: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ack'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'

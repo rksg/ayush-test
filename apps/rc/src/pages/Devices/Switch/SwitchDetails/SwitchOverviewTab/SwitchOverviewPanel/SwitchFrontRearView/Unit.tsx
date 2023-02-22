@@ -1,6 +1,6 @@
 import { Button, Descriptions, Drawer, showActionModal } from '@acx-ui/components'
-import { useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
-import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, isOperationalSwitch, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearView, SwitchRearViewUI, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
+import { useAcknowledgeSwitchMutation, useDeleteStackMemberMutation, useLazySwitchFrontViewQuery, useLazySwitchRearViewQuery } from '@acx-ui/rc/services'
+import { getPoeUsage, getSwitchModel, getSwitchModelInfo, getSwitchPortLabel, isEmpty, StackMember, SwitchFrontView, SwitchModelInfo, SwitchRearViewUISlot, SwitchSlot, SwitchStatusEnum, SwitchViewModel, transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import Tooltip from 'antd/es/tooltip'
 import _ from 'lodash'
@@ -77,6 +77,7 @@ export function Unit (props:{
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
+  const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const { serialNumber, switchMac } = switchDetail
 
@@ -106,7 +107,7 @@ export function Unit (props:{
   
   const [ switchFrontView ] = useLazySwitchFrontViewQuery()
   const [ switchRearView ] = useLazySwitchRearViewQuery()
-  const { tenantId } = useParams()
+  const { tenantId, switchId } = useParams()
   
 
   useEffect(() => {
@@ -278,6 +279,21 @@ export function Unit (props:{
     setVisible(true)
   }
 
+  const onClickAck = () => {
+    const ackPayload = {
+      add: [] as string[],
+      remove: [] as string[]
+    }
+    if (!isEmpty(member.newSerialNumber)) {
+      ackPayload.add.push(member.newSerialNumber as string);
+      ackPayload.remove.push(unit.serialNumber);
+    } else {
+      ackPayload.add.push(unit.serialNumber);
+    }
+
+    acknowledgeSwitch({ params: { tenantId, switchId }, payload: ackPayload })
+  }
+
   const ViewModeButton = <Button 
       type='link' 
       size='small'
@@ -297,14 +313,24 @@ export function Unit (props:{
           ? <>
               <div className={isOnline ? 'unit-header operational' : 'unit-header'}>{unit.switchUnit}</div>
               <div className='model'>{unit.model}</div>
-              <div className='status'>
                 { unit.unitStatus && unit.unitStatus.needAck 
-                  ? unit.unitStatus.ackMsg
-                  : <span className='unit-button' onClick={onClickUnit}>
-                      {unit.unitStatus.activeStatus}
-                    </span>
+                  ? <>
+                      <div className='icon'>
+                        <UI.SettingsIcon />
+                      </div>
+                      <div className='status'>{unit.unitStatus.ackMsg}</div>
+                      <div className='status'>
+                        <span className='unit-button' onClick={onClickAck}>
+                          {$t({ defaultMessage: 'Acknowledge' })}
+                        </span>
+                      </div>
+                    </>
+                  : <div className='status'>
+                      <span className='unit-button' onClick={onClickUnit}>
+                        {unit.unitStatus.activeStatus}
+                      </span>
+                    </div>
                 }
-              </div>
               <div className='icon'>
                 <UI.RearPowerIcon />
               </div>
