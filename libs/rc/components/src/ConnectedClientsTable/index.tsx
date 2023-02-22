@@ -147,10 +147,15 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) =>
-        (
-          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
-        )
+      render: (data, row) => {
+        if (!row.healthCheckStatus) {
+          return data
+        } else {
+          return (
+            <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
+          )
+        }
+      }
     },
     {
       key: 'sessStartTime',
