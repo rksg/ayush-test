@@ -45,7 +45,7 @@ describe('KpiWidget', () => {
 
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: connectionSuccessFixture }
+      data: { network: { timeSeries: connectionSuccessFixture } }
     })
     render( <Provider> <KpiWidget name='connectionSuccess' filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
@@ -54,15 +54,15 @@ describe('KpiWidget', () => {
 
   it('should render for empty data', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [null, null] } }
+      data: { network: { histogram: { data: [null, null] } } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: {
+      data: { network: { timeSeries: {
         time: [
           '2023-01-11T00:00:00.000Z',
           '2023-01-12T00:00:00.000Z'
         ],
-        data: [null, null] } }
+        data: [null, null] } } }
     })
     const { asFragment } =render( <Provider>
       <KpiWidget name='timeToConnect' filters={filters}/></Provider>)
@@ -73,7 +73,7 @@ describe('KpiWidget', () => {
   })
   it('should render component properly with sparkline', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: connectionSuccessFixture }
+      data: { network: { timeSeries: connectionSuccessFixture } }
     })
     const { asFragment } =render( <Provider>
       <KpiWidget name='connectionSuccess' filters={filters}/></Provider>)
@@ -85,7 +85,7 @@ describe('KpiWidget', () => {
 
   it('should render component properly with sparkline with no chart style', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: connectionSuccessFixture }
+      data: { network: { timeSeries: connectionSuccessFixture } }
     })
     render( <Provider>
       <KpiWidget name='connectionSuccess' filters={filters} type='no-chart-style'/></Provider>)
@@ -94,10 +94,10 @@ describe('KpiWidget', () => {
 
   it('should render component having healthy icon', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: clientThroughputHistogramFixture }
+      data: { network: { histogram: clientThroughputHistogramFixture } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: clientThroughputFixture }
+      data: { network: { timeSeries: clientThroughputFixture } }
     })
     const { asFragment } =render( <Provider>
       <KpiWidget name='clientThroughput' filters={filters}/></Provider>)
@@ -107,7 +107,7 @@ describe('KpiWidget', () => {
   })
   it('should render component having major icon', async () => {
     mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { histogram: { data: [
+      data: { network: { histogram: { data: [
         2,
         0,
         1,
@@ -115,10 +115,10 @@ describe('KpiWidget', () => {
         0,
         0,
         0
-      ] } }
+      ] } } }
     })
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { timeSeries: {
+      data: { network: { timeSeries: {
         time: [
           '2023-01-11T00:00:00.000Z',
           '2023-01-12T00:00:00.000Z'
@@ -126,7 +126,7 @@ describe('KpiWidget', () => {
         data: [
           [1,3],
           [1,3]
-        ] } }
+        ] } } }
     })
     const { asFragment } =render( <Provider>
       <KpiWidget name='clientThroughput' filters={filters} threshold={25000}/></Provider>)

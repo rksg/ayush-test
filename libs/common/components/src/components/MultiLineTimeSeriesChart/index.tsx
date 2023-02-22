@@ -62,7 +62,7 @@ export interface MultiLineTimeSeriesChartProps <
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
     data: TChartData[]
     legendProp?: keyof TChartData /** @default 'name' */
-    legendFormatter?: string | ((name: string) => string) | undefined
+    legendFormatter?: string | ((name: string) => string)
     lineColors?: string[]
     dataFormatter?: ChartFormatterFn
     seriesFormatters?: Record<string, ChartFormatterFn>

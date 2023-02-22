@@ -1,4 +1,4 @@
-import { QueryCacheLifecycleApi } from '@reduxjs/toolkit/dist/query/endpointDefinitions'
+import { QueryCacheLifecycleApi, MutationCacheLifecycleApi } from '@reduxjs/toolkit/dist/query/endpointDefinitions'
 import {
   BaseQueryFn,
   FetchArgs,
@@ -28,6 +28,11 @@ export async function onSocketActivityChanged <
 > (
   payload: Payload,
   api: QueryCacheLifecycleApi<
+    Payload,
+    RTKBaseQuery,
+    Response,
+    ReducerPath
+  > | MutationCacheLifecycleApi<
     Payload,
     RTKBaseQuery,
     Response,

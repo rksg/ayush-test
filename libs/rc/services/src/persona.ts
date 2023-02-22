@@ -11,7 +11,9 @@ import {
   NewTableResult,
   transferToTableResult,
   createNewTableHttpRequest,
-  TableChangePayload
+  TableChangePayload,
+  downloadFile,
+  RequestFormData
 } from '@acx-ui/rc/utils'
 
 export const basePersonaApi = createApi({
@@ -99,10 +101,46 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
+    downloadPersonaGroups: build.query<Blob, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.exportPersonaGroup, {
+          ...params,
+          timezone: params?.timezone ?? 'UTC',
+          dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+        }, {
+          Accept: 'text/csv'
+        })
+
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'PersonaGroups.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+
     // Persona
     addPersona: build.mutation<Persona, RequestPayload>({
       query: ( { params, payload }) => {
         const req = createHttpRequest(PersonaUrls.addPersona, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Persona' }]
+    }),
+    importPersonas: build.mutation<{}, RequestFormData>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.importPersonas, params, {
+          'Content-Type': undefined
+        })
         return {
           ...req,
           body: payload
@@ -215,6 +253,29 @@ export const personaApi = basePersonaApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
+    }),
+    downloadPersonas: build.query<Blob, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.exportPersona, {
+          ...params,
+          timezone: params?.timezone ?? 'UTC',
+          dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
+        },{
+          Accept: 'text/csv'
+        })
+
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'Personas.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -227,7 +288,8 @@ export const {
   useGetPersonaGroupByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useUpdatePersonaGroupMutation,
-  useDeletePersonaGroupMutation
+  useDeletePersonaGroupMutation,
+  useLazyDownloadPersonaGroupsQuery
 } = personaApi
 
 export const {
@@ -238,5 +300,7 @@ export const {
   useUpdatePersonaMutation,
   useDeletePersonasMutation,
   useAddPersonaDevicesMutation,
-  useDeletePersonaDevicesMutation
+  useDeletePersonaDevicesMutation,
+  useImportPersonasMutation,
+  useLazyDownloadPersonasQuery
 } = personaApi

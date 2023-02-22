@@ -40,16 +40,11 @@ module.exports = async function setupProxy (app) {
     }
   ))
 
-  // Enable this proxy for superset local dev (docker-compose) setup
-  // app.use(createProxyMiddleware(
-  //   ['/api/v1/security', '/api/v1/dashboard/embedded'],
-  //   { target: 'http://localhost:8088', changeOrigin: false }
-  // ))
   app.use(createProxyMiddleware(
     '/api/websocket/socket.io',
     {
       target: CLOUD_URL, changeOrigin: true, ws: true,
-      onProxyReq: function (request) {
+      onProxyReqWs: function (request) {
         request.setHeader('origin', CLOUD_URL)
       }
     }
@@ -73,6 +68,17 @@ module.exports = async function setupProxy (app) {
   app.use(createProxyMiddleware(
     '/mfa',
     { target: CLOUD_URL, changeOrigin: true,
+      onProxyReq: function (request) {
+        request.setHeader('origin', CLOUD_URL)
+      }
+    }
+  ))
+  app.use(createProxyMiddleware(
+    '/**',
+    {
+      target: CLOUD_URL.replace('//', '//api.'),
+      changeOrigin: true,
+      secure: false,
       onProxyReq: function (request) {
         request.setHeader('origin', CLOUD_URL)
       }

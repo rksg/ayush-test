@@ -181,6 +181,7 @@ export function VarCustomers () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
         />
       </Loader>

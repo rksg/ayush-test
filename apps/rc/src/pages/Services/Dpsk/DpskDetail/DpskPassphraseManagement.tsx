@@ -11,8 +11,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { CopyOutlined }             from '@acx-ui/icons'
-import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import { CopyOutlined }              from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
@@ -184,10 +184,11 @@ export default function DpskPassphraseManagement () {
       visible={addPassphrasesDrawerVisible}
       setVisible={setAddPassphrasesDrawerVisible}
     />
-    <ImportCsvDrawer type='DPSK'
+    <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}
       maxEntries={512}
+      acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
       isLoading={uploadCsvResult.isLoading}
@@ -213,7 +214,7 @@ export default function DpskPassphraseManagement () {
         label={$t({ defaultMessage: 'User name prefix' })}
         children={<Input />}
       />
-    </ImportCsvDrawer>
+    </ImportFileDrawer>
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
         columns={columns}

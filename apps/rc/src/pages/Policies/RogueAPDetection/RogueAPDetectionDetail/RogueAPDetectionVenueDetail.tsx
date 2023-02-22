@@ -77,10 +77,12 @@ const RogueAPDetectionVenueDetail = () => {
     <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length ?? 0})`}>
       <div style={{ width: '100%' }}>
         <Table
+          enableApiFilter={true}
           columns={basicColumns}
           dataSource={basicData}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
         />
       </div>
