@@ -202,7 +202,7 @@ export function useMenuConfig () {
     },
     {
       path: '/policies',
-      name: $t({ defaultMessage: 'Policies' }),
+      name: $t({ defaultMessage: 'Policies & Profiles' }),
       inactiveIcon: PoliciesOutlined,
       activeIcon: PoliciesSolid,
       disabled: !useIsSplitOn(Features.POLICIES)
