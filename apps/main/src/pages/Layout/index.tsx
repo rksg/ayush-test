@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -7,6 +9,7 @@ import { HomeSolid }     from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton
 } from '@acx-ui/main/components'
@@ -22,6 +25,7 @@ import SearchBar         from './SearchBar'
 import { Home }          from './styledComponents'
 
 function Layout () {
+  const [supportStatus,setSupportStatus] = useState('')
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
@@ -52,7 +56,8 @@ function Layout () {
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         <AlarmsButton/>
         <ActivityButton/>
-        <HelpButton/>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />
