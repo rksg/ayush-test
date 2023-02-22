@@ -35,6 +35,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [eventState, setEventState] = useState({} as DisplayEvent)
   const [visible, setVisible] = useState(false)
   const sharedChartName = 'eventTimeSeriesGroup'
+  const popoverRef = useRef<HTMLDivElement>(null)
   const chartsRef = useRef<EChartsType[]>([])
   chartsRef.current = []
   const connectChart = (chart: ReactECharts | null) => {
@@ -118,6 +119,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   setVisible={setVisible}
                   sharedChartName={sharedChartName}
                   connectChart={connectChart}
+                  popoverRef={popoverRef}
                 />
                 <ConnectionEventPopover
                   key={Number(visible)}
@@ -135,7 +137,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                     ]
                   }}
                 >
-                  <div key='popover-child' data-testid='popover-child'/>
+                  <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
                 </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>

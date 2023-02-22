@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { RefObject, useState } from 'react'
 
 import { Row, Col }                   from 'antd'
 import ReactECharts                   from 'echarts-for-react'
@@ -47,7 +47,8 @@ type TimeLineProps = {
   setEventState: (event: DisplayEvent) => void,
   setVisible: (visible: boolean) => void,
   connectChart: (instance: ReactECharts) => void,
-  sharedChartName: string
+  sharedChartName: string,
+  popoverRef: RefObject<HTMLDivElement>
 }
 
 type CoordDisplayEvent = DisplayEvent & {
@@ -58,7 +59,9 @@ type CoordDisplayEvent = DisplayEvent & {
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const { data, filters, connectChart, sharedChartName } = props
+  const {
+    data, filters, connectChart, sharedChartName, popoverRef, setEventState, setVisible
+  } = props
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
@@ -120,8 +123,6 @@ export function TimeLine (props: TimeLineProps) {
 
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
-
-  const { setEventState, setVisible } = props
 
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
@@ -238,6 +239,7 @@ export function TimeLine (props: TimeLineProps) {
                 }}
                 chartRef={connectChart}
                 sharedChartName={sharedChartName}
+                popoverRef={popoverRef}
               />
             </Col>
           ))}

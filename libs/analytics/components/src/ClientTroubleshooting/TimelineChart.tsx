@@ -6,8 +6,7 @@ import {
   useState,
   RefCallback,
   useImperativeHandle,
-  useMemo,
-  ReactNode
+  useMemo
 } from 'react'
 
 import {
@@ -79,7 +78,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   showResetZoom?: boolean;
   onClick?: Function
   index?: React.Attributes['key'];
-  popoverNode?: ReactNode;
+  popoverRef?: RefObject<HTMLDivElement>;
 }
 
 export const getSeriesData = (
@@ -164,7 +163,8 @@ export function getBarColor (params: {
 }
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
-  onDotClick: ((param: unknown) => void) | undefined
+  onDotClick: ((param: unknown) => void) | undefined,
+  popoverRef: RefObject<HTMLDivElement> | undefined
 ) => {
   const navigate = useNavigate()
   const currentPath = useTenantLink('/')
@@ -178,7 +178,7 @@ export const useDotClick = (
         const data = params.data as [number, string, Event]
         const { clientX, clientY } = (params as unknown as
           { event: { event: PointerEvent } }).event.event
-        const popoverChild = document.querySelector('div[data-testid="popover-child"]')
+        const popoverChild = popoverRef && popoverRef.current
         if (!popoverChild) return
         const { x, y, width } = popoverChild.getBoundingClientRect()
         const calcX = clientX - (x + width / 2)
@@ -197,7 +197,7 @@ export const useDotClick = (
         navigate(`${basePath}/analytics/incidents/${id}`)
       }
     },
-    [onDotClick, navigate, basePath]
+    [onDotClick, navigate, basePath, popoverRef]
   )
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
@@ -308,6 +308,7 @@ export function TimelineChart ({
   onClick,
   index,
   sharedChartName,
+  popoverRef,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -322,7 +323,7 @@ export function TimelineChart ({
 
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
 
-  useDotClick(eChartsRef, onDotClick)
+  useDotClick(eChartsRef, onDotClick, popoverRef)
 
   const mappedData = useMemo(() => mapping
     .slice()
