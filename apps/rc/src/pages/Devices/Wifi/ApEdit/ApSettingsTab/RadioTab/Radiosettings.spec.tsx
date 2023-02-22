@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider, store }                     from '@acx-ui/store'
-import { cleanup, mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                             from '@acx-ui/store'
+import { cleanup, mockServer, render, screen }         from '@acx-ui/test-utils'
 
 import { ApEditContext }    from '../..'
 import {
@@ -40,7 +40,7 @@ describe('RadioSettingsTab', ()=> {
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
         rest.get(
-          CommonUrlsInfo.getVenue.url,
+          getUrlForTest(CommonUrlsInfo.getVenue),
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
@@ -428,7 +428,7 @@ describe('RadioSettingsTab', ()=> {
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
         rest.get(
-          CommonUrlsInfo.getVenue.url,
+          getUrlForTest(CommonUrlsInfo.getVenue),
           (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getAp.url,

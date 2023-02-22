@@ -16,6 +16,8 @@ export interface L2AclPolicy {
   access?: AccessEnum,
   description?: string,
   macAddress?: string[],
+  networksCount?: number,
+  rulesCount?: number,
   name: string,
   id: string
 }

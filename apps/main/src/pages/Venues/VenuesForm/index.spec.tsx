@@ -2,9 +2,9 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, getUrlForTest } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -52,19 +52,19 @@ describe('Venues Form', () => {
     }
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.addVenue.url,
+        getUrlForTest(CommonUrlsInfo.addVenue),
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
+        getUrlForTest(CommonUrlsInfo.getVenuesList),
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
       rest.get(
-        CommonUrlsInfo.getVenue.url,
+        getUrlForTest(CommonUrlsInfo.getVenue),
         (req, res, ctx) => res(ctx.json(venueResponse))
       ),
       rest.put(
-        CommonUrlsInfo.updateVenue.url,
+        getUrlForTest(CommonUrlsInfo.updateVenue),
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.get(
