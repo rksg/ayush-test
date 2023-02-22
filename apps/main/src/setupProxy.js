@@ -47,7 +47,6 @@ module.exports = async function setupProxy (app) {
       changeOrigin: true,
       ws: true,
       onProxyReqWs: function (request) {
-        console.log('onProxyReqWs:')
         request.setHeader('origin', CLOUD_URL)
       }
     })

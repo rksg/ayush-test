@@ -47,9 +47,12 @@ export const QRCodeImgWrapper = styled(Space)`
 `
 
 export const AuthAppDrawerStyle = css`
-  div.ant-typography {
-    padding-top: var(--acx-descriptions-space);
-    margin-bottom: 0;
+  .ant-drawer-body > form {
+    padding-top: var(--acx-modal-footer-small-button-space);
+  }
+
+  span.ant-typography {
+    font-size: var(--acx-body-4-font-size);
   }
 
   .ant-typography.hasTooltip {
@@ -58,7 +61,6 @@ export const AuthAppDrawerStyle = css`
 
   .ant-typography ol li {
     margin-top: 13px;
-    font-size: var(--acx-body-4-font-size);
   }
 
   span.ant-typography + .ant-form-item {
@@ -67,5 +69,35 @@ export const AuthAppDrawerStyle = css`
     input {
       width: 210px;
     }
+  }
+`
+
+export const OTPDrawerStyle = css`
+  .ant-drawer-body > form {
+    padding-top: var(--acx-modal-footer-small-button-space);
+  }
+
+  .ant-radio-wrapper-in-form-item {
+    margin-bottom: var(--acx-content-vertical-space);
+
+    &.ant-radio-wrapper-checked {
+      margin-bottom: 0px;
+    }
+  }
+
+  .ant-radio-wrapper .ant-typography + .ant-form-item{
+    margin-top: 10px;
+  }
+
+  .ant-radio-wrapper-in-form-item {
+    input {
+      width: 210px;
+    }
+  }
+`
+
+export const RecoveryCodesDrawerStyle = css`
+  .ant-drawer-body > div.ant-space {
+    padding-top: var(--acx-modal-footer-small-button-space);
   }
 `

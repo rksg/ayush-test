@@ -1,10 +1,12 @@
 import { useState } from 'react'
 
-import { Form, Input, Radio, Space } from 'antd'
-import { PhoneNumberUtil }           from 'google-libphonenumber'
-import { useIntl }                   from 'react-intl'
 
-import { Drawer, showToast }           from '@acx-ui/components'
+import { Form, Input, Radio, Space, Typography } from 'antd'
+import { PhoneNumberUtil }                       from 'google-libphonenumber'
+import { useIntl }                               from 'react-intl'
+import styled                                    from 'styled-components/macro'
+
+import { cssStr, Drawer, showToast }   from '@acx-ui/components'
 import { useMfaRegisterAdminMutation } from '@acx-ui/rc/services'
 import {
   phoneRegExp,
@@ -12,9 +14,11 @@ import {
   MFAMethod
 } from '@acx-ui/rc/utils'
 
+import * as UI             from '../styledComponents'
 import { VerifyCodeModal } from '../VerifyCodeModal'
 
 interface OneTimePasswordProps {
+  className?: string;
   visible: boolean;
   setVisible: (visible: boolean) => void;
   userId: string;
@@ -26,10 +30,9 @@ export interface OTPMethodProps {
   data: string;
 }
 
-export const OneTimePassword = (props: OneTimePasswordProps) => {
+export const OneTimePassword = styled((props: OneTimePasswordProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, userId } = props
-  const [isValid, setIsValid] = useState(false)
+  const { className, visible, setVisible, userId } = props
   const [verifyModalVisible, setVerifyModalVisible] = useState(false)
   const [verifyCodeData, setVerifyCodeData] = useState<OTPMethodProps>({} as OTPMethodProps)
   const [form] = Form.useForm()
@@ -80,13 +83,6 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
     setVerifyModalVisible(false)
   }
 
-  const handleValuesChange = () => {
-    const mobile = form.getFieldValue('mobilePhoneNumber')
-    const email = form.getFieldValue('email')
-    setIsValid(mobile || email)
-  }
-
-  // TODO: use "isValid"
   const footer = [
     <Drawer.FormFooter
       buttonLabel={{ save: $t({ defaultMessage: 'Verify' }) }}
@@ -98,6 +94,7 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
   return (
     <>
       <Drawer
+        className={className}
         title={$t({ defaultMessage: 'OTP Authentication' })}
         visible={visible}
         onClose={onClose}
@@ -109,77 +106,80 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
           layout='vertical'
           form={form}
           onFinish={handleSubmit}
-          onValuesChange={handleValuesChange}
         >
-          <div/>
-          <label >
-            { $t({ defaultMessage: 'Manage OTP (One-Time Password) delivery options:' }) }
-          </label>
-          <Form.Item
-            name='otpSelection'
-            initialValue={MFAMethod.EMAIL}
-            style={{ marginTop: '20px' }}
-            rules={[{ required: true }]}
+          <Space
+            direction='vertical'
+            size={parseInt(cssStr('--acx-content-vertical-space'), 10)}
           >
-            <Radio.Group>
-              <Space direction='vertical'>
-                <Radio
-                  value={MFAMethod.SMS}
-                >
-                  { $t({ defaultMessage: 'Text Message (SMS)' }) }
-                </Radio>
-                <Form.Item
-                  noStyle
-                  dependencies={['otpSelection']}
-                >
-                  {({ getFieldValue }) => {
-                    return getFieldValue('otpSelection') === MFAMethod.SMS ? (
-                      <Form.Item
-                        name='mobilePhoneNumber'
-                        rules={[
-                          { validator: (_, value) => phoneRegExp(value) }
-                        ]}
-                        initialValue={null}
-                        children={
-                          <Input
-                            style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}
+            <label >
+              { $t({ defaultMessage: 'Manage OTP (One-Time Password) delivery options:' }) }
+            </label>
+            <Form.Item
+              name='otpSelection'
+              initialValue={MFAMethod.EMAIL}
+              rules={[{ required: true }]}
+            >
+              <Radio.Group>
+                <Space direction='vertical' size={0}>
+                  <Radio
+                    value={MFAMethod.SMS}
+                  >
+                    <Typography.Text>
+                      { $t({ defaultMessage: 'Text Message (SMS)' }) }
+                    </Typography.Text>
+                    <Form.Item
+                      noStyle
+                      dependencies={['otpSelection']}
+                    >
+                      {({ getFieldValue }) => {
+                        return getFieldValue('otpSelection') === MFAMethod.SMS ? (
+                          <Form.Item
+                            name='mobilePhoneNumber'
+                            rules={[
+                              { required: true },
+                              { validator: (_, value) => phoneRegExp(value) }
+                            ]}
+                            initialValue={''}
+                          >
+                            <Input
                             // eslint-disable-next-line max-len
-                            placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
-                          />
-                        }
-                      />):''
-                  }}
-                </Form.Item>
+                              placeholder={`+${examplePhoneNumber.getCountryCode()} ${examplePhoneNumber.getNationalNumberOrDefault()}`}
+                            />
+                          </Form.Item>):''
+                      }}
+                    </Form.Item>
+                  </Radio>
+                  <Radio
+                    value={MFAMethod.EMAIL}
+                  >
+                    <Typography.Text>
+                      { $t({ defaultMessage: 'Email' }) }
+                    </Typography.Text>
+                    <Form.Item
+                      noStyle
+                      dependencies={['otpSelection']}
+                    >
+                      {({ getFieldValue }) => {
+                        return getFieldValue('otpSelection') === MFAMethod.EMAIL ? (
+                          <Form.Item
+                            name='email'
+                            rules={[
+                              { required: true },
+                              { validator: (_, value) => emailRegExp(value) }
+                            ]}
+                            initialValue={''}
+                            children={
+                              <Input />
+                            }
+                          />) : ''
+                      }}
+                    </Form.Item>
+                  </Radio>
 
-                <Radio
-                  style={{ marginTop: '5px' }}
-                  value={MFAMethod.EMAIL}
-                >
-                  { $t({ defaultMessage: 'Email' }) }
-                </Radio>
-                <Form.Item
-                  noStyle
-                  dependencies={['otpSelection']}
-                >
-                  {({ getFieldValue }) => {
-                    return getFieldValue('otpSelection') === MFAMethod.EMAIL ? (
-                      <Form.Item
-                        name='email'
-                        rules={[
-                          { validator: (_, value) => emailRegExp(value) }
-                        ]}
-                        initialValue={''}
-                        children={
-                          <Input
-                            style={{ marginLeft: '16px', marginTop: '5px', width: '207px' }}
-                          />
-                        }
-                      />) : ''
-                  }}
-                </Form.Item>
-              </Space>
-            </Radio.Group>
-          </Form.Item>
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+          </Space>
         </Form>
       </Drawer>
       <VerifyCodeModal
@@ -190,4 +190,4 @@ export const OneTimePassword = (props: OneTimePasswordProps) => {
       />
     </>
   )
-}
+})`${UI.OTPDrawerStyle}`
