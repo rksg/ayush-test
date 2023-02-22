@@ -1,8 +1,4 @@
 export const aclDetail = {
-  l2AclPolicy: {
-    id: '36ec4826b5da48cc8118eda83aa4080f',
-    enabled: true
-  },
   name: 'acl-test',
   id: 'c9c0667abfe74ab7803999a793fd2bbe'
 }
