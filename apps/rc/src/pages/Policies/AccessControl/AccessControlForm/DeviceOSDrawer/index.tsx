@@ -361,6 +361,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
+        { required: true },
         { required: true,
           validator: (_, value) => {
             if (deviceList && deviceList.find(device => device === value)) {

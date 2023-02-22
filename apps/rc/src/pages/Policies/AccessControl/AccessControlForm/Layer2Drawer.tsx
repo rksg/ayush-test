@@ -320,6 +320,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
+          { required: true },
           { required: true,
             validator: (_, value) => {
               if (layer2List && layer2List.find(layer2 => layer2 === value)) {

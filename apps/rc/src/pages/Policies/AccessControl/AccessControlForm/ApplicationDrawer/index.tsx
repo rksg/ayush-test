@@ -429,6 +429,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
+        { required: true },
         { required: true,
           validator: (_, value) => {
             if (appList && appList.find(app => app === value)) {
