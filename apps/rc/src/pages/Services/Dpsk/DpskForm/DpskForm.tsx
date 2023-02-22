@@ -84,7 +84,7 @@ export default function DpskForm (props: DpskFormProps) {
         }
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'Services' }),
+            text: $t({ defaultMessage: 'DPSK' }),
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
