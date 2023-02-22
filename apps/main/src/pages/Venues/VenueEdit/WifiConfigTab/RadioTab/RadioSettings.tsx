@@ -363,7 +363,7 @@ export function RadioSettings () {
         params: { tenantId, venueId },
         payload: formData
       }).unwrap()
-    }catch {
+    } catch {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })

@@ -1,9 +1,25 @@
 import { ApiInfo } from '../apiService'
 
 export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
+  getTenantDetails: {
+    method: 'get',
+    url: '/api/tenant/:tenantId'
+  },
   getRegisteredUsersList: {
     method: 'get',
     url: '/api/tenant/:tenantId/admins/registered'
+  },
+  getAdministrators: {
+    method: 'get',
+    url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
+    newApi: true
+  },
+  updateAdmin: {
+    method: 'put',
+    url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
+    newApi: true
   },
   deleteAdmin: {
     method: 'delete',
@@ -51,18 +67,6 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/mfa/tenant/:tenantId'
   },
-  getAdministrators: {
-    method: 'get',
-    url: '/admins',
-    oldUrl: '/api/tenant/:tenantId/admin',
-    newApi: true
-  },
-  updateAdmin: {
-    method: 'put',
-    url: '/admins',
-    oldUrl: '/api/tenant/:tenantId/admin',
-    newApi: true
-  },
   getAccountDetails: {
     method: 'get',
     url: '/tenants/accounts',
@@ -95,6 +99,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/delegation?type=SUPPORT_EC',
     newApi: true
   },
+  getMspEcDelegations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/delegation?type=MSP'
+  },
   enableAccessSupport: {
     method: 'post',
     url: '/tenants/supportDelegations',
@@ -115,6 +123,18 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/tenant/:tenantId/preferences'
   },
+  revokeInvitation: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/delegation/:delegationId'
+  },
+  inviteVAR: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/delegation'
+  },
+  findVAR: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/find-var'
+  },
   getNotificationRecipients: {
     method: 'get',
     url: '/api/tenant/:tenantId/notification-recipient'
@@ -134,5 +154,25 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNotificationRecipient: {
     method: 'delete',
     url: '/api/tenant/:tenantId/notification-recipient/:recipientId'
+  },
+  getEntitlementSummary: {
+    method: 'get',
+    newApi: false,
+    url: '/entitlements/summaries',
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary'
+  },
+  getEntitlementsList: {
+    method: 'get',
+    newApi: false,
+    url: '/entitlements',
+    oldUrl: '/api/tenant/:tenantId/entitlement'
+  },
+  refreshLicensesData: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/entitlement/internal-refresh'
   }
+  // acceptRejectInvitation: {
+  //   method: 'put',
+  //   url: '/api/tenant/:tenantId/delegation/:delegationId'
+  // }
 }
