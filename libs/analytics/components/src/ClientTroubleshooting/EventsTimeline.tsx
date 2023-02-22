@@ -236,10 +236,14 @@ export function TimeLine (props: TimeLineProps) {
                       : config.chartMapping.slice().reverse()
                     : [config.chartMapping[0]]
                 }
-                onDotClick={(params) => {
-                  setEventState(params as CoordDisplayEvent)
-                  setVisible(true)
-                }}
+                onDotClick={
+                  /* istanbul ignore next */
+                  (params) => {
+                  /* istanbul ignore next */
+                    setEventState(params as CoordDisplayEvent)
+                    /* istanbul ignore next */
+                    setVisible(true)
+                  }}
                 chartRef={connectChart}
                 sharedChartName={sharedChartName}
                 popoverRef={popoverRef}

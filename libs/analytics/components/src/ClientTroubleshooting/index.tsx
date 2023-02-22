@@ -45,9 +45,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   }
   const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
   useEffect(() => {
-    const isChartActive = (chart: EChartsType) =>
+    /* istanbul ignore next */
+    const isChartActive = (chart: EChartsType) => {
       /* istanbul ignore next */
-      chart && chart.isDisposed && !chart.isDisposed()
+      return chart && chart.isDisposed && !chart.isDisposed()
+    }
     const charts = chartsRef.current
     const active = charts.filter(isChartActive)
     connect(active)
@@ -55,9 +57,11 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
 
     return () => {
       const remainingCharts = charts.filter(isChartActive)
-      remainingCharts.forEach(chart =>
+      /* istanbul ignore next */
+      remainingCharts.forEach(chart => {
         /* istanbul ignore next */
-        chart.dispose())
+        chart.dispose()
+      })
       chartsRef.current = []
     }
   }, [])

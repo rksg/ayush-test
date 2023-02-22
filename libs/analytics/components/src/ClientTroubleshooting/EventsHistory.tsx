@@ -34,7 +34,7 @@ type HistoryContentProps = {
   popoverRef: RefObject<HTMLDivElement>
 }
 
-type FormattedEvent = {
+export type FormattedEvent = {
   start: number,
   date: string,
   description: string,
@@ -95,10 +95,17 @@ const renderItem = (
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
     : <UI.HistoryItemWrapper
       onClick={onClick}
-      $selected={visible && (eventState?.key === (item as FormattedEvent).event.key)}
+      $selected={getSelectedEvent(visible, eventState, item)}
     >
       {Item}
     </UI.HistoryItemWrapper>
+}
+
+export function getSelectedEvent (
+  visible: boolean,
+  eventState: DisplayEvent,
+  item: FormattedEvent | IncidentDetails): boolean | undefined {
+  return visible && (eventState?.key === (item as FormattedEvent).event.key)
 }
 
 export function onPanelClick (
