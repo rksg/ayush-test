@@ -97,9 +97,13 @@ export function DeviceInventory () {
   })
 
   const list = filterResults.data
-  const customerName = _.uniq(list?.data.map(c=>c.customerName))
-  const customerVenue = _.uniq(list?.data.map(c=>c.venueName))
-  const model = _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model))
+  const customerName =
+    (list && list.totalCount > 0) ? _.uniq(list?.data.map(c=>c.customerName)) : []
+  const customerVenue =
+    (list && list.totalCount > 0) ? _.uniq(list?.data.map(c=>c.venueName)) : []
+  const model =
+    (list && list.totalCount > 0)
+      ? _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model)) : []
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
