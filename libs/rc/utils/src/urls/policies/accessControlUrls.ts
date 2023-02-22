@@ -15,7 +15,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   delL2AclPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId'
+    url: '/l2AclPolicies/:l2AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
+    newApi: true
   },
   addL3AclPolicy: {
     method: 'post',
@@ -31,7 +33,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   delL3AclPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
+    url: '/l3AclPolicies/:l3AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
+    newApi: true
   },
   addAppPolicy: {
     method: 'post',
@@ -47,7 +51,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   delAppAclPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId'
+    url: '/applicationPolicies/:applicationPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
+    newApi: true
   },
   getL2AclPolicyList: {
     method: 'post',
