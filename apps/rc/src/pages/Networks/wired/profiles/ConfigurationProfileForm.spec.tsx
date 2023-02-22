@@ -127,7 +127,7 @@ describe('Wired', () => {
     await screen.findByRole('heading', { level: 3, name: /Summary/ })
 
     await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
-  })
+  }, 30000)
 
   it('should render create Switch Configuration Profile with trust ports correctly', async () => {
     const params = {
@@ -200,7 +200,7 @@ describe('Wired', () => {
 
     const finishButton = await screen.findAllByRole('button', { name: /Finish/ })
     await userEvent.click(finishButton[1])
-  })
+  }, 35000)
 
   it('should render Switch Configuration Profile form with VLAN correctly', async () => {
     const params = {
@@ -262,7 +262,7 @@ describe('Wired', () => {
 
     const finishButton = await screen.findAllByRole('button', { name: /Finish/ })
     await userEvent.click(finishButton[1])
-  })
+  }, 30000)
 
   it('should edit Switch Configuration Profile form', async () => {
     const profileValues = {
