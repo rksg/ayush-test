@@ -1,8 +1,8 @@
 
 import { useState, useEffect, SetStateAction, useContext } from 'react'
 
-import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
-import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
+import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
+import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip } from '@acx-ui/components'
 // import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
@@ -341,7 +341,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
               <Form.Item
                 name={'family'}
                 required={true}
-                children={<Radio.Group onChange={onFamilyChange} defaultValue={family}>
+                initialValue={family}
+                children={<Radio.Group onChange={onFamilyChange}
+                  // defaultValue={family}
+                >
                   {families.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
@@ -362,7 +365,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
               <Form.Item
                 name={'model'}
                 required={true}
-                children={<Radio.Group onChange={onModelChange} defaultValue={model}>
+                initialValue={model}
+                children={<Radio.Group onChange={onModelChange}
+                  // defaultValue={model}
+                >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
@@ -464,7 +470,11 @@ export function SelectModelStep (props: { editMode: boolean }) {
           </Row>
         </Col>
       </Row>
-      <Form.Item name={'switchFamilyModels'} />
+      <Form.Item
+        name={'switchFamilyModels'}
+        hidden={true}
+        children={<Input />}
+      />
     </>
   )
 }

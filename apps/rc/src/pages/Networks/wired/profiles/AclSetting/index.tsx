@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form } from 'antd'
+import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
 import {
@@ -152,7 +152,12 @@ export function AclSetting () {
         setVisible={setDrawerVisible}
         setRule={handleSetRule}
         aclsTable={aclsTable} />
-      <Form.Item name='acls' initialValue={aclsTable} />
+      <Form.Item
+        name='acls'
+        initialValue={aclsTable}
+        hidden={true}
+        children={<Input />}
+      />
     </>
   )
 }

@@ -68,7 +68,12 @@ export function GeneralSetting () {
         >
           <TextArea rows={4} maxLength={64} />
         </Form.Item>
-        <Form.Item name='id' initialValue={null} />
+        <Form.Item
+          name='id'
+          hidden={true}
+          initialValue={null}
+          children={<Input />}
+        />
       </Col>
     </Row>
   )

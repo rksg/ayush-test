@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 
-import { Switch, Row, Col, Form } from 'antd'
-import { useIntl }                from 'react-intl'
+import { Switch, Row, Col, Form, Input } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 import {
   Loader,
@@ -181,7 +181,12 @@ export function VenueSetting () {
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
           />
-          <Form.Item name='venues' initialValue={[]} />
+          <Form.Item
+            name='venues'
+            initialValue={[]}
+            hidden={true}
+            children={<Input />}
+          />
         </Col>
       </Row>
     </Loader>

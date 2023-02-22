@@ -219,6 +219,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         <Form.Item
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
+          validateFirst
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },

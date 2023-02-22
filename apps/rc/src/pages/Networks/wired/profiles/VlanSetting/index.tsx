@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 
-import { Row, Col, Form } from 'antd'
+import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
 import {
@@ -175,7 +175,11 @@ export function VlanSetting () {
         setDefaultVlan={handleSetDefaultVlan}
         vlansList={vlanTable}
       />
-      <Form.Item name='vlans' />
+      <Form.Item
+        name='vlans'
+        hidden={true}
+        children={<Input />}
+      />
     </>
   )
 }

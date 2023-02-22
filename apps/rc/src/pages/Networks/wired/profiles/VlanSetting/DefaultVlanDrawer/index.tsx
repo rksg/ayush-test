@@ -135,7 +135,12 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
           </Select>
         }
       />
-      <Form.Item name='vlanName' initialValue={'DEFAULT-VLAN'} />
+      <Form.Item
+        name='vlanName'
+        initialValue={'DEFAULT-VLAN'}
+        hidden={true}
+        children={<Input />}
+      />
     </Form>
   )
 }

@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react'
 
-import { Row, Col, Form } from 'antd'
-import _                  from 'lodash'
+import { Row, Col, Form, Input } from 'antd'
+import _                         from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
@@ -138,7 +138,12 @@ export function TrustedPorts () {
           />
         </Col>
       </Row>
-      <Form.Item name='trustedPorts' initialValue={ruleList} />
+      <Form.Item
+        name='trustedPorts'
+        initialValue={ruleList}
+        hidden={true}
+        children={<Input />}
+      />
       <TrustedPortsModal
         open={openModal}
         editRecord={selected}

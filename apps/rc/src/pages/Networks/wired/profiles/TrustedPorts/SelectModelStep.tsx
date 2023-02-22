@@ -1,8 +1,8 @@
 
 import { useState, useEffect, SetStateAction } from 'react'
 
-import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select } from 'antd'
-import { CheckboxChangeEvent }                                                   from 'antd/lib/checkbox'
+import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, Input } from 'antd'
+import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip } from '@acx-ui/components'
 // import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
@@ -333,9 +333,10 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
               <Form.Item
                 name={'family'}
                 required={true}
+                initialValue={family}
                 children={<Radio.Group
                   onChange={onFamilyChange}
-                  defaultValue={family}
+                  // defaultValue={family}
                 >
                   {families.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
@@ -357,9 +358,10 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
               <Form.Item
                 name={'model'}
                 required={true}
+                initialValue={model}
                 children={<Radio.Group
                   onChange={onModelChange}
-                  defaultValue={model}
+                  // defaultValue={model}
                 >
                   {models.map(({ label, value }) => (
                     <Radio key={value} value={value} disabled={!!editRecord}>
@@ -460,7 +462,11 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
           </Row>
         </Col>
       </Row>
-      <Form.Item name={'switchFamilyModels'} />
+      <Form.Item
+        name={'switchFamilyModels'}
+        hidden={true}
+        children={<Input />}
+      />
     </>
   )
 }

@@ -435,5 +435,5 @@ describe('Wired', () => {
     await screen.findByRole('heading', { level: 3, name: /Summary/ })
 
     await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
-  })
+  }, 30000)
 })

@@ -6,8 +6,8 @@ import {
   boxesIntersect,
   useSelectionContainer
 } from '@air/react-drag-to-select'
-import { Row, Col, Form, Typography, Checkbox } from 'antd'
-import _                                        from 'lodash'
+import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
+import _                                               from 'lodash'
 
 import { Card, Tooltip } from '@acx-ui/components'
 import { SwitchSlot }    from '@acx-ui/rc/utils'
@@ -462,7 +462,11 @@ export function UntaggedPortsStep () {
           <DragSelectionUntaggedPorts />
         </Col>
       </Row>
-      <Form.Item name={['switchFamilyModels', 'untaggedPorts']} />
+      <Form.Item
+        name={['switchFamilyModels', 'untaggedPorts']}
+        hidden={true}
+        children={<Input />}
+      />
     </>
   )
 }
