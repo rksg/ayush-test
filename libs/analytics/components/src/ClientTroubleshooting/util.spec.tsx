@@ -686,7 +686,7 @@ describe('util', () => {
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
       expect(useLabelFormatter(useTooltipParameters('quality', qualityDataObj)))
-        .toContain('-74 dBm/ 15 dB/ 3 Mbps/ 37 Mbps')
+        .toContain('-74 dBm / 15 dB / 3.07 Mbps / 37.9 Mbps')
 
       expect(useLabelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
     })

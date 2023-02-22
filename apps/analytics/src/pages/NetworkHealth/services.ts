@@ -136,7 +136,7 @@ const runServiceGuardTest = gql`
     runServiceGuardTest (id: $specId) {
       userErrors { field message }
       spec {
-        id name type apsCount userId clientType
+        id
         tests (limit: 1) {
           items {
             id createdAt

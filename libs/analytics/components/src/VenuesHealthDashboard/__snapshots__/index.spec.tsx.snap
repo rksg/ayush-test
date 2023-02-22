@@ -537,14 +537,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           >
                                             <span>
                                               <span
-                                                data-tooltip="675 of 675 sessions above 9.77 Mbps"
+                                                data-tooltip="675 of 675 sessions above 10 Mbps"
                                               >
                                                 100%
                                               </span>
                                               <span
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
-                                                &gt; 9.77 Mbps
+                                                &gt; 10 Mbps
                                               </span>
                                             </span>
                                           </td>
@@ -643,14 +643,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           >
                                             <span>
                                               <span
-                                                data-tooltip="2 of 11 sessions above 9.77 Mbps"
+                                                data-tooltip="2 of 11 sessions above 10 Mbps"
                                               >
                                                 18%
                                               </span>
                                               <span
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
-                                                &gt; 9.77 Mbps
+                                                &gt; 10 Mbps
                                               </span>
                                             </span>
                                           </td>
@@ -749,14 +749,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           >
                                             <span>
                                               <span
-                                                data-tooltip="15 of 15 sessions above 9.77 Mbps"
+                                                data-tooltip="15 of 15 sessions above 10 Mbps"
                                               >
                                                 100%
                                               </span>
                                               <span
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
-                                                &gt; 9.77 Mbps
+                                                &gt; 10 Mbps
                                               </span>
                                             </span>
                                           </td>
@@ -943,14 +943,14 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                           >
                                             <span>
                                               <span
-                                                data-tooltip="4 of 4 sessions above 9.77 Mbps"
+                                                data-tooltip="4 of 4 sessions above 10 Mbps"
                                               >
                                                 100%
                                               </span>
                                               <span
                                                 class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
                                               >
-                                                &gt; 9.77 Mbps
+                                                &gt; 10 Mbps
                                               </span>
                                             </span>
                                           </td>
