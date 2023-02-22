@@ -16,7 +16,9 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   SyslogUrls,
+  SyslogContextType,
   SyslogPolicyType,
+  VenueSyslogPolicyType,
   VenueRoguePolicyType,
   VLANPoolPolicyType, VlanPoolUrls, VLANPoolVenues,
   TableResult,
@@ -758,6 +760,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    syslogPolicy: build.query<SyslogContextType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params)
@@ -845,5 +895,10 @@ export const {
   useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
+  useAddSyslogPolicyMutation,
+  useDelSyslogPolicyMutation,
+  useUpdateSyslogPolicyMutation,
+  useSyslogPolicyQuery,
+  useVenueSyslogPolicyQuery,
   useGetSyslogPolicyListQuery
 } = policyApi
