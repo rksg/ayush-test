@@ -17,10 +17,6 @@ const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
 const params = { tenantId }
 
 describe('FetchBot',()=>{
-  it('should render properly',()=>{
-    const { asFragment } = render(<FetchBot/>)
-    expect(asFragment()).toMatchSnapshot()
-  })
   it('should render without button visible',()=>{
     const { asFragment } = render(<FetchBot showFloatingButton={false}/>)
     expect(asFragment()).toMatchSnapshot()
@@ -32,6 +28,7 @@ describe('FetchBot',()=>{
       chat: undefined
     }
     const { asFragment } = render(<FetchBot statusCallback={mockStausFn}/>)
+    expect(asFragment()).toMatchSnapshot('init')
     act(()=>{
       window.tdiConfig.events.start()
     })
