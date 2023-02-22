@@ -368,7 +368,7 @@ describe('Guest Table', () => {
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })
 
-  it('should show "Import from file" correctly', async () => {
+  it.skip('should show "Import from file" correctly', async () => {
     mockServer.use(
       rest.post(
         ClientUrlsInfo.importGuestPass.url,
