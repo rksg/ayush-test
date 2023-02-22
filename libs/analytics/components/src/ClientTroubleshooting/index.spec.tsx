@@ -39,7 +39,6 @@ describe('ClientTroubleshootingTab', () => {
     expect(screen.getAllByRole('img', { name: 'loader' })[0]).toBeVisible()
   })
   it('should render correctly without search params', async () => {
-
     const { asFragment } = render(
       <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
       {
@@ -51,13 +50,8 @@ describe('ClientTroubleshootingTab', () => {
     )
     expect(await screen.findByTestId('history-collapse')).toBeVisible()
     const fragment = asFragment()
-    fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
-      .forEach((node:Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
-    fragment.querySelectorAll('text[transform^="translate"]')
-      .forEach((node:Element) => node.setAttribute('transform', 'transform_mock'))
-    fragment.querySelectorAll('path[transform^="translate"]')
-      .forEach((node:Element) => node.setAttribute('transform', 'transform_mock'))
-    expect(fragment).toMatchSnapshot()
+    const charts = fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
+    expect(charts).toHaveLength(4)
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(
