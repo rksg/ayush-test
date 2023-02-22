@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }                                           from '@acx-ui/rc/utils'
-import { Provider, store }                                                          from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { switchApi }                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { profilesExistResponse, familyModels, venues, profile }      from './__tests__/fixtures'
 import { ConfigurationProfileForm }                                  from './ConfigurationProfileForm'
@@ -86,7 +86,9 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -135,7 +137,9 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -207,7 +211,9 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
@@ -264,7 +270,7 @@ describe('Wired', () => {
           <ConfigurationProfileForm />
         </ConfigurationProfileFormContext.Provider>
       </Provider>, {
-        route: { params, path: '/:tenantId/networks/wired/profiles/:profileId/edit' }
+        route: { params, path: '/:tenantId/networks/wired/profiles/regular/:profileId/edit' }
       })
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
@@ -273,7 +279,9 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -312,7 +320,9 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -378,7 +388,9 @@ describe('Wired', () => {
     const profileDescInput = await screen.findByLabelText('Profile Description')
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
-    await waitForElementToBeRemoved(await screen.findByRole('img', { name: 'loading' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
