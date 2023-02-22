@@ -80,7 +80,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render correctly: Backup, Restore, Download and Delete', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
@@ -142,7 +142,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render correctly: View Backup and actions: Download', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
@@ -192,7 +192,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render correctly: View Backup and actions: Compare', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
@@ -243,7 +243,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render correctly: View Backup and actions: Restore', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
@@ -293,7 +293,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render correctly: View Backup and actions: Delete', async () => {
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(list))
       )
@@ -353,7 +353,7 @@ describe('SwitchConfigBackupTable', () => {
     })
     inRestoreProgressList[0].restoreStatus = 'STARTED'
     mockServer.use(
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
         (req, res, ctx) => res(ctx.json(inRestoreProgressList))
       )
