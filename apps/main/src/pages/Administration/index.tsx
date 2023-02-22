@@ -81,7 +81,7 @@ export default function Administration () {
 
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
-  return <>
+  return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Administration' })}
       breadcrumb={[
@@ -90,5 +90,5 @@ export default function Administration () {
       footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />
     { ActiveTabPane && <ActiveTabPane /> }
-  </>
+  </>)
 }

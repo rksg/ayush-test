@@ -53,6 +53,7 @@ import RogueAPDetectionDetailView
 import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import RogueAPDetectionTable    from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
+import SyslogDetailView         from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
 import SyslogTable              from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import VLANPoolDetail           from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
@@ -374,6 +375,11 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
         element={<SyslogTable />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
+        element={<SyslogDetailView />}
+      />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
