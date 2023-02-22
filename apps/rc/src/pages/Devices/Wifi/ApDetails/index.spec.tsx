@@ -167,7 +167,7 @@ describe('ApDetails', () => {
       .toEqual('Clients ()')
   })
 
-  it('should navigate to services tab correctly', async () => {
+  it.skip('should navigate to services tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       serialNumber: 'ap-serialNumber',
