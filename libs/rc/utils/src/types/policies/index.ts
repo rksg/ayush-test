@@ -1,5 +1,6 @@
 export * from './macRegistrarionList'
 export * from './rogueApDetectionPolicy'
+export * from './aaaPolicy'
 export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,
   useMacRegistrationsQuery,
@@ -25,12 +25,6 @@ export function MacRegistrationsTab () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
-  useEffect(()=>{
-    if (uploadCsvResult.isSuccess) {
-      setUploadCsvDrawerVisible(false)
-    }
-  },[uploadCsvResult])
-
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
     defaultPayload: {},
@@ -39,6 +33,12 @@ export function MacRegistrationsTab () {
       sortOrder: 'asc'
     }
   })
+
+  useEffect(()=>{
+    if (uploadCsvResult.isSuccess) {
+      setUploadCsvDrawerVisible(false)
+    }
+  },[uploadCsvResult])
 
   const [
     deleteMacRegistration,
@@ -164,6 +164,16 @@ export function MacRegistrationsTab () {
     }
   ]
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toastDetailErrorMessage = (error: any) => {
+    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+    })
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -175,10 +185,11 @@ export function MacRegistrationsTab () {
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
       />
-      <ImportCsvDrawer type='DPSK'
+      <ImportFileDrawer type='DPSK'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
+        acceptType={['csv']}
         templateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
@@ -188,12 +199,7 @@ export function MacRegistrationsTab () {
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            if (error.data?.message) {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
-            }
+            toastDetailErrorMessage(error)
           }
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />

@@ -182,10 +182,51 @@ describe('MacRegistrationsTab', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    // const importBtn = await screen.findByRole('button', { name: 'Import From File' })
     fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
-    //
-    // fireEvent.click(importBtn)
+
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'mac_registration_import_template.csv', { type: 'text/csv' })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+
+    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+  })
+
+  it('should show error toast when "Import from file"', async () => {
+    const error = {
+      status: 'BAD_REQUEST',
+      timestamp: '2023-02-14 07:47:47',
+      message: 'Validation error',
+      subErrors: [
+        {
+          object: 'Registration',
+          field: 'macAddress',
+          rejectedValue: 'FF-7D-A2-5B-6A-AD',
+          // eslint-disable-next-line max-len
+          message: 'FF-7D-A2-5B-6A-AD already exists in pool (29fe1d03-1bf2-4d5b-bd17-07f362feeab8). In row: 0'
+        }
+      ]
+    }
+
+    mockServer.use(
+      rest.post(
+        MacRegListUrlsInfo.addMacRegistration.url,
+        (req, res, ctx) => res(ctx.status(500), ctx.json(error))
+      )
+    )
+
+    render(<Provider><MacRegistrationsTab /></Provider>, {
+      route: { params, path: tablePath }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: /import from file/i }))
+
     const dialog = await screen.findByRole('dialog')
     const csvFile = new File([''], 'mac_registration_import_template.csv', { type: 'text/csv' })
 

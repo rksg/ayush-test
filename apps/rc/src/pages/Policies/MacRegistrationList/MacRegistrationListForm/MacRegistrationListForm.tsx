@@ -23,12 +23,14 @@ import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/Mac
 
 
 interface MacRegistrationListFormProps {
-  editMode?: boolean
+  editMode?: boolean,
+  modalMode?: boolean,
+  modalCallBack?: () => void
 }
 
 export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const intl = useIntl()
-  const { editMode = false } = props
+  const { editMode = false, modalMode, modalCallBack } = props
   const { policyId } = useParams()
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
@@ -70,11 +72,13 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
@@ -101,18 +105,20 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'An error occurred' }),
+        // FIXME: Correct the error message
+        link: { onClick: () => alert(JSON.stringify(error)) }
       })
     }
   }
 
   return (
     <>
-      <PageHeader
+      {!modalMode && <PageHeader
         title={editMode
           ? intl.$t({ defaultMessage: 'Configure {listName}' }, { listName: data?.name })
           : intl.$t({ defaultMessage: 'Add MAC Registration List' })}
@@ -123,12 +129,12 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
             link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })
           }
         ]}
-      />
+      />}
       <StepsForm<MacRegistrationPoolFormFields>
         editMode={editMode}
         formRef={formRef}
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Apply' }) }}
-        onCancel={() => navigate(linkToList)}
+        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToList)}
         onFinish={editMode ? handleEditList : handleAddList}>
         <StepsForm.StepForm<MacRegistrationPoolFormFields>>
           <Loader states={[{

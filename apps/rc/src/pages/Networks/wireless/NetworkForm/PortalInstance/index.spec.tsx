@@ -37,24 +37,24 @@ describe('Portal Instance Page', () => {
     )
   })
 
-  it.skip('should render instance page', async () => {
+  it('should render instance page', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
-        { enableSmsLogin: true, socialIdentities: {} } }
+        { enableSmsLogin: true, socialIdentities: {} }, portalServiceProfileId: '2' }
     }}><Form><PortalInstance />
       </Form></NetworkFormContext.Provider></Provider>,
     {
       route: { params }
     })
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
     await userEvent.click(await screen.findByText('Add Guest Portal Service'))
     await userEvent.type(await screen.findByRole(
       'textbox', { name: 'Service Name' }),'create Portal test')
     await userEvent.click(await screen.findByText('Reset'))
     await userEvent.click(await screen.findByText('Finish'))
     await userEvent.click((await screen.findAllByRole('combobox'))[0])
-    await userEvent.click(await screen.findByTitle('test2'))
+    await userEvent.click((await screen.findAllByTitle('test2'))[0])
   })
 })

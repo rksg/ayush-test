@@ -16,7 +16,9 @@ import {
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
   SyslogUrls,
+  SyslogContextType,
   SyslogPolicyType,
+  VenueSyslogPolicyType,
   VenueRoguePolicyType,
   VLANPoolPolicyType, VlanPoolUrls, VLANPoolVenues,
   TableResult,
@@ -27,6 +29,10 @@ import {
   DevicePolicy,
   NewTableResult,
   transferToTableResult,
+  AAAPolicyType,
+  AaaUrls,
+  AAATempType,
+  AAADetailInstances,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   L2AclPolicy,
@@ -98,12 +104,30 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
+    delL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.delL2AclPolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.addL3AclPolicy, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.delL3AclPolicy, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
@@ -177,6 +201,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
+    delDevicePolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.delDevicePolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AccessControlUrls.addAppPolicy, params, RKS_NEW_UI)
@@ -195,6 +228,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    delAppPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AccessControlUrls.delDevicePolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -310,6 +352,81 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAPolicyList: build.query<AAATempType[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add AAA Policy Profile',
+            'Update AAA Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    aaaNetworkInstances: build.query<TableResult<AAADetailInstances>, RequestPayload>({
+      query: ({ params }) => {
+        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
+        return {
+          ...instancesRes
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
+      query: ({ params }) => {
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params, RKS_NEW_UI)
+        return {
+          ...aaaDetailReq
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -681,6 +798,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
+    addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    syslogPolicy: build.query<SyslogContextType, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
     getSyslogPolicyList: build.query<SyslogPolicyType[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SyslogUrls.getSyslogPolicyList, params)
@@ -747,10 +912,13 @@ export const {
   useDelRoguePoliciesMutation,
   useAddL2AclPolicyMutation,
   useGetL2AclPolicyQuery,
+  useDelL2AclPolicyMutation,
   useAddAppPolicyMutation,
   useGetAppPolicyQuery,
+  useDelAppPolicyMutation,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
+  useDelL3AclPolicyMutation,
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation,
   useDeleteAccessControlProfileMutation,
@@ -759,6 +927,7 @@ export const {
   useL3AclPolicyListQuery,
   useAddDevicePolicyMutation,
   useGetDevicePolicyQuery,
+  useDelDevicePolicyMutation,
   useDevicePolicyListQuery,
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
@@ -768,6 +937,14 @@ export const {
   useVenueRoguePolicyQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
+  useAddAAAPolicyMutation,
+  useDeleteAAAPolicyMutation,
+  useGetAAAPolicyListQuery,
+  useLazyGetAAAPolicyListQuery,
+  useUpdateAAAPolicyMutation,
+  useAaaPolicyQuery,
+  useAaaNetworkInstancesQuery,
+  useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
@@ -785,6 +962,11 @@ export const {
   useGetVenueUsageByClientIsolationQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
+  useAddSyslogPolicyMutation,
+  useDelSyslogPolicyMutation,
+  useUpdateSyslogPolicyMutation,
+  useSyslogPolicyQuery,
+  useVenueSyslogPolicyQuery,
   useGetSyslogPolicyListQuery,
   useAdaptivePolicySetListQuery,
   useGetAdaptivePolicySetQuery,
