@@ -23,6 +23,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/dhcpConfigServiceProfiles'
   },
+  getDHCPProfilesViewModel: {
+    //Get DHCP Profiles LIST
+    method: 'post',
+    url: '/dhcpConfigServiceProfiles/query'
+  },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',

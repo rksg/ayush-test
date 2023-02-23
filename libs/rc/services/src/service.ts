@@ -168,18 +168,41 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    getDHCPProfileList: build.query<TableResult<DHCPSaveData>, RequestPayload>({
+    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(
-          DHCPUrls.getDHCPProfiles,
-          params)
+        const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
+          params, RKS_NEW_UI)
 
         return {
           ...req
         }
       },
-      transformResponse (result: DHCPSaveData[]) {
-        return { data: result, totalCount: result.length, page: 0 }
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddDhcpConfigServiceProfile',
+            'UpdateDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'DHCP', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel,
+          params, RKS_NEW_UI)
+
+        return {
+          ...req,
+          body: payload
+        }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -823,5 +846,6 @@ export const {
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
   useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery
+  useGetDistributionSwitchesQuery,
+  useGetDHCPProfileListViewModelQuery
 } = serviceApi

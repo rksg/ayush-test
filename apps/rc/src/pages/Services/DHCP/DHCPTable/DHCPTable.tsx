@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteDHCPServiceMutation, useGetDHCPProfileListQuery }       from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }    from '@acx-ui/components'
+import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -21,22 +21,29 @@ export default function DHCPTable () {
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
   const DHCP_LIMIT_NUMBER = 32
   const tableQuery = useTableQuery({
-    useQuery: useGetDHCPProfileListQuery,
+    useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
-
+      searchString: '',
+      fields: [
+        'id',
+        'name',
+        'dhcpPools',
+        'venueIds',
+        'technology'
+      ]
     }
   })
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, serviceName }], clearSelection) => {
+      onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'Service' }),
-            entityValue: serviceName
+            entityValue: name
           },
           onOk: () => {
             deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
@@ -105,7 +112,7 @@ function useColumns () {
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
-      dataIndex: 'serviceName',
+      dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {

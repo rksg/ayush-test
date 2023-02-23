@@ -61,15 +61,15 @@ const VenueDHCPForm = (props: {
 
   const DHCP_LIMIT_NUMBER = 32
   const getSelectedDHCPMode = ()=> {
-    if(dhcpProfileList?.data && dhcpServiceID){
-      return dhcpProfileList.data[_.findIndex(dhcpProfileList.data,
+    if(dhcpProfileList && dhcpServiceID){
+      return dhcpProfileList[_.findIndex(dhcpProfileList,
         { id: dhcpServiceID })].dhcpMode
     }else{
       return DHCPConfigTypeEnum.SIMPLE
     }
   }
   const isMaxNumberReached = ()=>{
-    return dhcpProfileList&&dhcpProfileList.data.length >= DHCP_LIMIT_NUMBER
+    return dhcpProfileList&&dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
 
   useEffect(() => {
@@ -200,7 +200,7 @@ const VenueDHCPForm = (props: {
             setDHCPServiceID(val as string)
           }}
           placeholder={$t({ defaultMessage: 'Select Service...' })}>
-            {dhcpProfileList?.data.map( (dhcp:DHCPSaveData) =>
+            {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
               <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
               </Option>

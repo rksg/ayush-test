@@ -38,8 +38,8 @@ export default function BasicInfo () {
 
   const { data: dhcpProfileList } = useGetDHCPProfileListQuery({ params })
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
-    if(dhcpProfileList?.data && dhcpServiceID){
-      return _.find(dhcpProfileList.data, { id: dhcpServiceID })?.dhcpMode
+    if(dhcpProfileList && dhcpServiceID){
+      return _.find(dhcpProfileList, { id: dhcpServiceID })?.dhcpMode
     }else{
       return DHCPConfigTypeEnum.SIMPLE
     }

@@ -37,7 +37,7 @@ export default function DHCPForm (props: DHCPFormProps) {
   const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink('/services/dhcp/list')
 
   const {
     data,

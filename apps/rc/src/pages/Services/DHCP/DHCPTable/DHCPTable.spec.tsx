@@ -20,12 +20,15 @@ import {
 
 import DHCPTable from './DHCPTable'
 
-const mockTableResult = [{
-  id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-  serviceName: 'My DHCP 1',
-  dhcpPools: [],
-  venueIds: []
-}]
+const mockTableResult = {
+  totalCount: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My DHCP 1',
+    dhcpPools: [],
+    venueIds: []
+  }]
+}
 
 
 const mockedUseNavigate = jest.fn()
@@ -51,8 +54,8 @@ describe('DHCPTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        DHCPUrls.getDHCPProfiles.url,
+      rest.post(
+        DHCPUrls.getDHCPProfilesViewModel.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -67,12 +70,12 @@ describe('DHCPTable', () => {
       }
     )
 
-    const targetServiceName = mockTableResult[0].serviceName
+    const targetServiceName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add DHCP Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
-  // TODO
+
   it('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
@@ -94,13 +97,13 @@ describe('DHCPTable', () => {
       }
     )
 
-    const target = mockTableResult[0]
-    const row = await screen.findByRole('row', { name: new RegExp(target.serviceName) })
+    const target = mockTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    expect(await screen.findByText('Delete "' + target.serviceName + '"?')).toBeVisible()
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
@@ -119,8 +122,8 @@ describe('DHCPTable', () => {
       }
     )
 
-    const target = mockTableResult[0]
-    const row = await screen.findByRole('row', { name: new RegExp(target.serviceName) })
+    const target = mockTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
