@@ -4,10 +4,10 @@ import { List, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { Table, TableProps, Loader, Tooltip }                        from '@acx-ui/components'
-import { LineChartOutline, ListSolid, MeshSolid }                    from '@acx-ui/icons'
-import { ApTable }                                                   from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useMeshApsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip }     from '@acx-ui/components'
+import { LineChartOutline, ListSolid, MeshSolid } from '@acx-ui/icons'
+import { ApTable }                                from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useMeshApsQuery }  from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -235,6 +235,20 @@ export function VenueWifi () {
 
   const [ showIdx, setShowIdx ] = useState(1)
 
+  const { apgroupFilterOptions } = useApGroupsListQuery({
+    params: { tenantId: params.tenantId }, payload: {
+      fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { isDefault: [false], venueId: params.venueId }
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+    })
+  })
+
   const VenueMeshApsTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useMeshApsQuery,
@@ -256,32 +270,6 @@ export function VenueWifi () {
     )
   }
 
-  const { venueFilterOptions } = useVenuesListQuery({
-    params: { tenantId: params.tenantId }, payload: {
-      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-    })
-  })
-
-  const { apgroupFilterOptions } = useApGroupsListQuery({
-    params: { tenantId: params.tenantId }, payload: {
-      fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: { isDefault: [false] }
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-    })
-  })
 
 
   return (
@@ -303,6 +291,7 @@ export function VenueWifi () {
         </div>
       }
       {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
+        searchable={true}
         filterables={{
           deviceGroupId: apgroupFilterOptions
         }}
