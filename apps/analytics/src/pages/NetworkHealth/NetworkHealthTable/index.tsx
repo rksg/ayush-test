@@ -52,9 +52,6 @@ export function NetworkHealthTable () {
     }
   }
 
-  const tableData = queryResults.data && queryResults.data[0].tests
-    ? getTableData(queryResults.data[0]) : {} as StatsFromSummary
-
   const getLastRun = (result: string) =>
     result ? formatter('dateTimeFormatWithSeconds')(result)
       : noDataSymbol
@@ -66,9 +63,8 @@ export function NetworkHealthTable () {
         runMutation({ id })
         clearSelection()
       },
-      disabled: (selectedRow) => (
-        selectedRow[0]?.apsCount === 0 || selectedRow[0]?.tests.items[0].summary.apsPendingCount > 0
-      )
+      disabled: (selectedRow) => selectedRow[0]?.apsCount === 0
+        || selectedRow[0]?.tests.items[0]?.summary.apsPendingCount > 0
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
@@ -153,13 +149,21 @@ export function NetworkHealthTable () {
       key: 'apsUnderTest',
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
       dataIndex: ['tests', 'items'],
-      render: () => formatApsUnderTest(tableData, $t)
+      render: (_, row) => {
+        const tableData = row
+          ? getTableData(row) : {} as StatsFromSummary
+        return formatApsUnderTest(tableData, $t)
+      }
     },
     {
       key: 'lastResult',
       title: $t(defineMessage({ defaultMessage: 'Last Result' })),
       dataIndex: ['tests', 'items'],
-      render: () => formatLastResult(tableData, $t)
+      render: (_, row) => {
+        const tableData = row
+          ? getTableData(row) : {} as StatsFromSummary
+        return formatLastResult(tableData, $t)
+      }
     }
   ], [])
 
