@@ -64,10 +64,8 @@ const RogueApModal = () => {
     >
       {$t({ defaultMessage: 'Add Profile' })}
     </Button>
-    {/* It's a workaround to avoid Modal element popping up again then disappear after closing this Modal element. */}
     {visible && <Modal
       title={$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
-      visible={visible}
       type={ModalType.ModalStepsForm}
     >
       <RogueAPDetectionContext.Provider value={{ state, dispatch }}>
