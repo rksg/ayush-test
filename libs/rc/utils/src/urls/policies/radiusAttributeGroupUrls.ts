@@ -8,42 +8,52 @@ const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttribute: {
     method: 'get',
+    newApi: true,
     url: attributeBaseUrl + '/:attributeId'
   },
   getAttributes: {
     method: 'get',
+    newApi: true,
     url: attributeBaseUrl + '?size=:pageSize&page=:page'
   },
   getAttributesWithQuery: {
     method: 'post',
+    newApi: true,
     url: attributeBaseUrl + '/query'
   },
   getAttributeGroups: {
     method: 'get',
+    newApi: true,
     url: attributeGroupsBaseUrl + paginationParams
   },
   getAttributeGroupsWithQuery: {
     method: 'post',
+    newApi: true,
     url: attributeGroupsBaseUrl + '/query'
   },
   createAttributeGroup: {
     method: 'post',
+    newApi: true,
     url: attributeGroupsBaseUrl
   },
   getAttributeGroup: {
     method: 'get',
+    newApi: true,
     url: attributeGroupsBaseUrl + '/:policyId'
   },
   deleteAttributeGroup: {
     method: 'delete',
+    newApi: true,
     url: attributeGroupsBaseUrl + '/:policyId'
   },
   updateAttributeGroup: {
     method: 'PATCH',
+    newApi: true,
     url: attributeGroupsBaseUrl + '/:policyId'
   },
   getAttributeVendors: {
     method: 'get',
+    newApi: true,
     url: attributeBaseUrl + '/vendors'
   }
 }
