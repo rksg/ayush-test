@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { NetworkSaveData, NetworkVenue, SchedulerTypeEnum, Venue, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { NetworkVenue, SchedulerTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import {
   fireEvent,
   render,

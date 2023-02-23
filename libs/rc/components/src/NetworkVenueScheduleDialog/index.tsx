@@ -29,22 +29,14 @@ import {
   NetworkVenue,
   fetchVenueTimeZone,
   transformTimezoneDifference,
-  NetworkVenueScheduler
+  NetworkVenueScheduler,
+  NetworkSaveData
 } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import type { CheckboxValueType }   from 'antd/es/checkbox/Group'
-export interface SchedulingModalState {
-  visible: boolean,
-  networkVenue?: NetworkVenue,
-  venue?: {
-    latitude: string,
-    longitude: string,
-    name: string
-  }
-}
 
 interface SchedulingModalProps extends AntdModalProps {
   networkVenue?: NetworkVenue
@@ -53,7 +45,7 @@ interface SchedulingModalProps extends AntdModalProps {
     longitude: string,
     name: string
   }
-  network?: { name: string } | null
+  network?: { name: string } | null | NetworkSaveData
   formName: string
 }
 
