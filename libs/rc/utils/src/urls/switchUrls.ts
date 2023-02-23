@@ -296,6 +296,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
   },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
+  },
   deleteProfiles: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/profiles'

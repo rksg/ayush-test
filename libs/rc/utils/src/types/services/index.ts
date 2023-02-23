@@ -70,7 +70,29 @@ export interface AccessControlProfile {
   l3AclPolicy?: {
     enabled: boolean,
     id: string
+  },
+  policyName?: string,
+  description?: string
+}
+
+export interface AccessControlFormFields {
+  description: string | undefined
+  enableApplications: boolean | undefined
+  enableClientRateLimit: boolean | undefined
+  enableDeviceOs: boolean | undefined
+  enableLayer2: boolean | undefined
+  enableLayer3: boolean | undefined
+  l2AclPolicyId: string | undefined
+  l3AclPolicyId: string | undefined
+  devicePolicyId: string | undefined
+  applicationPolicyId: string | undefined
+  rateLimiting?: {
+    enableDownloadLimit?: boolean
+    enableUploadLimit?: boolean
+    uplinkLimit?: number
+    downlinkLimit?: number
   }
+  policyName: string
 }
 
 export interface CloudpathServer {
