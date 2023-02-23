@@ -35,7 +35,7 @@ export function VenueServicesTab () {
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Rogue Aps' })}
-        key={'rogueAps'}
+        key={PolicyType.ROGUE_AP_DETECTION}
       >
         <VenueRogueAps />
       </Tabs.TabPane>

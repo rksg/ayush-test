@@ -85,7 +85,6 @@ export function VenueRogueAps () {
         key: 'rogueMac',
         title: intl.$t({ defaultMessage: 'BSSID' }),
         dataIndex: 'rogueMac',
-        align: 'left',
         searchable: true
       },
       {
@@ -94,7 +93,6 @@ export function VenueRogueAps () {
         dataIndex: 'category',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true,
-        align: 'left',
         render: (data, row) => {
           return <span>
             <Badge
@@ -108,28 +106,24 @@ export function VenueRogueAps () {
         key: 'classificationPolicyName',
         title: intl.$t({ defaultMessage: 'Classification Profile' }),
         dataIndex: 'classificationPolicyName',
-        align: 'left',
         sorter: true
       },
       {
         key: 'ssid',
         title: intl.$t({ defaultMessage: 'SSID' }),
         dataIndex: 'ssid',
-        align: 'left',
         sorter: true
       },
       {
         key: 'channel',
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
-        sorter: true,
-        align: 'left'
+        sorter: true
       },
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
-        dataIndex: 'band',
-        align: 'left'
+        dataIndex: 'band'
       },
       {
         key: 'closestAp_snr',
@@ -149,8 +143,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Closest Ap' }),
         dataIndex: 'closestAp_apName',
         // filterable: true, // TODO: change to search or provide static list
-        sorter: true,
-        align: 'left'
+        sorter: true
       },
       {
         key: 'detectingAps',
@@ -167,7 +160,6 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Last Seen' }),
         dataIndex: 'lastUpdTime',
         sorter: true,
-        align: 'left',
         defaultSortOrder: 'descend',
         render: (data, row) => {
           return formatDate(new Date(Number(row.lastUpdTime) * 1000))
@@ -178,7 +170,6 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         sorter: true,
-        align: 'left',
         render: (data, row) => {
           return row.locatable
             ? <VenueMarkerRed />

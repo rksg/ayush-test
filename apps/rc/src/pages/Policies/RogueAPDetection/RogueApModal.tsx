@@ -17,19 +17,13 @@ const RogueApModal = () => {
   const [visible, setVisible] = useState(false)
   const params = useParams()
 
-  const policyName = ''
-  const description = ''
-  const tags:string[] = []
-  const rules:RogueAPRule[] = []
-  const venues:RogueVenue[] = []
-
   const formRef = useRef<StepsFormInstance<RogueAPDetectionContextType>>()
   const [state, dispatch] = useReducer(mainReducer, {
-    policyName,
-    tags,
-    description,
-    rules,
-    venues
+    policyName: '',
+    tags: [] as string[],
+    description: '',
+    rules: [] as RogueAPRule[],
+    venues: [] as RogueVenue[]
   })
 
   const [ createRoguePolicy ] = useAddRoguePolicyMutation()
@@ -70,6 +64,7 @@ const RogueApModal = () => {
     >
       {$t({ defaultMessage: 'Add Profile' })}
     </Button>
+    {/* It's a workaround to avoid Modal element popping up again then disappear after closing this Modal element. */}
     {visible && <Modal
       title={$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
       visible={visible}
