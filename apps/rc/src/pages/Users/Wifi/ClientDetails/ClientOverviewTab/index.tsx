@@ -95,7 +95,7 @@ export function ClientOverviewTab () {
     clientStatus === ClientStatusEnum.CONNECTED
       ? getClientData()
       : getHistoricalClientData()
-  }, [])
+  }, [clientId])
 
   useEffect(() => {
     const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
