@@ -26,5 +26,6 @@ export enum Features {
   HELP_SUPPORT='acx-ui-help-support',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
+  SWITCH_SUPPORT_ICX8200='switch-support-icx8200',
   NEW_API='acx-ui-new-api'
 }
