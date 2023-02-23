@@ -458,14 +458,6 @@ export interface VePortRouted {
   portNumber: string
 }
 
-// export interface ProfileVlan {
-//   defaultVlan: boolean
-//   profileLevel: boolean
-//   vlanConfigName?: string
-//   vlanId: number
-//   switchId: string
-// }
-
 export interface SwitchDefaultVlan {
   defaultVlanId: number
   switchId: string
@@ -626,19 +618,42 @@ export interface CliTemplateVenueSwitches {
 }
 
 export interface CliConfiguration {
-  id: string
-  name: string
-  cli: string
+  id?: string
+  name?: string
+  cli?: string
   reload?: boolean
   applyLater?: boolean
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
 
   // profile
-  overwrite?: boolean  //For profiles
-  // venues = []; //For profiles
-  // models = []; //For profiles
+  overwrite?: boolean
+  venues?: string[]
+  models?: string[]
+  venueCliTemplate?: { //
+		cli?: string,
+		id?: string,
+		name?: string,
+		overwrite?: boolean
+    switchModels?: string
+    variables?: CliTemplateVariable[]
+	}
 }
+
+export interface FamilyModels {
+  family: string,
+  models: {
+    model: string
+    checked: boolean
+  }[]
+}
+
+export interface CliFamilyModels {
+  familyModels: FamilyModels[]
+  venueId: string
+  venueName: string
+}
+
 export enum LAG_TYPE {
   STATIC = 'static',
   DYNAMIC = 'dynamic'
@@ -655,7 +670,6 @@ export interface Lag {
   type: LAG_TYPE
   untaggedVlan: string
 }
-
 export interface CliProfileModel{
   model: string,
   checked: boolean
@@ -664,10 +678,4 @@ export interface CliProfileModel{
 export interface CliProfileFamily {
   family: string,
   model: CliProfileModel[]
-}
-
-export interface CliProfileFamilyModels {
-  familyModels: CliProfileFamily[]
-  venueId: string
-  venueName: string
 }

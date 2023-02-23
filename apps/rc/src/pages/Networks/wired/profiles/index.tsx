@@ -49,7 +49,8 @@ export function ProfilesTab () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        navigate(`regular/${selectedRows[0].id}/edit`, { replace: false })
+        const row = selectedRows?.[0]
+        navigate(`${row?.profileType?.toLowerCase()}/${row?.id}/edit`, { replace: false })
       }
     },
     {
@@ -93,8 +94,9 @@ export function ProfilesTab () {
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => {
+            navigate('cli/add', { replace: false })
+          }
         }]}
       />
     </Loader></>

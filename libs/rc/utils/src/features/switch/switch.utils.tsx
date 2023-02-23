@@ -121,7 +121,6 @@ export const ICX_MODELS_MODULES = {
   }
 }
 
-
 export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig: boolean) => {
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
 }

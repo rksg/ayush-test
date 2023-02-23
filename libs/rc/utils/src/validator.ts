@@ -13,7 +13,6 @@ import { AclTypeEnum }    from './constants'
 import { IpUtilsService } from './ipUtilsService'
 import { Acl, Vlan }      from './types'
 
-
 const Netmask = require('netmask').Netmask
 
 export function networkWifiIpRegExp (value: string) {

@@ -163,6 +163,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
   },
+  addAcl: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
+  },
   addVePort: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId'
@@ -304,6 +308,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
   },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
+  },
   deleteProfiles: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/profiles'
@@ -339,9 +351,5 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   deleteLag: {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/lag/:lagId'
-  },
-  getCliFamilyModels: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   }
 }
