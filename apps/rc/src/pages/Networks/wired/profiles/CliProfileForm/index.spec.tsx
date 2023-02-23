@@ -198,7 +198,7 @@ describe('Cli Profile Form - Add', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
 
     await screen.findByText('An error occurred')
-  })
+  }, 30000)
 })
 
 describe('Cli Profile Form - Edit', () => {

@@ -631,3 +631,18 @@ export interface SchedulingModalState {
     name: string
   }
 }
+export interface AclStandardRule {
+  sequence: number
+  action: string
+  source: string
+  specificSrcNetwork: string
+  editIndex?: number
+}
+
+export interface AclExtendedRule extends AclStandardRule {
+  protocol?: string
+  sourcePort?: string
+  destination?: string
+  destinationPort?: string
+  specificDestNetwork?: string
+}
