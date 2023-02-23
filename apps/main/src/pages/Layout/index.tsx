@@ -23,6 +23,7 @@ import {
 import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
@@ -35,7 +36,10 @@ function Layout () {
   const showHomeButton = isDelegationMode() || userProfile?.var
   const { $t } = useIntl()
 
-  const [searchExpanded, setSearchExpanded] = useState<boolean>(false)
+  const params = useParams()
+  const searchFromUrl = params.searchVal || ''
+
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
 
   return (
