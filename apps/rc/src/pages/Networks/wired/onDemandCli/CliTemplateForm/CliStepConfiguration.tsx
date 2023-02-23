@@ -87,14 +87,12 @@ const cliTemplatesPayload = {
   sortOrder: 'DESC'
 }
 
-export function CliStepConfiguration (props: {
-  configType?: 'Profile' | 'Template'
-}) {
+// TODO: move to rc/components
+export function CliStepConfiguration () {
   const { $t } = useIntl()
   const params = useParams()
-  const { configType } = props
   const form = Form.useFormInstance()
-  const isTemplate = configType === 'Template'
+  const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
 
   const [cli, setCli] = useState('')
@@ -106,9 +104,10 @@ export function CliStepConfiguration (props: {
   const [selectedEditVariable, setSelectedEditVariable] = useState({} as CliTemplateVariable)
   const [importModalvisible, setImportModalvisible] = useState(false)
 
-  const { editMode, data, setCliValidation } = useContext(CliTemplateFormContext)
+  const { editMode, data, initCodeMirror, setCliValidation } = useContext(CliTemplateFormContext)
   const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
-  const { data: cliTemplates } = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload })
+  const { data: cliTemplates }
+    = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
@@ -128,28 +127,35 @@ export function CliStepConfiguration (props: {
       codeMirrorInstance.on('keyup', (
         cm: CodeMirror.EditorFromTextArea,
         event: React.KeyboardEvent
-      ) => codemirrorOnKeyup(cm, event, form)
-      )
+      ) => codemirrorOnKeyup(cm, event, form))
     }
   }, [codeMirrorInstance])
 
   useEffect(() => {
+    if (codeMirrorInstance && initCodeMirror) {
+      const templateData = isTemplate ? data : data?.venueCliTemplate
+      codeMirrorInstance?.setValue(templateData?.cli ?? cliDefaultString)
+      !isTemplate && markCodeMirrorReadOnlyText(codeMirrorInstance)
+    }
+  }, [initCodeMirror])
+
+  useEffect(() => {
+    const templateData = isTemplate ? data : data?.venueCliTemplate
     if (editMode && data) {
-      form?.setFieldsValue(data)
-      codeMirrorInstance?.setValue(data?.cli)
-      setVariableList((data?.variables ?? []) as CliTemplateVariable[])
+      form?.setFieldsValue(templateData)
+      setVariableList((templateData?.variables ?? []) as CliTemplateVariable[])
     }
   }, [data])
 
   useEffect(() => {
     const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
-    setCliValidation(validation)
+    setCliValidation?.(validation)
     form?.setFieldsValue({ variables: variableList })
   }, [variableList])
 
   useEffect(() => {
     const validation = validateCLI(codeMirrorEl, variableList, cliDefaultString)
-    setCliValidation(validation)
+    setCliValidation?.(validation)
   }, [cli])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -181,7 +187,7 @@ export function CliStepConfiguration (props: {
     <Row gutter={24}>
       <Col span={8}>
         <StepsForm.Title>{$t({ defaultMessage: 'CLI Configuration' })}</StepsForm.Title>
-        <Form.Item
+        {isTemplate && <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Template Name' })}
           rules={[
@@ -198,9 +204,9 @@ export function CliStepConfiguration (props: {
           validateFirst
           hasFeedback
           children={<Input />}
-        />
+        />}
 
-        <Form.Item
+        {isTemplate && <Form.Item
           noStyle
           children={<Space style={{ marginBottom: '10px' }}>
             <Form.Item
@@ -213,8 +219,28 @@ export function CliStepConfiguration (props: {
               {$t({ defaultMessage: 'Reboot the Switches after applying config' })}
             </Typography.Text>
           </Space>}
-        />
+        />}
 
+        {!isTemplate && <Form.Item
+          noStyle
+          children={<Space style={{ marginBottom: '10px' }}>
+            <Form.Item
+              noStyle
+              name='overwrite'
+              valuePropName='checked'
+              children={<Switch />}
+            />
+            <Typography.Text style={{ fontSize: '12px' }}>
+              {$t({ defaultMessage: 'Override existing switch configuration' })}
+            </Typography.Text>
+          </Space>}
+        />}
+
+        <Form.Item
+          hidden={true}
+          name='id'
+          children={<Input />}
+        />
         <Form.Item
           hidden={true}
           name='cli'
@@ -499,6 +525,16 @@ function codemirrorOnKeyup (
       cm.closeHint()
     }
   }
+}
+
+function markCodeMirrorReadOnlyText (codeMirrorInstance: CodeMirror.EditorFromTextArea) {
+  // mark text "manager registrar" read only and unselectable
+  codeMirrorInstance?.markText({ line: 0, ch: 0 }, { line: 0, ch: 17 }, {
+    readOnly: true,
+    atomic: true,
+    selectLeft: false,
+    css: 'color: #808080'
+  })
 }
 
 function appendContentToCliEditor (

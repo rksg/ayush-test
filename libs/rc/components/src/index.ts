@@ -54,6 +54,7 @@ export { SwitchClientsTable } from './SwitchClientsTable'
 export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
+export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

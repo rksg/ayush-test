@@ -67,7 +67,7 @@ describe('Edge DHCP', () => {
           path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
-    const leasesTab = screen.getByRole('tab', { name: 'Leases ( 2 online )' })
+    const leasesTab = screen.getByRole('tab', { name: 'Leases ( 0 online )' })
     expect(leasesTab.getAttribute('aria-selected')).toBeTruthy()
   })
 
@@ -83,7 +83,7 @@ describe('Edge DHCP', () => {
           path: '/:tenantId/devices/edge/:serialNumber/edge-details/:activeTab/:activeSubTab'
         }
       })
-    await user.click(screen.getByRole('tab', { name: 'Leases ( 2 online )' }))
+    await user.click(screen.getByRole('tab', { name: 'Leases ( 0 online )' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
       pathname: `/t/${params.tenantId}/devices/edge/${params.serialNumber}/edge-details/dhcp/leases`,
