@@ -9,7 +9,7 @@ import { useDeleteNetworkMutation }                                          fro
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
-import { useHasRoles }                                                       from '@acx-ui/rbac'
+
 
 const disabledType: NetworkTypeEnum[] = []
 
@@ -196,19 +196,19 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
 
   const rowActions: TableProps<Network>['rowActions'] = [
     {
-      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Edit' }),
+      label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       }
     },
     {
-      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Clone' }),
+      label: $t({ defaultMessage: 'Clone' }),
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       }
     },
     {
-      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Delete' }),
+      label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
