@@ -179,7 +179,7 @@ describe('Switch Stack Form - Add', () => {
   })
   it('should handle add stack by stack switches', async () => {
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
-      venueId: 'venue-id', stackList: 'c0:c5:20:aa:32:79_FEK3230S3A0'
+      venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }
@@ -203,7 +203,7 @@ describe('Switch Stack Form - Add', () => {
 
   it('should handle error occurred for stack switches', async () => {
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
-      venueId: 'switch-id', stackList: 'c0:c5:20:aa:32:79_FEK3230S3A0'
+      venueId: 'switch-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
     render(<Provider><StackForm /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/stack/:venueId/:stackList/add' }

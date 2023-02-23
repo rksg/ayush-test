@@ -228,7 +228,7 @@ export function SwitchTable (props : {
       return !!notOperational || !!invalid || !!hasStack
     },
     onClick: (selectedRows) => {
-      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.id).join('_')}/add`, { replace: false })
+      navigate(`stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),

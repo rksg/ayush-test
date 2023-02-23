@@ -229,9 +229,9 @@ export function StackForm () {
           }, true))?.data?.data
           : []
 
-        const switchTableData = switchList?.map((s, index) => ({
+        const switchTableData = stackSwitches?.map((serialNumber, index) => ({
           key: (index + 1).toString(),
-          id: s.serialNumber,
+          id: serialNumber,
           model: '',
           active: index === 0,
           disabled: false
@@ -239,10 +239,10 @@ export function StackForm () {
 
         setStandaloneSwitches(switchList as SwitchViewModel[])
         setTableData(switchTableData as SwitchTable[])
-        setRowKey(switchList?.length ?? 0)
+        setRowKey(stackSwitches?.length ?? 0)
         formRef?.current?.setFieldValue('venueId', venueId)
-        switchList?.map((s, index) => {
-          formRef?.current?.setFieldValue(`serialNumber${index + 1}`, s.serialNumber)
+        stackSwitches?.map((serialNumber, index) => {
+          formRef?.current?.setFieldValue(`serialNumber${index + 1}`, serialNumber)
         })
       }
 
