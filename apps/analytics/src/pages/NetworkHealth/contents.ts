@@ -103,7 +103,7 @@ export const messageMapping = {
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {
-  auth: defineMessage({ defaultMessage: '802.11 Authentication' }),
+  auth: defineMessage({ defaultMessage: '802.11 Auth', description: '802.11 Authentication' }),
   assoc: defineMessage({ defaultMessage: 'Association' }),
   eap: defineMessage({ defaultMessage: 'EAP' }),
   radius: defineMessage({ defaultMessage: 'RADIUS' }),

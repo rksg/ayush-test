@@ -3,7 +3,18 @@ import { IntlShape } from 'react-intl'
 import { noDataSymbol } from '@acx-ui/analytics/utils'
 import { intlFormats }  from '@acx-ui/utils'
 
-import { NetworkHealthTest } from './types'
+import { authMethodsByCode }                      from './authMethods'
+import { stage }                                  from './stages'
+import { NetworkHealthConfig, NetworkHealthTest } from './types'
+
+export const stagesFromConfig = (config: NetworkHealthConfig) => {
+  if (!config.authenticationMethod) { return [] }
+  const stages = [...authMethodsByCode[config.authenticationMethod].stages, stage('dns')]
+  if (config.pingAddress) { stages.push(stage('ping')) }
+  if (config.tracerouteAddress) { stages.push(stage('traceroute')) }
+  if (config.speedTestEnabled) { stages.push(stage('speedTest')) }
+  return stages.map((item) => ({ ...item }))
+}
 
 export interface StatsFromSummary extends NetworkHealthTest {
   isOngoing?: boolean
