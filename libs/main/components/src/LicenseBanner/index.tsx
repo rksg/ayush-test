@@ -14,6 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { HeaderContext } from '../HeaderContext'
+
 import {
   LicenseBannerRemindMapping,
   LicenseBannerDescMapping,
@@ -21,7 +23,6 @@ import {
   MSPLicenseBannerDescMapping } from './contentsMap'
 import * as UI from './styledComponents'
 
-import { HeaderContext } from '@acx-ui/main/components'
 
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
   if(expireType === LicenseBannerTypeEnum.initial ||
@@ -79,7 +80,8 @@ interface BannerProps {
   isMSPUser?: boolean
 }
 export function LicenseBanner (props: BannerProps) {
-  const { searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded } = useContext(HeaderContext)
+  const { searchExpanded, licenseExpanded,
+    setSearchExpanded, setLicenseExpanded } = useContext(HeaderContext)
   const { $t } = useIntl()
   const { isMSPUser } = props
 
@@ -151,7 +153,7 @@ export function LicenseBanner (props: BannerProps) {
           setSearchExpanded && setSearchExpanded(false)
         }
         setLicenseExpanded(!licenseExpanded)
-        }}>
+      }}>
       <UI.WarningBtnContainer>
         <UI.ContentWrapper>
           <UI.LicenseIconWrapper>

@@ -12,9 +12,9 @@ import {
 
 import {
   HeaderContext
-} from '@acx-ui/main/components'
+} from '../HeaderContext'
 
-import { LicenseBanner } from '.'
+import { LicenseBanner } from './index'
 
 const list = [
   {
@@ -106,34 +106,35 @@ const list = [
   }]
 
 
-  describe('License Single Component', () => {
-    let params: { tenantId: string }
-    beforeEach(async () => {
-      params = {
-        tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
-      }
-      mockServer.use(
-        rest.get(
-          LicenseUrlsInfo.getEntitlementsBanners.url,
-          (req, res, ctx) => res(ctx.json([list[0]]))
-        )
+describe('License Single Component', () => {
+  let params: { tenantId: string }
+  beforeEach(async () => {
+    params = {
+      tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
+    }
+    mockServer.use(
+      rest.get(
+        LicenseUrlsInfo.getEntitlementsBanners.url,
+        (req, res, ctx) => res(ctx.json([list[0]]))
       )
-    })
-
-    it('should render Single License Banner Correctly', async () => {
-      render(
-        <Provider>
-          <HeaderContext.Provider value={{
-            searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
-            <LicenseBanner/>
-          </HeaderContext.Provider>
-        </Provider>, {
-          route: { params, path: '/:tenantId/dashboard' }
-        })
-      expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
-
-    })
+    )
   })
+
+  it('should render Single License Banner Correctly', async () => {
+    render(
+      <Provider>
+        <HeaderContext.Provider value={{
+          searchExpanded: false,
+          licenseExpanded: true, setSearchExpanded: jest.fn(), setLicenseExpanded: jest.fn() }}>
+          <LicenseBanner/>
+        </HeaderContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+    expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
+
+  })
+})
 
 describe('License Banner Component', () => {
   let params: { tenantId: string }
@@ -157,7 +158,8 @@ describe('License Banner Component', () => {
     render(
       <Provider>
         <HeaderContext.Provider value={{
-          searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
+          searchExpanded: false,
+          licenseExpanded: true, setSearchExpanded: jest.fn(), setLicenseExpanded: jest.fn() }}>
           <LicenseBanner />
         </HeaderContext.Provider>
       </Provider>, {
@@ -172,7 +174,8 @@ describe('License Banner Component', () => {
     render(
       <Provider>
         <HeaderContext.Provider value={{
-          searchExpanded:false, licenseExpanded:true, setSearchExpanded:jest.fn(), setLicenseExpanded:jest.fn() }}>
+          searchExpanded: false,
+          licenseExpanded: true, setSearchExpanded: jest.fn(), setLicenseExpanded: jest.fn() }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>
       </Provider>, {

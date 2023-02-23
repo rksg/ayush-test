@@ -11,6 +11,7 @@ import { HomeSolid }     from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton,
   LicenseBanner,
@@ -28,6 +29,7 @@ import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
 function Layout () {
+  const [supportStatus,setSupportStatus] = useState('')
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
@@ -71,7 +73,8 @@ function Layout () {
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         <AlarmsButton/>
         <ActivityButton/>
-        <HelpButton/>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

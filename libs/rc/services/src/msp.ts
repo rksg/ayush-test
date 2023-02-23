@@ -218,6 +218,24 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getMspEcAdmin: build.query<MspEcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspEcAdmin, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateMspEcAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
         const mspEcAdminListReq =
@@ -381,6 +399,8 @@ export const {
   useSupportMspCustomerListQuery,
   useGetMspProfileQuery,
   useGetMspEcProfileQuery,
+  useGetMspEcAdminQuery,
+  useUpdateMspEcAdminMutation,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useAddCustomerMutation,

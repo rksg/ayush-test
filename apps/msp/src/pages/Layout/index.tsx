@@ -15,6 +15,7 @@ import {
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton,
   LicenseBanner,
@@ -36,6 +37,7 @@ function Layout () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
+  const [supportStatus,setSupportStatus] = useState('')
 
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
@@ -88,7 +90,8 @@ function Layout () {
         <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
         <AlarmsButton/>
         <ActivityButton/>
-        <HelpButton/>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
+        <HelpButton supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />
