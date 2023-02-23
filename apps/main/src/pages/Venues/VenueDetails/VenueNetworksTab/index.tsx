@@ -37,8 +37,7 @@ import {
   aggregateApGroupPayload,
   Network,
   NetworkSaveData,
-  NetworkVenue,
-  Venue
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
