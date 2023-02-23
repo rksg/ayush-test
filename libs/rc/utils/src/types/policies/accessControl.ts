@@ -111,6 +111,15 @@ export interface AvcApp {
   }
 }
 
+export interface AclEmbeddedObject {
+  l2AclPolicyId?: string,
+  l3AclPolicyId?: string,
+  devicePolicyId?: string,
+  applicationPolicyId?: string,
+  uplinkLimit?: number,
+  downlinkLimit?: number
+}
+
 export enum Layer3ProtocolType {
   ANYPROTOCOL = 'ANYPROTOCOL',
   L3ProtocolEnum_TCP = 'L3ProtocolEnum_TCP',
