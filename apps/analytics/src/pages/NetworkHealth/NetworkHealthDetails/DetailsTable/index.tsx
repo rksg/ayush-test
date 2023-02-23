@@ -2,7 +2,9 @@
 /* eslint-disable comma-dangle */
 import { upperFirst, without }        from 'lodash'
 import { MessageDescriptor, useIntl } from 'react-intl'
+import { FormattedMessage }           from 'react-intl'
 
+import { mapCodeToReason }   from '@acx-ui/analytics/utils'
 import { Table, TableProps } from '@acx-ui/components'
 import { cssStr }            from '@acx-ui/components'
 import { Tooltip }           from '@acx-ui/components'
@@ -11,6 +13,7 @@ import { TenantLink }        from '@acx-ui/react-router-dom'
 import {  formatter }        from '@acx-ui/utils'
 
 import { authMethodsByCode }            from '../../authMethods'
+import * as contents                    from '../../contents'
 import {  useNetworkHealthTestResults } from '../../services'
 import { stage }                        from '../../stages'
 
@@ -127,8 +130,32 @@ const Details = () => {
     filterable: false,
     searchable: true,
     render: function (text: unknown, row) {
+      const failure = row?.clientFailure?.[key]?.get('event')
+      const noFailureDetailsMap = {
+        PROCESSING: 'Failure reason pending',
+        UNKNOWN: 'Failure reason unavailable'
+      }
+      const error = row?.error
+      const toolTipText = !failure
+        ? null
+        : noFailureDetailsMap[failureCode] || `Failure reason: ${mapCodeToReason(failureCode)}`
+      const toolTipContent = contents.stagesErrorMappings?.[error]?.text ||
+      contents.errorMappings?.[error]?.text ||
+      toolTipText
+      const errorText = `${toolTipContent} \n \n`
+      const noStationAPText = `${errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption`
+      const wrappedContent = (error === 'WLAN_CONF_ERROR')
+        ? (<FormattedMessage
+          {...contents.unsupportedAuthMethods[clientType]}
+          values={contents.formatValues}
+        />)
+        : (((wlanAuthSettings?.wpaVersion || '').match('WPA3') && error === 'NO_STATION_AP')
+          ? noStationAPText : toolTipContent)
+
       return (
-        <UI.Badge type={row[key]}>{badgeTextMap[row[key]]}</UI.Badge>
+        <Tooltip key={text} title={wrappedContent}>
+          <UI.Badge type={row[key]}>{badgeTextMap[row[key]]}</UI.Badge>
+        </Tooltip>
       )
     }
   })
@@ -141,12 +168,25 @@ const Details = () => {
       searchable: false,
       render: function (text: unknown, row) {
         const { speedTest, speedTestServer } = row
+        const error = row?.error || row?.speedTestFailure
+
+        const toolTipText = speedTest === 'n/a' ? null : `speedtest.net: ${speedTestServer}`
+        const toolTipContent = contents.stagesErrorMappings?.[error]?.text ||
+        contents.errorMappings?.[error]?.text ||
+        toolTipText
         text=speedTest === 'success'
           ? formatter('networkSpeedFormat')(row[key])
           : badgeTextMap[speedTest]
-
+        const errorText = `${toolTipContent} \n \n`
+        const noStationAPText = `${errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption`
+        const wrappedContent = (error === 'WLAN_CONF_ERROR')
+          ? $t(contents.unsupportedAuthMethods[clientType])
+          : (((wlanAuthSettings?.wpaVersion || '').match('WPA3') && error === 'NO_STATION_AP')
+            ? noStationAPText : toolTipContent)
         return (
-          <UI.Badge type={speedTest}>{text}</UI.Badge>
+          <Tooltip key={text} title={wrappedContent}>
+            <UI.Badge type={speedTest}>{text}</UI.Badge>
+          </Tooltip>
         )
       }
     }
@@ -261,12 +301,28 @@ const Details = () => {
       searchable: false,
       render: function (text: unknown, row) {
         const { ping, avgPingTime, pingTotal, pingReceive, error } = row
+
+        const toolTipText =ping === 'n/a'
+          ? null
+          : `${pingTotal} packets transmitted, ${pingReceive} packets received`
+        const toolTipContent = contents.stagesErrorMappings?.[error]?.text ||
+          contents.errorMappings?.[error]?.text ||
+          toolTipText
+
+        const errorText = `${toolTipContent} \n \n`
+        const noStationAPText = `${errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption`
+        const wrappedContent = (error === 'WLAN_CONF_ERROR')
+          ? $t(contents.unsupportedAuthMethods[clientType])
+          : (((wlanAuthSettings?.wpaVersion || '').match('WPA3') && error === 'NO_STATION_AP')
+            ? noStationAPText : toolTipContent)
         text= avgPingTime
           ? formatter('durationFormat')(avgPingTime)
           : badgeTextMap[ping]
 
         return (
-          <UI.Badge type={ping}>{text}</UI.Badge>
+          <Tooltip key={text} title={wrappedContent}>
+            <UI.Badge type={ping}>{text}</UI.Badge>
+          </Tooltip>
         )
       }
     })
@@ -280,21 +336,33 @@ const Details = () => {
       filterable: false,
       searchable: false,
       render: function (text: unknown, row) {
-        console.log(row)
         const { traceroute, tracerouteLog, error } = row
+        const toolTipText = traceroute === 'n/a' ? null : tracerouteLog
+        const toolTipContent = contents.stagesErrorMappings?.[error]?.text ||
+        contents.errorMappings?.[error]?.text ||
+        toolTipText
+        const errorText = `${toolTipContent} \n \n`
+        const noStationAPText = `${errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption`
+        const wrappedContent = (error === 'WLAN_CONF_ERROR')
+          ? $t(contents.unsupportedAuthMethods[clientType])
+          : (((wlanAuthSettings?.wpaVersion || '').match('WPA3') && error === 'NO_STATION_AP')
+            ? noStationAPText : toolTipContent)
         return (
-          <UI.Badge type={traceroute}>
-            {tracerouteLog ? (
-              <EyeOpenSolid
-                stroke={cssStr('--acx-primary-white')}
-                height={12}
-                width={12}
-                color={cssStr('--acx-primary-white')}
-              />
-            ) : (
-              badgeTextMap[traceroute]
-            )}
-          </UI.Badge>
+          <Tooltip key={text} title={wrappedContent}>
+
+            <UI.Badge type={traceroute}>
+              {tracerouteLog ? (
+                <EyeOpenSolid
+                  stroke={cssStr('--acx-primary-white')}
+                  height={12}
+                  width={12}
+                  color={cssStr('--acx-primary-white')}
+                />
+              ) : (
+                badgeTextMap[traceroute]
+              )}
+            </UI.Badge>
+          </Tooltip>
         )
       }
     })
