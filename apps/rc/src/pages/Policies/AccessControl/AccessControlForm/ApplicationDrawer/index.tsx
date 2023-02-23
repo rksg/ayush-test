@@ -467,14 +467,13 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
         { required: true },
-        { required: true,
-          validator: (_, value) => {
-            if (appList && appList.find(app => app === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { validator: (_, value) => {
+          if (appList && appList.find(app => app === value)) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -509,6 +508,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           <Form.Item
             name={[...inputName, 'applicationPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Application profile' })
             }]}
             children={

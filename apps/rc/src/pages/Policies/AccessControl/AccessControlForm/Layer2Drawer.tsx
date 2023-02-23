@@ -255,33 +255,41 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     return Promise.resolve()
   }
 
+  const invalidateMacToast = () => {
+    showToast({
+      type: 'error',
+      duration: 10,
+      content: $t({ defaultMessage: 'invalided or existing MAC Address has been found' })
+    })
+  }
+
   const handleInputChange = async (event: { target: { value: SetStateAction<string> } }) => {
     const split = [',', ';']
     let inputValue = event.target.value
     for (const char of split) {
-      if (event.target.value.toString().includes(char)) {
-        let inputValues = event.target.value.toString().split(char).map(async (inputValue) => {
-          const macAddressValidation = await MacAddressFilterRegExp(inputValue.trim())
-          if (addressTags.indexOf(inputValue.trim()) === -1 && macAddressValidation === undefined) {
-            return Promise.resolve(inputValue.trim())
-          }
-          return Promise.reject()
-        })
-        const results = await Promise.allSettled(inputValues)
-        const addAddressTags = results.filter(result => {
-          return result.status === 'fulfilled' && result.value !== ''
-        }).map(result=> (result as { status: 'fulfilled', value: string }).value)
-
-        if (results.findIndex(result => result.status === 'rejected') !== -1) {
-          showToast({
-            type: 'error',
-            duration: 10,
-            content: $t({ defaultMessage: 'invalided or existing MAC Address' })
-          })
-        }
-        setAddressTags([...addressTags, ...addAddressTags])
-        inputValue = ''
+      let inputValueString = inputValue.toString()
+      if (!inputValueString.includes(char)) {
+        continue
       }
+
+      let inputValues = inputValueString.split(char).map(async (inputValue) => {
+        const trimValue = inputValue.trim()
+        const macAddressValidation = await MacAddressFilterRegExp(trimValue)
+        if (addressTags.indexOf(trimValue) === -1 && macAddressValidation === undefined) {
+          return Promise.resolve(trimValue)
+        }
+        return Promise.reject()
+      })
+      const results = await Promise.allSettled(inputValues)
+      const addAddressTags = results.filter(result => {
+        return result.status === 'fulfilled' && result.value !== ''
+      }).map(result=> (result as { status: 'fulfilled', value: string }).value)
+
+      if (results.findIndex(result => result.status === 'rejected') !== -1) {
+        invalidateMacToast()
+      }
+      setAddressTags([...addressTags, ...addAddressTags])
+      inputValue = ''
     }
 
     setInputValue(inputValue)
@@ -299,18 +307,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           return resolve
         })
       } else {
-        showToast({
-          type: 'error',
-          duration: 10,
-          content: $t({ defaultMessage: 'invalided or existing MAC Address' })
-        })
+        invalidateMacToast()
       }
+      setInputValue('')
     } catch (e) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'invalided or existing MAC Address' })
-      })
+      invalidateMacToast()
     }
   }
 
@@ -511,6 +512,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           <Form.Item
             name={[...inputName, 'l2AclPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Layer 2 profile' })
             }]}
             children={

@@ -134,34 +134,6 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
         <Form.Item
           name='accessControlComponent'
           label={$t({ defaultMessage: 'Access Control Components' })}
-          rules={[
-            { validator: async () => {
-              if (form.getFieldValue('enableLayer2') && !form.getFieldValue('l2AclPolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'l2AclPolicy could not be empty' }))
-              }
-              if (form.getFieldValue('enableLayer3') && !form.getFieldValue('l3AclPolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'l3AclPolicy could not be empty' }))
-              }
-              if (form.getFieldValue('enableDeviceOs') && !form.getFieldValue('devicePolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'devicePolicyId could not be empty' }))
-              }
-              // eslint-disable-next-line max-len
-              if (form.getFieldValue('enableApplications') && !form.getFieldValue('applicationPolicyId')) {
-                return Promise.reject($t({
-                  defaultMessage: 'applicationPolicyId could not be empty'
-                }))
-              }
-              if (form.getFieldValue('enableClientRateLimit')
-                  && !form.getFieldValue(['rateLimiting', 'enableUploadLimit'])
-                  && !form.getFieldValue(['rateLimiting', 'enableDownloadLimit'])) {
-                return Promise.reject($t({
-                  defaultMessage: 'One of the client rate limit setting should be chosen'
-                }))
-              }
-
-              return Promise.resolve()
-            } }
-          ]}
           children={<AccessControlComponent />}
         />
       </GridCol>

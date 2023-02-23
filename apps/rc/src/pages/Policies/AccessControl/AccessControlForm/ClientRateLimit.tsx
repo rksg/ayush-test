@@ -50,10 +50,15 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           style={{ lineHeight: '50px' }}
           children={
             <Checkbox data-testid='enableUploadLimit'
-              onChange={(e: CheckboxChangeEvent) => {
+              onChange={async (e: CheckboxChangeEvent) => {
                 const value = e.target.checked ? DEFAULT_VALUE : 0
                 form.setFieldValue(
                   [...inputName, 'uplinkLimit'], value)
+                try {
+                  await form.validateFields(['clientRateLimitWarningMessage'])
+                } catch (error) {
+                  return
+                }
               }}
               children={$t({ defaultMessage: 'Upload Limit' })} />}
         />
@@ -86,10 +91,15 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           style={{ lineHeight: '50px' }}
           children={
             <Checkbox data-testid='enableDownloadLimit'
-              onChange={(e: CheckboxChangeEvent) => {
+              onChange={async (e: CheckboxChangeEvent) => {
                 const value = e.target.checked ? DEFAULT_VALUE : 0
                 form.setFieldValue(
                   [...inputName, 'downlinkLimit'], value)
+                try {
+                  await form.validateFields(['clientRateLimitWarningMessage'])
+                } catch (error) {
+                  return
+                }
               }}
               children={$t({ defaultMessage: 'Download Limit' })} />}
         />
@@ -113,6 +123,21 @@ const ClientRateLimit = (props: ClientRateLimitProps) => {
           />
           : <Unlimited /> }
       </div>
+      <Form.Item
+        name={'clientRateLimitWarningMessage'}
+        rules={[
+          { validator: () => {
+            if (form.getFieldValue([...inputName, 'enableUploadLimit'])
+                || form.getFieldValue([...inputName, 'enableDownloadLimit'])) {
+              return Promise.resolve()
+            }
+
+            return Promise.reject($t({
+              defaultMessage: 'One of the client rate limit setting should be chosen'
+            }))
+          } }
+        ]}
+      />
     </div>
   )
 }
