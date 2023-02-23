@@ -2,6 +2,7 @@ import { Form, Input, Col, Row, Space, Typography } from 'antd'
 import { FormattedMessage, useIntl }                from 'react-intl'
 
 import { cssStr, StepsForm } from '@acx-ui/components'
+import { InformationSolid }  from '@acx-ui/icons'
 import { agreeRegExp }       from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 
@@ -9,9 +10,11 @@ import * as UI from './styledComponents'
 
 import { tooltip } from './'
 
+// TODO: move to rc/components
 export function CliStepNotice () {
   const { $t } = useIntl()
   const params = useParams()
+  const isTemplate = params?.configType !== 'profiles'
   const editMode = params.action === 'edit'
   // eslint-disable-next-line max-len
   const documentLink = 'https://support.ruckuswireless.com/documents/3450-fastiron-08-0-95-ga-command-reference-guide'
@@ -26,6 +29,16 @@ export function CliStepNotice () {
       }}>
         {$t({ defaultMessage: 'Read this before you start:' })}
       </Typography.Text>
+
+      {!isTemplate && <Space style={{
+        marginBottom: '10px',
+        alignItems: 'flex-start', fontSize: '12px' }}
+      >
+        <InformationSolid />
+        <FormattedMessage
+          {...tooltip?.noticeInfo}
+        />
+      </Space>}
 
       <Space style={{
         color: cssStr('--acx-semantics-red-50'), marginBottom: '10px',

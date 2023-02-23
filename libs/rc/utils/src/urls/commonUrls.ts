@@ -360,6 +360,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
   },
+  fetchBotAuth: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/chatbot/idtoken'
+  },
   getTopology: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'

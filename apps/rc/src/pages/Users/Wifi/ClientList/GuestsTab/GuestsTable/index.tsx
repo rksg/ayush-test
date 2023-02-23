@@ -69,7 +69,10 @@ export default function GuestsTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
-    defaultPayload: defaultGuestPayload,
+    defaultPayload: {
+      ...defaultGuestPayload,
+      filters: { includeExpired: ['true'] }
+    },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
@@ -117,6 +120,15 @@ export default function GuestsTable () {
 
   const networkFilterOptions = allowedNetworkList.map(network=>({
     key: network.id, value: network.name
+  }))
+
+  const showExpired = () => [
+    { key: 'true', text: $t({ defaultMessage: 'Show expired guests' }) },
+    { key: 'false', text: $t({ defaultMessage: 'Hide expired guests' }) }
+  ] as Array<{ key: string, text: string }>
+
+  const showExpiredOptions = showExpired().map(({ key, text }) => ({
+    key, value: text
   }))
 
   const navigate = useNavigate()
@@ -236,6 +248,10 @@ export default function GuestsTable () {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expiryDate',
       sorter: true,
+      filterKey: 'includeExpired',
+      filterMultiple: false,
+      filterable: showExpiredOptions || true,
+      defaultFilteredValue: ['true'],
       render: function (data, row) {
         return renderExpires(row)
       }
