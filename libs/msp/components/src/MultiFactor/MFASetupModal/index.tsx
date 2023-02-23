@@ -7,63 +7,51 @@ import { useParams }                                from 'react-router-dom'
 import { cssStr }                                                  from '@acx-ui/components'
 import { useGetMfaTenantDetailsQuery, useGetMfaAdminDetailsQuery } from '@acx-ui/rc/services'
 import { MFAMethod }                                               from '@acx-ui/rc/utils'
-// import { MfaDetailStatus, MFAMethod } from '@acx-ui/rc/utils'
-// import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { AuthenticationMethod, BackupAuthenticationMethod } from '../'
+import { AuthenticationMethod }       from '../AuthenticationMethod'
+import { BackupAuthenticationMethod } from '../BackupAuthenticationMethod'
+
 
 interface MFASetupModalProps {
-  // mfaDetails: MfaDetailStatus | undefined,
   onFinish: () => void
 }
 
 export const MFASetupModal = (props: MFASetupModalProps) => {
-  // const { mfaDetails, onFinish } = props
   const { onFinish } = props
   const params = useParams()
   const { $t } = useIntl()
   const { data } = useGetMfaTenantDetailsQuery({ params })
-  const { data: details } =
-  useGetMfaAdminDetailsQuery({ params: { userId: data?.userId } }, { skip: !data })
+  const mfaEnabled= data?.enabled
+  const { data: details } = useGetMfaAdminDetailsQuery({
+    params: { userId: data?.userId } },
+  { skip: !mfaEnabled })
 
   const [form] = Form.useForm()
-  const mfaMethods = Form.useWatch('mfaMethods', form)
+  const otpToggle = Form.useWatch('otpToggle', form)
+  const authAppToggle = Form.useWatch('authAppToggle', form)
 
   const handleCancel = () => {
     // redirect to login page
     window.location.href = '/logout'
   }
 
-  // useEffect(() => {
-  //   if (mfaDetails) {
-  //     const smsEnabled = mfaDetails?.mfaMethods.includes(MFAMethod.SMS) ||
-  //     mfaDetails?.mfaMethods.includes(MFAMethod.EMAIL)
-  //     const mobileEnabled = mfaDetails?.mfaMethods.includes(MFAMethod.MOBILEAPP)
-
-  //     form.setFieldsValue({
-  //       ...mfaDetails,
-  //       smsToggle: smsEnabled,
-  //       authAppToggle: mobileEnabled
-  //     })
-  //   }
-  // }, [form, mfaDetails])
-
   useEffect(() => {
     if (details) {
-      const smsEnabled = details?.mfaMethods.includes(MFAMethod.SMS) ||
+      const otpEnabled = details?.mfaMethods.includes(MFAMethod.SMS) ||
                     details?.mfaMethods.includes(MFAMethod.EMAIL)
       const mobileEnabled = details?.mfaMethods.includes(MFAMethod.MOBILEAPP)
 
       form.setFieldsValue({
+        contactId: '',
         ...data,
         ...details,
-        smsToggle: smsEnabled,
+        otpToggle: otpEnabled,
         authAppToggle: mobileEnabled
       })
     }
   }, [form, data, details])
 
-  const disableBtn = mfaMethods ? mfaMethods.length === 0 : true
+  const disableBtn = mfaEnabled && !otpToggle && !authAppToggle
 
   return <Modal
     title={$t({ defaultMessage: 'Multi-Factors Authentication Setup' })}
@@ -85,7 +73,6 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
       <Row gutter={20}>
         <Col span={21}>
           <Form.Item
-            name='info'
             label={
               <Space direction='vertical' >
                 <Typography.Text style={{

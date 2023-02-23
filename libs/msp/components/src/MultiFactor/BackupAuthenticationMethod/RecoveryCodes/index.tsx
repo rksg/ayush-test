@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/components'
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
-import * as UI from '../styledComponents'
+import * as UI from './styledComponents'
 
 interface RecoveryCodeDrawerProps {
   className?: string;

@@ -13,7 +13,7 @@ import {
   MFAMethod
 } from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import * as UI from './styledComponents'
 
 interface AuthAppProps {
   className?: string;

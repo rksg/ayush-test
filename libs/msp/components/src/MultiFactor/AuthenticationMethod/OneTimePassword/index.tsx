@@ -14,8 +14,9 @@ import {
   MFAMethod
 } from '@acx-ui/rc/utils'
 
-import * as UI             from '../styledComponents'
 import { VerifyCodeModal } from '../VerifyCodeModal'
+
+import * as UI from './styledComponents'
 
 interface OneTimePasswordProps {
   className?: string;

@@ -58,14 +58,15 @@ function Layout () {
     <LayoutComponent
       menuConfig={useMenuConfig()}
       content={
-        mfaDetails.userId !== ''
-          ?((mfaDetails.enabled && mfaDetails.mfaMethods.length === 0 && mfaSetupFinish === false)
-            ? <MFASetupModal onFinish={handleMFASetupFinish} />
-            : <>
-              <CloudMessageBanner />
-              <Outlet />
-            </>)
-          :''}
+        // no need to check MFA first-time setup in delegation mode
+        (!isDelegationMode()
+         && (mfaDetails.enabled && mfaDetails.mfaMethods.length === 0 && mfaSetupFinish === false)
+          ? <MFASetupModal onFinish={handleMFASetupFinish} />
+          : <>
+            <CloudMessageBanner />
+            <Outlet />
+          </>)
+      }
       leftHeaderContent={
         showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
           <Home>

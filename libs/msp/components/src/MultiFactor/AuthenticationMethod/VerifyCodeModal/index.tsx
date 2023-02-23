@@ -29,7 +29,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
   const [isValid, setIsValid] = useState(false)
   const [failedMessage, setFailedMessage] = useState('')
 
-  const [setupMFAAccount] = useSetupMFAAccountMutation()
+  const [setupMFAAccount, { isLoading: isVerifying }] = useSetupMFAAccountMutation()
   const [ resendOPT, { isLoading: isResending }] = useMfaResendOTPMutation()
 
   const handleFieldsChange = (changedFields: FieldData[]) => {
@@ -93,7 +93,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
       onCancel={handleCancel}
       onOk={() => form.submit()}
       okButtonProps={{
-        disabled: !isValid || isResending
+        disabled: !isValid || isVerifying || isResending
       }}
     >
       <Form
