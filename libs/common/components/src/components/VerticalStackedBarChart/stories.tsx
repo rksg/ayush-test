@@ -15,7 +15,7 @@ export const data = {
     { name: 'Fail', data: [ 0, 0, 0, 0, 0, 0, 1], color: cssStr('--acx-semantics-red-50') },
     { name: 'Error', data: [ 1, 1, 1, 1, 1, 1, 1], color: cssStr('--acx-semantics-yellow-40') },
     { name: 'N/A', data: [ 0, 0, 0, 0, 0, 0, 0], color: cssStr('--acx-neutrals-50') },
-    { name: 'Pending', data: [ 1, 1, 1, 1, 1, 1, 1], color: 'transparent' }
+    { name: 'Pending', data: [ 1, 1, 1, 1, 1, 1, 1], color: cssStr('--acx-primary-white') }
   ]
 }
 

@@ -43,7 +43,7 @@ export const getChatData = (data: NetworkHealthTest) => {
       { name: 'N/A', data: nas, color: cssStr('--acx-neutrals-50') }
     ].concat(pendings.every(v => v === 0)
       ? []
-      : [{ name: 'Pending', data: pendings, color: 'transparent' }]
+      : [{ name: 'Pending', data: pendings, color: cssStr('--acx-primary-white') }]
     ) as VerticalStackedBarChartData[]
   }
 }

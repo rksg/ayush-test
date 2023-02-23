@@ -44,7 +44,8 @@ export function VerticalStackedBarChart<TChartData extends VerticalStackedBarCha
     },
     tooltip: {
       ...tooltipOptions(),
-      trigger: 'axis'
+      trigger: 'axis',
+      order: 'seriesDesc'
     },
     xAxis: {
       ...xAxisOptions(),
