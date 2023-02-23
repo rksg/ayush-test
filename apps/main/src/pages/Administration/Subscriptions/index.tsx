@@ -34,13 +34,7 @@ const SubscriptionTable = () => {
     {
       title: $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
-      key: 'anme',
-      filterable: true
-    },
-    {
-      title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'name',
-      key: 'anme',
+      key: 'name',
       filterable: true
     },
     {
