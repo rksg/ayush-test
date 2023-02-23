@@ -69,10 +69,11 @@ export function MacRegistrationListSettingForm () {
             <Form.Item name='policySetId'
               label={$t({ defaultMessage: 'Access Policy Set' })}
               valuePropName='value'
-              rules={[
-                { required: true,
-                  message: $t({ defaultMessage: 'Please choose a Access Policy Set' }) }
-              ]}
+              // TODO should add require after policy set complete
+              // rules={[
+              //   { required: true,
+              //     message: $t({ defaultMessage: 'Please choose a Access Policy Set' }) }
+              // ]}
               children={
                 <Select style={{ width: 200 }}
                   allowClear
@@ -84,6 +85,7 @@ export function MacRegistrationListSettingForm () {
                 />
               }
             />
+            {/* TODO should add require after policy set complete */}
             <Button type='link'>
               {$t({ defaultMessage: 'Add Access Policy Set' })}
             </Button>

@@ -43,7 +43,8 @@ export default function SelectPolicyForm () {
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
+    { type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] }
   ]
 
   return (
