@@ -1,4 +1,6 @@
 
+import { useEffect } from 'react'
+
 import { dataApiURL }         from '@acx-ui/analytics/services'
 import { Provider }           from '@acx-ui/store'
 import {
@@ -7,6 +9,7 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { DateRange, useDateFilter } from '@acx-ui/utils'
 
 import { ClientTroubleshootingTab } from './index'
 
@@ -40,8 +43,23 @@ describe('ClientTroubleshootingTab', () => {
       }
     } })
 
-    const { asFragment } = render(<Provider><ClientTroubleshootingTab /></Provider>, {
-      route: { params, path: '/:tenantId/users/wifi/:clientId/details/:activeTab' }
+    const TestWrapper = () => {
+      const { setDateFilter } = useDateFilter()
+      useEffect(() => {
+        setDateFilter({
+          range: DateRange.custom,
+          startDate: '02/01/2023',
+          endDate: '02/01/2023'
+        })
+      }, [])
+      return <Provider><ClientTroubleshootingTab /></Provider>
+    }
+
+    const { asFragment } = render(<TestWrapper />, {
+      route: {
+        params,
+        path: '/:tenantId/users/wifi/:clientId/details/:activeTab'
+      }
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('All Categories')).toBeVisible()

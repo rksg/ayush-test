@@ -418,7 +418,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -530,7 +530,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -642,7 +642,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -754,7 +754,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 dkBDac"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -839,22 +839,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   transform="transform_mock"
                                   y="8"
                                 >
-                                  04:00
-                                </text>
-                                <path
-                                  d="M-2.5 0l5 0l0 16l-5 0Z"
-                                  fill="none"
-                                  transform="transform_mock"
-                                />
-                                <text
-                                  dominant-baseline="central"
-                                  fill="#ACAEB0"
-                                  style="font: normal 400 10px 'Open Sans', sans-serif"
-                                  text-anchor="middle"
-                                  transform="transform_mock"
-                                  y="8"
-                                >
-                                  08:00
+                                  06:00
                                 </text>
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
@@ -884,7 +869,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   transform="transform_mock"
                                   y="8"
                                 >
-                                  16:00
+                                  18:00
                                 </text>
                                 <path
                                   d="M-2.5 0l5 0l0 16l-5 0Z"
@@ -899,7 +884,37 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   transform="transform_mock"
                                   y="8"
                                 >
-                                  20:00
+                                  06:00
+                                </text>
+                                <path
+                                  d="M-2.5 0l5 0l0 16l-5 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#ACAEB0"
+                                  style="font: normal 400 10px 'Open Sans', sans-serif"
+                                  text-anchor="middle"
+                                  transform="transform_mock"
+                                  y="8"
+                                >
+                                  12:00
+                                </text>
+                                <path
+                                  d="M-2.5 0l5 0l0 16l-5 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#ACAEB0"
+                                  style="font: normal 400 10px 'Open Sans', sans-serif"
+                                  text-anchor="middle"
+                                  transform="transform_mock"
+                                  y="8"
+                                >
+                                  18:00
                                 </text>
                                 <path
                                   d="M-3 0l6 0l0 16l-6 0Z"
@@ -915,7 +930,38 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   xml:space="preserve"
                                   y="8"
                                 >
-                                  Feb 22
+                                  Jan 31
+                                </text>
+                                <path
+                                  d="M-3 0l6 0l0 16l-6 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#ACAEB0"
+                                  style="font: normal 400 10px 'Open Sans', sans-serif"
+                                  text-anchor="middle"
+                                  transform="transform_mock"
+                                  xml:space="preserve"
+                                  y="8"
+                                >
+                                  Feb 02
+                                </text>
+                                <path
+                                  d="M-1.5 0l3 0l0 16l-3 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <text
+                                  dominant-baseline="central"
+                                  fill="#ACAEB0"
+                                  style="font: normal 400 10px 'Open Sans', sans-serif"
+                                  text-anchor="middle"
+                                  transform="transform_mock"
+                                  y="8"
+                                >
+                                  Feb
                                 </text>
                                 <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
