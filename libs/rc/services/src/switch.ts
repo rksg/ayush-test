@@ -354,10 +354,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       transformResponse: (res: ConfigurationBackup[]) => {
@@ -482,11 +483,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchAcls: build.query<Acl[], RequestPayload>({
-      query: ({ params }) => {
+    getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
