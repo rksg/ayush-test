@@ -8,7 +8,6 @@ import {
   Select,
   Switch
 } from 'antd'
-import _                             from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -16,15 +15,13 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { InformationSolid }               from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { InformationSolid, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
-  WlanSecurityEnum,
-  AaaServerTypeEnum,
-  AaaServerOrderEnum
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
+import AAAInstance        from '../AAAInstance'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -44,28 +41,21 @@ export function AaaSettingsForm () {
         isCloudpathEnabled: data.isCloudpathEnabled,
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: checkIsUndefined(data.enableAccountingService,
-          data.accountingRadius),
-        enableSecondaryAuthServer: checkIsUndefined(data.enableSecondaryAuthServer,
-          (data.authRadius?.secondary !== undefined)),
-        enableSecondaryAcctServer: checkIsUndefined(data.enableSecondaryAcctServer,
-          (data.accountingRadius?.secondary !== undefined)),
+        enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        wlanSecurity: data?.wlan?.wlanSecurity
+        wlanSecurity: data?.wlan?.wlanSecurity,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const checkIsUndefined = function (currentValue: any, defaultValue: any) {
-    return _.isUndefined(currentValue) ? defaultValue : currentValue
-  }
 
   return (
     <Row gutter={20}>
       <Col span={10}>
         <SettingsForm />
+        {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
       </Col>
       <Col span={14} style={{ height: '100%' }}>
         <NetworkDiagram />
@@ -78,19 +68,14 @@ function SettingsForm () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { data, setData } = useContext(NetworkFormContext)
-  const { editMode } = useContext(NetworkFormContext)
   const [
     isCloudpathEnabled,
     wlanSecurity,
-    enableSecondaryAuthServer,
-    enableAccountingService,
-    enableSecondaryAcctServer
+    enableAccountingService
   ] = [
     useWatch('isCloudpathEnabled'),
     useWatch('wlanSecurity'),
-    useWatch('enableSecondaryAuthServer'),
-    useWatch('enableAccountingService'),
-    useWatch('enableSecondaryAcctServer')
+    useWatch('enableAccountingService')
   ]
 
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
@@ -131,11 +116,10 @@ function SettingsForm () {
   }
 
   return (
-    <>
-      <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-        <div>
-          <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
-          {triBandRadioFeatureFlag &&
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <StepsForm.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsForm.Title>
+        {triBandRadioFeatureFlag &&
           <Form.Item
             label='Security Protocol'
             name='wlanSecurity'
@@ -153,20 +137,18 @@ function SettingsForm () {
               <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
             </Select>
           </Form.Item>
-          }
-          <Form.Item>
-            <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-              <Switch onChange={onCloudPathChange}/>
-            </Form.Item>
-            <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
+        }
+        <Form.Item>
+          <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
+            <Switch onChange={onCloudPathChange}/>
           </Form.Item>
-        </div>
-        <div>
-          {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
-        </div>
-      </Space>
-      {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
-    </>
+          <span>{ $t({ defaultMessage: 'Use Cloudpath Server' }) }</span>
+        </Form.Item>
+      </div>
+      <div>
+        {isCloudpathEnabled ? <CloudpathServerForm /> : <AaaService />}
+      </div>
+    </Space>
   )
 
   function AaaService () {
@@ -177,8 +159,9 @@ function SettingsForm () {
       setData && setData({ ...data, [fieldName]: value })
     }
 
-    const proxyServiceTooltip = <Tooltip.Question
+    const proxyServiceTooltip = <Tooltip
       placement='bottom'
+      children={<QuestionMarkCircleOutlined />}
       title={$t({
         // eslint-disable-next-line max-len
         defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
@@ -188,25 +171,8 @@ function SettingsForm () {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <div>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
-
-          <Form.Item noStyle name='enableSecondaryAuthServer'>
-            <ToggleButton
-              enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-            />
-          </Form.Item>
-
-          {enableSecondaryAuthServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.AUTHENTICATION}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
-          }
-
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+            type='authRadius'/>
           <Form.Item>
             <Form.Item
               noStyle
@@ -234,25 +200,8 @@ function SettingsForm () {
           </Form.Item>
           {enableAccountingService && (
             <>
-              <IpPortSecretForm
-                serverType={AaaServerTypeEnum.ACCOUNTING}
-                order={AaaServerOrderEnum.PRIMARY}
-              />
-
-              <Form.Item noStyle name='enableSecondaryAcctServer'>
-                <ToggleButton
-                  enableText={$t({ defaultMessage: 'Remove Secondary Server' })}
-                  disableText={$t({ defaultMessage: 'Add Secondary Server' })}
-                />
-              </Form.Item>
-
-              {enableSecondaryAcctServer &&
-                <IpPortSecretForm
-                  serverType={AaaServerTypeEnum.ACCOUNTING}
-                  order={AaaServerOrderEnum.SECONDARY}
-                />
-              }
-
+              <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+                type='accountingRadius'/>
               <Form.Item>
                 <Form.Item
                   noStyle
