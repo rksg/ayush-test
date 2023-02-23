@@ -4,6 +4,7 @@ import {
   FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react'
 import { Drawer }  from 'antd'
+import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
@@ -14,8 +15,8 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -38,6 +39,8 @@ import { getIntl }                                           from '@acx-ui/utils
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
+import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
+import { useGuestActions }                   from '../GuestsDetail/guestActions'
 
 import {
   AddGuestDrawer,
@@ -94,9 +97,13 @@ export default function GuestsTable () {
       </Button>
     </span>
 
+  const guestAction = useGuestActions()
+
   const [visible, setVisible] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
+  const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
@@ -248,6 +255,57 @@ export default function GuestsTable () {
     setVisible(false)
   }
 
+  const rowActions: TableProps<Guest>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (selectedRows) => {
+        guestAction.showDeleteGuest(selectedRows, params.tenantId)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Download Information' }),
+      onClick: (selectedRows) => {
+        guestAction.showDownloadInformation(selectedRows, params.tenantId)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Generate New Password' }),
+      visible: (selectedRows) => {
+        if (selectedRows.length !== 1) { return false }
+        const guestDetail = selectedRows[0]
+        const flag = (guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
+        ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
+          guestDetail.networkId && !guestDetail.socialLogin)
+
+        return Boolean(flag)
+      },
+      onClick: (selectedRows) => {
+        setGuestDetail(selectedRows[0])
+        setGenerateModalVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Disable' }),
+      visible: (selectedRows) => {
+        return selectedRows.length === 1 &&
+          !_.isEmpty(selectedRows[0].networkId) &&
+          (selectedRows[0].guestStatus !== GuestStatusEnum.DISABLED) &&
+          (selectedRows[0].guestStatus !== GuestStatusEnum.EXPIRED)
+      },
+      onClick: (selectedRows) => { guestAction.disableGuest(selectedRows[0], params.tenantId)}
+    },
+    {
+      label: $t({ defaultMessage: 'Enable' }),
+      visible: (selectedRows) => {
+        return selectedRows.length === 1 &&
+          !_.isEmpty(selectedRows[0].networkId) &&
+          (selectedRows[0].guestStatus === GuestStatusEnum.DISABLED)
+      },
+      onClick: (selectedRows) => { guestAction.enableGuest(selectedRows[0], params.tenantId)}
+    }
+  ]
+
+
   return (
     <Loader states={[
       tableQuery
@@ -264,6 +322,10 @@ export default function GuestsTable () {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
+        rowActions={rowActions}
+        rowSelection={{
+          type: 'checkbox'
+        }}
         actions={[{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
@@ -299,10 +361,11 @@ export default function GuestsTable () {
         visible={drawerVisible}
         setVisible={setDrawerVisible}
       />
-      <ImportCsvDrawer type='GuestPass'
+      <ImportFileDrawer type='GuestPass'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={250}
+        acceptType={['csv']}
         templateLink='assets/templates/guests_import_template.csv'
         visible={importVisible}
         isLoading={importResult.isLoading}
@@ -317,9 +380,12 @@ export default function GuestsTable () {
             importRequestHandler(formData, formValues)
           }
         }}
-        onClose={()=>setImportVisible(false)} >
+        onClose={() => setImportVisible(false)} >
         <GuestFields withBasicFields={false} />
-      </ImportCsvDrawer>
+      </ImportFileDrawer>
+      <GenerateNewPasswordModal {...{
+        generateModalVisible, setGenerateModalVisible, guestDetail, tenantId: params.tenantId
+      }} />
       <Modal
         title={$t({ defaultMessage: 'Add Guest Pass Network' })}
         type={ModalType.ModalStepsForm}
@@ -343,7 +409,7 @@ export const renderAllowedNetwork = function (currentGuest: Guest) {
   // return currentGuest.ssid
   if (currentGuest.networkId) {
     return (
-      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/aps`}>
+      <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>
     )
   } else {

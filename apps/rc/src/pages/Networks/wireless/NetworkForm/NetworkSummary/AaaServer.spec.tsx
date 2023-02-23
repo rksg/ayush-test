@@ -4,7 +4,7 @@ import { Form } from 'antd'
 
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
-import { render }                                                           from '@acx-ui/test-utils'
+import { render, screen }                                                   from '@acx-ui/test-utils'
 
 import { AaaServer } from './AaaServer'
 
@@ -21,24 +21,47 @@ const mockSummary = {
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
   passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
   passphraseLength: 18,
-  expiration: PassphraseExpirationEnum.UNLIMITED
+  expiration: PassphraseExpirationEnum.UNLIMITED,
+  authRadius: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 1812,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.2.2.2',
+      port: 1812,
+      sharedSecret: 'xxxxxxxx'
+    }
+  },
+  accountingRadius: {
+    primary: {
+      ip: '1.1.1.1',
+      port: 1813,
+      sharedSecret: 'xxxxxxxx'
+    },
+    secondary: {
+      ip: '2.2.2.2',
+      port: 1813,
+      sharedSecret: 'xxxxxxxx'
+    }
+  }
 }
 
 describe('AaaServer', () => {
   it('should render cloudpath enabled successfully', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
     mockSummary.isCloudpathEnabled = true
-    const { asFragment } = render(
+    render(
       <Provider>
         <Form>
-          <AaaServer summaryData={mockSummary} />
+          <AaaServer summaryData={mockSummary} serverType='authRadius' />
         </Form>
       </Provider>,
       {
         route: { params }
       }
     )
-
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('Primary Server')).toBeVisible()
   })
 })

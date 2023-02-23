@@ -12,8 +12,14 @@ import {
   useAddAccessControlProfileMutation,
   useUpdateAccessControlProfileMutation
 } from '@acx-ui/rc/services'
-import { AccessControlInfoType, AccessControlProfile, getPolicyListRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                          from '@acx-ui/react-router-dom'
+import {
+  AccessControlInfoType,
+  AccessControlProfile,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation, AccessControlFormFields
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import AccessControlSettingForm from './AccessControlSettingForm'
 
@@ -22,79 +28,123 @@ type AccessControlFormProps = {
   editMode: boolean
 }
 
+export const genAclPayloadObject = (accessControlProfile: AccessControlFormFields) => {
+  let aclPayloadObject = {} as AccessControlFormFields
+
+  aclPayloadObject.policyName = accessControlProfile.policyName!
+  aclPayloadObject.description = accessControlProfile.description
+  aclPayloadObject.enableLayer2 = accessControlProfile.enableLayer2
+  aclPayloadObject.l2AclPolicyId = accessControlProfile.l2AclPolicyId
+  aclPayloadObject.enableLayer3 = accessControlProfile.enableLayer3
+  aclPayloadObject.l3AclPolicyId = accessControlProfile.l3AclPolicyId
+  aclPayloadObject.enableDeviceOs = accessControlProfile.enableDeviceOs
+  aclPayloadObject.devicePolicyId = accessControlProfile.devicePolicyId
+  aclPayloadObject.enableApplications = accessControlProfile.enableApplications
+  aclPayloadObject.applicationPolicyId = accessControlProfile.applicationPolicyId
+  aclPayloadObject.enableClientRateLimit =
+    accessControlProfile.rateLimiting?.enableUploadLimit
+    || accessControlProfile.rateLimiting?.enableUploadLimit
+
+  aclPayloadObject.rateLimiting = {}
+
+  if (accessControlProfile.rateLimiting?.uplinkLimit
+    && accessControlProfile.rateLimiting?.uplinkLimit > 0
+  ) {
+    aclPayloadObject.rateLimiting.enableUploadLimit = true
+    aclPayloadObject.rateLimiting.uplinkLimit = accessControlProfile.rateLimiting?.uplinkLimit
+  }
+
+  if (accessControlProfile.rateLimiting?.downlinkLimit
+    && accessControlProfile.rateLimiting?.downlinkLimit > 0
+  ) {
+    aclPayloadObject.rateLimiting.enableDownloadLimit = true
+    aclPayloadObject.rateLimiting.downlinkLimit = accessControlProfile.rateLimiting?.downlinkLimit
+  }
+
+  return aclPayloadObject
+}
+
+export const convertToPayload = (
+  editMode: boolean,
+  accessControlProfile: AccessControlFormFields,
+  policyId: string | undefined) => {
+  let payload = {} as AccessControlInfoType
+  if (editMode) {
+    payload.id = policyId ?? ''
+  }
+
+  payload.name = accessControlProfile.policyName
+  payload.description = accessControlProfile.description ?? ''
+
+  if (accessControlProfile.enableLayer2) {
+    payload.l2AclPolicy = {
+      enabled: true,
+      id: accessControlProfile.l2AclPolicyId!
+    }
+  }
+
+  if (accessControlProfile.enableLayer3) {
+    payload.l3AclPolicy = {
+      enabled: true,
+      id: accessControlProfile.l3AclPolicyId!
+    }
+  }
+
+  if (accessControlProfile.enableDeviceOs) {
+    payload.devicePolicy = {
+      enabled: true,
+      id: accessControlProfile.devicePolicyId!
+    }
+  }
+
+  if (accessControlProfile.enableApplications) {
+    payload.applicationPolicy = {
+      enabled: true,
+      id: accessControlProfile.applicationPolicyId!
+    }
+  }
+
+  if (accessControlProfile.rateLimiting?.enableDownloadLimit
+    || accessControlProfile.rateLimiting?.enableUploadLimit) {
+    payload.rateLimiting = {
+      enabled: true,
+      uplinkLimit: accessControlProfile.rateLimiting?.uplinkLimit ?? 0,
+      downlinkLimit: accessControlProfile.rateLimiting?.downlinkLimit ?? 0
+    }
+  }
+
+  return payload
+}
+
 const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath(true))
+  // eslint-disable-next-line max-len
+  const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const { editMode } = props
 
-  const formRef = useRef<StepsFormInstance<AccessControlProfile>>()
+  const formRef = useRef<StepsFormInstance<AccessControlFormFields>>()
 
   const [ createAclProfile ] = useAddAccessControlProfileMutation()
 
   const [ updateAclProfile ] = useUpdateAccessControlProfileMutation()
 
-  const convertToPayload = (editMode: boolean) => {
-    let payload = {} as AccessControlInfoType
-    if (editMode) {
-      payload.id = params.policyId ?? ''
-    }
-
-    payload.name = formRef.current?.getFieldValue('policyName')
-    payload.description = formRef.current?.getFieldValue('description')
-
-    if (formRef.current?.getFieldValue('enableLayer2')) {
-      payload.l2AclPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('l2AclPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableLayer3')) {
-      payload.l3AclPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('l3AclPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableDeviceOs')) {
-      payload.devicePolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('devicePolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue('enableApplications')) {
-      payload.applicationPolicy = {
-        enabled: true,
-        id: formRef.current?.getFieldValue('applicationPolicyId')
-      }
-    }
-
-    if (formRef.current?.getFieldValue(['rateLimiting', 'enableDownloadLimit'])
-      || formRef.current?.getFieldValue(['rateLimiting', 'enableUploadLimit'])) {
-      payload.rateLimiting = {
-        enabled: true,
-        uplinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'uplinkLimit']) ?? 0,
-        downlinkLimit: formRef.current?.getFieldValue(['rateLimiting', 'downlinkLimit']) ?? 0
-      }
-    }
-
-    return payload
-  }
-
   const handleAccessControlPolicy = async (editMode: boolean) => {
     try {
+      const aclPayloadObject = genAclPayloadObject(
+        formRef.current?.getFieldsValue() as AccessControlFormFields
+      )
       if (!editMode) {
         await createAclProfile({
           params: params,
-          payload: convertToPayload(false)
+          payload: convertToPayload(false, aclPayloadObject, params.policyId)
         }).unwrap()
       } else {
         await updateAclProfile({
           params: params,
-          payload: convertToPayload(true)
+          payload: convertToPayload(true, aclPayloadObject, params.policyId)
         }).unwrap()
       }
 
@@ -114,7 +164,7 @@ const AccessControlForm = (props: AccessControlFormProps) => {
           ? $t({ defaultMessage: 'Edit Access Control Policy' })
           : $t({ defaultMessage: 'Add Access Control Policy' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
+          { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
         ]}
       />
       <StepsForm<AccessControlProfile>

@@ -6,8 +6,9 @@ import { Form } from 'antd'
 import { Provider } from '@acx-ui/store'
 import { render }   from '@acx-ui/test-utils'
 
-import { NetworkOverviewTab } from './index'
+import { useGetNetwork } from '../services'
 
+import { NetworkOverviewTab } from './index'
 
 jest.mock('@acx-ui/analytics/components', () => ({
   ...jest.requireActual('@acx-ui/analytics/components'),
@@ -15,14 +16,23 @@ jest.mock('@acx-ui/analytics/components', () => ({
   NetworkHistory: () => <div></div>,
   TopApplicationsByTraffic: () => <div></div>,
   TrafficByVolume: () => <div></div>,
-  VenueHealth: () => <div></div>
+  VenueHealth: () => <div></div>,
+  IncidentBySeverityDonutChart: () => <div></div>,
+  KpiWidget: () => <div></div>,
+  TtcTimeWidget: () => <div></div>
 }))
+const mockUseGetNetwork = useGetNetwork as jest.Mock
+
 jest.mock('../services', () => ({
   extractSSIDFilter: () => [],
-  useGetNetwork: () => ({})
+  useGetNetwork: jest.fn()
 }))
 describe('NetworkOverviewTab', () => {
-  it('should render network incidents tab successfully', async () => {
+  afterEach(() => {
+    mockUseGetNetwork.mockClear()
+  })
+  it('should render network overview tab successfully with no network data', () => {
+    mockUseGetNetwork.mockImplementationOnce(() => ({}))
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const { asFragment } = render(
@@ -36,6 +46,20 @@ describe('NetworkOverviewTab', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render network overview tab successfully', () => {
+    mockUseGetNetwork.mockImplementationOnce(() => ({ data: { type: 'psk' } }))
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
+    const { asFragment } = render(
+      <Provider>
+        <Form>
+          <NetworkOverviewTab />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
 

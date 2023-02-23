@@ -4,14 +4,12 @@ import {
   Form,
   Radio,
   RadioChangeEvent,
-  Space,
-  Tooltip
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
@@ -88,12 +86,10 @@ function TypesForm () {
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
-              <Tooltip title={intl.$t(notAvailableMsg)}>
-                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
-                <RadioDescription>
-                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
-                </RadioDescription>
-              </Tooltip>
+              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
+              <RadioDescription>
+                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
+              </RadioDescription>
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.HostApproval}>
@@ -110,7 +106,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr}>
+            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={true}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

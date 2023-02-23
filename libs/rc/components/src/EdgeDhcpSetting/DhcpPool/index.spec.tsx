@@ -1,111 +1,81 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 
-import { networkApi } from '@acx-ui/rc/services'
-import { store }      from '@acx-ui/store'
 import {
-  render, screen
+  findTBody,
+  render, screen, within
 } from '@acx-ui/test-utils'
 
-import  DhcpPoolTable from '.'
+import DhcpPoolTable from '.'
 
-function wrapper ({ children }: { children: React.ReactElement }) {
-  return <Form>{children}</Form>
-}
+const mockData = [
+  {
+    id: '1',
+    poolName: 'TestPool-1',
+    subnetMask: '255.255.255.0',
+    poolStartIp: '1.1.1.1',
+    poolEndIp: '1.1.1.5',
+    gatewayIp: '1.1.1.0',
+    activated: true
+  },
+  {
+    id: '2',
+    poolName: 'TestPool-2',
+    subnetMask: '255.255.255.0',
+    poolStartIp: '1.1.1.1',
+    poolEndIp: '1.1.1.5',
+    gatewayIp: '1.1.1.0',
+    activated: true
+  }
+]
 
-describe('Create DHCP: Pool detail', () => {
-  beforeEach(() => {
-    store.dispatch(networkApi.util.resetApiState())
+describe('DHCP Pool table(Edge)', () => {
+  it('should render data succefully', async () => {
+    render(<DhcpPoolTable value={mockData} />)
+
+    const tableRow = await screen.findAllByRole('row', { name: /TestPool-/i })
+    expect(tableRow.length).toBe(2)
   })
 
-  it('should add pool', async () => {
-    const params = { tenantId: 'tenant-id' }
+  it('should show no data', async () => {
+    render(<DhcpPoolTable />)
 
-    render(<DhcpPoolTable/>, {
-      wrapper,
-      route: { params }
-    })
-    const addNewPoolButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
-    expect(addNewPoolButton).toBeVisible()
-    await userEvent.click(addNewPoolButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4')
-    await userEvent.type(screen.getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    const tbody = await findTBody()
+    const noDataElement = within(tbody).getByRole('row')
+    expect(noDataElement.className).toBe('ant-table-placeholder')
   })
 
-  it('should update pool', async () => {
-    const params = { tenantId: 'tenant-id' }
+  it('should open drawer', async () => {
+    const user = userEvent.setup()
+    render(<DhcpPoolTable value={mockData} />)
 
-    render(<DhcpPoolTable/>, {
-      wrapper,
-      route: { params }
-    })
-    const addNewPoolButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
-    expect(addNewPoolButton).toBeVisible()
-    await userEvent.click(addNewPoolButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4')
-    await userEvent.type(screen.getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-
-    await userEvent.click(await screen.findByText('pool1'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Update' }))
+    await user.click(screen.getByRole('button', { name: 'Add DHCP Pool' }))
+    expect(await screen.findByRole('textbox', { name: 'Pool Name' })).toBeVisible()
   })
 
-  it('should show alert for duplicate host name', async () => {
-    const params = { tenantId: 'tenant-id' }
+  it('should show edit button', async () => {
+    render(<DhcpPoolTable value={mockData} />)
 
-    render(<DhcpPoolTable/>, {
-      wrapper,
-      route: { params }
-    })
-    const addNewPoolButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
-    expect(addNewPoolButton).toBeVisible()
-    await userEvent.click(addNewPoolButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4')
-    await userEvent.type(screen.getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
+    const tbody = await findTBody()
 
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+    expect(tbody).toBeVisible()
 
-    await userEvent.click(addNewPoolButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
-    const alertElement = await screen.findByRole('alert')
-    expect(alertElement).toBeVisible()
-  })
-
-  it('should delete pool', async () => {
-    const params = { tenantId: 'tenant-id' }
-
-    render(<DhcpPoolTable/>, {
-      wrapper,
-      route: { params }
-    })
-    const addNewPoolButton = screen.getByRole('button', { name: 'Add DHCP Pool' })
-    expect(addNewPoolButton).toBeVisible()
-    await userEvent.click(addNewPoolButton)
-    await userEvent.type(screen.getByRole('textbox', { name: 'Pool Name' }), 'pool1')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Start IP Address' }), '1.2.3.4')
-    await userEvent.type(screen.getByRole('textbox', { name: 'End IP Address' }), '1.2.3.5')
-    await userEvent.type(screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.10')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-
-    userEvent.click(screen.getByText('pool1'))
+    const row = await screen.findByRole('row', { name: /TestPool-1/i })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+  })
+
+  it('should hidden edit button', async () => {
+    render(<DhcpPoolTable value={mockData} />)
+
+    const tbody = await findTBody()
+
+    expect(tbody).toBeVisible()
+
+    const rows = await screen.findAllByRole('row', { name: /TestPool-/i })
+    await userEvent.click(within(rows[0]).getByRole('checkbox'))
+    await userEvent.click(within(rows[1]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 })

@@ -99,29 +99,42 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
-  addVenue: {
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
+  newAddVenue: { // Only for IT test
     method: 'post',
     newApi: true,
+    url: '/venues'
+    // url: '/api/tenant/:tenantId/venue'
+  },
+  addVenue: {
+    method: 'post',
+    newApi: false,
     url: '/venues',
     oldUrl: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
-    newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: false,
+    // url: '/venues/:venueId',
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
-    newApi: true,
-    url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: false,
+    // url: '/venues/:venueId',
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
-    url: '/venues/:venueId',
-    newApi: true,
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/api/tenant/:tenantId/venue/:venueId'
+    // url: '/venues/:venueId',
+    // newApi: false,
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
     method: 'delete',
@@ -346,5 +359,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  fetchBotAuth: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/chatbot/idtoken'
+  },
+  getTopology: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
   }
 }

@@ -99,20 +99,6 @@ exports[`SwitchOverviewTab should navigate to ports tab correctly 1`] = `
             class="ant-tabs-tab"
           >
             <div
-              aria-controls="rc-tabs-test-panel-routeInterfaces"
-              aria-selected="false"
-              class="ant-tabs-tab-btn"
-              id="rc-tabs-test-tab-routeInterfaces"
-              role="tab"
-              tabindex="0"
-            >
-              Routed Interfaces
-            </div>
-          </div>
-          <div
-            class="ant-tabs-tab"
-          >
-            <div
               aria-controls="rc-tabs-test-panel-vlans"
               aria-selected="false"
               class="ant-tabs-tab-btn"
@@ -206,15 +192,6 @@ exports[`SwitchOverviewTab should navigate to ports tab correctly 1`] = `
             title="SwitchPortTable"
           />
         </div>
-        <div
-          aria-hidden="true"
-          aria-labelledby="rc-tabs-test-tab-routeInterfaces"
-          class="ant-tabs-tabpane"
-          id="rc-tabs-test-panel-routeInterfaces"
-          role="tabpanel"
-          style="display: none;"
-          tabindex="-1"
-        />
         <div
           aria-hidden="true"
           aria-labelledby="rc-tabs-test-tab-vlans"
