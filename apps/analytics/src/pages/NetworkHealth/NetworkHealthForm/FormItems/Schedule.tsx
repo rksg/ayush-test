@@ -1,6 +1,6 @@
-import { Form, Row, Col, Select, Input } from 'antd'
-import moment                            from 'moment-timezone'
-import { defineMessage, useIntl }        from 'react-intl'
+import { Form, Row, Col, Select, Input }            from 'antd'
+import moment                                       from 'moment-timezone'
+import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsFormNew,
@@ -73,6 +73,10 @@ const useTypeWithSchedule = () => {
   return Form.useWatch('typeWithSchedule', form)
 }
 
+const atDayHour = defineMessage({
+  defaultMessage: '<day></day> <at>at</at> <hour></hour>'
+})
+
 export function Schedule () {
   const { $t } = useIntl()
   const typeWithSchedule = useTypeWithSchedule()
@@ -110,66 +114,66 @@ export function Schedule () {
             </Col>
         }
         {
-          typeWithSchedule === ScheduleFrequency.Weekly && <>
-            <Col span={11}>
-              <Form.Item
-                name={[name, 'day']}
-                rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
-                noStyle
-              >
-                <Select
-                  placeholder={$t({ defaultMessage: 'Select day' })}
-                  children={dayOfWeekOptions()}
-                />
-              </Form.Item>
-            </Col>
-            <UI.AtCol span={2}>
-              {$t({ defaultMessage: 'at' })}
-            </UI.AtCol>
-            <Col span={11}>
-              <Form.Item
-                name={[name, 'hour']}
-                rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-                noStyle
-              >
-                <Select
-                  placeholder={$t({ defaultMessage: 'Select hour' })}
-                  children={timeOptions()}
-                />
-              </Form.Item>
-            </Col>
-          </>
+          typeWithSchedule === ScheduleFrequency.Weekly && <FormattedMessage {...atDayHour}
+            values={{
+              day: () => <Col span={11}>
+                <Form.Item
+                  name={[name, 'day']}
+                  rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
+                  noStyle
+                >
+                  <Select
+                    placeholder={$t({ defaultMessage: 'Select day' })}
+                    children={dayOfWeekOptions()}
+                  />
+                </Form.Item>
+              </Col>,
+              at: (children) => <UI.AtCol span={2} children={children} />,
+              hour: () => <Col span={11}>
+                <Form.Item
+                  name={[name, 'hour']}
+                  rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
+                  noStyle
+                >
+                  <Select
+                    placeholder={$t({ defaultMessage: 'Select hour' })}
+                    children={timeOptions()}
+                  />
+                </Form.Item>
+              </Col>
+            }}
+          />
         }
         {
-          typeWithSchedule === ScheduleFrequency.Monthly && <>
-            <Col span={11}>
-              <Form.Item
-                name={[name, 'day']}
-                rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
-                noStyle
-              >
-                <Select
-                  placeholder={$t({ defaultMessage: 'Select day' })}
-                  children={dayOfMonthOptions()}
-                />
-              </Form.Item>
-            </Col>
-            <UI.AtCol span={2}>
-              {$t({ defaultMessage: 'at' })}
-            </UI.AtCol>
-            <Col span={11}>
-              <Form.Item
-                name={[name, 'hour']}
-                rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-                noStyle
-              >
-                <Select
-                  placeholder={$t({ defaultMessage: 'Select hour' })}
-                  children={timeOptions()}
-                />
-              </Form.Item>
-            </Col>
-          </>
+          typeWithSchedule === ScheduleFrequency.Monthly && <FormattedMessage {...atDayHour}
+            values={{
+              day: () => <Col span={11}>
+                <Form.Item
+                  name={[name, 'day']}
+                  rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
+                  noStyle
+                >
+                  <Select
+                    placeholder={$t({ defaultMessage: 'Select day' })}
+                    children={dayOfMonthOptions()}
+                  />
+                </Form.Item>
+              </Col>,
+              at: (children) => <UI.AtCol span={2} children={children} />,
+              hour: () => <Col span={11}>
+                <Form.Item
+                  name={[name, 'hour']}
+                  rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
+                  noStyle
+                >
+                  <Select
+                    placeholder={$t({ defaultMessage: 'Select hour' })}
+                    children={timeOptions()}
+                  />
+                </Form.Item>
+              </Col>
+            }}
+          />
         }
       </Row>
     </Form.Item>
@@ -193,17 +197,21 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
         case ScheduleFrequency.Daily:
           return timeMap().get(value!.hour!)
         case ScheduleFrequency.Weekly:
-          return `
-            ${dayOfWeekMap().get(value!.day!)}
-            ${$t({ defaultMessage: 'at' })}
-            ${timeMap().get(value!.hour!)}
-          `
+          return <FormattedMessage {...atDayHour}
+            values={{
+              day: () => dayOfWeekMap().get(value!.day!),
+              at: (text) => text,
+              hour: () => timeMap().get(value!.hour!)
+            }}
+          />
         default:
-          return `
-            ${dayOfMonthMap().get(value!.day!)}
-            ${$t({ defaultMessage: 'at' })}
-            ${timeMap().get(value!.hour!)}
-          `
+          return <FormattedMessage {...atDayHour}
+            values={{
+              day: () => dayOfMonthMap().get(value!.day!),
+              at: (text) => text,
+              hour: () => timeMap().get(value!.hour!)
+            }}
+          />
       }
     }}/>}
   />
