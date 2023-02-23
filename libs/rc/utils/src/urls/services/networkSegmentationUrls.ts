@@ -6,6 +6,10 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/networkSegmentationGroups/:serviceId'
   },
+  getNetworkSegmentationGroupList: {
+    method: 'get',
+    url: '/networkSegmentationGroups'
+  },
   getWebAuthTemplate: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
@@ -33,5 +37,10 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getDistributionSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+  },
+  createNetworkSegmentationGroup: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups'
   }
 }

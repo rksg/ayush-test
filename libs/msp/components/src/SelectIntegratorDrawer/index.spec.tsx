@@ -72,8 +72,7 @@ describe('SelectIntegratorDrawer', () => {
       await screen.findByPlaceholderText('Search Name')
 
     fireEvent.change(input, { target: { value: 'a' } })
-    expect(await screen.findByText('a')).toBeVisible()
-    expect(await screen.findByText('nother int')).toBeVisible()
+    expect(await screen.findByText('another int')).toBeVisible()
 
     fireEvent.change(input, { target: { value: 'an' } })
     expect(await screen.findByText('an')).toBeVisible()
@@ -81,7 +80,5 @@ describe('SelectIntegratorDrawer', () => {
 
     fireEvent.change(input, { target: { value: 'aa' } })
     expect(screen.queryByText('aa')).toBeNull()
-
-
   })
 })

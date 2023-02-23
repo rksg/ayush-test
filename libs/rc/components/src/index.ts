@@ -18,11 +18,12 @@ export {
   EventTable,
   useEventTableFilter,
   defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter
+  defaultSorter as eventDefaultSorter,
+  defaultSearch as eventDefaultSearch
 } from './EventTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
-export { ImportCsvDrawer, CsvSize } from './ImportCsvDrawer'
+export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
@@ -53,6 +54,7 @@ export { SwitchClientsTable } from './SwitchClientsTable'
 export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
+export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

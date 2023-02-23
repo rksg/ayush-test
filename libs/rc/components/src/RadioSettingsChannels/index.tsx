@@ -77,14 +77,27 @@ export function RadioSettingsChannels (props: {
     = useState(getChannelGroupList(channelGroupListArray as RadioChannel[][]))
 
   const handleClickBarButton = (barType: ChannelBarTypeEnum) => {
-    const avaliableBarChannels = avaliableBarsChannels[barType]
-    const oldSelected = (form.getFieldValue(props.formName) ?? []) as string[]
-    const hasAnySelected = intersection(avaliableBarChannels, oldSelected).length > 0
-    const newSelected = hasAnySelected
-      ? oldSelected.filter(item => !avaliableBarChannels.includes(item))
-      : oldSelected.concat(avaliableBarChannels)
-    form.setFieldValue(props.formName, uniq(newSelected))
-    updateChannelGroupList(uniq(newSelected))
+    const barChannelGroupIdx = findBarChannelGroupIdx(channelGroupList, barType)
+    const hasBarChannelsGroupIdx = barChannelGroupIdx?.length > 0
+    if (!hasBarChannelsGroupIdx) {
+      return
+    }
+
+    const hasAnySelected = barChannelGroupIdx.some(idx => {
+      return channelGroupList[idx].selected === true
+    })
+
+    barChannelGroupIdx.forEach(index => {
+      const channelGroup = channelGroupList[index]
+      channelGroup.selected = !hasAnySelected
+      channelGroup.channels.forEach((channel) => {
+        channel.selected = !hasAnySelected
+      })
+    })
+
+    const selectedChannels = getSelectedValuesFormGropList(channelGroupList)
+    form.setFieldValue(props.formName, selectedChannels)
+    setChannelGroupList(channelGroupList)
 
     // notify data is changed
     setEditContextData({
@@ -96,16 +109,46 @@ export function RadioSettingsChannels (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickGroupChannels = async (checkedValues: any) => {
     form.validateFields([props.formName])
-    const selectedValue = await getSelectedValues(channelGroupValueList, checkedValues)
-    form.setFieldValue(props.formName, selectedValue)
-    updateChannelGroupList(selectedValue)
+    const selectedValues = await getSelectedValues(channelGroupValueList, checkedValues)
+    form.setFieldValue(props.formName, selectedValues)
+
+    channelGroupList.forEach(group => {
+      const hasSelected = selectedValues.includes(group.channels.map(c => c.value)[0])
+      group.selected = hasSelected
+      group.channels.forEach(c => c.selected = hasSelected)
+    })
+
+    setChannelGroupList(channelGroupList)
   }
 
   useEffect(() => {
-    if(channelList && groupSize){
-      const channelGroupListArray = getChannelGroupListArray(channelList, props.groupSize)
-      setChannelValueList(channelList.map((channelItem: RadioChannel) => channelItem.value))
-      setChannelGroupList(getChannelGroupList(channelGroupListArray as RadioChannel[][]))
+    if(channelList?.length > 0 && groupSize){
+      const chVlaueList = channelList.map((channelItem: RadioChannel) => channelItem.value)
+      let chList = [ ...channelList ]
+      if (form) {
+        const selectedCh = form.getFieldValue(props.formName)
+        if (selectedCh) {
+          chList = channelList.map((channelItem: RadioChannel) => {
+            return {
+              value: channelItem.value,
+              selected: selectedCh.includes(channelItem.value)
+            }
+          })
+        } else {
+          form.setFieldValue(props.formName, chVlaueList)
+          chList = channelList.map((channelItem: RadioChannel) => {
+            return {
+              value: channelItem.value,
+              selected: true
+            }
+          })
+        }
+      }
+      const channelGroupListArray = getChannelGroupListArray(chList, groupSize)
+      setChannelValueList(chVlaueList)
+      const chGroupList = getChannelGroupList(channelGroupListArray as RadioChannel[][])
+      setChannelGroupList(chGroupList)
+
     }
   }, [channelList, groupSize])
 
@@ -259,17 +302,43 @@ export function RadioSettingsChannels (props: {
     }
   }
 
-  function updateChannelGroupList (selectedValues: string[]) {
-    setChannelGroupList(channelGroupList.map(group => ({
-      ...group,
-      selected: selectedValues.includes(group.channels.map(c => c.value)[0])
-    })))
-  }
-
   async function getSelectedValues (groupValueList: string[][], selectedValues: string[]) {
     const values = selectedValues.map((value:string) =>
       groupValueList.filter(list => list?.includes(value))
     ).flat().flat()
     return uniq(values)
+  }
+
+  function findBarChannelGroupIdx (chGroupList: channelGroupOption[], barType: ChannelBarTypeEnum) {
+    const barChannelGroupIdx: number[] = []
+    const barChannels = avaliableBarsChannels[barType]
+
+    if (!barChannels || barChannels.length === 0) {
+      return barChannelGroupIdx
+    }
+
+    // find channel groups which include bar's channels
+    chGroupList.forEach((channelGroup, idx) => {
+      const barChannelGroup = channelGroup.channels.some(ch => {
+        return barChannels.includes(ch.value)
+      })
+
+      if (barChannelGroup) {
+        barChannelGroupIdx.push(idx)
+      }
+    })
+
+    return barChannelGroupIdx
+  }
+
+  function getSelectedValuesFormGropList (channelGroupList: channelGroupOption[]) {
+    const selectedChannels: string[] = []
+    channelGroupList.filter((channeGroup) => channeGroup.selected).forEach((channelGroup) => {
+      channelGroup.channels.forEach((channel) => {
+        selectedChannels.push(channel.value)
+      })
+    })
+
+    return selectedChannels
   }
 }

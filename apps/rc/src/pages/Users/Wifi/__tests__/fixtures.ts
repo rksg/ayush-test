@@ -25,7 +25,7 @@ export const GuestClient = {
       emailAddress: '',
       guestType: 'SelfSign',
       ssid: 'guest pass wlan',
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       passDurationHours: '',
       guestStatus: 'Not Applicable',
       notes: '',
@@ -39,7 +39,7 @@ export const GuestClient = {
       emailAddress: '',
       guestType: 'HostGuest',
       ssid: 'guest pass wlan',
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       passDurationHours: 720,
       guestStatus: 'Offline',
       notes: '',
@@ -53,7 +53,7 @@ export const GuestClient = {
       emailAddress: 'a@email.com',
       guestType: 'GuestPass',
       ssid: 'guest pass wlan',
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       passDurationHours: 168,
       guestStatus: 'Online (1)',
       notes: '',
@@ -73,7 +73,7 @@ export const GuestClient = {
           apName: 'testAp',
           switchSerialNumber: '',
           switchName: '',
-          networkId: '3f04e252a9d04180855813131d007aca',
+          networkId: 'tenant-id',
           networkName: 'guest pass wlan',
           networkSsid: 'guest pass wlan',
           connectSince: '2022-11-28T14:55:15.924Z'
@@ -180,7 +180,7 @@ export const AllowedNetworkList = {
   data: [
     {
       name: 'guest pass wlan1',
-      id: '3f04e252a9d04180855813131d007aca',
+      id: 'tenant-id',
       defaultGuestCountry: 'United States'
     },
     {
@@ -191,6 +191,45 @@ export const AllowedNetworkList = {
   ]
 }
 
+export const network = {
+  type: 'aaa',
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  venues: [
+    {
+      venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',
+      dual5gEnabled: true,
+      tripleBandEnabled: false,
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      allApGroupsRadio: 'Both',
+      isAllApGroups: true,
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
+      id: '7a97953dc55f4645b3cdbf1527f3d7cb'
+    }
+  ],
+  name: 'testNetwork',
+  enableAuthProxy: false,
+  enableAccountingProxy: false,
+  id: '373377b0cb6e46ea8982b1c80aabe1fa'
+}
+
+export const userProfile =
+{
+  adminId: '9b85c591260542c188f6a12c62bb3912',
+  companyName: 'msp.eleu1658',
+  dateFormat: 'mm/dd/yyyy',
+  detailLevel: 'debug',
+  email: 'msp.eleu1658@mail.com',
+  externalId: '0032h00000gXuBNAA0',
+  firstName: 'msp',
+  lastName: 'eleu1658',
+  role: 'PRIME_ADMIN',
+  support: false,
+  tenantId: '3061bd56e37445a8993ac834c01e2710',
+  username: 'msp.eleu1658@rwbigdog.com',
+  var: true,
+  varTenantId: '3061bd56e37445a8993ac834c01e2710'
+}
+
 export const AllowedNetworkSingleList = {
   fields: ['name', 'id', 'defaultGuestCountry'],
   totalCount: 1,
@@ -198,7 +237,7 @@ export const AllowedNetworkSingleList = {
   data: [
     {
       name: 'guest pass wlan1',
-      id: '3f04e252a9d04180855813131d007aca',
+      id: 'tenant-id',
       defaultGuestCountry: 'United States'
     }
   ]
@@ -213,7 +252,7 @@ export const AddGuestPassResponse = {
       lastModified: 1670312604329,
       name: 'wifitest',
       disabled: false,
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       notes: '',
       email: '',
       mobilePhoneNumber: '+12052220123',
@@ -242,7 +281,7 @@ export const AddGuestPassWihtoutExpirationResponse = {
       lastModified: 1670312604329,
       name: 'wifitest',
       disabled: false,
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       notes: '',
       email: '',
       mobilePhoneNumber: '+12052220123',
@@ -362,7 +401,7 @@ export const wifiNetworkDetail = {
       venueId: '4c778ed630394b76b17bce7fe230cf9f',
       dual5gEnabled: true,
       tripleBandEnabled: false,
-      networkId: '3f04e252a9d04180855813131d007aca',
+      networkId: 'tenant-id',
       allApGroupsRadio: 'Both',
       allApGroupsRadioTypes: ['2.4-GHz', '5-GHz'],
       isAllApGroups: true,
@@ -371,7 +410,7 @@ export const wifiNetworkDetail = {
   ],
   enableDhcp: false,
   name: 'guest pass wlan',
-  id: '3f04e252a9d04180855813131d007aca'
+  id: 'tenant-id'
 }
 export const clientList = [{
   apMac: '28:B3:71:28:78:50',

@@ -1,7 +1,7 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi }               from '@acx-ui/analytics/services'
+import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -20,7 +20,8 @@ import {
   baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
   baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi
+  basePersonaApi as personaApi,
+  baseNsgApi as nsgApi
 } from '@acx-ui/rc/services'
 
 import type { Middleware } from '@reduxjs/toolkit'
@@ -80,7 +81,9 @@ export const store = configureStore({
     [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
-    [personaApi.reducerPath]: personaApi.reducer
+    [personaApi.reducerPath]: personaApi.reducer,
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
+    [nsgApi.reducerPath]: nsgApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -108,7 +111,9 @@ export const store = configureStore({
       mfaApi.middleware,
       administrationApi.middleware,
       edgeDhcpApi.middleware,
-      personaApi.middleware
+      personaApi.middleware,
+      networkHealthApi.middleware,
+      nsgApi.middleware
     ])
   },
 

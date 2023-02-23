@@ -10,10 +10,14 @@ jest.mock('@acx-ui/main/components', () => ({
   ActivityButton: () => <div data-testid='activity-button' />,
   AlarmsButton: () => <div data-testid='alarms-button' />,
   HelpButton: () => <div data-testid='help-button' />,
-  UserButton: () => <div data-testid='user-button' />
+  UserButton: () => <div data-testid='user-button' />,
+  FetchBot: () => <div data-testid='fetch-bot' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
+  useUserProfileContext: () => ({
+    data: { companyName: 'Mock company' }
+  })
 }))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />

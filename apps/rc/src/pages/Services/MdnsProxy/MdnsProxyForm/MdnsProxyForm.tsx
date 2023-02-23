@@ -12,10 +12,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   MdnsProxyFormData,
-  getServiceListRoutePath,
   getServiceRoutePath,
   ServiceType,
-  ServiceOperation
+  ServiceOperation,
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -34,7 +34,9 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const myServicesPath = useTenantLink(getServiceListRoutePath(true))
+  const serviceTablePath = useTenantLink(getServiceRoutePath({
+    type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
+  }))
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
   const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
@@ -63,11 +65,14 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
         await addMdnsProxy({ params, payload: data }).unwrap()
       }
 
-      navigate(myServicesPath, { replace: true })
-    } catch {
+      navigate(serviceTablePath, { replace: true })
+    } catch (error) {
+      const errorResponse = error as CatchErrorResponse
+      const errorMsg = errorResponse.data?.errors?.map(error => error.message).join('<br />')
+
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
       })
     }
   }
@@ -89,7 +94,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
       <MdnsProxyFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm<MdnsProxyFormData>
           editMode={editMode}
-          onCancel={() => navigate(myServicesPath)}
+          onCancel={() => navigate(serviceTablePath)}
           onFinish={(data) => saveData(editMode, data)}
         >
           <StepsForm.StepForm

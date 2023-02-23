@@ -1,23 +1,22 @@
-import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
   Button,
+  ColumnType,
   PageHeader,
   Table,
   TableProps,
   Loader,
-  StackedBarChart,
-  cssStr,
-  showActionModal,
-  deviceStatusColors,
-  getDeviceConnectionStatusColors
+  showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useVenuesListQuery, useDeleteVenueMutation } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  ApDeviceStatusEnum,
+  useVenuesListQuery,
+  useDeleteVenueMutation,
+  useGetVenueCityListQuery
+} from '@acx-ui/rc/services'
+import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
@@ -26,7 +25,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-function useColumns () {
+function useColumns (
+  searchable?: boolean,
+  filterables?: { [key: string]: ColumnType['filterable'] }
+) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
@@ -37,10 +39,12 @@ function useColumns () {
       dataIndex: 'name',
       sorter: true,
       disable: true,
+      searchable: searchable,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         return (
-          <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{data}</TenantLink>
+          <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
+            {searchable ? highlightFn(row.name) : data}</TenantLink>
         )
       }
     },
@@ -49,6 +53,7 @@ function useColumns () {
       key: 'city',
       dataIndex: 'city',
       sorter: true,
+      filterable: filterables ? filterables['city'] : false,
       width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
@@ -88,7 +93,7 @@ function useColumns () {
     // },
     {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
-      align: 'left',
+      align: 'center',
       key: 'aggregatedApStatus',
       dataIndex: 'aggregatedApStatus',
       sorter: true,
@@ -97,15 +102,12 @@ function useColumns () {
           ? Object.values(row.aggregatedApStatus)
             .reduce((a, b) => a + b, 0)
           : 0
-        return (<Space direction='horizontal' size={4}>
-          { row.aggregatedApStatus
-            ? getApStatusChart(row.aggregatedApStatus)
-            : getEmptyStatusChart() }
+        return (
           <TenantLink
             to={`/venues/${row.id}/venue-details/devices`}
             children={count ? count : 0}
           />
-        </Space>)
+        )
       }
     },
     {
@@ -201,6 +203,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
       'status',
       'id'
     ],
+    searchTargetFields: ['name', 'description'],
     filters: {},
     sortField: 'name',
     sortOrder: 'ASC'
@@ -209,15 +212,19 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 type VenueTableProps = {
   tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>,
-  rowSelection?: TableProps<Venue>['rowSelection']
+  rowSelection?: TableProps<Venue>['rowSelection'],
+  searchable?: boolean
+  filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
-export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
+export const VenueTable = (
+  { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const columns = useColumns()
-
   const { tenantId } = useParams()
+
+
+  const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
     { isLoading: isDeleteVenueUpdating }
@@ -262,6 +269,8 @@ export const VenueTable = ({ tableQuery, rowSelection }: VenueTableProps) => {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         rowKey='id'
         rowActions={rowActions}
         rowSelection={rowSelection}
@@ -276,7 +285,16 @@ export function VenuesTable () {
 
   const tableQuery = usePollingTableQuery<Venue>({
     useQuery: useVenuesListQuery,
-    defaultPayload: venuePayload
+    defaultPayload: venuePayload,
+    search: {
+      searchTargetFields: venuePayload.searchTargetFields as string[]
+    }
+  })
+
+  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
+    selectFromResult: ({ data }) => ({
+      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name })) || true
+    })
   })
 
   return (
@@ -289,67 +307,12 @@ export function VenuesTable () {
           </TenantLink>
         ]}
       />
-      <VenueTable tableQuery={tableQuery} rowSelection={{ type: 'checkbox' }} />
+      <VenueTable tableQuery={tableQuery}
+        rowSelection={{ type: 'checkbox' }}
+        searchable={true}
+        filterables={{ city: cityFilterOptions }} />
     </>
   )
-}
-
-function getApStatusChart (apStatus: Venue['aggregatedApStatus']) {
-  const barColors = getDeviceConnectionStatusColors()
-  const apStatusMap = [[
-    ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD,
-    ApDeviceStatusEnum.FIRMWARE_UPDATE_FAILED,
-    ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED
-  ], [
-    ApDeviceStatusEnum.REBOOTING
-  ], [
-    ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD,
-    ApDeviceStatusEnum.INITIALIZING,
-    ApDeviceStatusEnum.OFFLINE
-
-  ], [
-    ApDeviceStatusEnum.OPERATIONAL,
-    ApDeviceStatusEnum.APPLYING_FIRMWARE,
-    ApDeviceStatusEnum.APPLYING_CONFIGURATION
-  ]]
-
-  const series = Object.entries(apStatus).reduce((counts, [key, value]) => {
-    const index = apStatusMap.findIndex(s =>
-      String(s).toLowerCase().includes((key).toLowerCase()))
-    counts[index] += value as number
-    return counts
-  }, [0, 0, 0, 0]).map((data, index) => ({
-    name: `P${index + 1}`,
-    value: data
-  }))
-
-  return <StackedBarChart
-    style={{ height: 10, width: 100 }}
-    data={[{
-      category: 'apStatus',
-      series: series
-    }]}
-    showLabels={false}
-    showTotal={false}
-    barColors={barColors}
-  />
-}
-
-function getEmptyStatusChart () {
-  return <StackedBarChart
-    style={{ height: 10, width: 100 }}
-    data={[{
-      category: 'emptyStatus',
-      series: [{
-        name: '',
-        value: 1
-      }]
-    }]}
-    showTooltip={false}
-    showLabels={false}
-    showTotal={false}
-    barColors={[cssStr(deviceStatusColors.empty)]}
-  />
 }
 
 function shouldShowConfirmation (selectedVenues: Venue[]) {

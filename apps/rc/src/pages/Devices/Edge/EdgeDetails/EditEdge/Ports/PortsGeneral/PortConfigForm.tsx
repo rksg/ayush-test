@@ -3,13 +3,38 @@ import { useLayoutEffect } from 'react'
 import { Col, Form, Input, Radio, Row, Select, Space, Switch } from 'antd'
 import { useIntl }                                             from 'react-intl'
 
-import { StepsForm }                                                                   from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { StepsForm }                                                                                              from '@acx-ui/components'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, isSubnetOverlap, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
+import { PortConfigFormType } from '.'
+
+export interface EdgePortWithStatus extends EdgePort {
+  statusIp: string
+}
+
 interface ConfigFormProps {
   index: number
+}
+
+export async function lanPortsubnetValidator (
+  currentSubnet: { ip: string, subnetMask: string },
+  allSubnetWithoutCurrent: { ip: string, subnetMask: string } []
+) {
+  if(!!!currentSubnet.ip || !!!currentSubnet.subnetMask) {
+    return
+  }
+
+  for(let item of allSubnetWithoutCurrent) {
+    try {
+      await isSubnetOverlap(currentSubnet.ip, currentSubnet.subnetMask,
+        item.ip, item.subnetMask)
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  return Promise.resolve()
 }
 
 const { useWatch, useFormInstance } = Form
@@ -19,11 +44,12 @@ export const PortConfigForm = (props: ConfigFormProps) => {
   const { index } = props
 
   const { $t } = useIntl()
-  const form = useFormInstance()
+  const form = useFormInstance<PortConfigFormType>()
   const mac = useWatch([`port_${index}`, 'mac'])
   const portType = useWatch([`port_${index}`, 'portType'])
   const enabled = useWatch([`port_${index}`, 'enabled'])
   const ipMode = useWatch([`port_${index}`, 'ipMode'])
+  const statusIp = useWatch([`port_${index}`, 'statusIp'])
 
   useLayoutEffect(() => {
     form.validateFields()
@@ -44,6 +70,22 @@ export const PortConfigForm = (props: ConfigFormProps) => {
     }
   ]
 
+  const getCurrentSubnetInfo = () => {
+    return {
+      ip: form.getFieldValue([`port_${index}`, 'ip']),
+      subnetMask: form.getFieldValue([`port_${index}`, 'subnet'])
+    }
+  }
+
+  const getSubnetInfoWithoutCurrent = () => {
+    return Object.entries<EdgePortWithStatus>(form.getFieldsValue(true))
+      .filter(item => item[0] !== `port_${index}`
+        && item[1].enabled
+        && !!item[1].ip
+        && !!item[1].subnet)
+      .map(item => ({ ip: item[1].ip, subnetMask: item[1].subnet }))
+  }
+
   const getFieldsByPortType = (portType: EdgePortTypeEnum) => {
     if(portType === EdgePortTypeEnum.LAN) {
       return (
@@ -51,15 +93,21 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='ip'
             label={$t({ defaultMessage: 'IP Address' })}
+            validateFirst
             rules={[
               { required: true },
-              { validator: (_, value) => serverIpAddressRegExp(value) }
+              { validator: (_, value) => serverIpAddressRegExp(value) },
+              {
+                validator: () =>
+                  lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+              }
             ]}
             children={<Input />}
           />
           <Form.Item
             name='subnet'
             label={$t({ defaultMessage: 'Subnet Mask' })}
+            validateFirst
             rules={[
               { required: true },
               { validator: (_, value) => subnetMaskIpRegExp(value) }
@@ -74,6 +122,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='ipMode'
             label={$t({ defaultMessage: 'IP Assignment' })}
+            validateFirst
             rules={[{
               required: true
             }]}
@@ -95,15 +144,21 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='ip'
                 label={$t({ defaultMessage: 'IP Address' })}
+                validateFirst
                 rules={[
                   { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  {
+                    validator: () =>
+                      lanPortsubnetValidator(getCurrentSubnetInfo(), getSubnetInfoWithoutCurrent())
+                  }
                 ]}
                 children={<Input />}
               />
               <Form.Item
                 name='subnet'
                 label={$t({ defaultMessage: 'Subnet Mask' })}
+                validateFirst
                 rules={[
                   { required: true },
                   { validator: (_, value) => subnetMaskIpRegExp(value) }
@@ -113,6 +168,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
               <Form.Item
                 name='gateway'
                 label={$t({ defaultMessage: 'Gateway' })}
+                validateFirst
                 rules={[
                   { required: true },
                   { validator: (_, value) => serverIpAddressRegExp(value) }
@@ -142,7 +198,7 @@ export const PortConfigForm = (props: ConfigFormProps) => {
 
           $t(
             { defaultMessage: 'IP Address: {ip}   |   MAC Address: {mac}' },
-            { ip: '', mac: mac }
+            { ip: statusIp ?? 'N/A', mac: mac }
           )
         }
       </UI.IpAndMac>
@@ -151,6 +207,9 @@ export const PortConfigForm = (props: ConfigFormProps) => {
           <Form.Item
             name='name'
             label={$t({ defaultMessage: 'Port Name' })}
+            rules={[
+              { max: 64 }
+            ]}
             children={<Input />}
           />
           <Form.Item

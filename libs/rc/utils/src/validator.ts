@@ -65,7 +65,8 @@ export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
   const re = new RegExp('^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/){1}[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value)) {
+  const IpV4RegExp = new RegExp('^(http:\\/\\/|https:\\/\\/)(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(%[\p{N}\p{L}]+)?$')
+  if (value!=='' && !re.test(value) && !IpV4RegExp.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -75,7 +76,7 @@ export function domainNameRegExp (value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
   if (value && !re.test(value)) {
-    return Promise.reject($t(validationMessages.invalid))
+    return Promise.reject($t(validationMessages.domain))
   }
   return Promise.resolve()
 }
@@ -90,7 +91,7 @@ export function domainsNameRegExp (value: string[], required: boolean) {
     return !(required && !re.test(domain))
   })
 
-  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
 
 export function walledGardensRegExp (value:string) {
@@ -499,6 +500,76 @@ export function priorityRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function whitespaceOnlyRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('\\S')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.whitespaceOnly))
+  }
+  return Promise.resolve()
+}
+
+export function agreeRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp('^agree$', 'i')
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.agree))
+  }
+  return Promise.resolve()
+}
+
+export function nameCannotStartWithNumberRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([0-9][A-Za-z0-9]*)$/)
+
+  if (value && re.test(value)) {
+    return Promise.reject($t(validationMessages.nameCannotStartWithNumber))
+  }
+  return Promise.resolve()
+}
+
+export function cliVariableNameRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[A-Za-z0-9]*$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.nameInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function cliIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-2][0-3]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}
+
+export function subnetMaskPrefixRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/(^255\.255\.(0|128|192|224|24[08]|25[245])\.0$)|(^255\.255\.255\.(0|128|192|224|24[08]|252)$)/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.subnetMaskBased255_255))
+  }
+  return Promise.resolve()
+}
+
+export function specialCharactersRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ -]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
 export function ValidatePhoneNumber (phoneNumber: string) {
   const phoneNumberUtil = PhoneNumberUtil.getInstance()
   let number
@@ -651,4 +722,38 @@ export function validateRecoveryPassphrasePart (value: string) {
   }
 
   return Promise.resolve()
+}
+
+export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
+  secondIpAddress: string, secondSubnetMask:string ) {
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  let result = false
+  let firstSubnetInfo
+  let secondSubnetInfo
+  try {
+    firstSubnetInfo = getSubnetInfo(firstIpAddress, firstSubnetMask)
+    secondSubnetInfo = getSubnetInfo(secondIpAddress, secondSubnetMask)
+  } catch (error) {
+    // ignore invalid case
+    return Promise.resolve()
+  }
+
+  const firstStartLong = convertIpToLong(firstSubnetInfo.first)
+  const firstEndLong = convertIpToLong(firstSubnetInfo.last)
+  const secondStartLong = convertIpToLong(secondSubnetInfo.first)
+  const secondEndLong = convertIpToLong(secondSubnetInfo.last)
+
+  if(secondStartLong < firstStartLong) {
+    result = secondEndLong > firstStartLong
+  } else {
+    result = secondStartLong < firstEndLong
+  }
+
+  return result ? Promise.reject($t(validationMessages.subnetOverlapping))
+    : Promise.resolve()
+
 }

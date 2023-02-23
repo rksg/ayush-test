@@ -5,8 +5,10 @@ import {
   websocketServerUrl,
   ClientIsolationUrls,
   ClientUrlsInfo,
-  getPolicyListRoutePath,
-  ClientIsolationSaveData
+  ClientIsolationSaveData,
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -47,6 +49,27 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 
+export const clientMeta = {
+  data: [
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:97:c7:ef',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: '3c:22:fb:c9:ab:2d',
+      apName: 'UI team AP'
+    },
+    {
+      venueName: 'My-Venue',
+      clientMac: 'aa:5c:7a:99:38:a2',
+      apName: 'UI team AP'
+    }
+  ]
+}
+
+
 describe('ClientIsolationForm', () => {
   beforeEach(async () => {
     mockServer.use(
@@ -57,6 +80,9 @@ describe('ClientIsolationForm', () => {
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => res(ctx.json(clientMeta))
       )
     )
   })
@@ -283,7 +309,8 @@ describe('ClientIsolationForm', () => {
 
   it('should navigate to the list page when clicking Cancel button', async () => {
     const { result: policyListPath } = renderHook(() => {
-      return useTenantLink(getPolicyListRoutePath(true))
+      // eslint-disable-next-line max-len
+      return useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
     })
 
     render(

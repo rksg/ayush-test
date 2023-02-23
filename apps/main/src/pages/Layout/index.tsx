@@ -1,26 +1,35 @@
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Tooltip } from '@acx-ui/components'
 import {
   Layout as LayoutComponent,
   LayoutUI
 } from '@acx-ui/components'
 import { SplitProvider } from '@acx-ui/feature-toggle'
+import { HomeSolid }     from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
+  FetchBot,
   HelpButton,
   UserButton
 } from '@acx-ui/main/components'
-import { CloudMessageBanner } from '@acx-ui/rc/components'
-import { Outlet }             from '@acx-ui/react-router-dom'
-import { notAvailableMsg }    from '@acx-ui/utils'
-
+import {
+  MspEcDropdownList
+} from '@acx-ui/msp/components'
+import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
+import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
+import { Home }          from './styledComponents'
 
 function Layout () {
+  const [supportStatus,setSupportStatus] = useState('')
+  const { data: userProfile } = useUserProfileContext()
+  const companyName = userProfile?.companyName
+  const showHomeButton = isDelegationMode() || userProfile?.var
+
   return (
     <LayoutComponent
       menuConfig={useMenuConfig()}
@@ -30,17 +39,26 @@ function Layout () {
           <Outlet />
         </>
       }
+      leftHeaderContent={
+        showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+          <Home>
+            <LayoutUI.Icon children={<HomeSolid />} />
+            Home
+          </Home>
+        </Link>
+      }
+
       rightHeaderContent={<>
         <SearchBar />
         <LayoutUI.Divider />
+        {isDelegationMode()
+          ? <MspEcDropdownList/>
+          : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
         <AlarmsButton/>
         <ActivityButton/>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <HelpButton/>
-        </Tooltip>
-        <Tooltip placement='bottomRight' title={useIntl().$t(notAvailableMsg)}>
-          <UserButton/>
-        </Tooltip>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
+        <HelpButton supportStatus={supportStatus}/>
+        <UserButton/>
       </>}
     />
   )

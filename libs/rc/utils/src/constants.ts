@@ -207,6 +207,7 @@ export enum ConfigTypeEnum {
   AAA_SERVER = 'AAA_SERVER',
   AAA_SETTING = 'AAA_SETTING',
   DNS_SERVER = 'DNS_SERVER',
+  DHCP_SERVER = 'DHCP_SERVER',
   LAG_SETTINGS = 'LAG_SETTINGS',
   MODEL ='MODEL',
   OVERWRITE_CONFIGURATION = 'OVERWRITE_CONFIGURATION',
@@ -229,6 +230,7 @@ export enum ConfigStatusEnum {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
   NO_CONFIG_CHANGE = 'NO_CONFIG_CHANGE',
+  NOTIFY_SUCCESS = 'NOTIFY_SUCCESS',
   FAILED_NO_RESPONSE = 'FAILED_NO_RESPONSE',
   PENDING ='PENDING'
 }
@@ -549,8 +551,8 @@ const guestPrintDictionary = {
   cs: {
     /* Czech */
     hello: 'Ahoj! ',
-    youCanAccess: 'Nyní můžete přistupovat k síti WiFi',
-    wifiNetwork: 'WiFi síť:',
+    youCanAccess: 'Nyní můžete přistupovat k síti Wi-Fi',
+    wifiNetwork: 'Wi-Fi síť:',
     password: 'Heslo:',
     accessIsValid: ' Přístup je platný pro ',
     enjoy: 'Užijte si to',
@@ -559,8 +561,8 @@ const guestPrintDictionary = {
   sk: {
     /* Slovak */
     hello: 'Ahoj! ',
-    youCanAccess: 'Teraz môžete pristupovať k sieti WiFi',
-    wifiNetwork: 'WiFi sieť:',
+    youCanAccess: 'Teraz môžete pristupovať k sieti Wi-Fi',
+    wifiNetwork: 'Wi-Fi sieť:',
     password: 'Heslo:',
     accessIsValid: 'Prístup je platný pre ',
     enjoy: 'Užite si to',
@@ -569,8 +571,8 @@ const guestPrintDictionary = {
   hu: {
     /* Hungarian */
     hello: 'Hello ',
-    youCanAccess: 'Most már elérheti a WiFi hálózatunkat',
-    wifiNetwork: 'WiFi hálózat:',
+    youCanAccess: 'Most már elérheti a Wi-Fi hálózatunkat',
+    wifiNetwork: 'Wi-Fi hálózat:',
     password: 'Jelszó:',
     accessIsValid: 'Hozzáférés érvényes ',
     enjoy: 'Jó szórakozást',
@@ -738,8 +740,8 @@ const guestPrintDictionary = {
   ja: {
     /* Japanese */
     hello: 'Hello ',
-    youCanAccess: 'WiFi ゲスト アクセス ネットワークに接続することができます。',
-    wifiNetwork: 'WiFi ネットワーク:',
+    youCanAccess: 'Wi-Fi ゲスト アクセス ネットワークに接続することができます。',
+    wifiNetwork: 'Wi-Fi ネットワーク:',
     password: 'パスワード:',
     accessIsValid: 'のアクセス権限が付与されました。 ',
     enjoy: 'お楽しみください',

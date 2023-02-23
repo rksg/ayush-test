@@ -37,10 +37,19 @@ export * from './mfa'
 export * from './administration'
 export * from './timeline'
 export * from './persona'
+export * from './radiusClientConfig'
 
 export interface CommonResult {
   requestId: string
   response?:{}
+}
+
+export interface CommonErrorsResult<T> {
+  data: {
+    errors: T[];
+    requestId: string;
+  };
+  status: number;
 }
 
 export interface Network {
@@ -101,13 +110,12 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
   activated: { isActivated: boolean, isDisabled?: boolean }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  deepVenue?: any
+  deepVenue?: NetworkVenue
   disabledActivation: boolean
   networkId? : string
   vlanPoolId?: string
@@ -365,6 +373,7 @@ export interface DnsProxyRule {
 export interface DnsProxyContextType {
   dnsProxyList: DnsProxyRule[] | [],
   setDnsProxyList: (dnsProxyList: DnsProxyRule[]) => void
+  setEnableDnsProxy: (enable: boolean)=> void
 }
 
 export interface WifiCallingSetting {
@@ -406,14 +415,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse {
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number
@@ -425,8 +434,8 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-	apModels: ApModel[]
-	version: string
+  apModels: ApModel[]
+  version: string
 }
 
 export interface ClientStatistic {

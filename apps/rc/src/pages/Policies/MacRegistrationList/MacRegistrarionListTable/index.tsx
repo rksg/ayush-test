@@ -6,7 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal, showToast
 } from '@acx-ui/components'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
 import {
@@ -34,9 +34,8 @@ function useColumns () {
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (data, row) {
+      render: function (data, row, _, highlightFn) {
         return (
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.MAC_REGISTRATION_LIST,
@@ -44,7 +43,7 @@ function useColumns () {
               policyId: row.id!,
               activeTab: MacRegistrationDetailsTabKey.OVERVIEW
             })}
-          >{data}</TenantLink>
+          >{highlightFn(data as string)}</TenantLink>
         )
       }
     },
@@ -52,7 +51,6 @@ function useColumns () {
       title: $t({ defaultMessage: 'List Expiration' }),
       key: 'listExpiration',
       dataIndex: 'listExpiration',
-      align: 'center',
       render: function (data, row) {
         return returnExpirationString(row)
       }
@@ -60,8 +58,7 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'Default Access' }),
       key: 'defaultAccess',
-      dataIndex: 'defaultAccess',
-      align: 'center'
+      dataIndex: 'defaultAccess'
     },
     {
       title: $t({ defaultMessage: 'Access Policy Set' }),
@@ -114,19 +111,30 @@ export default function MacRegistrationListsTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (rows, clearSelection) => {
+      onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: $t({ defaultMessage: 'List' }),
-            entityValue: rows.length === 1 ? rows[0].name : undefined,
-            numOfEntities: rows.length,
+            entityValue: name,
             confirmationText: 'Delete'
           },
           onOk: () => {
-            deleteMacRegList({ params: { policyId: rows[0].id } })
-              .then(clearSelection)
+            deleteMacRegList({ params: { policyId: id } })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'List {name} was deleted' }, { name })
+                })
+                clearSelection()
+              }).catch((error) => {
+                showToast({
+                  type: 'error',
+                  content: error.data.message
+                })
+              })
           }
         })
       }

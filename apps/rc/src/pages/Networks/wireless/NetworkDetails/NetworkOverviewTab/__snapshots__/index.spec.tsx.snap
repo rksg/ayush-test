@@ -1,0 +1,344 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkOverviewTab should render network overview tab successfully 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+    >
+      <div
+        class="ant-row Grid__GridRow-sc-5irhjd-2"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 152px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 4px;"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          >
+                            Pre-Shared Key (PSK)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <svg
+                            class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 dGmXEJ"
+                            data-testid="HistoricalOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto; align-items: center;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`NetworkOverviewTab should render network overview tab successfully with no network data 1`] = `
+<DocumentFragment>
+  <form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+    >
+      <div
+        class="ant-row Grid__GridRow-sc-5irhjd-2"
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 152px;"
+          >
+            <div
+              class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 4px;"
+                        >
+                          <div
+                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          />
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto; align-items: center;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="Grid__Container-sc-5irhjd-1 zzbxI"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="Grid__Container-sc-5irhjd-1 zzbxI"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

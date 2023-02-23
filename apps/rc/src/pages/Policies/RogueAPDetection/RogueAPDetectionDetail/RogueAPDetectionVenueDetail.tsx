@@ -39,8 +39,10 @@ const RogueAPDetectionVenueDetail = () => {
       key: 'name',
       searchable: true,
       sorter: true,
-      render: (data, row) => {
-        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
+      render: (_, row, __, highlightFn) => {
+        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
+          {highlightFn(row.name)}
+        </TenantLink>
       }
     },
     {
@@ -75,10 +77,12 @@ const RogueAPDetectionVenueDetail = () => {
     <Card title={`${$t({ defaultMessage: 'Instance' })} (${basicData?.length ?? 0})`}>
       <div style={{ width: '100%' }}>
         <Table
+          enableApiFilter={true}
           columns={basicColumns}
           dataSource={basicData}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
         />
       </div>

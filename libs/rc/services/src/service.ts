@@ -91,19 +91,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Multicast DNS Proxy Service Profile',
-            'Update Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profiles',
-            'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles',
+            'AddMulticastDnsProxyServiceProfile',
+            'DeleteMulticastDnsProxyServiceProfile',
+            'DeleteMulticastDnsProxyServiceProfiles',
+            'AddWifiCallingServiceProfile',
+            'DeleteWiFiCallingProfile',
+            'DeleteWiFiCallingProfiles',
             'Update Portal Service Profile',
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles',
-            'Delete DHCP Config Service Profile',
-            'Delete DHCP Config Service Profiles'
+            'AddDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -622,13 +621,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PortalUrlsInfo.getPortalProfileList, params)
-        return{
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: PortalUrlsInfo.getPortalProfileList,
+          params,
+          payload: { ...((payload as TableChangePayload) ?? defaultNewTablePaginationParams),
+            pageStartZero: false }
+        })
+
+        return {
           ...req
         }
       },
-      providesTags: [{ type: 'Portal', id: 'LIST' }],
+      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
       transformResponse (result: NewTableResult<Portal>) {
         return transferToTableResult<Portal>(result)
       },
@@ -736,6 +741,19 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
+        return transferToTableResult<NetworkSegmentationGroup>(result)
+      }
     })
   })
 })
@@ -744,7 +762,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useDevicePolicyListQuery,
   useServiceListQuery,
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
@@ -791,6 +808,7 @@ export const {
   useUpdatePortalMutation,
   useUploadURLMutation,
   useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,
