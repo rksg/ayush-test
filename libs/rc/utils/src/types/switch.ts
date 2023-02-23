@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { ConfigurationBackupStatus, PortTaggedEnum } from '../constants'
-import { PortSettingModel }                          from '../models/PortSetting'
+import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum } from '../constants'
+import { PortSettingModel }                                         from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
@@ -438,6 +438,24 @@ export interface SwitchSlot {
     type: string
     status: string
   }
+}
+
+export interface SwitchPortModuleInfo {
+  portLabel: PortLabelType;
+}
+
+export interface SwitchModelInfo {
+  powerSlots?: number;
+  fanSlots?: number;
+  portModuleSlots?: SwitchPortModuleInfo[];
+}
+
+export interface SwitchModelFamilyInfo {
+  [key: string]: SwitchModelInfo;
+}
+
+export interface SwitchModelInfoMap {
+  [key: string]: SwitchModelFamilyInfo;
 }
 
 export interface SwitchFrontView {

@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom'
 
 import { DeviceConnectionStatus }                              from '../../constants'
-import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel } from '../../types'
+import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE } from '../../types'
 
 import {
   isOperationalSwitch,
@@ -12,7 +12,11 @@ import {
   transformSwitchStatus,
   getSwitchStatusString,
   getPoeUsage,
-  getStackMemberStatus
+  getStackMemberStatus,
+  transformSwitchUnitStatus,
+  isRouter,
+  isEmpty,
+  getSwitchPortLabel
 } from '.'
 
 const switchRow ={
@@ -52,6 +56,57 @@ describe('switch.utils', () => {
   describe('Test isStrictOperationalSwitch function', () => {
     it('should render correctly', async () => {
       expect(isStrictOperationalSwitch(SwitchStatusEnum.OPERATIONAL, true, true)).toBeTruthy()
+    })
+  })
+
+  describe('Test isRouter function', () => {
+    it('should render correctly', async () => {
+      expect(isRouter(SWITCH_TYPE.ROUTER)).toBeTruthy()
+    })
+  })
+
+  describe('Test isEmpty function', () => {
+    it('should render correctly', async () => {
+      expect(isEmpty(null)).toBeTruthy()
+      expect(isEmpty(undefined)).toBeTruthy()
+      expect(isEmpty('undefined')).toBeTruthy()
+      expect(isEmpty('')).toBeTruthy()
+      expect(isEmpty(1)).toBeFalsy()
+    })
+  })
+
+  describe('Test getSwitchPortLabel function', () => {
+    it('should render correctly', async () => {
+      expect(getSwitchPortLabel('ICX7150-C12P', 1)).toEqual('')
+    })
+  })
+
+  describe('Test transformSwitchUnitStatus function', () => {
+    it('should render correctly', async () => {
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toEqual('Never contacted cloud')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.INITIALIZING)).toEqual('Initializing')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_START)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.FIRMWARE_UPD_FAIL)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toEqual('Firmware Updating')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true, '1 minute'))
+        .toEqual('Operational - applying configuration')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, true))
+        .toEqual('Operational')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, true, false))
+        .toEqual('Synchronizing data')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.OPERATIONAL, false, true))
+        .toEqual('Operational - Synchronizing')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.DISCONNECTED))
+        .toEqual('Disconnected from cloud')
+      expect(transformSwitchUnitStatus(SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED))
+        .toEqual('Never contacted Active Switch')
+      expect(transformSwitchUnitStatus('Default' as SwitchStatusEnum))
+        .toEqual('Never contacted cloud')
     })
   })
 
