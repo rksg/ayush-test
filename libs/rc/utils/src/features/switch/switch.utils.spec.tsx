@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { DeviceConnectionStatus }                              from '../../constants'
+import { DeviceConnectionStatus }                                           from '../../constants'
 import { STACK_MEMBERSHIP, SwitchStatusEnum, SwitchViewModel, SWITCH_TYPE } from '../../types'
 
 import {

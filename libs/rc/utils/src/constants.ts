@@ -1,4 +1,5 @@
 import { defineMessage } from 'react-intl'
+
 import { SwitchModelInfoMap } from './types'
 
 export enum NetworkTypeEnum {

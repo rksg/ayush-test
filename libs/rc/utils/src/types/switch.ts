@@ -251,12 +251,12 @@ export interface SwitchRow {
 export interface StackMember {
   venueName: string
   serialNumber: string
-  operStatusFound: boolean
+  operStatusFound?: boolean
   switchMac: string
   activeSerial: string
   id: string
   uptime: string
-  order: number
+  order: string
   unitStatus?: STACK_MEMBERSHIP
   unitId?: number
   model?: string
