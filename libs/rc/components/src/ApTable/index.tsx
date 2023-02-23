@@ -382,11 +382,6 @@ export function ApTable (props: ApTableProps) {
               pathname: `${basePath.pathname}/apgroups/add`
             })
           }
-        }, {
-          label: $t({ defaultMessage: 'Import from file' }),
-          onClick: () => {
-            // setImportVisible(true)
-          }
         }
         ] : []}
       />
