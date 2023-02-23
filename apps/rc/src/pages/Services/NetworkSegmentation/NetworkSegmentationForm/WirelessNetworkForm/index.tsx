@@ -7,7 +7,7 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { StepsForm, useStepFormContext, useWatch } from '@acx-ui/components'
+import { StepsForm, useStepFormContext }           from '@acx-ui/components'
 import { useVenueNetworkListQuery }                from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
@@ -27,8 +27,8 @@ export const WirelessNetworkForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const venueId = useWatch('venueId', form)
-  const tunnelProfileId = useWatch('vxlanTunnelProfileId', form)
+  const venueId = Form.useWatch('venueId', form)
+  const tunnelProfileId = Form.useWatch('vxlanTunnelProfileId', form)
   const { networkOptions } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
@@ -79,7 +79,7 @@ export const WirelessNetworkForm = () => {
           <Space direction='vertical'>
             {
               $t({
-                defaultMessage: `Apply the tunnel profile to the following 
+                defaultMessage: `Apply the tunnel profile to the following
                 networks that you want to enable network segmentation:`
               })
             }
@@ -88,7 +88,7 @@ export const WirelessNetworkForm = () => {
               <UI.Description>
                 {
                   $t({
-                    defaultMessage: `The client isolation service will be disabled 
+                    defaultMessage: `The client isolation service will be disabled
                       and VLAN ID will be set to 1 for the checked networks.`
                   })
                 }

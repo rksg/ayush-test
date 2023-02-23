@@ -4,7 +4,7 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, StepsForm, useStepFormContext, useWatch }                       from '@acx-ui/components'
+import { Button, StepsForm, useStepFormContext }                                 from '@acx-ui/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
@@ -29,9 +29,9 @@ export const SmartEdgeForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const edgeId = useWatch('edgeId', form)
-  const dhcpId = useWatch('dhcpId', form)
-  const poolName = useWatch('poolName', form)
+  const edgeId = Form.useWatch('edgeId', form)
+  const dhcpId = Form.useWatch('dhcpId', form)
+  const poolName = Form.useWatch('poolName', form)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
   const { edgeOptions, isLoading: isEdgeOptionsLoading } = useGetEdgeListQuery(
