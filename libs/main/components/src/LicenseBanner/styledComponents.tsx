@@ -1,16 +1,17 @@
 import { ButtonProps } from 'antd'
-import styled          from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import {
-  LayoutUI,
-  Button
+  LayoutUI
 }                        from '@acx-ui/components'
 import {
   BulbSolid,
   BulbOffSolid,
   WarningCircle,
-  CaretDownSolid
+  CaretDownSolid,
+  CaretLeftSolid
 }                          from '@acx-ui/icons'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export const LicenseContainer = styled.div`
   background-color: var(--acx-neutrals-90);
@@ -68,18 +69,19 @@ export const SubTips = styled.div.attrs((props: { expired: boolean }) => props)`
   align-items: center;
   color: ${props => props.expired ? 'var(--acx-primary-white);':'var(--acx-accents-orange-50);'}
   font-weight: ${props => props.expired ?
-    'var(--acx-subtitle-6-font-weight);':'var(--acx-subtitle-5-font-weight);' }
+    'var(--acx-subtitle-5-font-weight);':'var(--acx-subtitle-6-font-weight);' }
   font-size: 12px;
 `
 
-export const ActiveBtn = styled(Button).attrs({ type: 'link' })<
+export const ActiveBtn = styled(TenantLink).attrs({ type: 'link' })<
 ButtonProps & { expired?: boolean }
 >`
-  height: 20px;
+  height: 16px;
   color: ${props => props.expired ?
     'var(--acx-primary-white);':'var(--acx-accents-orange-50);' }
   font-weight: var(--acx-subtitle-5-font-weight);
   font-size: 12px;
+  padding-left: 2px;
 `
 
 export const LayoutIcon = styled(LayoutUI.Icon)`
@@ -177,9 +179,19 @@ export const LicenseWarningBtn = styled.div.attrs((props: { isCritical: boolean,
   align-items: center;
   border-radius: ${props => (props.isExpanded && props.isCritical) ? ';':'4px;'}
 `
-export const CaretDown = styled(CaretDownSolid)`
+
+const Caret = css`
   path:nth-child(2) {
     fill: var(--acx-primary-white);
     stroke: var(--acx-primary-white);
   }
+  align-self: center;
+  width: 16px;
+  height: 16px;
+`
+export const CaretDown = styled(CaretDownSolid)`
+  ${Caret}
+`
+export const CaretLeft = styled(CaretLeftSolid)`
+  ${Caret}
 `

@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _                          from 'lodash'
+import { useIntl, defineMessage } from 'react-intl'
+import { FormattedMessage }       from 'react-intl'
 
 import {
   useEntitlementBannersQuery,
@@ -13,6 +14,9 @@ import {
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { formatter } from '@acx-ui/utils'
+
+
 
 import { HeaderContext } from '../HeaderContext'
 
@@ -53,9 +57,14 @@ export interface ExpireInfo {
   isMultipleLicense: boolean
   expireType: LicenseBannerTypeEnum
 }
-interface ContentInfo {
-  btnText?: number
-  content?: string
+
+const deviceTypeText = {
+  WIFI: defineMessage({ defaultMessage: 'APs' }),
+  LTE: defineMessage({ defaultMessage: 'APs' }),
+  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  MSP_WIFI: defineMessage({ defaultMessage: 'APs' }),
+  MSP_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
+  ANALYTICS: defineMessage({ defaultMessage: 'Devices' })
 }
 
 const getExpireInfo = (bannerList:EntitlementBanner[])=>{
@@ -107,12 +116,7 @@ export function LicenseBanner (props: BannerProps) {
       LicenseBannerRemindMapping(expireInfo)[expireInfo.expireType]
   }
 
-  const getDescContent = (expireInfo:ExpireInfo)=>{
-    return isMSPUser ?
-      MSPLicenseBannerDescMapping(expireInfo)[expireInfo.expireType]
-      :
-      LicenseBannerDescMapping(expireInfo)[expireInfo.expireType]
-  }
+
 
   const getIsExpired = (expireInfo:ExpireInfo)=>
     expireInfo.expireType===LicenseBannerTypeEnum.expired ||
@@ -121,8 +125,12 @@ export function LicenseBanner (props: BannerProps) {
     expireInfo.expireType===LicenseBannerTypeEnum.ra_below_50_percent
 
 
-  const getCardItem = (expireInfo:ExpireInfo, descTips:ContentInfo) => {
+  const getCardItem = (expireInfo:ExpireInfo) => {
     const isExpired = getIsExpired(expireInfo)
+    const descTips = isMSPUser ?
+      MSPLicenseBannerDescMapping()[expireInfo.expireType]
+      :
+      LicenseBannerDescMapping()[expireInfo.expireType]
     return <>
       <UI.LicenseIconWrapper>
         <UI.LayoutIcon children={getBulbIcon(expireInfo.expireType)} />
@@ -130,12 +138,19 @@ export function LicenseBanner (props: BannerProps) {
       <UI.TipsWrapper>
         <UI.MainTips expired={isExpired} children={getMainTipsContent(expireInfo)}/>
         <UI.SubTips expired={isExpired}>
-          <>
-            {descTips?.content}
-            <UI.ActiveBtn expired={isExpired}>
-              {descTips?.btnText}
-            </UI.ActiveBtn>
-          </>
+          <FormattedMessage {...descTips}
+            values={{
+              b: chunks => chunks,
+              a: (chunks) =>
+                <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
+                  expired={isExpired}
+                  to='administration/subscriptions'>
+                  {chunks}
+                </UI.ActiveBtn>,
+              expireDeviceType: $t(deviceTypeText[expireInfo.deviceType]),
+              graceDate: formatter('dateFormat')(expireInfo.effectDate)
+            }}
+          />
         </UI.SubTips>
       </UI.TipsWrapper>
     </>
@@ -165,7 +180,7 @@ export function LicenseBanner (props: BannerProps) {
             </UI.MainTips>
           </UI.TipsWrapper>
         </UI.ContentWrapper>
-        <UI.CaretDown style={{ alignSelf: 'center' }}/>
+        {licenseExpanded ? <UI.CaretDown/> : <UI.CaretLeft/>}
       </UI.WarningBtnContainer>
     </UI.LicenseWarningBtn>
 
@@ -186,10 +201,9 @@ export function LicenseBanner (props: BannerProps) {
               isWhiteBorder = true
             }
           }
-          const descTips = getDescContent(expireInfo)
           const isExpired = getIsExpired(expireInfo)
           return <UI.LicenseGrid expired={isExpired} isWhiteBorder={isWhiteBorder}>
-            { getCardItem(expireInfo, descTips as ContentInfo) }
+            { getCardItem(expireInfo) }
           </UI.LicenseGrid>
         })}
       </UI.LicenseContainer>
@@ -199,10 +213,10 @@ export function LicenseBanner (props: BannerProps) {
   const licenseRender = ()=>{
     if(expireList && expireList.length===1){
       const expireInfo = _.first(expireList)
-      const subTips = expireInfo && getDescContent(expireInfo)
+
       const isExpired = expireInfo && getIsExpired(expireInfo)
       return <UI.LicenseContainerSingle expired={isExpired}>
-        { getCardItem(expireInfo!, subTips as ContentInfo) }
+        { getCardItem(expireInfo!) }
       </UI.LicenseContainerSingle>
     }
     return multipleRender()

@@ -41,7 +41,7 @@ function SearchBar () {
   }
   const closeSearch = () => {
     setSearchText('')
-    setShowSearchBar(false)
+    setShowSearchBar && setShowSearchBar(false)
     if (pathname.includes('/search/')) {
       if (key === 'default') { // user came directly to search page, no history
         navigate({
@@ -87,7 +87,7 @@ function SearchBar () {
         icon={<SearchOutlined />}
         onClick={
           () => {
-            setShowSearchBar(true)
+            setShowSearchBar && setShowSearchBar(true)
             setLicenseExpanded(false)
           }
         }

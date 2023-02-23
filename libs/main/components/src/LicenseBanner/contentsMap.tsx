@@ -1,11 +1,10 @@
 /* eslint-disable max-len */
-import { useIntl }       from 'react-intl'
-import { defineMessage } from 'react-intl'
+import { useIntl, defineMessage } from 'react-intl'
 
 import {
   LicenseBannerTypeEnum
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+
 
 import { ExpireInfo } from './'
 
@@ -57,44 +56,32 @@ export const LicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
   }
 }
 
-export const LicenseBannerDescMapping = (expireInfo:ExpireInfo)=> {
-  const { $t } = useIntl()
+export const LicenseBannerDescMapping = ()=> {
   return {
-    [LicenseBannerTypeEnum.ra_below_50_percent]: {
-      btnText: $t({ defaultMessage: 'To restore the service - contact RUCKUS sales team' })
-    },
-    [LicenseBannerTypeEnum.ra_50_to_90_percent]: {
-      btnText: $t({ defaultMessage: 'To ensure data collection - contact RUCKUS sales team' })
-    },
-
-    [LicenseBannerTypeEnum.ra_onboard_only]: {
-      btnText: $t({ defaultMessage: 'For permanent subscription or to learn more about RUCKUS Analytics - click here' })
-    },
-    [LicenseBannerTypeEnum.initial]: {
-      content: $t({ defaultMessage: 'Ensure service level' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.closeToExpiration]: {
-      content: $t({ defaultMessage: 'Ensure service level' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.gracePeriod]: {
-      content: $t({ defaultMessage: '{expireDeviceType} configuration will be deleted on {graceDate}' },
-        {
-          expireDeviceType: $t(deviceTypeText[expireInfo.deviceType]),
-          graceDate: formatter('dateFormat')(expireInfo.effectDate)
-        }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.expired]: {
-      content: $t({ defaultMessage: '{expireDeviceType} configuration was deleted' },
-        {
-          expireDeviceType: $t(deviceTypeText[expireInfo.deviceType])
-        })
-    },
-    [LicenseBannerTypeEnum.msp_expired]: {
-      content: $t({ defaultMessage: 'MSP subscriptions have expired' })
-    }
+    [LicenseBannerTypeEnum.ra_below_50_percent]: defineMessage({
+      defaultMessage: '<a>To restore the service - contact RUCKUS sales team</a>'
+    }),
+    [LicenseBannerTypeEnum.ra_50_to_90_percent]: defineMessage({
+      defaultMessage: '<a>To ensure data collection - contact RUCKUS sales team</a>'
+    }),
+    [LicenseBannerTypeEnum.ra_onboard_only]: defineMessage({
+      defaultMessage: '<a>To ensure data collection - contact RUCKUS sales team</a>'
+    }),
+    [LicenseBannerTypeEnum.initial]: defineMessage({
+      defaultMessage: '<b>Ensure service level</b>, <a> Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.closeToExpiration]: defineMessage({
+      defaultMessage: '<b>Ensure service level</b>, <a>Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.gracePeriod]: defineMessage({
+      defaultMessage: '<b>{expireDeviceType} configuration will be deleted on {graceDate}</b>, <a>Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.expired]: defineMessage({
+      defaultMessage: '<b>{expireDeviceType} configuration was deleted</b>'
+    }),
+    [LicenseBannerTypeEnum.msp_expired]: defineMessage({
+      defaultMessage: '<b>MSP subscriptions have expired</b>'
+    })
   }
 }
 
@@ -141,42 +128,31 @@ export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
   }
 }
 
-export const MSPLicenseBannerDescMapping = (expireInfo:ExpireInfo)=> {
-  const { $t } = useIntl()
+export const MSPLicenseBannerDescMapping = ()=> {
   return {
-    [LicenseBannerTypeEnum.ra_below_50_percent]: {
-      btnText: $t({ defaultMessage: 'To restore the service - contact RUCKUS sales team' })
-    },
-    [LicenseBannerTypeEnum.ra_50_to_90_percent]: {
-      btnText: $t({ defaultMessage: 'To ensure data collection - contact RUCKUS sales team' })
-    },
-
-    [LicenseBannerTypeEnum.ra_onboard_only]: {
-      btnText: $t({ defaultMessage: 'For permanent subscription or to learn more about RUCKUS Analytics - click here' })
-    },
-    [LicenseBannerTypeEnum.initial]: {
-      content: $t({ defaultMessage: 'Ensure service level' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.closeToExpiration]: {
-      content: $t({ defaultMessage: 'Ensure service level' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.gracePeriod]: {
-      content: $t({ defaultMessage: '{expireDeviceType} configuration will be deleted on {graceDate}' },
-        {
-          expireDeviceType: $t(deviceTypeText[expireInfo.deviceType]),
-          graceDate: formatter('dateFormat')(expireInfo.effectDate)
-        }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.expired]: {
-      content: $t({ defaultMessage: 'MSP license usage exceeds limit' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    },
-    [LicenseBannerTypeEnum.msp_expired]: {
-      content: $t({ defaultMessage: 'MSP license usage exceeds limit' }),
-      btnText: ', ' + $t({ defaultMessage: 'Act now' })
-    }
+    [LicenseBannerTypeEnum.ra_below_50_percent]: defineMessage({
+      defaultMessage: '<a>To restore the service - contact RUCKUS sales team</a>'
+    }),
+    [LicenseBannerTypeEnum.ra_50_to_90_percent]: defineMessage({
+      defaultMessage: '<a>To ensure data collection - contact RUCKUS sales team</a>'
+    }),
+    [LicenseBannerTypeEnum.ra_onboard_only]: defineMessage({
+      defaultMessage: '<a>For permanent subscription or to learn more about RUCKUS Analytics - click here</a>'
+    }),
+    [LicenseBannerTypeEnum.initial]: defineMessage({
+      defaultMessage: '<b>Ensure service level</b>, <a>Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.closeToExpiration]: defineMessage({
+      defaultMessage: '<b>Ensure service level</b>, <a>Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.gracePeriod]: defineMessage({
+      defaultMessage: '<b>{expireDeviceType} configuration will be deleted on {graceDate}</b>, <a>Act now</a>'
+    }),
+    [LicenseBannerTypeEnum.expired]: defineMessage({
+      defaultMessage: '<b>MSP subscriptions usage exceeds limit</b>'
+    }),
+    [LicenseBannerTypeEnum.msp_expired]: defineMessage({
+      defaultMessage: '<b>MSP subscriptions usage exceeds limit</b>, <a>Act now</a>'
+    })
   }
 }
