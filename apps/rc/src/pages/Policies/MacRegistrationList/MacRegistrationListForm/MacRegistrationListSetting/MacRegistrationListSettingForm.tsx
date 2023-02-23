@@ -6,7 +6,7 @@ import { useIntl }                                      from 'react-intl'
 import { Button, SelectionControl }                               from '@acx-ui/components'
 import { ExpirationDateSelector }                                 from '@acx-ui/rc/components'
 import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, useTableQuery }                    from '@acx-ui/rc/utils'
+import { checkObjectNotExists }                                   from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 
 export function MacRegistrationListSettingForm () {
@@ -14,11 +14,9 @@ export function MacRegistrationListSettingForm () {
   const [ macRegList ] = useLazyMacRegListsQuery()
   const { policyId } = useParams()
 
-  const policySetList = useTableQuery({
-    useQuery: useAdaptivePolicySetListQuery,
-    apiParams: { size: '2147483647', page: '0', sort: 'name,ASC' },
-    defaultPayload: { }
-  })
+  const { data: policySetsData } = useAdaptivePolicySetListQuery({
+    payload: { page: '1', pageSize: '2147483647' },
+    params: { policyId } })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({
@@ -80,7 +78,7 @@ export function MacRegistrationListSettingForm () {
                   allowClear
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={
-                    policySetList.data?.data
+                    policySetsData?.data
                       .map(set => ({ value: set.id, label: set.name }))
                   }
                 />
