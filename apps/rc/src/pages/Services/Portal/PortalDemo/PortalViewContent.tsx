@@ -141,7 +141,7 @@ export default function PortalViewContent (props:{
       />}
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm portalLang={portalLang}/>}
-      {view === PortalViewEnum.TermCondition&&demoValue.componentDisplay.termsConditions&&
+      {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms demoValue={demoValue}
         portalLang={portalLang}
         updateBtn={(data)=>{

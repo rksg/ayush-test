@@ -100,6 +100,12 @@ export default function PortalDemo ({
             defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
           type='error'
           showIcon/>}
+      {demoValue.componentDisplay.termsConditions && !demoValue.termsCondition
+        && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
+          message={$t(defineMessage({
+            defaultMessage: 'Terms & conditions is enabled but not configured!' }))}
+          type='error'
+          showIcon/>}
       <UI.LayoutHeader>
         <div style={{ display: 'flex' }}>
           <div

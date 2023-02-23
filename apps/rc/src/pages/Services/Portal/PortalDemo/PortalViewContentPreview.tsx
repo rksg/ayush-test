@@ -91,7 +91,7 @@ export default function PortalViewContentPreview (props:{
       />}
       {view === PortalViewEnum.ConnectionConfirmed &&
       <PortalViewConfirm portalLang={portalLang}/>}
-      {view === PortalViewEnum.TermCondition&&demoValue.componentDisplay.termsConditions&&
+      {view === PortalViewEnum.TermCondition &&
       <PortalViewTerms
         portalLang={portalLang}
         demoValue={demoValue}
