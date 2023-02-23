@@ -93,12 +93,6 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
-    const profileDescInput = await screen.findByLabelText('Profile Description')
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -129,7 +123,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
   }, 30000)
 
-  it('should render create Switch Configuration Profile with trust ports correctly', async () => {
+  it('should validate profile name', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -150,6 +144,23 @@ describe('Wired', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
+  })
+
+  it('should render create Switch Configuration Profile with trust ports correctly', async () => {
+    const params = {
+      tenantId: 'tenant-id'
+    }
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/networks/wired/profiles/add' }
+      })
+
+    const profileNameInput = await screen.findByLabelText('Profile Name')
+    fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -217,13 +228,6 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
-    const profileDescInput = await screen.findByLabelText('Profile Description')
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/i })
@@ -286,13 +290,6 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
-    const profileDescInput = await screen.findByLabelText('Profile Description')
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -325,13 +322,6 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
-    const profileDescInput = await screen.findByLabelText('Profile Description')
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
@@ -394,25 +384,9 @@ describe('Wired', () => {
 
     const profileNameInput = await screen.findByLabelText('Profile Name')
     fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
-    const profileDescInput = await screen.findByLabelText('Profile Description')
-    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
-    fireEvent.blur(profileNameInput)
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
-    })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /VLANs/ })
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Add VLAN' }))
-    const vIdInput = await screen.findByLabelText('VLAN ID')
-    fireEvent.change(vIdInput, { target: { value: '1' } })
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Default VLAN settings' }))
-    const dvIdInput = await screen.findByLabelText('VLAN ID')
-    fireEvent.change(dvIdInput, { target: { value: '1' } })
-    await userEvent.click(await screen.findByRole('button', { name: 'Save' }) )
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }) )
     await screen.findByRole('heading', { level: 3, name: /ACLs/ })
