@@ -74,7 +74,7 @@ export type NetworkHealthConfig = {
   createdAt: string // timestamp
 }
 
-type WlanAuthSettings = {
+export type WlanAuthSettings = {
   authType?: string
   authentication?: string
   wpaEncryption?: string
@@ -96,7 +96,6 @@ export type NetworkHealthTest = {
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
-
 export type UserErrors = {
   field: string
   message: string
@@ -131,3 +130,45 @@ export type MutationUserError = {
 export type MutationResult <Result> = {
   userErrors: MutationUserError[]
 } & Result
+
+export type TestResultByAP = {
+    apName:string
+    apMac:string
+    auth: string
+    assoc: string
+    eap: string
+    radius: string
+    dhcp: string
+    userAuth: string
+    dns: string
+    ping: string
+    traceroute: string
+    speedTest: string
+    pingReceive: string | null
+    pingTotal: string | null
+    avgPingTime: string | null
+    error: string
+    speedTestFailure: string | null
+    speedTestServer: string | null
+    download: string | null
+    upload: string | null
+    tracerouteLog: string | null
+    state: string
+    stationAp: string | null
+    clients : { failure : ClientFailure } []
+}
+
+export type ClientFailure = {
+    failedMsgId: string | null
+    messageIds: string | null
+    ssid: string | null
+    radio: string | null
+    reason: string | null
+    failureType: string | null
+}
+export type NetworkHealthTestResults = {
+  spec: NetworkHealthSpec
+  config: NetworkHealthConfig
+  wlanAuthSettings: WlanAuthSettings
+  aps: { items : TestResultByAP[] }
+}

@@ -16,7 +16,8 @@ import type {
   MutationResult,
   NetworkHealthConfig,
   NetworkHealthTest,
-  UserErrors
+  UserErrors,
+  NetworkHealthTestResults
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -232,11 +233,11 @@ const {
       }
     }),
     networkHealthTestResults: build.query<
-      Record<string, number | string>[],
+    NetworkHealthTestResults,
       { testId: NetworkHealthTest['id']; offset: number; limit: number }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
-      transformResponse: (result: { serviceGuardTest: Record<string, number | string>[] }) =>
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTestResults }) =>
         result.serviceGuardTest
     })
   })
