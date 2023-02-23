@@ -1,12 +1,13 @@
 import { createContext, useContext } from 'react'
 
+import { getJwtTokenPayload } from '@acx-ui/utils'
+
 import {
   useGuestAllowedOperationsQuery,
   useSwitchAllowedOperationsQuery,
   useTenantAllowedOperationsQuery, useUpgradeAllowedOperationsQuery, useVenueAllowedOperationsQuery,
   useWifiAllowedOperationsQuery
-} from '@acx-ui/rc/services'
-import { getJwtTokenPayload } from '@acx-ui/utils'
+} from '../src/rbac'
 
 export const RbacAuthContext = createContext<Array<string>>([])
 
@@ -22,6 +23,7 @@ export function RbacAuthProvider (props: React.PropsWithChildren) {
   </RbacAuthContext.Provider>
 }
 
+// TODO: need to refactore code to avoid using @ts-ignore -WIP
 export function useGetTenantAllowedOperations ( tenantId: string): string[] {
   const data1 = useWifiAllowedOperationsQuery({ params: { tenantId } })
   const data2 = useSwitchAllowedOperationsQuery({ params: { tenantId } })

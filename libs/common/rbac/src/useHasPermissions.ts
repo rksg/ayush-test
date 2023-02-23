@@ -1,5 +1,6 @@
-import { useGetTenantAllowedOperations } from '@acx-ui/rc/components'
-import { getJwtTokenPayload }            from '@acx-ui/utils'
+import { getJwtTokenPayload } from '@acx-ui/utils'
+
+import { useGetTenantAllowedOperations } from '../RbacAuthContext'
 
 import { RolesMappingDic } from './role-mapping'
 

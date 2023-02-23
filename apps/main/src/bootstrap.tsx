@@ -2,13 +2,14 @@ import React from 'react'
 
 import { createRoot } from 'react-dom/client'
 
-import { ConfigProvider, ConfigProviderProps }   from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { UserProfileProvider, RbacAuthProvider } from '@acx-ui/rc/components'
-import { CommonUrlsInfo, createHttpRequest }     from '@acx-ui/rc/utils'
-import { BrowserRouter }                         from '@acx-ui/react-router-dom'
-import { Provider }                              from '@acx-ui/store'
-import { getTenantId }                           from '@acx-ui/utils'
+import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
+import { get }                                 from '@acx-ui/config'
+import { RbacAuthProvider }                    from '@acx-ui/rbac'
+import { UserProfileProvider }                 from '@acx-ui/rc/components'
+import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
+import { BrowserRouter }                       from '@acx-ui/react-router-dom'
+import { Provider }                            from '@acx-ui/store'
+import { getTenantId }                         from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
 

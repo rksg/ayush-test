@@ -2,6 +2,7 @@ import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
+import { baseRbacApi as rbacApi }    from '@acx-ui/rbac'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -11,7 +12,6 @@ import {
   baseServiceApi as serviceApi,
   apApi,
   baseUserApi as userApi,
-  baseRbacApi as rbacApi,
   baseDhcpApi as dhcpApi,
   baseMspApi as mspApi,
   baseEdgeApi as edgeApi,
