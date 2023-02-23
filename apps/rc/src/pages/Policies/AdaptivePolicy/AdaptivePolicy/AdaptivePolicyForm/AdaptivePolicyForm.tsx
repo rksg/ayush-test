@@ -66,6 +66,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           params: { templateId: data.templateTypeId },
           payload: policyPayload
         }).unwrap()
+
       } else {
         await addAdaptivePolicy({
           params: { templateId: data.templateTypeId },

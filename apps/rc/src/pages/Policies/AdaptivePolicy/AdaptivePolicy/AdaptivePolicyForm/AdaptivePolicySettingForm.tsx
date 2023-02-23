@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useIntl }                                               from 'react-intl'
-import { useParams }                                             from 'react-router-dom'
-import { v4 as uuidv4 }                                          from 'uuid'
+import { Col, Form, Input, Radio, Row, Space } from 'antd'
+import { useIntl }                             from 'react-intl'
+import { useParams }                           from 'react-router-dom'
+import { v4 as uuidv4 }                        from 'uuid'
 
 import { Button, Descriptions, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
@@ -44,18 +44,18 @@ export function AdaptivePolicySettingForm () {
   const { $t } = useIntl()
   const { policyId } = useParams()
 
+  const evaluationRules = Form.useWatch('evaluationRules')
+  const templateId = Form.useWatch('templateTypeId')
+
   const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
   const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
   // eslint-disable-next-line max-len
   const [radiusAttributeGroupFormDrawerVisible, setRadiusAttributeGroupFormDrawerVisible] = useState(false)
-
-  const evaluationRules = Form.useWatch('evaluationRules')
   const [editConditionMode, setEditConditionMode] = useState(false)
   // eslint-disable-next-line max-len
   const [selectRadiusAttributeGroup, setSelectRadiusAttributeGroup] = useState({} as RadiusAttributeGroup)
   const [editCondition, setEditCondition] = useState<AccessCondition>()
   const [templateMode, setTemplateMode] = useState([] as RuleTemplate [])
-  const [templateId, setTemplateId] = useState(0)
 
   const form = Form.useFormInstance()
 
@@ -161,10 +161,10 @@ export function AdaptivePolicySettingForm () {
             { required: true }
           ]}
           children={
-            <Radio.Group onChange={(e: RadioChangeEvent) => {
-              setAccessConditionsVisible(false)
-              setTemplateId(e.target.value)
-            }}>
+            <Radio.Group
+              onChange={() => {
+                setAccessConditionsVisible(false)
+              }}>
               <Space direction='vertical'>
                 {templateMode.map(({ id, name }) => (
                   <Radio key={name} value={id}>{name}</Radio>
