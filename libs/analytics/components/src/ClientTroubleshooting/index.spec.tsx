@@ -38,6 +38,24 @@ describe('ClientTroubleshootingTab', () => {
     )
     expect(screen.getAllByRole('img', { name: 'loader' })[0]).toBeVisible()
   })
+  it('should render error panel when max event error', async () => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      error: {
+        message: 'CTP:MAX_EVENTS_EXCEEDED'
+      }
+    })
+    render(
+      <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByTestId('ct-error-panel')).toBeVisible()
+
+  })
   it('should render correctly without search params', async () => {
 
     const { asFragment } = render(

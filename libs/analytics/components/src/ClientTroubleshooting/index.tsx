@@ -38,7 +38,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const isMaxEventError = results.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
 
   return isMaxEventError
-    ? <UI.ErrorPanel>
+    ? <UI.ErrorPanel data-testid='ct-error-panel'>
       <span>{maxEventsMsg(
         moment(startDate).format(dateTimeFormats.dateTimeFormat),
         moment(endDate).format(dateTimeFormats.dateTimeFormat),
