@@ -24,7 +24,6 @@ function SearchBar () {
   const params = useParams()
   const { pathname, key } = useLocation()
   const searchFromUrl = params.searchVal || ''
-  // const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
   const { searchExpanded: showSearchBar,
     setSearchExpanded: setShowSearchBar, setLicenseExpanded
   } = useContext(HeaderContext)
