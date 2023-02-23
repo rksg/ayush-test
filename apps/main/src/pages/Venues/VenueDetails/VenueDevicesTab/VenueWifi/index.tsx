@@ -304,9 +304,9 @@ export function VenueWifi () {
       }
       {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
         filterables={{
-          venueId: venueFilterOptions,
           deviceGroupId: apgroupFilterOptions
-        }} />}
+        }}
+      />}
       {showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
