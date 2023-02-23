@@ -493,7 +493,7 @@ export function StackForm () {
         >{ isStackSwitches
             ? <Select
               options={standaloneSwitches?.map(s => ({
-                label: s.name, value: s.serialNumber
+                label: s.serialNumber, value: s.serialNumber
               }))}
               onChange={value => {
                 setTableData(tableData.map(d =>
