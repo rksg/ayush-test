@@ -14,8 +14,7 @@ import {
 import {
   DateFormatEnum,
   EntitlementUtil,
-  Entitlement,
-  EntitlementDeviceTypeDisplayText
+  Entitlement
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -34,12 +33,15 @@ const SubscriptionTable = () => {
   const columns: TableProps<Entitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'deviceType',
-      key: 'deviceType',
-      filterable: true,
-      render: function (_, row) {
-        return $t(EntitlementDeviceTypeDisplayText[row.deviceType])
-      }
+      dataIndex: 'name',
+      key: 'anme',
+      filterable: true
+    },
+    {
+      title: $t({ defaultMessage: 'Subscription' }),
+      dataIndex: 'name',
+      key: 'anme',
+      filterable: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
@@ -131,7 +133,7 @@ const SubscriptionTable = () => {
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      name: EntitlementDeviceTypeDisplayText[response?.deviceType],
+      name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
       status: GetStatus(response?.status as string)
     }
   })

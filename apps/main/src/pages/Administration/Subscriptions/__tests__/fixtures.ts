@@ -36,6 +36,28 @@ export const mockedEtitlementsList =
       lastNotificationDate: null,
       quantity: 30,
       sku: 'CLD-S08M-3001'
+    },
+    {
+      deviceSubType: '',
+      deviceType: 'EDGE',
+      effectiveDate: 'Mon Dec 10 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 06 23:59:59 UTC 2023',
+      id: '358889302-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 70,
+      sku: ''
+    },
+    {
+      deviceSubType: '',
+      deviceType: 'UNKOWNTYPE',
+      effectiveDate: 'Mon Dec 12 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 06 23:59:59 UTC 2023',
+      id: '358889509-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 50,
+      sku: ''
     }
   ]
 
@@ -55,6 +77,14 @@ export const mockedSummary =
       isTrial: false,
       quantity: 45,
       remainingDevices: 15,
+      trial: false
+    },
+    {
+      deviceSubType: null,
+      deviceType: 'EDGE',
+      isTrial: false,
+      quantity: 70,
+      remainingDevices: 20,
       trial: false
     },
     {
