@@ -556,6 +556,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleLayer2DrawerClose}
             onSave={async () => {
               try {
@@ -581,7 +582,6 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

@@ -556,11 +556,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      {Object.keys(Layer3ProtocolType).map((type) => (
-        <Option value={type}>
-          {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
-        </Option>
-      ))}
+      {Object.keys(Layer3ProtocolType).map((type) => {
+        return (
+          <Option value={type}>
+            {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
+          </Option>
+        )
+      })}
     </Select>
   )
 
@@ -897,6 +899,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleLayer3DrawerClose}
             onSave={async () => {
               try {
@@ -926,7 +929,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

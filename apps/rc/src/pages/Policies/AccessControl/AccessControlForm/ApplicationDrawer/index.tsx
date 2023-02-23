@@ -555,6 +555,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleApplicationsDrawerClose}
             onSave={async () => {
               try {
@@ -589,7 +590,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

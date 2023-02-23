@@ -496,6 +496,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleDeviceOSDrawerClose}
             onSave={async () => {
               try {
