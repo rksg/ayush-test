@@ -63,7 +63,8 @@ export function VerticalStackedBarChart<TChartData extends VerticalStackedBarCha
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dataFormatter ? dataFormatter : (value: number) => `${value}`
-      }
+      },
+      splitLine: { show: false }
     },
     series: data.map(sets=>({
       ...sets,
