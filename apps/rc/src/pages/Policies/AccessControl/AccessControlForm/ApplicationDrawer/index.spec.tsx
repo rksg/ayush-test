@@ -227,22 +227,28 @@ const systemDefinedSection = async () => {
 
 describe('ApplicationDrawer Component', () => {
   it('Render ApplicationDrawer component successfully with new added profile', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addAppPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(applicationResponse)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcCategory.url,
-      (_, res, ctx) => res(
-        ctx.json(avcCat)
-      )
-    ), rest.get(
-      AccessControlUrls.getAvcApp.url,
-      (_, res, ctx) => res(
-        ctx.json(avcApp)
-      )
-    ))
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryApplication)
+        )
+      ), rest.post(
+        AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(applicationResponse)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(
+          ctx.json(avcCat)
+        )
+      ), rest.get(
+        AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(
+          ctx.json(avcApp)
+        )
+      ))
 
     render(
       <Provider>
@@ -304,7 +310,17 @@ describe('ApplicationDrawer Component', () => {
       (_, res, ctx) => res(
         ctx.json(applicationResponse)
       )
-    ))
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcCategory.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
+      )
+    ) )
 
     render(
       <Provider>
@@ -377,6 +393,16 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.addAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationResponse)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcCategory.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
       )
     ))
 
@@ -571,6 +597,16 @@ describe('ApplicationDrawer Component', () => {
       AccessControlUrls.getAppPolicy.url,
       (_, res, ctx) => res(
         ctx.json(applicationDetail)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcCategory.url,
+      (_, res, ctx) => res(
+        ctx.json(avcCat)
+      )
+    ), rest.get(
+      AccessControlUrls.getAvcApp.url,
+      (_, res, ctx) => res(
+        ctx.json(avcApp)
       )
     ))
 
