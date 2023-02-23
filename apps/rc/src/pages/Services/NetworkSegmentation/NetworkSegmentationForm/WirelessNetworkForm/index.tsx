@@ -7,8 +7,8 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { StepsForm, useStepFormContext }           from '@acx-ui/components'
-import { useVenueNetworkListQuery }                from '@acx-ui/rc/services'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
+import { useVenueNetworkListQuery }      from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
 
