@@ -23,8 +23,14 @@ export enum LicenseBannerTypeEnum {
   ra_onboard_only = 'RA_ONBOARD_ONLY'
 }
 
-export type EntitlementDeviceType =
-  'WIFI' | 'LTE' | 'SWITCH' | 'ANALYTICS' | 'MSP_WIFI' | 'MSP_SWITCH'
+export enum EntitlementDeviceType {
+  WIFI='WIFI',
+  LTE='LTE',
+  SWITCH='SWITCH',
+  ANALYTICS='ANALYTICS',
+  MSP_WIFI='MSP_WIFI',
+  MSP_SWITCH='MSP_SWITCH'
+}
 
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
@@ -38,6 +44,7 @@ export enum EntitlementDeviceSubType {
   ICX75 = 'ICX75',
   ICX76 = 'ICX76',
   ICX78 = 'ICX78',
+  ICX82 = 'ICX82',
   ICXTEMP = 'ICXTEMP',
   ICX = 'ICX',
   // for MSP
@@ -66,6 +73,7 @@ export interface DelegationEntitlementRecord {
 export interface MspEc {
   id: string;
   name: string;
+  mspName?: string;
   tenantType: string;
   streetAddress: string;
   status: string;
@@ -271,6 +279,37 @@ export interface EcInvitation {
   resend: boolean;
 }
 
+export interface EcProfile {
+  name: string;
+  msp_label: string;
+  is_active: string;
+  service_effective_date: string;
+  service_expiration_date: string;
+  street_address?: string;
+  city?: string;
+  country?: string;
+  state?: string;
+  tenant_id?: string;
+  parent_tenant_id?: string;
+  tenant_type?: string;
+}
+
+export interface TenantDetail {
+  createdDate?: string;
+  entitlementId?: string;
+  externalId: string;
+  id: string;
+  isActivated: boolean
+  maintenanceState?: boolean
+  name: string;
+  oemName?: string;
+  ruckusUser?: boolean
+  status: string;
+  tenantType: string;
+  updatedDate?: string;
+  upgradeGroup?: string;
+}
+
 export interface MspProfile {
   msp_label: string;
   logo_uuid: string;
@@ -304,7 +343,6 @@ export interface MspEcProfile {
   tenant_id:string
   parent_tenant_id:string
 }
-
 
 export interface SupportDelegation {
   id: string;

@@ -181,7 +181,7 @@ export function VenueNetworksTab () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{data}</TenantLink>
+          <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{data}</TenantLink>
         )
       }
     },

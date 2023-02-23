@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space, Tooltip } from 'antd'
-import { DefaultOptionType }                             from 'antd/lib/select'
-import { isEqual, omit, omitBy, pick }                   from 'lodash'
-import { FormattedMessage, useIntl }                     from 'react-intl'
+import { Col, Form, Input, Row, Select, Space } from 'antd'
+import { DefaultOptionType }                    from 'antd/lib/select'
+import { isEqual, omit, pick, isEmpty }         from 'lodash'
+import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
   Button,
@@ -15,10 +15,10 @@ import {
   showToast,
   showActionModal,
   StepsForm,
-  StepsFormInstance
+  StepsFormInstance,
+  Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
   useAddApMutation,
@@ -35,7 +35,7 @@ import {
   ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
-  catchErrorResponse,
+  CatchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -156,7 +156,7 @@ export function ApForm () {
       await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as catchErrorResponse)
+      handleError(err as CatchErrorResponse)
     }
   }
 
@@ -165,20 +165,22 @@ export function ApForm () {
     try {
       const payload = {
         ...omit(values, 'deviceGps'),
-        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string) })
+        ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
+          || deviceGps })
       }
-      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       setEditContextData && setEditContextData({
         ...editContextData,
         isDirty: false,
         hasError: false
       })
+      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
-      handleError(err as catchErrorResponse)
+      handleError(err as CatchErrorResponse)
     }
   }
 
-  const handleError = async (error: catchErrorResponse) => {
+  const handleError = async (error: CatchErrorResponse) => {
     const errorType = (error?.status === 423
       ? 'REQUEST_LOCKING'
       : error?.data?.errors?.[0]?.code) as keyof typeof errorTypeMap
@@ -210,20 +212,24 @@ export function ApForm () {
   }
 
   const getApGroupOptions = async (venueId: string) => {
-    const list = venueId
-      ? (await apGroupList({ params: { tenantId, venueId } }, true)).data
-      : []
+    const result = []
+    result.push({
+      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      value: null
+    })
 
-    return venueId && list?.length
-      ? list?.map((item) => ({
-        label: !item.isDefault
-          ? item.name
-          : $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: item.isDefault && !isEditMode ? null : item.id
-      })).sort((a, b) => (a.label > b.label) ? 1 : -1) : [{
-        label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
-        value: null
-      }]
+    const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
+    if (venueId && list?.length) {
+      list?.filter((item) => !item.isDefault)
+        .sort((a, b) => (a.name > b.name) ? 1 : -1)
+        .forEach((item) => (
+          result.push({
+            label: item.name,
+            value: item.id
+          })
+        ))
+    }
+    return result
   }
 
   const handleVenueChange = async (value: string) => {
@@ -231,8 +237,11 @@ export function ApForm () {
     const options = await getApGroupOptions(value)
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
-    setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
-    formRef?.current?.setFieldValue('apGroupId', options?.[0]?.value ?? (value ? null : ''))
+    const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
+    if (sameAsVenue) {
+      setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
+    }
+    formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
@@ -246,13 +255,17 @@ export function ApForm () {
   const handleUpdateContext = () => {
     if (isEditMode) {
       const form = formRef?.current as StepsFormInstance
-      const originalData = {
-        deviceGps: {
-          latitude: selectedVenue?.latitude,
-          longitude: selectedVenue?.longitude
-        },
-        ...apDetails
-      } as ApDeep
+      const originalData = (isEmpty(apDetails?.deviceGps) ? {
+        ...apDetails,
+        ...{
+          deviceGps: {
+            latitude: selectedVenue?.latitude,
+            longitude: selectedVenue?.longitude
+          }
+        }
+      } : apDetails) as ApDeep
+
+
 
       setEditContextData && setEditContextData({
         ...editContextData,
@@ -296,7 +309,7 @@ export function ApForm () {
                 name='venueId'
                 label={<>
                   {$t({ defaultMessage: 'Venue' })}
-                  {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip
+                  {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
                     title={
                       apMeshRoleDisabled
                         ? $t(WifiNetworkMessages.AP_VENUE_MESH_DISABLED_TOOLTIP)
@@ -306,9 +319,7 @@ export function ApForm () {
                         )
                     }
                     placement='bottom'
-                  >
-                    <QuestionMarkCircleOutlined />
-                  </Tooltip>}
+                  />}
                 </>}
                 initialValue={null}
                 rules={[{
@@ -360,12 +371,10 @@ export function ApForm () {
                 name='name'
                 label={<>
                   {$t({ defaultMessage: 'AP Name' })}
-                  <Tooltip
+                  <Tooltip.Question
                     title={$t(WifiNetworkMessages.AP_NAME_TOOLTIP)}
                     placement='bottom'
-                  >
-                    <QuestionMarkCircleOutlined />
-                  </Tooltip>
+                  />
                 </>}
                 rules={[
                   { required: true },
@@ -683,7 +692,8 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const formData = form?.getFieldsValue()
   const checkFields = Object.keys(form?.getFieldsValue() ?? {}).concat(['deviceGps'])
   const oldData = pick(originalData, checkFields)
-  const newData = omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
+  const newData = { ...omit(formData, 'deviceGps'), deviceGps: deviceGps }
+  //omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
   return !!Object.values(formData).length && !isEqual(oldData, newData)
 }
 

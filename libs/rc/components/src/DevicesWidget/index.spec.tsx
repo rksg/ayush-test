@@ -5,12 +5,6 @@ import { render,
 
 import { DevicesWidget } from '.'
 
-jest.mock('@acx-ui/icons', ()=> {
-  const icons = jest.requireActual('@acx-ui/icons')
-  const keys = Object.keys(icons).map(key => [key, () => <div data-testid={key} />])
-  return Object.fromEntries(keys)
-})
-
 describe('Devices widget', () => {
   it('should render loader and then chart', async () => {
     const params = {

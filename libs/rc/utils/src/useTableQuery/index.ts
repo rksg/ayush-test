@@ -6,6 +6,7 @@ import _               from 'lodash'
 
 import { useParams, Params }                         from '@acx-ui/react-router-dom'
 import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
+import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
 
@@ -49,12 +50,14 @@ export interface TABLE_QUERY <
 export type PAGINATION = {
   page: number,
   pageSize: number,
+  defaultPageSize: number,
   total: number
 }
 
 export const DEFAULT_PAGINATION = {
   page: 1,
-  pageSize: 10,
+  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   total: 0
 }
 
@@ -120,7 +123,10 @@ export function useTableQuery <
 
   const initialPagination = {
     ...DEFAULT_PAGINATION,
-    ...(option?.pagination || {})
+    ...(option?.pagination ? {
+      defaultPageSize: option.pagination.pageSize || TABLE_DEFAULT_PAGE_SIZE,
+      ...option.pagination
+    } : {})
   }
 
   const initialSorter = {
@@ -240,6 +246,7 @@ export interface TableChangePayload {
   sortOrder: 'ASC' | 'DESC'
   page: number
   pageSize: number
+  pageStartZero?: boolean
 }
 
 export interface NewTableResult<T> {
@@ -277,12 +284,13 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
   const pagination = {
     ...DEFAULT_PAGINATION,
     ...DEFAULT_SORTER,
+    pageStartZero: true,
     ...(_.omitBy(payload ?? {}, _.isNil))
   }
 
   return {
     pageSize: pagination.pageSize.toString(),
-    page: (pagination.page - 1).toString(),
+    page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
   }
 }

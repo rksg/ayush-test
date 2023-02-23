@@ -39,6 +39,8 @@ const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 export function useMenuConfig () {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -153,14 +155,14 @@ export function useMenuConfig () {
         [
           {
             path: '/devices/wifi',
-            name: $t({ defaultMessage: 'WiFi' })
+            name: $t({ defaultMessage: 'Wi-Fi' })
           },
           {
             path: '/devices/switch',
             name: $t({ defaultMessage: 'Switch' }),
             disabled: !useIsSplitOn(Features.DEVICES)
           },
-          ...useIsSplitOn(Features.EDGES) ? [{
+          ...isEdgeEnabled ? [{
             path: '/devices/edge/list',
             name: $t({ defaultMessage: 'Edge' })
           }] : []
@@ -177,7 +179,7 @@ export function useMenuConfig () {
           name: $t({ defaultMessage: 'Wireless Networks' })
         },
         {
-          path: '/networks/wired',
+          path: '/networks/wired/profiles',
           name: $t({ defaultMessage: 'Wired Networks' }),
           disabled: !useIsSplitOn(Features.UNRELEASED)
         }
@@ -215,7 +217,7 @@ export function useMenuConfig () {
       routes: [
         {
           path: '/users/wifi',
-          name: $t({ defaultMessage: 'WiFi' })
+          name: $t({ defaultMessage: 'Wi-Fi' })
         },
         {
           path: '/users/switch',

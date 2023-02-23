@@ -10,15 +10,14 @@ import { useUpdatePortConfigMutation }                                          
 import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }          from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                          from '@acx-ui/react-router-dom'
 
-
-import { PortConfigForm } from './PortConfigForm'
+import { EdgePortWithStatus, lanPortsubnetValidator, PortConfigForm } from './PortConfigForm'
 
 interface PortsGeneralProps {
-  data: EdgePort[]
+  data: EdgePortWithStatus[]
 }
 
-interface PortConfigFormType {
-  [key: string]: EdgePort
+export interface PortConfigFormType {
+  [key: string]: EdgePortWithStatus
 }
 
 const PortsGeneral = (props: PortsGeneralProps) => {
@@ -55,6 +54,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const handleTabChange = (value: string) => {
     setCurrentTab(value)
   }
+
   const handleFormChange = (name: string, formInfo: FormChangeInfo) => {
     const changedField = formInfo.changedFields[0]
     if(changedField) {
@@ -75,6 +75,9 @@ const PortsGeneral = (props: PortsGeneralProps) => {
         if(!!!item.ip || !!!item.subnet || !await isIpSubnetValid(item.ip, item.subnet)) {
           return index
         }
+        if(!await validateSubnetOverlapping(index, item)) {
+          return index
+        }
       }
       if(item.portType === EdgePortTypeEnum.WAN &&
           item.ipMode === EdgeIpModeEnum.STATIC) {
@@ -82,9 +85,24 @@ const PortsGeneral = (props: PortsGeneralProps) => {
           !await isIpSubnetValid(item.ip, item.subnet, item.gateway)) {
           return index
         }
+        if(!await validateSubnetOverlapping(index, item)) {
+          return index
+        }
       }
     }
     return -1
+  }
+
+  const validateSubnetOverlapping = async (index: number, item: EdgePort) => {
+    const listWithoutCurrent = Object.values<EdgePort>(formRef.current?.getFieldsValue(true))
+      .filter((element, idx) => idx !== index)
+      .map(element => ({ ip: element.ip, subnetMask: element.subnet }))
+    try {
+      await lanPortsubnetValidator({ ip: item.ip, subnetMask: item.subnet }, listWithoutCurrent)
+    } catch (error) {
+      return false
+    }
+    return true
   }
 
   const isIpSubnetValid = async (ip:string, subnet:string, gateway?: string) => {

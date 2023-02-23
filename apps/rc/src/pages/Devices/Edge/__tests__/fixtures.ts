@@ -187,6 +187,42 @@ export const mockEdgePortConfig = {
   ]
 }
 
+export const mockEdgePortStatus = [
+  {
+    portId: mockEdgePortConfig.ports[0].id,
+    ip: '10.206.78.152'
+  },
+  {
+    portId: mockEdgePortConfig.ports[1].id,
+    ip: '10.206.78.153'
+  }
+]
+
+export const mockEdgePortConfigWithStatusIp = {
+  ports: [
+    {
+      ...mockEdgePortConfig.ports[0],
+      statusIp: '10.206.78.152'
+    },
+    {
+      ...mockEdgePortConfig.ports[1],
+      statusIp: '10.206.78.153'
+    },
+    {
+      ...mockEdgePortConfig.ports[2],
+      statusIp: '10.206.78.154'
+    },
+    {
+      ...mockEdgePortConfig.ports[3],
+      statusIp: '10.206.78.155'
+    },
+    {
+      ...mockEdgePortConfig.ports[4],
+      statusIp: '10.206.78.156'
+    }
+  ]
+}
+
 export const mockEdgeSubInterfaces = {
   page: 1,
   pageSize: 10,

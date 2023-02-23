@@ -7,10 +7,20 @@ import {
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle
+  useImperativeHandle,
+  useMemo
 } from 'react'
 
 
+import {
+  ECharts,
+  EChartsOption,
+  SeriesOption,
+  CustomSeriesRenderItemAPI,
+  CustomSeriesRenderItemParams,
+  TooltipComponentOption,
+  connect
+} from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
@@ -44,14 +54,6 @@ import {
 } from './config'
 import { getQualityColor, useLabelFormatter } from './util'
 
-import type {
-  ECharts,
-  EChartsOption,
-  SeriesOption,
-  CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams,
-  TooltipComponentOption
-} from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
 
 type OnDatazoomEvent = {
@@ -68,6 +70,7 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
+  sharedChartName: string;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
   tooltipFormatter: CallableFunction;
@@ -269,6 +272,7 @@ export function TimelineChart ({
   hasXaxisLabel,
   showResetZoom,
   index,
+  sharedChartName,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
@@ -281,14 +285,15 @@ export function TimelineChart ({
 
   const eChartsRef = useRef<ReactECharts>(null)
   const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
+
   // use selected event on dot click to show popover
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState<number | undefined>(selectedData)
   useDotClick(eChartsRef, onDotClick, setSelected)
 
-  const seriesData = mapping
-    .reverse()
+  const mappedData = useMemo(() => mapping
     .slice()
+    .reverse()
     .map(({ key, series, chartType }) =>
       chartType === 'scatter'
         ? ({
@@ -300,10 +305,9 @@ export function TimelineChart ({
           data: getSeriesData(data, key, series),
           itemStyle: {
             color: getSeriesItemColor
-          },
-          connectNulls: true
+          }
         } as SeriesOption)
-        : {
+        : ({
           type: 'custom',
           name: series,
           renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
@@ -311,13 +315,21 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           data: getSeriesData(data, key, series),
-          connectNulls: true
-        }
-    ) as SeriesOption[]
+          clip: true
+        })
+    ) as SeriesOption[], [data, mapping])
 
-  const option: EChartsOption = {
+  const hasData = useMemo(() => {
+    const seriesDatas = mappedData
+      .map(({ data }) => data as [number, string, number | Object, Object])
+      .flat()
+    return seriesDatas.length > 0
+  }, [mappedData])
+
+  const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
+      show: false,
       top: 0,
       bottom: 0,
       left: chartPadding,
@@ -327,12 +339,12 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
-      zlevel: 10,
       triggerOn: 'mousemove',
-      show: seriesData.length > 0,
+      show: hasData,
       axisPointer: {
         axis: 'x',
-        status: seriesData.length > 0 ? 'show' : 'hide',
+        status: hasData ? 'show' : 'hide',
+        show: hasData,
         snap: false,
         animation: false,
         lineStyle: {
@@ -350,7 +362,6 @@ export function TimelineChart ({
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
-      boundaryGap: false,
       ...(hasXaxisLabel
         ? {
           axisLabel: {
@@ -377,7 +388,7 @@ export function TimelineChart ({
         lineStyle: { color: cssStr('--acx-neutrals-20') }
       },
       axisPointer: {
-        show: true,
+        show: hasData,
         snap: false,
         triggerTooltip: false,
         label: {
@@ -439,13 +450,21 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60,
-        start: 0,
-        end: 100
+        minValueSpan: 60 * 1000 * 10,
+        filterMode: 'none'
       }
     ],
-    series: seriesData
-  }
+    series: mappedData
+  }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, mappedData, hasData])
+
+  useEffect(() => {
+    if (eChartsRef && eChartsRef.current) {
+      const instance = eChartsRef.current.getEchartsInstance()
+      instance.setOption(option)
+      connect(sharedChartName)
+    }
+  }, [option, sharedChartName])
+
   return (
     <>
       <ReactECharts

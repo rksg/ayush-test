@@ -1,8 +1,200 @@
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
+
+import { Row, Col, Badge, Typography } from 'antd'
+import { useIntl }                     from 'react-intl'
+
+import {
+  Loader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import {
+  useGetNotificationRecipientsQuery,
+  useDeleteNotificationRecipientsMutation,
+  useDeleteNotificationRecipientMutation
+} from '@acx-ui/rc/services'
+import { NotificationRecipientUIModel, NotificationEndpointType } from '@acx-ui/rc/utils'
+import { useParams }                                              from '@acx-ui/react-router-dom'
+
+import RecipientDialog from './RecipientDialog'
+import * as UI         from './styledComponents'
+
+const FunctionEnabledStatusLightConfig = {
+  active: {
+    color: 'var(--acx-semantics-green-50)'
+  },
+  inActive: {
+    color: 'var(--acx-neutrals-50)'
+  }
+}
+
+export const NotificationsTable = () => {
+  const { $t } = useIntl()
+  const params = useParams()
+  const [showDialog, setShowDialog] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  // eslint-disable-next-line max-len
+  const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
+
+
+  const notificationList = useGetNotificationRecipientsQuery({ params })
+
+  const [deleteRecipient, deleteOneState] = useDeleteNotificationRecipientMutation()
+  const [deleteRecipients, deleteMultipleState] = useDeleteNotificationRecipientsMutation()
+
+
+  const handleClickAddRecipient = () => {
+    setEditMode(false)
+    setEditData({} as NotificationRecipientUIModel)
+    setShowDialog(true)
+  }
+
+  const isDuplicated = (type: string, value: string): boolean => {
+    if (notificationList.data === undefined) return false
+    let hasDuplicated = false
+
+    let data
+    for (let i = 0; i < notificationList.data.length; i++) {
+      data = notificationList.data[i]
+
+      if (type === NotificationEndpointType.email) {
+        hasDuplicated = data.email === value
+      }
+
+      if (type === NotificationEndpointType.sms) {
+        hasDuplicated = data.mobile === value
+      }
+
+      if (hasDuplicated) break
+    }
+
+    return hasDuplicated
+  }
+
+  const renderDataWithStatus = (data:string, enabled: boolean) => {
+    return data ? <Badge
+      color={FunctionEnabledStatusLightConfig[enabled ? 'active' : 'inActive'].color}
+      text={data}
+    /> : data
+  }
+
+  const columns: TableProps<NotificationRecipientUIModel>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Recipient Name' }),
+      key: 'description',
+      dataIndex: 'description',
+      defaultSortOrder: 'ascend'
+    },
+    {
+      title: $t({ defaultMessage: 'Email Address' }),
+      key: 'email',
+      dataIndex: 'email',
+      render: (data, row) => {
+        return renderDataWithStatus(row.email, row.emailEnabled)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Mobile Phone' }),
+      key: 'mobile',
+      dataIndex: 'mobile',
+      render: (data, row) => {
+        return renderDataWithStatus(row.mobile, row.mobileEnabled)
+      }
+    }
+  ]
+
+  const rowActions: TableProps<NotificationRecipientUIModel>['rowActions'] = [
+    {
+      visible: (selectedRows) => selectedRows.length === 1,
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        // show edit dialog
+        setEditMode(true)
+        setEditData(selectedRows[0])
+        setShowDialog(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: (rows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Recipients' }),
+            entityValue: rows.length === 1 ? rows[0].description : undefined,
+            numOfEntities: rows.length
+          },
+          onOk: () => {
+            rows.length === 1 ?
+              deleteRecipient({
+                params: {
+                  tenantId: params.tenantId,
+                  recipientId: rows[0].id
+                } })
+                .then(clearSelection) :
+              deleteRecipients({
+                params,
+                payload: rows.map(item => item.id)
+              }).then(clearSelection)
+          }
+        })
+      }
+    }
+  ]
+
+  const tableActions = [{
+    label: $t({ defaultMessage: 'Add Recipient' }),
+    onClick: handleClickAddRecipient
+  }]
+
+  const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading
+
+  return (
+    <>
+      <Loader states={[
+        { isLoading: notificationList.isLoading, isFetching: isLoading }
+      ]}>
+        <Table
+          columns={columns}
+          dataSource={notificationList.data}
+          rowKey='id'
+          rowActions={rowActions}
+          rowSelection={{ type: 'checkbox' }}
+          actions={tableActions}
+        />
+      </Loader>
+
+      <RecipientDialog
+        visible={showDialog}
+        setVisible={setShowDialog}
+        editMode={editMode}
+        editData={editData}
+        isDuplicated={isDuplicated}
+      />
+    </>
+  )
+}
+
 
 const Notifications = () => {
   const { $t } = useIntl()
-  return <>{$t({ defaultMessage: 'Notifications' })}</>
+
+  return <UI.Wrapper>
+    <Row>
+      <Col span={24} className='description'>
+        <Typography>
+          {
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'System notifications will be sent to the following email addresses and mobile devices:' })
+          }
+        </Typography>
+      </Col>
+    </Row>
+    <UI.Spacer />
+    <NotificationsTable />
+  </UI.Wrapper>
 }
 
 export default Notifications

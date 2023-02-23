@@ -175,6 +175,7 @@ export function Integrators () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowSelection={{ type: 'radio' }}
         />
@@ -185,7 +186,7 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Integrators' })}
+        title={$t({ defaultMessage: '3rd Party' })}
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>

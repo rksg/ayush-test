@@ -13,6 +13,8 @@ export const Wrapper = styled.div`
   --acx-header-item-margin: 20px;
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
+  --acx-header-company-name-width: 175px;
+  --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
 
   .ant-pro-basicLayout {
@@ -343,5 +345,19 @@ export const LayoutUI = {
   Divider: styled(LogoDivider)`
     margin: 0 var(--acx-header-divider-margin) 0
       calc(var(--acx-header-divider-margin) - 1px);
+  `,
+  CompanyName: styled.div`
+    line-height: var(--acx-body-4-line-height);
+    font-size: var(--acx-body-4-font-size);
+    font-weight: var(--acx-body-font-weight);
+    text-align: right;
+    max-width: var(--acx-header-company-name-width);
+    max-height: calc(2 * var(--acx-body-4-line-height));
+    overflow: hidden;
+    margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
+    padding-right: 9px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   `
 }

@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
-import { useIntl }             from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer }                              from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,
   useMacRegistrationsQuery,
@@ -26,12 +25,6 @@ export function MacRegistrationsTab () {
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
-  useEffect(()=>{
-    if (uploadCsvResult.isSuccess) {
-      setUploadCsvDrawerVisible(false)
-    }
-  },[uploadCsvResult])
-
   const tableQuery = useTableQuery({
     useQuery: useMacRegistrationsQuery,
     defaultPayload: {},
@@ -40,6 +33,12 @@ export function MacRegistrationsTab () {
       sortOrder: 'asc'
     }
   })
+
+  useEffect(()=>{
+    if (uploadCsvResult.isSuccess) {
+      setUploadCsvDrawerVisible(false)
+    }
+  },[uploadCsvResult])
 
   const [
     deleteMacRegistration,
@@ -61,19 +60,29 @@ export function MacRegistrationsTab () {
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: (selectedRows) => selectedRows.length === 1,
-    onClick: (rows, clearSelection) => {
+    onClick: ([{ macAddress, id }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'MAC Address' }),
-          entityValue: rows.length === 1 ? rows[0].macAddress : undefined,
-          numOfEntities: rows.length
+          entityValue: macAddress
         },
         onOk: () => {
-          // eslint-disable-next-line max-len
-          deleteMacRegistration({ params: { policyId, registrationId: rows[0].id } })
-            .then(clearSelection)
+          deleteMacRegistration({ params: { policyId, registrationId: id } }).unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                // eslint-disable-next-line max-len
+                content: $t({ defaultMessage: 'MAC Address {macAddress} was deleted' }, { macAddress })
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
         }
       })
     }
@@ -155,6 +164,16 @@ export function MacRegistrationsTab () {
     }
   ]
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toastDetailErrorMessage = (error: any) => {
+    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+    showToast({
+      type: 'error',
+      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+    })
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -166,26 +185,21 @@ export function MacRegistrationsTab () {
         isEdit={isEditMode}
         editData={isEditMode ? editData : undefined}
       />
-      <ImportCsvDrawer type='DPSK'
+      <ImportFileDrawer type='DPSK'
         title={$t({ defaultMessage: 'Import from file' })}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
-        temlateLink='assets/templates/mac_registration_import_template.csv'
+        acceptType={['csv']}
+        templateLink='assets/templates/mac_registration_import_template.csv'
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
-        importError={uploadCsvResult.error as FetchBaseQueryError}
         importRequest={async (formData) => {
           try {
             await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error: any) {
-            if (error.data?.message) {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
-            }
+            toastDetailErrorMessage(error)
           }
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />

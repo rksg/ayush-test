@@ -2,13 +2,18 @@ export interface VLANPoolPolicyType{
   id?: string,
   name: string,
   description?: string[],
-  vlanMembers: string,
+  vlanMembers: string|string[],
   networkIds?: string[]
 }
-export interface VLANPoolDetailInstances{
-  id?: string,
-  name: string,
-  aps: number,
-  scope: string
 
+export interface VLANPoolAPGroup{
+  apGroupId:string,
+  apGroupName:string,
+  apCount:number
+}
+
+export interface VLANPoolVenues{
+  venueId?: string,
+  venueName: string,
+  apGroupData: VLANPoolAPGroup
 }
