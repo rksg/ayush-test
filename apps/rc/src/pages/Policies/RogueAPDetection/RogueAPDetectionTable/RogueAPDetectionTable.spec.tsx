@@ -22,14 +22,23 @@ import {
 import RogueAPDetectionTable from './RogueAPDetectionTable'
 
 const mockTableResult = {
+  fields: [
+    'scope',
+    'name',
+    'cog',
+    'id',
+    'type'
+  ],
   totalCount: 1,
   page: 1,
-  data: [{
-    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-    name: 'My Rogue AP Detection 1',
-    type: 'Rogue AP Detection',
-    scope: '0'
-  }]
+  data: [
+    {
+      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+      name: 'My Rogue AP Detection 1',
+      type: 'Rogue AP Detection',
+      scope: '0'
+    }
+  ]
 }
 
 const mockedUseNavigate = jest.fn()
@@ -102,7 +111,7 @@ describe('RogueAPDetectionTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 

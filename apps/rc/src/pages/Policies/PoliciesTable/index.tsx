@@ -8,7 +8,11 @@ import {
   useDelRoguePolicyMutation,
   usePolicyListQuery,
   useDeleteAAAPolicyMutation,
-  useDeleteAccessControlProfileMutation
+  useDeleteAccessControlProfileMutation,
+  useDelL2AclPolicyMutation,
+  useDelL3AclPolicyMutation,
+  useDelAppPolicyMutation,
+  useDelDevicePolicyMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -109,10 +113,10 @@ export default function PoliciesTable () {
     [PolicyType.MAC_REGISTRATION_LIST]: [],
     [PolicyType.SYSLOG]: [],
     [PolicyType.VLAN_POOL]: [],
-    [PolicyType.LAYER_2_POLICY]: [],
-    [PolicyType.LAYER_3_POLICY]: [],
-    [PolicyType.APPLICATION_POLICY]: [],
-    [PolicyType.DEVICE_POLICY]: []
+    [PolicyType.LAYER_2_POLICY]: useDelL2AclPolicyMutation(),
+    [PolicyType.LAYER_3_POLICY]: useDelL3AclPolicyMutation(),
+    [PolicyType.APPLICATION_POLICY]: useDelAppPolicyMutation(),
+    [PolicyType.DEVICE_POLICY]: useDelDevicePolicyMutation()
   }
 
   const tableQuery = useTableQuery({
