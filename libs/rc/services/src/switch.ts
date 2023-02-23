@@ -536,6 +536,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    addAcl: build.mutation<Acl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     addVePort: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
@@ -1090,6 +1099,7 @@ export const {
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
+  useAddAclMutation,
   useGetCliFamilyModelsQuery,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
