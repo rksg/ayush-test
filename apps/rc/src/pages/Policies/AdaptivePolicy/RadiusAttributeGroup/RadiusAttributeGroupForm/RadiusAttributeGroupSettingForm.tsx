@@ -1,10 +1,12 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { showActionModal, Table, TableProps }        from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListQuery }      from '@acx-ui/rc/services'
-import { AttributeAssignment, checkObjectNotExists } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
+import { useLazyRadiusAttributeGroupListQuery }                    from '@acx-ui/rc/services'
+import { AttributeAssignment, checkObjectNotExists, OperatorType } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+
+import { AttributeOperationLabelMapping } from '../../../contentsMap'
 
 
 function useColumns () {
@@ -20,7 +22,8 @@ function useColumns () {
       key: 'attributeValue',
       dataIndex: 'attributeValue',
       render: function (data, row) {
-        return `${row.operator} '${row.attributeValue}'`
+        // eslint-disable-next-line max-len
+        return `${$t(AttributeOperationLabelMapping[row.operator as OperatorType])} '${row.attributeValue}'`
       }
     }
   ]

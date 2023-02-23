@@ -11,7 +11,8 @@ export interface AttributeAssignment {
   attributeName: string,
   operator: OperatorType,
   attributeValue: string,
-  dataType: DataType
+  dataType: DataType,
+  operatorName?: string
 }
 
 export interface RadiusAttributeGroup {
