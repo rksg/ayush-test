@@ -292,6 +292,7 @@ export function VenueWifi () {
       }
       {showIdx === 1 && <ApTable rowSelection={{ type: 'checkbox' }}
         searchable={true}
+        enableActions={true}
         filterables={{
           deviceGroupId: apgroupFilterOptions
         }}
