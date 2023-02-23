@@ -20,10 +20,10 @@ enum StatusBadgeEnum {
 interface StatusColumn {
   title: MessageDescriptor,
   format: (
-    value: number|typeof undefined|typeof NaN, state: ConfigStatusEnum, $t: IntlShape['$t']
+    value: number | undefined, state: ConfigStatusEnum, $t: IntlShape['$t']
   ) => string
   diff: (
-    current: number|typeof undefined|typeof NaN, previous: number|typeof undefined|typeof NaN
+    current: number | undefined, previous: number | undefined
   ) => number|null
   badgeColor: (value: number) => StatusBadgeEnum
 }
@@ -65,7 +65,7 @@ export const statusColumns: Record<string, StatusColumn> = {
 
 export interface StatusBlockProps {
   field: string
-  values: [number|typeof undefined|typeof NaN, number|typeof undefined|typeof NaN]
+  values: [number | undefined, number | undefined]
   configured: ConfigStatusEnum
 }
 
