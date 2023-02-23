@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { Demo } from '@acx-ui/rc/utils'
 
 
-import { PortalDemoDefaultSize } from '../../../commonUtils'
-import * as UI                   from '../../styledComponents'
-import PortalImageTools          from '../PortalImageTools'
-import PortalPopover             from '../PortalPopover'
+import { PortalDemoDefaultSize, hoverOutline } from '../../../commonUtils'
+import * as UI                                 from '../../styledComponents'
+import PortalImageTools                        from '../PortalImageTools'
+import PortalPopover                           from '../PortalPopover'
 
 export default function PortalWelcomeContent (props: {
   demoValue: Demo,
@@ -14,7 +14,6 @@ export default function PortalWelcomeContent (props: {
     color?:string, text?:string }) => void
 }) {
   const { demoValue, updateWelcome } = props
-  const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
   const [clicked, setClicked] = useState(false)
@@ -33,6 +32,7 @@ export default function PortalWelcomeContent (props: {
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Input type='text'
+        maxLength={100}
         value={demoValue.welcomeText}
         placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
@@ -45,7 +45,7 @@ export default function PortalWelcomeContent (props: {
         onChange={(e) => updateWelcome({ text: e.target.value, show: true })}
         onMouseOver={() => {
           setCursor('pointer')
-          setOutline(dashedOutline)
+          setOutline(hoverOutline)
         }}
         onMouseLeave={() => {
           if (!clicked){
@@ -56,7 +56,7 @@ export default function PortalWelcomeContent (props: {
         onClick={() => {
           setCursor('pointer')
           setClicked(true)
-          setOutline(dashedOutline)
+          setOutline(hoverOutline)
         }}
       />
     </PortalPopover>
