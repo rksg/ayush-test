@@ -9,7 +9,7 @@ export function DataStudio () {
     : window.location.origin // Production
 
 
-  const [url, setUrl] = useState<string| undefined>(undefined)
+  const [url, setUrl] = useState<string>()
   const [ authenticate ] = useAuthenticateMutation()
 
   useEffect(() => {
