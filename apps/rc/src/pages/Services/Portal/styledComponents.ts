@@ -283,6 +283,7 @@ export const ViewSection = styled.div`
   border: 2px solid var(--acx-neutrals-30);
 `
 export const ViewSectionNoBorder = styled.div`
+  margin-top:10px;
   height:auto;
   width:420px;
   max-width:100%;
