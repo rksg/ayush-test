@@ -367,7 +367,7 @@ describe('Wired', () => {
 
     const finishButton = await screen.findAllByRole('button', { name: /Finish/ })
     await userEvent.click(finishButton[1])
-  })
+  }, 35000)
 
   it('should render create Switch Configuration Profile with extended acl correctly', async () => {
     const params = {

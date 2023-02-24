@@ -106,7 +106,7 @@ describe('Cli Profile Form - Add', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row1).getByRole('checkbox'))
+    await userEvent.click(await within(row1).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })

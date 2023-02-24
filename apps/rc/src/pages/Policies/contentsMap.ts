@@ -5,6 +5,9 @@ import {
   PolicyType,
   RogueRuleType,
   Layer3ProtocolType,
+  FacilityEnum,
+  FlowLevelEnum,
+  ProtocolEnum,
   OsVendorEnum,
   DeviceTypeEnum,
   ApplicationAclType,
@@ -145,6 +148,25 @@ export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor>
   [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
 }
 
+export const protocolLabelMapping: Record<ProtocolEnum, MessageDescriptor> = {
+  [ProtocolEnum.TCP]: defineMessage({ defaultMessage: 'TCP' }),
+  [ProtocolEnum.UDP]: defineMessage({ defaultMessage: 'UDP' })
+}
 
+export const facilityLabelMapping: Record<FacilityEnum, MessageDescriptor> = {
+  [FacilityEnum.KEEP_ORIGINAL]: defineMessage({ defaultMessage: 'Keep Original' }),
+  [FacilityEnum.LOCAL0]: defineMessage({ defaultMessage: '0' }),
+  [FacilityEnum.LOCAL1]: defineMessage({ defaultMessage: '1' }),
+  [FacilityEnum.LOCAL2]: defineMessage({ defaultMessage: '2' }),
+  [FacilityEnum.LOCAL3]: defineMessage({ defaultMessage: '3' }),
+  [FacilityEnum.LOCAL4]: defineMessage({ defaultMessage: '4' }),
+  [FacilityEnum.LOCAL5]: defineMessage({ defaultMessage: '5' }),
+  [FacilityEnum.LOCAL6]: defineMessage({ defaultMessage: '6' }),
+  [FacilityEnum.LOCAL7]: defineMessage({ defaultMessage: '7' })
+}
 
-
+export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
+  [FlowLevelEnum.GENERAL_LOGS]: defineMessage({ defaultMessage: 'General Logs' }),
+  [FlowLevelEnum.CLIENT_FLOW]: defineMessage({ defaultMessage: 'Client Flow' }),
+  [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
+}
