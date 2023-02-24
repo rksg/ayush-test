@@ -4,10 +4,10 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Button, Dropdown, PageHeader }           from '@acx-ui/components'
-import { ImportFileDrawer, CsvSize, SwitchTable } from '@acx-ui/rc/components'
-import { useImportSwitchesMutation }              from '@acx-ui/rc/services'
-import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { Button, Dropdown, PageHeader }                  from '@acx-ui/components'
+import { ImportFileDrawer, CsvSize, SwitchTable }        from '@acx-ui/rc/components'
+import { useImportSwitchesMutation, useVenuesListQuery } from '@acx-ui/rc/services'
+import { TenantLink, useParams }                         from '@acx-ui/react-router-dom'
 
 
 export default function SwitchesTable () {
@@ -46,6 +46,19 @@ export default function SwitchesTable () {
     }]}
   />
 
+  const { venueFilterOptions } = useVenuesListQuery({
+    params: { tenantId }, payload: {
+      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+    })
+  })
+
   return (
     <>
       <PageHeader
@@ -70,7 +83,12 @@ export default function SwitchesTable () {
         }}
         onClose={()=>setImportVisible(false)}
       />
-      <SwitchTable />
+      <SwitchTable
+        searchable={true}
+        filterableKeys={{
+          venueId: venueFilterOptions
+        }}
+      />
     </>
   )
 }

@@ -300,6 +300,8 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.accessControlEnable = false
   }
 
+  advancedCustomization.respectiveAccessControl = !get(data, 'accessControlProfileEnable')
+
   if (get(data, 'accessControlProfileEnable')
     && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
     advancedCustomization.l2AclEnable = false
