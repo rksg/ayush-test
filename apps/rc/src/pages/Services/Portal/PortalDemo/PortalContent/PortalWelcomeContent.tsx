@@ -10,6 +10,7 @@ import PortalPopover                           from '../PortalPopover'
 
 export default function PortalWelcomeContent (props: {
   demoValue: Demo,
+  portalLang: { [key:string]:string },
   updateWelcome: (value: { url?: string, size?: number, show?: boolean,
     color?:string, text?:string }) => void
 }) {
@@ -33,7 +34,7 @@ export default function PortalWelcomeContent (props: {
       onVisibleChange={(value) => setClicked(value)}
     ><UI.Input type='text'
         maxLength={100}
-        value={demoValue.welcomeText}
+        value={demoValue.welcomeText||props.portalLang.welcomeText}
         placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
           /PortalDemoDefaultSize.welcomeSize), fontWeight: 600,

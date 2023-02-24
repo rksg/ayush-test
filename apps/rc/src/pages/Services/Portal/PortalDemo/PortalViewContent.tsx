@@ -78,6 +78,7 @@ export default function PortalViewContent (props:{
             setOutline(hoverOutline)}}
         /></PortalPopover>}
       {componentDisplay.welcome && <PortalWelcomeContent
+        portalLang={portalLang}
         demoValue={demoValue}
         updateWelcome={(data)=>{
           updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,
