@@ -6,6 +6,7 @@ import { ProtocolEnum }       from '../../models/ProtocolEnum'
 
 
 export interface SyslogPolicyType {
+  policyName: string,
   name: string,
   id?: string,
   server: string,

@@ -1,5 +1,5 @@
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import moment                       from 'moment-timezone'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -7,7 +7,9 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  MspEntitlement
+  MspEntitlement,
+  MspEcProfile,
+  MspProfile
 } from './types/msp'
 
 const devicesCountMap = {
@@ -25,6 +27,25 @@ export class EntitlementUtil {
         return 'Wi-Fi'
     }
     return 'Wi-Fi'
+  }
+
+  public static getDeviceTypeText ($t: IntlShape['$t'], deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case EntitlementDeviceType.WIFI:
+      case EntitlementDeviceType.MSP_WIFI:
+        return $t({ defaultMessage: 'Wi-Fi' })
+      case EntitlementDeviceType.SWITCH:
+      case EntitlementDeviceType.MSP_SWITCH:
+        return $t({ defaultMessage: 'Switch' })
+      case EntitlementDeviceType.LTE:
+        return $t({ defaultMessage: 'LTE' })
+      case EntitlementDeviceType.ANALYTICS:
+        return $t({ defaultMessage: 'Analytics' })
+      case EntitlementDeviceType.EDGE:
+        return $t({ defaultMessage: 'SmartEdge' })
+      default:
+        return ''
+    }
   }
 
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
@@ -159,5 +180,29 @@ function displayYears (timeLeft: number) {
   } else {
     return getIntl().$t({ defaultMessage:
       'More than {years} {years, plural, one {Year} other {Years}}' }, { years: yearsValueFloored })
+  }
+}
+
+export const MSPUtils = () => {
+
+  const isMspEc = (mspEc: MspEcProfile | undefined): boolean => {
+    if (mspEc?.msp_label) {
+      return true
+    }
+
+    return false
+  }
+
+  const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
+    if (msp?.msp_label !== '') {
+      return true
+    }
+
+    return false
+  }
+
+  return {
+    isMspEc,
+    isOnboardedMsp
   }
 }

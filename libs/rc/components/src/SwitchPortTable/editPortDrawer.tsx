@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/components'
 import {
   switchApi,
-  useGetAclUnionQuery,
+  useLazyGetAclUnionQuery,
   useGetDefaultVlanQuery,
   useLazyGetPortSettingQuery,
   useLazyGetPortsSettingQuery,
@@ -48,7 +48,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { store }     from '@acx-ui/store'
 import { getIntl }   from '@acx-ui/utils'
 
-import { EditLldpModal } from './editLldpModal'
+import { ACLSettingDrawer } from './ACLSettingDrawer'
+import { EditLldpModal }    from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,
@@ -170,6 +171,7 @@ export function EditPortDrawer ({
   const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [portsProfileVlans, setPortsProfileVlans] = useState({} as ProfileVlans)
+  const [switchConfigurationProfileId, setSwitchConfigurationProfileId] = useState('')
 
   const [portEditStatus, setPortEditStatus] = useState('')
   const [useVenueSettings, setUseVenueSettings] = useState(true)
@@ -186,6 +188,8 @@ export function EditPortDrawer ({
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
 
+  const [ drawerAclVisible, setDrawerAclVisible ] = useState(false)
+
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
@@ -197,11 +201,12 @@ export function EditPortDrawer ({
   const [getSwitchConfigurationProfileByVenue] = useLazyGetSwitchConfigurationProfileByVenueQuery()
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
+  const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
 
   const { data: switchDetail }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: aclUnion } = useGetAclUnionQuery({ params: { tenantId, switchId } })
+
   const { data: switchesDefaultVlan }
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches })
 
@@ -260,6 +265,7 @@ export function EditPortDrawer ({
 
   useEffect(() => {
     const setData = async () => {
+      const aclUnion = await getAclUnion({ params: { tenantId, switchId } }, true).unwrap()
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
       const vlansByVenue = await getVlansByVenue({
@@ -281,6 +287,7 @@ export function EditPortDrawer ({
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
         ?.find((item) => item.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
+      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
 
       setDefaultVlan(defaultVlan)
       setProfileDefaultVlan(profileDefaultVlan)
@@ -1158,6 +1165,13 @@ export function EditPortDrawer ({
           />
         </Space>
 
+        <ACLSettingDrawer
+          visible={drawerAclVisible}
+          setVisible={setDrawerAclVisible}
+          aclsOptions={aclsOptions}
+          setAclsOptions={setAclsOptions}
+          profileId={switchConfigurationProfileId}
+        />
         { getFieldTemplate(
           <>
             <Form.Item
@@ -1181,7 +1195,7 @@ export function EditPortDrawer ({
                   key='add-ingress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !ingressAclCheckbox) || !hasSwitchProfile || ipsg}
-                  // onClick={() => { }} TODO
+                  onClick={() => { setDrawerAclVisible(true) }}
                 >
                   {$t({ defaultMessage: 'Add ACL' })}
                 </UI.LinkButton>
@@ -1214,7 +1228,7 @@ export function EditPortDrawer ({
                   key='add-egress-acl'
                   size='small'
                   disabled={(isMultipleEdit && !egressAclCheckbox) || !hasSwitchProfile}
-                  // onClick={() => { }} TODO
+                  onClick={() => { setDrawerAclVisible(true) }}
                 >{$t({ defaultMessage: 'Add ACL' })}
                 </UI.LinkButton>
               </Space>
