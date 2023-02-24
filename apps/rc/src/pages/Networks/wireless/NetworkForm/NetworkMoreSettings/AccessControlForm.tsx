@@ -627,55 +627,6 @@ function AccessControlConfigForm () {
         }
       </div>
     </>}
-
-    <Form.Item
-      name='checkPolicyMessage'
-      rules={[
-        { validator: async () => {
-          if (form.getFieldValue(['wlan','advancedCustomization','l2AclEnable'])
-            && !form.getFieldValue(['wlan','advancedCustomization','l2AclPolicyId'])) {
-            return Promise.reject($t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'Layer 2 policy could not be empty'
-            }))
-          }
-
-          if (form.getFieldValue(['wlan','advancedCustomization','l3AclEnable'])
-            && !form.getFieldValue(['wlan','advancedCustomization','l3AclPolicyId'])) {
-            return Promise.reject($t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'Layer 3 policy could not be empty'
-            }))
-          }
-
-          if (form.getFieldValue('enableDeviceOs')
-            && !form.getFieldValue(['wlan','advancedCustomization','devicePolicyId'])) {
-            return Promise.reject($t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'Device & OS policy could not be empty'
-            }))
-          }
-
-          if (form.getFieldValue(['wlan','advancedCustomization','applicationPolicyEnable'])
-            && !form.getFieldValue(['wlan','advancedCustomization','applicationPolicyId'])) {
-            return Promise.reject($t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'Application policy could not be empty'
-            }))
-          }
-
-          if (form.getFieldValue('enableClientRateLimit')
-            && !form.getFieldValue('enableUploadLimit')
-            && !form.getFieldValue('enableDownloadLimit')) {
-            return Promise.reject($t({
-              defaultMessage: 'One of the client rate limit setting should be chosen'
-            }))
-          }
-
-          return Promise.resolve()
-        } }
-      ]}
-    />
   </>)
 
 }
