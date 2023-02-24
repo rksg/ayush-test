@@ -106,10 +106,10 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
 
         return (
           <Select
-            defaultValue={target ? target.clientIsolationAllowlistId : ''}
+            defaultValue={target?.clientIsolationAllowlistId ?? null}
             onChange={(value: string) => setAllowList(row.venueId!, value)}
             options={[
-              { label: $t({ defaultMessage: 'Not active...' }), value: '' },
+              { label: $t({ defaultMessage: 'Not active...' }), value: null },
               ...policyOptions
             ]}
           >
