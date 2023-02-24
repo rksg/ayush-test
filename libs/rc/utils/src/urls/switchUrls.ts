@@ -75,23 +75,29 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    // url: '/switches',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   updateSwitch: {
     method: 'put',
-    // url: '/switches/:switchId',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches/:switchId',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
+  },
+  convertToStack: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/ConvertToStack'
   },
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   },
   getSwitchConfigBackupList: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
+    method: 'post',
+    url: '/switches/:switchId/configBackups/query'
   },
   addBackup: {
     method: 'post',
@@ -161,6 +167,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
   },
+  addAcl: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
+  },
   addVePort: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/vePort/switch/:switchId'
@@ -174,8 +184,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/vePorts'
   },
   getSwitchAcls: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
+    method: 'post',
+    url: '/switches/:switchId/acls/query'
   },
   getVlanListBySwitchLevel: {
     method: 'post',
@@ -289,6 +299,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   },
   deleteProfiles: {
     method: 'delete',

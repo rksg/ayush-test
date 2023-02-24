@@ -23,8 +23,15 @@ export enum LicenseBannerTypeEnum {
   ra_onboard_only = 'RA_ONBOARD_ONLY'
 }
 
-export type EntitlementDeviceType =
-  'WIFI' | 'LTE' | 'SWITCH' | 'ANALYTICS' | 'MSP_WIFI' | 'MSP_SWITCH'
+export enum EntitlementDeviceType {
+  WIFI='WIFI',
+  LTE='LTE',
+  SWITCH='SWITCH',
+  ANALYTICS='ANALYTICS',
+  MSP_WIFI='MSP_WIFI',
+  MSP_SWITCH='MSP_SWITCH',
+  EDGE='EDGE'
+}
 
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
@@ -38,6 +45,7 @@ export enum EntitlementDeviceSubType {
   ICX75 = 'ICX75',
   ICX76 = 'ICX76',
   ICX78 = 'ICX78',
+  ICX82 = 'ICX82',
   ICXTEMP = 'ICXTEMP',
   ICX = 'ICX',
   // for MSP
