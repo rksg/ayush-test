@@ -16,7 +16,7 @@ const defaultPayload = {
     'country',
     'switches',
     'rogueAps',
-    'syslog',
+    'rogueDetection',
     'status'
   ],
   sortField: 'name',
@@ -24,7 +24,7 @@ const defaultPayload = {
   page: 1,
   pageSize: 25,
   filters: {
-    'syslog.policyId': [] as string[]
+    'rogueDetection.policyId': [] as string[]
   }
 }
 
@@ -53,7 +53,7 @@ const SyslogVenueDetail = () => {
       dataIndex: 'syslogEnable',
       key: 'syslogEnable',
       render: (data, row) => {
-        return row.syslog?.enabled ? <CheckOutlined /> : null
+        return row.rogueDetection?.enabled ? <CheckOutlined /> : null
       }
     }
   ]
@@ -63,7 +63,7 @@ const SyslogVenueDetail = () => {
     defaultPayload: {
       ...defaultPayload,
       filters: {
-        'syslog.policyId': [params.policyId]
+        'rogueDetection.policyId': [params.policyId]
       }
     }
   })

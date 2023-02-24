@@ -22,11 +22,11 @@ export const SyslogDetailContext = createContext({} as SyslogDetailContextType)
 const SyslogDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const [venueId, setVenueId] = useState([] as string[])
+  const [filtersId, setFiltersId] = useState([] as string[])
   const [policyName, setPolicyName] = useState('' as string)
 
   return (
-    <SyslogDetailContext.Provider value={{ venueId, setVenueId, policyName, setPolicyName }}>
+    <SyslogDetailContext.Provider value={{ filtersId, setFiltersId, policyName, setPolicyName }}>
       <PageHeader
         title={policyName}
         breadcrumb={[
@@ -52,7 +52,7 @@ const SyslogDetailView = () => {
           <SyslogDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          { venueId.length && <SyslogVenueDetail /> }
+          { filtersId.length && <SyslogVenueDetail /> }
         </GridCol>
       </GridRow>
     </SyslogDetailContext.Provider>

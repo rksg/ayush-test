@@ -9,7 +9,9 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { AclTypeEnum }    from './constants'
 import { IpUtilsService } from './ipUtilsService'
+import { Acl }            from './types'
 
 
 const Netmask = require('netmask').Netmask
@@ -385,10 +387,20 @@ export function gpsRegExp (lat: string, lng: string) {
   const { $t } = getIntl()
   const latitudeRe = new RegExp('^$|^(-?(?:90(?:\\.0{1,6})?|(?:[1-8]?\\d(?:\\.\\d{1,6})?)))$')
   const longitudeRe = new RegExp('^$|^(-?(?:180(?:\\.0{1,6})?|(?:[1-9]?\\d(?:\\.\\d{1,6})?)|(?:1[0-7]?\\d(?:\\.\\d{1,6})?)))$')
+  const errors: string[] = []
 
-  if (!lat || !lng || !latitudeRe.test(lat) || !longitudeRe.test(lng)) {
-    return Promise.reject($t(validationMessages.gpsCoordinates))
+  if (!lat || !latitudeRe.test(lat)) {
+    errors.push($t(validationMessages.gpsLatitudeInvalid))
   }
+
+  if (!lng || !longitudeRe.test(lng)) {
+    errors.push($t(validationMessages.gpsLongitudeInvalid))
+  }
+
+  if (errors.length > 0) {
+    return Promise.reject(errors.join('. '))
+  }
+
   return Promise.resolve()
 }
 
@@ -756,4 +768,43 @@ export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
   return result ? Promise.reject($t(validationMessages.subnetOverlapping))
     : Promise.resolve()
 
+}
+
+export function checkAclName (aclName: string, aclType: string) {
+  const { $t } = getIntl()
+  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
+    try {
+      const iName = parseInt(aclName, 10)
+      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
+        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
+      }
+      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
+        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
+      }
+      return Promise.resolve()
+    } catch (e) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+  } else {
+    if (!aclName.match(/^[a-zA-Z_].*/)) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+    if (aclName.match(/.*[\"]/)) {
+      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+    }
+    if (aclName === 'test') {
+      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+    }
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
 }
