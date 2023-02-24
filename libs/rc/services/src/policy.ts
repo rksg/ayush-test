@@ -885,6 +885,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
+    radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
+        return transferToTableResult<RadiusAttributeGroup>(result)
+      }
+    }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
@@ -1047,6 +1061,7 @@ export const {
   useDelSyslogPolicyMutation,
   useUpdateSyslogPolicyMutation,
   useVenueSyslogPolicyQuery,
+  useGetVenueSyslogListQuery,
   useGetSyslogPolicyListQuery,
   useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
