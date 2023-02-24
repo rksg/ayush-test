@@ -168,7 +168,7 @@ export const getEdgeDonutChartData: (statistic?: EdgeStatusSeverityStatistic) =>
   if (statistic) {
     seriesMappingEdge().forEach(({ key, name, color }) => {
       const value = statistic.summary[key as EdgeStatusSeverityEnum]
-      if (key === EdgeStatusSeverityEnum.OFFLINE) {
+      if (key === EdgeStatusSeverityEnum.OFFLINE && value) {
         const setupPhase = find(chartData, {
           name: getEdgeStatusDisplayName(EdgeStatusSeverityEnum.IN_SETUP_PHASE, false)
         })
