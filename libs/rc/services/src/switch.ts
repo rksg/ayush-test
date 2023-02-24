@@ -232,6 +232,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    convertToStack: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.convertToStack, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
@@ -354,11 +363,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       },
       transformResponse: (res: ConfigurationBackup[]) => {
@@ -483,12 +491,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
-      query: ({ params, payload }) => {
+    getSwitchAcls: build.query<Acl[], RequestPayload>({
+      query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
@@ -1040,6 +1047,7 @@ export const {
   useAddSwitchMutation,
   useUpdateSwitchMutation,
   useAddStackMemberMutation,
+  useConvertToStackMutation,
   useGetSwitchConfigBackupListQuery,
   useAddConfigBackupMutation,
   useRestoreConfigBackupMutation,

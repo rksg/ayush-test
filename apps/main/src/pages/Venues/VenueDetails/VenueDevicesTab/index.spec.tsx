@@ -1,11 +1,23 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, Dashboard }             from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Dashboard, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import { VenueDetails } from '../'
+
+import { mockEdgeList } from './__tests__/fixtures'
+
+import { VenueDevicesTab } from '.'
+
+
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
 
 jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
@@ -264,6 +276,10 @@ const meshData = {
 
 describe('VenueWifi', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation((feature: string) => {
+      return feature === Features.EDGES ? false: true
+    })
+
     mockServer.use(
       rest.get(
         CommonUrlsInfo.getDashboardOverview.url,
@@ -301,5 +317,68 @@ describe('VenueWifi', () => {
     fireEvent.click(await screen.findByTestId('MeshSolid'))
 
     await screen.findByText('R710')
+  })
+})
+
+describe('Venue device tab', () => {
+  let params: { tenantId: string, venueId: string, activeTab: string, activeSubTab: string }
+
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
+      )
+    )
+
+    params = {
+      tenantId: 'd1ec841a4ff74436b23bca6477f6a631',
+      venueId: '8caa8f5e01494b5499fa156a6c565138',
+      activeTab: 'devices',
+      activeSubTab: 'edge'
+    }
+  })
+
+  it('should direct to other tab correctly', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    const tab = await screen.findByRole('tab', { name: 'Switch' })
+    fireEvent.click(tab)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/devices/switch`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('should render edge list correctly', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    expect(await screen.findByRole('cell', { name: /Smart Edge 3/ })).toBeTruthy()
+  })
+
+  it('should have correct href path to create new edge', async () => {
+    render(
+      <Provider>
+        <VenueDevicesTab />
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
+      })
+
+    const target = await screen.findByRole('link', { name: 'Add SmartEdge' })
+    expect(target.getAttribute('href')).toBe(`/t/${params.tenantId}/devices/edge/add`)
   })
 })

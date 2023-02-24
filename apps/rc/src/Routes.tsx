@@ -53,6 +53,7 @@ import RogueAPDetectionForm        from './pages/Policies/RogueAPDetection/Rogue
 import RogueAPDetectionTable       from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm            from './pages/Policies/SelectPolicyForm'
 import SyslogDetailView            from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
+import SyslogForm                  from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                 from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import VLANPoolDetail              from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm                from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
@@ -155,6 +156,7 @@ function DeviceRoutes () {
       <Route path='devices/switch/:action' element={<SwitchForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
@@ -369,7 +371,12 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-        element={<div />}
+        element={<SyslogForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
+        element={<SyslogForm edit={true}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
