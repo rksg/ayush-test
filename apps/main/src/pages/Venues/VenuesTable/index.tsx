@@ -163,7 +163,7 @@ function useColumns (
       render: function (data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
+            to={`/venues/${row.id}/venue-details/devices/edge`}
             children={data ? data : 0}
           />
         )

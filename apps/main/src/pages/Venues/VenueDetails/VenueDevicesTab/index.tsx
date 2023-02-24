@@ -5,8 +5,10 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { VenueSwitch } from './VenueSwitch'
-import { VenueWifi }   from './VenueWifi'
+import { VenueEdgesTable } from './VenueEdgesTable'
+import { VenueSwitch }     from './VenueSwitch'
+import { VenueWifi }       from './VenueWifi'
+
 
 export function VenueDevicesTab () {
   const { $t } = useIntl()
@@ -43,6 +45,15 @@ export function VenueDevicesTab () {
         disabled={!useIsSplitOn(Features.DEVICES)}>
         <VenueSwitch />
       </Tabs.TabPane>
+
+      { useIsSplitOn(Features.EDGES) && (
+        <Tabs.TabPane
+          tab={$t({ defaultMessage: 'SmartEdge' })}
+          key='edge'
+        >
+          <VenueEdgesTable />
+        </Tabs.TabPane>
+      )}
     </Tabs>
   )
 }
