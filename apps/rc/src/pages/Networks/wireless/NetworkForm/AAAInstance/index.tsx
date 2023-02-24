@@ -13,7 +13,10 @@ import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 import * as contents from '../contentsMap'
 
 import AAAPolicyModal from './AAAPolicyModal'
-
+const radiusType: { [key:string]:string }={
+  authRadius: 'AUTHENTICATION',
+  accountingRadius: 'ACCOUNTING'
+}
 const AAAInstance = (props:{
   serverLabel: string,
   type: string
@@ -29,10 +32,11 @@ const AAAInstance = (props:{
   useEffect(()=>{
     if(data){
       setAaaData([...data])
-      setAaaList(data?.map(m => ({ label: m.name, value: m.id })))
+      setAaaList((data?.filter(d => d.type === radiusType[props.type]))
+        .map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
@@ -66,7 +70,9 @@ const AAAInstance = (props:{
             setAaaData([...aaaData])
             form.setFieldValue(props.type+'Id', data.id)
             form.setFieldValue(props.type, data)
-          }}/>
+          }}
+          type={radiusType[props.type]}
+          />
         </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',

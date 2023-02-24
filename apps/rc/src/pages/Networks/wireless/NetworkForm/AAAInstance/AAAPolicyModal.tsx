@@ -11,9 +11,10 @@ import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
 
 export default function AAAPolicyModal (props:{
+  type?: string,
   updateInstance: (value:AAAPolicyType) => void
 }) {
-  const { updateInstance }=props
+  const { updateInstance, type }=props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
@@ -21,11 +22,12 @@ export default function AAAPolicyModal (props:{
   const [visible, setVisible]=useState(false)
   const getContent = <AAAForm networkView={true}
     edit={false}
+    type={type}
     backToNetwork={(data)=>{
       onClose()
       if(data)updateInstance(data)
     }}/>
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Button type='link'
