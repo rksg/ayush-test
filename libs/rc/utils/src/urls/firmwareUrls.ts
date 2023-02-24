@@ -15,6 +15,18 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
   },
+  skipVenueUpgradeSchedules: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/skip/venue/schedule'
+  },
+  updateVenueSchedules: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/upgrade/venue/schedule'
+  },
+  updateNow: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/upgrade/update-now'
+  },
   getPreferences: {
     method: 'get',
     url: '/api/tenant/:tenantId/preferences'

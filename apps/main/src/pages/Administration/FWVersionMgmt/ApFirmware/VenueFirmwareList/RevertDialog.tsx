@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Select, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
+import { Col, Select, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
 import { useForm }                                                             from 'antd/lib/form/Form'
 import { useIntl }                                                             from 'react-intl'
 
 import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
-import { Button, Modal }                                              from '@acx-ui/components'
+import { Button, Modal, cssStr }                                      from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
@@ -40,7 +40,7 @@ export interface RevertDialogProps {
   onSubmit: (data: []) => void,
   firmwareType: FirmwareType,
   data?: FirmwareVenue[],
-  availableVersions?: any,
+  availableVersions?: FirmwareVersion[],
   eol?: boolean,
   eolName?: string,
   latestEolVersion?: string,
@@ -97,7 +97,8 @@ export function RevertDialog (props: RevertDialogProps) {
     }
     // setOtherVersions(versionOptions.slice(1))
     // setOtherVersions([...copyAvailableVersions])
-    otherVersions = [...copyAvailableVersions]
+    // otherVersions = [...copyAvailableVersions]
+    otherVersions = [...copyAvailableVersions, ...copyAvailableVersions]
     setOptionLabel()
   }
 
@@ -216,12 +217,17 @@ export function RevertDialog (props: RevertDialogProps) {
     onCancel()
   }
 
+  const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
+
+  const onChangeRegular = (e: RadioChangeEvent) => {
+    setSelectedProfileKeys(e.target.value)
+  }
+
   const disableSave = false
 
   return (
     <Modal
       title={$t({ defaultMessage: 'Revert Now' })}
-      subTitle={subTitle}
       visible={visible}
       width={560}
       okText={$t({ defaultMessage: 'Run Revert' })}
@@ -233,25 +239,39 @@ export function RevertDialog (props: RevertDialogProps) {
         form={form}
         name={'deviceModalForm'}
       >
-        <Form.Item
-          name={'importDevicesMode'}
-          initialValue={DevicesImportMode.FromClientDevices}
-        >
-          <UI.TitleActive>Select one previous version:</UI.TitleActive>
-          <Radio.Group onChange={onImportModeChange}>
-            <Space direction={'vertical'}>
-              <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
-              </Radio>
-            </Space>
-          </Radio.Group>
-          <UI.Section>
-            <UI.Ul>
-              <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>
-              <UI.Li>You will be notified once the update process has finished.</UI.Li>
-            </UI.Ul>
-          </UI.Section>
-        </Form.Item>
+        <Typography>
+          {$t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
+        </Typography>
+        <Typography>
+          {$t({ defaultMessage: 'Select one previous version:' })}
+        </Typography>
+        <Radio.Group
+          style={{ margin: 12 }}
+          defaultValue={otherVersions[0].id}
+          onChange={onChangeRegular}
+          value={selectedProfileKeys}>
+          <Space direction={'vertical'}>
+            { otherVersions?.map(p =>
+              <Radio value={p.id} key={p.id}>{p.name}</Radio>)}
+          </Space>
+        </Radio.Group>
+        {/*
+          // <UI.TitleActive>Select one previous version:</UI.TitleActive>
+          // <Radio.Group onChange={onImportModeChange}>
+          //   <Space direction={'vertical'}>
+          //     <Radio value={DevicesImportMode.FromClientDevices}>
+          //       {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
+          //     </Radio>
+          //   </Space>
+          // </Radio.Group>
+          // */}
+        <UI.Section>
+          <UI.Ul>
+            <UI.Li>This action will cause network interruption and impact service delivery.</UI.Li>
+            { // eslint-disable-next-line max-len
+              <UI.Li>Some features may no longer be availabe with previous versions of device firmware.</UI.Li>}
+          </UI.Ul>
+        </UI.Section>
       </Form>
     </Modal>
   )

@@ -18,4 +18,5 @@ export * from './ipUtilsService'
 export * from './msp.utils'
 export * from './pdfGeneratorService'
 export * from './ipCalculatorUtilsService'
+export * from './dateTimeUtilsService'
 

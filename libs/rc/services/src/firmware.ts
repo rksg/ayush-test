@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  CommonResult,
   TableResult,
   FirmwareUrlsInfo,
   FirmwareVersion,
@@ -51,6 +52,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    skipVenueUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.skipVenueUpgradeSchedules, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'DELETE' }]
     })
   })
 })
@@ -58,5 +69,6 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 export const {
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
-  useGetAvailableFirmwareListQuery
+  useGetAvailableFirmwareListQuery,
+  useSkipVenueUpgradeSchedulesMutation
 } = firmwareApi

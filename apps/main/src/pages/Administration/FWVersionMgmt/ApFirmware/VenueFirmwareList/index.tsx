@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useIntl }                   from 'react-intl'
 
 import {
+  showActionModal,
+  CustomButtonProps,
   ColumnType,
   Table,
   TableProps,
@@ -14,11 +17,14 @@ import {
   useGetVenueVersionListQuery,
   useDeleteVenueMutation,
   useGetVenueCityListQuery,
-  useGetAvailableFirmwareListQuery
+  useGetAvailableFirmwareListQuery,
+  useSkipVenueUpgradeSchedulesMutation
 } from '@acx-ui/rc/services'
 import {
   Venue,
+  Schedule,
   FirmwareType,
+  FirmwareCategory,
   FirmwareVenue,
   ApVenueStatusEnum,
   TableQuery,
@@ -30,7 +36,6 @@ import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { PreferencesDialog }    from './PreferencesDialog'
 import { RevertDialog }         from './RevertDialog'
-import { SkipDialog }           from './SkipDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
 function useColumns (
@@ -149,12 +154,12 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const params = useParams()
   const { data: upgradeVersions } = useGetAvailableFirmwareListQuery({ params })
+  const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
-  const [skipModelVisible, setSkipModelVisible] = useState(false)
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
   // let venues: FirmwareVenue[] = []
@@ -178,13 +183,6 @@ export const VenueFirmwareTable = (
     setChangeScheduleModelVisible(false)
   }
   const handleChangeScheduleModalSubmit = (data: []) => {
-    // change firmware scheduled
-  }
-
-  const handleSkipModalCancel = () => {
-    setSkipModelVisible(false)
-  }
-  const handleSkipModalSubmit = (data: []) => {
     // change firmware scheduled
   }
 
@@ -218,15 +216,41 @@ export const VenueFirmwareTable = (
     onClick: () => setChangeScheduleModelVisible(true)
   },
   {
-    visible: (selectedRows) => selectedRows.length === 1,
+    visible: (selectedRows) => {
+      let skipUpdateVisilibity = true
+      selectedRows.forEach((row) => {
+        if (!hasApSchedule(row)) {
+          skipUpdateVisilibity = false
+        }
+      })
+      return skipUpdateVisilibity
+    },
     label: $t({ defaultMessage: 'Skip Update' }),
-    onClick: () => setSkipModelVisible(true)
+    onClick: (selectedRows, clearSelection) => {
+      showActionModal({
+        type: 'confirm',
+        width: 460,
+        title: $t({ defaultMessage: 'Skip This Update?' }),
+        // eslint-disable-next-line max-len
+        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        okText: $t({ defaultMessage: 'Skip' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        onOk () {
+          skipVenueUpgradeSchedules({
+            params: { ...params },
+            payload: { ...selectedRows.map((row) => row.id) }
+          }).then(clearSelection)
+        },
+        onCancel () {}
+      })
+    }
   },
   {
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Revert Now' }),
     onClick: () => setRevertModelVisible(true)
   }]
+
 
   return (
     <Loader states={[
@@ -272,18 +296,6 @@ export const VenueFirmwareTable = (
         eolModels='eolModel'
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
-      />
-      <SkipDialog
-        visible={skipModelVisible}
-        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
-        data={venues}
-        eol={true}
-        availableVersions={upgradeVersions}
-        eolName='eolName'
-        latestEolVersion='eolVersion'
-        eolModels='eolModel'
-        onCancel={handleSkipModalCancel}
-        onSubmit={handleSkipModalSubmit}
       />
       <RevertDialog
         visible={revertModelVisible}
@@ -332,10 +344,10 @@ export function VenueFirmwareList () {
   )
 }
 
-function shouldShowConfirmation (selectedVenues: FirmwareVenue[]) {
-  const venues = selectedVenues.filter(v => {
-    // return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
-    return v !== null
-  })
-  return venues.length > 0
+// eslint-disable-next-line max-len
+const scheduleTypeIsApFunc = (value: Schedule) => value && value.versionInfo && value.versionInfo.type && value.versionInfo.type === FirmwareType.AP_FIRMWARE_UPGRADE
+
+function hasApSchedule (venue: FirmwareVenue): boolean {
+  return venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
 }
+
