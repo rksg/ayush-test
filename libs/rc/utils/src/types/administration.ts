@@ -2,6 +2,8 @@ import { defineMessage } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
+import { EntitlementUtil } from '../msp.utils'
+
 import { RolesEnum, roleDisplayText }                      from './msp'
 import { EntitlementDeviceType, EntitlementDeviceSubType } from './msp'
 
@@ -241,20 +243,11 @@ export interface NewEntitlementSummary {
   summary: EntitlementSummary[];
 }
 
-export const EntitlementDeviceTypeDisplayText = {
-  [EntitlementDeviceType.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [EntitlementDeviceType.SWITCH]: defineMessage({ defaultMessage: 'Switch' }),
-  [EntitlementDeviceType.LTE]: defineMessage({ defaultMessage: 'LTE' }),
-  [EntitlementDeviceType.ANALYTICS]: defineMessage({ defaultMessage: 'Analytics' }),
-  [EntitlementDeviceType.MSP_WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [EntitlementDeviceType.MSP_SWITCH]: defineMessage({ defaultMessage: 'Switch' })
-}
-
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
 export const getEntitlementDeviceTypes = (): EntitlementDeviceTypes => {
   return Object.keys(EntitlementDeviceType)
     .map(key => ({
-      label: getIntl().$t(EntitlementDeviceTypeDisplayText[key as EntitlementDeviceType]),
+      label: EntitlementUtil.getDeviceTypeText(getIntl().$t, key as EntitlementDeviceType),
       value: key as EntitlementDeviceType
     }))
 }

@@ -31,6 +31,7 @@ import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
 import ApsTable                    from './pages/Devices/Wifi/ApsTable'
 import Wired                       from './pages/Networks/wired'
 import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliTemplateForm'
+import CliProfileForm              from './pages/Networks/wired/profiles/CliProfileForm'
 import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable               from './pages/Networks/wireless/NetworksTable'
@@ -52,6 +53,7 @@ import RogueAPDetectionForm        from './pages/Policies/RogueAPDetection/Rogue
 import RogueAPDetectionTable       from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm            from './pages/Policies/SelectPolicyForm'
 import SyslogDetailView            from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
+import SyslogForm                  from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                 from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import VLANPoolDetail              from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolForm                from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
@@ -175,9 +177,9 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
-      <Route path='networks/wired/onDemandCli/add' element={<CliTemplateForm />} />
+      <Route path='networks/wired/:configType/add' element={<CliTemplateForm />} />
       <Route
-        path='networks/wired/onDemandCli/:templateId/:action'
+        path='networks/wired/:configType/:templateId/:action'
         element={<CliTemplateForm />}
       />
       <Route
@@ -186,6 +188,11 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab' element={<Wired />} />
+      <Route path='networks/wired/:configType/cli/add' element={<CliProfileForm />} />
+      <Route
+        path='networks/wired/:configType/cli/:profileId/:action'
+        element={<CliProfileForm />}
+      />
     </Route>
   )
 }
@@ -369,7 +376,12 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-        element={<div />}
+        element={<SyslogForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
+        element={<SyslogForm edit={true}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
