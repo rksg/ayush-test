@@ -59,6 +59,7 @@ export const WiredIcon = styled(Wired)`
 `
 
 export const IconRadioGroup = styled(Radio.Group)`
+  padding: 16px 0px;
   & > .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
     background: var(--acx-accents-orange-50);
     border-color: var(--acx-accents-orange-50);

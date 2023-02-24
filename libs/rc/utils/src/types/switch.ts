@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum } from '../constants'
-import { PortSettingModel }                                         from '../models/PortSetting'
+import { NetworkVenue }              from '../models'
+import { PortSettingModel }          from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
@@ -710,6 +711,15 @@ export interface Lag {
   untaggedVlan: string
 }
 
+export interface SchedulingModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: {
+    latitude: string,
+    longitude: string,
+    name: string
+  }
+}
 export interface AclStandardRule {
   sequence: number
   action: string
