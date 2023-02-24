@@ -131,26 +131,6 @@ const fetchServiceGuardRelatedTests = gql`
   }
 `
 
-const runServiceGuardTest = gql`
-  mutation RunNetworkHealthTest ($specId: String!){
-    runServiceGuardTest (id: $specId) {
-      userErrors { field message }
-      spec {
-        id
-        tests (limit: 1) {
-          items {
-            id createdAt
-            summary { apsTestedCount apsSuccessCount apsPendingCount }
-          }
-        }
-        schedule {
-          nextExecutionTime
-        }
-      }
-    }
-  }
-`
-
 const {
   useNetworkHealthDetailsQuery,
   useNetworkHealthTestQuery,
@@ -354,7 +334,18 @@ const {
     runNetworkHealthTest: build.mutation<
       RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
     >({
-      query: (variables) => ({ variables, document: runServiceGuardTest }),
+      query: (variables) => ({
+        variables,
+        document: gql`mutation RunNetworkHealthTest ($specId: String!){
+          runServiceGuardTest (id: $specId) {
+            userErrors { field message }
+            spec {
+              id
+              tests (limit: 1) { items { id } }
+            }
+          }
+        }`
+      }),
       invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
