@@ -27,6 +27,8 @@ import {
   ConfigurationHistory,
   CliTemplateExample,
   CliConfiguration,
+  CliFamilyModels,
+  ConfigurationProfile,
   transformConfigType,
   transformConfigStatus,
   VeViewModel,
@@ -230,6 +232,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
+    convertToStack: build.mutation<Switch, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.convertToStack, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
@@ -352,10 +363,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       transformResponse: (res: ConfigurationBackup[]) => {
@@ -480,11 +492,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchAcls: build.query<Acl[], RequestPayload>({
-      query: ({ params }) => {
+    getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -529,6 +542,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
         return {
           ...req
+        }
+      }
+    }),
+    addAcl: build.mutation<Acl, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -871,6 +893,44 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
+    }),
+    getCliFamilyModels: build.query<CliFamilyModels[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     })
   })
 })
@@ -989,6 +1049,7 @@ export const {
   useAddSwitchMutation,
   useUpdateSwitchMutation,
   useAddStackMemberMutation,
+  useConvertToStackMutation,
   useGetSwitchConfigBackupListQuery,
   useAddConfigBackupMutation,
   useRestoreConfigBackupMutation,
@@ -1047,5 +1108,10 @@ export const {
   useDeleteProfilesMutation,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
-  useGetCliConfigExamplesQuery
+  useGetCliConfigExamplesQuery,
+  useAddAclMutation,
+  useGetCliFamilyModelsQuery,
+  useGetSwitchConfigProfileQuery,
+  useAddSwitchConfigProfileMutation,
+  useUpdateSwitchConfigProfileMutation
 } = switchApi
