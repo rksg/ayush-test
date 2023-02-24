@@ -246,17 +246,7 @@ describe('Cli Profile Form - Edit', () => {
     })
     expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
     expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Models' })
-    await screen.findByText('Select switch models')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
-    await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
-    await userEvent.click(addExampleBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -276,17 +266,7 @@ describe('Cli Profile Form - Edit', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
     })
     expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Models' })
-    await screen.findByText('Select switch models')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
-    await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
-    await userEvent.click(addExampleBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
