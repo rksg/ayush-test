@@ -151,9 +151,16 @@ describe('validator', () => {
       const result = gpsRegExp('51.507558', '-0.126095')
       await expect(result).resolves.toEqual(undefined)
     })
-    it('Should display error message if GPS values incorrectly', async () => {
+    it('Should display error message if the GPS longitude value is incorrect', async () => {
       const result = gpsRegExp('51.507558', '-0.126095xxxx')
-      await expect(result).rejects.toEqual('Please enter valid GPS coordinates')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('A valid longitude value is between -180 and 180, and contains a maximum of 6-digit decimal')
+    })
+
+    it('Should display error message if the GPS latitude value is incorrect', async () => {
+      const result = gpsRegExp('999.507558', '-0.126095')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('A valid latitude value is between -90 and 90, and contains a maximum of 6-digit decimal')
     })
   })
 

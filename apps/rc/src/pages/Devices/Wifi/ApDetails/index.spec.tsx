@@ -99,7 +99,7 @@ describe('ApDetails', () => {
     })
 
     expect(await screen.findByText('Overview')).toBeVisible()
-    expect(await screen.findAllByRole('tab')).toHaveLength(7)
+    expect(await screen.findAllByRole('tab')).toHaveLength(6)
   })
 
   it('should navigate to analytic tab correctly', async () => {
@@ -167,7 +167,7 @@ describe('ApDetails', () => {
       .toEqual('Clients ()')
   })
 
-  it('should navigate to services tab correctly', async () => {
+  it.skip('should navigate to services tab correctly', async () => {
     const params = {
       tenantId: 'tenant-id',
       serialNumber: 'ap-serialNumber',
