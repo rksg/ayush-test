@@ -33,6 +33,7 @@ export function SwitchOverviewACLs () {
       title: $t({ defaultMessage: 'ACL Name' }),
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
+      sorter: true,
       render: (data, row) =>
         <Button
           type='link'
@@ -49,6 +50,7 @@ export function SwitchOverviewACLs () {
       key: 'aclType',
       title: $t({ defaultMessage: 'ACL Type' }),
       dataIndex: 'aclType',
+      sorter: true,
       render: (data) => transformTitleCase(data as string)
     }
   ]
