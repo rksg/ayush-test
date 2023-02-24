@@ -94,10 +94,16 @@ export default function PortalDemo ({
     <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
       width: '95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
-      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId
+      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId?.trim()
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
           message={$t(defineMessage({
             defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
+          type='error'
+          showIcon/>}
+      {demoValue.componentDisplay.termsConditions && !demoValue.termsCondition?.trim()
+        && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
+          message={$t(defineMessage({
+            defaultMessage: 'Terms & conditions is enabled but not configured!' }))}
           type='error'
           showIcon/>}
       <UI.LayoutHeader>
