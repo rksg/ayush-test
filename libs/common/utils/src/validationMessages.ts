@@ -320,10 +320,31 @@ export const validationMessages = {
   subnetOverlapping: defineMessage({
     defaultMessage: 'The ports have overlapping subnets',
     description: 'Validation - subnet range'
+  }),
+  aclStandardNumericValueInvalid: defineMessage({
+    defaultMessage: 'Standard ACL Numeric Value Must Be 1-99',
+    description: 'Validation - Standard ACL Numeric Value Must Be 1-99'
+  }),
+  aclExtendedNumericValueInvalid: defineMessage({
+    defaultMessage: 'Extended ACL Numeric Value Must Be 100-199',
+    description: 'Validation - Extended ACL Numeric Value Must Be 100-199'
+  }),
+  aclNameSpecialCharacterInvalid: defineMessage({
+    defaultMessage: 'An ACL name cannot contain special characters such as a double quote (")',
+    description: 'Validation - ACL name cannot contain special characters'
+  }),
+  aclNameContainsTestInvalid: defineMessage({
+    defaultMessage: 'The ACL name cannot be \'test\'',
+    description: 'Validation - The ACL name cannot be \'test\''
+  }),
+  aclNameStartWithoutAlphabetInvalid: defineMessage({
+    defaultMessage: 'Name should start with an alphabet',
+    description: 'Validation - Name should start with an alphabet'
+  }),
+  aclNameDuplicateInvalid: defineMessage({
+    defaultMessage: 'The ACL name already exists',
+    description: 'Validation - The ACL name already exists'
   })
-
-
-
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {

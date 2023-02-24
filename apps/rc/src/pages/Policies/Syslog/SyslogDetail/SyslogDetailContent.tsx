@@ -5,7 +5,7 @@ import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { useSyslogPolicyQuery }   from '@acx-ui/rc/services'
+import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
@@ -13,16 +13,16 @@ const SyslogDetailContent = () => {
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useSyslogPolicyQuery({
+  const { data } = useRoguePolicyQuery({
     params: useParams()
   })
 
-  const { setVenueId, setPolicyName } = useContext(SyslogDetailContext)
+  const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
 
   useEffect(() => {
     if (data){
       const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
-      setVenueId(venueIdList)
+      setFiltersId(venueIdList)
       setPolicyName(data.policyName ?? '')
     }
   }, [data])
@@ -35,8 +35,6 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Primary Server' })}
           </Card.Title>
           <Paragraph>
-            {`${data.server}
-            :${data.port} ${data.protocol}`}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
@@ -44,21 +42,19 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Secondary Server' })}
           </Card.Title>
           <Paragraph>
-            {`${data.secondaryServer}
-            :${data.secondaryPort} ${data.secondaryProtocol}`}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Event Facility' })}
           </Card.Title>
-          <Paragraph>{data.facility}</Paragraph>
+          <Paragraph></Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Send Logs' })}
           </Card.Title>
-          <Paragraph>{data.flowLevel}</Paragraph>
+          <Paragraph></Paragraph>
         </GridCol>
       </GridRow>
     </Card>

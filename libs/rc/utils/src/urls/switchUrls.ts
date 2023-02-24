@@ -115,6 +115,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
     // newApi: false
   },
+  convertToStack: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/ConvertToStack'
+  },
   addStackMember: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
@@ -230,6 +234,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switches/:switchId/aclUnions',
     oldUrl: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId',
     newApi: true
+  },
+  addAcl: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
   },
   addVePort: {
     method: 'post',
@@ -410,6 +418,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchProfiles/query',
     oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
     newApi: true
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   },
   deleteProfiles: {
     method: 'delete',

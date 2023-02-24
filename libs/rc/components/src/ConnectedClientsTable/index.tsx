@@ -137,7 +137,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return '--'
         }else{
           return (
-            <TenantLink to={`/devices/switch/${data}/details/overview`}>{row.switchName}</TenantLink>
+            <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
           )
         }
       }
@@ -147,10 +147,15 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) =>
-        (
-          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
-        )
+      render: (data, row) => {
+        if (!row.healthCheckStatus) {
+          return data
+        } else {
+          return (
+            <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
+          )
+        }
+      }
     },
     {
       key: 'sessStartTime',
@@ -344,7 +349,8 @@ export const ConnectedClientsTable = (props: {
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
-    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+    params.serialNumber ? { serialNumber: [params.serialNumber] } :
+      params.apId ? { serialNumber: [params.apId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
