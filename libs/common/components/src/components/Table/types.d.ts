@@ -54,6 +54,12 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterKey?: React.Key
   /**
+   * Set the value in filters to be nullable
+   * It is useful when the value could not be null
+   * @default undefined
+   */
+  filterValueNullable?: boolean
+  /**
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */

@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { CaretDownSolid }                                         from '@acx-ui/icons'
-import { useUserProfileContext }                                  from '@acx-ui/rc/components'
+import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
+import { CaretDownSolid }                              from '@acx-ui/icons'
+import { useUserProfileContext }                       from '@acx-ui/rc/components'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
@@ -134,6 +134,7 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
@@ -153,7 +154,6 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      show: delegationType === DelegationType.MSP_EC,
       key: 'status'
     },
     {
@@ -169,6 +169,7 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'tenantName',
       key: 'tenantName',
+      searchable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
@@ -257,13 +258,13 @@ export function MspEcDropdownList () {
 
   const ContentMspEc = () => {
     return <Loader states={[tableQueryMspEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data}
         pagination={tableQueryMspEc.pagination}
         onChange={tableQueryMspEc.handleTableChange}
+        onFilterChange={tableQueryMspEc.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -271,13 +272,13 @@ export function MspEcDropdownList () {
 
   const ContentIntergrator = () => {
     return <Loader states={[tableQueryIntegrator]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQueryIntegrator.data?.data}
         pagination={tableQueryIntegrator.pagination}
         onChange={tableQueryIntegrator.handleTableChange}
+        onFilterChange={tableQueryIntegrator.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -285,13 +286,13 @@ export function MspEcDropdownList () {
 
   const ContentVar = () => {
     return <Loader states={[tableQueryVarRec]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
+        onFilterChange={tableQueryVarRec.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -299,13 +300,13 @@ export function MspEcDropdownList () {
 
   const ContentSupport = () => {
     return <Loader states={[tableQuerySupport]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQuerySupport.data?.data}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
+        onFilterChange={tableQuerySupport.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -313,13 +314,13 @@ export function MspEcDropdownList () {
 
   const ContentSupportEc = () => {
     return <Loader states={[tableQuerySupportEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data}
         pagination={tableQuerySupportEc.pagination}
         onChange={tableQuerySupportEc.handleTableChange}
+        onFilterChange={tableQuerySupportEc.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -345,7 +346,7 @@ export function MspEcDropdownList () {
         />
       </UI.CompanyNameDropdown>
       <Drawer
-        width={360}
+        width={420}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
