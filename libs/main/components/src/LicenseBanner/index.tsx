@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
 
-import _                          from 'lodash'
-import { useIntl, defineMessage } from 'react-intl'
-import { FormattedMessage }       from 'react-intl'
+import _                    from 'lodash'
+import { useIntl }          from 'react-intl'
+import { FormattedMessage } from 'react-intl'
 
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
@@ -12,7 +12,8 @@ import {
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
-  EntitlementDeviceType
+  EntitlementDeviceType,
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
@@ -56,15 +57,6 @@ export interface ExpireInfo {
   deviceType: EntitlementDeviceType
   isMultipleLicense: boolean
   expireType: LicenseBannerTypeEnum
-}
-
-const deviceTypeText = {
-  WIFI: defineMessage({ defaultMessage: 'APs' }),
-  LTE: defineMessage({ defaultMessage: 'APs' }),
-  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  MSP_WIFI: defineMessage({ defaultMessage: 'APs' }),
-  MSP_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  ANALYTICS: defineMessage({ defaultMessage: 'Devices' })
 }
 
 const getExpireInfo = (bannerList:EntitlementBanner[])=>{
@@ -149,7 +141,7 @@ export function LicenseBanner (props: BannerProps) {
                   to='administration/subscriptions'>
                   {chunks}
                 </UI.ActiveBtn>,
-              expireDeviceType: $t(deviceTypeText[expireInfo.deviceType]),
+              expireDeviceType: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType),
               graceDate: formatter('dateFormat')(expireInfo.effectDate)
             }}
           />
