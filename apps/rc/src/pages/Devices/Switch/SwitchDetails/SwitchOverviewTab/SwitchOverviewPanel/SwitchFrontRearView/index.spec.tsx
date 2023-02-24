@@ -1,29 +1,24 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { switchApi }                       from '@acx-ui/rc/services'
-import { IP_ADDRESS_TYPE, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { mockServer, render, screen }      from '@acx-ui/test-utils'
+import { switchApi }                  from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { SwitchDetailsContext }                                                      from '../../..'
-import { stackMemberStandalone, switchDetailSatckOnline, switchDetailSwitchOffline } from '../__tests__/fixtures'
+import { SwitchDetailsContext }                                                                                       from '../../..'
+import { stackMemberStandalone, standaloneFront, standaloneRear, switchDetailSatckOnline, switchDetailSwitchOffline } from '../__tests__/fixtures'
 
 import { SwitchFrontRearView } from '.'
 
 describe('SwitchFrontRearView', () => {
-
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
-      rest.get( SwitchUrlsInfo.getSwitch.url,
-        (_, res, ctx) => res(ctx.json({
-          dhcpClientEnabled: true,
-          dhcpServerEnabled: false,
-          ipAddressType: IP_ADDRESS_TYPE.DYNAMIC
-        }))),
-      rest.post( SwitchUrlsInfo.getDhcpPools.url,
-        (_, res, ctx) => res(ctx.json({})))
+      rest.get(SwitchUrlsInfo.getSwitchFrontView.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(standaloneFront))),
+      rest.get(SwitchUrlsInfo.getSwitchRearView.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(standaloneRear)))
     )
   })
 
