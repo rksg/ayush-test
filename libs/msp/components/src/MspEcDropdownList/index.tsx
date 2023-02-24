@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Drawer, LayoutUI, Loader, SearchBar, Table, TableProps } from '@acx-ui/components'
-import { CaretDownSolid }                                         from '@acx-ui/icons'
-import { useUserProfileContext }                                  from '@acx-ui/rc/components'
+import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
+import { CaretDownSolid }                              from '@acx-ui/icons'
+import { useUserProfileContext }                       from '@acx-ui/rc/components'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
@@ -17,12 +17,21 @@ import { AccountType }                                        from '@acx-ui/util
 
 import * as UI from './styledComponents'
 
+enum DelegationType {
+  MSP_EC = 'MSP_EC',
+  VAR_REC = 'VAR_REC',
+  SUPPORT_REC = 'SUPPORT_REC',
+  SUPPORT_MSP_EC = 'SUPPORT_MSP_EC',
+  MSP_INTEGRATOR = 'MSP_INTEGRATOR',
+}
+
 export function MspEcDropdownList () {
   const { $t } = useIntl()
 
   const [customerName, setCustomerName] = useState('')
   const [searchString, setSearchString] = useState('')
   const [visible, setVisible] = useState(false)
+  const [delegationType, setDelegationType] = useState('')
 
   const params = useParams()
   const { data: tenantDetail } = useGetTenantDetailQuery({ params })
@@ -30,25 +39,45 @@ export function MspEcDropdownList () {
   // user profile for tenant from jwt token
   const { data: userProfile } = useUserProfileContext()
 
-  let isMspEc = false
-  let isSupportEc = false
-  let isSupport = false
-  let isVar = false
-  if (userProfile?.support === true) {
-    if (tenantDetail?.tenantType === AccountType.MSP_EC)
-      isSupportEc = true
-    else
-      isSupport = true
-  } else {
-    if (tenantDetail?.tenantType === AccountType.MSP_EC)
-      isMspEc = true
-    else
-      isVar = true
+  useEffect(()=>{
+    if (tenantDetail && userProfile) {
+      UpdateDelegationType(tenantDetail?.tenantType, userProfile?.support)
+    }
+  }, [tenantDetail, userProfile])
+
+
+  function UpdateDelegationType (tenantType?: string, support?: boolean) {
+    if (support === true) {
+      if (tenantType === AccountType.MSP_EC)
+        setDelegationType(DelegationType.SUPPORT_MSP_EC)
+      else
+        setDelegationType(DelegationType.SUPPORT_REC)
+    } else {
+      if (tenantType === AccountType.MSP_EC)
+        setDelegationType(DelegationType.MSP_EC)
+      else if ( tenantType === AccountType.MSP_INSTALLER ||
+                tenantType === AccountType.MSP_INTEGRATOR)
+        setDelegationType(DelegationType.MSP_INTEGRATOR)
+      else
+        setDelegationType(DelegationType.VAR_REC)
+    }
   }
 
   const mspEcPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: { tenantType: [AccountType.MSP_EC] },
+    fields: [
+      'id',
+      'name',
+      'tenantType',
+      'status',
+      'streetAddress'
+    ]
+  }
+
+  const integratorPayload = {
+    searchString: '',
+    filters: { tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
       'name',
@@ -105,6 +134,7 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
@@ -124,7 +154,6 @@ export function MspEcDropdownList () {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
-      show: isMspEc,
       key: 'status'
     },
     {
@@ -140,6 +169,7 @@ export function MspEcDropdownList () {
       title: $t({ defaultMessage: 'Customers' }),
       dataIndex: 'tenantName',
       key: 'tenantName',
+      searchable: true,
       defaultSortOrder: 'ascend',
       onCell: () => {
         return {
@@ -168,28 +198,35 @@ export function MspEcDropdownList () {
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: mspEcPayload,
-    option: { skip: !isMspEc }
+    option: { skip: delegationType !== DelegationType.MSP_EC }
+  })
+
+  const tableQueryIntegrator = useTableQuery({
+    useQuery: useMspCustomerListDropdownQuery,
+    apiParams: { tenantId: TenantIdFromJwt() },
+    defaultPayload: integratorPayload,
+    option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR }
   })
 
   const tableQueryVarRec = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: varPayload,
-    option: { skip: !isVar }
+    option: { skip: delegationType !== DelegationType.VAR_REC }
   })
 
   const tableQuerySupportEc = useTableQuery({
     useQuery: useSupportCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportEcPayload,
-    option: { skip: !isSupportEc }
+    option: { skip: delegationType !== DelegationType.SUPPORT_MSP_EC }
   })
 
   const tableQuerySupport = useTableQuery({
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportPayload,
-    option: { skip: !isSupport }
+    option: { skip: delegationType !== DelegationType.SUPPORT_REC }
   })
 
   useEffect(()=>{
@@ -197,16 +234,19 @@ export function MspEcDropdownList () {
       setCustomerName(() => tenantDetail?.name)
     }
 
-    if(tableQueryMspEc?.data && isMspEc) {
+    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_EC) {
       tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
     }
-    if(tableQueryVarRec?.data && isVar) {
+    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_INTEGRATOR) {
+      tableQueryMspEc.setPayload({ ...tableQueryIntegrator.payload, searchString: searchString })
+    }
+    if(tableQueryVarRec?.data && delegationType === DelegationType.VAR_REC) {
       tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
     }
-    if(tableQuerySupportEc?.data && isSupportEc) {
+    if(tableQuerySupportEc?.data && delegationType === DelegationType.SUPPORT_MSP_EC) {
       tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
     }
-    if(tableQuerySupport?.data && isSupport) {
+    if(tableQuerySupport?.data && delegationType === DelegationType.SUPPORT_REC) {
       tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
     }
   }, [tenantDetail?.name, searchString])
@@ -218,13 +258,27 @@ export function MspEcDropdownList () {
 
   const ContentMspEc = () => {
     return <Loader states={[tableQueryMspEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQueryMspEc.data?.data}
         pagination={tableQueryMspEc.pagination}
         onChange={tableQueryMspEc.handleTableChange}
+        onFilterChange={tableQueryMspEc.handleFilterChange}
+        rowKey='id'
+      />
+    </Loader>
+  }
+
+  const ContentIntergrator = () => {
+    return <Loader states={[tableQueryIntegrator]}>
+
+      <Table
+        columns={customerColumns}
+        dataSource={tableQueryIntegrator.data?.data}
+        pagination={tableQueryIntegrator.pagination}
+        onChange={tableQueryIntegrator.handleTableChange}
+        onFilterChange={tableQueryIntegrator.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -232,13 +286,13 @@ export function MspEcDropdownList () {
 
   const ContentVar = () => {
     return <Loader states={[tableQueryVarRec]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQueryVarRec.data?.data}
         pagination={tableQueryVarRec.pagination}
         onChange={tableQueryVarRec.handleTableChange}
+        onFilterChange={tableQueryVarRec.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -246,13 +300,13 @@ export function MspEcDropdownList () {
 
   const ContentSupport = () => {
     return <Loader states={[tableQuerySupport]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={supportColumns}
         dataSource={tableQuerySupport.data?.data}
         pagination={tableQuerySupport.pagination}
         onChange={tableQuerySupport.handleTableChange}
+        onFilterChange={tableQuerySupport.handleFilterChange}
         rowKey='id'
       />
     </Loader>
@@ -260,25 +314,27 @@ export function MspEcDropdownList () {
 
   const ContentSupportEc = () => {
     return <Loader states={[tableQuerySupportEc]}>
-      <SearchBar onChange={setSearchString}/>
 
       <Table
         columns={customerColumns}
         dataSource={tableQuerySupportEc.data?.data}
         pagination={tableQuerySupportEc.pagination}
         onChange={tableQuerySupportEc.handleTableChange}
+        onFilterChange={tableQuerySupportEc.handleFilterChange}
         rowKey='id'
       />
     </Loader>
   }
 
   let contentx = ContentMspEc()
-  if (isSupport) {
+  if (delegationType === DelegationType.SUPPORT_REC) {
     contentx = ContentSupport()
-  } else if (isSupportEc) {
+  } else if (delegationType === DelegationType.SUPPORT_MSP_EC) {
     contentx = ContentSupportEc()
-  } else if (isVar) {
+  } else if (delegationType === DelegationType.VAR_REC) {
     contentx = ContentVar()
+  } else if (delegationType === DelegationType.MSP_INTEGRATOR) {
+    contentx = ContentIntergrator()
   }
 
   return (
@@ -290,7 +346,7 @@ export function MspEcDropdownList () {
         />
       </UI.CompanyNameDropdown>
       <Drawer
-        width={360}
+        width={420}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}

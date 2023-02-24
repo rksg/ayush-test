@@ -79,7 +79,7 @@ async function addVariable (variableName, type) {
 
 describe('Cli Template Form - Add', () => {
   const params = {
-    tenantId: 'tenant-id', action: 'add', templateId: 'template-id'
+    tenantId: 'tenant-id', action: 'add', configType: 'onDemandCli'
   }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -106,7 +106,7 @@ describe('Cli Template Form - Add', () => {
   })
   it('should render correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -149,7 +149,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should render variable list correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -170,7 +170,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should add variable to CLI editor correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -194,7 +194,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should filter variables correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -216,7 +216,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should handle CLI valiation', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -242,7 +242,7 @@ describe('Cli Template Form - Add', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -272,7 +272,8 @@ describe('Cli Template Form - Add', () => {
 
 describe('Cli Template Form - Edit', () => {
   const params = {
-    tenantId: 'tenant-id', action: 'edit', templateId: 'f14c4116e30743bfa3180ba4b68cd069'
+    tenantId: 'tenant-id', action: 'edit', configType: 'onDemandCli',
+    templateId: 'f14c4116e30743bfa3180ba4b68cd069'
   }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -305,7 +306,7 @@ describe('Cli Template Form - Edit', () => {
     render(<Provider>
       <CliTemplateForm />
     </Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -340,7 +341,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle edit variable', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -365,7 +366,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle delete variable', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -386,7 +387,7 @@ describe('Cli Template Form - Edit', () => {
 
   xit('should render variable hint menu correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -411,7 +412,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle import from file', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -440,7 +441,7 @@ describe('Cli Template Form - Edit', () => {
   //     )
   //   )
   //   render(<Provider><CliTemplateForm /></Provider>, {
-  //     route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+  //     route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
   //   })
 
   //   await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -462,7 +463,7 @@ describe('Cli Template Form - Edit', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
     await waitFor(() => {
@@ -483,7 +484,7 @@ describe('Cli Template Form - Edit', () => {
 
   it('should redirect to list table after clicking cancel button', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()

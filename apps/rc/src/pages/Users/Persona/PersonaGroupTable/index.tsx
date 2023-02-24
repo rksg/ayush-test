@@ -151,7 +151,7 @@ export function PersonaGroupTable () {
   const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { }
+    defaultPayload: { keyword: '' }
   })
 
   useEffect(() => {

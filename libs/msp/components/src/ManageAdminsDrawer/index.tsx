@@ -62,13 +62,15 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const handleSave = () => {
     let payload: MspEcDelegatedAdmins[] = []
     const selectedRows = form.getFieldsValue(['mspAdmins'])
-    if (selectedRows && selectedRows.mspAdmins) {
+    if (selectedRows && selectedRows.mspAdmins && selectedRows.mspAdmins.length > 0) {
       selectedRows.mspAdmins.forEach((element:MspAdministrator) => {
         payload.push ({
           msp_admin_id: element.id,
           msp_admin_role: element.role
         }
         )})
+    } else {
+      return
     }
     if (tenantId) {
       saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
@@ -153,6 +155,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
       form.setFieldValue('mspAdmins', selRows)
     }
+    form.validateFields(['admintable'])
 
     return (
       <Loader states={[queryResults
@@ -166,6 +169,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selectedRows) {
               form.setFieldValue('mspAdmins', selectedRows)
+              form.validateFields(['admintable'])
             }
           }}
         />
@@ -173,12 +177,29 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     )
   }
 
-  const content =
-  <Form layout='vertical' form={form} onFinish={onClose}>
-    <Subtitle level={3}>
-      { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
-    <MspAdminTable />
-  </Form>
+  const formContent =
+    <Form layout='vertical' form={form} onFinish={onClose}>
+      <Subtitle level={3}>
+        { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
+      <MspAdminTable />
+      <Form.Item
+        style={{ marginTop: '-50px' }}
+        name='admintable'
+        rules={[
+          { validator: async () => {
+            const selectedRows = form.getFieldsValue(['mspAdmins'])
+            if (selectedRows && selectedRows.mspAdmins && selectedRows.mspAdmins.length > 0) {
+              return Promise.resolve()
+            }
+            return Promise.reject(
+              $t({ defaultMessage: 'Please select at least one MSP administrator' })
+            )
+          } }
+        ]}
+        validateFirst
+      >
+      </Form.Item>
+    </Form>
 
   const footer = [
     <Drawer.FormFooter
@@ -193,10 +214,11 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onBackClick={onClose}
       visible={visible}
       onClose={onClose}
-      children={content}
       footer={footer}
       destroyOnClose={resetField}
       width={'700px'}
-    />
+    >
+      {formContent}
+    </Drawer>
   )
 }

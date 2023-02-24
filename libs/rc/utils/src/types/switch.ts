@@ -569,19 +569,42 @@ export interface CliTemplateVenueSwitches {
 }
 
 export interface CliConfiguration {
-  id: string
-  name: string
-  cli: string
+  id?: string
+  name?: string
+  cli?: string
   reload?: boolean
   applyLater?: boolean
   venueSwitches?: CliTemplateVenueSwitches[]
   variables?: CliTemplateVariable[]
 
   // profile
-  overwrite?: boolean  //For profiles
-  // venues = []; //For profiles
-  // models = []; //For profiles
+  overwrite?: boolean
+  venues?: string[]
+  models?: string[]
+  venueCliTemplate?: { //
+		cli?: string,
+		id?: string,
+		name?: string,
+		overwrite?: boolean
+    switchModels?: string
+    variables?: CliTemplateVariable[]
+	}
 }
+
+export interface FamilyModels {
+  family: string,
+  models: {
+    model: string
+    checked: boolean
+  }[]
+}
+
+export interface CliFamilyModels {
+  familyModels: FamilyModels[]
+  venueId: string
+  venueName: string
+}
+
 export enum LAG_TYPE {
   STATIC = 'static',
   DYNAMIC = 'dynamic'
@@ -597,4 +620,20 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+}
+
+export interface AclStandardRule {
+  sequence: number
+  action: string
+  source: string
+  specificSrcNetwork: string
+  editIndex?: number
+}
+
+export interface AclExtendedRule extends AclStandardRule {
+  protocol?: string
+  sourcePort?: string
+  destination?: string
+  destinationPort?: string
+  specificDestNetwork?: string
 }

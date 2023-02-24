@@ -297,7 +297,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
 
   if (!get(data, 'accessControlProfileEnable')) {
     advancedCustomization.accessControlProfileId = null
+    advancedCustomization.accessControlEnable = false
   }
+
+  advancedCustomization.respectiveAccessControl = !get(data, 'accessControlProfileEnable')
 
   if (get(data, 'accessControlProfileEnable')
     && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
@@ -314,9 +317,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
   }
 
-  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
-    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
-  }
+
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
     advancedCustomization.userUplinkRateLimiting = 0

@@ -1,5 +1,5 @@
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import moment                       from 'moment-timezone'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -7,7 +7,9 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  MspEntitlement
+  MspEntitlement,
+  MspEcProfile,
+  MspProfile
 } from './types/msp'
 
 const devicesCountMap = {
@@ -27,6 +29,25 @@ export class EntitlementUtil {
     return 'Wi-Fi'
   }
 
+  public static getDeviceTypeText ($t: IntlShape['$t'], deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case EntitlementDeviceType.WIFI:
+      case EntitlementDeviceType.MSP_WIFI:
+        return $t({ defaultMessage: 'Wi-Fi' })
+      case EntitlementDeviceType.SWITCH:
+      case EntitlementDeviceType.MSP_SWITCH:
+        return $t({ defaultMessage: 'Switch' })
+      case EntitlementDeviceType.LTE:
+        return $t({ defaultMessage: 'LTE' })
+      case EntitlementDeviceType.ANALYTICS:
+        return $t({ defaultMessage: 'Analytics' })
+      case EntitlementDeviceType.EDGE:
+        return $t({ defaultMessage: 'SmartEdge' })
+      default:
+        return ''
+    }
+  }
+
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
@@ -39,6 +60,8 @@ export class EntitlementUtil {
         return 'ICX 7650'
       case EntitlementDeviceSubType.ICX78:
         return 'ICX 7850'
+      case EntitlementDeviceSubType.ICX82:
+        return 'ICX 8200'
       case EntitlementDeviceSubType.ICXTEMP:
       case EntitlementDeviceSubType.ICX_ANY:
       case EntitlementDeviceSubType.MSP_WIFI_TEMP:
@@ -157,5 +180,29 @@ function displayYears (timeLeft: number) {
   } else {
     return getIntl().$t({ defaultMessage:
       'More than {years} {years, plural, one {Year} other {Years}}' }, { years: yearsValueFloored })
+  }
+}
+
+export const MSPUtils = () => {
+
+  const isMspEc = (mspEc: MspEcProfile | undefined): boolean => {
+    if (mspEc?.msp_label) {
+      return true
+    }
+
+    return false
+  }
+
+  const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
+    if (msp?.msp_label !== '') {
+      return true
+    }
+
+    return false
+  }
+
+  return {
+    isMspEc,
+    isOnboardedMsp
   }
 }
