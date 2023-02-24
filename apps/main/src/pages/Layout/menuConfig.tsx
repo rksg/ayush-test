@@ -41,6 +41,7 @@ export function useMenuConfig () {
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -237,7 +238,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: !useIsSplitOn(Features.UNRELEASED)
+      disabled: !isAdministrationEnabled
     }
   ]
   return config

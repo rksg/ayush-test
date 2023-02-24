@@ -9,7 +9,9 @@ import {
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
+import { AclTypeEnum }    from './constants'
 import { IpUtilsService } from './ipUtilsService'
+import { Acl }            from './types'
 
 
 const Netmask = require('netmask').Netmask
@@ -76,7 +78,7 @@ export function domainNameRegExp (value: string) {
   // eslint-disable-next-line max-len
   const re = new RegExp(/^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$/)
   if (value && !re.test(value)) {
-    return Promise.reject($t(validationMessages.invalid))
+    return Promise.reject($t(validationMessages.domain))
   }
   return Promise.resolve()
 }
@@ -91,7 +93,7 @@ export function domainsNameRegExp (value: string[], required: boolean) {
     return !(required && !re.test(domain))
   })
 
-  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.invalid))
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
 
 export function walledGardensRegExp (value:string) {
@@ -756,4 +758,43 @@ export function isSubnetOverlap (firstIpAddress: string, firstSubnetMask:string,
   return result ? Promise.reject($t(validationMessages.subnetOverlapping))
     : Promise.resolve()
 
+}
+
+export function checkAclName (aclName: string, aclType: string) {
+  const { $t } = getIntl()
+  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
+    try {
+      const iName = parseInt(aclName, 10)
+      if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
+        return Promise.reject($t(validationMessages.aclStandardNumericValueInvalid))
+      }
+      if ((iName < 100 || iName > 199) && aclType === AclTypeEnum.EXTENDED) {
+        return Promise.reject($t(validationMessages.aclExtendedNumericValueInvalid))
+      }
+      return Promise.resolve()
+    } catch (e) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+  } else {
+    if (!aclName.match(/^[a-zA-Z_].*/)) {
+      return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
+    }
+    if (aclName.match(/.*[\"]/)) {
+      return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
+    }
+    if (aclName === 'test') {
+      return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
+    }
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
 }
