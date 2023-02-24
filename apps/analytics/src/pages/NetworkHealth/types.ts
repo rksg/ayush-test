@@ -83,13 +83,15 @@ export type NetworkHealthConfig = {
   createdAt?: string // timestamp
 }
 
-export type NetworkHealthFormDto = Omit<NetworkHealthSpec, 'id' | 'configs'> & {
+export type NetworkHealthFormDto = Pick<NetworkHealthSpec, 'clientType' | 'schedule'> & {
   id?: NetworkHealthSpec['id']
-  // TODO: temporary handling until APsSelection widget available
-  configs: Array<Omit<NetworkHealthConfig, 'networkPaths'> &
-    { networkPaths: { networkNodes: string } }
+  name?: NetworkHealthSpec['name']
+  type?: NetworkHealthSpec['type']
+  configs: Array<Omit<Partial<NetworkHealthConfig>, 'networkPaths'> &
+    // TODO: temporary handling until APsSelection widget available
+    { networkPaths?: { networkNodes: string } }
   >
-  typeWithSchedule: TestTypeWithSchedule
+  typeWithSchedule?: TestTypeWithSchedule
   isDnsServerCustom: boolean
 }
 

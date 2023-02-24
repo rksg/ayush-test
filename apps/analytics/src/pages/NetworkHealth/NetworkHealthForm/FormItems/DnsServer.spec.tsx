@@ -11,9 +11,7 @@ const { clear, click, type } = userEvent
 describe('DnsServer', () => {
   it('handles Default', async () => {
     renderForm(<DnsServer />, {
-      initialValues: {
-        isDnsServerCustom: false
-      }
+      initialValues: { isDnsServerCustom: false }
     })
 
     expect(screen.getByRole('radio', { name: 'Default' })).toBeChecked()

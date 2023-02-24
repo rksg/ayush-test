@@ -18,9 +18,7 @@ import { NetworkHealthFormAPsSelection } from './NetworkHealthFormAPsSelection'
 import { NetworkHealthFormSettings }     from './NetworkHealthFormSettings'
 import { NetworkHealthFormSummary }      from './NetworkHealthFormSummary'
 
-export const initialValues: Partial<Omit<NetworkHealthFormDto, 'configs'>> & {
-  configs?: Partial<NetworkHealthFormDto['configs'][0]>[]
-} = {
+export const initialValues: NetworkHealthFormDto = {
   clientType: ClientType.VirtualClient,
   schedule: {
     type: 'service_guard',
