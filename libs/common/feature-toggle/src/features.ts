@@ -24,6 +24,7 @@ export enum Features {
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
+  LICENSE_BANNER='acx-ui-license-banner',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
   NEW_API='acx-ui-new-api'

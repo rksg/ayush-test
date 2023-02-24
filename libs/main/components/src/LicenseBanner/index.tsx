@@ -4,6 +4,7 @@ import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import { FormattedMessage }       from 'react-intl'
 
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useEntitlementBannersQuery,
   useGetMspEntitlementBannersQuery
@@ -15,7 +16,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
-
 
 
 import { HeaderContext } from '../HeaderContext'
@@ -93,6 +93,8 @@ export function LicenseBanner (props: BannerProps) {
     setSearchExpanded, setLicenseExpanded } = useContext(HeaderContext)
   const { $t } = useIntl()
   const { isMSPUser } = props
+
+  const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
@@ -222,6 +224,6 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return <> { !_.isEmpty(expireList) && licenseRender()}
+  return <> { !_.isEmpty(expireList) && isFFEnabled && licenseRender()}
   </>
 }
