@@ -37,7 +37,7 @@ export function DevicesWidget (props: {
               data={props.switchData}/>
             { edgeSupported && (<DonutChart
               style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Edge' })}
+              title={$t({ defaultMessage: 'SmartEdge' })}
               data={props.edgeData}/>)}
           </div>
         )}

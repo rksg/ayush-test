@@ -1,9 +1,11 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { switchApi }                  from '@acx-ui/rc/services'
 import { LAG_TYPE, SwitchUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store  }           from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
@@ -21,44 +23,51 @@ import { SwitchLagModal } from './SwitchLagModal'
 const params = {
   tenantId: 'tenant-id',
   switchId: 'switch-id',
+  venueId: 'a98653366d2240b9ae370e48fab3a9a1',
   serialNumber: 'serialNumber-id'
 }
-const mockServerQuery = () => mockServer.use(
-  rest.get(
-    SwitchUrlsInfo.getLagList.url,
-    (req, res, ctx) => res(ctx.json(lagList))
-  ),
-  rest.post(
-    SwitchUrlsInfo.addLag.url,
-    (_, res, ctx) => { return res(ctx.json(successResponse)) }
-  ),
-  rest.put(
-    SwitchUrlsInfo.updateLag.url,
-    (_, res, ctx) => { return res(ctx.json(successResponse)) }
-  ),
-  rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-    (_, res, ctx) => res(ctx.json(defaultVlan))
-  ),
-  rest.get(SwitchUrlsInfo.getSwitchVlans.url,
-    (_, res, ctx) => res(ctx.json(switchVlans))
-  ),
-  rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
-    (_, res, ctx) => res(ctx.json(switchVlanUnion))
-  ),
-  rest.get(SwitchUrlsInfo.getVlansByVenue.url,
-    (_, res, ctx) => res(ctx.json(vlansByVenue))
-  ),
-  rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
-    (_, res, ctx) => res(ctx.json(switchDetailHeader))
-  ),
-  rest.post(
-    SwitchUrlsInfo.getSwitchPortlist.url,
-    (req, res, ctx) => res(ctx.json(portlist))
-  )
-)
+const mockServerQuery = () => {
+  store.dispatch(switchApi.util.resetApiState())
+  mockServer.use(
+    rest.get(
+      SwitchUrlsInfo.getLagList.url,
+      (req, res, ctx) => res(ctx.json(lagList))
+    ),
+    rest.post(
+      SwitchUrlsInfo.addLag.url,
+      (_, res, ctx) => { return res(ctx.json(successResponse)) }
+    ),
+    rest.put(
+      SwitchUrlsInfo.updateLag.url,
+      (_, res, ctx) => { return res(ctx.json(successResponse)) }
+    ),
+    rest.post(SwitchUrlsInfo.getDefaultVlan.url,
+      (_, res, ctx) => res(ctx.json(defaultVlan))
+    ),
+    rest.get(SwitchUrlsInfo.getSwitchVlans.url,
+      (_, res, ctx) => res(ctx.json(switchVlans))
+    ),
+    rest.get(SwitchUrlsInfo.getSwitchVlanUnion.url,
+      (_, res, ctx) => res(ctx.json(switchVlanUnion))
+    ),
+    rest.get(SwitchUrlsInfo.getVlansByVenue.url,
+      (_, res, ctx) => res(ctx.json(vlansByVenue))
+    ),
+    rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
+      (_, res, ctx) => res(ctx.json(switchDetailHeader))
+    ),
+    rest.post(
+      SwitchUrlsInfo.getSwitchPortlist.url,
+      (req, res, ctx) => res(ctx.json(portlist))
+    )
+  )}
 
 describe('SwitchLagModal', () => {
   const mockedSetVisible = jest.fn()
+  afterEach(() => {
+    Modal.destroyAll()
+  })
+
 
   it('should render lag list correctly', async () => {
     mockServerQuery()
@@ -78,7 +87,7 @@ describe('SwitchLagModal', () => {
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
   })
 
-  it('should edit lag click cancel correctly', async () => {
+  it('should render correctly with cancel', async () => {
     mockServerQuery()
     const lag = {
       id: '75145abea1e74f5e8019725444a0ef9f',
