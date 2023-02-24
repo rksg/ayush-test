@@ -25,7 +25,7 @@ import { MacRegistrationListSettingForm } from './MacRegistrationListSetting/Mac
 interface MacRegistrationListFormProps {
   editMode?: boolean,
   modalMode?: boolean,
-  modalCallBack?: () => void
+  modalCallBack?: (name?: string) => void
 }
 
 export default function MacRegistrationListForm (props: MacRegistrationListFormProps) {
@@ -72,7 +72,7 @@ export default function MacRegistrationListForm (props: MacRegistrationListFormP
         )
       })
 
-      modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
+      modalMode ? modalCallBack?.(data.name) : navigate(linkToList, { replace: true })
     } catch (error) {
       showToast({
         type: 'error',
