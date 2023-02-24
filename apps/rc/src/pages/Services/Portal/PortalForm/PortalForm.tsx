@@ -157,8 +157,9 @@ export const PortalForm = (props:{
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
           onFinish={async (data) => {
-            if((data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId.trim())||
-              (data.content.componentDisplay.termsConditions&&!data.content.termsCondition.trim())){
+            if((data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId?.trim())||
+              (data.content.componentDisplay.termsConditions&&!
+              data.content.termsCondition?.trim())){
               return false
             }
             return handleAddPortalService(data)}}
