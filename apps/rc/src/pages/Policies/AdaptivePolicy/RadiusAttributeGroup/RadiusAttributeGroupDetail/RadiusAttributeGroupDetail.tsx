@@ -23,20 +23,16 @@ export default function RadiusAttributeGroupDetail () {
   const { Paragraph } = Typography
 
   const getAttributes = function (attributes: Partial<AttributeAssignment> [] | undefined) {
-    const rows = []
-    if(attributes) {
-      for (const attribute of attributes) {
-        rows.push(
-          <Col span={6}>
-            <Form.Item
-              label={attribute.attributeName}>
-              <Paragraph>{attribute.attributeValue}</Paragraph>
-            </Form.Item>
-          </Col>
-        )
-      }
-    }
-    return rows
+    return attributes?.map((attribute) => {
+      return (
+        <Col span={6} key={attribute.attributeName}>
+          <Form.Item
+            label={attribute.attributeName}>
+            <Paragraph>{attribute.attributeValue}</Paragraph>
+          </Form.Item>
+        </Col>
+      )
+    }) ?? []
   }
 
   return (

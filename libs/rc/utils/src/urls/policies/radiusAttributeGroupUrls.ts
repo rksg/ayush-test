@@ -29,7 +29,7 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttributeGroupsWithQuery: {
     method: 'post',
     newApi: true,
-    url: attributeGroupsBaseUrl + '/query'
+    url: attributeGroupsBaseUrl + '/query?excludeContent=:excludeContent'
   },
   createAttributeGroup: {
     method: 'post',

@@ -894,9 +894,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req,
           body: payload
         }
-      },
-      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
-        return transferToTableResult<RadiusAttributeGroup>(result)
       }
     }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
@@ -1073,5 +1070,6 @@ export const {
   useDeleteRadiusAttributeGroupMutation,
   useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
-  useAddRadiusAttributeGroupMutation
+  useAddRadiusAttributeGroupMutation,
+  useLazyRadiusAttributeGroupListByQueryQuery
 } = policyApi

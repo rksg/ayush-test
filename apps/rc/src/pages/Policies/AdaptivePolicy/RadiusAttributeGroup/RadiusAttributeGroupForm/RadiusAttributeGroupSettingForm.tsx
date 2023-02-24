@@ -2,7 +2,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
 import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
-import { useLazyRadiusAttributeGroupListQuery }                    from '@acx-ui/rc/services'
+import { useLazyRadiusAttributeGroupListByQueryQuery }             from '@acx-ui/rc/services'
 import { AttributeAssignment, checkObjectNotExists, OperatorType } from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
 
@@ -37,7 +37,7 @@ interface RadiusAttributeGroupSettingFormProps {
 
 export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSettingFormProps) {
   const { $t } = useIntl()
-  const [attributeGroup] = useLazyRadiusAttributeGroupListQuery()
+  const [attributeGroup] = useLazyRadiusAttributeGroupListByQueryQuery()
   const { policyId } = useParams()
   const form = Form.useFormInstance()
   const attributeAssignments = Form.useWatch('attributeAssignments')
@@ -49,9 +49,13 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
 
   const nameValidator = async (value: string) => {
     const list = (await attributeGroup({
+      params: {
+        excludeContent: 'false'
+      },
       payload: {
-        page: '1',
-        pageSize: '10000'
+        fields: [ 'name' ],
+        page: 1, pageSize: 10,
+        filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId)
       .map(n => ({ name: n.name }))
