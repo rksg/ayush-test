@@ -62,7 +62,7 @@ export function Password () {
     if (field && !field.preConfigured) return
 
     form.setFieldValue(fieldName, undefined)
-  }, [form, field])
+  }, [form, field, fieldName])
 
   if (!field) return null
 

@@ -36,7 +36,7 @@ export function Username () {
     if (field) return
 
     form.setFieldValue(fieldName, undefined)
-  }, [form, field])
+  }, [form, field, fieldName])
 
   if (!field) return null
 

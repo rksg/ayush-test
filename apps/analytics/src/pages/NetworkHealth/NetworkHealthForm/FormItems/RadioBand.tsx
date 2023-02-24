@@ -45,7 +45,7 @@ export function RadioBand () {
     if (clientType === ClientTypeEnum.VirtualWirelessClient) return
     if (radio !== Band.Band6) return
     form.setFieldValue(fieldName, Band.Band2_4)
-  }, [form, clientType, radio])
+  }, [form, clientType, radio, fieldName])
 
   return <Form.Item label={mainLabel}>
     <Form.Item noStyle name={fieldName} label={$t(label)}>

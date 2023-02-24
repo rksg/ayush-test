@@ -32,7 +32,7 @@ export function DnsServer () {
 
   useEffect(() => {
     if (!isCustom && value) form.setFieldValue(fieldName, undefined)
-  }, [form, isCustom, value])
+  }, [form, isCustom, value, fieldName])
 
   return (
     <Form.Item required={isCustom} label={$t(label)}>

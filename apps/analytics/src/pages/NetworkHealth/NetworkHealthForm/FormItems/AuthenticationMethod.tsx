@@ -47,7 +47,7 @@ export function AuthenticationMethod () {
     if (!code) return
     if (methods?.some(method => method.code === code)) return
     form.setFieldValue(fieldName, undefined)
-  }, [form, methods, code, clientType])
+  }, [form, methods, code, clientType, fieldName])
 
   const mainLabel = <>
     {$t(label)}
