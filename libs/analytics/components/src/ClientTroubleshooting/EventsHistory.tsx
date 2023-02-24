@@ -2,7 +2,7 @@ import { ReactNode, RefObject } from 'react'
 
 import { List }               from 'antd'
 import { EChartsType }        from 'echarts'
-import { findIndex, flatten } from 'lodash'
+import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
@@ -121,15 +121,23 @@ export function onPanelClick (
       const charts = chartRefs.current
       if (charts && charts.length > 0) {
         const active = charts.filter(chart => !chart.isDisposed())
-        const options = active.map(chart => chart.getOption())
-        const activeSeries = options.map(option => (option as { series: object[] } ).series)
-        const activeData = activeSeries.map(series => (series as { data: object } [])[0].data)
-        const allSeriesIndex = activeData
-          .map(data => findIndex(data as [number, string, number | object][], (elem) => {
-            return typeof elem[2] != 'number' && (elem[2] as { key: string } ).key === key
-          }))
-        const targetIndex = allSeriesIndex.findIndex(elem => elem > -1)
-        const dataIndex = allSeriesIndex[targetIndex]
+        let found = false
+        const dotChartIndexes = active.map(chart => {
+          if (found) return -1
+          const option = chart
+            .getOption() as unknown as { series: [{ data: [number, string, number | object][] }] }
+          const data = option.series[0].data
+          for (let i = 0; i < data.length; ++i) {
+            const elem = data[i]
+            if (typeof elem[2] !== 'number' && (elem[2] as { key: string }).key === key) {
+              found = true
+              return i
+            }
+          }
+          return -1
+        })
+        const targetIndex = dotChartIndexes.findIndex(elem => elem > -1)
+        const dataIndex = dotChartIndexes[targetIndex]
         const selectedChart = active[targetIndex]
         const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
         const targetDot = dots[dataIndex]

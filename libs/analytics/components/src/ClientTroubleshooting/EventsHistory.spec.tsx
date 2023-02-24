@@ -324,7 +324,29 @@ describe('EventsHistory', () => {
         {
           isDisposed: () => false,
           getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'fail' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        },
+        {
+          isDisposed: () => false,
+          getOption: () => ({
             series: [{ data: [[1234, 'all', { key: 'test' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        },
+        {
+          isDisposed: () => false,
+          getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'pass' }]] }]
           }),
           getDom: () => ({
             querySelectorAll: () => [{
