@@ -67,7 +67,7 @@ export interface PropertyUnit {
   personaId: string,
   guestPersonaId?: string,
   accessPoint?: {
-    name: string,
+    name?: string,
     selectedPorts: {
       macAddress: string,
       portIndex: number
@@ -79,12 +79,14 @@ export interface PropertyUnit {
 export interface UnitPersonaConfig {
   vlan?: number,
   dpskPassphrase?: string,
-  ethernetPorts?: PersonaEthernetPort[]
+  ethernetPorts?: PersonaEthernetPort[] // FIXME: not integrate with Persona
 }
 
 export interface PropertyUnitFormFields extends PropertyUnit {
   unitPersona?: UnitPersonaConfig,
-  guestPersona?: UnitPersonaConfig
+  guestPersona?: UnitPersonaConfig,
+  accessAp?: string,
+  ports?: number[]
 }
 
 export interface ResidentPortal {
