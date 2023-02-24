@@ -2,25 +2,18 @@
 import { useIntl, defineMessage } from 'react-intl'
 
 import {
-  LicenseBannerTypeEnum
+  LicenseBannerTypeEnum,
+  EntitlementUtil
 } from '@acx-ui/rc/utils'
 
 
 import { ExpireInfo } from './'
 
-const deviceTypeText = {
-  WIFI: defineMessage({ defaultMessage: 'APs' }),
-  LTE: defineMessage({ defaultMessage: 'APs' }),
-  SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  MSP_WIFI: defineMessage({ defaultMessage: 'APs' }),
-  MSP_SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  ANALYTICS: defineMessage({ defaultMessage: 'Devices' })
-}
 
 export const LicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
   const { $t } = useIntl()
   const isMulti = expireInfo.isMultipleLicense
-  const param = { deviceText: $t(deviceTypeText[expireInfo.deviceType]), daysText: expireInfo.effectDays, deviceCount: expireInfo.deviceCount }
+  const param = { deviceText: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType), daysText: expireInfo.effectDays, deviceCount: expireInfo.deviceCount }
   if(expireInfo.deviceType==='ANALYTICS'){
     return {
       [LicenseBannerTypeEnum.ra_below_50_percent]: $t({ defaultMessage: 'Analytics service has been deactivated' }),
@@ -89,7 +82,10 @@ export const LicenseBannerDescMapping = ()=> {
 export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
   const { $t } = useIntl()
   const isMulti = expireInfo.isMultipleLicense
-  const param = { deviceText: $t(deviceTypeText[expireInfo.deviceType]), daysText: expireInfo.effectDays, deviceCount: expireInfo.deviceCount }
+  const param = {
+    deviceText: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType),
+    daysText: expireInfo.effectDays,
+    deviceCount: expireInfo.deviceCount }
   if(expireInfo.deviceType==='ANALYTICS'){
     return {
       [LicenseBannerTypeEnum.ra_below_50_percent]: $t({ defaultMessage: 'Analytics service has been deactivated' }),
