@@ -89,18 +89,17 @@ export function ConnectionEventPopover ({ children, event, ...rest }: Connection
   const rowData = getConnectionDetails(event)
   const failureExtra: ReactNode = getFailureExtra(event)
   const visibleHandle = (val: boolean) => {
-    /* istanbul ignore next */
     rest.onVisibleChange && rest.onVisibleChange(val)
     setOpen(val)
   }
   return (
     <UI.PopoverWrapper>
       <Popover
+        {...rest}
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
         visible={open}
         onVisibleChange={visibleHandle}
-        {...rest}
       >
         {children}
       </Popover>
