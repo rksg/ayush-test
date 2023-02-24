@@ -403,11 +403,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addCliTemplate: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/cli-template'
+    url: '/cliTemplates',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    newApi: true
   },
   getCliConfigExamples: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/cli-template/example'
+    url: '/cliTemplates/examples',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template/example',
+    newApi: true
   },
   getProfiles: {
     method: 'post',
@@ -417,15 +421,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchConfigProfile: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+    url: '/switchProfiles/:profileId',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId',
+    newApi: true
   },
   addSwitchConfigProfile: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/profile'
+    url: '/switchProfiles',
+    oldUrl: '/api/switch/tenant/:tenantId/profile',
+    newApi: true
   },
   updateSwitchConfigProfile: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/profile'
+    url: '/switchProfiles/:profileId',
+    oldUrl: '/api/switch/tenant/:tenantId/profile',
+    newApi: true
   },
   getCliFamilyModels: {
     method: 'get',
@@ -433,7 +443,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteProfiles: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/profiles'
+    url: '/switchProfiles',
+    oldUrl: '/api/switch/tenant/:tenantId/profiles',
+    newApi: true
   },
   getCliTemplates: {
     method: 'post',
@@ -443,15 +455,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteCliTemplates: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/cli-template'
+    url: '/cliTemplates',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    newApi: true
   },
   getCliTemplate: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/cli-template/:templateId'
+    url: '/cliTemplates/:templateId',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template/:templateId',
+    newApi: true
   },
   updateCliTemplate: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/cli-template'
+    url: '/cliTemplates/:templateId',
+    oldUrl: '/api/switch/tenant/:tenantId/cli-template',
+    newApi: true
   },
   getLagList: {
     method: 'get',
