@@ -286,8 +286,12 @@ type HistoryItemWrapperProp = ElementType<HTMLDivElement> & {
 export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperProp) => props)`
   ${({ $selected }) => $selected
   /* istanbul ignore next */
-  && css`
-    background-color: var(--acx-accents-blue-30);
+  && `
+    font-weight: var(--acx-body-font-weight-bold);
+    
+    .ant-list-item-meta-title {
+      font-weight: var(--acx-body-font-weight-bold); 
+    }
   `
 }
 `
