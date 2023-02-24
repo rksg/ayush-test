@@ -42,5 +42,15 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     newApi: true,
     url: '/networkSegmentationGroups'
+  },
+  getNetworkSegmentationStatsList: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups/query'
+  },
+  deleteNetworkSegmentationGroup: {
+    method: 'delete',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
   }
 }
