@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form, Select }                             from 'antd'
+import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -19,15 +20,18 @@ import {
   NetworkHealthFormDto
 } from '../../types'
 
-const name = 'authenticationMethod' as const
+import { ClientType } from './ClientType'
+
+const name = ['configs', 0, 'authenticationMethod'] as const
 const label = defineMessage({ defaultMessage: 'Authentication Method' })
 
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
+  const fieldName = name as unknown as NamePath
   const [code, clientType] = [
-    Form.useWatch(name, form),
-    Form.useWatch('clientType', form)
+    Form.useWatch(fieldName, form),
+    Form.useWatch(ClientType.fieldName, form)
   ]
   const methods = authMethodsByClientType[clientType]
 
@@ -42,7 +46,7 @@ export function AuthenticationMethod () {
   useEffect(() => {
     if (!code) return
     if (methods?.some(method => method.code === code)) return
-    form.setFieldValue(name, undefined)
+    form.setFieldValue(fieldName, undefined)
   }, [form, methods, code, clientType])
 
   const mainLabel = <>
@@ -58,7 +62,7 @@ export function AuthenticationMethod () {
   return <Form.Item required label={mainLabel}>
     <Form.Item
       noStyle
-      name={name}
+      name={fieldName}
       label={$t(label)}
       rules={[{ required: true }]}
       children={<Select
@@ -76,7 +80,7 @@ AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary ()
   const { $t } = useIntl()
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary<AuthenticationMethodEnum>
       convert={(code) => $t(authMethodsByCode[code!].title)}

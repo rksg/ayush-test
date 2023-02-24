@@ -83,7 +83,9 @@ describe('WlanName', () => {
 
     renderForm(<WlanName />, {
       params,
-      initialValues: { wlanName: 'Name XYZ' }
+      initialValues: {
+        configs: [{ wlanName: 'Name XYZ' }]
+      }
     })
 
     const submit = screen.getByRole('button', { name: 'Submit' })

@@ -27,8 +27,10 @@ export const initialValues: Partial<NetworkHealthFormDto> = {
     day: null,
     hour: null
   },
-  radio: Band.Band2_4,
-  speedTestEnabled: false,
+  configs: [{
+    radio: Band.Band2_4,
+    speedTestEnabled: false
+  }],
   isDnsServerCustom: false
 }
 

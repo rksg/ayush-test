@@ -83,27 +83,15 @@ export type NetworkHealthConfig = {
   createdAt?: string // timestamp
 }
 
-export type NetworkHealthFormDto = {
+export type NetworkHealthFormDto = Omit<NetworkHealthSpec, 'id' | 'configs'> & {
   id?: NetworkHealthSpec['id']
-  isDnsServerCustom: boolean
-  typeWithSchedule: TestTypeWithSchedule
-} & Pick<NetworkHealthSpec, 'name' | 'type' | 'schedule' | 'clientType'>
-  & Pick<NetworkHealthConfig, 'radio'
-    | 'wlanName'
-    | 'authenticationMethod'
-    | 'wlanPassword'
-    | 'wlanUsername'
-    | 'speedTestEnabled'
-    | 'dnsServer'
-    | 'pingAddress'
-    | 'tracerouteAddress'
-    // TODO:
-    // Take `networkPaths` from `NetworkHealthConfig` when APsSelection input available
-    // | 'networkPaths'
+  // TODO: temporary handling until APsSelection widget available
+  configs: Array<Omit<NetworkHealthConfig, 'networkPaths'> &
+    { networkPaths: { networkNodes: string } }
   >
-  // TODO:
-  // Temporary handling unable APsSelection widget available
-  & { networkPaths: { networkNodes: string } }
+  typeWithSchedule: TestTypeWithSchedule
+  isDnsServerCustom: boolean
+}
 
 export type MutationUserError = {
   field: string

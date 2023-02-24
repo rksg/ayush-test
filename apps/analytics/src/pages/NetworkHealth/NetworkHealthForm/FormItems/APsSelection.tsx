@@ -6,7 +6,7 @@ import { StepsFormNew } from '@acx-ui/components'
 
 const APSelectionInput = Input.TextArea
 
-const name = ['networkPaths', 'networkNodes'] as const
+const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
 
 export function APsSelection () {

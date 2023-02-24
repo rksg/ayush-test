@@ -57,7 +57,7 @@ describe('AuthenticationMethod', () => {
     renderForm(field, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
-        authenticationMethod: selected
+        configs: [{ authenticationMethod: selected }]
       },
       valuesToUpdate: {
         clientType: ClientType.VirtualClient
@@ -80,7 +80,7 @@ describe('AuthenticationMethod', () => {
     renderForm(field, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
-        authenticationMethod: selected
+        configs: [{ authenticationMethod: selected }]
       },
       valuesToUpdate: {
         clientType: ClientType.VirtualClient

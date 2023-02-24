@@ -14,7 +14,7 @@ describe('RadioBand', () => {
     renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualClient,
-        radio: Band.Band2_4
+        configs: [{ radio: Band.Band2_4 }]
       }
     })
 
@@ -27,7 +27,7 @@ describe('RadioBand', () => {
     renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
-        radio: Band.Band2_4
+        configs: [{ radio: Band.Band2_4 }]
       }
     })
 
@@ -41,7 +41,7 @@ describe('RadioBand', () => {
     renderForm(<RadioBand />, {
       initialValues: {
         clientType: ClientType.VirtualWirelessClient,
-        radio: Band.Band6
+        configs: [{ radio: Band.Band6 }]
       },
       valuesToUpdate: {
         clientType: ClientType.VirtualClient

@@ -132,17 +132,25 @@ Object {
 
 exports[`specToDto handles path without AP list 1`] = `
 Object {
-  "authenticationMethod": "WPA3_PERSONAL",
   "clientType": "virtual-wireless-client",
-  "dnsServer": "10.10.10.10",
+  "configs": Array [
+    Object {
+      "authenticationMethod": "WPA3_PERSONAL",
+      "dnsServer": "10.10.10.10",
+      "networkPaths": Object {
+        "networkNodes": "VENUE>AP Group",
+      },
+      "pingAddress": "10.10.10.10",
+      "radio": "6",
+      "tracerouteAddress": "10.10.10.10",
+      "wlanName": "WLAN Name",
+      "wlanPassword": "12345",
+      "wlanUsername": "user",
+    },
+  ],
   "id": "spec-id",
   "isDnsServerCustom": true,
   "name": "Test Name",
-  "networkPaths": Object {
-    "networkNodes": "VENUE>AP Group",
-  },
-  "pingAddress": "10.10.10.10",
-  "radio": "6",
   "schedule": Object {
     "day": null,
     "frequency": null,
@@ -150,28 +158,32 @@ Object {
     "timezone": "Africa/Abidjan",
     "type": "service_guard",
   },
-  "tracerouteAddress": "10.10.10.10",
   "type": "on-demand",
   "typeWithSchedule": "on-demand",
-  "wlanName": "WLAN Name",
-  "wlanPassword": "12345",
-  "wlanUsername": "user",
 }
 `;
 
 exports[`specToDto process spec of GraphQL result to dto for on-demand spec 1`] = `
 Object {
-  "authenticationMethod": "WPA3_PERSONAL",
   "clientType": "virtual-wireless-client",
-  "dnsServer": "10.10.10.10",
+  "configs": Array [
+    Object {
+      "authenticationMethod": "WPA3_PERSONAL",
+      "dnsServer": "10.10.10.10",
+      "networkPaths": Object {
+        "networkNodes": "VENUE|00:00:00:00:00:00",
+      },
+      "pingAddress": "10.10.10.10",
+      "radio": "6",
+      "tracerouteAddress": "10.10.10.10",
+      "wlanName": "WLAN Name",
+      "wlanPassword": "12345",
+      "wlanUsername": "user",
+    },
+  ],
   "id": "spec-id",
   "isDnsServerCustom": true,
   "name": "Test Name",
-  "networkPaths": Object {
-    "networkNodes": "VENUE|00:00:00:00:00:00",
-  },
-  "pingAddress": "10.10.10.10",
-  "radio": "6",
   "schedule": Object {
     "day": null,
     "frequency": null,
@@ -179,11 +191,7 @@ Object {
     "timezone": "Africa/Abidjan",
     "type": "service_guard",
   },
-  "tracerouteAddress": "10.10.10.10",
   "type": "on-demand",
   "typeWithSchedule": "on-demand",
-  "wlanName": "WLAN Name",
-  "wlanPassword": "12345",
-  "wlanUsername": "user",
 }
 `;

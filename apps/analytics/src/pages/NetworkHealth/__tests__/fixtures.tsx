@@ -56,9 +56,13 @@ export const withinField = () => within(screen.getByTestId('field'))
 export const renderForm = (
   field: JSX.Element,
   options: {
-    initialValues?: Partial<NetworkHealthFormDto>,
+    initialValues?: Partial<Omit<NetworkHealthFormDto, 'configs'>> & {
+      configs?: Partial<NetworkHealthFormDto['configs'][0]>[]
+    },
     editMode?: boolean,
-    valuesToUpdate?: Partial<NetworkHealthFormDto>,
+    valuesToUpdate?: Partial<Omit<NetworkHealthFormDto, 'configs'>> & {
+      configs?: Partial<NetworkHealthFormDto['configs'][0]>[]
+    },
     params?: Record<string, string>
   } = {}
 ) => {

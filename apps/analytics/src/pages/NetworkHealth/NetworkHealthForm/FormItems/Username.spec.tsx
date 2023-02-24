@@ -2,8 +2,8 @@ import userEvent from '@testing-library/user-event'
 
 import { screen, within } from '@acx-ui/test-utils'
 
-import { renderForm }           from '../../__tests__/fixtures'
-import { AuthenticationMethod } from '../../types'
+import { renderForm }                 from '../../__tests__/fixtures'
+import { AuthenticationMethod, Band } from '../../types'
 
 import { Username } from './Username'
 
@@ -13,7 +13,7 @@ describe('Username', () => {
   it('renders field based on selected authentication method', async () => {
     renderForm(<Username />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
       }
     })
 
@@ -23,7 +23,7 @@ describe('Username', () => {
   it('renders null for authentication method not needing username', async () => {
     renderForm(<Username />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.OPEN_AUTH
+        configs: [{ authenticationMethod: AuthenticationMethod.OPEN_AUTH }]
       }
     })
 
@@ -33,7 +33,7 @@ describe('Username', () => {
   it('invalidate field if left empty', async () => {
     renderForm(<Username />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
       }
     })
 
@@ -45,10 +45,14 @@ describe('Username', () => {
     const value = 'username'
     renderForm(<Username />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
       },
       valuesToUpdate: {
-        authenticationMethod: AuthenticationMethod.OPEN_AUTH
+        configs: [{
+          radio: Band.Band2_4,
+          speedTestEnabled: false,
+          authenticationMethod: AuthenticationMethod.OPEN_AUTH
+        }]
       }
     })
 
@@ -72,8 +76,10 @@ describe('Username.FieldSummary', () => {
   it('renders if selected auth method requires this field', async () => {
     renderForm(<Username.FieldSummary />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
-        wlanUsername: value
+        configs: [{
+          authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
+          wlanUsername: value
+        }]
       }
     })
 
@@ -83,8 +89,10 @@ describe('Username.FieldSummary', () => {
   it('hidden if selected auth method not require this field', async () => {
     renderForm(<Username.FieldSummary />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.OPEN_AUTH,
-        wlanUsername: value
+        configs: [{
+          authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+          wlanUsername: value
+        }]
       }
     })
 

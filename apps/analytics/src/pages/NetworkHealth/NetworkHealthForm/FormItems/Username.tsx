@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form, Input }            from 'antd'
+import { NamePath }               from 'antd/es/form/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -11,15 +12,17 @@ import {
 import { authMethodsByCode }    from '../../authMethods'
 import { NetworkHealthFormDto } from '../../types'
 
-const name = 'wlanUsername' as const
+import { AuthenticationMethod } from './AuthenticationMethod'
+
+const name = ['configs', 0, 'wlanUsername'] as const
 const label = defineMessage({ defaultMessage: 'Username' })
 
 const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const code = Form.useWatch('authenticationMethod', form)
+  const code = Form.useWatch(AuthenticationMethod.fieldName as unknown as NamePath, form)
 
   const spec = authMethodsByCode[code]
-  const field = spec?.fields.find(field => field.key === name)
+  const field = spec?.fields.find(field => field.key === 'wlanUsername')
 
   return { field, form }
 }
@@ -27,17 +30,18 @@ const useField = () => {
 export function Username () {
   const { $t } = useIntl()
   const { field, form } = useField()
+  const fieldName = name as unknown as NamePath
 
   useEffect(() => {
     if (field) return
 
-    form.setFieldValue(name, undefined)
+    form.setFieldValue(fieldName, undefined)
   }, [form, field])
 
   if (!field) return null
 
   return <Form.Item
-    name={name}
+    name={fieldName}
     label={$t(label)}
     rules={[{ required: true }]}
     children={<Input />}
@@ -54,7 +58,7 @@ Username.FieldSummary = function UsernameFieldSummary () {
   if (!field) return null
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary />}
   />

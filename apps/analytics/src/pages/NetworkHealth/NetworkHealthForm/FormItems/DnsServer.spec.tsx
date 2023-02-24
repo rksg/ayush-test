@@ -58,7 +58,7 @@ describe('DnsServer', () => {
     renderForm(<DnsServer />, {
       initialValues: {
         isDnsServerCustom: true,
-        dnsServer: '10.10.10.10'
+        configs: [{ dnsServer: '10.10.10.10' }]
       }
     })
 
@@ -87,7 +87,7 @@ describe('DnsServer.FieldSummary', () => {
     renderForm(<DnsServer.FieldSummary />, {
       initialValues: {
         isDnsServerCustom: true,
-        dnsServer: value
+        configs: [{ dnsServer: value }]
       }
     })
 

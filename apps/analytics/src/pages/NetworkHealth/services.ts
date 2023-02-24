@@ -121,26 +121,16 @@ function stringToNetworkNodes (value: string): NetworkPaths {
   return value.split('\n').map(convert)
 }
 
-const configKeys: Array<keyof NetworkHealthFormDto> = [
-  'authenticationMethod',
-  'dnsServer',
-  'pingAddress',
-  'radio',
-  'speedTestEnabled',
-  'tracerouteAddress',
-  'wlanName',
-  'wlanPassword',
-  'wlanUsername'
-]
 
 export function processDtoToPayload (dto: NetworkHealthFormDto) {
   const spec = {
-    // TODO:
-    // Add `networkPaths` into `configKeys` when APsSelection input available
-    ..._.omit(dto, configKeys.concat(['typeWithSchedule', 'isDnsServerCustom', 'networkPaths'])),
+    ..._.omit(dto, ['typeWithSchedule', 'isDnsServerCustom']),
     configs: [{
-      ..._.pick(dto, configKeys),
-      networkPaths: { networkNodes: stringToNetworkNodes(dto.networkPaths.networkNodes) }
+      ..._.omit(dto.configs[0], ['updatedAt']),
+      // TODO: Handle `networkPaths` when APsSelection input available
+      networkPaths: { networkNodes: stringToNetworkNodes(
+        dto.configs[0].networkPaths!.networkNodes as unknown as string
+      ) }
     }]
   }
   return { spec }
@@ -155,8 +145,8 @@ export function specToDto (spec?: NetworkHealthSpec): NetworkHealthFormDto | und
     networkNodes: networkNodesToString(spec.configs[0].networkPaths.networkNodes)
   }
   const localTimezone = moment.tz.guess()
-  const localSchedule = { ...(spec.schedule! || initialValues.schedule) }
-  const { frequency, day, hour, timezone } = localSchedule
+  const schedule = { ...(spec.schedule! || initialValues.schedule) }
+  const { frequency, day, hour, timezone } = schedule
   const typeWithSchedule = spec.type === TestType.OnDemand ? TestType.OnDemand : frequency!
 
   if (frequency) {
@@ -166,34 +156,26 @@ export function specToDto (spec?: NetworkHealthSpec): NetworkHealthFormDto | und
     const totalHours = hour! + differenceInHours
     const rolloverHours = totalHours > 0 ? totalHours - 24 : Math.abs(totalHours)
     const differenceInDays = Math.ceil(rolloverHours / 24) * Math.sign(totalHours)
-    localSchedule.hour = mod(totalHours, 24)
+    schedule.hour = mod(totalHours, 24)
     if (frequency === ScheduleFrequency.Weekly) {
-      localSchedule.day = mod(day! + differenceInDays, 7)
+      schedule.day = mod(day! + differenceInDays, 7)
     }
     if (frequency === ScheduleFrequency.Monthly) {
-      localSchedule.day = mod(day! - 1 + differenceInDays, 31) + 1
+      schedule.day = mod(day! - 1 + differenceInDays, 31) + 1
     }
   }
 
   return {
     typeWithSchedule,
     isDnsServerCustom: Boolean(spec.configs[0].dnsServer),
-    // TODO:
-    // Take `networkPaths` from `spec.configs[0]` when APsSelection input available
-    networkPaths,
-    ..._.pick(spec, ['id', 'name', 'type', 'clientType']),
-    schedule: localSchedule,
-    ..._.pick(spec.configs[0], [
-      'radio',
-      'wlanName',
-      'authenticationMethod',
-      'wlanPassword',
-      'wlanUsername',
-      'speedTestEnabled',
-      'dnsServer',
-      'pingAddress',
-      'tracerouteAddress'
-    ])
+    ..._.omit(spec, ['schedule', 'configs']),
+    schedule,
+    configs: [{
+      ...spec.configs[0],
+      // TODO:
+      // Take `networkPaths` from `spec.configs[0]` when APsSelection input available
+      networkPaths
+    }]
   }
 }
 

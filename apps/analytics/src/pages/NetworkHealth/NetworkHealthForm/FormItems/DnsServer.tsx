@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
+import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
@@ -11,14 +12,14 @@ import { networkWifiIpRegExp } from '@acx-ui/rc/utils'
 
 import { NetworkHealthFormDto } from '../../types'
 
-const name = 'dnsServer' as const
+const name = ['configs', 0, 'dnsServer'] as const
 const label = defineMessage({ defaultMessage: 'DNS Server' })
 
 const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const [isCustom, value] = [
     Form.useWatch('isDnsServerCustom', form),
-    Form.useWatch(name, form)
+    Form.useWatch(name as unknown as NamePath, form)
   ]
 
   return { form, isCustom, value }
@@ -27,9 +28,10 @@ const useField = () => {
 export function DnsServer () {
   const { $t } = useIntl()
   const { form, isCustom, value } = useField()
+  const fieldName = name as unknown as NamePath
 
   useEffect(() => {
-    if (!isCustom && value) form.setFieldValue(name, undefined)
+    if (!isCustom && value) form.setFieldValue(fieldName, undefined)
   }, [form, isCustom, value])
 
   return (
@@ -46,7 +48,7 @@ export function DnsServer () {
         </Form.Item>
         {isCustom ? <Form.Item
           noStyle
-          name={name}
+          name={fieldName}
           label={$t(label)}
           rules={[
             { required: true },
@@ -69,7 +71,7 @@ DnsServer.FieldSummary = function DnsServerFieldSummary () {
   const { isCustom } = useField()
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary<string>
       convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}

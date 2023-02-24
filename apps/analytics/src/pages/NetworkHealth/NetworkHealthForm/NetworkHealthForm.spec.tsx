@@ -85,7 +85,7 @@ describe('NetworkHealthForm', () => {
     await selectOptions(await body.findByRole('combobox', { name: 'Test Type' }), 'On-Demand')
     await selectOptions(await body.findByRole('combobox', { name: 'Network' }), 'Network 1')
     await selectOptions(
-      body.getByRole('combobox', { name: (_, el) => el.id === 'authenticationMethod' }),
+      body.getByRole('combobox', { name: (_, el) => el.id === 'configs_0_authenticationMethod' }),
       body.getByRole('option', { name: 'Pre-Shared Key (PSK)' })
     )
 
@@ -96,7 +96,7 @@ describe('NetworkHealthForm', () => {
     // Step 2
     await type(
       await screen.findByRole('textbox', {
-        name: (_, el) => el.id === 'networkPaths_networkNodes'
+        name: (_, el) => el.id === 'configs_0_networkPaths_networkNodes'
       }),
       'Venue Name|00:00:00:00:00:01'
     )

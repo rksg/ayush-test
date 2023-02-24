@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form, Input }            from 'antd'
+import { NamePath }               from 'antd/es/form/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -11,22 +12,24 @@ import {
 import { authMethodsByCode }    from '../../authMethods'
 import { NetworkHealthFormDto } from '../../types'
 
-const name = 'wlanPassword' as const
+import { AuthenticationMethod } from './AuthenticationMethod'
+
+const name = ['configs', 0, 'wlanPassword'] as const
 const label = defineMessage({ defaultMessage: 'Password' })
 const labelAlt = defineMessage({ defaultMessage: 'Pre-Shared Key' })
 
-function fieldOfCode (code?: NetworkHealthFormDto['authenticationMethod']) {
+function fieldOfCode (code?: NetworkHealthFormDto['configs'][0]['authenticationMethod']) {
   const spec = code ? authMethodsByCode[code] : undefined
-  return spec?.fields.find(field => field.key === name)
+  return spec?.fields.find(field => field.key === 'wlanPassword')
 }
 
 const useField = () => {
   const { $t } = useIntl()
   const { editMode, form, initialValues } = useStepFormContext<NetworkHealthFormDto>()
-  const code = Form.useWatch('authenticationMethod', form)
+  const code = Form.useWatch(AuthenticationMethod.fieldName as unknown as NamePath, form)
 
   const field = fieldOfCode(code)
-  const previousField = fieldOfCode(initialValues?.authenticationMethod)
+  const previousField = fieldOfCode(initialValues?.configs?.[0].authenticationMethod)
 
   if (!field) return { form, field }
 
@@ -53,11 +56,12 @@ const useField = () => {
 export function Password () {
   const { $t } = useIntl()
   const { form, field, disabled, placeholder, required } = useField()
+  const fieldName = name as unknown as NamePath
 
   useEffect(() => {
     if (field && !field.preConfigured) return
 
-    form.setFieldValue(name, undefined)
+    form.setFieldValue(fieldName, undefined)
   }, [form, field])
 
   if (!field) return null
@@ -67,7 +71,7 @@ export function Password () {
     : <Input.Password {...{ placeholder, disabled }} />
 
   return <Form.Item
-    name={name}
+    name={fieldName}
     label={$t(field.preConfigured ? labelAlt : label)}
     rules={[{ required }]}
     children={children}
@@ -85,7 +89,7 @@ Password.FieldSummary = function PasswordFieldSummary () {
   if (!field) return null
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(field.preConfigured ? labelAlt : label)}
     children={<StepsFormNew.FieldSummary<string>
       convert={(value) => field.preConfigured

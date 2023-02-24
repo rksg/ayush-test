@@ -50,15 +50,19 @@ describe('useNetworkHealthSpecMutation', () => {
   it('handles create mutation', async () => {
     const dto: NetworkHealthFormDto = {
       isDnsServerCustom: true,
-      dnsServer: '10.10.10.10',
-      tracerouteAddress: '10.10.10.10',
-      pingAddress: '10.10.10.10',
-      wlanName: 'WLAN Name',
-      clientType: ClientType.VirtualWirelessClient,
-      radio: Band.Band6,
-      authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-      wlanPassword: '12345',
-      wlanUsername: 'user',
+      configs: [{
+        dnsServer: '10.10.10.10',
+        tracerouteAddress: '10.10.10.10',
+        pingAddress: '10.10.10.10',
+        wlanName: 'WLAN Name',
+        radio: Band.Band6,
+        authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+        wlanPassword: '12345',
+        wlanUsername: 'user',
+        // TODO:
+        // Update to correct format when APsSelection input done
+        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      }],
       schedule: {
         type: 'service_guard',
         timezone: 'Asia/Tokyo',
@@ -68,10 +72,8 @@ describe('useNetworkHealthSpecMutation', () => {
       },
       typeWithSchedule: TestType.OnDemand,
       type: TestType.OnDemand,
-      name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      clientType: ClientType.VirtualWirelessClient,
+      name: 'Test Name'
     }
     const { result } = renderHook(
       useNetworkHealthSpecMutation,
@@ -95,15 +97,19 @@ describe('useNetworkHealthSpecMutation', () => {
     const dto: NetworkHealthFormDto = {
       id: 'spec-id',
       isDnsServerCustom: true,
-      dnsServer: '10.10.10.10',
-      tracerouteAddress: '10.10.10.10',
-      pingAddress: '10.10.10.10',
-      wlanName: 'WLAN Name',
-      clientType: ClientType.VirtualWirelessClient,
-      radio: Band.Band6,
-      authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-      wlanPassword: '12345',
-      wlanUsername: 'user',
+      configs: [{
+        dnsServer: '10.10.10.10',
+        tracerouteAddress: '10.10.10.10',
+        pingAddress: '10.10.10.10',
+        wlanName: 'WLAN Name',
+        radio: Band.Band6,
+        authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+        wlanPassword: '12345',
+        wlanUsername: 'user',
+        // TODO:
+        // Update to correct format when APsSelection input done
+        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      }],
       schedule: {
         type: 'service_guard',
         timezone: 'Asia/Tokyo',
@@ -113,10 +119,8 @@ describe('useNetworkHealthSpecMutation', () => {
       },
       typeWithSchedule: TestType.OnDemand,
       type: TestType.OnDemand,
-      name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      clientType: ClientType.VirtualWirelessClient,
+      name: 'Test Name'
     }
 
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpec })
@@ -145,17 +149,17 @@ describe('useNetworkHealthSpecMutation', () => {
 describe('processDtoToPayload', () => {
   const dto: NetworkHealthFormDto = {
     id: 'spec-id',
-    networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' },
     isDnsServerCustom: true,
-    dnsServer: '10.10.10.10',
-    tracerouteAddress: '10.10.10.10',
-    pingAddress: '10.10.10.10',
-    wlanName: 'WLAN Name',
-    clientType: ClientType.VirtualWirelessClient,
-    radio: Band.Band6,
-    authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-    wlanPassword: '12345',
-    wlanUsername: 'user',
+    configs: [{
+      dnsServer: '10.10.10.10',
+      tracerouteAddress: '10.10.10.10',
+      pingAddress: '10.10.10.10',
+      wlanName: 'WLAN Name',
+      radio: Band.Band6,
+      authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
+      wlanPassword: '12345',
+      wlanUsername: 'user'
+    }],
     schedule: {
       type: 'service_guard',
       timezone: 'Asia/Tokyo',
@@ -165,14 +169,18 @@ describe('processDtoToPayload', () => {
     },
     typeWithSchedule: TestType.OnDemand,
     type: TestType.OnDemand,
+    clientType: ClientType.VirtualWirelessClient,
     name: 'Test Name'
   }
   it('process dto to payload for GraphQL input', () => {
     const payload = processDtoToPayload({
       ...dto,
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      configs: [{
+        ...dto.configs[0],
+        // TODO:
+        // Update to correct format when APsSelection input done
+        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      }]
     })
 
     expect(payload).toMatchSnapshot()
@@ -183,7 +191,12 @@ describe('processDtoToPayload', () => {
     // Remove when APsSelection input done
     const payload = processDtoToPayload({
       ...dto,
-      networkPaths: { networkNodes: 'VENUE' }
+      configs: [{
+        ...dto.configs[0],
+        // TODO:
+        // Update to correct format when APsSelection input done
+        networkPaths: { networkNodes: 'VENUE' }
+      }]
     })
 
     expect(payload).toMatchSnapshot()
@@ -194,7 +207,12 @@ describe('processDtoToPayload', () => {
     // Remove when APsSelection input done
     const payload = processDtoToPayload({
       ...dto,
-      networkPaths: { networkNodes: 'VENUE>AP Group' }
+      configs: [{
+        ...dto.configs[0],
+        // TODO:
+        // Update to correct format when APsSelection input done
+        networkPaths: { networkNodes: 'VENUE>AP Group' }
+      }]
     })
 
     expect(payload).toMatchSnapshot()
