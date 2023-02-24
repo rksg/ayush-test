@@ -28,7 +28,7 @@ const initialPortalData : Portal ={
   content: {
     bgColor: '#FFFFFF',
     bgImage: '',
-    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeText: '',
     welcomeColor: '#333333',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
@@ -157,7 +157,9 @@ export const PortalForm = (props:{
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
           onFinish={async (data) => {
-            if(data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId){
+            if((data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId?.trim())||
+              (data.content.componentDisplay.termsConditions&&!
+              data.content.termsCondition?.trim())){
               return false
             }
             return handleAddPortalService(data)}}
