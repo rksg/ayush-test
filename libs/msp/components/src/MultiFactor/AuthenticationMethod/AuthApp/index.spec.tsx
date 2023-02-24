@@ -2,25 +2,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { UserUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
-import { Provider }                from '@acx-ui/store'
+import { UserUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }     from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
+
+import { fakeMFADisabledTenantDetail } from '../../__tests__/fixtures'
 
 import { AuthApp } from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
-export const fakeMFATenantDetail = {
-  tenantStatus: MFAStatus.DISABLED,
-  recoveryCodes: ['678490','287605','230202','791760','169187'],
-  mfaMethods: [],
-  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-}
 
 const mockedRegisterPhoneResponse = {
   key: 'ASFVZB7MCMYICUNR',
@@ -48,7 +42,7 @@ describe('Authentication App Drawer', () => {
         <AuthApp
           visible={true}
           setVisible={mockedCloseDrawer}
-          userId={fakeMFATenantDetail.userId}
+          userId={fakeMFADisabledTenantDetail.userId}
         />
       </Provider>, {
         route: { params }
@@ -69,7 +63,7 @@ describe('Authentication App Drawer', () => {
         <AuthApp
           visible={true}
           setVisible={mockedCloseDrawer}
-          userId={fakeMFATenantDetail.userId}
+          userId={fakeMFADisabledTenantDetail.userId}
         />
       </Provider>, {
         route: { params }
@@ -78,9 +72,7 @@ describe('Authentication App Drawer', () => {
     await screen.findByText('Manage Authentication App')
     await screen.findByText(mockedRegisterPhoneResponse.key)
     await userEvent.click(await screen.findByRole('button', { name: 'Confirm' }))
-    await waitFor(async () => {
-      await screen.findByText('Please enter verification code')
-    })
+    await screen.findByText('Please enter verification code')
     await userEvent.click(await screen.findByRole('button', { name: 'Close' }))
   })
 })

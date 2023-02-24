@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { UserUrlsInfo, MFAStatus, MFAMethod } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { UserUrlsInfo, MFAMethod } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -11,18 +11,12 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { OTPMethodProps } from '../OneTimePassword'
+import { fakeMFADisabledTenantDetail } from '../../__tests__/fixtures'
+import { OTPMethodProps }              from '../OneTimePassword'
 
 import { VerifyCodeModal } from '.'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
-export const fakeMFATenantDetail = {
-  tenantStatus: MFAStatus.DISABLED,
-  recoveryCodes: ['678490','287605','230202','791760','169187'],
-  mfaMethods: [],
-  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-}
 
 const mockedCancelFn = jest.fn()
 const mockedSuccessFn = jest.fn()
@@ -42,7 +36,7 @@ describe('MFA Verify Code Modal', () => {
 
   it('should correctly render', async () => {
     const fakeOTPData:OTPMethodProps = {
-      userId: fakeMFATenantDetail.userId,
+      userId: fakeMFADisabledTenantDetail.userId,
       type: MFAMethod.EMAIL,
       data: '123@email.com'
     }
@@ -80,7 +74,7 @@ describe('MFA Verify Code Modal', () => {
     )
 
     const fakeOTPData:OTPMethodProps = {
-      userId: fakeMFATenantDetail.userId,
+      userId: fakeMFADisabledTenantDetail.userId,
       type: MFAMethod.SMS,
       data: '+886912345678'
     }
@@ -115,7 +109,7 @@ describe('MFA Verify Code Modal', () => {
     )
 
     const fakeOTPData:OTPMethodProps = {
-      userId: fakeMFATenantDetail.userId,
+      userId: fakeMFADisabledTenantDetail.userId,
       type: MFAMethod.SMS,
       data: '+886912345678'
     }

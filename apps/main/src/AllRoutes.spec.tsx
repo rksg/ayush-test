@@ -1,10 +1,14 @@
 import React from 'react'
 
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, cleanup } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { UserUrlsInfo, MFAStatus }                      from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { render, screen, cleanup, mockServer, waitFor } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
+
 
 jest.mock('@acx-ui/main/components', () => ({
   ActivityButton: () => <div data-testid='activity-button' />,
@@ -45,6 +49,12 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
 jest.mock('msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
+jest.mock('@acx-ui/msp/components', () => ({
+  ...jest.requireActual('@acx-ui/msp/components'),
+  MFASetupModal: () => {
+    return <div data-testid='mfaSetup' />
+  }
+}), { virtual: true })
 
 describe('AllRoutes', () => {
   afterEach(cleanup)
@@ -164,5 +174,46 @@ describe('AllRoutes', () => {
       }
     })
     expect(await screen.findByTestId('msp')).toBeVisible()
+  })
+})
+
+describe('MFA First-time Setup Check', () => {
+  const mockedGetMfaAdminDetails = jest.fn()
+
+  beforeEach(() => {
+    const mockedMFATenantDetail = {
+      tenantStatus: MFAStatus.ENABLED,
+      mfaMethods: [],
+      userId: 'userId'
+    }
+
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(mockedMFATenantDetail))
+      ),
+      rest.get(
+        UserUrlsInfo.getMfaAdminDetails.url,
+        (_req, res, ctx) => {
+          mockedGetMfaAdminDetails()
+          return res(ctx.json(mockedMFATenantDetail))
+        }
+      )
+    )
+  })
+
+  test('should popup setup modal', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/dashboard',
+        wrapRoutes: false
+      }
+    })
+
+    await waitFor(() => {
+      expect(mockedGetMfaAdminDetails).toBeCalled()
+    })
+
+    await screen.findByTestId('mfaSetup')
   })
 })

@@ -43,12 +43,14 @@ function Layout () {
   useEffect(() => {
     const fetchMfaData = async () => {
       const mfaTenantData = await getMfaTenantDetails({ params }).unwrap()
-      const mfaDetailsData = await getMfaAdminDetails({
-        params: {
-          userId: mfaTenantData?.userId
-        } }).unwrap()
+      if (mfaTenantData.enabled) {
+        const mfaDetailsData = await getMfaAdminDetails({
+          params: {
+            userId: mfaTenantData?.userId
+          } }).unwrap()
 
-      setMfaDetails(mfaDetailsData)
+        setMfaDetails(mfaDetailsData)
+      }
     }
 
     fetchMfaData()

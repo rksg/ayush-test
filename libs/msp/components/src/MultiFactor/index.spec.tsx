@@ -2,44 +2,36 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { UserUrlsInfo, MFAStatus, MFAMethod } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { UserUrlsInfo, MFAMethod } from '@acx-ui/rc/utils'
+import { Provider }                from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
+
+import {
+  fakeMFADisabledTenantDetail,
+  fakeMFADisabledAdminDetail,
+  fakeMFAEnabledTenantDetail,
+  fakeMFAEnabledAdminDetail
+} from './__tests__/fixtures'
 
 import { MultiFactor } from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-export const fakeMFATenantDetail = {
-  tenantStatus: MFAStatus.ENABLED,
-  recoveryCodes: ['678490','287605','230202','791760','169187'],
-  mfaMethods: [MFAMethod.EMAIL],
-  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-}
-
-
 describe('Multi-Factor Authentication Form', () => {
 
   it('should not have form item when MFA is disabled', async () => {
-    const fakeMFATenantDetail = {
-      tenantStatus: MFAStatus.DISABLED,
-      mfaMethods: [],
-      userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-    }
-
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
-        (_req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
+        (_req, res, ctx) => res(ctx.json(fakeMFADisabledTenantDetail))
       ),
       rest.get(
         UserUrlsInfo.getMfaAdminDetails.url,
-        (_req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
+        (_req, res, ctx) => res(ctx.json(fakeMFADisabledAdminDetail))
       )
     )
 
@@ -56,28 +48,14 @@ describe('Multi-Factor Authentication Form', () => {
   })
 
   it('should correctly render', async () => {
-    const fakeMFATenantDetail = {
-      tenantStatus: MFAStatus.ENABLED,
-      recoveryCodes: ['678490','287605','230202','791760','169187'],
-      mfaMethods: [],
-      userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-    }
-    const fakeMFAAdminDetail = {
-      contactId: 'test@email.com',
-      tenantStatus: MFAStatus.ENABLED,
-      recoveryCodes: ['678490','287605','230202','791760','169187'],
-      mfaMethods: [MFAMethod.EMAIL],
-      userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-    }
-
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
-        (_req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
+        (_req, res, ctx) => res(ctx.json(fakeMFAEnabledTenantDetail))
       ),
       rest.get(
         UserUrlsInfo.getMfaAdminDetails.url,
-        (_req, res, ctx) => res(ctx.json(fakeMFAAdminDetail))
+        (_req, res, ctx) => res(ctx.json(fakeMFAEnabledAdminDetail))
       ),
       rest.post(
         UserUrlsInfo.mfaRegisterPhone.url,
@@ -103,24 +81,15 @@ describe('Multi-Factor Authentication Form', () => {
 
   it('should be able to disable MFA method', async () => {
     const mockedDisableMFAMethodFn = jest.fn()
-    const fakeMFATenantDetail = {
-      tenantStatus: MFAStatus.ENABLED,
-      recoveryCodes: ['678490','287605','230202','791760','169187'],
-      mfaMethods: [],
-      userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
-    }
     const fakeMFAAdminDetail = {
-      contactId: 'test@email.com',
-      tenantStatus: MFAStatus.ENABLED,
-      recoveryCodes: ['678490','287605','230202','791760','169187'],
-      mfaMethods: [MFAMethod.EMAIL, MFAMethod.MOBILEAPP],
-      userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
+      ...fakeMFAEnabledAdminDetail,
+      mfaMethods: [MFAMethod.EMAIL, MFAMethod.MOBILEAPP]
     }
 
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
-        (_req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
+        (_req, res, ctx) => res(ctx.json(fakeMFAEnabledTenantDetail))
       ),
       rest.get(
         UserUrlsInfo.getMfaAdminDetails.url,
@@ -146,10 +115,11 @@ describe('Multi-Factor Authentication Form', () => {
     await screen.findByRole('heading', { name: 'Set authentication method' })
     await screen.findByRole('heading', { name: 'Backup authentication method' })
     await screen.findByText('test@email.com')
-    await waitFor(async () => {
-      expect(await screen.findByRole('switch', { name: 'app' })).toBeChecked()
-    })
+    await screen.findByRole('switch', { name: 'otp' })
     expect(await screen.findByRole('switch', { name: 'otp' })).toBeChecked()
+    await screen.findByRole('switch', { name: 'app' })
+    await screen.findByText('Add App')
+    expect(await screen.findByRole('switch', { name: 'app' })).toBeChecked()
     expect(await screen.findByRole('switch', { name: 'otp' })).not.toBeDisabled()
     await userEvent.click(await screen.findByRole('switch', { name: 'app' }))
     expect(mockedDisableMFAMethodFn).toBeCalled()
