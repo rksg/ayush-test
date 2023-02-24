@@ -48,8 +48,12 @@ export type NetworkHealthSpec = {
   id: UUID
   name: string
   type: TestType
+  apsCount: number
+  userId: string,
   clientType: ClientType
   configs: NetworkHealthConfig[]
+  tests: { items: NetworkHealthTest[] }
+  schedule: Schedule
 }
 
 export type NetworkHealthConfig = {
@@ -91,6 +95,8 @@ export type NetworkHealthTest = {
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
+
+type Schedule = { nextExecutionTime: number }
 
 export type NetworkHealthFormDto = {
   id?: NetworkHealthSpec['id']

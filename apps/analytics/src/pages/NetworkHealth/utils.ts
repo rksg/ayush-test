@@ -47,3 +47,14 @@ export const formatLastResult = (
       lastResultPercent: $t(intlFormats.percentFormat, { value: details.lastResult })
     })
     : noDataSymbol
+
+export const getTestStatus = (details: NetworkHealthTest) => {
+  const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
+  } = statsFromSummary(details.summary)
+  return { ...details,
+    ...(isOngoing && { isOngoing }),
+    ...(apsUnderTest !== undefined && { apsUnderTest }),
+    ...(apsFinishedTest !== undefined && { apsFinishedTest }),
+    ...(lastResult !== undefined && { lastResult })
+  }
+}

@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
-import _                          from 'lodash'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
@@ -10,21 +9,26 @@ import { useUserProfileContext }                                 from '@acx-ui/r
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
 import { formatter }                                             from '@acx-ui/utils'
 
-import * as contents                                                                from '../contents'
-import { useMutationResponseEffect }                                                from '../services'
-import { ClientType, NetworkHealthTest, TestType }                                  from '../types'
-import { formatApsUnderTest, formatLastResult, StatsFromSummary, statsFromSummary } from '../utils'
+import * as contents      from '../contents'
+import {
+  useMutationResponseEffect,
+  useAllNetworkHealthSpecsQuery,
+  useDeleteNetworkHealthTestMutation,
+  useRunNetworkHealthTestMutation,
+  NetworkHealthTableRow
+}                                                              from '../services'
+import { ClientType, TestType }                                from '../types'
+import { formatApsUnderTest, formatLastResult, getTestStatus } from '../utils'
 
-import { ServiceGuardSpec, useNetworkHealthDeleteMutation, useNetworkHealthQuery, useNetworkHealthRunMutation } from './services'
 
 export function NetworkHealthTable () {
   const { $t } = useIntl()
-  const queryResults = useNetworkHealthQuery()
+  const queryResults = useAllNetworkHealthSpecsQuery()
   const navigate = useNavigate()
   const networkHealthPath = useTenantLink('/serviceValidation/networkHealth/')
   const { data: userProfile } = useUserProfileContext()
-  const [deleteMutation, deleteResponse] = useNetworkHealthDeleteMutation()
-  const [runMutation, runResponse] = useNetworkHealthRunMutation()
+  const { deleteTest, response: deleteResponse } = useDeleteNetworkHealthTestMutation()
+  const { runTest, response: runResponse } = useRunNetworkHealthTestMutation()
 
   useMutationResponseEffect(deleteResponse, useCallback(() => {
     showToast({
@@ -40,31 +44,16 @@ export function NetworkHealthTable () {
     })
   }, [$t]))
 
-  const getTableData = (details: ServiceGuardSpec) => {
-    const summary = details.tests?.items[0]?.summary || {}
-    const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
-    } = statsFromSummary(summary as NetworkHealthTest['summary'])
-    return { ...details,
-      ...(isOngoing && { isOngoing }),
-      ...(apsUnderTest !== undefined && { apsUnderTest }),
-      ...(apsFinishedTest !== undefined && { apsFinishedTest }),
-      ...(lastResult !== undefined && { lastResult })
-    }
-  }
-
-  const getLastRun = (result: string) =>
-    result ? formatter('dateTimeFormatWithSeconds')(result)
-      : noDataSymbol
-
-  const rowActions: TableProps<ServiceGuardSpec>['rowActions'] = [
+  const rowActions: TableProps<NetworkHealthTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
       onClick: ([{ id }], clearSelection) => {
-        runMutation({ id })
+        runTest({ id })
         clearSelection()
       },
-      disabled: (selectedRow) => selectedRow[0]?.apsCount === 0
-        || selectedRow[0]?.tests.items[0]?.summary.apsPendingCount > 0
+      disabled: (selectedRow) =>
+        (selectedRow[0]?.apsCount === 0) ||
+        (selectedRow[0]?.latestTest && selectedRow[0].latestTest.summary?.apsPendingCount > 0)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
@@ -89,7 +78,7 @@ export function NetworkHealthTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteMutation({ id })
+            deleteTest({ id })
             clearSelection()
           }
         })
@@ -97,19 +86,18 @@ export function NetworkHealthTable () {
     }
   ]
 
-  const ColumnHeaders: TableProps<ServiceGuardSpec>['columns'] = useMemo(() => [
+  const ColumnHeaders: TableProps<NetworkHealthTableRow>['columns'] = [
     {
       key: 'name',
       title: $t(defineMessage({ defaultMessage: 'Test Name' })),
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) => row.tests.items[0]?.summary.apsTestedCount ?
-        <TenantLink to={
-          `/serviceValidation/networkHealth/${row.id}/tests/${row.tests.items[0]?.id}`
-        }>
+      render: (value, row) => row.latestTest?.summary?.apsTestedCount
+        ? <TenantLink to={`/serviceValidation/networkHealth/${row.id}/tests/${row.latestTest?.id}`}>
           {value}
-        </TenantLink> : value
+        </TenantLink>
+        : value
     },
     {
       key: 'clientType',
@@ -139,33 +127,26 @@ export function NetworkHealthTable () {
     {
       key: 'lastRun',
       title: $t(defineMessage({ defaultMessage: 'Last Run' })),
-      dataIndex: ['tests', 'items'],
-      render: (value: React.ReactNode) => {
-        const result = _.get(value, '[0].createdAt')
-        return getLastRun(result)
-      }
+      dataIndex: ['latestTest', 'createdAt'],
+      render: (_, row) => row.latestTest?.createdAt
+        ? formatter('dateTimeFormatWithSeconds')(row.latestTest?.createdAt)
+        : noDataSymbol
     },
     {
       key: 'apsUnderTest',
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
-      dataIndex: ['tests', 'items'],
-      render: (_, row) => {
-        const tableData = row
-          ? getTableData(row) : {} as StatsFromSummary
-        return formatApsUnderTest(tableData, $t)
-      }
+      dataIndex: ['latestTest', 'summary', 'apsUnderTest'],
+      render: (_, row) =>
+        formatApsUnderTest(row.latestTest?.summary ? getTestStatus(row.latestTest) : {}, $t)
     },
     {
       key: 'lastResult',
       title: $t(defineMessage({ defaultMessage: 'Last Result' })),
-      dataIndex: ['tests', 'items'],
-      render: (_, row) => {
-        const tableData = row
-          ? getTableData(row) : {} as StatsFromSummary
-        return formatLastResult(tableData, $t)
-      }
+      dataIndex: ['latestTest', 'summary', 'lastResult'],
+      render: (_, row) =>
+        formatLastResult(row.latestTest?.summary ? getTestStatus(row.latestTest) : {}, $t)
     }
-  ], [])
+  ]
 
   return (
     <Loader states={[queryResults]}>

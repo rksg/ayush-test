@@ -20,7 +20,8 @@ import type {
   MutationResult,
   NetworkHealthConfig,
   MutationUserError,
-  MutationResponse
+  MutationResponse,
+  NetworkHealthTest
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -57,10 +58,44 @@ const fetchServiceGuardSpec = gql`
   }
 `
 
-const {
+const fetchAllServiceGuardSpecs = gql`
+  query FetchAllServiceGuardSpecs {
+    allServiceGuardSpecs {
+      id
+      name
+      type
+      apsCount
+      userId
+      clientType
+      schedule { nextExecutionTime }
+      tests(limit: 1) {
+        items {
+          id
+          createdAt
+          summary { apsTestedCount apsSuccessCount apsPendingCount }
+        }
+      }
+    }
+  }`
+
+export type NetworkHealthTableRow = NetworkHealthSpec & {
+  latestTest: NetworkHealthTest
+}
+
+export const {
+  useAllNetworkHealthSpecsQuery,
   useNetworkHealthDetailsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
+    allNetworkHealthSpecs: build.query<NetworkHealthTableRow[], void>({
+      query: () => ({
+        document: fetchAllServiceGuardSpecs
+      }),
+      providesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { allServiceGuardSpecs: NetworkHealthTableRow[] }) =>
+        response.allServiceGuardSpecs
+          .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') }))
+    }),
     networkHealthDetails: build.query<NetworkHealthSpec, { id: string }>({
       query: (variables) => ({
         variables,
@@ -187,9 +222,19 @@ type CreateUpdateMutationResult = MutationResult<{
   spec: Pick<NetworkHealthSpec, 'id'>
 }>
 
+type DeleteNetworkHealthTestResult = MutationResult<{
+  deletedSpecId: NetworkHealthSpec['id']
+}>
+
+type RunNetworkHealthTestResult = MutationResult<{
+  spec: Pick<NetworkHealthSpec,'id'|'tests'>
+}>
+
 const {
   useCreateNetworkHealthSpecMutation,
-  useUpdateNetworkHealthSpecMutation
+  useUpdateNetworkHealthSpecMutation,
+  useDeleteNetworkHealthMutation,
+  useRunNetworkHealthMutation
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     createNetworkHealthSpec: build.mutation<CreateUpdateMutationResult, NetworkHealthFormDto>({
@@ -219,6 +264,41 @@ const {
       invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
+    }),
+    deleteNetworkHealth: build.mutation<
+      DeleteNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }
+    >({
+      query: (variables) => ({
+        variables,
+        document: gql`
+          mutation DeleteServiceGuardSpec ($id: String!) {
+            deleteServiceGuardSpec (id: $id) {
+              deletedSpecId
+              userErrors { field message }
+            }
+          }
+        `
+      }),
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { deleteServiceGuardSpec: DeleteNetworkHealthTestResult }) =>
+        response.deleteServiceGuardSpec
+    }),
+    runNetworkHealth: build.mutation<RunNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation RunNetworkHealthTest ($id: String!){
+          runServiceGuardTest (id: $id) {
+            userErrors { field message }
+            spec {
+              id
+              tests (limit: 1) { items { id } }
+            }
+          }
+        }`
+      }),
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
+        response.runServiceGuardTest
     })
   })
 })
@@ -231,6 +311,16 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
+}
+
+export function useRunNetworkHealthTestMutation () {
+  const [runTest, response] = useRunNetworkHealthMutation()
+  return { runTest, response }
+}
+
+export function useDeleteNetworkHealthTestMutation () {
+  const [deleteTest, response] = useDeleteNetworkHealthMutation()
+  return { deleteTest, response }
 }
 
 export function useMutationResponseEffect <

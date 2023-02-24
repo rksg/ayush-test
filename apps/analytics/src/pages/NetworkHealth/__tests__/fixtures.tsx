@@ -11,9 +11,9 @@ import {
   Band,
   ClientType,
   TestType,
-  NetworkPaths
+  NetworkPaths,
+  NetworkHealthFormDto
 } from '../types'
-import { NetworkHealthFormDto } from '../types'
 
 export const serviceGuardSpecNames = {
   allServiceGuardSpecs: [
@@ -46,6 +46,59 @@ export const fetchServiceGuardSpec = {
         ]] as NetworkPaths
       }
     }]
+  }
+}
+
+export const fetchAllServiceGuardSpecs = {
+  allServiceGuardSpecs: [
+    {
+      id: 'spec-id',
+      name: 'test-1',
+      type: TestType.OnDemand,
+      apsCount: 0,
+      userId: 'user-id',
+      clientType: ClientType.VirtualClient,
+      schedule: null,
+      tests: { items: [] }
+    },
+    {
+      id: 'spec-id-other',
+      name: 'test-2',
+      type: TestType.Scheduled,
+      apsCount: 2,
+      userId: 'user-id-other',
+      clientType: ClientType.VirtualWirelessClient,
+      tests: { items: [
+        { id: 1,
+          createdAt: '2023-02-24T07:34:33.336Z',
+          summary: { apsTestedCount: 2, apsSuccessCount: 2, apsPendingCount: 0 }
+        }
+      ] },
+      schedule: { nextExecutionTime: '2023-02-24T16:00:00.000Z' }
+    }
+  ]
+}
+
+export const runServiceGuardTest = {
+  runServiceGuardTest: {
+    spec: {
+      id: 'spec-id',
+      tests: {
+        items: [{
+          id: 3,
+          createdAt: '2023-02-16T00:00:00.000Z',
+          summary: { apsTestedCount: 0, apsSuccessCount: 0, apsPendingCount: 0 }
+        }]
+      }
+    },
+    userErrors: null
+  }
+}
+
+export const deleteNetworkHealth = {
+  deleteServiceGuardSpec: {
+    deletedSpecId: 'spec-id',
+    userErrors: null
   }
 }
 

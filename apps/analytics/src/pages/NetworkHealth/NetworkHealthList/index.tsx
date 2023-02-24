@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { PageHeader, Button } from '@acx-ui/components'
 import { TenantLink }         from '@acx-ui/react-router-dom'
 
-import { NetworkHealthTable } from '../NetworkHealthTable'
+import { NetworkHealthTable } from './NetworkHealthTable'
 
 function NetworkHealthList () {
   const { $t } = useIntl()
