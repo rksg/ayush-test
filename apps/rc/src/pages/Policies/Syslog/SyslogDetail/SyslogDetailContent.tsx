@@ -23,7 +23,7 @@ const SyslogDetailContent = () => {
     if (data){
       const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
       setFiltersId(venueIdList)
-      setPolicyName(data.policyName ?? '')
+      setPolicyName(data.name ?? '')
     }
   }, [data])
 
