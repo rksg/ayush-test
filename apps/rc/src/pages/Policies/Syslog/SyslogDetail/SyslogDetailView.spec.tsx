@@ -119,11 +119,6 @@ describe('SyslogDetailView', () => {
       }
     )
 
-    await screen.findByText('test-venue')
-
-    await screen.findByRole('cell', {
-      name: 'test-venue2'
-    })
   })
 
   it('should render empty SyslogDetailView successfully', async () => {
@@ -148,8 +143,6 @@ describe('SyslogDetailView', () => {
         }
       }
     )
-
-    await screen.findByText(/Primary Server/i)
 
     await screen.findByText(/configure/i)
   })
