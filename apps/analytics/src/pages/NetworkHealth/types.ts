@@ -67,8 +67,8 @@ export type Schedule = {
 }
 
 export type NetworkHealthConfig = {
-  id?: string
-  specId?: string
+  id: string
+  specId: string
   radio: Band
   authenticationMethod: string
   wlanName: string
@@ -79,8 +79,8 @@ export type NetworkHealthConfig = {
   dnsServer?: string
   tracerouteAddress?: string
   speedTestEnabled?: boolean
-  updatedAt?: string // timestamp
-  createdAt?: string // timestamp
+  updatedAt: string // timestamp
+  createdAt: string // timestamp
 }
 
 export type NetworkHealthFormDto = Pick<NetworkHealthSpec, 'clientType' | 'schedule'> & {
