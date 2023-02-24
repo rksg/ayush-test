@@ -220,6 +220,7 @@ export class SwitchViewModel extends Switch {
   activeSerial?: string
   syncDataId?: string
   lastSeenTime?: string
+  rearModuleOption?: boolean
 }
 
 export interface SwitchRow {
