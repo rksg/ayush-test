@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Form }     from 'antd'
 import {  useIntl } from 'react-intl'
 
-import { Card, Descriptions, Drawer, Table, TableProps }            from '@acx-ui/components'
+import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
 import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
 import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -21,7 +21,7 @@ function useColumns () {
     if(attributes) {
       for (const attribute of attributes) {
         rows.push(
-          <Descriptions.Item
+          <Descriptions.Item key={attribute.attributeName}
             label={attribute.attributeName}
             children={attribute.attributeValue}/>
         )
@@ -103,20 +103,22 @@ export function RadiusAttributeGroupDrawer (props: RadiusAttributeDrawerProps) {
           }]
         }
       >
-        <Table
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
-          showHeader={false}
-          rowSelection={{ type: 'radio', onChange: onSelectChange }}
-          rowKey='id'
-          type={'form'}
-          actions={[{
-            label: $t({ defaultMessage: 'Add Group' }),
-            onClick: () => {
-              setRadiusAttributeGroupFormDrawerVisible(true)
-            }
-          }]}
-        />
+        <Loader states={[tableQuery]}>
+          <Table
+            columns={useColumns()}
+            dataSource={tableQuery.data?.data}
+            showHeader={false}
+            rowSelection={{ type: 'radio', onChange: onSelectChange }}
+            rowKey='id'
+            type={'form'}
+            actions={[{
+              label: $t({ defaultMessage: 'Add Group' }),
+              onClick: () => {
+                setRadiusAttributeGroupFormDrawerVisible(true)
+              }
+            }]}
+          />
+        </Loader>
       </Form.Item>
     </Form>
   )

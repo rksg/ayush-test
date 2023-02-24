@@ -891,6 +891,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
+    radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
@@ -992,6 +1003,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return transferToTableResult<AdaptivePolicy>(result)
       },
       providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
+    }),
+    adaptivePolicyLisByQuery: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery,
+          params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: NewTableResult<AdaptivePolicy>) {
+        return transferToTableResult<AdaptivePolicy>(result)
+      }
     }),
     getAdaptivePolicy: build.query<AdaptivePolicy, RequestPayload>({
       query: ({ params }) => {
@@ -1196,5 +1220,7 @@ export const {
   useGetConditionsInPolicyQuery,
   useLazyGetConditionsInPolicyQuery,
   useUpdateAdaptivePolicyMutation,
-  useAddPolicyConditionsMutation
+  useAddPolicyConditionsMutation,
+  useLazyAdaptivePolicyLisByQueryQuery,
+  useLazyRadiusAttributeGroupListByQueryQuery
 } = policyApi

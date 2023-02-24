@@ -43,3 +43,34 @@ export const assignConditions = {
     }
   ]
 }
+
+export const vendorList = {
+  supportedVendors: [
+    'Bay-Networks',
+    'UKERNA',
+    'Packeteer',
+    '3GPP'
+  ]
+}
+
+export const radiusAttributeList = {
+  totalCount: 2,
+  page: 1,
+  pageSize: 10000,
+  data: [
+    {
+      id: 19910001,
+      name: 'Foundry-Privilege-Level',
+      vendorName: 'Foundry',
+      dataType: 'INTEGER',
+      showOnDefault: true
+    },
+    {
+      id: 19910002,
+      name: 'Foundry-Command-String',
+      vendorName: 'Foundry',
+      dataType: 'STRING',
+      showOnDefault: true
+    }
+  ]
+}

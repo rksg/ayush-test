@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useForm } from 'antd/lib/form/Form'
 import { useIntl } from 'react-intl'
 
-import { Modal, showToast }    from '@acx-ui/components'
+import { Modal }               from '@acx-ui/components'
 import { AttributeAssignment } from '@acx-ui/rc/utils'
 
 import { RadiusAttributeForm } from '../../RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeForm'
@@ -28,20 +28,14 @@ export function RadiusAttributeDialog (props: RadiusAttributeDialogProps) {
     }
   }, [editAttribute, visible])
 
-  const triggerSubmit = () => {
+  const triggerSubmit = async () => {
     try {
-      form.validateFields().then(values => {
-        // console.log('Current dialog fields value = ', values)
+      await form.validateFields().then(values => {
         setAttributeAssignments(values)
         onModalCancel()
       })
-    } catch (e) {
-      if (e instanceof Error) {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
-      }
+    } catch (error) {
+      if (error instanceof Error) throw error
     }
   }
 

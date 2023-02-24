@@ -8,7 +8,7 @@ import {
   OsVendorEnum,
   DeviceTypeEnum,
   ApplicationAclType,
-  ApplicationRuleType
+  ApplicationRuleType, OperatorType
 } from '@acx-ui/rc/utils'
 
 export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
@@ -154,6 +154,10 @@ export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor>
   [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
 }
 
-
+export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescriptor> = {
+  [OperatorType.ADD]: defineMessage({ defaultMessage: 'Add (Multiple)' }),
+  [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
+  [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add or Replace (Single)' })
+}
 
 

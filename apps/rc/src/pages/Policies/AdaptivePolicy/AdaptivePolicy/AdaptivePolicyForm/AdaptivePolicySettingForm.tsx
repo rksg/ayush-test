@@ -7,13 +7,13 @@ import { v4 as uuidv4 }                        from 'uuid'
 
 import { Button, Descriptions, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyAdaptivePolicyListQuery,
+  useLazyAdaptivePolicyLisByQueryQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
   AttributeAssignment, checkObjectNotExists,
-  RadiusAttributeGroup, RuleTemplate
+  RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
 
 import { AccessConditionDrawer }          from './AccessConditionDrawer'
@@ -42,7 +42,6 @@ function useColumns () {
 
 export function AdaptivePolicySettingForm () {
   const { $t } = useIntl()
-  const { policyId } = useParams()
 
   const evaluationRules = Form.useWatch('evaluationRules')
   const templateId = Form.useWatch('templateTypeId')
@@ -55,26 +54,33 @@ export function AdaptivePolicySettingForm () {
   // eslint-disable-next-line max-len
   const [selectRadiusAttributeGroup, setSelectRadiusAttributeGroup] = useState({} as RadiusAttributeGroup)
   const [editCondition, setEditCondition] = useState<AccessCondition>()
-  const [templateMode, setTemplateMode] = useState([] as RuleTemplate [])
 
   const form = Form.useFormInstance()
+  const { policyId } = useParams()
 
-  const [policyList] = useLazyAdaptivePolicyListQuery()
+  const [policyList] = useLazyAdaptivePolicyLisByQueryQuery()
 
   // eslint-disable-next-line max-len
-  const { data: templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
+  const { data: templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647', sortField: 'name', sortOrder: 'desc' } })
 
   useEffect(() => {
-    if(templateList?.data) {
-      setTemplateMode(templateList.data)
+    if(templateList?.data && templateList?.data.length > 0) {
+      form.setFieldValue('templateTypeId', templateList?.data[0].id)
     }
   }, [templateList?.data])
 
   const nameValidator = async (value: string) => {
     const list = (await policyList({
-      payload: { page: '1', pageSize: '2147483647' }
-    }).unwrap()).data.filter(n => n.id !== policyId)
-      .map(n => ({ name: n.name }))
+      params: {
+        excludeContent: 'false'
+      },
+      payload: {
+        fields: [ 'name' ],
+        page: 1, pageSize: 10,
+        filters: { name: value }
+      }
+    }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Adaptive Policy' }))
   }
 
@@ -156,7 +162,7 @@ export function AdaptivePolicySettingForm () {
           children={<Input/>}
         />
         <Form.Item name='templateTypeId'
-          label={$t({ defaultMessage: 'Template Type' })}
+          label={$t({ defaultMessage: 'Policy Type' })}
           rules={[
             { required: true }
           ]}
@@ -166,8 +172,10 @@ export function AdaptivePolicySettingForm () {
                 setAccessConditionsVisible(false)
               }}>
               <Space direction='vertical'>
-                {templateMode.map(({ id, name }) => (
-                  <Radio key={name} value={id}>{name}</Radio>
+                {templateList?.data.map(({ id, ruleType }) => (
+                  <Radio key={ruleType} value={id}>
+                    {ruleType}
+                  </Radio>
                 ))}
               </Space>
             </Radio.Group>
@@ -177,7 +185,7 @@ export function AdaptivePolicySettingForm () {
           label={$t({ defaultMessage: 'Access Conditions' })}
           rules={[
             {
-              required: true,
+              required: false,
               message: $t({ defaultMessage: 'Please create access conditions' })
             }]}
         >
@@ -205,7 +213,7 @@ export function AdaptivePolicySettingForm () {
           name='attributeGroupId'
           label={$t({ defaultMessage: 'RADIUS Attribute Group' })}
           rules={[
-            { required: true,
+            { required: false,
               message: $t({ defaultMessage: 'Please select group' }) }
           ]}
         >
@@ -230,6 +238,7 @@ export function AdaptivePolicySettingForm () {
           setVisible={setAccessConditionsVisible}
           setAccessCondition={setAccessCondition}
           editCondition={editCondition}
+          isEdit={editConditionMode}
           templateId={templateId}/>
         <RadiusAttributeGroupDrawer
           visible={attributeGroupVisible}

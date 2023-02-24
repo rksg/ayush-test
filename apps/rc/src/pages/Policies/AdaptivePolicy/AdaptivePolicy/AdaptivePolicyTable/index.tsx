@@ -156,8 +156,7 @@ export default function AdaptivePolicyTable () {
 
   return (
     <Loader states={[
-      tableQuery,
-      { isLoading: false, isFetching: isDeletePolicyUpdating }
+      { isLoading: tableQuery.isLoading || templateIsLoading, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         columns={useColumns(conditionCountMap, templateIdMap)}

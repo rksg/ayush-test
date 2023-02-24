@@ -26,6 +26,10 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: policyTemplateApiBaseUrl + '/policies' + paginationParams
   },
+  getPoliciesByQuery: {
+    method: 'post',
+    url: policyTemplateApiBaseUrl + '/policies/query?excludeContent=:excludeContent'
+  },
   getPolicyTemplateAttributes: {
     method: 'get',
     url: policyTemplateApiBaseUrl + '/:templateId/attributes' + paginationParams

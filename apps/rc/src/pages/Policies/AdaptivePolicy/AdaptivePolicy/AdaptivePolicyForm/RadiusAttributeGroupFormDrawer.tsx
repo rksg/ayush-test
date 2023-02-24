@@ -80,7 +80,6 @@ export function RadiusAttributeGroupFormDrawer (props: RadiusAttributeGroupFormD
     form?.setFieldValue('attributeAssignments', newAttribute)
   }
 
-
   const footer = (
     <Drawer.FormFooter
       onCancel={() => {

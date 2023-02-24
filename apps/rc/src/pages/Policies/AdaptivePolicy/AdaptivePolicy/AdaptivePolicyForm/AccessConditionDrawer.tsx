@@ -7,7 +7,7 @@ import { Drawer }                         from '@acx-ui/components'
 import { useLazyAttributesListQuery }     from '@acx-ui/rc/services'
 import { AccessCondition, RuleAttribute } from '@acx-ui/rc/utils'
 
-interface RadiusAttributeDrawerProps {
+interface AccessConditionDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   isEdit?: boolean,
@@ -25,7 +25,7 @@ const OperationTypeOption = [
   { label: defineMessage({ defaultMessage: 'Ends with' }), value: 'Ends with' }
 ]
 
-export function AccessConditionDrawer (props: RadiusAttributeDrawerProps) {
+export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const { visible, setVisible, isEdit = false, setAccessCondition, editCondition, templateId } = props

@@ -7,8 +7,7 @@ import { useParams }                         from 'react-router-dom'
 import { Button, Card, Loader, PageHeader, Table, TableProps }      from '@acx-ui/components'
 import { useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery } from '@acx-ui/rc/services'
 import {
-  AccessCondition,
-  getPolicyDetailsLink,
+  AccessCondition, getAdaptivePolicyDetailLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -61,20 +60,13 @@ export function AdaptivePolicyDetail () {
   const { policyId, templateId } = useParams()
   const { Paragraph } = Typography
 
-  const getAdaptivePolicyQuery = useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
+  // eslint-disable-next-line max-len
+  const { data: policyData, isLoading: isGetAdaptivePolicyLoading }= useGetAdaptivePolicyQuery({ params: { templateId, policyId } })
 
   // eslint-disable-next-line max-len
-  const { data: conditionsData } = useGetConditionsInPolicyQuery({
+  const { data: conditionsData, isLoading: isGetConditionsLoading } = useGetConditionsInPolicyQuery({
     payload: { page: '1', pageSize: '2147483647' },
     params: { policyId, templateId } })
-  // const getConditionsInPolicyQuery = useTableQuery({
-  //   useQuery: useGetConditionsInPolicyQuery,
-  //   defaultPayload: {},
-  //   pagination: { pageSize: 2147483647 }
-  // })
-
-  const policyData = getAdaptivePolicyQuery.data
-  // const conditionsData = getConditionsInPolicyQuery.data
 
   // TODO: just for mock data
   const venues = [
@@ -92,21 +84,17 @@ export function AdaptivePolicyDetail () {
     }
   ] as VenueTable []
 
-  const getConditions = function (conditions : AccessCondition []) {
-    const rows = []
-    if(conditions) {
-      for (const condition of conditions) {
-        rows.push(
-          <Col span={6}>
-            <Form.Item
-              label={condition.name}>
-              <Paragraph>{condition.evaluationRule.regexStringCriteria}</Paragraph>
-            </Form.Item>
-          </Col>
-        )
-      }
-    }
-    return rows
+  const getConditions = function (conditions : AccessCondition [] | undefined) {
+    return conditions?.map(((condition) =>{
+      return (
+        <Col span={6} key={condition.id}>
+          <Form.Item
+            label={condition.name ?? 'Need service support'}>
+            <Paragraph>{condition.evaluationRule.regexStringCriteria}</Paragraph>
+          </Form.Item>
+        </Col>
+      )
+    })) ?? []
   }
 
   return (
@@ -121,11 +109,13 @@ export function AdaptivePolicyDetail () {
         extra={[
           <TenantLink
             key='edit'
-            to={getPolicyDetailsLink({
-              type: PolicyType.ADAPTIVE_POLICY,
-              oper: PolicyOperation.EDIT,
-              policyId: policyId!
-            })}
+            to={
+              getAdaptivePolicyDetailLink({
+                oper: PolicyOperation.EDIT,
+                policyId: policyId!,
+                templateId: templateId!
+              })
+            }
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
@@ -134,8 +124,7 @@ export function AdaptivePolicyDetail () {
       <Space direction={'vertical'}>
         <Card>
           <Loader states={[
-            getAdaptivePolicyQuery,
-            { isLoading: false }
+            { isLoading: isGetAdaptivePolicyLoading || isGetConditionsLoading }
           ]}>
             <Form layout={'vertical'}>
               <Row>
@@ -154,7 +143,7 @@ export function AdaptivePolicyDetail () {
                 <Col span={24}>
                   <Paragraph>{$t({ defaultMessage: 'Access Conditions' })}</Paragraph>
                 </Col>
-                {getConditions(conditionsData?.data ?? [])}
+                {getConditions(conditionsData?.data)}
               </Row>
             </Form>
           </Loader>

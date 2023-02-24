@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance, Input, Select, Space, TreeSelect } from 'antd'
 import { defineMessage, useIntl }                               from 'react-intl'
 
+import { Loader }                                                                      from '@acx-ui/components'
 import { useLazyRadiusAttributeListWithQueryQuery, useRadiusAttributeVendorListQuery } from '@acx-ui/rc/services'
 import { AttributeAssignment, OperatorType, RadiusAttribute, treeNode }                from '@acx-ui/rc/utils'
 
@@ -96,36 +97,38 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   return (
-    <Form layout='vertical' form={form}>
-      <Form.Item name='id' hidden children={<Input />}/>
-      <Form.Item name='attributeName'
-        label={$t({ defaultMessage: 'Attribute Type' })}
-        rules={[{ required: true }]}
-      >
-        <TreeSelect
-          showSearch
-          value={attributeName}
-          placeholder={$t({ defaultMessage: 'Select attribute type' })}
-          treeData={attributeTreeData}
-          loadData={onLoadData}
-          onChange={(value) => {
-            form.setFieldValue('dataType', getAttributeDataType(value))
-          }}
-        />
-      </Form.Item>
-      <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
-        <Space direction='horizontal'>
-          <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>
-            <Select
-              options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>
-            </Select>
-          </Form.Item>
-          <Form.Item name='attributeValue'
-            rules={[{ required: true }]}
-            children={<Input />}/>
-        </Space>
-      </Form.Item>
-      <Form.Item name='dataType' hidden children={<Input/>}/>
-    </Form>
+    <Loader states={[radiusAttributeVendorListQuery]}>
+      <Form layout='vertical' form={form}>
+        <Form.Item name='id' hidden children={<Input />}/>
+        <Form.Item name='attributeName'
+          label={$t({ defaultMessage: 'Attribute Type' })}
+          rules={[{ required: true }]}
+        >
+          <TreeSelect
+            showSearch
+            value={attributeName}
+            placeholder={$t({ defaultMessage: 'Select attribute type' })}
+            treeData={attributeTreeData}
+            loadData={onLoadData}
+            onChange={(value) => {
+              form.setFieldValue('dataType', getAttributeDataType(value))
+            }}
+          />
+        </Form.Item>
+        <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
+          <Space direction='horizontal'>
+            <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>
+              <Select
+                options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>
+              </Select>
+            </Form.Item>
+            <Form.Item name='attributeValue'
+              rules={[{ required: true }]}
+              children={<Input />}/>
+          </Space>
+        </Form.Item>
+        <Form.Item name='dataType' hidden children={<Input/>}/>
+      </Form>
+    </Loader>
   )
 }

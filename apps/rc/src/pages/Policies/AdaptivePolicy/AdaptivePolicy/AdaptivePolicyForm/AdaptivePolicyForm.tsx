@@ -5,12 +5,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
-  useAddAdaptivePolicyMutation, useAddPolicyConditionsMutation,
+  useAddAdaptivePolicyMutation,
   useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery,
   useUpdateAdaptivePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessCondition, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                    from '@acx-ui/react-router-dom'
+import { getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                   from '@acx-ui/react-router-dom'
 
 import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
 
@@ -27,10 +27,9 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance>()
   const [addAdaptivePolicy] = useAddAdaptivePolicyMutation()
-  const [addConditions] = useAddPolicyConditionsMutation()
+  // const [addConditions] = useAddPolicyConditionsMutation()
 
   const [updateAdaptivePolicy, { isLoading: isUpdating }] = useUpdateAdaptivePolicyMutation()
-
   // eslint-disable-next-line max-len
   const { data, isLoading: isGetPolicyLoading } = useGetAdaptivePolicyQuery({ params: { policyId, templateId } }, { skip: !editMode })
   // eslint-disable-next-line max-len
@@ -63,27 +62,27 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
 
       if(editMode){
         await updateAdaptivePolicy({
-          params: { templateId: data.templateTypeId },
+          params: { templateId: data.templateTypeId, policyId },
           payload: policyPayload
         }).unwrap()
-
       } else {
         await addAdaptivePolicy({
           params: { templateId: data.templateTypeId },
           payload: policyPayload
         }).unwrap()
-        // no policyId
-        const policyId = ''
-        data.evaluationRules.forEach((rule: AccessCondition) => {
-          // console.log(rule)
-          addConditions({
-            params: { templateId: data.templateTypeId },
-            payload: {
-              ...rule,
-              policyId
-            }
-          }).unwrap()
-        })
+
+        // if(policyId) {
+        //   data.evaluationRules.forEach((rule: AccessCondition) => {
+        //     // console.log(rule)
+        //     addConditions({
+        //       params: { templateId: data.templateTypeId },
+        //       payload: {
+        //         ...rule,
+        //         policyId
+        //       }
+        //     }).unwrap()
+        //   })
+        // }
       }
 
       showToast({
@@ -108,7 +107,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     <>
       <PageHeader
         title={editMode
-          ? $t({ defaultMessage: 'Configure {name}' }, { name: '' })
+          ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy' })}
         breadcrumb={[
           {

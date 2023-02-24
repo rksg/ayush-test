@@ -228,6 +228,14 @@ export function useTableQuery <
   } as TableQuery<ResultType, Payload, ResultExtra>
 }
 
+export interface TableChangePayload {
+  sortField: string
+  sortOrder: 'ASC' | 'DESC'
+  page: number
+  pageSize: number
+  pageStartZero?: boolean
+}
+
 export interface NewTablePageable {
   offset: number
   pageNumber: number
@@ -239,14 +247,6 @@ export interface NewTablePageable {
     empty: boolean
   }
   unpaged: boolean
-}
-
-export interface TableChangePayload {
-  sortField: string
-  sortOrder: 'ASC' | 'DESC'
-  page: number
-  pageSize: number
-  pageStartZero?: boolean
 }
 
 export interface NewTableResult<T> {
@@ -292,5 +292,32 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
     pageSize: pagination.pageSize.toString(),
     page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
+  }
+}
+
+
+export interface NewTableResultPolicy<T> {
+  totalElements: number
+  totalPages: number
+  sort: {
+    unsorted: boolean,
+    sorted: boolean,
+    empty: boolean
+  }
+  content: T[]
+  paging: {
+    totalCount: number,
+    page: number,
+    pageSize: number,
+    pageCount: number
+  }
+}
+
+// eslint-disable-next-line max-len
+export function transferToTableResultPolicy<T> (newResult: NewTableResultPolicy<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.paging ? newResult.paging.page : 1,
+    totalCount: newResult.paging.totalCount
   }
 }
