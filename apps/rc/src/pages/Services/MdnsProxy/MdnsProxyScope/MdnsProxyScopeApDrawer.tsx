@@ -83,9 +83,12 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     let result: SimpleApRecord[] = []
 
     if (isActivated) {
-      result = _.uniq([...activatedAps, ...selectedAps.map(selectedAp => {
-        return { serialNumber: selectedAp.serialNumber, name: selectedAp.name }
-      })])
+      const simpleSelectedAps = selectedAps.map(selectedAp => ({
+        serialNumber: selectedAp.serialNumber,
+        name: selectedAp.name
+      }))
+
+      result = _.uniqBy([...activatedAps, ...simpleSelectedAps], (ap) => ap.serialNumber)
     } else {
       result = _.remove(activatedAps, (activatedAp: SimpleApRecord) => {
         // eslint-disable-next-line max-len
