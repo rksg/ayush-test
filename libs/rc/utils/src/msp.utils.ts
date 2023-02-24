@@ -1,5 +1,5 @@
-import moment            from 'moment-timezone'
-import { defineMessage } from 'react-intl'
+import moment                       from 'moment-timezone'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -27,6 +27,25 @@ export class EntitlementUtil {
         return 'Wi-Fi'
     }
     return 'Wi-Fi'
+  }
+
+  public static getDeviceTypeText ($t: IntlShape['$t'], deviceType: EntitlementDeviceType): string {
+    switch (deviceType) {
+      case EntitlementDeviceType.WIFI:
+      case EntitlementDeviceType.MSP_WIFI:
+        return $t({ defaultMessage: 'Wi-Fi' })
+      case EntitlementDeviceType.SWITCH:
+      case EntitlementDeviceType.MSP_SWITCH:
+        return $t({ defaultMessage: 'Switch' })
+      case EntitlementDeviceType.LTE:
+        return $t({ defaultMessage: 'LTE' })
+      case EntitlementDeviceType.ANALYTICS:
+        return $t({ defaultMessage: 'Analytics' })
+      case EntitlementDeviceType.EDGE:
+        return $t({ defaultMessage: 'SmartEdge' })
+      default:
+        return ''
+    }
   }
 
   public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {

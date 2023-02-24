@@ -25,13 +25,13 @@ export interface SyslogContextType {
   policyName: string,
   server: string,
   port: string,
-  protocol: string,
-  secondaryServer: string,
-  secondaryPort: string,
-  secondaryProtocol: string,
-  facility: string,
-  priority: string,
-  flowLevel: string,
+  protocol: ProtocolEnum,
+  secondaryServer?: string,
+  secondaryPort?: string,
+  secondaryProtocol?: ProtocolEnum,
+  facility: FacilityEnum,
+  priority: PriorityEnum,
+  flowLevel: FlowLevelEnum,
   venues: SyslogVenue[]
 }
 
@@ -41,9 +41,9 @@ export interface SyslogVenue {
 }
 
 export interface SyslogDetailContextType {
-  venueId: string[],
+  filtersId: string[],
   policyName: string,
-  setVenueId: (venueId: string[]) => void
+  setFiltersId: (filtersId: string[]) => void
   setPolicyName: (policyName: string) => void
 }
 
@@ -55,7 +55,7 @@ export interface VenueSyslogPolicyType {
   switches?: number,
   aggregatedApStatus?: Record<ApDeviceStatusEnum, number>,
   status?: string
-  syslog?: {
+  rogueDetection?: {
     policyId: string,
     policyName: string,
     enabled: boolean
@@ -98,7 +98,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.PROTOCOL,
   payload: {
-    protocol: string
+    protocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.SECONDARYSERVER,
@@ -113,22 +113,22 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.SECONDARYPROTOCOL,
   payload: {
-    secondaryProtocol: string
+    secondaryProtocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.FACILITY,
   payload: {
-    facility: string
+    facility: FacilityEnum
   }
 } | {
   type: SyslogActionTypes.PRIORITY,
   payload: {
-    priority: string
+    priority: PriorityEnum
   }
 } | {
   type: SyslogActionTypes.FLOWLEVEL,
   payload: {
-    flowLevel: string
+    flowLevel: FlowLevelEnum
   }
 } | {
   type: SyslogActionTypes.UPDATE_STATE,
@@ -137,16 +137,10 @@ export type SyslogActionPayload = {
   }
 } | {
   type: SyslogActionTypes.ADD_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 } | {
   type: SyslogActionTypes.REMOVE_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 }
 
 export enum SyslogConstant {

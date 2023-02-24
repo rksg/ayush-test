@@ -693,7 +693,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
         const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
-
         return {
           ...req,
           body: {
@@ -813,25 +812,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.deleteRogueApPolicy, params)
+        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params)
         return {
           ...req
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    syslogPolicy: build.query<SyslogContextType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
-    }),
     updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.updateRoguePolicy, params)
+        const req = createHttpRequest(SyslogUrls.updateSyslogPolicy, params)
         return {
           ...req,
           body: payload
@@ -867,6 +857,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    getVenueSyslogList: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
     }),
     radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1046,7 +1046,6 @@ export const {
   useAddSyslogPolicyMutation,
   useDelSyslogPolicyMutation,
   useUpdateSyslogPolicyMutation,
-  useSyslogPolicyQuery,
   useVenueSyslogPolicyQuery,
   useGetSyslogPolicyListQuery,
   useRadiusAttributeGroupListQuery,

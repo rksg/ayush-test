@@ -1,7 +1,4 @@
-import {
-  useState,
-  useRef
-} from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -40,6 +37,7 @@ export const tooltip = {
   cliAttributeInvalid: defineMessage({ defaultMessage: 'Please define attribute(s) in CLI commands' }),
   cliCommands: defineMessage({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' }),
   cliVariablesReachMax: defineMessage({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' }),
+  noticeInfo: defineMessage({ defaultMessage: 'Once the CLI Configuration profile is applied to a venue, you will not be able to apply a regular switch configuration profile to the same venue' }),
   noticeDesp: defineMessage({ defaultMessage: 'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures' }),
   variableName: defineMessage({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' }),
   rangeStartValue: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' }),
@@ -62,8 +60,9 @@ export default function CliTemplateForm () {
     = useGetCliTemplateQuery({ params }, { skip: !editMode })
 
   const [data, setData] = useState(null as unknown as CliConfiguration | undefined)
-  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
   const [applySwitches, setApplySwitches] = useState({} as Record<string, ApplySwitches[]>)
+  const [cliValidation, setCliValidation] = useState({ valid: false, tooltip: '' })
+  const [initCodeMirror, setInitCodeMirror] = useState(false)
   const [summaryData, setSummaryData] = useState({} as CliConfiguration)
 
   const handleEditCli = async (data: CliConfiguration) => {
@@ -113,6 +112,12 @@ export default function CliTemplateForm () {
     }
   }
 
+  useEffect(() => {
+    if (!isCliTemplateLoading) {
+      setData(cliTemplate)
+    }
+  }, [cliTemplate])
+
   return (
     <>
       <PageHeader
@@ -130,7 +135,8 @@ export default function CliTemplateForm () {
         cliValidation,
         setCliValidation,
         applySwitches,
-        setApplySwitches
+        setApplySwitches,
+        initCodeMirror
       }}>
         <Loader states={[{ isLoading: editMode && isCliTemplateLoading }]}>
           <StepsForm
@@ -138,7 +144,7 @@ export default function CliTemplateForm () {
             editMode={editMode}
             onCurrentChange={(current) => {
               if (editMode && current === 1) {
-                setData(cliTemplate) // workaround for init CLI
+                setInitCodeMirror(true)
               }
             }}
             onCancel={() => navigate(linkToNetworks)}
@@ -166,7 +172,7 @@ export default function CliTemplateForm () {
                 return cliValidation?.valid ?? true
               }}
             >
-              <CliStepConfiguration configType='Template' />
+              <CliStepConfiguration />
             </StepsForm.StepForm>
 
             <StepsForm.StepForm

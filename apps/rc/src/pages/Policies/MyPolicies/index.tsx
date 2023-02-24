@@ -141,7 +141,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       category: RadioCardCategory.WIFI,
       totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.SYSLOG] } }
+        params, payload: { ...defaultPayload, filters: { type: ['Syslog Server'] } }
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))
