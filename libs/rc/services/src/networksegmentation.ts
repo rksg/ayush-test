@@ -3,8 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonResult,
-  createHttpRequest, NetworkSegmentationGroup,
-  NetworkSegmentationGroupStats, NetworkSegmentationUrls, RequestPayload, TableResult
+  createHttpRequest, NetworkSegmentationGroupStats, NetworkSegmentationUrls, RequestPayload, TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseNsgApi = createApi({
