@@ -41,12 +41,14 @@ export function TestType () {
           children={$t(contents.testTypesWithSchedule[type])}
         />)}
         onChange={(typeWithSchedule) => {
-          form.setFieldValue(
-            [Schedule.fieldName, 'frequency'],
-            typeWithSchedule === TestTypeEnum.OnDemand ? null : typeWithSchedule
-          )
-          form.setFieldValue([Schedule.fieldName, 'day'], null)
-          form.setFieldValue([Schedule.fieldName, 'hour'], null)
+          if (typeWithSchedule === TestTypeEnum.OnDemand) {
+            form.setFieldValue([Schedule.fieldName, 'frequency'], null)
+            form.setFieldValue([Schedule.fieldName, 'day'], null)
+            form.setFieldValue([Schedule.fieldName, 'hour'], null)
+          } else {
+            form.setFieldValue([Schedule.fieldName, 'frequency'], typeWithSchedule)
+            form.setFieldValue([Schedule.fieldName, 'day'], null)
+          }
         }}
       />}
     />

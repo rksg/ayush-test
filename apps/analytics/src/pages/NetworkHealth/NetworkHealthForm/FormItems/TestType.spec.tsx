@@ -55,6 +55,6 @@ describe('TestType', () => {
     expect(fields.find(field => field.id === 'schedule_day'))
       .toHaveValue('')
     expect(fields.find(field => field.id === 'schedule_hour'))
-      .toHaveValue('')
+      .toHaveValue('2')
   })
 })
