@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip } from '@acx-ui/components'
-import { SwitchSlot }    from '@acx-ui/rc/utils'
-import { getIntl }       from '@acx-ui/utils'
+import { Card, Tooltip }             from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot } from '@acx-ui/rc/utils'
+import { getIntl }                   from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'

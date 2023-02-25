@@ -41,6 +41,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/switches'
   },
+  deleteStackMember: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber'
+  },
+  acknowledgeSwitch: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ack'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
@@ -299,6 +307,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   updateSwitchConfigProfile: {
     method: 'put',
     url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getSwitchFrontView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+  },
+  getSwitchRearView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId'
   },
   addCliTemplate: {
     method: 'post',
