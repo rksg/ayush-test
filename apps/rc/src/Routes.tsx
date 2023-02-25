@@ -74,6 +74,7 @@ import MdnsProxyTable              from './pages/Services/MdnsProxy/MdnsProxyTab
 import MyServices                  from './pages/Services/MyServices'
 import AddNetworkSegmentation      from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
 import EditNetworkSegmentation     from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
+import NetworkSegmentationTable    from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail        from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm          from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import PortalServiceDetail         from './pages/Services/Portal/PortalDetail'
@@ -281,6 +282,11 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
         element={<AddNetworkSegmentation />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.LIST })}
+        element={<NetworkSegmentationTable />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
