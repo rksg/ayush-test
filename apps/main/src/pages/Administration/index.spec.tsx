@@ -39,13 +39,13 @@ jest.mock('./Administrators', () => ({
     return <div data-testid='mocked-Administrators'></div>
   }
 }))
-jest.mock('./FWVersionMgmt', () => ({
-  ...jest.requireActual('./FWVersionMgmt'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-FWVersionMgmt'></div>
-  }
-}))
+// jest.mock('./FWVersionMgmt', () => ({
+//   ...jest.requireActual('./FWVersionMgmt'),
+//   __esModule: true,
+//   default: () => {
+//     return <div data-testid='mocked-FWVersionMgmt'></div>
+//   }
+// }))
 jest.mock('./LocalRadiusServer', () => ({
   ...jest.requireActual('./LocalRadiusServer'),
   __esModule: true,
