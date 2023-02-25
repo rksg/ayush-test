@@ -11,10 +11,12 @@ import {
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { getPolicyRoutePath, PolicyOperation, PolicyType, VenueMessages } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
+import { VenueMessages } from '@acx-ui/rc/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import RogueApModal from '../../../../../../../rc/src/pages/Policies/RogueAPDetection/RogueApModal'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -265,14 +267,7 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <TenantLink
-                  to={getPolicyRoutePath({
-                    type: PolicyType.ROGUE_AP_DETECTION,
-                    oper: PolicyOperation.CREATE
-                  })}
-                >
-                  {$t({ defaultMessage: 'Add Profile' })}
-                </TenantLink>
+                <RogueApModal />
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}

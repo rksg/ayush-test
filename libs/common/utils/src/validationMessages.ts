@@ -159,6 +159,16 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
   }),
+  gpsLatitudeInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'A valid latitude value is between -90 and 90, and contains a maximum of 6-digit decimal',
+    description: 'Validation - GPS Latitude checks'
+  }),
+  gpsLongitudeInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'A valid longitude value is between -180 and 180, and contains a maximum of 6-digit decimal',
+    description: 'Validation - GPS Longitude checks'
+  }),
   targetHost: defineMessage({
     defaultMessage: 'Please enter valid target host or IP address',
     description: 'Validation - target host checks'
