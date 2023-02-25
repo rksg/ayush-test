@@ -827,7 +827,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogPolicy, params)
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params)
         return {
           ...req,
           body: payload

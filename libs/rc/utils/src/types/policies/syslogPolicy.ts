@@ -76,8 +76,8 @@ export interface VenueSyslogSettingType {
 }
 
 export interface VenueSyslogPolicyType {
-  id: string,
-  name: string,
+  id?: string,
+  name?: string,
   city?: string,
   country?: string,
   switches?: number,
