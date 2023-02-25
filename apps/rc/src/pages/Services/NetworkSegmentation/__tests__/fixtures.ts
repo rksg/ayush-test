@@ -189,3 +189,25 @@ export const mockNsgStatsList = {
     }
   ]
 }
+
+export const mockNsgData = {
+  id: '2599f95d-86a2-470c-9679-e739de054ba1',
+  name: 'RLTestNsg-1',
+  vxlanTunnelProfileId: 'test123',
+  venueInfos: [
+    {
+      venueId: 'mock_venue_1',
+      personaId: ''
+    }
+  ],
+  edgeInfos: [
+    {
+      edgeId: '0000000001',
+      segments: 10,
+      devices: 10,
+      dhcpInfoId: '1',
+      dhcpPoolId: '1'
+    }
+  ],
+  networkIds: ['1', '2']
+}

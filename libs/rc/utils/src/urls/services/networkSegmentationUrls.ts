@@ -52,5 +52,10 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/networkSegmentationGroups/:serviceId'
+  },
+  updateNetworkSegmentationGroup: {
+    method: 'put',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
   }
 }

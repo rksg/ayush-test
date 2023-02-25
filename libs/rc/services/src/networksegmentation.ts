@@ -3,7 +3,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonResult,
-  createHttpRequest, NetworkSegmentationGroupStats, NetworkSegmentationUrls, RequestPayload, TableResult
+  createHttpRequest,
+  NetworkSegmentationGroup,
+  NetworkSegmentationGroupStats,
+  NetworkSegmentationUrls,
+  RequestPayload,
+  TableResult
 } from '@acx-ui/rc/utils'
 
 export const baseNsgApi = createApi({
@@ -44,6 +49,19 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+    }),
+    updateNetworkSegmentationGroup: build.mutation<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          NetworkSegmentationUrls.updateNetworkSegmentationGroup,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     })
   })
 })
@@ -51,5 +69,6 @@ export const nsgApi = baseNsgApi.injectEndpoints({
 export const {
   useCreateNetworkSegmentationGroupMutation,
   useGetNetworkSegmentationStatsListQuery,
-  useDeleteNetworkSegmentationGroupMutation
+  useDeleteNetworkSegmentationGroupMutation,
+  useUpdateNetworkSegmentationGroupMutation
 } = nsgApi
