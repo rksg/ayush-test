@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum } from '../constants'
-import { NetworkVenue }                                             from '../models'
-import { PortSettingModel }                                         from '../models/PortSetting'
+import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTypeEnum } from '../constants'
+import { NetworkVenue }                                                                  from '../models'
+import { PortSettingModel }                                                              from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
@@ -548,14 +548,6 @@ export interface VePortRouted {
   portNumber: string
 }
 
-// export interface ProfileVlan {
-//   defaultVlan: boolean
-//   profileLevel: boolean
-//   vlanConfigName?: string
-//   vlanId: number
-//   switchId: string
-// }
-
 export interface SwitchDefaultVlan {
   defaultVlanId: number
   switchId: string
@@ -636,6 +628,64 @@ export interface SwitchDhcpLease {
   clientIp: string
   leaseExpiration: string
   leaseType: string
+}
+export interface PortStatus{
+  portNumber: number
+  portTagged: string
+  unitNumber?: number
+}
+
+export interface SwitchSlot2 { //TODO
+  slotNumber: number
+  enable: boolean
+  option: string
+  slotPortInfo?: string
+  portStatus?: PortStatus[]
+}
+
+export interface TrustedPort {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots: SwitchSlot2[]
+  trustPorts: string[]
+  trustedPortType: TrustedPortTypeEnum
+}
+
+export interface SwitchConfigurationProfile {
+  acls: Acl[]
+  id: string
+  name: string
+  profileType: string
+  venues: string[]
+  vlans: Vlan[]
+  description: string
+  trustedPorts: TrustedPort[]
+}
+
+export interface AclStandardRule {
+  sequence: number
+  action: string
+  source: string
+  specificSrcNetwork: string
+  editIndex?: number
+}
+
+export interface AclExtendedRule extends AclStandardRule {
+  protocol?: string
+  sourcePort?: string
+  destination?: string
+  destinationPort?: string
+  specificDestNetwork?: string
+}
+
+export interface SwitchModelPortData {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots: SwitchSlot2[]
+  taggedPorts: string[]
+  untaggedPorts: string[]
 }
 
 export interface CliTemplateExample {
@@ -728,10 +778,12 @@ export interface AclStandardRule {
   editIndex?: number
 }
 
-export interface AclExtendedRule extends AclStandardRule {
-  protocol?: string
-  sourcePort?: string
-  destination?: string
-  destinationPort?: string
-  specificDestNetwork?: string
+export interface CliProfileModel{
+  model: string,
+  checked: boolean
+}
+
+export interface CliProfileFamily {
+  family: string,
+  model: CliProfileModel[]
 }

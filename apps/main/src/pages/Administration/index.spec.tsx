@@ -218,7 +218,11 @@ describe('Administration page', () => {
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })

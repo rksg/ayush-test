@@ -327,10 +327,6 @@ export const validationMessages = {
     defaultMessage: 'Enter a valid number between 0 and 255',
     description: 'Validation - switch static route admin distance'
   }),
-  subnetOverlapping: defineMessage({
-    defaultMessage: 'The ports have overlapping subnets',
-    description: 'Validation - subnet range'
-  }),
   aclStandardNumericValueInvalid: defineMessage({
     defaultMessage: 'Standard ACL Numeric Value Must Be 1-99',
     description: 'Validation - Standard ACL Numeric Value Must Be 1-99'
@@ -354,6 +350,22 @@ export const validationMessages = {
   aclNameDuplicateInvalid: defineMessage({
     defaultMessage: 'The ACL name already exists',
     description: 'Validation - The ACL name already exists'
+  }),
+  vlanNameInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090-4094',
+    description: 'Validation - validate vlan name'
+  }),
+  vlanIdInvalid: defineMessage({
+    defaultMessage: 'The VLAN ID already exists',
+    description: 'Validation - validate vlan id'
+  }),
+  vlanNameInvalidWithDefaultVlans: defineMessage({
+    defaultMessage: 'DEFAULT-VLAN is reserved word',
+    description: 'Validation - DEFAULT-VLAN is reserved word'
+  }),
+  subnetOverlapping: defineMessage({
+    defaultMessage: 'The ports have overlapping subnets',
+    description: 'Validation - subnet range'
   })
 }
 
