@@ -1,29 +1,33 @@
 
-import { useIntl }     from 'react-intl'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
-import { PageHeader, showToast, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }               from '@acx-ui/rc/services'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { Form }                   from 'antd'
+import { useIntl }                from 'react-intl'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import { PageHeader, showToast, StepsFormNew }                                                from '@acx-ui/components'
+import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
+import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
 import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
 import { SmartEdgeForm }                from '../NetworkSegmentationForm/SmartEdgeForm'
-import { SummaryForm }                  from '../NetworkSegmentationForm/SummaryForm'
 import { WirelessNetworkForm }          from '../NetworkSegmentationForm/WirelessNetworkForm'
 
-const AddNetworkSegmentation = () => {
+const EditNetworkSegmentation = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
   const linkToServices = useTenantLink('/services')
-  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const [createNetworkSegmentationGroup] = useCreateNetworkSegmentationGroupMutation()
+  const [form] = Form.useForm()
+  const { data: nsgData } = useGetNetworkSegmentationGroupByIdQuery({ params })
+  const [updateNetworkSegmentationGroup] = useUpdateNetworkSegmentationGroupMutation()
 
   const steps = [
     {
       title: $t({ defaultMessage: 'General Settings' }),
-      content: <GeneralSettingsForm />
+      content: <GeneralSettingsForm editMode />
     },
     {
       title: $t({ defaultMessage: 'SmartEdge' }),
@@ -32,12 +36,23 @@ const AddNetworkSegmentation = () => {
     {
       title: $t({ defaultMessage: 'Wireless Network' }),
       content: <WirelessNetworkForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
     }
   ]
+
+  useEffect(() => {
+    if(nsgData) {
+      form.setFieldValue('name', nsgData.name)
+      // form.setFieldValue('tags', nsgData.ta)
+      form.setFieldValue('venueId', nsgData.venueInfos[0]?.venueId)
+      form.setFieldValue('edgeId', nsgData.edgeInfos[0]?.edgeId)
+      form.setFieldValue('segments', nsgData.edgeInfos[0]?.segments)
+      form.setFieldValue('devices', nsgData.edgeInfos[0]?.devices)
+      form.setFieldValue('dhcpId', nsgData.edgeInfos[0]?.dhcpInfoId)
+      form.setFieldValue('poolId', nsgData.edgeInfos[0]?.dhcpPoolId)
+      form.setFieldValue('vxlanTunnelProfileId', nsgData.vxlanTunnelProfileId)
+      form.setFieldValue('networkIds', nsgData.networkIds)
+    }
+  }, [nsgData])
 
   const handleFinish = async (formData: NetworkSegmentationGroupForm) => {
     const payload = {
@@ -56,7 +71,7 @@ const AddNetworkSegmentation = () => {
       networkIds: formData.networkIds
     }
     try{
-      await createNetworkSegmentationGroup({ payload }).unwrap()
+      await updateNetworkSegmentationGroup({ params, payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch {
       showToast({
@@ -69,7 +84,7 @@ const AddNetworkSegmentation = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Network Segmentation Service' })}
+        title={$t({ defaultMessage: 'Edit Network Segmentation Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
@@ -78,6 +93,7 @@ const AddNetworkSegmentation = () => {
         form={form}
         onCancel={() => navigate(linkToServices)}
         onFinish={handleFinish}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       >
         {
           steps.map((item, index) =>
@@ -94,4 +110,4 @@ const AddNetworkSegmentation = () => {
   )
 }
 
-export default AddNetworkSegmentation
+export default EditNetworkSegmentation
