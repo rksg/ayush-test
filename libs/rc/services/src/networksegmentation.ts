@@ -24,10 +24,24 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+    }),
+    updateNetworkSegmentationGroup: build.mutation<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          NetworkSegmentationUrls.updateNetworkSegmentationGroup,
+          params
+        )
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
     })
   })
 })
 
 export const {
-  useCreateNetworkSegmentationGroupMutation
+  useCreateNetworkSegmentationGroupMutation,
+  useUpdateNetworkSegmentationGroupMutation
 } = nsgApi
