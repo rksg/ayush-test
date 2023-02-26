@@ -41,6 +41,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/switches'
   },
+  deleteStackMember: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber'
+  },
+  acknowledgeSwitch: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ack'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
@@ -96,8 +104,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
   },
   getSwitchConfigBackupList: {
-    method: 'post',
-    url: '/switches/:switchId/configBackups/query'
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId'
   },
   addBackup: {
     method: 'post',
@@ -184,8 +192,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/vePorts'
   },
   getSwitchAcls: {
-    method: 'post',
-    url: '/switches/:switchId/acls/query'
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/acls/switch/:switchId'
   },
   getVlanListBySwitchLevel: {
     method: 'post',
@@ -288,6 +296,26 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  getSwitchProfileList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/profilelist'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getSwitchFrontView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+  },
+  getSwitchRearView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId'
+  },
   addCliTemplate: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template'
@@ -303,14 +331,6 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
-  },
-  addSwitchConfigProfile: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/profile'
-  },
-  updateSwitchConfigProfile: {
-    method: 'put',
-    url: '/api/switch/tenant/:tenantId/profile'
   },
   getCliFamilyModels: {
     method: 'get',
