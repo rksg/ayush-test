@@ -8,12 +8,12 @@ import { useIntl, defineMessage } from 'react-intl'
 import { Select, Button, Loader }             from '@acx-ui/components'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
-import { ClientTroubleShootingConfig, DisplayEvent } from './config'
-import { ConnectionEventPopover }                    from './ConnectionEvent'
-import { History }                                   from './EventsHistory'
-import { TimeLine }                                  from './EventsTimeline'
-import { useClientInfoQuery }                        from './services'
-import * as UI                                       from './styledComponents'
+import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
+import { ConnectionEventPopover }                                     from './ConnectionEvent'
+import { FormattedEvent, History }                                    from './EventsHistory'
+import { TimeLine }                                                   from './EventsTimeline'
+import { useClientInfoQuery }                                         from './services'
+import * as UI                                                        from './styledComponents'
 
 
 export type Filters = {
@@ -23,6 +23,10 @@ export type Filters = {
 }
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
+
+const isChartActive = (chart: EChartsType) => {
+  return chart && chart.isDisposed && !chart.isDisposed()
+}
 
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
@@ -44,12 +48,56 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     }
   }
   const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
+  const onPanelCallback = useCallback((item: IncidentDetails | FormattedEvent) => ({
+    onClick: () => {
+      if (item && (item as FormattedEvent).event) {
+        const event = (item as FormattedEvent).event
+        const key = event.key
+        const charts = chartsRef.current
+        if (charts && charts.length > 0) {
+          const active = charts.filter(chart => !chart.isDisposed())
+          let found = false
+          const dotChartIndexes = active.map(chart => {
+            if (found) return -1
+            const option = chart
+              .getOption() as unknown as { series: [{ data: [number, string, number | object][] }] }
+            const data = option.series[0].data
+            for (let i = 0; i < data.length; ++i) {
+              const elem = data[i]
+              if (typeof elem[2] !== 'number' && (elem[2] as { key: string }).key === key) {
+                found = true
+                return i
+              }
+            }
+            return -1
+          })
+          const targetIndex = dotChartIndexes.findIndex(elem => elem > -1)
+          const dataIndex = dotChartIndexes[targetIndex]
+          const selectedChart = active[targetIndex]
+          const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
+          const targetDot = dots[dataIndex]
+          if (targetDot && targetDot.getBoundingClientRect) {
+            const clientX = targetDot.getBoundingClientRect().x
+            const clientY = targetDot.getBoundingClientRect().y
+            const popoverChild = popoverRef && popoverRef.current
+            if (!popoverChild)
+              return
+            const { x, y, width } = popoverChild.getBoundingClientRect()
+            const calcX = clientX - (x + width / 2)
+            const calcY = clientY - y
+            setEventState({
+              ...(item as FormattedEvent).event,
+              x: -calcX,
+              y: -calcY
+            } as unknown as DisplayEvent)
+            setVisible(true)
+          }
+        }
+      }
+    },
+    selected: visible && (eventState?.key === (item as FormattedEvent).event.key)
+  }), [eventState?.key, visible])
   useEffect(() => {
-    /* istanbul ignore next */
-    const isChartActive = (chart: EChartsType) => {
-      /* istanbul ignore next */
-      return chart && chart.isDisposed && !chart.isDisposed()
-    }
     const charts = chartsRef.current
     const active = charts.filter(isChartActive)
     connect(active)
@@ -57,9 +105,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
 
     return () => {
       const remainingCharts = charts.filter(isChartActive)
-      /* istanbul ignore next */
       remainingCharts.forEach(chart => {
-        /* istanbul ignore next */
         chart.dispose()
       })
       chartsRef.current = []
@@ -158,12 +204,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               historyContentToggle
               data={results.data}
               filters={filters}
-              setEventState={setEventState}
-              setVisible={setVisible}
-              chartsRef={chartsRef}
-              visible={visible}
-              eventState={eventState}
-              popoverRef={popoverRef}
+              onPanelCallback={onPanelCallback}
             />
           </Loader>
         </Col>
