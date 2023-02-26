@@ -974,7 +974,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+    // addSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   },
+    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    // }),
+    // updateSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   },
+    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    // }),
+    // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   }
+    // })
   })
 })
 
@@ -1148,16 +1186,17 @@ export const {
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
-  useGetProfilesQuery,
-  useAddCliTemplateMutation,
+  useLazyValidateUniqueProfileNameQuery,
   useGetCliTemplatesQuery,
+  useGetProfilesQuery,
+  useGetCliFamilyModelsQuery,
+  useAddCliTemplateMutation,
   useDeleteCliTemplatesMutation,
   useDeleteProfilesMutation,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
-  useGetCliFamilyModelsQuery,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation

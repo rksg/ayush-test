@@ -296,6 +296,18 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  getSwitchProfileList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/profilelist'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
   getSwitchFrontView: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
@@ -319,14 +331,6 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchConfigProfile: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/profile/:profileId'
-  },
-  addSwitchConfigProfile: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/profile'
-  },
-  updateSwitchConfigProfile: {
-    method: 'put',
-    url: '/api/switch/tenant/:tenantId/profile'
   },
   getCliFamilyModels: {
     method: 'get',

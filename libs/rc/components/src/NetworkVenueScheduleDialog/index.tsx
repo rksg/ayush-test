@@ -286,7 +286,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
     setIsModalOpen(false)
   }
 
-  const selectedItems: string[] = []
+  let selectedItems: string[] = []
   const { DragSelection } = useSelectionContainer({
     shouldStartSelecting: (target) => {
       if (target instanceof HTMLElement) {
@@ -299,6 +299,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       return true
     },
     onSelectionChange: (box) => {
+      selectedItems = []
       if(disabled){
         return
       }
@@ -309,6 +310,7 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       }
 
       for (let daykey in dayIndex) {
+        // eslint-disable-next-line no-loop-func
         Array.from({ length: 96 }, (_, i) => {
           const itemKey = `${daykey}_${i}`
           const item = document.getElementById(itemKey)
@@ -317,9 +319,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
             const boxItem = { left, top, width, height }
             if (boxesIntersect(scrollAwareBox, boxItem)) {
               selectedItems.push(itemKey)
-              if(selectedItems.length > 0){
-                localStorage.setItem('selectedTimeslots', JSON.stringify(selectedItems))
-              }
             }
           }
           return null
@@ -327,13 +326,13 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
       }
     },
     onSelectionEnd: () => {
-      const uniqSelectedItems = _.uniq(JSON.parse(localStorage.getItem('selectedTimeslots') || '[]'))
+      selectedItems = _.uniq(selectedItems)
       for (let daykey in dayIndex) {
         const schedule = form.getFieldValue(['scheduler', daykey]) || []
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if(uniqSelectedItems.filter((item: any) => item.indexOf(daykey) > -1)){
+        if(selectedItems.filter((item: any) => item.indexOf(daykey) > -1)){
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          let uniqSchedule = _.uniq(_.xor(schedule, uniqSelectedItems.filter((item: any) => item.indexOf(daykey) > -1)))
+          let uniqSchedule = _.uniq(_.xor(schedule, selectedItems.filter((item: any) => item.indexOf(daykey) > -1)))
 
           form.setFieldValue(['scheduler', daykey], uniqSchedule)
           if(uniqSchedule && uniqSchedule.length === 96){
@@ -352,7 +351,6 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
           }
         }
       }
-      localStorage.removeItem('selectedTimeslots')
     },
     isEnabled: true
   })
