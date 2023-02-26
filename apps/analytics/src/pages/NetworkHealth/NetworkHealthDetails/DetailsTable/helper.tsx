@@ -1,19 +1,17 @@
+import { defineMessage }                        from '@formatjs/intl'
 import { upperFirst, without }                  from 'lodash'
 import { FormattedMessage , MessageDescriptor } from 'react-intl'
 
 
-import { mapCodeToReason } from '@acx-ui/analytics/utils'
-import { TableProps }      from '@acx-ui/components'
-import { cssStr }          from '@acx-ui/components'
-import { Tooltip }         from '@acx-ui/components'
-import { EyeOpenSolid }    from '@acx-ui/icons'
-import { TenantLink }      from '@acx-ui/react-router-dom'
-import { getIntl }         from '@acx-ui/utils'
-import {  formatter }      from '@acx-ui/utils'
+import { mapCodeToReason }             from '@acx-ui/analytics/utils'
+import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
+import type { TableColumn }            from '@acx-ui/components'
+import { EyeOpenSolid }                from '@acx-ui/icons'
+import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { getIntl, formatter }          from '@acx-ui/utils'
 
 import * as contents  from '../../contents'
 import {
-  AuthenticationMethod,
   ClientType,
   TestStage,
   NetworkHealthConfig,
@@ -25,11 +23,11 @@ import {
 import * as UI from './styledComponents'
 
 const badgeTextMap = {
-  'success': 'Pass',
-  'error': 'Error',
-  'fail': 'Fail',
-  'n/a': 'N/A',
-  'pending': 'Pending'
+  'success': defineMessage({ defaultMessage: 'Pass' }),
+  'error': defineMessage({ defaultMessage: 'Error' }),
+  'fail': defineMessage({ defaultMessage: 'Fail' }),
+  'n/a': defineMessage({ defaultMessage: 'N/A' }),
+  'pending': defineMessage({ defaultMessage: 'Pending' })
 }
 export type TrendType = 'success' | 'fail' | 'n/a' | 'error' | 'pending'
 
@@ -40,18 +38,20 @@ export function getToolTipText ({
   clientType
 }: {
   error: string;
-  toolTipText: string;
-  wlanAuthSettings: WlanAuthSettings;
-  clientType: ClientType;
+  toolTipText: string |null;
+  wlanAuthSettings?: WlanAuthSettings;
+  clientType?: ClientType;
 }) {
-  const toolTipContent =
-    contents.stagesErrorMappings?.[error]?.text ||
-    contents.errorMappings?.[error]?.text ||
+  const { $t } = getIntl()
+
+  const toolTipContent = error && error !== 'WLAN_CONF_ERROR'?
+    ($t(contents.stagesErrorMappings?.[error]?.text) ||
+  $t(contents.errorMappings?.[error]?.text)) :
     toolTipText
   const errorText = `${toolTipContent} \n \n`
   // eslint-disable-next-line
-  const noStationAPText = `${errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption`;
-  return error === 'WLAN_CONF_ERROR' ? (
+  const noStationAPText = $t(defineMessage({ defaultMessage:'{errorText}An AP with 3 radios is required to test WLAN with WPA2/WPA3-Mixed or WPA3 encryption'}),{ errorText})
+  return error === 'WLAN_CONF_ERROR' && clientType ? (
     <FormattedMessage
       {...contents.unsupportedAuthMethods[clientType]}
       values={contents.formatValues}
@@ -100,68 +100,71 @@ export const getTableColumns = ({
 }: {
   isWirelessClient : boolean,
   stagesKeys : TestStage[],
-  wlanAuthSettings : WlanAuthSettings,
-  clientType : ClientType,
-  config : NetworkHealthConfig,
-  stages : Array<{ key: TestStage, title: MessageDescriptor }>
+  wlanAuthSettings? : WlanAuthSettings,
+  clientType? : ClientType,
+  config? : NetworkHealthConfig,
+  stages? : Array<{ key: TestStage, title: MessageDescriptor }>
 
 }) => {
   const { $t } = getIntl()
 
-  const genStageCol = (key: string) => ({
-    title: $t(stages?.find((s) => s?.key === key)?.title).replace('Authentication', 'Auth'),
+  const genStageCol = (key: keyof TestResultByAP) => ({
+    title: $t(stages?.find((s) => s?.key === key)?.title as MessageDescriptor),
     dataIndex: key,
     key: key,
     filterable: false,
     searchable: true,
+    align: 'center',
     render: function (text: string, row : TestResultByAP ) {
-      const failure = getClientFailureInfo(row)[key]?.event
-      const noFailureDetailsMap = {
-        PROCESSING: 'Failure reason pending',
-        UNKNOWN: 'Failure reason unavailable'
-      }
+      const failure = getClientFailureInfo(row)[key]
+      const failureCode = failure?.event
+      const intl = getIntl()
       const error = row?.error
       const toolTipText = !failure
         ? null
-        : noFailureDetailsMap[failureCode] || `Failure reason: ${mapCodeToReason(failureCode)}`
+        : $t(
+          contents.noFailureDetailsMap[failureCode as keyof typeof contents.noFailureDetailsMap]
+        ) || `Failure reason: ${mapCodeToReason(failureCode as string, intl)}`
       const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
+      const type = row[key] as TrendType
       return (
         <TableCell
           tooltipContent={wrappedContent}
-          type={row[key]}
-          displayText={badgeTextMap[row[key]]}
+          type={type}
+          displayText={$t(badgeTextMap[type])}
           key={key}
         />
       )
     }
-  })
-  const genSpeedCol = (key : string) => {
+  } as TableColumn<TestResultByAP>)
+  const genSpeedCol = (key :keyof Pick<TestResultByAP, 'upload' | 'download'>) => {
     return {
       title: upperFirst(key),
       dataIndex: key,
       key: key,
       filterable: false,
       searchable: false,
-      render: function (text: string, row : any) {
+      align: 'center',
+      render: function (text: string, row : TestResultByAP) {
         const { speedTest, speedTestServer } = row
-        const error = row?.error || row?.speedTestFailure
+        const error = row?.error || row.speedTestFailure
 
         const toolTipText = speedTest === 'n/a' ? null : `speedtest.net: ${speedTestServer}`
         text =
           speedTest === 'success'
             ? formatter('networkSpeedFormat')(row[key])
-            : badgeTextMap[speedTest]
+            : $t(badgeTextMap[speedTest as keyof typeof badgeTextMap])
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         return (
           <TableCell
             tooltipContent={wrappedContent}
-            type={speedTest}
+            type={speedTest as TrendType}
             displayText={text}
             key={key}
           />
         )
       }
-    }
+    } as TableColumn<TestResultByAP>
   }
   const columns: TableProps<TestResultByAP>['columns'] = [
     {
@@ -189,7 +192,6 @@ export const getTableColumns = ({
       key: 'apMac',
       filterable: false,
       searchable: true,
-
       render: function (text, row) {
         const { apMac } = row
         return (
@@ -212,6 +214,7 @@ export const getTableColumns = ({
         key: 'stationAp',
         filterable: false,
         searchable: true,
+        align: 'center',
         render: function (text: unknown, row) {
           const { stationAp } = row
           return (
@@ -231,6 +234,7 @@ export const getTableColumns = ({
         key: 'stationAp',
         filterable: false,
         searchable: true,
+        align: 'center',
         render: function (text: unknown, row) {
           const { stationAp } = row
           return (
@@ -250,6 +254,7 @@ export const getTableColumns = ({
         key: 'stationAp',
         filterable: false,
         searchable: true,
+        align: 'center',
         render: function (text: unknown, row) {
           const { stationAp } = row
           return (
@@ -264,11 +269,12 @@ export const getTableColumns = ({
   )
   if (stagesKeys.includes('ping')) {
     columns.push({
-      title: $t(stages?.find((s) => s.key === 'ping').title),
+      title: $t(stages?.find((s) => s.key === 'ping')?.title as MessageDescriptor),
       dataIndex: 'ping',
       key: 'ping',
       filterable: false,
       searchable: false,
+      align: 'center',
       render: function (text: unknown, row) {
         const { ping, avgPingTime, pingTotal, pingReceive, error } = row
 
@@ -278,21 +284,29 @@ export const getTableColumns = ({
             : `${pingTotal} packets transmitted, ${pingReceive} packets received`
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
 
-        text = avgPingTime ? formatter('durationFormat')(avgPingTime) : badgeTextMap[ping]
+        text = avgPingTime
+          ? formatter('durationFormat')(avgPingTime)
+          : $t(badgeTextMap[ping as TrendType])
 
         return (
-          <TableCell tooltipContent={wrappedContent} type={ping} displayText={text} key={'ping'} />
+          <TableCell
+            tooltipContent={wrappedContent}
+            type={ping as TrendType}
+            displayText={text as string}
+            key={'ping'}
+          />
         )
       }
     })
   }
   if (config?.tracerouteAddress) {
     columns.push({
-      title: $t(stages?.find((s) => s.key === 'traceroute').title),
+      title: $t(stages?.find((s) => s.key === 'traceroute')?.title as MessageDescriptor),
       dataIndex: 'tracerouteLog',
       key: 'tracerouteLog',
       filterable: false,
       searchable: false,
+      align: 'center',
       render: function (text: unknown, row) {
         const { traceroute, tracerouteLog, error } = row
         const toolTipText = traceroute === 'n/a' ? null : tracerouteLog
@@ -300,17 +314,17 @@ export const getTableColumns = ({
         return (
           <TableCell
             tooltipContent={wrappedContent}
-            type={traceroute}
+            type={traceroute as TrendType}
             displayText={
               tracerouteLog ? (
                 <EyeOpenSolid
                   stroke={cssStr('--acx-primary-white')}
-                  height={12}
+                  height={8}
                   width={12}
                   color={cssStr('--acx-primary-white')}
                 />
               ) : (
-                badgeTextMap[traceroute]
+                $t(badgeTextMap[traceroute as TrendType])
               )
             }
             key={'tracerouteLog'}
@@ -320,7 +334,10 @@ export const getTableColumns = ({
     })
   }
   if (config?.speedTestEnabled) {
-    columns.push(genSpeedCol('upload'), genSpeedCol('download'))
+    columns.push(
+      genSpeedCol('upload'),
+      genSpeedCol('download')
+    )
   }
   return columns
 }
@@ -331,9 +348,9 @@ export const TableCell = ({
   displayText,
   key
 }: {
-  tooltipContent: string;
+  tooltipContent: string | null | JSX.Element;
   type: TrendType;
-  displayText: string;
+  displayText: string | JSX.Element;
   key: string;
 }) =>
   type === 'pending' ? (

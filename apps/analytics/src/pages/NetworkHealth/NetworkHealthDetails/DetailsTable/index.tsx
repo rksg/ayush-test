@@ -1,6 +1,6 @@
 import { MessageDescriptor } from 'react-intl'
 
-import { Table } from '@acx-ui/components'
+import { Table, Loader } from '@acx-ui/components'
 
 import { authMethodsByCode }            from '../../authMethods'
 import {  useNetworkHealthTestResults } from '../../services'
@@ -8,8 +8,10 @@ import { stage }                        from '../../stages'
 import {
   ClientType,
   NetworkHealthConfig,
-  TestResultByAP
+  TestResultByAP,
+  TestStage
 } from '../../types'
+
 
 import {  getTableColumns } from './helper'
 
@@ -30,24 +32,26 @@ const Details = () => {
     return stages
   }
   const stages = stagesFromConfig(config)?.map(
-    ({ key, title }: { key: string; title: MessageDescriptor }) => ({
+    ({ key, title }: { key: TestStage; title: MessageDescriptor }) => ({
       key,
       title
     })
   )
-  const stagesKeys = stages.map(s => s.key)
+  const stagesKeys = stages.map(s => s.key) as TestStage[]
   return (
-    <Table<TestResultByAP>
-      columns={getTableColumns({
-        isWirelessClient,
-        stagesKeys,
-        wlanAuthSettings,
-        clientType,
-        config,
-        stages
-      })}
-      dataSource={items}
-    />
+    <Loader states={[queryResults]}>
+      <Table<TestResultByAP>
+        columns={getTableColumns({
+          isWirelessClient,
+          stagesKeys,
+          wlanAuthSettings,
+          clientType,
+          config,
+          stages
+        })}
+        dataSource={items}
+      />
+    </Loader>
   )
 }
 

@@ -148,13 +148,13 @@ export type TestResultByAP = {
     pingTotal: string | null
     avgPingTime: string | null
     error: string
-    speedTestFailure: string | null
+    speedTestFailure: string
     speedTestServer: string | null
     download: string | null
     upload: string | null
     tracerouteLog: string | null
     state: string
-    stationAp: string | null
+    stationAp: { name : string, mac : string, snr : number }
     clients : { failure : ClientFailure } []
 }
 
