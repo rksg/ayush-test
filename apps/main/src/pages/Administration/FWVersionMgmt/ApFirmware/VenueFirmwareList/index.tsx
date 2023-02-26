@@ -18,7 +18,8 @@ import {
   useDeleteVenueMutation,
   useGetVenueCityListQuery,
   useGetAvailableFirmwareListQuery,
-  useSkipVenueUpgradeSchedulesMutation
+  useSkipVenueUpgradeSchedulesMutation,
+  useUpdateNowMutation
 } from '@acx-ui/rc/services'
 import {
   Venue,
@@ -26,11 +27,19 @@ import {
   FirmwareType,
   FirmwareCategory,
   FirmwareVenue,
+  FirmwareVersion,
+  UpdateNowRequest,
   ApVenueStatusEnum,
   TableQuery,
   RequestPayload,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
+
+import {
+  compareVersions,
+  getApVersion
+} from '../../FirmwareUtils'
+
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
@@ -153,15 +162,18 @@ export const VenueFirmwareTable = (
   { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: upgradeVersions } = useGetAvailableFirmwareListQuery({ params })
+  // const navigate = useNavigate()
+  // const { tenantId } = useParams()
+  const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
-  const navigate = useNavigate()
-  const { tenantId } = useParams()
+  const [updateNow] = useUpdateNowMutation()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
+  const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
+  // let revertVersions: FirmwareVersion[] = []
   // let venues: FirmwareVenue[] = []
 
   const handleModalCancel = () => {
@@ -189,8 +201,11 @@ export const VenueFirmwareTable = (
   const handleRevertModalCancel = () => {
     setRevertModelVisible(false)
   }
-  const handleRevertModalSubmit = (data: []) => {
-    // change firmware scheduled
+  const handleRevertModalSubmit = (data: UpdateNowRequest[]) => {
+    updateNow({
+      params: { ...params },
+      payload: data
+    })
   }
 
   // const tableData: readonly FirmwareVenue[] | undefined = tableQuery.data
@@ -246,9 +261,48 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    visible: (selectedRows) => selectedRows.length === 1,
+    visible: (selectedRows) => {
+      let filterVersions: FirmwareVersion[] = []
+      if (selectedRows.length > 1) {
+        return false
+      }
+      if (!availableVersions || availableVersions.length === 0) {
+        return false
+      }
+
+      return selectedRows.every((row: FirmwareVenue) => {
+        // const version = getApVersion(row)
+        const version = '6.2.1.103.1720'
+        if (!version) {
+          return false
+        }
+
+        for (let i = 0; i < availableVersions.length; i++) {
+          if (compareVersions(availableVersions[i].id, version) < 0) {
+            filterVersions.push(availableVersions[i])
+          }
+        }
+        return filterVersions.length > 0
+      })
+    },
     label: $t({ defaultMessage: 'Revert Now' }),
-    onClick: () => setRevertModelVisible(true)
+    onClick: (selectedRows) => {
+      setVenues(selectedRows)
+      let filterVersions: FirmwareVersion[] = []
+      selectedRows.forEach((row: FirmwareVenue) => {
+        // const version = getApVersion(row)
+        const version = '6.2.1.103.1720'
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            if (compareVersions(availableVersions[i].id, version) < 0) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+      })
+      setRevertVersions(filterVersions)
+      setRevertModelVisible(true)
+    }
   }]
 
 
@@ -278,7 +332,7 @@ export const VenueFirmwareTable = (
         firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
         data={venues}
         eol={true}
-        availableVersions={upgradeVersions}
+        availableVersions={availableVersions}
         eolName='eolName'
         latestEolVersion='eolVersion'
         eolModels='eolModel'
@@ -290,7 +344,7 @@ export const VenueFirmwareTable = (
         firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
         data={venues}
         eol={true}
-        availableVersions={upgradeVersions}
+        availableVersions={availableVersions}
         eolName='eolName'
         latestEolVersion='eolVersion'
         eolModels='eolModel'
@@ -299,13 +353,8 @@ export const VenueFirmwareTable = (
       />
       <RevertDialog
         visible={revertModelVisible}
-        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
         data={venues}
-        eol={true}
-        availableVersions={upgradeVersions}
-        eolName='eolName'
-        latestEolVersion='eolVersion'
-        eolModels='eolModel'
+        availableVersions={revertVersions}
         onCancel={handleRevertModalCancel}
         onSubmit={handleRevertModalSubmit}
       />

@@ -62,6 +62,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'DELETE' }]
+    }),
+    updateNow: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateNow, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
   })
 })
@@ -70,5 +80,6 @@ export const {
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
-  useSkipVenueUpgradeSchedulesMutation
+  useSkipVenueUpgradeSchedulesMutation,
+  useUpdateNowMutation
 } = firmwareApi

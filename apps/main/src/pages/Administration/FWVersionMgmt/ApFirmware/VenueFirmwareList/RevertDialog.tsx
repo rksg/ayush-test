@@ -1,229 +1,71 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Select, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space, Typography } from 'antd'
-import { useForm }                                                             from 'antd/lib/form/Form'
-import { useIntl }                                                             from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { useForm }                                          from 'antd/lib/form/Form'
+import { useIntl }                                          from 'react-intl'
 
-import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
-import { Button, Modal, cssStr }                                      from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
-import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
 import {
-  firmwareTypeTrans,
+  Modal
+} from '@acx-ui/components'
+import {
   FirmwareVenue,
   FirmwareVersion,
-  FirmwareType,
-  UpdateNowRequest,
-  usePollingTableQuery
+  UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
+import {
+  getVersionLabel
+} from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
-// import { PersonaDeviceItem } from './PersonaDevicesForm'
-
-enum DevicesImportMode {
-  FromClientDevices,
-  Manually
-}
-
-interface DevicesImportDialogProps {
-  visible: boolean,
-  onCancel: () => void,
-  onSubmit: (data: []) => void,
-  personaGroupId?: string
-}
 
 export interface RevertDialogProps {
   visible: boolean,
   onCancel: () => void,
-  onSubmit: (data: []) => void,
-  firmwareType: FirmwareType,
+  onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
-  availableVersions?: FirmwareVersion[],
-  eol?: boolean,
-  eolName?: string,
-  latestEolVersion?: string,
-  eolModels?: any
+  availableVersions?: FirmwareVersion[]
 }
 
 export function RevertDialog (props: RevertDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
-  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel, data, availableVersions, eol } = props
-  const subTitle = 'Are you sure you wish to revert to previous firmware version?'
-  // const [versionOptions, setVersionOptions] = useState<FirmwareVersion[]>([])
-  let versionOptions: FirmwareVersion[] = []
-  // const [otherVersions, setOtherVersions] = useState<FirmwareVersion[]>([])
-  let otherVersions: FirmwareVersion[] = []
+  const { visible, onSubmit, onCancel, data, availableVersions } = props
+  // eslint-disable-next-line max-len
+  const [selectedVersion, setSelectedVersion] = useState<string>('')
 
-  let title: string
-  // let versionOptions: FirmwareVersion[] = availableVersions
-  let versionRadio: string = 'latestVersion'
-  let eolRadio: string = 'eolVersion'
-  // let otherVersions: any = []
-  let firmwareType: FirmwareType
-  // let FirmwareType = FirmwareType
-  // let data: any = null
-  let selectedVersion: any = null
-  // let eol: boolean = false
-  let eolName: string = ''
-  let latestEolVersion: string= ''
-  let eolModels: any = null
-
-    // this.firmwareType = this.params.firmwareType
-    // this.availableVersions = this.params.availableVersions
-    // this.data = this.params.data
-    // if (this.availableVersions.length > 1) {
-    //   this.initFirstRow()
-    // }
-    // this.initTitle()
-    // this.initEol()
-
-  const initFirstRow = () => {
-    let copyAvailableVersions = availableVersions ? [...availableVersions] : []
-    let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
-    if (firstIndex > 0) {
-      let removed = copyAvailableVersions.splice(firstIndex, 1)
-      // setVersionOptions([...removed, ...copyAvailableVersions])
-      versionOptions = [...removed, ...copyAvailableVersions]
-    } else {
-      // setVersionOptions([...copyAvailableVersions])
-      versionOptions = [...copyAvailableVersions]
+  useEffect(() => {
+    if (availableVersions && availableVersions[0]) {
+      setSelectedVersion(availableVersions[0].name)
     }
-    // setOtherVersions(versionOptions.slice(1))
-    // setOtherVersions([...copyAvailableVersions])
-    // otherVersions = [...copyAvailableVersions]
-    otherVersions = [...copyAvailableVersions, ...copyAvailableVersions]
-    setOptionLabel()
+  }, [availableVersions])
+
+  const onChangeRegular = (e: RadioChangeEvent) => {
+    setSelectedVersion(e.target.value)
   }
 
-  const isRecommanded = (e: FirmwareVersion) => {
-    return e.category === 'RECOMMENDED'
-  }
-
-  const initEol = () => {
-    // this.eol = this.params?.eol
-    // this.eolName = this.params?.eolName
-    // this.latestEolVersion = this.params?.latestEolVersion
-    // this.eolModels = this.params?.eolModels
-  }
-
-  const initTitle = () => {
-    title = 'Choose which version to update the venue to:'
-  }
-
-  // btnClicked = () => {
-  // const request = this.createUpdateScheduleRequest()
-
-  // this.deferred.resolve(request)
-  // this.dialogService.close('UpdateApNowDialogComponent')
-  // }
-
-  const setOptionLabel = (): void => {
-    // otherVersions = otherVersions.map((v: any) => {
-    //   v['optionLabel'] = getVersionLabel(v)
-    //   return v
-    // })
-  }
-
-  const transform = firmwareTypeTrans()
-
-  const getVersionLabel = (version: FirmwareVersion): string => {
-    const versionName = version.name
-    const versionType = transform(version.category)
-    const versionOnboardDate = transformToUserDate(version)
-
-    return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
-  }
-
-  const transformToUserDate = (firmwareVersion: FirmwareVersion): string | undefined => {
-    // return this.firmwareUpgradeService.transformToUserDate(firmwareVersion.onboardDate)
-    return firmwareVersion.onboardDate
-  }
-
-  const createUpdateScheduleRequest = (): UpdateNowRequest[] => {
-    let version
-    if (versionRadio === 'latestVersion') {
-      version = versionOptions[0]
-    } else {
-      version = selectedVersion
-    }
-    // const venuesData = this.params.data as FirmwareVenue[]
-    const venuesData = [] as FirmwareVenue[]
-    let request = []
-    if (version) {
-      request.push({
-        firmwareCategoryId: 'active',
-        firmwareVersion: version.id,
-        venueIds: venuesData.map(venue => venue.id)
-      })
-    }
-    if (eol) {
-      request.push({
-        firmwareCategoryId: eolName,
-        firmwareVersion: latestEolVersion,
-        venueIds: venuesData.map(venue => venue.id)
-      })
-    }
-
-    // console.table(request)
-
+  const createRequest = (): UpdateNowRequest[] => {
+    const venuesData = data as FirmwareVenue[]
+    const request = [{
+      firmwareCategoryId: 'active',
+      firmwareVersion: selectedVersion,
+      venueIds: venuesData.map(venue => venue.id)
+    }]
     return request
   }
 
-  initFirstRow()
-  // useEffect(() => {
-  //   initFirstRow()
-  // }, [])
-  // initFirstRow()
-  // useEffect(() => {
-  //   if (!personaGroupId) return
-
-  //   getPersonaGroupById({ params: { groupId: personaGroupId } })
-  //     .then(result => {
-  //       if (!result.data || !result.data?.macRegistrationPoolId) return
-
-  //       getMacRegistrationById({
-  //         params: { policyId: result.data.macRegistrationPoolId }
-  //       }).then(result => {
-  //         if (!result.data) return
-  //         setMacRegistrationPool(result.data)
-  //       })
-  //     })
-  // }, [personaGroupId])
-
   const triggerSubmit = () => {
-    // FIXME: need to filter unique device items, but it have type issue
     form.validateFields()
-      .then(values => {
-        // console.log('Current dialog fields value = ', values)
-        onSubmit(values.devices ?? [])
+      .then(() => {
+        onSubmit(createRequest())
         onModalCancel()
       })
   }
 
-  const onImportModeChange = (e: RadioChangeEvent) => {
-    setImportMode(e.target.value)
-  }
-
   const onModalCancel = () => {
     form.resetFields()
-    setImportMode(DevicesImportMode.FromClientDevices)
     onCancel()
   }
-
-  const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
-
-  const onChangeRegular = (e: RadioChangeEvent) => {
-    setSelectedProfileKeys(e.target.value)
-  }
-
-  const disableSave = false
 
   return (
     <Modal
@@ -233,45 +75,39 @@ export function RevertDialog (props: RevertDialogProps) {
       okText={$t({ defaultMessage: 'Run Revert' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
-      okButtonProps={{ disabled: disableSave }}
     >
       <Form
         form={form}
-        name={'deviceModalForm'}
+        name={'revertModalForm'}
       >
-        <Typography>
-          {$t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
-        </Typography>
-        <Typography>
-          {$t({ defaultMessage: 'Select one previous version:' })}
-        </Typography>
-        <Radio.Group
-          style={{ margin: 12 }}
-          defaultValue={otherVersions[0].id}
-          onChange={onChangeRegular}
-          value={selectedProfileKeys}>
-          <Space direction={'vertical'}>
-            { otherVersions?.map(p =>
-              <Radio value={p.id} key={p.id}>{p.name}</Radio>)}
-          </Space>
-        </Radio.Group>
-        {/*
-          // <UI.TitleActive>Select one previous version:</UI.TitleActive>
-          // <Radio.Group onChange={onImportModeChange}>
-          //   <Space direction={'vertical'}>
-          //     <Radio value={DevicesImportMode.FromClientDevices}>
-          //       {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
-          //     </Radio>
-          //   </Space>
-          // </Radio.Group>
-          // */}
-        <UI.Section>
-          <UI.Ul>
-            <UI.Li>This action will cause network interruption and impact service delivery.</UI.Li>
+        <Form.Item>
+          <Typography>
             { // eslint-disable-next-line max-len
-              <UI.Li>Some features may no longer be availabe with previous versions of device firmware.</UI.Li>}
-          </UI.Ul>
-        </UI.Section>
+              $t({ defaultMessage: 'Are you sure you wish to revert to previous firmware version?' })}
+          </Typography>
+          <Typography>
+            {$t({ defaultMessage: 'Select one previous version:' })}
+          </Typography>
+          <Radio.Group
+            style={{ margin: 12 }}
+            // eslint-disable-next-line max-len
+            defaultValue={availableVersions && availableVersions[0] ? availableVersions[0].name : ''}
+            onChange={onChangeRegular}
+            value={selectedVersion}>
+            <Space direction={'vertical'}>
+              { availableVersions?.map(v =>
+                <Radio value={v.name} key={v.name}>{getVersionLabel(v)}</Radio>)}
+            </Space>
+          </Radio.Group>
+          <UI.Section>
+            <UI.Ul>
+              { // eslint-disable-next-line max-len
+                <UI.Li>This action will cause network interruption and impact service delivery.</UI.Li>}
+              { // eslint-disable-next-line max-len
+                <UI.Li>Some features may no longer be availabe with previous versions of device firmware.</UI.Li>}
+            </UI.Ul>
+          </UI.Section>
+        </Form.Item>
       </Form>
     </Modal>
   )
