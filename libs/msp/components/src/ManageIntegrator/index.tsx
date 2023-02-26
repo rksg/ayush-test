@@ -33,12 +33,10 @@ import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
-  // useMspAdminListQuery,
   useMspCustomerListQuery,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
   useGetMspEcQuery,
-  // useGetMspEcDelegatedAdminsQuery,
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useGetUserProfileQuery
