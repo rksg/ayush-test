@@ -6,6 +6,8 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange } from '@acx-ui/utils'
 
+import { stackMemberStandalone } from './__tests__/fixtures'
+
 import { SwitchOverviewPanel } from '.'
 
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -21,6 +23,10 @@ jest.mock('./ResourceUtilization', () => ({
 jest.mock('./TopPorts', () => ({
   TopPorts: () =>
     <div data-testid={'rc-TopPorts'} title='TopPorts' />
+}))
+jest.mock('./SwitchFrontRearView', () => ({
+  SwitchFrontRearView: () =>
+    <div data-testid={'rc-SwitchFrontRearView'} title='SwitchFrontRearView' />
 }))
 
 describe('SwitchOverviewTab', () => {
@@ -39,12 +45,15 @@ describe('SwitchOverviewTab', () => {
       serialNumber: 'serialNumber',
       activeTab: 'overview'
     }
-    render(<Provider><SwitchOverviewPanel filters={filters}/></Provider>, {
+    render(<Provider>
+      <SwitchOverviewPanel filters={filters} stackMember={stackMemberStandalone} />
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
       }
     })
+    expect(await screen.findByTestId('rc-SwitchFrontRearView')).toBeVisible()
     expect(await screen.findByTestId('rc-SwitchesTrafficByVolume')).toBeVisible()
     expect(await screen.findByTestId('rc-ResourceUtilization')).toBeVisible()
     expect(await screen.findByTestId('rc-SwitchStatusByTime')).toBeVisible()
