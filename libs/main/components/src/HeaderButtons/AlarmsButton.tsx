@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { useEffect, useState } from 'react'
 
+
 import { Badge, Select }    from 'antd'
 import { PaginationConfig } from 'antd/lib/pagination'
+import { SorterResult }     from 'antd/lib/table/interface'
 import { useIntl }          from 'react-intl'
 
 import {
@@ -27,8 +29,6 @@ import { store }                                                                
 import { formatter }                                                              from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
-
-const defaultArray: Alarm[] = []
 
 const defaultPayload: {
     url: string
@@ -97,13 +97,7 @@ export default function AlarmsHeaderButton () {
     }
   })
 
-  const [tableData, setTableData] = useState(defaultArray)
-
   useEffect(()=>{
-    if (tableQuery.data?.data) {
-      setTableData(tableQuery.data.data)
-    }
-
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: severity==='all' ? {} : { severity: [severity] }
@@ -193,8 +187,26 @@ export default function AlarmsHeaderButton () {
     ]}>
       <UI.ListTable
         itemLayout='horizontal'
-        pagination={tableQuery.pagination as PaginationConfig}
-        dataSource={tableData}
+        pagination={{
+          ...tableQuery.pagination as PaginationConfig,
+          showSizeChanger: false,
+          onChange: (page, pageSize) => {
+            const pagination = {
+              current: page,
+              pageSize
+            }
+            const sorter = {
+              field: 'startTime',
+              order: 'descend'
+            } as SorterResult<Alarm>
+            const extra = {
+              currentDataSource: [] as Alarm[],
+              action: 'paginate' as const
+            }
+            return tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
+          }
+        }}
+        dataSource={tableQuery.data?.data}
         renderItem={(item) => {
           const alarm = item as Alarm
           return (
