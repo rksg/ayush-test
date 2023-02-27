@@ -14,8 +14,6 @@ import {
   Card
 } from 'antd'
 import { Button, Upload } from 'antd'
-import { select }         from 'd3'
-import { isEmpty }        from 'lodash'
 import { useIntl }        from 'react-intl'
 
 import {
@@ -38,7 +36,6 @@ import {
   phoneRegExp,
   MspPortal,
   Providers,
-  FileValidation,
   UploadUrlResponse,
   MspLogoFile
 } from '@acx-ui/rc/utils'
@@ -48,12 +45,12 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import logoLoginImg   from '../images/comscope-logo-ping.png'
-import logoAlarmImg   from '../images/ruckus-logo-alarm.png'
-import logoPortalImg  from '../images/ruckus-logo-cloud.png'
-import logoSupportImg from '../images/ruckus-logo-notification.png'
-import supportLinkImg from '../images/supportlink.png'
-import * as UI        from '../styledComponents'
+import defaultLoginLogo   from '../images/comscope-logo-ping.png'
+import defaultAlarmLogo   from '../images/ruckus-logo-alarm.png'
+import defaultPortalLogo  from '../images/ruckus-logo-cloud.png'
+import defaultSupportLogo from '../images/ruckus-logo-notification.png'
+import supportLinkImg     from '../images/supportlink.png'
+import * as UI            from '../styledComponents'
 
 export const getFileExtension = function (fileName: string) {
   // eslint-disable-next-line max-len
@@ -70,32 +67,25 @@ export function PortalSettings () {
   const intl = useIntl()
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MspPortal>>()
-  // const { Option } = Select
   const params = useParams()
   const fileUrl = '/api/file/tenant/' + params.tenantId + '/'
 
   const linkDashboard = useTenantLink('/dashboard', 'v')
+
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
-  // const [file, setFile] = useState<File>({} as File)
-  const validateFile = function (_fileValidation: FileValidation) {
-    // formRef.setFieldValue('imageName', _fileValidation.file.name)
-    // formRef.current?.validateFields(['mspLogoFiles']) // DON'T NEED B/C FIELD IS NOT REQUIRED
-    // setFile(_fileValidation.file)
-  }
-  const [fileList, setFileList] = useState<UploadFile[]>([])
   const [defaultFileList, setDefaultFileList] = useState<UploadFile[]>([])
-  const [getUploadURL] = useGetUploadURLMutation()
-  const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
+  const [fileList, setFileList] = useState<UploadFile[]>([])
   const [portalLogoUrl, setPortalLogoUrl] = useState('')
   const [loginLogoUrl, setLoginLogoUrl] = useState('')
   const [supportLogoUrl, setSupportLogoUrl] = useState('')
+  const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
+  const [getUploadURL] = useGetUploadURLMutation()
 
   const [showContactSupport, setContactSupport] = useState(false)
   const [showOpenCase, setOpenCase] = useState(true)
   const [showMyCase, setMyCase] = useState(true)
 
   const [isEditMode, setEditMode] = useState(false)
-  // const [editFormData, setEditFormData]=useState<MspPortal>()
 
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
 
@@ -136,44 +126,60 @@ export function PortalSettings () {
         setSelectedLogo('myLogo')
         mspLabel.logo_uuid     // TODO: update this after changing workflow to grab fileList from logo preview uuids and not data list
           ? setPortalLogoUrl(fileUrl + mspLabel.logo_uuid)
-          : setPortalLogoUrl(logoPortalImg)
+          : setPortalLogoUrl(defaultPortalLogo)
         mspLabel.ping_login_logo_uuid
           ? setLoginLogoUrl(fileUrl + mspLabel.ping_login_logo_uuid)
-          : setLoginLogoUrl(logoLoginImg)
+          : setLoginLogoUrl(defaultLoginLogo)
         mspLabel.ping_notification_logo_uuid
           ? setSupportLogoUrl(fileUrl + mspLabel.ping_notification_logo_uuid)
-          : setSupportLogoUrl(logoSupportImg)
+          : setSupportLogoUrl(defaultSupportLogo)
         // setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
         mspLabel.alarm_notification_logo_uuid
           ? setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
-          : setAlarmLogoUrl(logoAlarmImg)
+          : setAlarmLogoUrl(defaultAlarmLogo)
       }
       else {
-        setPortalLogoUrl(logoPortalImg)
-        setLoginLogoUrl(logoLoginImg)
-        setSupportLogoUrl(logoSupportImg)
-        setAlarmLogoUrl(logoAlarmImg)
+        setPortalLogoUrl(defaultPortalLogo)
+        setLoginLogoUrl(defaultLoginLogo)
+        setSupportLogoUrl(defaultSupportLogo)
+        setAlarmLogoUrl(defaultAlarmLogo)
       }
       // mspLabel.alarm_notification_logo_uuid
       //   ? setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
       //   : setAlarmLogoUrl(logoCloudImg)
-      // const formData = { ...mspLabel }
-      // setEditFormData(formData)
     }
   }, [provider, mspLabel])
+
+  function mspLabelRegExp (value: string) {
+    const re = new RegExp (/^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
+
+    if (value && !re.test(value)) {
+      return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid domain name' }))
+    }
+    return Promise.resolve()
+  }
+  function urlRegExp (value: string) {
+  // eslint-disable-next-line max-len
+    const re = new RegExp (/^(http|https):\/\/[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
+
+    if (value && !re.test(value)) {
+      return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid URL' }))
+    }
+    return Promise.resolve()
+  }
 
   const beforeUpload = function (file: File) {
     const acceptedImageTypes = ['image/png', 'image/jpg', 'image/gif']
     const validImage = acceptedImageTypes.includes(file.type)
     if (!validImage) {
-      const content = intl.$t({ defaultMessage: 'Invalid Image type!' })
+      const content = intl.$t({ defaultMessage: 'Invalid image type!' })
       showToast({
         type: 'error',
         content
       })
       return
     }
-    const isLt750K = file.size / 1024 / 1024 < 1     //TODO: UPDATE TO 0.75?
+    const isLt750K = file.size / 1024 < 750
     if (!isLt750K) {
       const content = intl.$t({ defaultMessage: 'Image must be smaller than 750KB!' })
       showToast({
@@ -182,8 +188,27 @@ export function PortalSettings () {
       })
       return
     }
+    if (fileList.find(f => f.name === file.name)) {
+      const content = intl.$t({ defaultMessage: 'An image already exists with that filename!' })
+      showToast({
+        type: 'error',
+        content
+      })
+      return
+    }
     const newFile = file as unknown as UploadFile
     newFile.url = URL.createObjectURL(file)
+    // If this is the only image imported, load image into all logo previews
+    if (!fileList.length) {
+      formRef.current?.setFieldValue('logo_uuid', newFile.uid)
+      formRef.current?.setFieldValue('ping_login_logo_uuid', newFile.uid)
+      formRef.current?.setFieldValue('ping_notification_logo_uuid', newFile.uid)
+      formRef.current?.setFieldValue('alarm_notification_logo_uuid', newFile.uid)
+      setPortalLogoUrl(newFile.url?? '')
+      setLoginLogoUrl(newFile.url?? '')
+      setSupportLogoUrl(newFile.url?? '')
+      setAlarmLogoUrl(newFile.url?? '')
+    }
     const newFileList = [ ...fileList, newFile ]
     setFileList(newFileList)
     return false
@@ -211,19 +236,6 @@ export function PortalSettings () {
     }
   }
 
-  const handleAddMspLabel = async (values: MspPortal) => {
-    try {
-      const formData = { ...values }
-      await addMspLabel({ params, payload: formData }).unwrap()
-      navigate(linkDashboard, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
-    }
-  }
-
   const getFilesUploadURL = async function (files : UploadFile[]) {
     return await Promise.all(files.map((file) => {
       const extension: string = getFileExtension(file.name)
@@ -231,14 +243,46 @@ export function PortalSettings () {
         params: { ...params },
         payload: { fileExtension: extension }
       }).unwrap().then((uploadUrl) => {
+        fetch(uploadUrl.signedUrl, { method: 'put', body: file as unknown as File, headers: {
+          'Content-Type': ''
+        } })
         return {
           fileName: file.name,
           fileId: file.uid,
-          file: file,    // TODO: not needed if fetch is not needed in handleUpdateMspLabel()
           data: uploadUrl
         }
       })
     }))
+  }
+
+  const getDefaultLogoUuid = async function ()
+  {
+    const defaultLogoFile = await fetch(defaultPortalLogo)
+      .then(res => res.blob())
+      .then(blob => {
+        return new File([blob], defaultPortalLogo, { type: 'image/png' })
+      })
+    const imageType: string = defaultPortalLogo.split(';base64', 1).at(0) ?? ''
+    if (!imageType) {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
+    }
+    const extension: string = getFileExtension(imageType)
+
+    const uploadUrl = await getUploadURL({
+      params: { ...params },
+      payload: { fileExtension: extension }
+    }) as { data: UploadUrlResponse }
+
+    if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {
+      await fetch(uploadUrl.data.signedUrl, { method: 'put', body: defaultLogoFile, headers: {
+        'Content-Type': ''
+      } })
+      return uploadUrl.data.fileId
+    }
+    return
   }
 
   const updateFormFileIds = function (values: MspPortal,
@@ -270,36 +314,6 @@ export function PortalSettings () {
     return values
   }
 
-  const getDefaultLogoUuid = async function ()
-  {
-    const defaultLogoFile = await fetch(logoPortalImg)
-      .then(res => res.blob())
-      .then(blob => {
-        return new File([blob], logoPortalImg, { type: 'image/png' })
-      })
-    const imageType: string = logoPortalImg.split(';base64', 1).at(0) ?? ''
-    if (!imageType) {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
-    }
-    const extension: string = getFileExtension(imageType)
-
-    const uploadUrl = await getUploadURL({
-      params: { ...params },
-      payload: { fileExtension: extension }
-    }) as { data: UploadUrlResponse }
-
-    if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {
-      await fetch(uploadUrl.data.signedUrl, { method: 'put', body: defaultLogoFile, headers: {
-        'Content-Type': ''
-      } })
-      return uploadUrl.data.fileId
-    }
-    return
-  }
-
   const getMspPortalToSave = async (values: MspPortal) => {
     const portal: MspPortal = {}
     if (selectedLogo === 'defaultLogo') {
@@ -308,7 +322,6 @@ export function PortalSettings () {
 
       portal.msp_label = formData.msp_label
       portal.default_logo_uuid = defaultLogoUid
-      // TODO: check if handleAddMspLabel needs the same values for these 3 url props
       portal.contact_support_url = showContactSupport ? formData.contact_support_url : ''
       portal.open_case_url = showOpenCase ? formData.open_case_url : ''
       portal.my_open_case_url = showMyCase ? formData.my_open_case_url : ''
@@ -318,28 +331,22 @@ export function PortalSettings () {
       // preferredWisprProvider?: MspPreferredWisprProvider;
     }
     else {
-      // TODO: need to make sure that files uploaded haven't already been uploaded to google? in which case don't need to call fetch nor use await promise for logoFileDataList
       const uploadedFiles = fileList.filter(file => file.status === 'done')
-      const newFiles = fileList.filter(file => file.status !== 'done')
-      const uploadUrls = await getFilesUploadURL(newFiles)
       const uploadedFileDataList: MspLogoFile[] = uploadedFiles.map((file) => {
         return {
           logo_fileuuid: file.uid,
           logo_file_name: file.name
         }
       })
-      const newFileList = uploadUrls ? await Promise.all(uploadUrls.map((uploadUrl) => {
-        // TODO: check if fetch is needed, or if already handled by getUploadURL()
-        const file = uploadUrl.file as unknown as File
-        fetch(uploadUrl.data.signedUrl, { method: 'put', body: file, headers: {
-          'Content-Type': ''
-        } })
+      const newFiles = fileList.filter(file => file.status !== 'done')
+      const uploadUrls = await getFilesUploadURL(newFiles)
+      const newFileList = uploadUrls ? uploadUrls.map((uploadUrl) => {
         const logoFileData: MspLogoFile = {
           logo_fileuuid: uploadUrl.data.fileId,
           logo_file_name: uploadUrl.fileName
         }
         return logoFileData
-      })) : []
+      }) : []
       const logoFileDataList = uploadedFileDataList.concat(newFileList)
       values = uploadUrls ? updateFormFileIds({ ...values }, uploadUrls) : values
       const formData = { ...mspLabel, ...values }
@@ -349,9 +356,7 @@ export function PortalSettings () {
       portal.alarm_notification_logo_uuid = formData.alarm_notification_logo_uuid
       portal.ping_notification_logo_uuid = formData.ping_notification_logo_uuid
       portal.ping_login_logo_uuid = formData.ping_login_logo_uuid
-      // default_logo_uuid: formData.default_logo_uuid,
       portal.mspLogoFileDataList = logoFileDataList
-      // TODO: check if handleAddMspLabel needs the same values for these 3 url props
       portal.contact_support_url = showContactSupport ? formData.contact_support_url : ''
       portal.open_case_url = showOpenCase ? formData.open_case_url : ''
       portal.my_open_case_url = showMyCase ? formData.my_open_case_url : ''
@@ -360,23 +365,24 @@ export function PortalSettings () {
       portal.msp_website = formData.msp_website
       // preferredWisprProvider?: MspPreferredWisprProvider;
     }
+    if (!showContactSupport) {
+      portal.contact_support_behavior = 'hide'
+    }
+    if (!showOpenCase) {
+      portal.open_case_behavior = 'hide'
+    }
+    if (!showMyCase) {
+      portal.my_open_case_behavior = 'hide'
+    }
     return portal
   }
 
-  const handleUpdateMspLabel = async (values: MspPortal) => {
+  const handleAddMspLabel = async (values: MspPortal) => {
     try {
-      const portal: MspPortal = await getMspPortalToSave(values)
-      if (!showContactSupport) {
-        portal.contact_support_behavior = 'hide'
-      }
-      if (!showOpenCase) {
-        portal.open_case_behavior = 'hide'
-      }
-      if (!showMyCase) {
-        portal.my_open_case_behavior = 'hide'
-      }
-
-      await updateMspLabel({ params, payload: portal }).unwrap()
+      // const formData = { ...values }
+      // TODO: test to make sure this call works for add as well
+      const formData = await getMspPortalToSave(values)
+      await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch {
       showToast({
@@ -386,22 +392,17 @@ export function PortalSettings () {
     }
   }
 
-  function mspLabelRegExp (value: string) {
-    const re = new RegExp (/^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
-
-    if (value && !re.test(value)) {
-      return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid domain name' }))
+  const handleUpdateMspLabel = async (values: MspPortal) => {
+    try {
+      const portal: MspPortal = await getMspPortalToSave(values)
+      await updateMspLabel({ params, payload: portal }).unwrap()
+      navigate(linkDashboard, { replace: true })
+    } catch {
+      showToast({
+        type: 'error',
+        content: intl.$t({ defaultMessage: 'An error occurred' })
+      })
     }
-    return Promise.resolve()
-  }
-  function urlRegExp (value: string) {
-  // eslint-disable-next-line max-len
-    const re = new RegExp (/^(http|https):\/\/[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
-
-    if (value && !re.test(value)) {
-      return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid URL' }))
-    }
-    return Promise.resolve()
   }
 
   return (
@@ -431,9 +432,9 @@ export function PortalSettings () {
                 label=''
                 initialValue={mspLabel?.msp_label}
                 rules={[
-                  { required: true },
-                  { validator: (_, value) => mspLabelRegExp(value) },
-                  { message: intl.$t({ defaultMessage: 'Please enter a valid domain name' }) }
+                  { required: true,
+                    message: intl.$t({ defaultMessage: 'Please enter a domain name' }) },
+                  { validator: (_, value) => mspLabelRegExp(value) }
                 ]}
                 children={<Input />}
                 style={{ width: '180px', paddingRight: '10px' }}
@@ -491,22 +492,25 @@ export function PortalSettings () {
                       defaultFileList={defaultFileList}
                       beforeUpload={beforeUpload}
                       onRemove={onRemove}
-                      maxCount={5}
                     >
-                      <Button type='link'>{intl.$t({ defaultMessage: 'Import Logo' })}</Button>
+                      <Button type='link'
+                        disabled={fileList.length >= 5}
+                      >
+                        {intl.$t({ defaultMessage: 'Import Logo' })}
+                      </Button>
                     </Upload>
                   </>
               }
             </div>
 
             <div style={{ float: 'left', marginLeft: '20px', width: '300px' }}>
-              {/* TODO: might not need width here */}
               <Subtitle level={4}>
                 { intl.$t({ defaultMessage: 'Logo Preview:' }) }</Subtitle>
               <Space direction='vertical'>
                 <Card
                   title='Portal Header'
                   size='small'
+                  headStyle={{ backgroundColor: 'var(--acx-neutrals-20)' }}
                 >
                   <Space direction='horizontal'>
                     {selectedLogo !== 'defaultLogo' &&
@@ -520,6 +524,7 @@ export function PortalSettings () {
                           { required: selectedLogo !== 'defaultLogo' ,
                             message: intl.$t({ defaultMessage: 'Please select logo' }) }
                         ]}
+                        style={{ marginBottom: '0' }}
                       >
                         <Select
                           placeholder='Select Logo'
@@ -532,19 +537,20 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <div style={{ backgroundColor: '#333333', height: '60px', width: '355px' }}>
+                    <UI.ImagePreviewDark width='355px' height='60px'>
                       {(selectedLogo === 'defaultLogo' || portalLogoUrl) &&
                         <img alt='portal header logo'
-                          src={selectedLogo === 'defaultLogo' ? logoPortalImg : portalLogoUrl}
-                          style={{ maxHeight: '45px', maxWidth: '300px' }}
+                          src={selectedLogo === 'defaultLogo' ? defaultPortalLogo : portalLogoUrl}
+                          style={{ marginLeft: '10px', maxHeight: '45px', maxWidth: '300px' }}
                         />
                       }
-                    </div>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card
                   title='Customer Login'
                   size='small'
+                  headStyle={{ backgroundColor: 'var(--acx-neutrals-20)' }}
                 >
                   <Space direction='horizontal'>
                     {selectedLogo !== 'defaultLogo' &&
@@ -558,6 +564,7 @@ export function PortalSettings () {
                           { required: selectedLogo !== 'defaultLogo' ,
                             message: intl.$t({ defaultMessage: 'Please select logo' }) }
                         ]}
+                        style={{ marginBottom: '0' }}
                       >
                         <Select
                           placeholder='Select Logo'
@@ -570,19 +577,20 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <div style={{ backgroundColor: '#ffffff', height: '80px', width: '355px' }}>
+                    <UI.ImagePreviewLight width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || loginLogoUrl) &&
                         <img alt='customer login logo'
-                          src={selectedLogo === 'defaultLogo' ? logoLoginImg : loginLogoUrl}
-                          style={{ maxHeight: '80px', maxWidth: '320px' }}
+                          src={selectedLogo === 'defaultLogo' ? defaultLoginLogo : loginLogoUrl}
+                          style={{ margin: 'auto', maxHeight: '80px', maxWidth: '320px' }}
                         />
                       }
-                    </div>
+                    </UI.ImagePreviewLight>
                   </Space>
                 </Card>
                 <Card
                   title='Customer Support Emails'
                   size='small'
+                  headStyle={{ backgroundColor: 'var(--acx-neutrals-20)' }}
                 >
                   <Space direction='horizontal'>
                     {selectedLogo !== 'defaultLogo' &&
@@ -596,6 +604,7 @@ export function PortalSettings () {
                           { required: selectedLogo !== 'defaultLogo' ,
                             message: intl.$t({ defaultMessage: 'Please select logo' }) }
                         ]}
+                        style={{ marginBottom: '0' }}
                       >
                         <Select
                           placeholder='Select Logo'
@@ -608,19 +617,20 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <div style={{ backgroundColor: '#333333', height: '60px', width: '355px' }}>
+                    <UI.ImagePreviewDark width='355px' height='60px'>
                       {(selectedLogo === 'defaultLogo' || supportLogoUrl) &&
                         <img alt='customer support logo'
-                          src={selectedLogo === 'defaultLogo' ? logoSupportImg : supportLogoUrl}
-                          style={{ maxHeight: '45px', maxWidth: '300px' }}
+                          src={selectedLogo === 'defaultLogo' ? defaultSupportLogo : supportLogoUrl}
+                          style={{ marginLeft: '10px', maxHeight: '45px', maxWidth: '300px' }}
                         />
                       }
-                    </div>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card
                   title='Alarm Notification Emails'
                   size='small'
+                  headStyle={{ backgroundColor: 'var(--acx-neutrals-20)' }}
                 >
                   <Space direction='horizontal'>
                     {selectedLogo !== 'defaultLogo' &&
@@ -634,6 +644,7 @@ export function PortalSettings () {
                           { required: selectedLogo !== 'defaultLogo' ,
                             message: intl.$t({ defaultMessage: 'Please select logo' }) }
                         ]}
+                        style={{ marginBottom: '0' }}
                       >
                         <Select
                           placeholder='Select Logo'
@@ -646,14 +657,14 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <div style={{ backgroundColor: '#f7f7f7', height: '80px', width: '355px' }}>
+                    <UI.ImagePreviewLight width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || alarmLogoUrl) &&
                         <img alt='alarm logo'
-                          src={selectedLogo === 'defaultLogo' ? logoAlarmImg : alarmLogoUrl}
-                          style={{ maxHeight: '80px', maxWidth: '300px' }}
+                          src={selectedLogo === 'defaultLogo' ? defaultAlarmLogo : alarmLogoUrl}
+                          style={{ marginLeft: '10px', maxHeight: '80px', maxWidth: '300px' }}
                         />
                       }
-                    </div>
+                    </UI.ImagePreviewLight>
                   </Space>
                 </Card>
               </Space>
@@ -671,7 +682,6 @@ export function PortalSettings () {
               name='external_provider'
               label={intl.$t({ defaultMessage: 'Select Preferred Provider' })}
               style={{ width: '300px' }}
-              rules={[{ required: true }]}
               initialValue={intl.$t({ defaultMessage: 'Select preferred provider' })}
               children={
                 <Select>
@@ -728,7 +738,8 @@ export function PortalSettings () {
                       name='contact_support_url'
                       style={{ width: '300px' }}
                       rules={[
-                        { required: true },
+                        { required: true,
+                          message: intl.$t({ defaultMessage: 'Please enter URL' }) },
                         { validator: (_, value) => urlRegExp(value) }
                       ]}
                       initialValue={mspLabel?.contact_support_url}
@@ -768,7 +779,8 @@ export function PortalSettings () {
                       name='open_case_url'
                       style={{ width: '300px' }}
                       rules={[
-                        { required: true },
+                        { required: true,
+                          message: intl.$t({ defaultMessage: 'Please enter URL' }) },
                         { validator: (_, value) => urlRegExp(value) }
                       ]}
                       initialValue={mspLabel?.open_case_url}
@@ -801,7 +813,8 @@ export function PortalSettings () {
                       name='my_open_case_url'
                       style={{ width: '300px' }}
                       rules={[
-                        { required: true },
+                        { required: true,
+                          message: intl.$t({ defaultMessage: 'Please enter URL' }) },
                         { validator: (_, value) => urlRegExp(value) }
                       ]}
                       initialValue={mspLabel?.my_open_case_url}
