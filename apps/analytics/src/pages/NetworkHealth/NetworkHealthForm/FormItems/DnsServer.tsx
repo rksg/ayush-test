@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { Form, Input, Radio, Space } from 'antd'
 import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
@@ -15,24 +13,17 @@ import { NetworkHealthFormDto } from '../../types'
 const name = ['configs', 0, 'dnsServer'] as const
 const label = defineMessage({ defaultMessage: 'DNS Server' })
 
-const useField = () => {
+const useIsCustom = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const [isCustom, value] = [
-    Form.useWatch('isDnsServerCustom', form),
-    Form.useWatch(name as unknown as NamePath, form)
-  ]
+  const isCustom = Form.useWatch('isDnsServerCustom', form)
 
-  return { form, isCustom, value }
+  return { form, isCustom }
 }
 
 export function DnsServer () {
   const { $t } = useIntl()
-  const { form, isCustom, value } = useField()
+  const { form, isCustom } = useIsCustom()
   const fieldName = name as unknown as NamePath
-
-  useEffect(() => {
-    if (!isCustom && value) form.setFieldValue(fieldName, undefined)
-  }, [form, isCustom, value, fieldName])
 
   return (
     <Form.Item required={isCustom} label={$t(label)}>
@@ -41,7 +32,9 @@ export function DnsServer () {
           noStyle
           name='isDnsServerCustom'
         >
-          <Radio.Group>
+          <Radio.Group
+            onChange={(e) => !e.target.value && form.setFieldValue(fieldName, undefined)}
+          >
             <Radio value={false}>{$t({ defaultMessage: 'Default' })}</Radio>
             <Radio value={true}>{$t({ defaultMessage: 'Custom' })}</Radio>
           </Radio.Group>
@@ -68,7 +61,7 @@ DnsServer.label = label
 
 DnsServer.FieldSummary = function DnsServerFieldSummary () {
   const { $t } = useIntl()
-  const { isCustom } = useField()
+  const { isCustom } = useIsCustom()
 
   return <Form.Item
     name={name as unknown as NamePath}

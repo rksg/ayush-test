@@ -1,6 +1,4 @@
-import { useEffect } from 'react'
-
-import { Form, Select }                             from 'antd'
+import { Form, FormInstance, Select }               from 'antd'
 import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
@@ -14,25 +12,34 @@ import {
   authMethodsByClientType,
   authMethodsByCode
 } from '../../authMethods'
-import * as contents     from '../../contents'
+import * as contents             from '../../contents'
 import {
   AuthenticationMethod as AuthenticationMethodEnum,
-  NetworkHealthFormDto
+  NetworkHealthFormDto,
+  ClientType as ClientTypeEnum
 } from '../../types'
 
 import { ClientType } from './ClientType'
+import { Password }   from './Password'
+import { Username }   from './Username'
 
 const name = ['configs', 0, 'authenticationMethod'] as const
 const label = defineMessage({ defaultMessage: 'Authentication Method' })
+
+function reset (form: FormInstance, clientType: ClientTypeEnum) {
+  const methods = authMethodsByClientType[clientType]
+  const fieldName = name as unknown as NamePath
+  const code = form.getFieldValue(fieldName)
+
+  if (!methods.some(method => method.code === code))
+    form.setFieldValue(fieldName, undefined)
+}
 
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const fieldName = name as unknown as NamePath
-  const [code, clientType] = [
-    Form.useWatch(fieldName, form),
-    Form.useWatch(ClientType.fieldName, form)
-  ]
+  const clientType = Form.useWatch(ClientType.fieldName, form)
   const methods = authMethodsByClientType[clientType]
 
   // TODO:
@@ -42,12 +49,6 @@ export function AuthenticationMethod () {
     value={method.code}
     children={$t(method.title)}
   />)
-
-  useEffect(() => {
-    if (!code) return
-    if (methods?.some(method => method.code === code)) return
-    form.setFieldValue(fieldName, undefined)
-  }, [form, methods, code, clientType, fieldName])
 
   const mainLabel = <>
     {$t(label)}
@@ -68,6 +69,10 @@ export function AuthenticationMethod () {
       children={<Select
         placeholder={$t({ defaultMessage: 'Select an authentication method' })}
         children={options}
+        onChange={(code: AuthenticationMethodEnum) => {
+          Username.reset(form, code)
+          Password.reset(form, code)
+        }}
       />}
     />
   </Form.Item>
@@ -75,6 +80,7 @@ export function AuthenticationMethod () {
 
 AuthenticationMethod.fieldName = name
 AuthenticationMethod.label = label
+AuthenticationMethod.reset = reset
 
 AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary () {
   const { $t } = useIntl()

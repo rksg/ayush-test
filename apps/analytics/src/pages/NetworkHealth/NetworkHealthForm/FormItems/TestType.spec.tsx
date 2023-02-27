@@ -1,60 +1,67 @@
 import userEvent from '@testing-library/user-event'
 
-import { screen } from '@acx-ui/test-utils'
+import { screen, within } from '@acx-ui/test-utils'
 
 import { renderForm }        from '../../__tests__/fixtures'
-import { ScheduleFrequency } from '../../types'
+import {
+  ScheduleFrequency,
+  TestTypeWithSchedule,
+  TestType as TestTypeEnum
+} from '../../types'
 
+import { Schedule } from './Schedule'
 import { TestType } from './TestType'
+
+type MockSelectProps = React.PropsWithChildren<{
+  onChange: (typeWithSchedule: TestTypeWithSchedule) => void
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ children, onChange, ...props }: MockSelectProps) => (
+    <select
+      onChange={(e) => onChange(e.target.value as TestTypeWithSchedule)}
+      {...props}
+    >
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+jest.mock('./Schedule', () => ({ Schedule: { reset: jest.fn() } }))
 
 describe('TestType', () => {
   it('handles change to on-demand', async () => {
-    renderForm(<TestType />, {
-      initialValues: {
-        schedule: {
-          type: 'service_guard',
-          timezone: 'America/New_York',
-          frequency: ScheduleFrequency.Weekly,
-          day: 1,
-          hour: 2
-        }
-      }
-    })
+    renderForm(<TestType />)
 
-    await userEvent.click(screen.getByRole('combobox', { name: 'Test Type' }))
-    await userEvent.click(await screen.findByText('On-Demand'))
+    const dropdown = await screen.findByRole('combobox')
+    await userEvent.selectOptions(
+      dropdown,
+      within(dropdown).getByRole('option', { name: 'On-Demand' })
+    )
 
     const fields = await screen.findAllByRole('textbox')
-    expect(fields.find(field => field.id === 'schedule_frequency'))
-      .toHaveValue('')
-    expect(fields.find(field => field.id === 'schedule_day'))
-      .toHaveValue('')
-    expect(fields.find(field => field.id === 'schedule_hour'))
-      .toHaveValue('')
+    expect(fields.find(field => field.id === 'type'))
+      .toHaveValue(TestTypeEnum.OnDemand)
+    expect(Schedule.reset)
+      .toHaveBeenCalledWith(expect.anything(), TestTypeEnum.OnDemand)
   })
 
   it('handles change to scheduled', async () => {
-    renderForm(<TestType />, {
-      initialValues: {
-        schedule: {
-          type: 'service_guard',
-          timezone: 'America/New_York',
-          frequency: ScheduleFrequency.Weekly,
-          day: 1,
-          hour: 2
-        }
-      }
-    })
+    renderForm(<TestType />)
 
-    await userEvent.click(screen.getByRole('combobox', { name: 'Test Type' }))
-    await userEvent.click(await screen.findByText('Monthly'))
+    const dropdown = await screen.findByRole('combobox')
+    await userEvent.selectOptions(
+      dropdown,
+      within(dropdown).getByRole('option', { name: 'Weekly' })
+    )
 
     const fields = await screen.findAllByRole('textbox')
-    expect(fields.find(field => field.id === 'schedule_frequency'))
-      .toHaveValue(ScheduleFrequency.Monthly)
-    expect(fields.find(field => field.id === 'schedule_day'))
-      .toHaveValue('')
-    expect(fields.find(field => field.id === 'schedule_hour'))
-      .toHaveValue('2')
+    expect(fields.find(field => field.id === 'type'))
+      .toHaveValue(TestTypeEnum.Scheduled)
+    expect(Schedule.reset)
+      .toHaveBeenCalledWith(expect.anything(), ScheduleFrequency.Weekly)
   })
 })

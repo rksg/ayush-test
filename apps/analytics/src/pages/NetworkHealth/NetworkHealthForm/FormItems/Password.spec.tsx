@@ -1,9 +1,10 @@
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { NamePath } from 'antd/es/form/interface'
 
 import { cleanup, screen } from '@acx-ui/test-utils'
 
-import { renderForm }           from '../../__tests__/fixtures'
-import { AuthenticationMethod } from '../../types'
+import { renderForm, renderFormHook } from '../../__tests__/fixtures'
+import { AuthenticationMethod }       from '../../types'
 
 import { Password } from './Password'
 
@@ -147,6 +148,31 @@ describe('Password', () => {
     await click(screen.getByRole('button', { name: 'Update' }))
 
     expect(screen.getByTestId('field')).toBeEmptyDOMElement()
+  })
+
+  describe('reset', () => {
+    const name = Password.fieldName as unknown as NamePath
+
+    it('resets to undefined if field not needed', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.OPEN_AUTH)
+      expect(form.getFieldValue(name)).toEqual(undefined)
+    })
+
+    it('resets to undefined if preconfigured', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.WPA2_PERSONAL)
+      expect(form.getFieldValue(name)).toEqual(undefined)
+    })
+
+    it('does not reset', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.WPA2_ENTERPRISE)
+      expect(form.getFieldValue(name)).toEqual('some-password')
+    })
   })
 })
 
