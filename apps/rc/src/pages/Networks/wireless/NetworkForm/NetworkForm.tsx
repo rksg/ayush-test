@@ -44,14 +44,14 @@ import {
   multipleConflictMessage,
   radiusErrorMessage
 } from './contentsMap'
-import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext           from './NetworkFormContext'
-import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
-import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }              from './NetworkSummary/SummaryForm'
+import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext          from './NetworkFormContext'
+import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
+import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }             from './NetworkSummary/SummaryForm'
 import {
   transferDetailToSave,
   tranferSettingsToSave,
@@ -118,12 +118,6 @@ export default function NetworkForm (props:{
   })
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if (saveState.isCloudpathEnabled) {
-      delete saveState.authRadius
-      delete saveState.accountingRadius
-    } else {
-      delete saveState.cloudpathServerId
-    }
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
     }
@@ -390,8 +384,7 @@ export default function NetworkForm (props:{
             name='settings'
             title={intl.$t(settingTitle, { type: saveState.type })}
             onFinish={async (data) => {
-              if (!(saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
-                (editMode || cloneMode))) {
+              if (saveState.type !== NetworkTypeEnum.CAPTIVEPORTAL) {
                 const radiusChanged = !_.isEqual(data?.authRadius, saveState?.authRadius)
                   || !_.isEqual(data?.accountingRadius, saveState?.accountingRadius)
                 const radiusValidate = !data.cloudpathServerId && radiusChanged
@@ -409,11 +402,24 @@ export default function NetworkForm (props:{
                     settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
                   }
                   updateSaveData(settingSaveData)
+                  return true
                 }else{
                   return false
                 }
+              }else {
+                if(!(editMode||cloneMode)){
+                  const settingData = {
+                    ...{ type: saveState.type },
+                    ...data
+                  }
+                  let settingSaveData = tranferSettingsToSave(settingData, editMode)
+                  if (!editMode) {
+                    settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+                  }
+                  updateSaveData(settingSaveData)
+                }
+                return true
               }
-              return true
             }}
           >
             {saveState.type === NetworkTypeEnum.AAA && <AaaSettingsForm />}
@@ -429,7 +435,6 @@ export default function NetworkForm (props:{
                 title={intl.$t(onboardingTitle, { type: saveState.guestPortal?.guestNetworkType })}
                 onFinish={async (data) => {
                   delete data.walledGardensString
-                  const dataMore = handleGuestMoreSetting(data)
                   let radiusData = null
                   let saveRadiusData = null
                   if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr
@@ -438,6 +443,7 @@ export default function NetworkForm (props:{
                     saveRadiusData = { ...saveState.guestPortal.wisprPage }
                   }
                   if(saveState.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
+                    delete data.guestPortal.wisprPage
                     radiusData = { ...data }
                     saveRadiusData = { ...saveState }
 
@@ -454,6 +460,7 @@ export default function NetworkForm (props:{
                       return false
                     }
                   }
+                  const dataMore = handleGuestMoreSetting(data)
                   handlePortalWebPage(dataMore)
                   return true
                 }}

@@ -123,7 +123,7 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
