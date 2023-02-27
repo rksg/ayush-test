@@ -22,6 +22,7 @@ import {
   SupportDelegation,
   VarCustomer,
   MspProfile,
+  EntitlementBanner,
   MspEcProfile,
   MspPortal
 } from '@acx-ui/rc/utils'
@@ -381,6 +382,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    getMspEntitlementBanners: build.query<EntitlementBanner[], RequestPayload>({
+      query: ({ params }) => {
+        const EntitlementBannerReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlementBanner, params)
+        return {
+          ...EntitlementBannerReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'BANNERS' }]
+    }),
     getMspBaseURL: build.query<BaseUrl, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
@@ -455,6 +466,7 @@ export const {
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
+  useGetMspEntitlementBannersQuery,
   useRefreshMspEntitlementMutation,
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
