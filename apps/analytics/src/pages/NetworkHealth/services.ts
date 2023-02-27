@@ -1,11 +1,14 @@
-import { gql } from 'graphql-request'
-import _       from 'lodash'
-import moment  from 'moment-timezone'
+import { Form } from 'antd'
+import { gql }  from 'graphql-request'
+import _        from 'lodash'
+import moment   from 'moment-timezone'
 
 import { networkHealthApi }     from '@acx-ui/analytics/services'
+import { useStepFormContext }   from '@acx-ui/components'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { APListNode, PathNode } from '@acx-ui/utils'
 
+import { authMethodsByClientType }     from './authMethods'
 import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'
 import { TestType, ScheduleFrequency } from './types'
 
@@ -15,7 +18,9 @@ import type {
   NetworkHealthSpec,
   NetworkNodes,
   NetworkPaths,
-  MutationResult
+  MutationResult,
+  ClientType,
+  AuthenticationMethod
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -53,7 +58,8 @@ const fetchServiceGuardSpec = gql`
 `
 
 const {
-  useNetworkHealthDetailsQuery
+  useNetworkHealthDetailsQuery,
+  useWlan2AuthMethodsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     networkHealthDetails: build.query<NetworkHealthSpec, { id: string }>({
@@ -63,9 +69,37 @@ const {
       }),
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
+    }),
+    wlan2AuthMethods: build.query<Record<string, AuthenticationMethod[]>, ClientType>({
+      query: (clientType) => ({
+        variables: { clientType, paths: [] },
+        document: gql`
+          query Wlans ($paths: [JSON!]!, $clientType: String!) {
+            wlans(paths: $paths, clientType: $clientType) { name authMethods }
+          }
+        `
+      }),
+      transformResponse: (result: {
+        wlans: Array<{
+          name: string
+          authMethods: AuthenticationMethod[]
+        }>
+      }, meta, clientType) => {
+        const methods = authMethodsByClientType[clientType].map(item => item.code)
+        return Object.fromEntries(result.wlans.map(item => [
+          item.name,
+          item.authMethods.filter(method => methods.includes(method))
+        ]))
+      }
     })
   })
 })
+
+export function useWlanAuthMethodsMap () {
+  const { form } = useStepFormContext<NetworkHealthFormDto>()
+  const clientType = Form.useWatch('clientType', form)
+  return useWlan2AuthMethodsQuery(clientType, { skip: !clientType })
+}
 
 export function useNetworkHealthSpec () {
   const params = useParams<{ specId: NetworkHealthSpec['id'] }>()
