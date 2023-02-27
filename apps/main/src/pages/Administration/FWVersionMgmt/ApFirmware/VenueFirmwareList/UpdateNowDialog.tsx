@@ -1,164 +1,103 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Select, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useForm }                                                             from 'antd/lib/form/Form'
-import { useIntl }                                                             from 'react-intl'
+import { Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { useForm }                                                  from 'antd/lib/form/Form'
+import { useIntl }                                                  from 'react-intl'
 
-import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
-import { Button, Modal }                                              from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
-import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
 import {
-  firmwareTypeTrans,
+  Modal
+} from '@acx-ui/components'
+import {
   FirmwareVenue,
   FirmwareVersion,
-  FirmwareType,
-  UpdateNowRequest,
-  usePollingTableQuery
+  UpdateNowRequest
 } from '@acx-ui/rc/utils'
 
+import {
+  getVersionLabel
+} from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
-// import { PersonaDeviceItem } from './PersonaDevicesForm'
 
-enum DevicesImportMode {
-  FromClientDevices,
-  Manually
-}
-
-interface DevicesImportDialogProps {
-  visible: boolean,
-  onCancel: () => void,
-  onSubmit: (data: []) => void,
-  personaGroupId?: string
+enum VersionsSelectMode {
+  Radio,
+  Dropdown
 }
 
 export interface UpdateApNowDialogProps {
   visible: boolean,
   onCancel: () => void,
-  onSubmit: (data: []) => void,
-  firmwareType: FirmwareType,
+  onSubmit: (data: UpdateNowRequest[]) => void,
   data?: FirmwareVenue[],
-  availableVersions?: any,
+  availableVersions?: FirmwareVersion[],
   eol?: boolean,
   eolName?: string,
   latestEolVersion?: string,
-  eolModels?: any
+  eolModels?: string[]
 }
 
 export function UpdateNowDialog (props: UpdateApNowDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
-  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel, data, availableVersions, eol } = props
-  const subTitle = 'Choose which version to update the venue to:'
-  // const [versionOptions, setVersionOptions] = useState<FirmwareVersion[]>([])
-  let versionOptions: FirmwareVersion[] = []
-  // const [otherVersions, setOtherVersions] = useState<FirmwareVersion[]>([])
-  let otherVersions: FirmwareVersion[] = []
+  // eslint-disable-next-line max-len
+  const { visible, onSubmit, onCancel, data, availableVersions, eol, eolName, latestEolVersion, eolModels } = props
+  const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
+  const [selectedVersion, setSelectedVersion] = useState('')
+  const [disableSave, setDisableSave] = useState(false)
 
-  let title: string
-  // let versionOptions: FirmwareVersion[] = availableVersions
-  let versionRadio: string = 'latestVersion'
-  let eolRadio: string = 'eolVersion'
-  // let otherVersions: any = []
-  let firmwareType: FirmwareType
-  // let FirmwareType = FirmwareType
-  // let data: any = null
-  let selectedVersion: any = null
-  // let eol: boolean = false
-  let eolName: string = ''
-  let latestEolVersion: string= ''
-  let eolModels: any = null
-
-    // this.firmwareType = this.params.firmwareType
-    // this.availableVersions = this.params.availableVersions
-    // this.data = this.params.data
-    // if (this.availableVersions.length > 1) {
-    //   this.initFirstRow()
-    // }
-    // this.initTitle()
-    // this.initEol()
-
-  const initFirstRow = () => {
-    let copyAvailableVersions = availableVersions ? [...availableVersions] : []
-    let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
-    if (firstIndex > 0) {
-      let removed = copyAvailableVersions.splice(firstIndex, 1)
-      // setVersionOptions([...removed, ...copyAvailableVersions])
-      versionOptions = [...removed, ...copyAvailableVersions]
+  useEffect(() => {
+    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+      setDisableSave(true)
     } else {
-      // setVersionOptions([...copyAvailableVersions])
-      versionOptions = [...copyAvailableVersions]
+      setDisableSave(false)
     }
-    // setOtherVersions(versionOptions.slice(1))
-    // setOtherVersions([...copyAvailableVersions])
-    otherVersions = [...copyAvailableVersions]
-    setOptionLabel()
-  }
+  }, [selectMode, selectedVersion])
+
+  let versionOptions: FirmwareVersion[] = []
+  let otherVersions: FirmwareVersion[] = []
 
   const isRecommanded = (e: FirmwareVersion) => {
     return e.category === 'RECOMMENDED'
   }
 
-  const initEol = () => {
-    // this.eol = this.params?.eol
-    // this.eolName = this.params?.eolName
-    // this.latestEolVersion = this.params?.latestEolVersion
-    // this.eolModels = this.params?.eolModels
+  let copyAvailableVersions = availableVersions ? [...availableVersions] : []
+  let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
+  if (firstIndex > 0) {
+    let removed = copyAvailableVersions.splice(firstIndex, 1)
+    versionOptions = [...removed, ...copyAvailableVersions]
+  } else {
+    versionOptions = [...copyAvailableVersions]
+  }
+  otherVersions = copyAvailableVersions.slice(1)
+
+  const onSelectModeChange = (e: RadioChangeEvent) => {
+    setSelectMode(e.target.value)
   }
 
-  const initTitle = () => {
-    title = 'Choose which version to update the venue to:'
+  const otherOptions = otherVersions.map((version) => {
+    return {
+      label: getVersionLabel(version),
+      value: version.name
+    }
+  })
+
+  const handleChange = (value: string) => {
+    setSelectedVersion(value)
   }
 
-  // btnClicked = () => {
-  // const request = this.createUpdateScheduleRequest()
-
-  // this.deferred.resolve(request)
-  // this.dialogService.close('UpdateApNowDialogComponent')
-  // }
-
-  const setOptionLabel = (): void => {
-    // otherVersions = otherVersions.map((v: any) => {
-    //   v['optionLabel'] = getVersionLabel(v)
-    //   return v
-    // })
-  }
-
-  const transform = firmwareTypeTrans()
-
-  const getVersionLabel = (version: FirmwareVersion): string => {
-    const versionName = version.name
-    const versionType = transform(version.category)
-    const versionOnboardDate = transformToUserDate(version)
-
-    return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
-  }
-
-  const transformToUserDate = (firmwareVersion: FirmwareVersion): string | undefined => {
-    // return this.firmwareUpgradeService.transformToUserDate(firmwareVersion.onboardDate)
-    return firmwareVersion.onboardDate
-  }
-
-  const createUpdateScheduleRequest = (): UpdateNowRequest[] => {
+  const createRequest = (): UpdateNowRequest[] => {
     let version
-    if (versionRadio === 'latestVersion') {
-      version = versionOptions[0]
+    if (selectMode === VersionsSelectMode.Radio) {
+      version = versionOptions[0].id
     } else {
       version = selectedVersion
     }
-    // const venuesData = this.params.data as FirmwareVenue[]
-    const venuesData = [] as FirmwareVenue[]
+    const venuesData = data as FirmwareVenue[]
     let request = []
     if (version) {
       request.push({
         firmwareCategoryId: 'active',
-        firmwareVersion: version.id,
+        firmwareVersion: version,
         venueIds: venuesData.map(venue => venue.id)
       })
     }
@@ -169,59 +108,27 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
         venueIds: venuesData.map(venue => venue.id)
       })
     }
-
-    // console.table(request)
-
     return request
   }
 
-  initFirstRow()
-  // useEffect(() => {
-  //   initFirstRow()
-  // }, [])
-  // initFirstRow()
-  // useEffect(() => {
-  //   if (!personaGroupId) return
-
-  //   getPersonaGroupById({ params: { groupId: personaGroupId } })
-  //     .then(result => {
-  //       if (!result.data || !result.data?.macRegistrationPoolId) return
-
-  //       getMacRegistrationById({
-  //         params: { policyId: result.data.macRegistrationPoolId }
-  //       }).then(result => {
-  //         if (!result.data) return
-  //         setMacRegistrationPool(result.data)
-  //       })
-  //     })
-  // }, [personaGroupId])
-
   const triggerSubmit = () => {
-    // FIXME: need to filter unique device items, but it have type issue
     form.validateFields()
-      .then(values => {
-        // console.log('Current dialog fields value = ', values)
-        onSubmit(values.devices ?? [])
+      .then(() => {
+        onSubmit(createRequest())
         onModalCancel()
       })
   }
 
-  const onImportModeChange = (e: RadioChangeEvent) => {
-    setImportMode(e.target.value)
-  }
-
   const onModalCancel = () => {
     form.resetFields()
-    setImportMode(DevicesImportMode.FromClientDevices)
+    setSelectMode(VersionsSelectMode.Radio)
     onCancel()
   }
 
-  const disableSave = false
 
   return (
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
-      subTitle={subTitle}
       visible={visible}
       width={560}
       okText={$t({ defaultMessage: 'Run Update' })}
@@ -231,27 +138,33 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
     >
       <Form
         form={form}
-        name={'deviceModalForm'}
+        name={'updateModalForm'}
       >
         <Form.Item
-          name={'importDevicesMode'}
-          initialValue={DevicesImportMode.FromClientDevices}
+          initialValue={VersionsSelectMode.Radio}
         >
           { versionOptions.length > 0 ?
             <div>
+              <Typography>
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Choose which version to update the venue to:' })}
+              </Typography>
               <UI.TitleActive>Active Device</UI.TitleActive>
-              <Radio.Group onChange={onImportModeChange}>
+              <Radio.Group
+                style={{ margin: 12 }}
+                onChange={onSelectModeChange}
+                value={selectMode}>
                 <Space direction={'vertical'}>
-                  <Radio value={DevicesImportMode.FromClientDevices}>
-                    {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
+                  <Radio value={VersionsSelectMode.Radio}>
+                    {getVersionLabel(versionOptions[0])}
                   </Radio>
                   { otherVersions.length > 0 ?
-                    <Radio value={DevicesImportMode.Manually}>
+                    <Radio value={VersionsSelectMode.Dropdown}>
                       <Select
-                        style={{ width: 200 }}
+                        style={{ width: '100%', fontSize: '12px' }}
                         placeholder='Select other version...'
-                        // value={otherVersions[0]}
-                        options={otherVersions}
+                        onChange={handleChange}
+                        options={otherOptions}
                       />
                     </Radio>
                     : null
@@ -264,16 +177,19 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
           { eol ?
             <UI.Section>
               <UI.TitleLegacy>Legacy Device</UI.TitleLegacy>
-              <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: '6.2.0.103.500' })}
+              <Radio
+                defaultChecked
+                style={{ margin: 12 }}>
+                {latestEolVersion}
               </Radio>
-              <UI.ItemModel>AP Models: T300,T300E</UI.ItemModel>
+              <UI.ItemModel>{eolModels}</UI.ItemModel>
             </UI.Section>
             : null
           }
           <UI.Section>
             <UI.Ul>
-              <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>
+              { // eslint-disable-next-line max-len
+                <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
               <UI.Li>You will be notified once the update process has finished.</UI.Li>
             </UI.Ul>
           </UI.Section>

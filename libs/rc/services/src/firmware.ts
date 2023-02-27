@@ -5,6 +5,7 @@ import {
   TableResult,
   FirmwareUrlsInfo,
   FirmwareVersion,
+  FirmwareCategory,
   FirmwareVenue,
   createHttpRequest,
   RequestPayload
@@ -30,6 +31,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           search: queryString.searchString ?? ''
         })
         return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    getVenueVersions: build.query<FirmwareVenue[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueVersions, params)
+        return {
           ...req
         }
       },
@@ -78,6 +88,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 
 export const {
   useGetVenueVersionListQuery,
+  useGetVenueVersionsQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
   useSkipVenueUpgradeSchedulesMutation,

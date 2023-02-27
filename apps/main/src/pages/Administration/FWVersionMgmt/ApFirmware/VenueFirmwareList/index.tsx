@@ -15,6 +15,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useGetVenueVersionListQuery,
+  useGetVenueVersionsQuery,
   useDeleteVenueMutation,
   useGetVenueCityListQuery,
   useGetAvailableFirmwareListQuery,
@@ -32,7 +33,7 @@ import {
   ApVenueStatusEnum,
   TableQuery,
   RequestPayload,
-  usePollingTableQuery
+  useTableQuery
 } from '@acx-ui/rc/utils'
 
 import {
@@ -60,7 +61,6 @@ function useColumns (
       key: 'name',
       dataIndex: 'name',
       sorter: true,
-      // disable: true,
       searchable: searchable,
       defaultSortOrder: 'ascend',
       width: 120,
@@ -73,8 +73,7 @@ function useColumns (
       key: 'versions[0].version',
       dataIndex: 'versions[0].version',
       sorter: true,
-      filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
+      filterable: filterables ? filterables['version'] : false,
       width: 120,
       render: function (data, row) {
         return row.versions[0].version
@@ -85,8 +84,7 @@ function useColumns (
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
       sorter: true,
-      filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
+      filterable: filterables ? filterables['type'] : false,
       width: 120,
       render: function (data, row) {
         return row.versions[0].category
@@ -97,8 +95,6 @@ function useColumns (
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: true,
-      // filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
       width: 120,
       render: function (data, row) {
         return '--'
@@ -109,8 +105,6 @@ function useColumns (
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: true,
-      // filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
       width: 120,
       render: function (data, row) {
         return 'Not scheduled'
@@ -123,32 +117,7 @@ function useColumns (
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
-
-  return {
-    fields: [
-      'check-all',
-      'name',
-      'description',
-      'city',
-      'country',
-      'networks',
-      'aggregatedApStatus',
-      'switches',
-      'switchClients',
-      'clients',
-      ...(isEdgeEnabled ? ['edges'] : []),
-      'cog',
-      'latitude',
-      'longitude',
-      'status',
-      'id'
-    ],
-    searchTargetFields: ['name', 'description'],
-    filters: {},
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
+  return {}
 }
 
 type VenueTableProps = {
@@ -172,8 +141,12 @@ export const VenueFirmwareTable = (
   const [changeScheduleModelVisible, setChangeScheduleModelVisible] = useState(false)
   const [revertModelVisible, setRevertModelVisible] = useState(false)
   const [venues, setVenues] = useState<FirmwareVenue[]>([])
+  const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
+  const [eol, setEol] = useState(false)
+  const [eolName, setEolName] = useState('')
+  const [latestEolVersion, setLatestEolVersion] = useState('')
+  const [eolModels, setEolModels] = useState<string[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
-  // let revertVersions: FirmwareVersion[] = []
   // let venues: FirmwareVenue[] = []
 
   const handleModalCancel = () => {
@@ -186,9 +159,12 @@ export const VenueFirmwareTable = (
   const handleUpdateModalCancel = () => {
     setUpdateModelVisible(false)
   }
-  const handleUpdateModalSubmit = (data: []) => {
-    console.log(data)
-    // update firmware
+
+  const handleUpdateModalSubmit = (data: UpdateNowRequest[]) => {
+    updateNow({
+      params: { ...params },
+      payload: data
+    })
   }
 
   const handleChangeScheduleModalCancel = () => {
@@ -218,10 +194,119 @@ export const VenueFirmwareTable = (
   ] = useDeleteVenueMutation()
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
+    visible: (selectedRows) => {
+      let eolAp = false
+      let allEolFwlatest = true
+      // let eolModels = []
+      for (let v of venues) {
+        if (v['eolApFirmwares']) {
+          eolAp = true
+          // this.latestEolVersion = v['eolApFirmwares'][0].latestEolVersion;
+          // this.eolModels = [...new Set([...this.eolModels, ...v['eolApFirmwares'][0].apModels])];
+          if (allEolFwlatest) {
+            // eslint-disable-next-line max-len
+            allEolFwlatest = compareVersions(v['eolApFirmwares'][0].latestEolVersion, v['eolApFirmwares'][0].currentEolVersion) === 0 ? true : false
+          }
+        }
+      }
+
+      let filterVersions: FirmwareVersion[] = []
+      if (selectedRows.length === 1) {
+        const version = getApVersion(selectedRows[0])
+        if (!version) {
+          return false
+        }
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            if (compareVersions(availableVersions[i].id, version) > 0) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+        return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
+      }
+
+      // multiple case
+      let minVersion = ''
+      let isSameVersion = true
+      const ok = selectedRows.every((row: FirmwareVenue) => {
+        const version = getApVersion(row)
+        if (!version) {
+          return false
+        }
+        if (minVersion && compareVersions(version, minVersion) !== 0) {
+          isSameVersion = false
+        }
+
+        if (!minVersion || compareVersions(version, minVersion) > 0) {
+          minVersion = version
+        }
+        return true
+      })
+      if (!ok) return false
+      if (availableVersions) {
+        for (let i = 0; i < availableVersions.length; i++) {
+          // eslint-disable-next-line max-len
+          if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
+            filterVersions.push(availableVersions[i])
+          }
+        }
+      }
+      return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
+    },
     label: $t({ defaultMessage: 'Update Now' }),
     onClick: (selectedRows) => {
       setVenues(selectedRows)
+      let eolAp = false
+      let eolName = ''
+      // let allEolFwlatest = true
+      let latestEolVersion = ''
+      let eolModels: string[] = []
+      for (let v of venues) {
+        if (v['eolApFirmwares']) {
+          eolAp = true
+          eolName = v['eolApFirmwares'][0].name
+          latestEolVersion = v['eolApFirmwares'][0].latestEolVersion
+          eolModels = [...new Set([...eolModels, ...v['eolApFirmwares'][0].apModels])]
+        }
+      }
+      setEol(eolAp)
+      setEolName(eolName)
+      setLatestEolVersion(latestEolVersion)
+      setEolModels(eolModels)
+
+      let filterVersions: FirmwareVersion[] = []
+      if (selectedRows.length === 1) {
+        const version = getApVersion(selectedRows[0])
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            if (compareVersions(availableVersions[i].id, version as string) > 0) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+      } else {
+        let minVersion = ''
+        let isSameVersion = true
+        selectedRows.forEach((row: FirmwareVenue) => {
+          const version = getApVersion(row)
+          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
+            isSameVersion = false
+          }
+          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
+            minVersion = version as string
+          }
+        })
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            // eslint-disable-next-line max-len
+            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+      }
+      setUpgradeVersions(filterVersions)
       setUpdateModelVisible(true)
     }
   },
@@ -271,8 +356,7 @@ export const VenueFirmwareTable = (
       }
 
       return selectedRows.every((row: FirmwareVenue) => {
-        // const version = getApVersion(row)
-        const version = '6.2.1.103.1720'
+        const version = getApVersion(row)
         if (!version) {
           return false
         }
@@ -290,11 +374,10 @@ export const VenueFirmwareTable = (
       setVenues(selectedRows)
       let filterVersions: FirmwareVersion[] = []
       selectedRows.forEach((row: FirmwareVenue) => {
-        // const version = getApVersion(row)
-        const version = '6.2.1.103.1720'
+        const version = getApVersion(row)
         if (availableVersions) {
           for (let i = 0; i < availableVersions.length; i++) {
-            if (compareVersions(availableVersions[i].id, version) < 0) {
+            if (compareVersions(availableVersions[i].id, version as string) < 0) {
               filterVersions.push(availableVersions[i])
             }
           }
@@ -324,18 +407,16 @@ export const VenueFirmwareTable = (
         actions={[{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-          // disabled: allowedNetworkList.length === 0 ? true : false
         }]}
       />
       <UpdateNowDialog
         visible={updateModelVisible}
-        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
         data={venues}
-        eol={true}
-        availableVersions={availableVersions}
-        eolName='eolName'
-        latestEolVersion='eolVersion'
-        eolModels='eolModel'
+        availableVersions={upgradeVersions}
+        eol={eol}
+        eolName={eolName}
+        latestEolVersion={latestEolVersion}
+        eolModels={eolModels}
         onCancel={handleUpdateModalCancel}
         onSubmit={handleUpdateModalSubmit}
       />
@@ -368,10 +449,9 @@ export const VenueFirmwareTable = (
 }
 
 export function VenueFirmwareList () {
-  // const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
 
-  const tableQuery = usePollingTableQuery<FirmwareVenue>({
+  const tableQuery = useTableQuery<FirmwareVenue>({
     useQuery: useGetVenueVersionListQuery,
     defaultPayload: venuePayload,
     search: {
@@ -379,17 +459,26 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { cityFilterOptions } = useGetVenueCityListQuery({ params: useParams() }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: data?.map(v=>({ key: v.name, value: v.name })) || true
-    })
+  const { versionFilterOptions } = useGetVenueVersionsQuery({ params: useParams() }, {
+    selectFromResult ({ data }) {
+      return {
+        // eslint-disable-next-line max-len
+        versionFilterOptions: data?.map(v=>({ key: v.versions[0].version, value: v.versions[0].version })) || true
+      }
+    }
   })
+
+  const typeFilterOptions = [{ key: 'Release', value: 'Release' }, { key: 'Beta', value: 'Beta' }]
 
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
       rowSelection={{ type: 'checkbox' }}
       searchable={true}
-      filterables={{ city: cityFilterOptions }} />
+      filterables={{
+        version: versionFilterOptions,
+        type: typeFilterOptions
+      }}
+    />
   )
 }
 

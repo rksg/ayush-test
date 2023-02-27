@@ -64,13 +64,21 @@ export interface FirmwareVersion {
   id: string;
   name: string;
   category: FirmwareCategory;
-  releaseNotesUrl: string;
-  features: string[];
-  impacts: string[];
-  affectNetwork: boolean;
+  releaseNotesUrl?: string;
+  features?: string[];
+  impacts?: string[];
+  affectNetwork?: boolean;
   createdDate?: string; // onboardDate
   onboardDate?: string;
   releaseDate?: string;
+}
+
+export interface EolApFirmware {
+  name: string;
+  currentEolVersion: string;
+  latestEolVersion: string;
+  apCount: string;
+  apModels: string[];
 }
 
 export interface FirmwareVenue {
@@ -83,6 +91,7 @@ export interface FirmwareVenue {
   lastSkippedVersions: SkippedVersion[];
   versionHistory: VersionHistory[];
   lastScheduleUpdate: string;
+  eolApFirmwares?: EolApFirmware[];
 }
 
 export interface FirmwareVenueVersion {
