@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { createRef, ReactNode, useEffect } from 'react'
 
 import { List }               from 'antd'
 import { flatten }            from 'lodash'
@@ -79,18 +79,31 @@ const renderItem = (
   }
 ) => {
   const { onClick, selected } = onPanelCallback(item)
+  return <WrappedItem item={item} onClick={onClick} selected={selected} />
+}
+
+function WrappedItem (
+  { item, onClick, selected }:
+  { item: IncidentDetails | FormattedEvent, onClick: () => void, selected: boolean | undefined }
+) {
+  const ref = createRef<HTMLDivElement>()
+  useEffect(() => {
+    if (selected && ref.current) {
+      ref.current.scrollIntoView()
+    }
+  }, [selected, ref])
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
       avatar={item.icon}
       title={item.date}
-      description={item.description}
-    />
+      description={item.description} />
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
     : <UI.HistoryItemWrapper
       onClick={onClick}
       $selected={selected}
+      ref={ref}
     >
       {Item}
     </UI.HistoryItemWrapper>

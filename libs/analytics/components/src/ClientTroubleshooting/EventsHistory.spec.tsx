@@ -25,6 +25,7 @@ const incidents = [{
   slaThreshold: 2000
 }] as Incident[]
 describe('EventsHistory', () => {
+  afterEach(() => jest.restoreAllMocks())
   it('should render correctly without data', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -186,5 +187,50 @@ describe('EventsHistory', () => {
     const collapse = screen.getByTestId('history-collapse')
     fireEvent.click(collapse)
     expect(setHistoryContentToggle).toBeCalledWith(false)
+  })
+  it('should handle event clicks', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      clientId: 'clientMac',
+      activeTab: 'troubleshooting'
+    }
+    const data = {
+      connectionEvents,
+      incidents,
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const setHistoryContentToggle = jest.fn()
+    const onClick = jest.fn(() => {})
+    const onPanelCallback = jest.fn(() => ({ onClick, selected: true }))
+    const scrollIntoView = jest.fn()
+    const ogView = HTMLElement.prototype.scrollIntoView
+    HTMLElement.prototype.scrollIntoView = scrollIntoView
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={null}
+          historyContentToggle
+          setHistoryContentToggle={setHistoryContentToggle}
+          onPanelCallback={onPanelCallback}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    const firstEvent =
+      await screen.findByText('Client roamed @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz')
+    expect(firstEvent).toBeVisible()
+    fireEvent.click(firstEvent)
+    expect(onPanelCallback).toBeCalledTimes(4)
+    expect(onClick).toBeCalledTimes(1)
+    expect(scrollIntoView).toBeCalledTimes(3)
+    HTMLElement.prototype.scrollIntoView = ogView
   })
 })
