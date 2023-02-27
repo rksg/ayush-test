@@ -26,8 +26,10 @@ import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-
 import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
+import RegionButton      from './RegionButton'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+
 
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
@@ -59,6 +61,8 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </Link> }
+          { showHomeButton && <RegionButton/> }
+
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
             <LicenseBanner/>

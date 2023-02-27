@@ -81,3 +81,7 @@ export const LeftHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
 `
+
+export const RegionWrapper = styled.div`
+  padding: 0px 10px 0px 10px;
+`
