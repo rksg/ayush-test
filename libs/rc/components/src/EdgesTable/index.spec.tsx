@@ -130,23 +130,6 @@ describe('Edge Table', () => {
     await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
   })
 
-  it('should delete selected row(multiple)', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
-      </Provider>, {
-        route: { params, path: '/:tenantId/devices/edge/list' }
-      })
-    const row1 = await screen.findByRole('row', { name: /Smart Edge 1/i })
-    const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
-    await user.click(within(row1).getByRole('checkbox'))
-    await user.click(within(row2).getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
-    await screen.findByText('Delete "2 Edges"?')
-    await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
-  })
-
   it('should send OTP sucessfully', async () => {
     const user = userEvent.setup()
     render(
@@ -173,5 +156,22 @@ describe('Edge Table', () => {
     await screen.findByRole('row', { name: /Smart Edge 1/i })
     expect(screen.queryByRole('columnheader', { name: /Venue/i })).not.toBeInTheDocument()
     expect((await screen.findAllByRole('columnheader')).length).toBe(9)
+  })
+
+  it('should delete selected row(multiple)', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/list' }
+      })
+    const row1 = await screen.findByRole('row', { name: /Smart Edge 1/i })
+    const row2 = await screen.findByRole('row', { name: /Smart Edge 2/i })
+    await user.click(within(row1).getByRole('checkbox'))
+    await user.click(within(row2).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await screen.findByText('Delete "2 Edges"?')
+    await user.click(screen.getByRole('button', { name: 'Delete Edges' }))
   })
 })

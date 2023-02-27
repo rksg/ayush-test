@@ -10,14 +10,10 @@ import { EdgeDhcpPool }                                                         
 
 import { NetworkSegmentationGroupForm } from '..'
 
+import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
-const edgeOptionsDefaultPayload = {
-  fields: ['name', 'serialNumber'],
-  pageSize: 10000,
-  sortField: 'name',
-  sortOrder: 'ASC'
-}
+
 
 const dhcpDefaultPayload = {
   page: 1,
@@ -29,11 +25,22 @@ export const SmartEdgeForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+  const venueId = Form.useWatch('venueId', form)
   const edgeId = Form.useWatch('edgeId', form)
   const dhcpId = Form.useWatch('dhcpId', form)
+  const poolId = Form.useWatch('poolId', form)
   const poolName = Form.useWatch('poolName', form)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
+
+  const edgeOptionsDefaultPayload = {
+    fields: ['name', 'serialNumber'],
+    pageSize: 10000,
+    sortField: 'name',
+    filters: { venueId: [venueId] },
+    sortOrder: 'ASC'
+  }
+
   const { edgeOptions, isLoading: isEdgeOptionsLoading } = useGetEdgeListQuery(
     { params, payload: edgeOptionsDefaultPayload },
     {
@@ -67,9 +74,11 @@ export const SmartEdgeForm = () => {
 
   useEffect(() => {
     if(!isGetDhcpByEdgeIdFetching) {
-      form.setFieldValue('dhcpId', (!!!edgeId || isGetDhcpByEdgeIdFail) ?
-        null :
-        currentEdgeDhcp?.id)
+      if(!dhcpId) {
+        form.setFieldValue('dhcpId', (!!!edgeId || isGetDhcpByEdgeIdFail) ?
+          null :
+          currentEdgeDhcp?.id)
+      }
       setShouldDhcpDisabled(!isGetDhcpByEdgeIdFail)
     }
   }, [
@@ -79,9 +88,19 @@ export const SmartEdgeForm = () => {
     isGetDhcpByEdgeIdFetching
   ])
 
+  useEffect(() => {
+    if(poolId) {
+      const poolItem = !!poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)
+      form.setFieldValue('poolName', poolItem?.poolName || poolId)
+    }
+  }, [poolId, poolMap])
+
   const onEdgeChange = (value: string) => {
     const edgeItem = edgeOptions?.find(item => item.value === value)
     form.setFieldValue('edgeName', edgeItem?.label)
+    form.setFieldValue('dhcpId', null)
+    form.setFieldValue('poolId', null)
+    form.setFieldValue('poolName', null)
   }
 
   const onDhcpChange = (value: string) => {
@@ -108,7 +127,8 @@ export const SmartEdgeForm = () => {
           visible={drawerVisible}
           setVisible={setDrawerVisible}
           selectPool={selectPool}
-          data={poolMap && poolMap[dhcpId]}
+          pools={poolMap && poolMap[dhcpId]}
+          data={poolId}
         />
         <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
         <Form.Item
@@ -173,17 +193,24 @@ export const SmartEdgeForm = () => {
               ]}
             >
               <Space size={20}>
-                {poolName ? poolName : $t({ defaultMessage: 'No Pool selected' })}
+                {
+                  poolId ? poolName : $t({ defaultMessage: 'No Pool selected' })}
                 <Button
                   type='link'
                   onClick={openDrawer}
                   children={
-                    poolName ?
+                    poolId ?
                       $t({ defaultMessage: 'Change Pool' }) :
                       $t({ defaultMessage: 'Select Pool' })
                   }
                 />
               </Space>
+              {
+                poolId &&
+                <DhcpPoolTable
+                  data={poolMap && poolMap[dhcpId]?.find(item => item.id === poolId)}
+                />
+              }
             </Form.Item>
         }
       </Col>
