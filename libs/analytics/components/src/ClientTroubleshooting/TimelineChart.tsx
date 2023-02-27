@@ -340,7 +340,8 @@ export function TimelineChart ({
           data: getSeriesData(data, key, series),
           itemStyle: {
             color: getSeriesItemColor
-          }
+          },
+          clip: true
         })
         : ({
           type: 'custom',
