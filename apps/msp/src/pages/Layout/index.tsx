@@ -19,7 +19,8 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext
+  HeaderContext,
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   CloudMessageBanner,
@@ -74,13 +75,7 @@ function Layout () {
         </>
       }
       leftHeaderContent={<LeftHeaderWrapper>
-        <Dropdown overlay={regionMenu}>{(selectedKeys) =>
-          <LayoutUI.DropdownText>
-            <LayoutUI.Icon children={<WorldSolid />} />
-            {selectedKeys}
-            <LayoutUI.Icon children={<ArrowExpand />} />
-          </LayoutUI.DropdownText>
-        }</Dropdown>
+        <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>

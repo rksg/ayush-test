@@ -15,7 +15,8 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext
+  HeaderContext,
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -26,7 +27,6 @@ import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-
 import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
-import RegionButton      from './RegionButton'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 

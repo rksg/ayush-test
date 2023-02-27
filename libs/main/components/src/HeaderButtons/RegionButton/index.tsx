@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Menu }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Menu } from 'antd'
 
 import {
   LayoutUI,
@@ -18,10 +17,9 @@ import {
 import { MSPUtils, RegionValue } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
 
 export default function RegionButton () {
-  const { $t } = useIntl()
   const params = useParams()
   const mspUtils = MSPUtils()
 
@@ -67,10 +65,10 @@ export default function RegionButton () {
   />
 
   // eslint-disable-next-line max-len
-  return <UI.RegionWrapper> {regionEnable && <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
+  return <UI.RegionBtnWrapper> {regionEnable && <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
     <LayoutUI.Icon children={<WorldSolid />} />
     {selectedKeys}
     <LayoutUI.Icon children={<ArrowExpand />} />
   </LayoutUI.DropdownText>}</Dropdown>}
-  </UI.RegionWrapper>
+  </UI.RegionBtnWrapper>
 }

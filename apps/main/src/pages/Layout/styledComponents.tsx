@@ -20,7 +20,9 @@ export const SearchBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 0px;
-  width: 400px;
+  width: 100%;
+  max-width:400px;
+  min-width:255px;
   height: 32px;
   background: var(--acx-neutrals-70);
   border-radius: 20px;
