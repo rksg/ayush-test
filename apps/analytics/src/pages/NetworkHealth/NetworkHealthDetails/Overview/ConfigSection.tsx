@@ -20,11 +20,11 @@ type FieldFormatter = (
 
 const fieldFormatterList: FieldFormatter[] = [
   (details, $t) => ({
-    children: _.get(details,'config.wlanName'),
+    children: _.get(details, 'config.wlanName') || $t({ defaultMessage: 'Unknown' }),
     label: $t({ defaultMessage: 'WLAN' })
   }),
   (details, $t) => ({
-    children: _.get(details,'config.radio')
+    children: _.get(details, 'config.radio')
       ? formatter('radioFormat')(details.config.radio) : $t({ defaultMessage: 'Unknown' }),
     label: $t({ defaultMessage: 'Radio Band' })
   }),

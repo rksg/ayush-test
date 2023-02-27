@@ -82,7 +82,7 @@ const fetchServiceGuardTest = gql`
       id
       createdAt
       spec {
-        specId: id
+        id
         name
         type
         apsCount
@@ -137,27 +137,6 @@ const fetchServiceGuardRelatedTests = gql`
     }
   }
 `
-
-const runServiceGuardTest = gql`
-  mutation RunNetworkHealthTest ($specId: String!){
-    runServiceGuardTest (id: $specId) {
-      userErrors { field message }
-      spec {
-        id name type apsCount userId clientType
-        tests (limit: 1) {
-          items {
-            id createdAt
-            summary { apsTestedCount apsSuccessCount apsPendingCount }
-          }
-        }
-        schedule {
-          nextExecutionTime
-        }
-      }
-    }
-  }
-`
-
 const fetchServiceGuardTestResults = gql`
   query ServiceGuardResults($testId: Float!, $offset: Int, $limit: Int) {
     serviceGuardTest(id: $testId) {
@@ -415,7 +394,7 @@ type RunNetworkHealthTestResult = MutationResult<{
   userErrors: UserErrors
 }>
 
-export const {
+const {
   useCreateNetworkHealthSpecMutation,
   useUpdateNetworkHealthSpecMutation,
   useRunNetworkHealthTestMutation
@@ -431,7 +410,7 @@ export const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { createServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.createServiceGuardSpec
     }),
@@ -445,14 +424,26 @@ export const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHeath', id: 'LIST' }],
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
     }),
     runNetworkHealthTest: build.mutation<
       RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
     >({
-      query: (variables) => ({ variables, document: runServiceGuardTest }),
+      query: (variables) => ({
+        variables,
+        document: gql`mutation RunNetworkHealthTest ($specId: String!){
+          runServiceGuardTest (id: $specId) {
+            userErrors { field message }
+            spec {
+              id
+              tests (limit: 1) { items { id } }
+            }
+          }
+        }`
+      }),
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
     })
@@ -467,4 +458,9 @@ export function useNetworkHealthSpecMutation () {
 
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
+}
+
+export function useNetworkHealthTestMutation () {
+  const [runTest, response] = useRunNetworkHealthTestMutation()
+  return { runTest, response }
 }

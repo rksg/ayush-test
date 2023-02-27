@@ -1,0 +1,49 @@
+import { IntlShape } from 'react-intl'
+
+import { noDataSymbol } from '@acx-ui/analytics/utils'
+import { intlFormats }  from '@acx-ui/utils'
+
+import { NetworkHealthTest } from './types'
+
+export interface StatsFromSummary extends NetworkHealthTest {
+  isOngoing?: boolean
+  apsUnderTest?: number
+  apsFinishedTest?: number
+  lastResult?: number
+}
+
+export const statsFromSummary = (
+  summary: NetworkHealthTest['summary']
+) => {
+  const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
+    = summary
+  const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
+  const apsFinishedTest = apsUnderTest
+    ? apsUnderTest - apsPendingCount
+    : undefined
+  const lastResult = apsUnderTest
+    ? apsSuccessCount / apsUnderTest
+    : undefined
+  return { isOngoing, apsFinishedTest, lastResult, apsUnderTest }
+}
+
+export const formatApsUnderTest = (
+  details: StatsFromSummary, $t: IntlShape['$t']
+) => details.isOngoing
+  ? $t(
+    { defaultMessage:
+      '{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested' },
+    { apsFinishedTest: details.apsFinishedTest, apsUnderTest: details.apsUnderTest })
+  : details.apsUnderTest
+    ? $t({ defaultMessage: '{apsUnderTest} APs' }, { apsUnderTest: details.apsUnderTest })
+    : noDataSymbol
+
+export const formatLastResult = (
+  details: StatsFromSummary, $t: IntlShape['$t']
+) => details.isOngoing
+  ? $t({ defaultMessage: 'In progress...' })
+  : details.lastResult !== undefined
+    ? $t({ defaultMessage: '{lastResultPercent} pass' }, {
+      lastResultPercent: $t(intlFormats.percentFormat, { value: details.lastResult })
+    })
+    : noDataSymbol

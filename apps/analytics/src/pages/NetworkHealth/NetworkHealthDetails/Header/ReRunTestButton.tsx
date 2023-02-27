@@ -3,18 +3,26 @@ import { useEffect } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, Loader, showToast } from '@acx-ui/components'
-import { useTenantLink }             from '@acx-ui/react-router-dom'
+import { Button, DisabledButton, Loader, showToast } from '@acx-ui/components'
+import { useTenantLink }                             from '@acx-ui/react-router-dom'
 
-import * as contents                       from '../../contents'
-import { useRunNetworkHealthTestMutation } from '../../services'
+import * as contents                                          from '../../contents'
+import { useNetworkHealthTest, useNetworkHealthTestMutation } from '../../services'
+import { NetworkHealthTest }                                  from '../../types'
+import { statsFromSummary }                                   from '../../utils'
 
 export const ReRunButton = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/serviceValidation/networkHealth')
   const params = useParams<{ specId: string }>()
-  const [runTest, response] = useRunNetworkHealthTestMutation()
+
+  const queryResults = useNetworkHealthTest()
+  const summary = queryResults.data
+    ? statsFromSummary(queryResults.data?.summary)
+    : {} as NetworkHealthTest['summary']
+
+  const { runTest, response } = useNetworkHealthTestMutation()
 
   useEffect(() => {
     if (!response.data) return
@@ -26,7 +34,7 @@ export const ReRunButton = () => {
       })
       navigate({
         ...basePath,
-        pathname: `${basePath.pathname}/${params.specId}/tests/${testId}`
+        pathname: `${basePath.pathname}/${response.data.spec.id}/tests/${testId}`
       })
     } else {
       const key = response.data.userErrors[0].message as keyof typeof contents.messageMapping
@@ -35,12 +43,20 @@ export const ReRunButton = () => {
     }
   }, [response])
 
-  return <Loader states={[response]}>
-    <Button
-      type='primary'
-      onClick={async () => { await runTest({ specId: params.specId! }).unwrap() }}
-    >
-      {$t({ defaultMessage: 'Re-Run Test' })}
-    </Button>
+  return <Loader states={[queryResults, response]}>
+    {(!summary.isOngoing && queryResults.data?.spec.apsCount)
+      ? <Button
+        type='primary'
+        onClick={async () => runTest({ specId: params.specId! })}
+      >
+        {$t({ defaultMessage: 'Re-Run Test' })}
+      </Button>
+      : <DisabledButton title={$t(
+        summary.isOngoing
+          ? contents.messageMapping.TEST_IN_PROGRESS
+          : contents.messageMapping.RUN_TEST_NO_APS
+      )}>
+        {$t({ defaultMessage: 'Re-Run Test' })}
+      </DisabledButton>}
   </Loader>
 }

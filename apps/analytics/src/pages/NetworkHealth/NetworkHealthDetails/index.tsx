@@ -15,7 +15,7 @@ type NetworkHealthTabs = 'overview' | 'details' | 'progress'
 const tabs : {
   key: NetworkHealthTabs,
   title: MessageDescriptor,
-  component: ({ details }: { details: NetworkHealthTest }) => JSX.Element
+  component: () => JSX.Element
 }[] = [
   {
     key: 'overview',
@@ -36,7 +36,6 @@ function NetworkHealthDetails () {
   const { activeTab = tabs[0].key, ...ids } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(generatePath(`${rootPath}/:specId/tests/:testId/tab`, ids))
-  const queryResults = useNetworkHealthTest()
 
   const onTabChange = (tab: string) => navigate({
     ...basePath,
@@ -47,15 +46,15 @@ function NetworkHealthDetails () {
   return (
     <>
       <PageHeader
-        title={<Title queryResults={queryResults} />}
-        subTitle={<SubTitle queryResults={queryResults} />}
+        title={<Title />}
+        subTitle={<SubTitle />}
         breadcrumb={[{
           text: $t({ defaultMessage: 'Network Health' }),
           link: '/serviceValidation/networkHealth'
         }]}
         extra={[
-          <ReRunButton/>,
-          <TestRunButton/>
+          <ReRunButton key='re-run' />,
+          <TestRunButton key='past-tests' />
         ]}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
@@ -63,7 +62,7 @@ function NetworkHealthDetails () {
           </Tabs>
         }
       />
-      {Tab && <Tab details={queryResults.data as NetworkHealthTest}/>}
+      {Tab && <Tab />}
     </>
   )
 }

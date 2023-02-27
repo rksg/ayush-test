@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 
+import { TrendPill as BasePill } from '@acx-ui/components'
+
 export const ScoreWrapper = styled.div`
   margin-left: 10px;
   display: grid;
@@ -25,5 +27,10 @@ export const ScoreValue = styled.span`
 `
 
 export const ScoreText = styled.span`
-  color: var(--acx-neutrals-60)
+  color: var(--acx-neutrals-60);
+`
+
+export const Pill = styled(BasePill)`
+  vertical-align: middle;
+  margin-top: -4px;
 `

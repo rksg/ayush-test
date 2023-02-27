@@ -1,12 +1,30 @@
-import { render, screen } from '@acx-ui/test-utils'
+import { networkHealthApiURL }              from '@acx-ui/analytics/services'
+import { Provider }                         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { NetworkHealthTest } from '../../types'
+import { fetchServiceGuardTest } from '../../__tests__/fixtures'
 
 import { Overview } from '.'
 
+jest.mock('./ConfigSection', () => ({
+  ...jest.requireActual('./ConfigSection'),
+  ConfigSection: () => <div data-testid='ConfigSection' />
+}))
+
+jest.mock('./ExecutionSection', () => ({
+  ...jest.requireActual('./ExecutionSection'),
+  ExecutionSection: () => <div data-testid='ExecutionSection' />
+}))
+
 describe('Overview component', () => {
   it('should render correctly', async () => {
-    render(<Overview details={{} as NetworkHealthTest}/>)
-    expect(await screen.findByText('Overview')).toBeVisible()
+    mockGraphqlQuery(
+      networkHealthApiURL, 'FetchServiceGuardTest', { data: fetchServiceGuardTest })
+    render(<Overview/>, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+    expect(screen.queryByTestId('ConfigSection')).toBeVisible()
+    expect(screen.queryByTestId('ExecutionSection')).toBeVisible()
   })
 })

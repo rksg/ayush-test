@@ -5,13 +5,16 @@ import {
 import { Provider, store }                                                 from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import * as fixtures            from './__tests__/fixtures'
+import * as fixtures             from './__tests__/fixtures'
 import {
   processDtoToPayload,
   specToDto,
+  useNetworkHealthRelatedTests,
   useNetworkHealthSpec,
   useNetworkHealthSpecMutation,
-  useNetworkHealthTestResults
+  useNetworkHealthTestResults,
+  useNetworkHealthTest,
+  useNetworkHealthTestMutation
 } from './services'
 import {
   AuthenticationMethod,
@@ -23,7 +26,6 @@ import {
 } from './types'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
-
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -43,6 +45,55 @@ describe('useNetworkHealthSpec', () => {
 
   it('does not load spec data if specId not in URL', () => {
     const { result } = renderHook(useNetworkHealthSpec, { wrapper: Provider })
+    expect(result.current.isUninitialized).toBe(true)
+  })
+})
+
+describe('useNetworkHealthTest', () => {
+  it('load test data if testId in URL', async () => {
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardTest', { data: fixtures.fetchServiceGuardTest })
+    const { result } = renderHook(useNetworkHealthTest, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual(fixtures.fetchServiceGuardTest.serviceGuardTest)
+  })
+  it('does not load test data if testId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthTest, { wrapper: Provider })
+    expect(result.current.isUninitialized).toBe(true)
+  })
+})
+
+describe('useNetworkHealthRelatedTests', () => {
+  it('load test data if testId in URL', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchServiceGuardRelatedTests', { data: fixtures.fetchServiceGuardRelatedTests })
+    const { result } = renderHook(useNetworkHealthRelatedTests, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual(
+      fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.tests.items
+        .map(({ summary, ...rest }) => ({
+          ...summary,
+          ...rest,
+          specId: fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.id
+        })))
+  })
+  it('handle null result', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchServiceGuardRelatedTests', { data: { serviceGuardTest: null } })
+    const { result } = renderHook(useNetworkHealthRelatedTests, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([])
+  })
+  it('does not load test data if testId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthRelatedTests, { wrapper: Provider })
     expect(result.current.isUninitialized).toBe(true)
   })
 })
@@ -125,6 +176,16 @@ describe('useNetworkHealthSpecMutation', () => {
 
     expect(result.current.response.data).toEqual(expected)
   })
+})
+
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ specId: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
 })
 
 describe('processDtoToPayload', () => {

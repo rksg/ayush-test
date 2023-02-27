@@ -18,9 +18,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardSpec, serviceGuardSpecNames } from '../__tests__/fixtures'
+import { NetworkHealthSpecGuard }                       from '../NetworkHealthGuard'
 
-import { NetworkHealthForm }      from './NetworkHealthForm'
-import { NetworkHealthSpecGuard } from './NetworkHealthSpecGuard'
+import { NetworkHealthForm } from './NetworkHealthForm'
 
 const { click, type, selectOptions } = userEvent
 

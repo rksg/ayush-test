@@ -1,33 +1,18 @@
 import _                                                        from 'lodash'
 import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { noDataSymbol }             from '@acx-ui/analytics/utils'
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
-import { formatter, intlFormats }   from '@acx-ui/utils'
+import { formatter }                from '@acx-ui/utils'
 
-import { authMethodsByCode }    from '../../authMethods'
-import { useNetworkHealthTest } from '../../services'
-import { NetworkHealthTest }    from '../../types'
+import { authMethodsByCode }                                                        from '../../authMethods'
+import { useNetworkHealthTest }                                                     from '../../services'
+import { NetworkHealthTest }                                                        from '../../types'
+import { StatsFromSummary, formatApsUnderTest, formatLastResult, statsFromSummary } from '../../utils'
 
 import { ReRunButton }   from './ReRunTestButton'
 import { TestRunButton } from './TestRunButton'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
-
-const statsFromSummary = (
-  summary: NetworkHealthTest['summary']
-) => {
-  const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
-    = summary
-  const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
-  const apsFinishedTest = apsUnderTest
-    ? apsUnderTest - apsPendingCount
-    : undefined
-  const lastResult = apsUnderTest
-    ? apsSuccessCount / apsUnderTest
-    : undefined
-  return { isOngoing, apsFinishedTest, lastResult, apsUnderTest }
-}
 
 const getHeaderData = (details: NetworkHealthTest) => {
   const { isOngoing, apsUnderTest, apsFinishedTest, lastResult
@@ -40,39 +25,11 @@ const getHeaderData = (details: NetworkHealthTest) => {
   }
 }
 
-interface NetworkHealthHeader extends NetworkHealthTest {
-  isOngoing?: boolean
-  apsUnderTest?: number
-  apsFinishedTest?: number
-  lastResult?: number
-}
-
 interface Subtitle {
   key: string,
   title: MessageDescriptor,
-  format?: (details: NetworkHealthTest, $t: IntlShape['$t']) => string
+  format?: (details: StatsFromSummary, $t: IntlShape['$t']) => string
 }
-
-export const formatApsUnderTest = (
-  details: NetworkHealthHeader, $t: IntlShape['$t']
-) => details.isOngoing
-  ? $t(
-    { defaultMessage:
-      '{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested' },
-    { apsFinishedTest: details.apsFinishedTest, apsUnderTest: details.apsUnderTest })
-  : details.apsUnderTest
-    ? $t({ defaultMessage: '{apsUnderTest} APs' }, { apsUnderTest: details.apsUnderTest })
-    : noDataSymbol
-
-export const formatLastResult = (
-  details: NetworkHealthHeader, $t: IntlShape['$t']
-) => details.isOngoing
-  ? $t({ defaultMessage: 'In progress...' })
-  : details.lastResult !== undefined
-    ? $t({ defaultMessage: '{lastResultPercent} pass' }, {
-      lastResultPercent: $t(intlFormats.percentFormat, { value: details.lastResult })
-    })
-    : noDataSymbol
 
 const subtitles: Subtitle[] = [
   {
@@ -105,17 +62,16 @@ const subtitles: Subtitle[] = [
   }
 ]
 
-const SubTitle = (
-  { queryResults }: { queryResults: ReturnType<typeof useNetworkHealthTest> }
-) => {
+const SubTitle = () => {
   const { $t } = useIntl()
+  const queryResults = useNetworkHealthTest()
   const state = { ...queryResults, isLoading: false }
   const headerData = queryResults.data
     ? getHeaderData(queryResults.data) : {} as NetworkHealthTest
 
   return <Loader states={[state]} fallback={<Spinner size='small' />}>
     {subtitles
-      .filter(({ key }) => _.get(headerData, key) !== undefined)
+      .filter(({ key }) => _.has(headerData, key))
       .map(({ key, title, format }) => [
         $t(title),
         format
@@ -125,10 +81,9 @@ const SubTitle = (
   </Loader>
 }
 
-const Title = (
-  { queryResults }: { queryResults: ReturnType<typeof useNetworkHealthTest> }
-) => {
+const Title = () => {
   const { $t } = useIntl()
+  const queryResults = useNetworkHealthTest()
   const state = { ...queryResults, isLoading: false }
   const headerData = queryResults.data
     ? getHeaderData(queryResults.data) : {} as NetworkHealthTest
