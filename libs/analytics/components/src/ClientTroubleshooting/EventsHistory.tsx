@@ -89,7 +89,7 @@ function WrappedItem (
   const ref = createRef<HTMLDivElement>()
   useEffect(() => {
     if (selected && ref.current) {
-      ref.current.scrollIntoView()
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selected, ref])
   const Item = <List.Item title={item.title}>
