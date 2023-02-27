@@ -27,7 +27,7 @@ type HistoryContentProps = {
   filters: Filters | null,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
     onClick: () => void,
-    selected: boolean
+    selected: boolean | undefined
   }
 }
 
@@ -75,7 +75,7 @@ const renderItem = (
   item: IncidentDetails | FormattedEvent,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
     onClick: () => void,
-    selected: boolean
+    selected: boolean | undefined
   }
 ) => {
   const { onClick, selected } = onPanelCallback(item)

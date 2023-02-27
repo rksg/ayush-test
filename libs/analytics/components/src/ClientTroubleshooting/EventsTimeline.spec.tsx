@@ -345,9 +345,9 @@ describe('EventsTimeLine', () => {
     } as unknown as Filters
     const data = {
       connectionEvents: [],
-      incidents,
-      connectionDetailsByAp: connectionDetailsByAp,
-      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
+      incidents: [],
+      connectionDetailsByAp: [],
+      connectionQualities: []
     }
     const setEventState = jest.fn()
     const setVisible = jest.fn()

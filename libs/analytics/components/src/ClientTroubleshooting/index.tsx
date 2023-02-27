@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import { Row, Col }               from 'antd'
 import { connect, EChartsType }   from 'echarts'
@@ -28,6 +28,67 @@ const isChartActive = (chart: EChartsType) => {
   return chart && chart.isDisposed && !chart.isDisposed()
 }
 
+export function getSelectedEvent (
+  visible: boolean,
+  eventState: DisplayEvent,
+  item: FormattedEvent | IncidentDetails): boolean | undefined {
+  return visible && (eventState?.key === (item as FormattedEvent).event.key)
+}
+
+export function onPanelClick (
+  item: IncidentDetails | FormattedEvent,
+  chartsRef: RefObject<EChartsType[]>,
+  popoverRef: RefObject<HTMLDivElement>,
+  setEventState: CallableFunction,
+  setVisible: CallableFunction) {
+  return () => {
+    if (item && (item as FormattedEvent).event) {
+      const event = (item as FormattedEvent).event
+      const key = event.key
+      const charts = chartsRef.current
+      if (charts && charts.length > 0) {
+        const active = charts.filter(chart => !chart.isDisposed())
+        let found = false
+        const dotChartIndexes = active.map(chart => {
+          if (found) return -1
+          const option = chart
+            .getOption() as unknown as { series: [{ data: [number, string, number | object][] }] }
+          const data = option.series[0].data
+          for (let i = 0; i < data.length; ++i) {
+            const elem = data[i]
+            if (typeof elem[2] !== 'number' && (elem[2] as { key: string }).key === key) {
+              found = true
+              return i
+            }
+          }
+          return -1
+        })
+        const targetIndex = dotChartIndexes.findIndex(elem => elem > -1)
+        const dataIndex = dotChartIndexes[targetIndex]
+        const selectedChart = active[targetIndex]
+        const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
+        const targetDot = dots[dataIndex]
+        if (targetDot && targetDot.getBoundingClientRect) {
+          const clientX = targetDot.getBoundingClientRect().x
+          const clientY = targetDot.getBoundingClientRect().y
+          const popoverChild = popoverRef && popoverRef.current
+          if (!popoverChild)
+            return
+          const { x, y, width } = popoverChild.getBoundingClientRect()
+          const calcX = clientX - (x + width / 2)
+          const calcY = clientY - y
+          setEventState({
+            ...(item as FormattedEvent).event,
+            x: -calcX,
+            y: -calcY
+          } as unknown as DisplayEvent)
+          setVisible(true)
+        }
+      }
+    }
+  }
+}
+
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const { $t } = useIntl()
@@ -49,68 +110,15 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   }
   const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
   const onPanelCallback = useCallback((item: IncidentDetails | FormattedEvent) => ({
-    onClick: () => {
-      if (item && (item as FormattedEvent).event) {
-        const event = (item as FormattedEvent).event
-        const key = event.key
-        const charts = chartsRef.current
-        if (charts && charts.length > 0) {
-          const active = charts.filter(chart => !chart.isDisposed())
-          let found = false
-          const dotChartIndexes = active.map(chart => {
-            if (found) return -1
-            const option = chart
-              .getOption() as unknown as { series: [{ data: [number, string, number | object][] }] }
-            const data = option.series[0].data
-            for (let i = 0; i < data.length; ++i) {
-              const elem = data[i]
-              if (typeof elem[2] !== 'number' && (elem[2] as { key: string }).key === key) {
-                found = true
-                return i
-              }
-            }
-            return -1
-          })
-          const targetIndex = dotChartIndexes.findIndex(elem => elem > -1)
-          const dataIndex = dotChartIndexes[targetIndex]
-          const selectedChart = active[targetIndex]
-          const dots = selectedChart.getDom().querySelectorAll('path[d="M1 0A1 1 0 1 1 1 -0.0001"]')
-          const targetDot = dots[dataIndex]
-          if (targetDot && targetDot.getBoundingClientRect) {
-            const clientX = targetDot.getBoundingClientRect().x
-            const clientY = targetDot.getBoundingClientRect().y
-            const popoverChild = popoverRef && popoverRef.current
-            if (!popoverChild)
-              return
-            const { x, y, width } = popoverChild.getBoundingClientRect()
-            const calcX = clientX - (x + width / 2)
-            const calcY = clientY - y
-            setEventState({
-              ...(item as FormattedEvent).event,
-              x: -calcX,
-              y: -calcY
-            } as unknown as DisplayEvent)
-            setVisible(true)
-          }
-        }
-      }
-    },
-    selected: visible && (eventState?.key === (item as FormattedEvent).event.key)
-  }), [eventState?.key, visible])
+    onClick: onPanelClick(item, chartsRef, popoverRef, setEventState, setVisible),
+    selected: getSelectedEvent(visible, eventState, item)
+  }), [eventState, visible])
   useEffect(() => {
     const charts = chartsRef.current
     const active = charts.filter(isChartActive)
     connect(active)
     chartsRef.current = active
-
-    return () => {
-      const remainingCharts = charts.filter(isChartActive)
-      remainingCharts.forEach(chart => {
-        chart.dispose()
-      })
-      chartsRef.current = []
-    }
-  }, [])
+  })
   return (
     <Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>

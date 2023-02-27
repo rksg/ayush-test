@@ -1,12 +1,19 @@
+import { RefObject } from 'react'
+
+import { EChartsType }                 from 'echarts'
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
-import { dataApiURL }                                                             from '@acx-ui/analytics/services'
-import { Provider, store }                                                        from '@acx-ui/store'
-import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { dataApiURL }                                                                      from '@acx-ui/analytics/services'
+import { Provider, store }                                                                 from '@acx-ui/store'
+import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
 
-import { api } from './services'
+import { connectionDetailsByAp, connectionEvents, connectionQualities } from './__tests__/fixtures'
+import { DisplayEvent }                                                 from './config'
+import { FormattedEvent }                                               from './EventsHistory'
+import { api }                                                          from './services'
 
-import { ClientTroubleshooting } from './index'
+import { ClientTroubleshooting, getSelectedEvent, onPanelClick } from './index'
+
 describe('ClientTroubleshootingTab', () => {
   const params = {
     tenantId: 'tenant-id',
@@ -18,14 +25,15 @@ describe('ClientTroubleshootingTab', () => {
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       data: {
         client: {
-          connectionDetailsByAp: [],
-          connectionEvents: [],
-          connectionQualities: [],
+          connectionDetailsByAp,
+          connectionEvents,
+          connectionQualities,
           incidents: []
         }
       }
     })
   })
+  afterEach(() => cleanup())
   it('should render loader', () => {
     render(
       <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
@@ -106,5 +114,146 @@ describe('ClientTroubleshootingTab', () => {
     const fragment = asFragment()
     const charts = fragment.querySelectorAll('div[_echarts_instance_]')
     expect(charts).toHaveLength(4)
+  })
+
+  describe('getSelectedEvent', () => {
+    it('should return true for matching selected events', () => {
+      const val = getSelectedEvent(
+        true,
+        { key: 'test' } as DisplayEvent,
+        { event: { key: 'test' } }as unknown as FormattedEvent
+      )
+      expect(val).toBeTruthy()
+    })
+
+    it('should return true for non-matching selected events', () => {
+      const val = getSelectedEvent(
+        true,
+        { key: 'no-test' } as DisplayEvent,
+        { event: { key: 'test' } }as unknown as FormattedEvent
+      )
+      expect(val).toBeFalsy()
+    })
+
+    it('should return false for false visible', () => {
+      const val = getSelectedEvent(
+        false,
+        { key: 'test' } as DisplayEvent,
+        { event: { key: 'test' } }as unknown as FormattedEvent
+      )
+      expect(val).toBeFalsy()
+    })
+  })
+
+  describe('onPanelClick', () => {
+    it('should return a valid panel click handle', () => {
+      const setEventState = jest.fn()
+      const setVisible = jest.fn()
+      const rect = {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10,
+        width: 10,
+        y: 10,
+        x: 10
+      }
+      const popoverRef = {
+        current: {
+          getBoundingClientRect: () => rect
+        }
+      } as RefObject<HTMLDivElement>
+      const chartsRefs = { current: [
+        {
+          isDisposed: () => false,
+          getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'test' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        }
+      ] } as unknown as RefObject<EChartsType[]>
+      const item = {
+        start: 124, date: '21-02-2022', description: 'test', event: { key: 'test' }
+      } as unknown as FormattedEvent
+      const onClick = onPanelClick(item, chartsRefs, popoverRef, setEventState, setVisible)
+      expect(onClick).toBeInstanceOf(Function)
+      onClick()
+      expect(setVisible).toBeCalledWith(true)
+      expect(setEventState).toBeCalledWith({ ...item.event, x: 5, y: -0 })
+    })
+    it('should not trigger on null popover callback', () => {
+      const setEventState = jest.fn()
+      const setVisible = jest.fn()
+      const rect = {
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10,
+        width: 10,
+        y: 10,
+        x: 10
+      }
+      const popoverRef = {
+        current: null
+      } as RefObject<HTMLDivElement>
+      const chartsRefs = { current: [
+        {
+          isDisposed: () => false,
+          getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'fail' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        },
+        {
+          isDisposed: () => false,
+          getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'test' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        },
+        {
+          isDisposed: () => false,
+          getOption: () => ({
+            series: [{ data: [[1234, 'all', { key: 'pass' }]] }]
+          }),
+          getDom: () => ({
+            querySelectorAll: () => [{
+              getBoundingClientRect: () => rect
+            }]
+          })
+        }
+      ] } as unknown as RefObject<EChartsType[]>
+      const item = {
+        start: 124, date: '21-02-2022', description: 'test', event: { key: 'test' }
+      } as unknown as FormattedEvent
+      const onClick = onPanelClick(item, chartsRefs, popoverRef, setEventState, setVisible)
+      expect(onClick).toBeInstanceOf(Function)
+      onClick()
+      expect(setVisible).toBeCalledTimes(0)
+      expect(setEventState).toBeCalledTimes(0)
+    })
+    it('should return callback', () => {
+      const setEventState = jest.fn()
+      const setVisible = jest.fn()
+      const popoverRef = {} as RefObject<HTMLDivElement>
+      const chartsRefs = { current: [] } as RefObject<EChartsType[]>
+      const item = {
+        start: 124, date: '21-02-2022', description: 'test', event: { key: 'test' }
+      } as unknown as FormattedEvent
+      const onClick = onPanelClick(item, chartsRefs, popoverRef, setEventState, setVisible)
+      expect(onClick).toBeInstanceOf(Function)
+    })
   })
 })
