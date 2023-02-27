@@ -12,16 +12,15 @@ import {
   TestStage
 } from '../../types'
 
-
 import {  getTableColumns } from './helper'
 
 const Details = () => {
-  const queryResults = useNetworkHealthTestResults()
+  const { tableQuery, onPageChange, pagination } = useNetworkHealthTestResults()
+  const queryResults = tableQuery
   const config = (queryResults?.data)?.config as NetworkHealthConfig
   const clientType = (queryResults?.data)?.spec?.clientType
   const items = (queryResults?.data)?.aps?.items
   const wlanAuthSettings = (queryResults?.data)?.wlanAuthSettings
-
   const isWirelessClient = clientType === ClientType.VirtualWirelessClient
   const stagesFromConfig = (config : NetworkHealthConfig) => {
     if (!config?.authenticationMethod) { return [] }
@@ -50,6 +49,8 @@ const Details = () => {
           stages
         })}
         dataSource={items}
+        onChange={onPageChange}
+        pagination={{ ...pagination, total: items?.length || 0 }}
       />
     </Loader>
   )

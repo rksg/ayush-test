@@ -17,7 +17,7 @@ const textStyle = css`
   font-size: var(--acx-subtitle-6-font-size);
   color: var(--acx-primary-white);
 `
-export const VenueName = styled.div`
+export const ColumnAnchorText = styled.div`
     white-space: nowrap;
     width: 125px;
     overflow: hidden;

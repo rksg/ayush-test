@@ -172,3 +172,9 @@ export type NetworkHealthTestResults = {
   wlanAuthSettings: WlanAuthSettings
   aps: { items : TestResultByAP[] }
 }
+export type Pagination = {
+  page: number,
+  pageSize: number,
+  defaultPageSize: number,
+  total: number
+}

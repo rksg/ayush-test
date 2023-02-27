@@ -1,9 +1,13 @@
+import { useState } from 'react'
+
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { networkHealthApi }     from '@acx-ui/analytics/services'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { networkHealthApi }        from '@acx-ui/analytics/services'
+import { TableProps }              from '@acx-ui/components'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { APListNode, PathNode }    from '@acx-ui/utils'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { stages } from './contents'
 
@@ -17,7 +21,9 @@ import type {
   NetworkHealthConfig,
   NetworkHealthTest,
   UserErrors,
-  NetworkHealthTestResults
+  NetworkHealthTestResults,
+  Pagination,
+  TestResultByAP
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -267,10 +273,35 @@ export function useNetworkHealthRelatedTests () {
 
 export function useNetworkHealthTestResults () {
   const params = useParams<{ testId: string }>()
-  return useNetworkHealthTestResultsQuery(
-    { testId: parseInt(params.testId!, 10), offset: 0,
-      limit: 10 },
-    { skip: !Boolean(params.testId) })
+  const DEFAULT_PAGINATION = {
+    page: 1,
+    pageSize: TABLE_DEFAULT_PAGE_SIZE,
+    defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+    total: 0
+  }
+  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
+  const handleTableChange: TableProps<TestResultByAP>['onChange'] = (
+    customPagination
+  ) => {
+    const paginationDetail = {
+      page: customPagination.current,
+      pageSize: customPagination.pageSize
+    } as Pagination
+
+    setPagination({ ...pagination, ...paginationDetail })
+  }
+  return {
+    tableQuery: useNetworkHealthTestResultsQuery(
+      {
+        testId: parseInt(params.testId!, 10),
+        offset: (pagination.page - 1) * pagination.pageSize,
+        limit: pagination.pageSize
+      },
+      { skip: !Boolean(params.testId) }
+    ),
+    onPageChange: handleTableChange,
+    pagination
+  }
 }
 function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
   const last = path[path.length - 1]
@@ -437,6 +468,3 @@ export function useNetworkHealthSpecMutation () {
   const [submit, response] = editMode ? update : create
   return { editMode, spec, submit, response }
 }
-
-
-
