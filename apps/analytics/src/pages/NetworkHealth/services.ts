@@ -204,7 +204,7 @@ const fetchServiceGuardTestResults = gql`
     }
   }
 `
-const {
+export const {
   useNetworkHealthDetailsQuery,
   useNetworkHealthTestQuery,
   useNetworkHealthRelatedTestsQuery,

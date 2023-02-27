@@ -9,7 +9,6 @@ const badgeColor = ({ type }: { type: TrendType }) => {
     case 'fail': return '--acx-semantics-red-50'
     case 'n/a': return '--acx-neutrals-50'
     case 'error': return '--acx-accents-orange-50'
-    default: return '--acx-neutrals-50'
   }
 }
 const textStyle = css`

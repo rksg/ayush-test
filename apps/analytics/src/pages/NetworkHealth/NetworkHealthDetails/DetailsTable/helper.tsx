@@ -46,7 +46,9 @@ export function getToolTipText ({
 
   const toolTipContent =
     error && error !== 'WLAN_CONF_ERROR'
-      ? $t(contents.stagesErrorMappings?.[error]?.text) || $t(contents.errorMappings?.[error]?.text)
+      ? contents.stagesErrorMappings?.[error]
+        ? $t(contents.stagesErrorMappings?.[error]?.text)
+        : $t(contents.errorMappings?.[error]?.text)
       : toolTipText
   const errorText = `${toolTipContent} \n \n`
   const noStationAPText = $t(
@@ -121,17 +123,20 @@ export const getTableColumns = ({
       filterable: false,
       searchable: true,
       align: 'center',
-      render: function (text: string, row: TestResultByAP) {
+      render: function (text: string, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
         const failureCode = failure?.event
         const intl = getIntl()
         const error = row?.error
+        const noFailureText =
+          contents.noFailureDetailsMap[failureCode as keyof typeof contents.noFailureDetailsMap]
         const toolTipText = !failure
           ? null
-          : $t(
-            contents.noFailureDetailsMap[failureCode as keyof typeof contents.noFailureDetailsMap]
-          ) ||
-            $t(
+          : noFailureText
+            ? $t(
+              noFailureText
+            )
+            : $t(
               defineMessage({
                 defaultMessage: 'Failure reason: {reason}'
               }),
@@ -144,7 +149,7 @@ export const getTableColumns = ({
             tooltipContent={wrappedContent}
             type={type}
             displayText={$t(badgeTextMap[type])}
-            key={key}
+            id={`${key}-${index}`}
           />
         )
       }
@@ -157,7 +162,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
-      render: function (text: string, row: TestResultByAP) {
+      render: function (text: string, row: TestResultByAP, index : number) {
         const { speedTest, speedTestServer } = row
         const error = row?.error || row.speedTestFailure
         const toolTipText = speedTest === 'n/a' ? null : `speedtest.net: ${speedTestServer}`
@@ -171,7 +176,7 @@ export const getTableColumns = ({
             tooltipContent={wrappedContent}
             type={speedTest as TrendType}
             displayText={text}
-            key={key}
+            id={`${key}-${index}`}
           />
         )
       }
@@ -186,13 +191,14 @@ export const getTableColumns = ({
       key: 'apName',
       filterable: false,
       searchable: true,
-      render: function (text, row) {
+      render: function (text, row, index) {
         const { apMac } = row
         return (
           <AnchorTextCell
             to={`devices/wifi/${apMac}/details/overview`}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
             text={text}
+            id={`apName-${index}`}
           />
         )
       }
@@ -205,13 +211,14 @@ export const getTableColumns = ({
       key: 'apMac',
       filterable: false,
       searchable: true,
-      render: function (text, row) {
+      render: function (text, row, index) {
         const { apMac } = row
         return (
           <AnchorTextCell
             to={`devices/wifi/${apMac}/details/overview`}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
             text={text}
+            id={`apMac-${index}`}
           />
         )
       }
@@ -226,13 +233,14 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
-        render: function (text: unknown, row) {
+        render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
             <AnchorTextCell
               to={`devices/wifi/${stationAp?.mac}/details/overview`}
               title={$t(stationAPDetailsText)}
               text={stationAp?.name}
+              id={`${stationAp?.name}-${index}`}
             />
           )
         }
@@ -244,13 +252,14 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
-        render: function (text: unknown, row) {
+        render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
             <AnchorTextCell
               to={`devices/wifi/${stationAp?.mac}/details/overview`}
               title={$t(stationAPDetailsText)}
               text={stationAp?.mac}
+              id={`${stationAp?.mac}-${index}`}
             />
           )
         }
@@ -262,10 +271,12 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
-        render: function (text: unknown, row) {
+        render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
-            <span>{stationAp ? formatter('decibelFormat')(stationAp?.snr) : ('' as string)}</span>
+            <span key={`${stationAp?.snr}-${index}`}>
+              {formatter('decibelFormat')(stationAp?.snr)}
+            </span>
           )
         }
       }
@@ -282,7 +293,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
-      render: function (text: unknown, row) {
+      render: function (text: unknown, row,index : number ) {
         const { ping, avgPingTime, pingTotal, pingReceive, error } = row
 
         const toolTipText =
@@ -304,7 +315,7 @@ export const getTableColumns = ({
             tooltipContent={wrappedContent}
             type={ping as TrendType}
             displayText={text as string}
-            key={'ping'}
+            id={`ping-${index}`}
           />
         )
       }
@@ -318,7 +329,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
-      render: function (text: unknown, row) {
+      render: function (text: unknown, row, index : number) {
         const { traceroute, tracerouteLog, error } = row
         const toolTipText = traceroute === 'n/a' ? null : tracerouteLog
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
@@ -338,7 +349,8 @@ export const getTableColumns = ({
                 $t(badgeTextMap[traceroute as TrendType])
               )
             }
-            key={'tracerouteLog'}
+            id={`tracerouteLog-${index}`}
+
           />
         )
       }
@@ -354,17 +366,17 @@ export const TableCell = ({
   tooltipContent,
   type,
   displayText,
-  key
+  id
 }: {
   tooltipContent: string | null | JSX.Element;
   type: TrendType;
   displayText: string | JSX.Element;
-  key: string;
+  id: string;
 }) =>
   type === 'pending' ? (
-    <span style={{ opacity: 0.5 }}>{displayText}</span>
+    <span key={id} style={{ opacity: 0.5 }}>{displayText}</span>
   ) : (
-    <Tooltip key={key} title={tooltipContent}>
+    <Tooltip key={id} title={tooltipContent}>
       <UI.Badge type={type}>{displayText}</UI.Badge>
     </Tooltip>
   )
@@ -372,13 +384,15 @@ export const TableCell = ({
 export const AnchorTextCell = ({
   to,
   title,
-  text
+  text,
+  id
 }: {
   to: string;
   title: string;
   text: string | React.ReactNode;
+  id: string
 }) => (
-  <UI.ColumnAnchorText>
+  <UI.ColumnAnchorText key={id}>
     <TenantLink
       to={to}
       title={title}>

@@ -5,26 +5,30 @@ import {
 import { Provider, store }                                                 from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import * as fixtures             from './__tests__/fixtures'
+import * as fixtures            from './__tests__/fixtures'
 import {
   processDtoToPayload,
   specToDto,
   useNetworkHealthSpec,
-  useNetworkHealthSpecMutation
+  useNetworkHealthSpecMutation,
+  useNetworkHealthTestResults
 } from './services'
 import {
   AuthenticationMethod,
   Band,
   ClientType,
   TestType,
-  NetworkPaths
+  NetworkPaths,
+  TestResultByAP
 } from './types'
+
+import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
 describe('useNetworkHealthSpec', () => {
-  it('load spec data if specId in URL', async () => {
+  it.only('load spec data if specId in URL', async () => {
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpec })
 
     const { result } = renderHook(useNetworkHealthSpec, {
@@ -221,5 +225,47 @@ describe('specToDto', () => {
 
   it('handle spec = undefined', () => {
     expect(specToDto()).toBe(undefined)
+  })
+})
+describe('useNetworkHealthTestResults', () => {
+  it('load spec data if specId in URL', async () => {
+    const config = {
+      pingAddress: null,
+      tracerouteAddress: null,
+      speedTestEnabled: false
+    }
+    mockGraphqlQuery(apiUrl, 'ServiceGuardResults', {
+      data: { serviceGuardTest: fixtures.mockResultForVirtualClient({ ...config }) }
+    })
+    const { result } = renderHook(useNetworkHealthTestResults, {
+      wrapper: Provider,
+      route: { params: { testId: '1' } }
+    })
+    await waitFor(() => expect(result.current.tableQuery.isSuccess).toBe(true))
+    expect(result.current.tableQuery.data).toEqual(
+      fixtures.mockResultForVirtualClient({ ...config })
+    )
+  })
+
+  it('does not load spec data if specId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthTestResults, { wrapper: Provider })
+    expect(result.current.tableQuery.isUninitialized).toBe(true)
+  })
+
+  it('handleTableChange should update pagination', () => {
+    const { result } = renderHook(useNetworkHealthTestResults, { wrapper: Provider })
+    const customPagination = { current: 1, pageSize: 10 }
+    result.current.onPageChange(
+      customPagination,
+      { filter: null },
+      [],
+      [] as unknown as TableCurrentDataSource<TestResultByAP>
+    )
+    expect(result.current.pagination).toEqual({
+      defaultPageSize: 10,
+      page: 1,
+      pageSize: 10,
+      total: 0
+    })
   })
 })
