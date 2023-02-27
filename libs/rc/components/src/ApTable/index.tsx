@@ -97,6 +97,7 @@ interface ApTableProps
   extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
   searchable?: boolean
+  enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
@@ -352,6 +353,7 @@ export function ApTable (props: ApTableProps) {
     }
   }]
 
+  const basePath = useTenantLink('/devices')
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended>
@@ -364,6 +366,24 @@ export function ApTable (props: ApTableProps) {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={rowActions}
+        actions={props.enableActions ? [{
+          label: $t({ defaultMessage: 'Add AP' }),
+          onClick: () => {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/wifi/add`
+            })
+          }
+        }, {
+          label: $t({ defaultMessage: 'Add AP Group' }),
+          onClick: () => {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/apgroups/add`
+            })
+          }
+        }
+        ] : []}
       />
     </Loader>
   )

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
 import { Provider  }                                   from '@acx-ui/store'
 import {
@@ -25,26 +25,52 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
+jest.mock('./AccountSettings', () => ({
+  ...jest.requireActual('./AccountSettings'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-AccountSettings'></div>
+  }
+}))
+jest.mock('./Administrators', () => ({
+  ...jest.requireActual('./Administrators'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-Administrators'></div>
+  }
+}))
+// jest.mock('./FWVersionMgmt', () => ({
+//   ...jest.requireActual('./FWVersionMgmt'),
+//   __esModule: true,
+//   default: () => {
+//     return <div data-testid='mocked-FWVersionMgmt'></div>
+//   }
+// }))
+jest.mock('./LocalRadiusServer', () => ({
+  ...jest.requireActual('./LocalRadiusServer'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-LocalRadiusServer'></div>
+  }
+}))
+jest.mock('./Notifications', () => ({
+  ...jest.requireActual('./Notifications'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-Notifications'></div>
+  }
+}))
+jest.mock('./Subscriptions', () => ({
+  ...jest.requireActual('./Subscriptions'),
+  __esModule: true,
+  default: () => {
+    return <div data-testid='mocked-Subscriptions'></div>
+  }
+}))
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-  it('should not render when feature flag off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValueOnce(false)
-
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <Administration />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-    await screen.findByText('Administration is not enabled')
-  })
 
   it('should render correctly', async () => {
     render(
@@ -192,12 +218,50 @@ describe('Administration page', () => {
 
     render(
       <Provider>
-        <Administration />
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params }
       })
 
     const tab = screen.getByRole('tab', { name: 'Local RADIUS Server' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render when only edge early beta flag enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementationOnce((flag) => {
+      return flag === Features.EDGE_EARLY_BETA ? true : false
+    })
+
+    params.activeTab = 'accountSettings'
+
+    render(
+      <Provider>
+        <Administration />
+      </Provider>, {
+        route: { params }
+      })
+
+    const tab = screen.getByRole('tab', { name: 'Account Settings' })
+    expect(tab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should not render when feature flag off', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(() => false)
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+    await screen.findByText('Administration is not enabled')
   })
 })
