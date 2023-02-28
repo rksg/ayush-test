@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  AssignedEc,
+  BaseUrl,
   MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
@@ -21,7 +23,8 @@ import {
   VarCustomer,
   MspProfile,
   EntitlementBanner,
-  MspEcProfile
+  MspEcProfile,
+  MspPortal
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -305,6 +308,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignedEcListReq =
+          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+        return {
+          ...mspAssignedEcListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
@@ -378,6 +391,44 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'BANNERS' }]
+    }),
+    getMspBaseURL: build.query<BaseUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspLabel: build.query<MspPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspLabel, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -408,6 +459,7 @@ export const {
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
+  useGetAssignedMspEcToIntegratorQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
   useReactivateMspEcMutation,
@@ -415,5 +467,9 @@ export const {
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useGetMspEntitlementBannersQuery,
-  useRefreshMspEntitlementMutation
+  useRefreshMspEntitlementMutation,
+  useGetMspBaseURLQuery,
+  useGetMspLabelQuery,
+  useAddMspLabelMutation,
+  useUpdateMspLabelMutation
 } = mspApi
