@@ -9,24 +9,18 @@ import {
   Loader,
   Drawer
 } from '@acx-ui/components'
-import { useGetSwitchAclsQuery }                  from '@acx-ui/rc/services'
-import { Acl, transformTitleCase, useTableQuery } from '@acx-ui/rc/utils'
+import { useGetSwitchAclsQuery }   from '@acx-ui/rc/services'
+import { Acl, transformTitleCase } from '@acx-ui/rc/utils'
+import {  useParams }              from '@acx-ui/react-router-dom'
 
 import { AclDetail } from './aclDetail'
 
 export function SwitchOverviewACLs () {
   const { $t } = useIntl()
+  const { tenantId, switchId } = useParams()
+  const { data, isLoading } = useGetSwitchAclsQuery({ params: { tenantId, switchId } })
   const [currentRow, setCurrentRow] = useState({} as Acl)
   const [drawerVisible, setDrawerVisible] = useState(false)
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetSwitchAclsQuery,
-    defaultPayload: {},
-    sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
-    }
-  })
 
 
   const onClose = () => {
@@ -62,14 +56,14 @@ export function SwitchOverviewACLs () {
   ]
   return (
     <Loader
-      states={[tableQuery]}
+      states={[
+        { isLoading }
+      ]}
     >
       <Table
         columns={columns}
         type={'tall'}
-        onChange={tableQuery.handleTableChange}
-        pagination={tableQuery.pagination}
-        dataSource={tableQuery.data?.data}
+        dataSource={data}
         rowKey='id'
       />
 
