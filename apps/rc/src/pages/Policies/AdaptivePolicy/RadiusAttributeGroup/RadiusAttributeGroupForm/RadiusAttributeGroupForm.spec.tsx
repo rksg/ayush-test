@@ -22,8 +22,14 @@ import {
 
 import { mockedTenantId } from '../../../../Services/MdnsProxy/MdnsProxyForm/__tests__/fixtures'
 
-import { attributeGroup, attributeList, groupList, vendorList } from './__tests__/fixtures'
-import RadiusAttributeGroupForm                                 from './RadiusAttributeGroupForm'
+import {
+  attributeGroup,
+  attributeGroupReturnByQuery,
+  attributeList,
+  groupList,
+  vendorList
+} from './__tests__/fixtures'
+import RadiusAttributeGroupForm from './RadiusAttributeGroupForm'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -63,6 +69,10 @@ describe('RadiusAttributeGroupForm', () => {
       rest.post(
         RadiusAttributeGroupUrlsInfo.createAttributeGroup.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url,
+        (req, res, ctx) => res(ctx.json(attributeGroupReturnByQuery))
       )
     )
   })

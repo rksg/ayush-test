@@ -39,6 +39,33 @@ export const groupList = {
   empty: false
 }
 
+export const attributeGroupReturnByQuery = {
+  totalCount: 1,
+  page: 1,
+  pageSize: 10,
+  data: [
+    {
+      name: 'group1',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ]
+    }
+  ]
+}
+
 export const attributeGroup = {
   id: '1751383c-f13a-4f55-9694-ca9d16d4c410',
   name: 'test11223',
