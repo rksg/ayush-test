@@ -1,29 +1,19 @@
 /* eslint-disable max-len */
-import _        from 'lodash'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { UserProfileProvider } from '@acx-ui/rc/components'
-import {
-  useAddMspLabelMutation,
-  useUpdateMspLabelMutation,
-  useGetMspLabelQuery
-} from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, BaseUrl, CommonUrlsInfo, ExternalProviders, MspPortal, MspUrlsInfo, UploadUrlResponse } from '@acx-ui/rc/utils'
-import { Provider  }                                                                                                     from '@acx-ui/store'
+import { BaseUrl, ExternalProviders, MspPortal } from '@acx-ui/rc/utils'
+import { Provider  }                             from '@acx-ui/store'
 import {
   render,
   mockServer,
   screen,
   fireEvent,
-  waitFor,
-  cleanup,
-  act
+  waitFor
 } from '@acx-ui/test-utils'
 
-import supportLinkImg     from '../images/supportlink.png'
+import { PortalSettings } from '.'
 
-import  { PortalSettings } from '.'
-import userEvent from '@testing-library/user-event'
 
 // const params: { tenantId: string } = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
 const mockDate = new Date('2023-02-25T18:53:39.319+00:00')
@@ -97,11 +87,6 @@ const externalProviders: ExternalProviders =
 const baseUrl: BaseUrl =
     {
       base_url: 'msp.devalto.ruckuswireless.com'
-    }
-const uploadUrlResponse: UploadUrlResponse =
-    {
-      fileId: 'fileId',
-      signedUrl: 'signedUrl'
     }
 
 const services = require('@acx-ui/rc/services')
@@ -790,22 +775,3 @@ describe('PortalSettings', () => {
   })
 })
 
-// expect(screen.getAllByRole('dropdown')).toBeDefined()    // uncomment for roles
-
-
-// const { data: test } = services.useGetMspLabelQuery({ params })
-// expect(test).toBe(mspLabel)
-// // expect(services.useGetUploadURLMutation).toHaveBeenCalled()
-// // eslint-disable-next-line no-console
-// console.log(services.useGetMspLabelQuery())
-// // eslint-disable-next-line no-console
-// console.log(services.useExternalProvidersQuery())
-// // eslint-disable-next-line no-console
-// console.log(services.useGetMspBaseURLQuery())
-// // expect(mspLabels).toBeDefined()
-
-// const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus support' })
-// await waitFor(() => expect(formItem).not.toBeDisabled())
-
-// expect(formItem).not.toBeChecked()
-// fireEvent.click(formItem)
