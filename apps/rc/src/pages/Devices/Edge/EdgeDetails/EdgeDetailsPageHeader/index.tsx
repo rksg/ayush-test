@@ -21,7 +21,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -127,7 +127,6 @@ export const EdgeDetailsPageHeader = () => {
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
