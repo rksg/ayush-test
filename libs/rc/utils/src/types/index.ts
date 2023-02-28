@@ -29,6 +29,7 @@ export * from './user'
 export * from './services'
 export * from './policies'
 export * from './msp'
+export * from './license'
 export * from './edge'
 export * from './client'
 export * from './components'
@@ -110,7 +111,7 @@ export interface Venue {
   }
   allApDisabled: boolean
   // aps ??
-  // switches ??
+  switches?: number
   // switchClients ??
   // radios ??
   // scheduling ??
@@ -415,14 +416,14 @@ interface VersionInfo {
 
 }
 
-export interface catchErrorDetails {
+export interface CatchErrorDetails {
   code: string,
   message: string
 }
 
-export interface catchErrorResponse {
+export interface CatchErrorResponse {
   data: {
-    errors: catchErrorDetails[],
+    errors: CatchErrorDetails[],
     requestId: string
   },
   status: number

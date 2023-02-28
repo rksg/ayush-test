@@ -9,6 +9,10 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId'
   },
+  delL2AclPolicy: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId'
+  },
   addL3AclPolicy: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/l3-acl-policy'
@@ -17,12 +21,20 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
   },
+  delL3AclPolicy: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId'
+  },
   addAppPolicy: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/application-policy'
   },
   getAppPolicy: {
     method: 'get',
+    url: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId'
+  },
+  delAppAclPolicy: {
+    method: 'delete',
     url: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId'
   },
   getL2AclPolicyList: {
@@ -71,6 +83,10 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   getDevicePolicy: {
     method: 'get',
+    url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
+  },
+  delDevicePolicy: {
+    method: 'delete',
     url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
   },
   getDevicePolicyList: {

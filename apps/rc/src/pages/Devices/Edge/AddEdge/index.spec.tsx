@@ -78,7 +78,7 @@ describe('AddEdge', () => {
     fireEvent.change(serialNumberInput, { target: { value: '12345678901234567890123456789012345' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
-    expect(await screen.findByText('Serial Number must be up to 34 characters')).toBeVisible()
+    expect(await screen.findByText('serialNumber must be up to 34 characters')).toBeVisible()
   })
 
   it('should add edge successfully', async () => {

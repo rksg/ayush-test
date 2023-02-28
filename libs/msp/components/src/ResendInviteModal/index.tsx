@@ -57,7 +57,7 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
     const { email } = form.getFieldsValue()
     const payload = {
       admin_email: email,
-      resend: false
+      resend: true
     }
     resendInvitation({ payload, params: { mspEcTenantId: tenantId } })
       .then(() => {

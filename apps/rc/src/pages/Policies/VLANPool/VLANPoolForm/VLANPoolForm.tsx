@@ -10,7 +10,9 @@ import {
 import { useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
-  getPolicyListRoutePath
+  getPolicyRoutePath,
+  PolicyType,
+  PolicyOperation
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -25,7 +27,8 @@ type VLANPoolFormProps = {
 const VLANPoolForm = (props: VLANPoolFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToPolicies = useTenantLink(getPolicyListRoutePath())
+  const tablePath = getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
+  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const edit = props.edit && !props.networkView
   const formRef = useRef<StepsFormInstance<VLANPoolPolicyType>>()
@@ -73,7 +76,7 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
           ? $t({ defaultMessage: 'Edit VLAN Pool' })
           : $t({ defaultMessage: 'Add VLAN Pool' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
       />
       <StepsForm<VLANPoolPolicyType>

@@ -26,12 +26,28 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
+  ipDomain: defineMessage({
+    defaultMessage: 'Please enter a valid IP address or domain',
+    description: 'Validation - IP address checks'
+  }),
+  domain: defineMessage({
+    defaultMessage: 'Please enter a valid domain',
+    description: 'Validation - domain checks'
+  }),
+  domains: defineMessage({
+    defaultMessage: 'Please enter valid domain(s)',
+    description: 'Validation - domains checks'
+  }),
   ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
     description: 'Validation - IP address checks'
   }),
   subnetMask: defineMessage({
     defaultMessage: 'Please enter a valid subnet mask',
+    description: 'Validation - subnet mask checks'
+  }),
+  subnetMaskBased255_255: defineMessage({
+    defaultMessage: 'Please enter a valid Netmask based on the 255.255 mask prefix',
     description: 'Validation - subnet mask checks'
   }),
   invalid: defineMessage({
@@ -143,6 +159,16 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid GPS coordinates',
     description: 'Validation - GPS coordinates checks'
   }),
+  gpsLatitudeInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'A valid latitude value is between -90 and 90, and contains a maximum of 6-digit decimal',
+    description: 'Validation - GPS Latitude checks'
+  }),
+  gpsLongitudeInvalid: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'A valid longitude value is between -180 and 180, and contains a maximum of 6-digit decimal',
+    description: 'Validation - GPS Longitude checks'
+  }),
   targetHost: defineMessage({
     defaultMessage: 'Please enter valid target host or IP address',
     description: 'Validation - target host checks'
@@ -192,6 +218,46 @@ export const validationMessages = {
   priority: defineMessage({
     defaultMessage: 'Enter a valid number between 0 and 7',
     description: 'Validation - priority checks'
+  }),
+  whitespaceOnly: defineMessage({
+    defaultMessage: 'Whitespace chars only are not allowed',
+    description: 'Validation - Whitespace chars check'
+  }),
+  numberRangeInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between {from} and {to}',
+    description: 'Validation - range check'
+  }),
+  agree: defineMessage({
+    defaultMessage: 'Please type “AGREE”',
+    description: 'Validation - Please type “AGREE”'
+  }),
+  nameCannotStartWithNumber: defineMessage({
+    defaultMessage: 'Name cannot start with a number',
+    description: 'Validation - name checks'
+  }),
+  nameInvalid: defineMessage({
+    defaultMessage: 'Name may include only letters and numbers',
+    description: 'Validation - name checks'
+  }),
+  startRangeInvalid: defineMessage({
+    defaultMessage: 'Start value must be lower than end value',
+    description: 'Validation - range checks'
+  }),
+  endRangeInvalid: defineMessage({
+    defaultMessage: 'End value must be higher than start value',
+    description: 'Validation - range checks'
+  }),
+  specialCharactersInvalid: defineMessage({
+    defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed',
+    description: 'Validation - special characters checks'
+  }),
+  minValueInvalid: defineMessage({
+    defaultMessage: 'Minimal value is {value}',
+    description: 'Validation - min value checks'
+  }),
+  maxValueInvalid: defineMessage({
+    defaultMessage: 'Maximal value is {value}',
+    description: 'Validation - max value checks'
   }),
   oneRadioChannel: defineMessage({
     defaultMessage: 'Please select one channel',
@@ -260,11 +326,47 @@ export const validationMessages = {
   switchStaticRouteAdminDistanceInvalid: defineMessage({
     defaultMessage: 'Enter a valid number between 0 and 255',
     description: 'Validation - switch static route admin distance'
+  }),
+  aclStandardNumericValueInvalid: defineMessage({
+    defaultMessage: 'Standard ACL Numeric Value Must Be 1-99',
+    description: 'Validation - Standard ACL Numeric Value Must Be 1-99'
+  }),
+  aclExtendedNumericValueInvalid: defineMessage({
+    defaultMessage: 'Extended ACL Numeric Value Must Be 100-199',
+    description: 'Validation - Extended ACL Numeric Value Must Be 100-199'
+  }),
+  aclNameSpecialCharacterInvalid: defineMessage({
+    defaultMessage: 'An ACL name cannot contain special characters such as a double quote (")',
+    description: 'Validation - ACL name cannot contain special characters'
+  }),
+  aclNameContainsTestInvalid: defineMessage({
+    defaultMessage: 'The ACL name cannot be \'test\'',
+    description: 'Validation - The ACL name cannot be \'test\''
+  }),
+  aclNameStartWithoutAlphabetInvalid: defineMessage({
+    defaultMessage: 'Name should start with an alphabet',
+    description: 'Validation - Name should start with an alphabet'
+  }),
+  aclNameDuplicateInvalid: defineMessage({
+    defaultMessage: 'The ACL name already exists',
+    description: 'Validation - The ACL name already exists'
+  }),
+  vlanNameInvalid: defineMessage({
+    defaultMessage: 'Enter a valid number between 1 and 4095, except 4087, 4090-4094',
+    description: 'Validation - validate vlan name'
+  }),
+  vlanIdInvalid: defineMessage({
+    defaultMessage: 'The VLAN ID already exists',
+    description: 'Validation - validate vlan id'
+  }),
+  vlanNameInvalidWithDefaultVlans: defineMessage({
+    defaultMessage: 'DEFAULT-VLAN is reserved word',
+    description: 'Validation - DEFAULT-VLAN is reserved word'
+  }),
+  subnetOverlapping: defineMessage({
+    defaultMessage: 'The ports have overlapping subnets',
+    description: 'Validation - subnet range'
   })
-
-
-
-
 }
 
 export function prepareAntdValidateMessages ({ $t }: IntlShape): ValidateMessages {

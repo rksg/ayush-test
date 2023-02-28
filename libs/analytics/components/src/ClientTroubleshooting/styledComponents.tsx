@@ -81,6 +81,13 @@ export const StyledMinusSquareOutlined = styled(MinusSquareOutlined)`
       stroke:var(--acx-accents-blue-50);
     }`
 
+export const StyledDisabledPlusSquareOutline = styled(PlusSquareOutlined)`
+    width: 16px;
+    path {
+      stroke:var(--acx-neutrals-50);
+    }
+`
+
 export const TimelineTitle = styled.span`
    line-height: 24px;
    font-weight: var(--acx-body-font-weight-bold);
@@ -256,4 +263,22 @@ export const StepLabel = styled.p`
   text-overflow: ellipsis;
   margin-bottom: 0px;
   font-size: var(--acx-body-5-font-size);
+`
+
+export const ErrorPanel = styled.div`
+  display: flex;
+  flex-grow: 1;
+  text-align: center;
+  background: var(--acx-neutrals-60);
+  font-size: var(--acx-body-1-font-size);
+  color: var(--acx-neutrals-15);
+  > span {
+    margin: auto;
+  }
+`
+export const ErrorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  align-self: center;
 `

@@ -1,18 +1,20 @@
 import { useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input, Space } from 'antd'
+import { useIntl }            from 'react-intl'
 
 import {
   Button,
   Loader,
+  Modal,
+  ModalType,
   showActionModal,
   showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { CopyOutlined }             from '@acx-ui/icons'
-import { CsvSize, ImportCsvDrawer } from '@acx-ui/rc/components'
+import { CopyOutlined }              from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
   useDownloadPassphrasesMutation,
@@ -21,12 +23,15 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ExpirationType,
+  NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { formatter } from '@acx-ui/utils'
+
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
@@ -45,6 +50,7 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
+  const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
@@ -82,7 +88,8 @@ export default function DpskPassphraseManagement () {
       key: 'username',
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
-      sorter: true
+      sorter: true,
+      ellipsis: true
     },
     {
       key: 'numberOfDevices',
@@ -105,18 +112,23 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'passphrase',
       sorter: false,
       render: function (data) {
-        return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
-            readOnly
-            bordered={false}
-            value={data as string}
-          />
-          <Button
-            type='link'
-            icon={<CopyOutlined />}
-            onClick={() => navigator.clipboard.writeText(data as string)}
-          />
-        </div>
+        return (
+          <Space
+            direction='horizontal'
+            size={2}
+            onClick={(e)=> {e.stopPropagation()}}>
+            <Input.Password
+              readOnly
+              bordered={false}
+              value={data as string}
+            />
+            <Button
+              type='link'
+              icon={<CopyOutlined />}
+              onClick={() => navigator.clipboard.writeText(data as string)}
+            />
+          </Space>
+        )
       }
     },
     {
@@ -176,18 +188,30 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
+    },
+    {
+      label: $t({ defaultMessage: 'Add DPSK Network' }),
+      onClick: () => setNetworkModalVisible(true)
     }
   ]
+
+  const networkForm = <NetworkForm modalMode={true}
+    modalCallBack={()=>{
+      setNetworkModalVisible(false)
+    }}
+    createType={NetworkTypeEnum.DPSK}
+  />
 
   return (<>
     <DpskPassphraseDrawer
       visible={addPassphrasesDrawerVisible}
       setVisible={setAddPassphrasesDrawerVisible}
     />
-    <ImportCsvDrawer type='DPSK'
+    <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
       maxSize={CsvSize['5MB']}
       maxEntries={512}
+      acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
       isLoading={uploadCsvResult.isLoading}
@@ -213,7 +237,14 @@ export default function DpskPassphraseManagement () {
         label={$t({ defaultMessage: 'User name prefix' })}
         children={<Input />}
       />
-    </ImportCsvDrawer>
+    </ImportFileDrawer>
+    <Modal
+      title={$t({ defaultMessage: 'Add DPSK Network' })}
+      type={ModalType.ModalStepsForm}
+      visible={networkModalVisible}
+      mask={true}
+      children={networkForm}
+    />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
         columns={columns}

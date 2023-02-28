@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { CsvSize, ImportCsvDrawer, PersonaGroupSelect }                       from '@acx-ui/rc/components'
+import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
   useGetPersonaGroupListQuery,
@@ -225,6 +225,21 @@ export function BasePersonaTable (props: PersonaTableProps) {
             entityValue: selectedItems[0].name,
             numOfEntities: selectedItems.length
           },
+          content:
+            $t({
+              // Display warning while one of the Persona contains devices.
+              defaultMessage: `{hasDevices, select,
+              true {The Persona contains devices in the MAC registration list.}
+              other {}
+              }
+              Are you sure you want to delete {count, plural,
+              one {this}
+              other {these}
+              } Persona?`
+            }, {
+              hasDevices: !!selectedItems.find(p => (p?.deviceCount ?? 0) > 0),
+              count: selectedItems.length
+            }),
           onOk: () => {
             const ids = selectedItems.map(({ id }) => id)
             const names = selectedItems.map(({ name }) => name).join(', ')
@@ -297,11 +312,12 @@ export function BasePersonaTable (props: PersonaTableProps) {
         visible={drawerState.visible}
         onClose={() => setDrawerState({ isEdit: false, visible: false, data: undefined })}
       />
-      <ImportCsvDrawer
+      <ImportFileDrawer
         title={$t({ defaultMessage: 'Import from file' })}
         visible={uploadCsvDrawerVisible}
         isLoading={uploadCsvResult.isLoading}
         type='Persona'
+        acceptType={['csv']}
         maxSize={CsvSize['5MB']}
         maxEntries={512}
         templateLink='assets/templates/persona_import_template.csv'
@@ -316,7 +332,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         >
           <PersonaGroupSelect disabled={!!personaGroupId}/>
         </Form.Item>
-      </ImportCsvDrawer>
+      </ImportFileDrawer>
     </Loader>
   )
 }
