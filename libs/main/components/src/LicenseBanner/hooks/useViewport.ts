@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function useViewPort () {
+export default function useViewport () {
   const [width, setWidth] = useState(window.innerWidth)
   useEffect(() => {
     const handleWindowResize = () => setWidth(window.innerWidth)
