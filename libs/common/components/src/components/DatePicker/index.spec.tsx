@@ -4,9 +4,16 @@ import userEvent          from '@testing-library/user-event'
 import moment             from 'moment-timezone'
 import { IntlProvider }   from 'react-intl'
 
-import { DateRange } from '@acx-ui/utils'
+import { DateRange, dateTimeFormats, getJwtTokenPayload, AccountTier } from '@acx-ui/utils'
 
 import { DatePicker, RangePicker } from '.'
+
+const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: jest.fn()
+}))
 
 describe('DatePicker', () => {
   it('should open when click on date select', async () => {
@@ -23,6 +30,12 @@ describe('DatePicker', () => {
 })
 
 describe('RangePicker', () => {
+  beforeEach(() => {
+    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.PLATINUM })
+  })
+  afterEach(() => {
+    mockGetJwtTokenPayload.mockClear()
+  })
   it('should open when click on date select', async () => {
     render(
       <IntlProvider locale='en'>
@@ -35,7 +48,6 @@ describe('RangePicker', () => {
           onDateApply={() => {}}
           rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
           showTimePicker
-          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
         />
       </IntlProvider>
 
@@ -57,7 +69,6 @@ describe('RangePicker', () => {
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
           }}
-          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
         />
       </IntlProvider>
 
@@ -82,7 +93,6 @@ describe('RangePicker', () => {
             startDate: moment().subtract(7, 'days').seconds(0),
             endDate: moment().seconds(0)
           }}
-          enableDates={[moment().subtract(7, 'days').seconds(0), moment().seconds(0)]}
         />
       </IntlProvider>
     )
@@ -149,8 +159,8 @@ describe('RangePicker', () => {
         <RangePicker
           selectionType={DateRange.custom}
           selectedRange={{
-            startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
-            endDate: moment('03/01/2022').seconds(0)
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
           }}
           onDateChange={onDateChange}
           onDateApply={() => {}}
@@ -160,9 +170,12 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
+    const yesterday = moment().subtract(1, 'day')
+    const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 - Mar 01 2022')
+    const today = moment().format(dateTimeFormats.dateFormat)
+    const yestFormat = yesterday.format(dateTimeFormats.dateFormat)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
     expect(onDateChange).toBeCalledTimes(1)
   })
   it('should select time when click on time selection', async () => {
@@ -271,7 +284,7 @@ describe('RangePicker', () => {
         <RangePicker
           selectionType={DateRange.custom}
           selectedRange={{
-            startDate: moment('01/01/2022').subtract(7, 'days').seconds(0),
+            startDate: moment().subtract(7, 'days').seconds(0),
             endDate: null
           }}
           onDateChange={onDateChange}
@@ -282,9 +295,11 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
+    const dateSelect = await screen.findAllByTitle(moment().format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('Jan 01 2022 -')
+    expect(
+      screen.getByRole('display-date-range')
+    ).toHaveTextContent(moment().format(dateTimeFormats.dateFormat))
   })
   it('should display only end date when start date is not selected', async () => {
     const onDateChange = jest.fn()
@@ -294,7 +309,7 @@ describe('RangePicker', () => {
           selectionType={DateRange.custom}
           selectedRange={{
             startDate: null,
-            endDate: moment('01/01/2022').subtract(7, 'days').seconds(0)
+            endDate: moment().subtract(7, 'days').seconds(0)
           }}
           onDateChange={onDateChange}
           onDateApply={() => {}}
@@ -304,9 +319,11 @@ describe('RangePicker', () => {
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('End date')
     await user.click(calenderSelect)
-    const dateSelect = await screen.findAllByTitle(moment('01/01/2022').format('YYYY-MM-DD'))
+    const dateSelect = await screen.findAllByTitle(moment().format('YYYY-MM-DD'))
     await user.click(dateSelect[0])
-    expect(screen.getByRole('display-date-range')).toHaveTextContent('- Jan 01 2022')
+    expect(
+      screen.getByRole('display-date-range')
+    ).toHaveTextContent(moment().format(dateTimeFormats.dateFormat))
   })
   it('should disable apply when startdate and end date are same', async () => {
     const onDateChange = jest.fn()
@@ -336,5 +353,34 @@ describe('RangePicker', () => {
     const applyButton = await screen.findByText('Apply')
     await user.click(applyButton)
     expect(apply).toBeCalledTimes(0)
+  })
+  it('should restrict date for gold tier license', async () => {
+    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.GOLD })
+    const onDateChange = jest.fn()
+    const apply = jest.fn()
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment().subtract(3, 'months').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          onDateChange={onDateChange}
+          onDateApply={apply}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const dateSelect = await screen.findAllByTitle(
+      moment().subtract(2, 'months').format('YYYY-MM-DD')
+    )
+    await user.click(dateSelect[0])
+    const applyButton = await screen.findByText('Apply')
+    await user.click(applyButton)
+    expect(onDateChange).toHaveBeenCalledTimes(0)
+    expect(apply).toHaveBeenCalledTimes(1)
   })
 })
