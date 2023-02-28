@@ -6,7 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { nodeTypes, useAnalyticsFilter }                                      from '@acx-ui/analytics/utils'
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
-import { useDateFilter, dateRangeForLast, NodeType }                          from '@acx-ui/utils'
+import { useDateFilter, NodeType }                                            from '@acx-ui/utils'
 
 import { NetworkFilter }                from '../NetworkFilter'
 import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
@@ -99,7 +99,6 @@ export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderPro
           startDate: moment(startDate),
           endDate: moment(endDate)
         }}
-        enableDates={dateRangeForLast(3, 'months')}
         onDateApply={setDateFilter as CallableFunction}
         showTimePicker
         selectionType={range}
