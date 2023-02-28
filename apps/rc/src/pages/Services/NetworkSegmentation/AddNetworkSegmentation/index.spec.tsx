@@ -4,11 +4,7 @@ import { rest }  from 'msw'
 
 import { CommonUrlsInfo, EdgeDhcpUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                            from '@acx-ui/store'
-import {
-  fireEvent, mockServer, render,
-  screen,
-  waitFor
-} from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor }                                 from '@acx-ui/test-utils'
 
 import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockVenueData, mockVenueNetworkData } from '../__tests__/fixtures'
 
@@ -21,13 +17,34 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+type MockSelectProps = React.PropsWithChildren<{
+  onChange?: (value: string) => void
+  options?: Array<{ label: string, value: unknown }>
+}>
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ children, onChange, options, ...props }: MockSelectProps) => (
+    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      {children ? <><option value={undefined}></option>{children}</> : null}
+      {options?.map((option, index) => (
+        <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
+      ))}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
 describe('Create NetworkSegmentation', () => {
-  let params: { tenantId: string }
+  // eslint-disable-next-line @typescript-eslint/semi
+  let params: { tenantId: string, venueId: string };
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      venueId: 'venue-id'
     }
 
     mockServer.use(
@@ -68,41 +85,45 @@ describe('Create NetworkSegmentation', () => {
 
   it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
-    render(
-      <Provider>
-        <AddNetworkSegmentation />
-      </Provider>, {
-        route: { params, path: createNsgPath }
-      })
+    render(<AddNetworkSegmentation />, {
+      wrapper: Provider,
+      route: { params, path: createNsgPath }
+    })
     // step 1
     const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
-    fireEvent.change(serviceNameInput, { target: { value: 'TestService' } })
-    const venueSelect = await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })
-    user.click(venueSelect)
-    user.click(await screen.findByText('Mock Venue 1'))
+    await user.type(serviceNameInput, 'TestService')
+    await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'Venue with the property management enabled' }),
+      await screen.findByRole('option', { name: 'Mock Venue 1' })
+    )
     expect(await screen.findByRole('table')).toBeVisible()
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 2
-    const edgeSelect = await screen.findByRole('combobox', { name: 'SmartEdge' })
-    user.click(edgeSelect)
-    user.click(await screen.findByText('Smart Edge 1'))
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'SmartEdge' }),
+      await screen.findByRole('option', { name: 'Smart Edge 1' })
+    )
     const segmentsInput = await screen.findByRole('spinbutton', { name: 'Number of Segments' })
-    fireEvent.change(segmentsInput, { target: { value: 10 } })
+    await user.type(segmentsInput, '10')
     const devicesInput = await screen.findByRole('spinbutton', { name: 'Number of devices per Segment' })
-    fireEvent.change(devicesInput, { target: { value: 10 } })
+    await user.type(devicesInput, '10')
     const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
     await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
-    user.click(dhcpSelect)
-    user.click(await screen.findByText('TestDhcp-1'))
-    user.click(await screen.findByRole('button', { name: 'Select Pool' }))
-    user.click(await screen.findByText('PoolTest1'))
-    user.click(await screen.findByRole('button', { name: 'Select' }))
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
+    await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+    await user.click(await screen.findByText('PoolTest1'))
+    await user.click(await screen.findByRole('button', { name: 'Select' }))
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
-    const tunnelSelect = await screen.findByRole('combobox', { name: 'Tunnel Profile' })
-    user.click(tunnelSelect)
-    user.click(await screen.findByText('Default'))
-    user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'Tunnel Profile' }),
+      await screen.findByRole('option', { name: 'Default' })
+    )
+    await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step4
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -111,12 +132,10 @@ describe('Create NetworkSegmentation', () => {
 
   it('cancel and go back to device list', async () => {
     const user = userEvent.setup()
-    render(
-      <Provider>
-        <AddNetworkSegmentation />
-      </Provider>, {
-        route: { params, path: createNsgPath }
-      })
+    render(<AddNetworkSegmentation />, {
+      wrapper: Provider,
+      route: { params, path: createNsgPath }
+    })
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/t/${params.tenantId}/services`,

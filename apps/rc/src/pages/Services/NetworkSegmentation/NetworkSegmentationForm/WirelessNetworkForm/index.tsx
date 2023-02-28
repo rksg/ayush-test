@@ -33,6 +33,7 @@ export const WirelessNetworkForm = () => {
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
+    skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
         networkOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -56,6 +57,8 @@ export const WirelessNetworkForm = () => {
 
   return(
     <>
+      <Form.Item name='venueId' hidden />{/* Added so useWatch could work */}
+
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -67,7 +70,6 @@ export const WirelessNetworkForm = () => {
                 options={[
                   { label: $t({ defaultMessage: 'Default' }), value: null }
                 ]}
-                defaultValue={null}
               />
             }
           />

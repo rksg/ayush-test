@@ -105,13 +105,12 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
             // eslint-disable-next-line max-len
               $t({ defaultMessage: 'Venue with the property management enabled' })
             }
-            initialValue={null}
             rules={[{
               required: true
             }]}
             children={
               <Select
-                loading={isVenueOptionsLoading}
+                loading={Boolean(isVenueOptionsLoading)}
                 onChange={onVenueChange}
                 options={[
                   { label: $t({ defaultMessage: 'Select...' }), value: null },
