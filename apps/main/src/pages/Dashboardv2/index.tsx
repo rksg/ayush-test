@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {
   ConnectedClientsOverTime,
+  OverallExp,
   SwitchesTrafficByVolume,
   TopApplicationsByTraffic,
   TopSSIDsByTraffic,
@@ -142,7 +143,7 @@ function SwitchWidgets () {
 }
 
 function CommonDashboardWidgets () {
-  // const { filters } = useDashboardFilter()
+  const { filters } = useDashboardFilter()
 
   return (
     <GridRow>
@@ -157,6 +158,7 @@ function CommonDashboardWidgets () {
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <Card title='Client Experience'>
+              <OverallExp filters={filters}/>
             </Card>
           </GridCol>
         </GridRow>

@@ -54,3 +54,20 @@ export function ProgressBar ({
       strokeColor={strokeColorsByPercent(percent)} />
   </Tooltip>
 }
+
+export function ProgressBarV2 ({
+  percent
+}: ProgressBarProps) {
+  const { $t } = useIntl()
+
+  return <Tooltip
+    placement={'top'}
+    title={$t(intlFormats.percentFormat, { value: percent/100 })}>
+    <UI.Progress
+      percent={percent}
+      showInfo={false}
+      trailColor={cssStr('--acx-neutrals-30')}
+      strokeWidth={10}
+      strokeColor={strokeColorsByPercent(percent)} />
+  </Tooltip>
+}
