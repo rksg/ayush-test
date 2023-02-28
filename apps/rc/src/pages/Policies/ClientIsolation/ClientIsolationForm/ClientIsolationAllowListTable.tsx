@@ -105,20 +105,12 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
     {
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
-      key: 'mac',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'ip',
-      key: 'ip',
-      sorter: true
+      key: 'mac'
     },
     {
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      key: 'description',
-      sorter: false
+      key: 'description'
     }
   ]
 

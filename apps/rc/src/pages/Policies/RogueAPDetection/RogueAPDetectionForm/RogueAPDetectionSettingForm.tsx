@@ -60,7 +60,8 @@ const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) =>
             ...state,
             description: policyData.description ?? '',
             policyName: policyData.name ?? '',
-            venues: policyData.venues ?? []
+            venues: policyData.venues ?? [],
+            rules: policyData.rules ?? []
           }
         }
       })

@@ -70,7 +70,7 @@ export function WifiConfigTab () {
         <SecurityTab />
       </Tabs.TabPane>
       <Tabs.TabPane
-        disabled={!useIsSplitOn(Features.DEVICES)}
+        disabled={!useIsSplitOn(Features.POLICIES)}
         tab={tabTitleMap('servers')}
         key='servers'
       >
