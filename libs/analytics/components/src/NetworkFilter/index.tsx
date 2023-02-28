@@ -179,7 +179,7 @@ const getFilterData = (
             name={name}
           />
         ),
-        value: [path[0], { ...path[1], name: id }],
+        value: JSON.stringify([path[0], { ...path[1], name: id }]), // replace venue name with id to be compatible with rc/reports
         displayLabel: name,
         children: [] as Option[]
       }
