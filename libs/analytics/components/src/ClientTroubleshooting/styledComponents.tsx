@@ -272,18 +272,30 @@ export const StepLabel = styled.p`
   margin-bottom: 0px;
   font-size: var(--acx-body-5-font-size);
 `
+type ChartWrapperProps = ElementType<HTMLDivElement> & {
+  $selected?: boolean
+}
 
-export const ChartWrapper = styled.div`
+export const ChartWrapper = styled.div.attrs((props: ChartWrapperProps) => props)`
   path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
     cursor: pointer !important; 
   }
+  ${({ $selected }) => $selected
+  && `
+    div[_echarts_instance_] {
+      g[clip-path] {
+        cursor: pointer !important;
+      }
+    }
+  `
+}
 `
 
-type HistoryItemWrapperProp = ElementType<HTMLDivElement> & {
+type HistoryItemWrapperProps = ElementType<HTMLDivElement> & {
   $selected: boolean
 }
 
-export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperProp) => props)`
+export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperProps) => props)`
   ${({ $selected }) => $selected
   && `
     font-weight: var(--acx-body-font-weight-bold);

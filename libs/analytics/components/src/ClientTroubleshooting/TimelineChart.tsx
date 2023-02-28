@@ -366,7 +366,8 @@ export function TimelineChart ({
           },
           animation: false,
           data: getSeriesData(data, key, series),
-          clip: true
+          clip: true,
+          cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
         })
     ) as SeriesOption[], [data, mapping])
 
@@ -526,7 +527,7 @@ export function TimelineChart ({
   }, [option, sharedChartName])
 
   return (
-    <UI.ChartWrapper>
+    <UI.ChartWrapper $selected={mapping[0].series === INCIDENTS}>
       <ReactECharts
         {...{
           ...props,
