@@ -24,7 +24,8 @@ import {
   MspProfile,
   EntitlementBanner,
   MspEcProfile,
-  MspPortal
+  MspPortal,
+  downloadFile
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -75,7 +76,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -85,7 +96,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -429,6 +450,37 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
+          ...params
+        })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent ? JSON.parse(
+              headerContent.split('filename=')[1]) : 'Guests Information.csv'
+            downloadFile(response, fileName)
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*'
+          }
+        }
+      }
+    }),
+    acceptRejectInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.acceptRejectInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -471,5 +523,7 @@ export const {
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
   useAddMspLabelMutation,
-  useUpdateMspLabelMutation
+  useUpdateMspLabelMutation,
+  useExportDeviceInventoryMutation,
+  useAcceptRejectInvitationMutation
 } = mspApi
