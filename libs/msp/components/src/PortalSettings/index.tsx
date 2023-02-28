@@ -89,8 +89,6 @@ export function PortalSettings () {
 
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
 
-  // const { action, tenantId, mspEcTenantId } = useParams()
-
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
@@ -111,7 +109,7 @@ export function PortalSettings () {
         ? setOpenCase(false) : setOpenCase(true)
       mspLabel?.my_open_case_behavior === 'hide'
         ? setMyCase(false) : setMyCase(true)
-      if (mspLabel.mspLogoFileDataList) {
+      if (mspLabel.mspLogoFileDataList && mspLabel.mspLogoFileDataList.length > 0) {
         const defaultList = mspLabel.mspLogoFileDataList.map((file) => {
           return {
             uid: file.logo_fileuuid,
@@ -124,7 +122,7 @@ export function PortalSettings () {
         setDefaultFileList(defaultList)
         setFileList(defaultList)
         setSelectedLogo('myLogo')
-        mspLabel.logo_uuid     // TODO: update this after changing workflow to grab fileList from logo preview uuids and not data list
+        mspLabel.logo_uuid
           ? setPortalLogoUrl(fileUrl + mspLabel.logo_uuid)
           : setPortalLogoUrl(defaultPortalLogo)
         mspLabel.ping_login_logo_uuid
@@ -133,7 +131,6 @@ export function PortalSettings () {
         mspLabel.ping_notification_logo_uuid
           ? setSupportLogoUrl(fileUrl + mspLabel.ping_notification_logo_uuid)
           : setSupportLogoUrl(defaultSupportLogo)
-        // setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
         mspLabel.alarm_notification_logo_uuid
           ? setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
           : setAlarmLogoUrl(defaultAlarmLogo)
@@ -144,9 +141,6 @@ export function PortalSettings () {
         setSupportLogoUrl(defaultSupportLogo)
         setAlarmLogoUrl(defaultAlarmLogo)
       }
-      // mspLabel.alarm_notification_logo_uuid
-      //   ? setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
-      //   : setAlarmLogoUrl(logoCloudImg)
     }
   }, [provider, mspLabel])
 
@@ -379,8 +373,6 @@ export function PortalSettings () {
 
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
-      // const formData = { ...values }
-      // TODO: test to make sure this call works for add as well
       const formData = await getMspPortalToSave(values)
       await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
