@@ -294,3 +294,20 @@ export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperPro
   `
 }
 `
+export const ErrorPanel = styled.div`
+  display: flex;
+  flex-grow: 1;
+  text-align: center;
+  background: var(--acx-neutrals-60);
+  font-size: var(--acx-body-1-font-size);
+  color: var(--acx-neutrals-15);
+  > span {
+    margin: auto;
+  }
+`
+export const ErrorContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  align-self: center;
+`
