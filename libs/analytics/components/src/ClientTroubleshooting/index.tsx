@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-import { Row, Col }               from 'antd'
-import { useIntl, defineMessage } from 'react-intl'
+import { Row, Col }                          from 'antd'
+import moment                                from 'moment-timezone'
+import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Select, Button, Loader }             from '@acx-ui/components'
-import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { Select, Button, Loader }                              from '@acx-ui/components'
+import { useEncodedParameter, useDateFilter, dateTimeFormats } from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig } from './config'
 import { History }                     from './EventsHistory'
@@ -17,18 +18,34 @@ export type Filters = {
   type?: [];
   radio?: [];
 }
+export const maxEventsMsg = (start: string, end: string, { $t }: IntlShape) => $t(
+  defineMessage({
+    defaultMessage: `Too much data to display in the selected period ({start} to {end}).
+Please select a shorter period.`
+  }), { start, end })
+
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
 
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
   const { startDate, endDate, range } = useDateFilter()
   const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
   const filters = read()
-  return (
-    <Row gutter={[16, 16]} style={{ flex: 1 }}>
+  const isMaxEventError = results.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+
+  return isMaxEventError
+    ? <UI.ErrorPanel data-testid='ct-error-panel'>
+      <span>{maxEventsMsg(
+        moment(startDate).format(dateTimeFormats.dateTimeFormat),
+        moment(endDate).format(dateTimeFormats.dateTimeFormat),
+        intl
+      )}</span>
+    </UI.ErrorPanel>
+    : (<Row gutter={[16, 16]} style={{ flex: 1 }}>
       <Col span={historyContentToggle ? 18 : 24}>
         <Row style={{ justifyContent: 'end' }} gutter={[16, 32]}>
           <Col span={historyContentToggle ? 15 : 11}>
@@ -99,5 +116,5 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         </Col>
       )}
     </Row>
-  )
+    )
 }

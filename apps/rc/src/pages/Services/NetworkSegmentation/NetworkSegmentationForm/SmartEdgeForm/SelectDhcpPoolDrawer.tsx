@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Divider, Form, Radio } from 'antd'
 import { useIntl }              from 'react-intl'
 
@@ -10,14 +12,22 @@ interface SelectDhcpPoolDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   selectPool: (poolId?: string, poolName?: string) => void
-  data?: EdgeDhcpPool[]
+  pools?: EdgeDhcpPool[]
+  data?: string
 }
 
 export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, selectPool, data } = props
+  const { visible, setVisible, selectPool, pools, data } = props
   const [formRef] = Form.useForm()
+
+  useEffect(() => {
+    if(visible) {
+      formRef.resetFields()
+      formRef.setFieldValue('poolId', data)
+    }
+  }, [visible])
 
   const handleClose = () => {
     setVisible(false)
@@ -28,7 +38,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
   }
 
   const handleFinish = (formData: { poolId: string }) => {
-    const poolItem = data?.find(item => item.id === formData.poolId)
+    const poolItem = pools?.find(item => item.id === formData.poolId)
     selectPool(poolItem?.id, poolItem?.poolName)
     setVisible(false)
   }
@@ -45,7 +55,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
     >
       <Radio.Group
         options={
-          data?.map(item => ({
+          pools?.map(item => ({
             label: <>
               <Subtitle level={4}>{item.poolName}</Subtitle>
               <StepsForm.FieldLabel width='100px'>

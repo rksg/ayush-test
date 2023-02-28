@@ -104,19 +104,23 @@ export function SwitchConfigBackupTable () {
     key: 'name',
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
+    sorter: true,
     disable: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),
-    dataIndex: 'createdDate'
+    dataIndex: 'createdDate',
+    sorter: true
   }, {
     key: 'backupType',
     title: $t({ defaultMessage: 'Type' }),
-    dataIndex: 'backupType'
+    dataIndex: 'backupType',
+    sorter: true
   }, {
     key: 'status',
     title: $t({ defaultMessage: 'Status' }),
-    dataIndex: 'status'
+    dataIndex: 'status',
+    sorter: true
   }
   ]
 

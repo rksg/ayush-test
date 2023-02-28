@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import { ConfigurationBackupStatus } from '../constants'
-import { PortSettingModel }          from '../models/PortSetting'
+import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTypeEnum } from '../constants'
+import { NetworkVenue }                                                                  from '../models'
+import { PortSettingModel }                                                              from '../models/PortSetting'
 
 import { ProfileTypeEnum }        from './../constants'
 import { Acl, Vlan, SwitchModel } from './venue'
@@ -218,7 +219,9 @@ export class SwitchViewModel extends Switch {
   firmware?: string
   activeSerial?: string
   syncDataId?: string
+  cloudPort?: string
   lastSeenTime?: string
+  rearModuleOption?: boolean
 }
 
 export interface SwitchRow {
@@ -250,14 +253,18 @@ export interface SwitchRow {
 export interface StackMember {
   venueName: string
   serialNumber: string
-  operStatusFound: boolean
+  operStatusFound?: boolean
   switchMac: string
   activeSerial: string
   id: string
   uptime: string
-  order: number
+  order: string
   unitStatus?: STACK_MEMBERSHIP
-  unitId?: string
+  unitId?: number
+  model?: string
+  deviceStatus?: SwitchStatusEnum
+  needAck?: boolean
+  newSerialNumber?: string
 }
 
 export interface StackMemberList {
@@ -398,6 +405,89 @@ export interface SwitchPortViewModel extends GridDataRow {
   SwitchPortStackingPortField: boolean;
 }
 
+export interface SwitchPortStatus {
+  portnumber: number
+  name: string
+  portIdentifier: string
+  poeEnabled: boolean
+  status: string
+  portStatus: string
+  portSpeed: string
+  portTagged: PortTaggedEnum
+  taggedVlan: string
+  untaggedVlan: string
+  usedInFormingStack: boolean
+  usedInUplink: boolean
+  poeUsed: number
+  neighborName: string
+  poeType: string
+  unTaggedVlan: string
+  vlanIds: string
+  poeTotal: number
+  neighborMacAddress: string
+}
+
+export interface SwitchSlot {
+  portStatus: SwitchPortStatus[]
+  portCount?: number
+  slotNumber?: number
+  isDataPort?: boolean
+  fanStatus?: {
+    type: string
+    status: string
+  }
+  powerStatus?: {
+    type: string
+    status: string
+  }
+}
+
+export interface SwitchPortModuleInfo {
+  portLabel: PortLabelType;
+}
+
+export interface SwitchModelInfo {
+  powerSlots?: number;
+  fanSlots?: number;
+  portModuleSlots?: SwitchPortModuleInfo[];
+}
+
+export interface SwitchModelFamilyInfo {
+  [key: string]: SwitchModelInfo;
+}
+
+export interface SwitchModelInfoMap {
+  [key: string]: SwitchModelFamilyInfo;
+}
+
+export interface SwitchFrontView {
+  slots: SwitchSlot[]
+  unitNumber?: number
+}
+
+export interface SwitchRearViewStatus {
+  slotNumber: number
+  status: string
+  type: string
+  unit?: number
+}
+
+export interface SwitchRearView {
+  slotNumber?: number
+  fanStatus?: SwitchRearViewStatus[]
+  powerStatus?: SwitchRearViewStatus[]
+}
+
+export interface SwitchRearViewUI {
+  slotNumber?: number
+  fanStatus?: SwitchRearViewStatus
+  powerStatus?: SwitchRearViewStatus
+}
+
+export interface SwitchRearViewUISlot {
+  slots: SwitchRearViewUI[]
+}
+
 export enum PORT_SPEED {
   NONE = 'None',
   AUTO = 'Auto',
@@ -457,14 +547,6 @@ export interface VePortRouted {
   vlanId: number
   portNumber: string
 }
-
-// export interface ProfileVlan {
-//   defaultVlan: boolean
-//   profileLevel: boolean
-//   vlanConfigName?: string
-//   vlanId: number
-//   switchId: string
-// }
 
 export interface SwitchDefaultVlan {
   defaultVlanId: number
@@ -547,6 +629,64 @@ export interface SwitchDhcpLease {
   leaseExpiration: string
   leaseType: string
 }
+export interface PortStatus{
+  portNumber: number
+  portTagged: string
+  unitNumber?: number
+}
+
+export interface SwitchSlot2 { //TODO
+  slotNumber: number
+  enable: boolean
+  option: string
+  slotPortInfo?: string
+  portStatus?: PortStatus[]
+}
+
+export interface TrustedPort {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots: SwitchSlot2[]
+  trustPorts: string[]
+  trustedPortType: TrustedPortTypeEnum
+}
+
+export interface SwitchConfigurationProfile {
+  acls: Acl[]
+  id: string
+  name: string
+  profileType: string
+  venues: string[]
+  vlans: Vlan[]
+  description: string
+  trustedPorts: TrustedPort[]
+}
+
+export interface AclStandardRule {
+  sequence: number
+  action: string
+  source: string
+  specificSrcNetwork: string
+  editIndex?: number
+}
+
+export interface AclExtendedRule extends AclStandardRule {
+  protocol?: string
+  sourcePort?: string
+  destination?: string
+  destinationPort?: string
+  specificDestNetwork?: string
+}
+
+export interface SwitchModelPortData {
+  id?: string
+  vlanDemand?: boolean
+  model: string
+  slots: SwitchSlot2[]
+  taggedPorts: string[]
+  untaggedPorts: string[]
+}
 
 export interface CliTemplateExample {
   id: string
@@ -619,4 +759,31 @@ export interface Lag {
   taggedVlans: string[]
   type: LAG_TYPE
   untaggedVlan: string
+}
+
+export interface SchedulingModalState {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: {
+    latitude: string,
+    longitude: string,
+    name: string
+  }
+}
+export interface AclStandardRule {
+  sequence: number
+  action: string
+  source: string
+  specificSrcNetwork: string
+  editIndex?: number
+}
+
+export interface CliProfileModel{
+  model: string,
+  checked: boolean
+}
+
+export interface CliProfileFamily {
+  family: string,
+  model: CliProfileModel[]
 }

@@ -43,6 +43,7 @@ export function useMenuConfig () {
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
+  const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -121,7 +122,7 @@ export function useMenuConfig () {
           },
           ...isEdgeEnabled ? [{
             path: '/devices/edge/list',
-            name: $t({ defaultMessage: 'Edge' })
+            name: $t({ defaultMessage: 'SmartEdge' })
           }] : []
         ]
     },
@@ -161,7 +162,7 @@ export function useMenuConfig () {
     },
     {
       path: '/policies',
-      name: $t({ defaultMessage: 'Policies' }),
+      name: $t({ defaultMessage: 'Policies & Profiles' }),
       inactiveIcon: PoliciesOutlined,
       activeIcon: PoliciesSolid,
       disabled: !useIsSplitOn(Features.POLICIES)
@@ -246,7 +247,7 @@ export function useMenuConfig () {
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
       activeIcon: AdminSolid,
-      disabled: !useIsSplitOn(Features.UNRELEASED)
+      disabled: !isAdministrationEnabled
     }
   ]
   return config
