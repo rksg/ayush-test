@@ -20,18 +20,7 @@ export const columns: TableProps<RecordType>['columns'] = [
     dataIndex: 'name',
     key: 'name',
     filterable: true,
-    searchable: true,
-    children: [{
-      title: 'Given Name',
-      dataIndex: 'givenName',
-      key: 'givenName',
-      searchable: true
-    },{
-      title: 'Surname',
-      dataIndex: 'surname',
-      key: 'surname',
-      searchable: true
-    }]
+    searchable: true
   },
   {
     title: 'Age',
