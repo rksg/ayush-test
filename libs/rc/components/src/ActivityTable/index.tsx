@@ -16,19 +16,26 @@ import { formatter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
+
 export const defaultSorter = {
   sortField: 'startDatetime',
   sortOrder: 'DESC'
 }
 
+type ColumnState = { [columnKey: string]: boolean }
+
 interface ActivityTableProps {
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
-  hiddenColumn?: boolean | string[]
   filterables?: boolean | string[]
+  columnState?: {
+    hidden?: boolean,
+    defaultValue?: ColumnState,
+    onChange?: (state: ColumnState) => void
+  }
 }
 
 const ActivityTable = ({
-  tableQuery, filterables = true, hiddenColumn = false
+  tableQuery, filterables = true, columnState
 }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -64,7 +71,7 @@ const ActivityTable = ({
       filterable: (Array.isArray(filterables) ? filterables.includes('status') : filterables)
         && Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
-    ...(Array.isArray(hiddenColumn) ? !hiddenColumn.includes('product') : !hiddenColumn) ? [{
+    {
       key: 'product',
       title: $t({ defaultMessage: 'Product' }),
       dataIndex: 'product',
@@ -75,7 +82,7 @@ const ActivityTable = ({
       },
       filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
         && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
-    }] : [],
+    },
     {
       key: 'source',
       title: $t({ defaultMessage: 'Source' }),
@@ -139,6 +146,7 @@ const ActivityTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      columnState={columnState}
     />
     {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}

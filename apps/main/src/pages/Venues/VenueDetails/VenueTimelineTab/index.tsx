@@ -78,7 +78,7 @@ const Activities = () => {
       filters: {
         fromTime: startDate,
         toTime: endDate,
-        entityType: 'CLIENT',
+        entityType: 'VENUES',
         entityId: venueId
       }
     })
@@ -93,14 +93,14 @@ const tabs : {
   component: () => JSX.Element
 }[] = [
   {
-    key: 'events',
-    title: defineMessage({ defaultMessage: 'Events' }),
-    component: Events
-  },
-  {
     key: 'activities',
     title: defineMessage({ defaultMessage: 'Activities' }),
     component: Activities
+  },
+  {
+    key: 'events',
+    title: defineMessage({ defaultMessage: 'Events' }),
+    component: Events
   }
 ]
 

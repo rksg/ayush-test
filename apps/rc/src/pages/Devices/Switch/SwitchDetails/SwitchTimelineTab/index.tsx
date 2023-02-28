@@ -48,6 +48,13 @@ const Activities = () => {
   const { switchId } = useParams()
   const { startDate, endDate } = useDateFilter()
 
+  const columnState = {
+    hidden: false,
+    defaultValue: {
+      product: false
+    }
+  }
+
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: {
@@ -56,6 +63,7 @@ const Activities = () => {
         'startDatetime',
         'endDatetime',
         'status',
+        'product',
         'admin',
         'descriptionTemplate',
         'descriptionData',
@@ -81,7 +89,7 @@ const Activities = () => {
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}
-    hiddenColumn={['product']}
+    columnState={columnState}
   />
 }
 
@@ -91,14 +99,14 @@ const tabs : {
   component: () => JSX.Element
 }[] = [
   {
+    key: 'activities',
+    title: defineMessage({ defaultMessage: 'Activities' }),
+    component: Activities
+  },
+  {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events Switch' }),
     component: Events
-  },
-  {
-    key: 'activities',
-    title: defineMessage({ defaultMessage: 'Activitees' }),
-    component: Activities
   }
 ]
 
