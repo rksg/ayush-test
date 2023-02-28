@@ -32,8 +32,7 @@ export default function AAAPolicyModal (props:{
     <>
       <Button type='link'
         title={disableAAA?$t(notAvailableMsg):''}
-        onClick={()=>setVisible(true)}
-        disabled={disableAAA}>
+        onClick={()=>setVisible(true)}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal

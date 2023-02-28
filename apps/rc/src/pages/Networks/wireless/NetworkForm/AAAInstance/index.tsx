@@ -49,7 +49,6 @@ const AAAInstance = (props:{
           ]}
           initialValue={''}
           children={<Select
-            disabled={disableAAA}
             style={{ width: 210 }}
             onChange={(value)=>{
               form.setFieldValue(props.type,
