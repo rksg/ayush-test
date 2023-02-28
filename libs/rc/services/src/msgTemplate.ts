@@ -4,21 +4,15 @@ import {
   MsgTemplateUrls,
   createHttpRequest,
   TemplateScope,
-//   TableResult,
   RequestPayload,
   Pageable,
   Template,
-//   Persona,
-//   PersonaDevice,
-//   NewTableResult,
-//   transferToTableResult,
-//   createNewTableHttpRequest,
-//   TableChangePayload
+  Registration,
 } from '@acx-ui/rc/utils'
 
 export const baseMsgTemplateApi = createApi({
   baseQuery: fetchBaseQuery(),
-  tagTypes: ['TemplateScope', 'Template'],
+  tagTypes: ['TemplateScope', 'Template', 'Registration'],
   reducerPath: 'msgTemplateApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
@@ -46,14 +40,25 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
               ...req
           }
       },
-      providesTags: (result) => result && result.content ? [...result.content.map(({id}) => ({type: 'Template' as const, id})), { type: 'Template', id: 'LIST'}] : [{ type: 'Template', id: 'LIST' }]
-      
-      
-  }),
+      providesTags: (result, error, arg) => result && result.content ? 
+        [...result.content.map(({id}) => ({type: 'Template' as const, id})), { type: 'Template', id: 'LIST' + arg.templateScopeId}] : [{ type: 'Template', id: 'LIST' + arg.templateScopeId }] 
+    }),
+
+    // Registrations ///////////////////////////////////////
+    getRegistrationById: build.query<Registration, RequestPayload>({
+      query: ({ params }) => {
+      const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params)
+          return {
+              ...req
+          }
+      },
+      providesTags: (result, error, arg) => [{ type: 'Registration', id: (arg.registrationId as string) }]
+    }),
   })
 })
 
 export const {
   useGetTemplateScopeByIdQuery,
-  useGetAllTemplatesByTemplateScopeIdQuery
+  useGetAllTemplatesByTemplateScopeIdQuery,
+  useGetRegistrationByIdQuery
 } = msgTemplateApi

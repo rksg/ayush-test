@@ -1,60 +1,75 @@
-import { Button } from '@acx-ui/components'
-import { Spin, Form, Select } from 'antd'
+
+import { Spin, Form, Select, FormItemProps, Typography } from 'antd'
 import { useIntl } from 'react-intl'
-import { useGetTemplateScopeByIdQuery, useGetAllTemplatesByTemplateScopeIdQuery } from '@acx-ui/rc/services'
-import { TemplateScope } from '@acx-ui/rc/utils'
+import { useGetTemplateScopeByIdQuery, useGetAllTemplatesByTemplateScopeIdQuery, useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
+import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
 
-type Props = {scopeId:string, registrationId:string}
 
-export const TemplateSelectionWidget = (props: Props) => {
+export interface TemplateSelectorProps {
+  formItemProps?: FormItemProps,
+  placeholder?: string,
+  scopeId: string,
+  registrationId: string
+}
+
+export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
   const { $t } = useIntl()
+  const { 
+    scopeId, 
+    registrationId, 
+    placeholder = $t({defaultMessage: "Select Template..."})
+  } = props
 
-  console.log("Template Scope Id in widget: ", props.scopeId)
-  const templateScopeRequest = useGetTemplateScopeByIdQuery({
-    params: { templateScopeId: props.scopeId }
-  })
+  const templateScopeRequest = 
+    useGetTemplateScopeByIdQuery({params: { templateScopeId: scopeId }})
+  const templatesRequest = 
+    useGetAllTemplatesByTemplateScopeIdQuery({params: {templateScopeId: scopeId}})
+  const registrationRequest = 
+    useGetRegistrationByIdQuery({params: {templateScopeId: scopeId, registrationId: registrationId}})
 
-  const templatesRequest = useGetAllTemplatesByTemplateScopeIdQuery({params: {templateScopeId: props.scopeId}})
+  let selectedTemplateId = ''
+  let registrationRequestFailed = false;
+  if(registrationRequest.isError 
+    && 'status' in registrationRequest.error
+    && registrationRequest.error.status === 404
+    && templateScopeRequest.data?.defaultTemplateId) {
 
-  let content
-  if(templateScopeRequest.isLoading || templatesRequest.isLoading) {
+    selectedTemplateId = templateScopeRequest.data.defaultTemplateId
 
-    // TODO: may need to style this
-    // TODO: add text about what is being loaded?
-    content = <Spin />
-
-  } else if(templateScopeRequest.isSuccess && templatesRequest.isSuccess) {
-    
-    content = <Form.Item name={['communicationConfiguration', 'unitAssignmentTemplateId']}
-      label={templateScopeRequest.data.nameLocalizationKey}
-      // rules={[{ required: true }]}
-      children={<><Select options={templatesRequest.data.content.map(({id, nameLocalizationKey}) => ({value: id, label: nameLocalizationKey}))}/></>}/>
-      // TODO: add link to preview
-
-  } else if(templateScopeRequest.isError || templatesRequest.isError) {
-    
-    // TODO: clean this up
-    content= <h3>Failed To Load</h3>
-    // console.log(templatesRequest)
+  } else if(registrationRequest.isSuccess && registrationRequest.data?.templateId) {
+    selectedTemplateId = registrationRequest.data.templateId
+  } else if(registrationRequest.isError) {
+    registrationRequestFailed = true;
   }
 
-  // const personaGroupList = useGetPersonaGroupListQuery({
-  //   payload: {
-  //     page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
-  //   }
-  // })
+  let content
+  if(templateScopeRequest.isLoading || templatesRequest.isLoading || registrationRequest.isLoading) {
+    content = <Spin />
 
-  // return (
-  //   <Select
-  //     {...props}
-  //     options={
-  //       personaGroupList.data?.data
-  //         .map(group => ({ value: group.id, label: group.name }))
-  //     }
-  //   />
-  // )
+  } else if(templateScopeRequest.isSuccess && templatesRequest.isSuccess && !registrationRequest.isLoading) {
+    // const options = templatesRequest.data.content.map((template) => ({...template, localizedName: $t({id: template.nameLocalizationKey})}))
+    const form = Form.useFormInstance()
+    const formItemProps = {
+      name: props.scopeId + 'templateId',
+      label: $t(templateScopeLabels[templateScopeRequest.data.nameLocalizationKey]),
+      ...props.formItemProps,
+    }
 
+    // const labelMessage = defineMessage({id: templateScopeRequest.data.nameLocalizationKey})
+    content = (<Form.Item {...formItemProps}>      
+        <Select defaultValue={selectedTemplateId}
+          placeholder={placeholder}
+          options={templatesRequest.data.content.map(({id, nameLocalizationKey, userProvidedName}) => ({value: id, label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey]))}))}
+          onSelect={(templateId:string) => {
+            form.setFieldValue(formItemProps.name, templateId)
+            form.validateFields()
+          }}/>
+      </Form.Item>)
+      // TODO: add link to preview
 
+  } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
+    content=(<p><Typography.Text type="warning">{$t({defaultMessage: 'Failed to load templates, please reload the page.'})}</Typography.Text></p>)
+  }
 
   return (
     <>

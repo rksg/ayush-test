@@ -3,13 +3,22 @@
 export interface TemplateScope {
     id: string,
     messageType: MessageType,
-    nameLocalizationKey: string
+    nameLocalizationKey: string,
+    defaultTemplateId: string
 }
 
 enum MessageType {
     EMAIL = "EMAIL",
     SMS = "SMS",
     WEBPUSH = "WEBPUSH"
+}
+
+export interface Registration {
+    id: string,
+    templateId: string,
+    usageLocalizationKey: string,
+    usageDescriptionFieldOne: string,
+    usageDescriptionFieldTwo: string
 }
 
 export interface Template {
