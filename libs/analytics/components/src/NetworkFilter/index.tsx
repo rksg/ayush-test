@@ -179,7 +179,7 @@ const getFilterData = (
             name={name}
           />
         ),
-        value: JSON.stringify(path).replace(name,id),
+        value: [path[0], { ...path[1], name: id }],
         displayLabel: name,
         children: [] as Option[]
       }
