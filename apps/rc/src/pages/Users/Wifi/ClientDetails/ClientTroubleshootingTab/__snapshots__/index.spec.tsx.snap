@@ -418,7 +418,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 kQnWie"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -530,7 +530,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 kQnWie"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -642,7 +642,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 kQnWie"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -754,7 +754,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 bKmAmL"
+                        class="styledComponents__ChartWrapper-sc-hmshlr-30 cHrktz"
                       >
                         <div
                           _echarts_instance_="ec_mock"
