@@ -1,19 +1,25 @@
-import React, { RefObject } from 'react'
+import React, { createRef, MutableRefObject, RefObject } from 'react'
 
-import { renderHook, act } from '@testing-library/react'
-import { ECharts }         from 'echarts'
-import ReactECharts        from 'echarts-for-react'
+import { ECharts, EChartsType } from 'echarts'
+import ReactECharts             from 'echarts-for-react'
+import moment                   from 'moment-timezone'
 
-import { qualityDataObj, incidentDataObj, roamingDataObj }                from './__tests__/fixtures'
-import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData } from './config'
+import { cleanup, render, fireEvent, renderHook, act, waitFor, screen } from '@acx-ui/test-utils'
+import { TimeStampRange }                                               from '@acx-ui/types'
+
+import { qualityDataObj, incidentDataObj, roamingDataObj, connectionEvents }                           from './__tests__/fixtures'
+import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData, ClientTroubleShootingConfig } from './config'
 import {
   useDotClick,
   useDataZoom,
   getSeriesItemColor,
   getSeriesData,
   getBarColor,
-  renderCustomItem
+  renderCustomItem,
+  TimelineChart,
+  updateBoundary
 } from './TimelineChart'
+import { transformEvents } from './util'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 const testEvent = {
@@ -90,6 +96,124 @@ function testHelpers (customSeries?: object) {
 
 const basePath = '/t/testPath'
 describe('TimelineChartComponent', () => {
+  describe('chart rendering tests', () => {
+    afterEach(() => cleanup())
+    it('should handle mouse over correctly with empty data', async () => {
+      const events = transformEvents(connectionEvents, [], [])
+        .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
+      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
+      chartRef.current = []
+      const TestWrapper = () => {
+        const onCharyReady = (chart: EChartsType | null) => {
+          if (chart && chartRef.current) {
+            chartRef.current.push(chart)
+          }
+        }
+        return <TimelineChart
+          style={{ height: 400, width: 400 }}
+          data={events}
+          chartBoundary={[1668268800000, 1668441600000]}
+          sharedChartName='testChart'
+          mapping={chartMapping.slice().reverse()}
+          showResetZoom={true}
+          onChartReady={onCharyReady}
+        />
+      }
+      render(<TestWrapper />,{ route: { wrapRoutes: true } })
+      await waitFor(() => expect(chartRef.current?.length).toBeGreaterThan(0))
+      const instance = chartRef.current![0]
+      act(() => { instance.triggerWithContext('mouseover') })
+      expect(instance).toBeDefined()
+    })
+    it('should handle dotClick correctly with valid data', async () => {
+      const onDotClick = jest.fn()
+      const events = transformEvents(connectionEvents, [], [])
+        .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
+      const ref = createRef<HTMLDivElement>()
+      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
+      chartRef.current = []
+      const TestWrapper = () => {
+        const onCharyReady = (chart: EChartsType | null) => {
+          if (chart && chartRef.current) {
+            chartRef.current.push(chart)
+          }
+        }
+        return <div ref={ref}>
+          <TimelineChart
+            style={{ height: 400, width: 400 }}
+            data={events}
+            chartBoundary={[1668268800000, 1668441600000]}
+            sharedChartName='testChart'
+            mapping={chartMapping.slice().reverse()}
+            showResetZoom={true}
+            onChartReady={onCharyReady}
+            onDotClick={onDotClick}
+            popoverRef={ref}
+          />
+        </div>
+      }
+      render(<TestWrapper />,{ route: { wrapRoutes: true } })
+      expect(ref.current).toBeInTheDocument()
+      await waitFor(() => expect(chartRef.current?.length).toBeGreaterThan(0))
+      expect(onDotClick).toBeCalledTimes(0)
+      const instance = chartRef.current![0]
+      act(() => { instance.triggerWithContext('click', {
+        componentSubType: 'scatter',
+        data: [1668378780000, 'all', events[0]],
+        event: { event: { clientX: 10, clientY: 10 } } })
+      })
+      expect(onDotClick).toBeCalledTimes(1)
+      expect(onDotClick).toBeCalledWith({ ...events[0], x: -10, y: -10 })
+    })
+    it('should handle mouse zoom with drag correctly with valid data', async () => {
+      const events = transformEvents(connectionEvents, [], [])
+        .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
+      const ref = createRef<HTMLDivElement>()
+      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
+      chartRef.current = []
+      const TestWrapper = () => {
+        const onCharyReady = (chart: EChartsType | null) => {
+          if (chart && chartRef.current) {
+            chartRef.current.push(chart)
+          }
+        }
+        return <div ref={ref}>
+          <TimelineChart
+            style={{ height: 400, width: 400 }}
+            data={events}
+            chartBoundary={[1668268800000, 1668441600000]}
+            sharedChartName='testChart'
+            mapping={chartMapping.slice().reverse()}
+            hasXaxisLabel={true}
+            showResetZoom={true}
+            onChartReady={onCharyReady}
+          />
+        </div>
+      }
+      render(<TestWrapper />,{ route: { wrapRoutes: true } })
+      expect(ref.current).toBeInTheDocument()
+      await waitFor(() => expect(chartRef.current?.length).toBeGreaterThan(0))
+      const instance = chartRef.current![0]
+      act(() => { instance.dispatchAction({
+        type: 'dataZoom',
+        start: 25,
+        end: 75
+      })})
+      const reset = await screen.findByRole('button', { name: 'Reset Zoom' })
+      expect(reset).toBeVisible()
+      fireEvent.click(reset)
+    })
+  })
+  describe('updateBoundary', () => {
+    it('should update object as intended', () => {
+      const ref = { current: null } as unknown as MutableRefObject<TimeStampRange>
+      updateBoundary([1234, 1245], ref)
+      expect(ref.current).toMatchObject([1234, 1245])
+    })
+  })
   describe('useDotClick', () => {
     it('should handle echart ref unavailable', () => {
       const eChartsRef = undefined as unknown as RefObject<ReactECharts>
@@ -293,6 +417,9 @@ describe('TimelineChartComponent', () => {
     let mockOn: (type: string, callback: (event: unknown) => void) => void
     let mockDispatchAction: DispatchAction
     let eChartsRef: RefObject<ReactECharts>
+    let onDataZoom: (val: TimeStampRange) => void
+    let chartBoundary =
+      [moment('01/02/2023').valueOf(), moment('01/01/2023').valueOf()] as [number, number]
     beforeEach(() => {
       onCallbacks = {}
       mockOn = jest.fn().mockImplementation((type, callback) => (onCallbacks[type] = callback))
@@ -306,15 +433,16 @@ describe('TimelineChartComponent', () => {
             } as unknown as ECharts)
         }
       } as RefObject<ReactECharts>
+      onDataZoom = jest.fn() as unknown as (val: TimeStampRange) => void
     })
 
     it('does not dispatch action to select zoom if zoom is not enabled', () => {
-      renderHook(() => useDataZoom(eChartsRef, false))
+      renderHook(() => useDataZoom(eChartsRef, false, chartBoundary, onDataZoom))
       expect(mockDispatchAction).not.toBeCalled()
     })
 
     it('dispatches action to select zoom', () => {
-      renderHook(() => useDataZoom(eChartsRef, true))
+      renderHook(() => useDataZoom(eChartsRef, true, chartBoundary, onDataZoom))
       expect(mockDispatchAction).toBeCalledTimes(1)
       expect(mockDispatchAction).toBeCalledWith({
         type: 'takeGlobalCursor',
@@ -326,7 +454,7 @@ describe('TimelineChartComponent', () => {
     it('handles resetZoomCallback if echart ref is null', () => {
       eChartsRef = { current: null } as RefObject<ReactECharts>
       renderHook(() => {
-        const [, resetZoomCallback] = useDataZoom(eChartsRef, true)
+        const [, resetZoomCallback] = useDataZoom(eChartsRef, true, chartBoundary, onDataZoom)
         resetZoomCallback()
       })
     })
@@ -339,7 +467,7 @@ describe('TimelineChartComponent', () => {
       useStateSpy.mockImplementation(() => [false, mockSetCanResetZoom])
       let resetZoomCallback: () => void
       renderHook(() => {
-        const [, callback] = useDataZoom(eChartsRef, true, onDataZoom)
+        const [, callback] = useDataZoom(eChartsRef, true, chartBoundary, onDataZoom)
         resetZoomCallback = callback
       })
       onCallbacks['datazoom']({

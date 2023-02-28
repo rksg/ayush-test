@@ -6,7 +6,8 @@ import {
   useState,
   RefCallback,
   useImperativeHandle,
-  useMemo
+  useMemo,
+  MutableRefObject
 } from 'react'
 
 import {
@@ -73,7 +74,6 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   sharedChartName: string;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
-  tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
   onClick?: Function
@@ -233,7 +233,8 @@ export const renderCustomItem = (
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
-  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
+  defaultWindow: [number, number],
+  onDataZoom: (range: TimeStampRange) => void
 ): [boolean, () => void] => {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
@@ -241,7 +242,7 @@ export const useDataZoom = (
     (e: unknown) => {
       const event = e as unknown as OnDatazoomEvent
       const firstBatch = event.batch?.[0]
-      firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+      firstBatch && onDataZoom([firstBatch.startValue, firstBatch.endValue])
       if (event.start === 0 && event.end === 100) {
         setCanResetZoom(false)
       } else {
@@ -272,7 +273,8 @@ export const useDataZoom = (
     if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({ type: 'dataZoom', start: 0, end: 100 })
-  }, [eChartsRef])
+    onDataZoom(defaultWindow)
+  }, [eChartsRef, onDataZoom, defaultWindow])
 
   return [canResetZoom, resetZoomCallback]
 }
@@ -294,13 +296,16 @@ const tooltipOptions = () =>
     extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
   } as TooltipComponentOption)
 
+export function updateBoundary (window: TimeStampRange, ref: MutableRefObject<TimeStampRange>) {
+  ref.current = window
+}
+
 export function TimelineChart ({
   data,
   chartBoundary,
   selectedData,
   onDotClick,
   chartRef,
-  tooltipFormatter,
   mapping,
   hasXaxisLabel,
   showResetZoom,
@@ -323,7 +328,15 @@ export function TimelineChart ({
   const legendWidth = 85
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
-  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
+  const timewindowRef = useRef<TimeStampRange>(chartBoundary as [number, number])
+
+  const [canResetZoom, resetZoomCallback] =
+  useDataZoom(
+    eChartsRef,
+    true,
+    chartBoundary as [number, number],
+    (window: TimeStampRange) => updateBoundary(window, timewindowRef)
+  )
   useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
 
   const mappedData = useMemo(() => mapping
@@ -341,7 +354,8 @@ export function TimelineChart ({
           itemStyle: {
             color: getSeriesItemColor
           },
-          clip: true
+          clip: true,
+          cursor: 'pointer'
         })
         : ({
           type: 'custom',
@@ -434,7 +448,12 @@ export function TimelineChart ({
         label: {
           ...tooltipOptions() as Object,
           show: true,
-          formatter: labelFormatter as unknown as string,
+          formatter:
+            /* istanbul ignore next */
+            (val) => {
+            /* istanbul ignore next*/
+              return labelFormatter(val, timewindowRef.current)
+            },
           margin: -35
         },
         type: 'line',
@@ -513,7 +532,7 @@ export function TimelineChart ({
           ...props,
           style: {
             ...props.style,
-            WebkitUserSelect: 'none',
+            // WebkitUserSelect: 'none',
             marginBottom: 0,
             width: (props.style?.width as number) + legendWidth,
             height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight

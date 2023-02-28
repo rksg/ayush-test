@@ -28,19 +28,24 @@ const isChartActive = (chart: EChartsType) => {
   return chart && chart.isDisposed && !chart.isDisposed()
 }
 
-export function getSelectedEvent (
+export function getSelectedCallback (
   visible: boolean,
   eventState: DisplayEvent,
-  item: FormattedEvent | IncidentDetails): boolean | undefined {
-  return visible && (eventState?.key === (item as FormattedEvent).event.key)
+  item: FormattedEvent | IncidentDetails) {
+  return () => visible
+    && eventState
+    && item
+    && (item as FormattedEvent).event
+    && (eventState.key === (item as FormattedEvent).event.key)
 }
 
-export function onPanelClick (
+export function getPanelCallback (
   item: IncidentDetails | FormattedEvent,
   chartsRef: RefObject<EChartsType[]>,
   popoverRef: RefObject<HTMLDivElement>,
   setEventState: CallableFunction,
-  setVisible: CallableFunction) {
+  setVisible: CallableFunction
+) {
   return () => {
     if (item && (item as FormattedEvent).event) {
       const event = (item as FormattedEvent).event
@@ -56,7 +61,9 @@ export function onPanelClick (
           const data = option.series[0].data
           for (let i = 0; i < data.length; ++i) {
             const elem = data[i]
-            if (typeof elem[2] !== 'number' && (elem[2] as { key: string }).key === key) {
+            if (elem[2]
+            && typeof elem[2] !== 'number'
+            && (elem[2] as { key: string }).key === key) {
               found = true
               return i
             }
@@ -110,8 +117,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   }
   const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
   const onPanelCallback = useCallback((item: IncidentDetails | FormattedEvent) => ({
-    onClick: onPanelClick(item, chartsRef, popoverRef, setEventState, setVisible),
-    selected: getSelectedEvent(visible, eventState, item)
+    onClick: getPanelCallback(item, chartsRef, popoverRef, setEventState, setVisible),
+    selected: getSelectedCallback(visible, eventState, item)
   }), [eventState, visible])
   useEffect(() => {
     const charts = chartsRef.current

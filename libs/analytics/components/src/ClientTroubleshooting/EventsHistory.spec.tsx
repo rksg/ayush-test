@@ -38,7 +38,7 @@ describe('EventsHistory', () => {
       connectionDetailsByAp: [],
       connectionQualities: []
     }
-    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: false }))
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -70,7 +70,7 @@ describe('EventsHistory', () => {
       connectionDetailsByAp: [],
       connectionQualities: []
     }
-    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: false }))
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -108,7 +108,7 @@ describe('EventsHistory', () => {
       category: ['performance'],
       type: ['roamed']
     } as unknown as Filters
-    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: false }))
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -165,7 +165,7 @@ describe('EventsHistory', () => {
       connectionQualities: []
     }
     const setHistoryContentToggle = jest.fn()
-    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: false }))
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
     render(
       <Provider>
         <History
@@ -202,7 +202,7 @@ describe('EventsHistory', () => {
     }
     const setHistoryContentToggle = jest.fn()
     const onClick = jest.fn(() => {})
-    const onPanelCallback = jest.fn(() => ({ onClick, selected: true }))
+    const onPanelCallback = jest.fn(() => ({ onClick, selected: () => true }))
     const scrollIntoView = jest.fn()
     const ogView = HTMLElement.prototype.scrollIntoView
     HTMLElement.prototype.scrollIntoView = scrollIntoView

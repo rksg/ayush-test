@@ -27,7 +27,7 @@ type HistoryContentProps = {
   filters: Filters | null,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
     onClick: () => void,
-    selected: boolean | undefined
+    selected: () => boolean | undefined
   }
 }
 
@@ -75,11 +75,16 @@ const renderItem = (
   item: IncidentDetails | FormattedEvent,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
     onClick: () => void,
-    selected: boolean | undefined
+    selected: () => boolean | undefined
   }
 ) => {
   const { onClick, selected } = onPanelCallback(item)
-  return <WrappedItem item={item} onClick={onClick} selected={selected} />
+  return <WrappedItem
+    item={item}
+    onClick={onClick}
+    selected={selected()}
+    key={item.id ?? (item as FormattedEvent).event.key}
+  />
 }
 
 function WrappedItem (
