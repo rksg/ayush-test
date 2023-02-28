@@ -43,11 +43,14 @@ const Events = () => {
 const Activities = () => {
   const { networkId } = useParams()
   const { startDate, endDate } = useDateFilter()
-
   const columnState = {
     hidden: false,
     defaultValue: {
-      product: false
+      date: true,
+      product: false,
+      status: true,
+      source: true,
+      description: true
     }
   }
 

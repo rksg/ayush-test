@@ -54,11 +54,14 @@ const Events = () => {
 const Activities = () => {
   const { serialNumber } = useApContext()
   const { startDate, endDate } = useDateFilter()
-
   const columnState = {
     hidden: false,
     defaultValue: {
-      product: false
+      date: true,
+      product: false,
+      status: true,
+      source: true,
+      description: true
     }
   }
 
