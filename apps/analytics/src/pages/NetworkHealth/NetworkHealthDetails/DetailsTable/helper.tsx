@@ -2,6 +2,7 @@ import { defineMessage }                       from '@formatjs/intl'
 import { upperFirst, without }                 from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
+import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
 import { mapCodeToReason }             from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
 import type { TableColumn }            from '@acx-ui/components'
@@ -145,12 +146,23 @@ export const getTableColumns = ({
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         const type = row[key] as TrendType
         return (
-          <TableCell
-            tooltipContent={wrappedContent}
-            type={type}
-            displayText={$t(badgeTextMap[type])}
-            id={`${key}-${index}`}
-          />
+          failure ?
+            <TableCell
+              tooltipContent={wrappedContent}
+              type={type}
+              displayText={
+                <ConnectionEventPopover event={failure}>
+                  {$t(badgeTextMap[type])}
+                </ConnectionEventPopover>}
+              id={`${key}-${index}`}
+            />
+            :
+            <TableCell
+              tooltipContent={wrappedContent}
+              type={type}
+              displayText={$t(badgeTextMap[type])}
+              id={`${key}-${index}`}
+            />
         )
       }
     } as TableColumn<TestResultByAP>)
