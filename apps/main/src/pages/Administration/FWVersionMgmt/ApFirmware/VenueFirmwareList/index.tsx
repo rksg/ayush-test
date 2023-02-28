@@ -15,10 +15,10 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesListQuery,
   useGetVenueVersionListQuery,
-  useGetVenueVersionsQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery,
   useGetAvailableFirmwareListQuery,
+  useGetVenueCityListQuery,
+  useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateNowMutation
 } from '@acx-ui/rc/services'
@@ -30,6 +30,7 @@ import {
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest,
+  UpdateScheduleRequest,
   ApVenueStatusEnum,
   TableQuery,
   RequestPayload,
@@ -146,6 +147,7 @@ export const VenueFirmwareTable = (
   const [eolName, setEolName] = useState('')
   const [latestEolVersion, setLatestEolVersion] = useState('')
   const [eolModels, setEolModels] = useState<string[]>([])
+  const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
   // let venues: FirmwareVenue[] = []
 
@@ -170,7 +172,7 @@ export const VenueFirmwareTable = (
   const handleChangeScheduleModalCancel = () => {
     setChangeScheduleModelVisible(false)
   }
-  const handleChangeScheduleModalSubmit = (data: []) => {
+  const handleChangeScheduleModalSubmit = (data: UpdateScheduleRequest) => {
     // change firmware scheduled
   }
 
@@ -311,9 +313,87 @@ export const VenueFirmwareTable = (
     }
   },
   {
-    visible: (selectedRows) => selectedRows.length === 1,
+    visible: (selectedRows) => {
+      if (!availableVersions || availableVersions.length === 0) {
+        return false
+      }
+      let filterVersions: FirmwareVersion[] = []
+      if (selectedRows.length === 1) {
+        const version = getApVersion(selectedRows[0])
+        if (!version) {
+          return false
+        }
+        for (let i = 0; i < availableVersions.length; i++) {
+          if (compareVersions(availableVersions[i].id, version) > 0) {
+            filterVersions.push(availableVersions[i])
+          }
+        }
+        return filterVersions.length > 0
+      }
+
+      // multiple case
+      let minVersion = ''
+      let isSameVersion = true
+      const ok = selectedRows.every((row: FirmwareVenue) => {
+        const version = getApVersion(row)
+        if (!version) {
+          return false
+        }
+        if (minVersion && compareVersions(version, minVersion) !== 0) {
+          isSameVersion = false
+        }
+
+        if (!minVersion || compareVersions(version, minVersion) > 0) {
+          minVersion = version
+        }
+        return true
+      })
+      if (!ok) return false
+      for (let i = 0; i < availableVersions.length; i++) {
+        // eslint-disable-next-line max-len
+        if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
+          filterVersions.push(availableVersions[i])
+        }
+      }
+      return filterVersions.length > 0
+    },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
-    onClick: () => setChangeScheduleModelVisible(true)
+    onClick: (selectedRows) => {
+      setVenues(selectedRows)
+      let filterVersions: FirmwareVersion[] = []
+      if (selectedRows.length === 1) {
+        const version = getApVersion(selectedRows[0])
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            if (compareVersions(availableVersions[i].id, version as string) > 0) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+      } else {
+        let minVersion = ''
+        let isSameVersion = true
+        selectedRows.forEach((row: FirmwareVenue) => {
+          const version = getApVersion(row)
+          if (minVersion && compareVersions(version as string, minVersion) !== 0) {
+            isSameVersion = false
+          }
+          if (!minVersion || compareVersions(version as string, minVersion) > 0) {
+            minVersion = version as string
+          }
+        })
+        if (availableVersions) {
+          for (let i = 0; i < availableVersions.length; i++) {
+            // eslint-disable-next-line max-len
+            if (compareVersions(availableVersions[i].id, minVersion) > 0 || (compareVersions(availableVersions[i].id, minVersion) === 0 && !isSameVersion)) {
+              filterVersions.push(availableVersions[i])
+            }
+          }
+        }
+      }
+      setChangeUpgradeVersions(filterVersions)
+      setChangeScheduleModelVisible(true)
+    }
   },
   {
     visible: (selectedRows) => {
@@ -422,13 +502,8 @@ export const VenueFirmwareTable = (
       />
       <ChangeScheduleDialog
         visible={changeScheduleModelVisible}
-        firmwareType={FirmwareType.AP_FIRMWARE_UPGRADE}
         data={venues}
-        eol={true}
-        availableVersions={availableVersions}
-        eolName='eolName'
-        latestEolVersion='eolVersion'
-        eolModels='eolModel'
+        availableVersions={changeUpgradeVersions}
         onCancel={handleChangeScheduleModalCancel}
         onSubmit={handleChangeScheduleModalSubmit}
       />
@@ -459,11 +534,11 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { versionFilterOptions } = useGetVenueVersionsQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: data?.map(v=>({ key: v.versions[0].version, value: v.versions[0].version })) || true
+        versionFilterOptions: data?.map(v=>({ key: v, value: v })) || true
       }
     }
   })

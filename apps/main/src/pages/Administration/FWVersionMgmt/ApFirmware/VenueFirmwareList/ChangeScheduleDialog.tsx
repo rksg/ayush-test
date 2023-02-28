@@ -1,133 +1,206 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useForm }                                                             from 'antd/lib/form/Form'
-import moment                                                                  from 'moment-timezone'
-import { useIntl }                                                             from 'react-intl'
+import { DatePicker, Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { useForm }                                                              from 'antd/lib/form/Form'
+import moment                                                                   from 'moment-timezone'
+import { useIntl }                                                              from 'react-intl'
 
-import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
-import { Button, Modal, RangePicker }                                 from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
-import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenue, MacRegistrationPool }           from '@acx-ui/rc/utils'
-import { useDateFilter, dateRangeForLast, useDashboardFilter }        from '@acx-ui/utils'
+import {
+  Modal,
+  RangePicker
+} from '@acx-ui/components'
+import {
+  AVAILABLE_SLOTS,
+  FirmwareType,
+  FirmwareVenue,
+  FirmwareVersion,
+  UpdateScheduleRequest
+} from '@acx-ui/rc/utils'
+import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
-// import { PersonaDeviceItem } from './PersonaDevicesForm'
+import {
+  getVersionLabel
+} from '../../FirmwareUtils'
+
 import * as UI from './styledComponents'
 
-enum DevicesImportMode {
-  FromClientDevices,
-  Manually
-}
+import type { DatePickerProps  } from 'antd'
 
-interface DevicesImportDialogProps {
-  visible: boolean,
-  onCancel: () => void,
-  onSubmit: (data: []) => void,
-  personaGroupId?: string
+enum VersionsSelectMode {
+  Radio,
+  Dropdown
 }
 
 export interface ChangeScheduleDialogProps {
   visible: boolean,
   onCancel: () => void,
-  onSubmit: (data: []) => void,
-  firmwareType: FirmwareType,
+  onSubmit: (data: UpdateScheduleRequest) => void,
   data?: FirmwareVenue[],
-  availableVersions?: any,
-  eol?: boolean,
-  eolName?: string,
-  latestEolVersion?: string,
-  eolModels?: any
+  availableVersions?: FirmwareVersion[]
 }
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
-  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel } = props
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const subTitle = 'Choose which version to update the venue to:'
+  // eslint-disable-next-line max-len
+  const { visible, onSubmit, onCancel, data, availableVersions } = props
+  // const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
+  const [selectedVersion, setSelectedVersion] = useState('')
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState<string>('')
+  const [disableSave, setDisableSave] = useState(false)
 
-  // useEffect(() => {
-  //   if (!personaGroupId) return
+  useEffect(() => {
+    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+      setDisableSave(true)
+    } else {
+      setDisableSave(false)
+    }
+  }, [selectMode, selectedVersion])
 
-  //   getPersonaGroupById({ params: { groupId: personaGroupId } })
-  //     .then(result => {
-  //       if (!result.data || !result.data?.macRegistrationPoolId) return
+  let versionOptions: FirmwareVersion[] = []
+  let otherVersions: FirmwareVersion[] = []
 
-  //       getMacRegistrationById({
-  //         params: { policyId: result.data.macRegistrationPoolId }
-  //       }).then(result => {
-  //         if (!result.data) return
-  //         setMacRegistrationPool(result.data)
-  //       })
-  //     })
-  // }, [personaGroupId])
+  const isRecommanded = (e: FirmwareVersion) => {
+    return e.category === 'RECOMMENDED'
+  }
+
+  let copyAvailableVersions = availableVersions ? [...availableVersions] : []
+  let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
+  if (firstIndex > 0) {
+    let removed = copyAvailableVersions.splice(firstIndex, 1)
+    versionOptions = [...removed, ...copyAvailableVersions]
+  } else {
+    versionOptions = [...copyAvailableVersions]
+  }
+  otherVersions = copyAvailableVersions.slice(1)
+
+  const onSelectModeChange = (e: RadioChangeEvent) => {
+    setSelectMode(e.target.value)
+  }
+
+  const otherOptions = otherVersions.map((version) => {
+    return {
+      label: getVersionLabel(version),
+      value: version.name
+    }
+  })
+
+  const handleChange = (value: string) => {
+    setSelectedVersion(value)
+  }
+
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(date, dateString)
+    setSelectedDate(dateString)
+  }
+
+  const onChangeRegular = (e: RadioChangeEvent) => {
+    setSelectedTime(e.target.value)
+  }
+
+  const createVenuePayload = (venue: FirmwareVenue) => {
+    return {
+      id: venue.id,
+      version: selectedVersion,
+      type: FirmwareType.AP_FIRMWARE_UPGRADE
+    }
+  }
+
+  const createRequest = (): UpdateScheduleRequest => {
+    return {
+      date: selectedDate,
+      time: selectedTime,
+      // eslint-disable-next-line max-len
+      venues: (data as FirmwareVenue[]).map((row) => createVenuePayload(row))
+    }
+  }
 
   const triggerSubmit = () => {
-    // FIXME: need to filter unique device items, but it have type issue
     form.validateFields()
-      .then(values => {
-        // console.log('Current dialog fields value = ', values)
-        onSubmit(values.devices ?? [])
+      .then(() => {
+        onSubmit(createRequest())
         onModalCancel()
       })
   }
 
-  const onImportModeChange = (e: RadioChangeEvent) => {
-    setImportMode(e.target.value)
-  }
-
   const onModalCancel = () => {
     form.resetFields()
-    setImportMode(DevicesImportMode.FromClientDevices)
+    setSelectMode(VersionsSelectMode.Radio)
     onCancel()
   }
 
   return (
     <UI.ScheduleModal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
-      subTitle={subTitle}
       visible={visible}
       width={560}
       okText={$t({ defaultMessage: 'Save' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
+      okButtonProps={{ disabled: disableSave }}
     >
       <Form
         form={form}
-        name={'deviceModalForm'}
+        name={'changeScheduleModalForm'}
       >
         <Form.Item
-          name={'importDevicesMode'}
-          initialValue={DevicesImportMode.FromClientDevices}
+          initialValue={VersionsSelectMode.Radio}
         >
-          <Radio.Group onChange={onImportModeChange}>
-            <Space direction={'horizontal'}>
-              <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: '6.2.1.103.1580 (Release - Recommended) - 12/16/2022 02:22 PM' })}
-              </Radio>
-            </Space>
-          </Radio.Group>
+          <div>
+            <Typography>
+              { // eslint-disable-next-line max-len
+                $t({ defaultMessage: 'Choose which version to update the venue to:' })}
+            </Typography>
+            <Radio.Group
+              style={{ margin: 12 }}
+              onChange={onSelectModeChange}
+              value={selectMode}>
+              <Space direction={'vertical'}>
+                <Radio value={VersionsSelectMode.Radio}>
+                  {getVersionLabel(versionOptions[0])}
+                </Radio>
+                { otherVersions.length > 0 ?
+                  <Radio value={VersionsSelectMode.Dropdown}>
+                    <Select
+                      style={{ width: '100%', fontSize: '12px' }}
+                      placeholder='Select other version...'
+                      onChange={handleChange}
+                      options={otherOptions}
+                    />
+                  </Radio>
+                  : null
+                }
+              </Space>
+            </Radio.Group>
+          </div>
         </Form.Item>
         <UI.TitleActive>When do you want the update to run?</UI.TitleActive>
-        <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>
+        { // eslint-disable-next-line max-len
+          <UI.TitleActive>Selected time will apply to each venue according to own time-zone</UI.TitleActive>}
+        <UI.DateContainer>
+          <label>Update date:</label>
+          <DatePicker onChange={onChange} />
+        </UI.DateContainer>
+        { selectedDate ?
+          <UI.DateContainer>
+            <label>Update time:</label>
+            <Radio.Group
+              style={{ margin: 12 }}
+              // eslint-disable-next-line max-len
+              // defaultValue={availableVersions && availableVersions[0] ? availableVersions[0].name : ''}
+              onChange={onChangeRegular}
+              value={selectedTime}>
+              <Space direction={'vertical'}>
+                { AVAILABLE_SLOTS.map(v =>
+                  <Radio value={v.value} key={v.value}>{v.label}</Radio>)}
+              </Space>
+            </Radio.Group>
+          </UI.DateContainer>
+          : null
+        }
       </Form>
-      <UI.DateContainer>
-        <label>Update time:</label>
-        <div>
-          <RangePicker
-            key='range-picker'
-            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-            enableDates={dateRangeForLast(3,'months')}
-            onDateApply={setDateFilter as CallableFunction}
-            selectionType={range}
-          />
-        </div>
-      </UI.DateContainer>
     </UI.ScheduleModal>
   )
 }

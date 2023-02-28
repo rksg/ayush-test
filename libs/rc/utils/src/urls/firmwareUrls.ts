@@ -7,10 +7,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams
   },
-  getVenueVersions: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/upgrade/venue'
-  },
   getLatestFirmwareList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/version/latest'
@@ -18,6 +14,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getAvailableFirmwareList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/version/release'
+  },
+  getFirmwareVersionIdList: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/upgrade/version'
   },
   skipVenueUpgradeSchedules: {
     method: 'delete',

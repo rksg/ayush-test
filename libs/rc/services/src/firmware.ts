@@ -63,6 +63,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
+    getFirmwareVersionIdList: build.query<string[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getFirmwareVersionIdList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
     skipVenueUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(FirmwareUrlsInfo.skipVenueUpgradeSchedules, params)
@@ -88,9 +97,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 
 export const {
   useGetVenueVersionListQuery,
-  useGetVenueVersionsQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
+  useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateNowMutation
 } = firmwareApi
