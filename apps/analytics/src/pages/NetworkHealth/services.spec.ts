@@ -16,6 +16,7 @@ import {
   useAllNetworkHealthSpecsQuery,
   useRunNetworkHealthTestMutation,
   useDeleteNetworkHealthTestMutation,
+  useCloneNetworkHealthTestMutation,
   useMutationResponseEffect
 }                                                                         from './services'
 import { AuthenticationMethod, Band, ClientType, TestType, NetworkPaths, MutationResponse, MutationUserError } from './types'
@@ -81,6 +82,19 @@ it('useDeleteNetworkHealthTestMutation', async () => {
   })
   await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
   expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
+})
+
+it('useCloneNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'CloneServiceGuardSpec', { data: fixtures.cloneNetworkHealth })
+  const { result } = renderHook(() => useCloneNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.cloneTest({
+      id: fixtures.cloneNetworkHealth.cloneServiceGuardSpec.spec.id,
+      name: 'test-name'
+    })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.cloneNetworkHealth.cloneServiceGuardSpec)
 })
 
 describe('useNetworkHealthSpecMutation', () => {
