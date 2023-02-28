@@ -606,11 +606,15 @@ export function calculateInterval (timewindow: TimeStampRange) {
   const day = hour * 24
   switch (true) {
     case interval > 24 * 7:
-      return day / 2
+      return day
+    case interval > 24:
+      return hour
     case interval > 1:
-      return hour / 2
+      return minute
+    case interval > 0.5:
+      return second * 10
     default:
-      return minute / 4
+      return second * 5
   }
 }
 

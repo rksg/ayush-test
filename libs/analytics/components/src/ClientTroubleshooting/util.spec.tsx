@@ -732,25 +732,35 @@ describe('util', () => {
   })
 
   describe('calculateInterval', () => {
-    it('should return half day for week period', () => {
+    it('should return day for greater than week period', () => {
       const start = moment('01/02/2023').valueOf()
       const end = moment('01/11/2023').valueOf()
-      const halfday = (1000 * 60 * 60 * 24) / 2
-      expect(calculateInterval([start, end])).toEqual(halfday)
+      const day = (1000 * 60 * 60 * 24)
+      expect(calculateInterval([start, end])).toEqual(day)
     })
-
-    it('should return half hour for 24 hours period', () => {
+    it('should return hour for 3 day period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/03/2023 12:00').valueOf()
+      const minute = 1000 * 60 * 60
+      expect(calculateInterval([start, end])).toEqual(minute)
+    })
+    it('should return minute for less than 24 hours period', () => {
       const start = moment('01/02/2023 08:00').valueOf()
       const end = moment('01/02/2023 12:00').valueOf()
-      const halfhour = (1000 * 60 * 60) / 2
-      expect(calculateInterval([start, end])).toEqual(halfhour)
+      const minute = 1000 * 60
+      expect(calculateInterval([start, end])).toEqual(minute)
     })
-
-    it('should return 15 seconds for less then hour period', () => {
+    it('should return 10 seconds for more than half hour period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/02/2023 08:45').valueOf()
+      const secs10 = 1000 * 10
+      expect(calculateInterval([start, end])).toEqual(secs10)
+    })
+    it('should return 5 seconds for less then half hour period', () => {
       const start = moment('01/02/2023 08:00').valueOf()
       const end = moment('01/02/2023 08:30').valueOf()
-      const halfhour = 1000 * 15
-      expect(calculateInterval([start, end])).toEqual(halfhour)
+      const secs5 = 1000 * 5
+      expect(calculateInterval([start, end])).toEqual(secs5)
     })
   })
 })
