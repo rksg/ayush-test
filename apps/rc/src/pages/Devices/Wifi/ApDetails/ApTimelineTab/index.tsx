@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate }                               from 'react-router-dom'
 
-import { Tabs }           from '@acx-ui/components'
+import { Tabs }            from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -11,7 +11,9 @@ import {
   eventDefaultSorter,
   useEventTableFilter,
   ActivityTable,
-  activityDefaultSorter
+  activityDefaultSorter,
+  activityDefaultPayload,
+  useActivityTableFilter
 } from '@acx-ui/rc/components'
 import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
@@ -19,12 +21,9 @@ import {
   usePollingTableQuery,
   TimelineTypes,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery,
-  Activity,
-  CommonUrlsInfo
+  Activity
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
 
 import { useApContext } from '../ApContext'
 
@@ -53,49 +52,34 @@ const Events = () => {
 
 const Activities = () => {
   const { serialNumber } = useApContext()
-  const { startDate, endDate } = useDateFilter()
+  const { fromTime, toTime } = useActivityTableFilter()
   const columnState = {
     hidden: false,
     defaultValue: {
-      date: true,
+      startDateTime: true,
       product: false,
       status: true,
       source: true,
       description: true
     }
   }
-
-  const tableQuery = useTableQuery<Activity>({
+  const tableQuery = usePollingTableQuery<Activity>({
     useQuery: useActivitiesQuery,
-    defaultPayload: {
-      url: CommonUrlsInfo.getActivityList.url,
-      fields: [
-        'startDatetime',
-        'endDatetime',
-        'status',
-        'product',
-        'admin',
-        'descriptionTemplate',
-        'descriptionData',
-        'severity'
-      ]
-    },
+    defaultPayload: activityDefaultPayload,
     sorter: activityDefaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
-
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        fromTime: startDate,
-        toTime: endDate,
+        fromTime,
+        toTime,
         entityType: 'AP',
         entityId: serialNumber
       }
     })
-  }, [startDate, endDate])
-
+  }, [fromTime, toTime])
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
@@ -10,9 +11,10 @@ import {
   getActivityDescription,
   productMapping,
   severityMapping,
-  statusMapping
+  statusMapping,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -20,6 +22,28 @@ import { TimelineDrawer } from '../TimelineDrawer'
 export const defaultSorter = {
   sortField: 'startDatetime',
   sortOrder: 'DESC'
+}
+
+export const useActivityTableFilter = () => {
+  const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
+  }
+}
+
+export const defaultPayload = {
+  url: CommonUrlsInfo.getActivityList.url,
+  fields: [
+    'startDatetime',
+    'endDatetime',
+    'status',
+    'product',
+    'admin',
+    'descriptionTemplate',
+    'descriptionData',
+    'severity'
+  ]
 }
 
 type ColumnState = { [columnKey: string]: boolean }

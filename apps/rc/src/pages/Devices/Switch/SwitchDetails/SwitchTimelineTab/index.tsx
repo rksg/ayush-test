@@ -3,14 +3,16 @@ import { useEffect } from 'react'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }           from '@acx-ui/components'
+import { Tabs }            from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
   eventDefaultSorter,
   eventDefaultSearch,
   ActivityTable,
-  activityDefaultSorter
+  activityDefaultSorter,
+  activityDefaultPayload,
+  useActivityTableFilter
 } from '@acx-ui/rc/components'
 import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
@@ -18,12 +20,9 @@ import {
   usePollingTableQuery,
   TimelineTypes,
   TABLE_QUERY_LONG_POLLING_INTERVAL,
-  useTableQuery,
-  Activity,
-  CommonUrlsInfo
+  Activity
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
 
 const Events = () => {
   // TODO: add fromTime/toTime to filter when DatePicker is ready
@@ -46,49 +45,34 @@ const Events = () => {
 
 const Activities = () => {
   const { switchId } = useParams()
-  const { startDate, endDate } = useDateFilter()
+  const { fromTime, toTime } = useActivityTableFilter()
   const columnState = {
     hidden: false,
     defaultValue: {
-      date: true,
+      startDateTime: true,
       product: false,
       status: true,
       source: true,
       description: true
     }
   }
-
-  const tableQuery = useTableQuery<Activity>({
-    useQuery: useActivitiesQuery,
-    defaultPayload: {
-      url: CommonUrlsInfo.getActivityList.url,
-      fields: [
-        'startDatetime',
-        'endDatetime',
-        'status',
-        'product',
-        'admin',
-        'descriptionTemplate',
-        'descriptionData',
-        'severity'
-      ]
-    },
-    sorter: activityDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
-
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        fromTime: startDate,
-        toTime: endDate,
+        fromTime,
+        toTime,
         entityType: 'SWITCH',
         entityId: switchId
       }
     })
-  }, [startDate, endDate])
-
+  }, [fromTime, toTime])
+  const tableQuery = usePollingTableQuery<Activity>({
+    useQuery: useActivitiesQuery,
+    defaultPayload: activityDefaultPayload,
+    sorter: activityDefaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+  })
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}

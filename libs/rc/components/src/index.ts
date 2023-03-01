@@ -1,6 +1,8 @@
 export {
   ActivityTable,
-  defaultSorter as activityDefaultSorter
+  useActivityTableFilter,
+  defaultSorter as activityDefaultSorter,
+  defaultPayload as activityDefaultPayload
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
