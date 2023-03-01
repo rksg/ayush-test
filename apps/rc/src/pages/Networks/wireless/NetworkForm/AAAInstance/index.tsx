@@ -6,7 +6,6 @@ import { useIntl }                    from 'react-intl'
 import { useParams }                  from 'react-router-dom'
 
 import { Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 
@@ -36,7 +35,6 @@ const AAAInstance = (props:{
         .map(m => ({ label: m.name, value: m.id })))
     }
   },[data])
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
@@ -45,7 +43,7 @@ const AAAInstance = (props:{
           noStyle
           label={props.serverLabel}
           rules={[
-            { required: !disableAAA }
+            { required: true }
           ]}
           initialValue={''}
           children={<Select

@@ -126,7 +126,7 @@ export function NetworkDetailForm () {
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: false },
+    { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]

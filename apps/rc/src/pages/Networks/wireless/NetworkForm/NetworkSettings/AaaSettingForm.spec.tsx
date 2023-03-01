@@ -4,6 +4,7 @@ import { Modal }   from 'antd'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
+import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -30,7 +31,7 @@ jest.mock('react-intl', () => {
     useIntl: () => intl
   }
 })
-
+jest.mocked(useIsSplitOn).mockReturnValue(true) // mock AAA policy
 const validateErrorResponse = [{
   code: '',
   message: 'Occured Some Error',
@@ -90,9 +91,8 @@ async function fillInBeforeSettings (networkName: string) {
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
   await userEvent.click(screen.getByRole('radio', { name: /802.1X standard/ }))
   await userEvent.click(screen.getByText('Next'))
-
   await screen.findByRole('heading', { level: 3, name: 'AAA Settings' })
-  await userEvent.click((await screen.findAllByRole('combobox'))[0])
+  await userEvent.click((await screen.findAllByRole('combobox'))[1])
   await userEvent.click((await screen.findAllByTitle('test1'))[0])
 }
 

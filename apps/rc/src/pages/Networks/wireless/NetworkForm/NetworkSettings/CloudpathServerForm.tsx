@@ -34,7 +34,7 @@ export function CloudpathServerForm () {
   />
   const enableAccountingService = useWatch('enableAccountingService')
   return (
-    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+    <Space direction='vertical' size='middle'>
       <div>
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
