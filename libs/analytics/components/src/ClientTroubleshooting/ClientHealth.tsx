@@ -3,15 +3,18 @@ import { groupBy }            from 'lodash'
 import moment                 from 'moment-timezone'
 import { useIntl }            from 'react-intl'
 
-import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
-import { cssStr, cssNumber, Loader } from '@acx-ui/components'
-import { BarChart }                  from '@acx-ui/components'
-import { noDataDisplay }             from '@acx-ui/rc/utils'
-import { formatter }                 from '@acx-ui/utils'
+import { AnalyticsFilter }                              from '@acx-ui/analytics/utils'
+import { cssStr, cssNumber, Loader, Tooltip, BarChart } from '@acx-ui/components'
+import { WarningTriangleOutlined }                      from '@acx-ui/icons'
+import { noDataDisplay }                                from '@acx-ui/rc/utils'
+import { formatter, dateTimeFormats }                   from '@acx-ui/utils'
 
 import { LabelledQuality }                                       from './config'
 import { ClientInfoData, ConnectionQuality, useClientInfoQuery } from './services'
+import { ErrorContainer }                                        from './styledComponents'
 import { transformConnectionQualities }                          from './util'
+
+import { maxEventsMsg } from '.'
 
 export const durations = (items: ConnectionQuality[] | LabelledQuality[] | undefined) => {
   if (!items) return 0
@@ -55,11 +58,9 @@ export function ClientHealth (
     clientMac: string
   })
 {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const { startDate, endDate, range } = filter
-  const data = useClientInfoQuery({ startDate, endDate, range, clientMac: clientMac.toUpperCase() })
-
-  const parsedData = calculateHealthSummary(data.data)
 
   const barColors = [
     cssStr('--acx-semantics-red-50'),
@@ -83,25 +84,40 @@ export function ClientHealth (
     }
   }
 
-  return <Loader states={[data]}>
-    <BarChart
-      style={{ height: 90, width: 90, alignSelf: 'center' }}
-      grid={{ height: 70 }}
-      data={{
-        dimensions: ['HealthQuality', 'Value'],
-        source: [
-          [$t({ defaultMessage: 'Poor' }), parsedData.badConnectionPercent],
-          [$t({ defaultMessage: 'Avg.' }), parsedData.avgConnectionPercent],
-          [$t({ defaultMessage: 'Good' }), parsedData.goodConnectionPercent]
-        ],
-        seriesEncode: [{
-          x: 'Value',
-          y: 'HealthQuality'
-        }]
-      }}
-      barColors={barColors}
-      labelFormatter={labelFormatter}
-      labelRichStyle={labelRichStyle}
-    />
-  </Loader>
+  const result = useClientInfoQuery(
+    { startDate, endDate, range, clientMac: clientMac.toUpperCase() }
+  )
+  const { data, error } = result
+  const parsedData = calculateHealthSummary(data)
+  const isMaxEventError = error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+  return isMaxEventError
+    ? <ErrorContainer>
+      <Tooltip title={maxEventsMsg(
+        moment(startDate).format(dateTimeFormats.dateTimeFormat),
+        moment(endDate).format(dateTimeFormats.dateTimeFormat),
+        intl
+      )}><WarningTriangleOutlined />
+      </Tooltip>
+    </ErrorContainer>
+    : <Loader states={[result]}>
+      <BarChart
+        style={{ height: 90, width: 90, alignSelf: 'center' }}
+        grid={{ height: 70 }}
+        data={{
+          dimensions: ['HealthQuality', 'Value'],
+          source: [
+            [$t({ defaultMessage: 'Poor' }), parsedData.badConnectionPercent],
+            [$t({ defaultMessage: 'Avg.' }), parsedData.avgConnectionPercent],
+            [$t({ defaultMessage: 'Good' }), parsedData.goodConnectionPercent]
+          ],
+          seriesEncode: [{
+            x: 'Value',
+            y: 'HealthQuality'
+          }]
+        }}
+        barColors={barColors}
+        labelFormatter={labelFormatter}
+        labelRichStyle={labelRichStyle}
+      />
+    </Loader>
 }

@@ -38,8 +38,8 @@ import {
   MapWidget,
   VenuesDashboardWidget
 } from '@acx-ui/rc/components'
-import { TenantLink }                                          from '@acx-ui/react-router-dom'
-import { useDateFilter, dateRangeForLast, useDashboardFilter } from '@acx-ui/utils'
+import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -88,7 +88,6 @@ function DashboardPageHeader () {
         <RangePicker
           key='range-picker'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
