@@ -1,16 +1,12 @@
 import userEvent    from '@testing-library/user-event'
 import { NamePath } from 'antd/es/form/interface'
 
-<<<<<<< HEAD
 import {
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
-import { store }                                 from '@acx-ui/store'
-import { act, mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
-=======
-import { screen, within } from '@acx-ui/test-utils'
->>>>>>> origin/feature/ACX-21924
+import { store }                            from '@acx-ui/store'
+import { mockGraphqlQuery, screen, within } from '@acx-ui/test-utils'
 
 import { renderForm, renderFormHook }                from '../../__tests__/fixtures'
 import { authMethodsByClientType }                   from '../../authMethods'
@@ -83,33 +79,12 @@ describe('AuthenticationMethod', () => {
     expect(result).toEqual(expected)
   })
 
-<<<<<<< HEAD
-  it('reset to undefined when clientType changed and current no longer available', async () => {
+  it('resets other fields on change', async () => {
     mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans: [] } })
 
-    const selected = AuthenticationMethod.WPA3_PERSONAL
-    renderForm(field, {
-      initialValues: {
-        clientType: ClientType.VirtualWirelessClient,
-        configs: [{ authenticationMethod: selected }]
-      },
-      valuesToUpdate: {
-        clientType: ClientType.VirtualClient
-      }
-    })
-
-    expect(await screen.findByRole('combobox')).toHaveValue(selected)
-
-    // prevent warning thrown
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await click(screen.getByRole('button', { name: 'Update' }))
-=======
-  it('resets other fields on change', async () => {
     const clientType = ClientType.VirtualWirelessClient
     renderForm(<AuthenticationMethod />, {
       initialValues: { clientType }
->>>>>>> origin/feature/ACX-21924
     })
 
     const dropdown = await screen.findByRole('combobox')
@@ -124,24 +99,8 @@ describe('AuthenticationMethod', () => {
       .toHaveBeenCalledWith(expect.anything(), AuthenticationMethodEnum.WPA3_PERSONAL)
   })
 
-<<<<<<< HEAD
-  it('retain current selected value if it is available in different clientType', async () => {
-    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans: [] } })
-
-    const selected = AuthenticationMethod.WPA2_PERSONAL
-    renderForm(field, {
-      initialValues: {
-        clientType: ClientType.VirtualWirelessClient,
-        configs: [{ authenticationMethod: selected }]
-      },
-      valuesToUpdate: {
-        clientType: ClientType.VirtualClient
-      }
-    })
-=======
   describe('reset', () => {
     const name = AuthenticationMethod.fieldName as unknown as NamePath
->>>>>>> origin/feature/ACX-21924
 
     it('resets to undefined', () => {
       const { form } = renderFormHook()
@@ -159,14 +118,14 @@ describe('AuthenticationMethod', () => {
   })
 
   it('renders suggested optgroup', async () => {
-    const selected = AuthenticationMethod.WPA2_PERSONAL
+    const selected = AuthenticationMethodEnum.WPA2_PERSONAL
     const wlanName = 'N 1'
 
     mockGraphqlQuery(apiUrl, 'Wlans', {
       data: { wlans: [{ name: wlanName, authMethods: [selected] }] }
     })
 
-    renderForm(field, {
+    renderForm(<AuthenticationMethod />, {
       initialValues: {
         clientType: ClientType.VirtualClient,
         configs: [{
