@@ -99,8 +99,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId },
     payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
+      fields: [
+        'id',
+        'name',
+        'description',
+        'macAddress',
+        'networkIds'
+      ],
+      page: 1,
+      pageSize: 25
     }
   }, {
     selectFromResult ({ data }) {

@@ -1,38 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
 import {
   useDelL2AclPolicyMutation,
   useGetAccessControlProfileListQuery,
-  useL2AclPolicyListQuery
+  useL2AclPolicyListQuery, useNetworkListQuery
 } from '@acx-ui/rc/services'
-import { L2AclPolicy, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
 
 const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.LAYER_2_POLICY]
-  },
   fields: [
     'id',
     'name',
     'description',
-    'macAddressesCount',
-    'networksCount'
-  ]
+    'macAddress',
+    'networkIds'
+  ],
+  page: 1,
+  pageSize: 25
 }
 
 const Layer2Component = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [networkIds, setNetworkIds] = useState(['none'] as string[])
+  const [networkFilterOptions, setNetworkFilterOptions] = useState(
+    [] as { key: string, value: string }[]
+  )
 
   const [ delL2AclPolicy ] = useDelL2AclPolicyMutation()
+
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
 
   const { data: accessControlList } = useGetAccessControlProfileListQuery({
     params: params
@@ -52,6 +65,48 @@ const Layer2Component = () => {
     useQuery: useL2AclPolicyListQuery,
     defaultPayload
   })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(layer2Policy => {
+        if (layer2Policy.networkIds) {
+          unionNetworkIds.push(...layer2Policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data])
+
+
+  const handleFilterChange = (customFilters: FILTER) => {
+    const payload = {
+      ...tableQuery.payload,
+      filters: {
+        ...customFilters
+      }
+    }
+
+    tableQuery.setPayload(payload)
+  }
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
@@ -91,10 +146,12 @@ const Layer2Component = () => {
 
   return <Loader states={[tableQuery]}>
     <Table<L2AclPolicy>
-      columns={useColumns(editMode, setEditMode)}
+      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+      enableApiFilter={true}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={handleFilterChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
@@ -102,9 +159,11 @@ const Layer2Component = () => {
   </Loader>
 }
 
-function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (editMode: {
-  id: string, isEdit: boolean
-}) => void) {
+function useColumns (
+  networkFilterOptions: { key: string, value: string }[],
+  editMode: { id: string, isEdit: boolean },
+  setEditMode: (editMode: { id: string, isEdit: boolean }
+  ) => void) {
   const { $t } = useIntl()
 
   const columns: TableProps<L2AclPolicy>['columns'] = [
@@ -129,22 +188,23 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      align: 'left',
       sorter: true
     },
     {
-      key: 'macAddressesCount',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddressesCount',
+      dataIndex: 'macAddress',
       align: 'center',
       sorter: true
     },
     {
-      key: 'networksCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networksCount',
+      dataIndex: 'networkIds',
+      filterable: networkFilterOptions,
       align: 'center',
-      sorter: true
+      sorter: true,
+      render: (data, row) => row.networkIds?.length
     }
   ]
 

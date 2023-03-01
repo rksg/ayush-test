@@ -440,10 +440,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
+          console.log(msg)
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
             onActivityMessageReceived(msg, [
-              'Add Layer 2 Policy Profile'
+              'AddL2AclPolicy'
             ],() => {
               api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
             }, params.requestId as string)

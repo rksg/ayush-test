@@ -39,7 +39,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   getL2AclPolicyList: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
+    url: '/enhancedL2AclPolicies/query'
   },
   getL3AclPolicyList: {
     method: 'post',
