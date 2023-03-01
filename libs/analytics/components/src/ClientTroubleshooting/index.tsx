@@ -173,7 +173,6 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                   onVisibleChange={setPopoverVisible}
                   trigger='click'
                   placement='bottom'
-                  zIndex={4}
                   align={{
                     targetOffset: [
                       (eventState as unknown as { x: number }).x,
