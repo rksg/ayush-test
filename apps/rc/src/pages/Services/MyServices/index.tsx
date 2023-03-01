@@ -55,6 +55,8 @@ export default function MyServices () {
       category: RadioCardCategory.EDGE,
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeDhcpEnabled
       }),
       disabled: !isEdgeDhcpEnabled
     },
@@ -63,6 +65,8 @@ export default function MyServices () {
       category: RadioCardCategory.EDGE,
       tableQuery: useGetNetworkSegmentationStatsListQuery({
         params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
       }),
       disabled: !networkSegmentationEnabled
     },
