@@ -50,7 +50,6 @@ export function ReportHeader (props: {
           shouldQuerySwitch={shouldQuerySwitch}
           showRadioBand={showRadioBand}
           multiple={true}
-          replaceWithId={true}
           filterMode={mode}
           filterFor={'reports'}
           isRadioBandDisabled={isRadioBandDisabled}
