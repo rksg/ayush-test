@@ -116,12 +116,13 @@ export function ApGroupForm () {
   }
 
   return <>
-    {action === 'add' && <PageHeader
-      title={$t({ defaultMessage: 'Add AP Group' })}
+    <PageHeader
+      title={action === 'add' ? $t({ defaultMessage: 'Add AP Group' }) :
+        $t({ defaultMessage: 'Edit AP Group' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-    />}
+    />
     <StepsForm
       formRef={formRef}
       onFinish={handleAddApGroup}
