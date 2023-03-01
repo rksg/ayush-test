@@ -58,8 +58,6 @@ export const WirelessNetworkForm = () => {
 
   return(
     <>
-      <Form.Item name='venueId' hidden />{/* Added so useWatch could work */}
-
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
