@@ -26,9 +26,11 @@ import {
   LicenseBannerDescMapping,
   MSPLicenseBannerRemindMapping,
   MSPLicenseBannerDescMapping } from './contentsMap'
-import * as UI from './styledComponents'
+import useViewport from './hooks/useViewport'
+import * as UI     from './styledComponents'
 
 
+const MAX_VIEWPORT_CHANGE = 1510
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
   if(expireType === LicenseBannerTypeEnum.initial ||
      expireType === LicenseBannerTypeEnum.ra_50_to_90_percent ||
@@ -84,6 +86,9 @@ export function LicenseBanner (props: BannerProps) {
   const { searchExpanded, licenseExpanded,
     setSearchExpanded, setLicenseExpanded } = useContext(HeaderContext)
   const { $t } = useIntl()
+
+  const { width } = useViewport()
+
   const { isMSPUser } = props
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
@@ -205,7 +210,7 @@ export function LicenseBanner (props: BannerProps) {
   }
 
   const licenseRender = ()=>{
-    if(expireList && expireList.length===1){
+    if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE){
       const expireInfo = _.first(expireList)
 
       const isExpired = expireInfo && getIsExpired(expireInfo)
