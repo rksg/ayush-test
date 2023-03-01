@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
   --acx-header-divider-margin: 5px;
   --acx-header-button-margin: 12px;
   --acx-header-company-name-width: 175px;
+  --acx-header-company-name-min-width: 130px;
   --acx-header-company-name-right-space: 6px;
   --acx-sidebar-left-space: 10px;
 
@@ -352,6 +353,7 @@ export const LayoutUI = {
     font-weight: var(--acx-body-font-weight);
     text-align: right;
     max-width: var(--acx-header-company-name-width);
+    min-width: var(--acx-header-company-name-min-width);
     max-height: calc(2 * var(--acx-body-4-line-height));
     overflow: hidden;
     margin-right: calc(var(--acx-header-company-name-right-space) - 9px);
