@@ -9,9 +9,9 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation } from '@acx-ui/rc/services'
-import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal }              from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                   from '@acx-ui/react-router-dom'
+import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -62,7 +62,8 @@ export const PortalForm = (props:{
   const { networkView, backToNetwork } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const tablePath = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
+  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const prefix = '/api/file/tenant/'+params.tenantId+'/'
   const editMode = props.editMode && !networkView
@@ -148,7 +149,7 @@ export const PortalForm = (props:{
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/service' }
+          { text: $t({ defaultMessage: 'Services' }), link: tablePath }
         ]}
       />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>

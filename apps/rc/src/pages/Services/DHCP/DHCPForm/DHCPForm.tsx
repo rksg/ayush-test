@@ -37,8 +37,8 @@ export default function DHCPForm (props: DHCPFormProps) {
   const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services/dhcp/list')
-
+  const tablePath = getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
+  const linkToServices = useTenantLink(tablePath)
   const {
     data,
     isFetching,
@@ -95,10 +95,7 @@ export default function DHCPForm (props: DHCPFormProps) {
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
           $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Services' }),
-            link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
-          }
+          { text: $t({ defaultMessage: 'Services' }), link: tablePath }
         ]}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
