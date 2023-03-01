@@ -1,13 +1,14 @@
 import React from 'react'
 
+import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
 import {
   HistoricalCard,
   Loader, StackedAreaChart,
-  NoData, MultiLineTimeSeriesChart } from '@acx-ui/components'
+  NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
 import { formatter } from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
@@ -29,10 +30,12 @@ export function ConnectedClientsOverTime ({
     { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
+  const stackColors = take(qualitativeColorSet(), 4).reverse()
+
   const queryResults = useConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
-      data: getSeriesData(data!, seriesMapping)
+      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.reverse() : seriesMapping)
     })
   })
 
@@ -44,6 +47,7 @@ export function ConnectedClientsOverTime ({
             queryResults.data.length ?
               vizType === 'area' ?
                 <StackedAreaChart
+                  stackColors={stackColors}
                   style={{ width, height }}
                   data={queryResults.data}
                 /> :
