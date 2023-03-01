@@ -69,7 +69,7 @@ const AddNetworkSegmentation = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Network Segmentation' })}
+        title={$t({ defaultMessage: 'Add Network Segmentation Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}

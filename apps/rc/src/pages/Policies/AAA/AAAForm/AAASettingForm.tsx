@@ -15,7 +15,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 type AAASettingFormProps = {
   edit: boolean,
-  saveState: AAAPolicyType
+  saveState: AAAPolicyType,
+  type?: string
 }
 
 const AAASettingForm = (props: AAASettingFormProps) => {
@@ -75,8 +76,8 @@ const AAASettingForm = (props: AAASettingFormProps) => {
         <Form.Item
           name='type'
           label={$t({ defaultMessage: 'Type' })}
-          initialValue='AUTHENTICATION'
-          children={<Radio.Group>
+          initialValue={props.type || 'AUTHENTICATION'}
+          children={<Radio.Group disabled={props.type? true: false}>
             <Space direction='vertical'>
               <Radio key='authentication' value={'AUTHENTICATION'}>
                 {$t({ defaultMessage: 'Authentication RADIUS Server' })}
@@ -114,7 +115,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                   { type: 'number', max: 65535 },
                   { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1811}
+                initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>
@@ -172,7 +173,7 @@ const AAASettingForm = (props: AAASettingFormProps) => {
                   { type: 'number', max: 65535 },
                   { validator: (_, value) => validateRadiusPort(value) }
                 ]}
-                initialValue={1814}
+                initialValue={type === 'ACCOUNTING'? AUTH_FORBIDDEN_PORT:ACCT_FORBIDDEN_PORT}
                 children={<InputNumber min={1} max={65535} />}
               />
             </div>

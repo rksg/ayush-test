@@ -48,6 +48,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const [selectedVlan, setSelectedVlan] = useState<VlanDate>(initVlanData)
   const [editingVlan, setEditingVlan] = useState<VlanDate>(initVlanData)
   const [vlanLabel, setVlanLabel] = useState('')
+  const [disabledApply, setDisabledApply] = useState(false)
 
   const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
     selectFromResult ({ data }) {
@@ -73,6 +74,14 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
 
     setDirty(!_.isEqual(selectedVlan, initVlanData))
   }, [selectedVlan])
+
+  useEffect(() => {
+    if (editingVlan.vlanType === VlanType.VLAN) {
+      setDisabledApply(!editingVlan.vlanId)
+    } else if (editingVlan.vlanType === VlanType.Pool) {
+      setDisabledApply(!editingVlan.vlanPool)
+    }
+  }, [editingVlan])
 
   const handleVlanTypeChange = (value: VlanType) => {
     setEditingVlan({
@@ -142,7 +151,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
               options={vlanPoolSelectOptions}
               style={{ width: '88px' }} />
           )}
-          <Button type='link' icon={<CheckOutlined />} onClick={()=>{handleApply()}}></Button>
+          <Button type='link' icon={<CheckOutlined />} disabled={disabledApply} onClick={()=>{handleApply()}}></Button>
           <Button type='link' icon={<CloseOutlined />} onClick={()=>{handleCancel()}}></Button>
         </>
       ) : (

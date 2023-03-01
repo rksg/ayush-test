@@ -59,7 +59,7 @@ const VenueDHCPForm = (props: {
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
-  const DHCP_LIMIT_NUMBER = 32
+  const DHCP_LIMIT_NUMBER = 120
   const getSelectedDHCPMode = ()=> {
     if(dhcpProfileList && dhcpServiceID){
       return dhcpProfileList[_.findIndex(dhcpProfileList,

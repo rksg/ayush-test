@@ -61,12 +61,12 @@ export default function MyPolicies () {
         ]}
       />
       <GridRow>
-        {policies.filter(policy => !policy.disabled).map(policy => {
+        {policies.filter(policy => !policy.disabled).map((policy, index) => {
           return (
-            <GridCol col={{ span: 6 }}>
+            <GridCol key={policy.type} col={{ span: 6 }}>
               <RadioCard
                 type={'default'}
-                key={policy.type}
+                key={`${policy.type}_${index}`}
                 value={policy.type}
                 title={$t({
                   defaultMessage: '{name} ({count})'
@@ -141,7 +141,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       category: RadioCardCategory.WIFI,
       totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.SYSLOG] } }
+        params, payload: { ...defaultPayload, filters: { type: ['Syslog Server'] } }
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))

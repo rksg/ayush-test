@@ -12,7 +12,7 @@ import {
   screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { layer3PolicyListResponse } from '../__tests__/fixtures'
+import { aclList, layer3PolicyListResponse, layer3Response } from '../__tests__/fixtures'
 
 import Layer3Component from './Layer3Component'
 
@@ -35,6 +35,16 @@ describe('AccessControlTable', () => {
       AccessControlUrls.getL3AclPolicyList.url,
       (_, res, ctx) => res(
         ctx.json(layer3PolicyListResponse)
+      )
+    ), rest.get(
+      AccessControlUrls.getAccessControlProfileList.url,
+      (_, res, ctx) => res(
+        ctx.json(aclList)
+      )
+    ), rest.get(
+      AccessControlUrls.getL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
       )
     ))
 
@@ -69,6 +79,16 @@ describe('AccessControlTable', () => {
       AccessControlUrls.delL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json({ requestId: 'requestId1' })
+      )
+    ), rest.get(
+      AccessControlUrls.getAccessControlProfileList.url,
+      (_, res, ctx) => res(
+        ctx.json(aclList)
+      )
+    ), rest.get(
+      AccessControlUrls.getL3AclPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(layer3Response)
       )
     ))
 

@@ -839,6 +839,7 @@ export const {
   useUpdatePortalMutation,
   useUploadURLMutation,
   useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupByIdQuery,
   useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,

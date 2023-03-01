@@ -19,7 +19,7 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
-  const DHCP_LIMIT_NUMBER = 32
+  const DHCP_LIMIT_NUMBER = 120
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -135,7 +135,7 @@ function useColumns () {
       sorter: true,
       align: 'center',
       render: function (data, row) {
-        return row.dhcpPools.length
+        return row.dhcpPools?.length||0
       }
     },
     {
