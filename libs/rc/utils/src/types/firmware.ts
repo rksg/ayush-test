@@ -1,3 +1,14 @@
+export interface UpgradePreferences {
+  days?: Array<string>,
+  times?: Array<string>,
+  autoSchedule?: boolean,
+  betaProgram?: boolean
+}
+
+export interface SwitchFirmwarePredownload {
+  preDownload: boolean
+}
+
 export const AVAILABLE_DAYS: Array<{ value: string, label: string }> = [
   { value: 'Sunday', label: 'Sunday' },
   { value: 'Monday', label: 'Monday' },

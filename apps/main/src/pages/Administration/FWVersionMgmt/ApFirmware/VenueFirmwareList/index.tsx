@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { useIntl }                   from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   showActionModal,
-  CustomButtonProps,
+  showToast,
   ColumnType,
   Table,
   TableProps,
@@ -13,36 +12,33 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useVenuesListQuery,
+  useGetUpgradePreferencesQuery,
+  useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
-  useDeleteVenueMutation,
   useGetAvailableFirmwareListQuery,
-  useGetVenueCityListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
+  useUpdateVenueSchedulesMutation,
   useUpdateNowMutation
 } from '@acx-ui/rc/services'
 import {
-  Venue,
   Schedule,
+  UpgradePreferences,
   FirmwareType,
-  FirmwareCategory,
   FirmwareVenue,
   FirmwareVersion,
   UpdateNowRequest,
   UpdateScheduleRequest,
-  ApVenueStatusEnum,
   TableQuery,
   RequestPayload,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   compareVersions,
   getApVersion
 } from '../../FirmwareUtils'
-
-import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { PreferencesDialog }    from './PreferencesDialog'
@@ -98,7 +94,7 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return '--'
+        return row.lastScheduleUpdate
       }
     },
     {
@@ -108,7 +104,7 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return 'Not scheduled'
+        return row.nextSchedules[0]?.startDateTime
       }
     }
   ]
@@ -132,10 +128,9 @@ export const VenueFirmwareTable = (
   { tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  // const navigate = useNavigate()
-  // const { tenantId } = useParams()
   const { data: availableVersions } = useGetAvailableFirmwareListQuery({ params })
   const [skipVenueUpgradeSchedules] = useSkipVenueUpgradeSchedulesMutation()
+  const [updateVenueSchedules] = useUpdateVenueSchedulesMutation()
   const [updateNow] = useUpdateNowMutation()
   const [modelVisible, setModelVisible] = useState(false)
   const [updateModelVisible, setUpdateModelVisible] = useState(false)
@@ -149,62 +144,94 @@ export const VenueFirmwareTable = (
   const [eolModels, setEolModels] = useState<string[]>([])
   const [changeUpgradeVersions, setChangeUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [revertVersions, setRevertVersions] = useState<FirmwareVersion[]>([])
-  // let venues: FirmwareVenue[] = []
+
+  const [updateUpgradePreferences] = useUpdateUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetUpgradePreferencesQuery({ params })
+  const preferenceDays = preferencesData?.days?.map((day) => {
+    return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
+  })
+  let preferences = {
+    ...preferencesData,
+    days: preferenceDays
+  }
 
   const handleModalCancel = () => {
     setModelVisible(false)
   }
-  const handleModalSubmit = (data: []) => {
-    // set preferences
+  const handleModalSubmit = async (payload: UpgradePreferences) => {
+    try {
+      await updateUpgradePreferences({ params, payload }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const handleUpdateModalCancel = () => {
     setUpdateModelVisible(false)
   }
 
-  const handleUpdateModalSubmit = (data: UpdateNowRequest[]) => {
-    updateNow({
-      params: { ...params },
-      payload: data
-    })
+  const handleUpdateModalSubmit = async (data: UpdateNowRequest[]) => {
+    try {
+      updateNow({
+        params: { ...params },
+        payload: data
+      }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const handleChangeScheduleModalCancel = () => {
     setChangeScheduleModelVisible(false)
   }
   const handleChangeScheduleModalSubmit = (data: UpdateScheduleRequest) => {
-    // change firmware scheduled
+    try {
+      updateVenueSchedules({
+        params: { ...params },
+        payload: data
+      }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
   }
 
   const handleRevertModalCancel = () => {
     setRevertModelVisible(false)
   }
-  const handleRevertModalSubmit = (data: UpdateNowRequest[]) => {
-    updateNow({
-      params: { ...params },
-      payload: data
-    })
-  }
 
-  // const tableData: readonly FirmwareVenue[] | undefined = tableQuery.data
+  const handleRevertModalSubmit = (data: UpdateNowRequest[]) => {
+    try {
+      updateNow({
+        params: { ...params },
+        payload: data
+      }).unwrap()
+    } catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'An error occurred' })
+      })
+    }
+  }
 
   const tableData = tableQuery.data as readonly FirmwareVenue[] | undefined
   const columns = useColumns(searchable, filterables)
-  const [
-    deleteVenue,
-    { isLoading: isDeleteVenueUpdating }
-  ] = useDeleteVenueMutation()
 
   const rowActions: TableProps<FirmwareVenue>['rowActions'] = [{
     visible: (selectedRows) => {
       let eolAp = false
       let allEolFwlatest = true
-      // let eolModels = []
       for (let v of venues) {
         if (v['eolApFirmwares']) {
           eolAp = true
-          // this.latestEolVersion = v['eolApFirmwares'][0].latestEolVersion;
-          // this.eolModels = [...new Set([...this.eolModels, ...v['eolApFirmwares'][0].apModels])];
           if (allEolFwlatest) {
             // eslint-disable-next-line max-len
             allEolFwlatest = compareVersions(v['eolApFirmwares'][0].latestEolVersion, v['eolApFirmwares'][0].currentEolVersion) === 0 ? true : false
@@ -228,7 +255,6 @@ export const VenueFirmwareTable = (
         return filterVersions.length > 0 || (eolAp && !allEolFwlatest)
       }
 
-      // multiple case
       let minVersion = ''
       let isSameVersion = true
       const ok = selectedRows.every((row: FirmwareVenue) => {
@@ -261,7 +287,6 @@ export const VenueFirmwareTable = (
       setVenues(selectedRows)
       let eolAp = false
       let eolName = ''
-      // let allEolFwlatest = true
       let latestEolVersion = ''
       let eolModels: string[] = []
       for (let v of venues) {
@@ -331,7 +356,6 @@ export const VenueFirmwareTable = (
         return filterVersions.length > 0
       }
 
-      // multiple case
       let minVersion = ''
       let isSameVersion = true
       const ok = selectedRows.every((row: FirmwareVenue) => {
@@ -472,7 +496,7 @@ export const VenueFirmwareTable = (
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: false, isFetching: isDeleteVenueUpdating }
+      { isLoading: false }
     ]}>
       <Table
         columns={columns}
@@ -516,6 +540,7 @@ export const VenueFirmwareTable = (
       />
       <PreferencesDialog
         visible={modelVisible}
+        data={preferences}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
       />

@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Modal } from '@acx-ui/components'
+import { Button, Modal } from '@acx-ui/components'
 
 export const DateContainer = styled.div`
   height: auto;
@@ -51,4 +51,16 @@ export const ScheduleModal = styled(Modal)`
 .ant-modal-body{
   overflow: initial;
 }
+`
+export const ChangeButton = styled(Button)`
+  position: absolute;
+  top: 40px;
+  right: 12px;
+  width: 50px !important;
+`
+
+export const FieldGroup = styled.div`
+  display: grid;
+  grid-template-columns: [column-1] 150px [column-2] auto;
+  margin-bottom: 10px;
 `

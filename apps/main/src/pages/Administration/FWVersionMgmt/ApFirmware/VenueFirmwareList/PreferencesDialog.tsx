@@ -1,112 +1,129 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { Col, Form, FormInstance, Input, Radio, RadioChangeEvent, Row, Space } from 'antd'
-import { useForm }                                                             from 'antd/lib/form/Form'
-import { useIntl }                                                             from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { useForm }                                          from 'antd/lib/form/Form'
+import { useIntl }                                          from 'react-intl'
 
-import { noDataSymbol }                                               from '@acx-ui/analytics/utils'
-import { Button, Modal }                                              from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                         from '@acx-ui/icons'
-import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
-import { MacAddressFilterRegExp, MacRegistrationPool }                from '@acx-ui/rc/utils'
+import { Modal }              from '@acx-ui/components'
+import { UpgradePreferences } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import { ChangeSlotDialog } from './ChangeSlotDialog'
+import * as UI              from './styledComponents'
 
-enum DevicesImportMode {
-  FromClientDevices,
+enum ScheduleMode {
+  Automatically,
   Manually
 }
 
-interface DevicesImportDialogProps {
+interface PreferencesDialogProps {
   visible: boolean,
   onCancel: () => void,
-  onSubmit: (data: []) => void,
-  personaGroupId?: string
+  onSubmit: (data: UpgradePreferences) => void,
+  data: UpgradePreferences
 }
 
-export function PreferencesDialog (props: DevicesImportDialogProps) {
+export function PreferencesDialog (props: PreferencesDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
-  const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
-  const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
-  const { visible, onSubmit, onCancel, personaGroupId } = props
-  const subTitle = 'Choose update schedule method:'
+  const { visible, onSubmit, onCancel, data } = props
+  const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
+  const [valueDays, setValueDays] = useState<string[]>([...data.days as string[]])
+  const [valueTimes, setValueTimes] = useState<string[]>([...data.times as string[]])
+  const [modelVisible, setModelVisible] = useState(false)
 
-  useEffect(() => {
-    if (!personaGroupId) return
-
-    getPersonaGroupById({ params: { groupId: personaGroupId } })
-      .then(result => {
-        if (!result.data || !result.data?.macRegistrationPoolId) return
-
-        getMacRegistrationById({
-          params: { policyId: result.data.macRegistrationPoolId }
-        }).then(result => {
-          if (!result.data) return
-          setMacRegistrationPool(result.data)
-        })
-      })
-  }, [personaGroupId])
-
-  const triggerSubmit = () => {
-    // FIXME: need to filter unique device items, but it have type issue
-    form.validateFields()
-      .then(values => {
-        // console.log('Current dialog fields value = ', values)
-        onSubmit(values.devices ?? [])
-        onModalCancel()
-      })
+  const showSlotModal = () => {
+    setModelVisible(true)
   }
 
-  const onImportModeChange = (e: RadioChangeEvent) => {
-    setImportMode(e.target.value)
+  const handleModalCancel = () => {
+    setModelVisible(false)
+  }
+
+  const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
+    setValueDays(data.valueDays)
+    setValueTimes(data.valueTimes)
+  }
+
+  const createRequest = (): UpgradePreferences => {
+    return {
+      days: valueDays,
+      times: valueTimes,
+      autoSchedule: scheduleMode === ScheduleMode.Automatically,
+      betaProgram: data.betaProgram
+    }
+  }
+
+  const triggerSubmit = () => {
+    onSubmit(createRequest())
+    onModalCancel()
+  }
+
+  const onScheduleModeChange = (e: RadioChangeEvent) => {
+    setScheduleMode(e.target.value)
   }
 
   const onModalCancel = () => {
     form.resetFields()
-    setImportMode(DevicesImportMode.FromClientDevices)
+    setScheduleMode(ScheduleMode.Automatically)
+    setValueDays([...data.days as string[]])
+    setValueTimes([...data.times as string[]])
     onCancel()
   }
 
   return (
-    <Modal
-      title={$t({ defaultMessage: 'Preferences' })}
-      subTitle={subTitle}
-      visible={visible}
-      width={560}
-      okText={$t({ defaultMessage: 'Save Preferences' })}
-      onOk={triggerSubmit}
-      onCancel={onModalCancel}
-    >
-      <Form
-        form={form}
-        name={'deviceModalForm'}
+    <>
+      <Modal
+        title={$t({ defaultMessage: 'Preferences' })}
+        visible={visible}
+        width={560}
+        okText={$t({ defaultMessage: 'Save Preferences' })}
+        onOk={triggerSubmit}
+        onCancel={onModalCancel}
       >
-        <Form.Item
-          name={'importDevicesMode'}
-          initialValue={DevicesImportMode.FromClientDevices}
+        <Form
+          form={form}
+          name={'preferencesModalForm'}
         >
-          <Radio.Group onChange={onImportModeChange}>
-            <Space direction={'vertical'}>
-              <Radio value={DevicesImportMode.FromClientDevices}>
-                {$t({ defaultMessage: 'Schedule Automatically' })}
-                <div>Upgrade preference saved for each venue based on venue’s local time-zone</div>
-                <UI.PreferencesSection>
-                  <div>Preferred update slot(s):</div>
-                  <div>Sunday, Saturday</div>
-                  <div>00:00-02:00, 02:00-04:00, 04:00-06:00</div>
-                </UI.PreferencesSection>
-              </Radio>
-              <Radio value={DevicesImportMode.Manually}>
-                {$t({ defaultMessage: 'Schedule Manually' })}
-                <div>Manually update firmware per venue</div>
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Form.Item
+            initialValue={ScheduleMode.Automatically}
+          >
+            <div>
+              <Typography>
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Choose update schedule method:' })}
+              </Typography>
+              <Radio.Group onChange={onScheduleModeChange} value={scheduleMode}>
+                <Space direction={'vertical'}>
+                  <Radio value={ScheduleMode.Automatically}>
+                    {$t({ defaultMessage: 'Schedule Automatically' })}
+                    { // eslint-disable-next-line max-len
+                      <div>Upgrade preference saved for each venue based on venue’s local time-zone</div>}
+                    <UI.PreferencesSection>
+                      <div>Preferred update slot(s):</div>
+                      <div>{valueDays.join(', ')}</div>
+                      <div>{valueTimes.join(', ')}</div>
+                    </UI.PreferencesSection>
+                    <UI.ChangeButton type='link' onClick={showSlotModal} block>
+                      Change
+                    </UI.ChangeButton>
+                  </Radio>
+                  <Radio value={ScheduleMode.Manually}>
+                    {$t({ defaultMessage: 'Schedule Manually' })}
+                    <div>Manually update firmware per venue</div>
+                  </Radio>
+                </Space>
+              </Radio.Group>
+            </div>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <ChangeSlotDialog
+        visible={modelVisible}
+        onCancel={handleModalCancel}
+        onSubmit={handleModalSubmit}
+        days={data.days as string[]}
+        times={data.times as string[]}
+      />
+    </>
   )
 }

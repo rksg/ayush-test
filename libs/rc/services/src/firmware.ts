@@ -3,9 +3,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonResult,
   TableResult,
+  UpgradePreferences,
   FirmwareUrlsInfo,
   FirmwareVersion,
-  FirmwareCategory,
   FirmwareVenue,
   createHttpRequest,
   RequestPayload
@@ -21,6 +21,25 @@ export const baseFirmwareApi = createApi({
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
   endpoints: (build) => ({
+    getUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getUpgradePreferences, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
+    }),
+    updateUpgradePreferences: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateUpgradePreferences, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'PREFERENCES' }]
+    }),
     getVenueVersionList: build.query<TableResult<FirmwareVenue>, RequestPayload>({
       query: ({ params, payload }) => {
         const queryString = payload as { searchString: string }
@@ -80,7 +99,17 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Firmware', id: 'DELETE' }]
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    updateVenueSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedules, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     updateNow: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -96,10 +125,13 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
 })
 
 export const {
+  useGetUpgradePreferencesQuery,
+  useUpdateUpgradePreferencesMutation,
   useGetVenueVersionListQuery,
   useGetLatestFirmwareListQuery,
   useGetAvailableFirmwareListQuery,
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
+  useUpdateVenueSchedulesMutation,
   useUpdateNowMutation
 } = firmwareApi

@@ -11,8 +11,6 @@ import {
   FirmwareCategory
 } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
-
 
 export const VersionBanner = () => {
   const { $t } = useIntl()

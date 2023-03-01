@@ -2,13 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { DatePicker, Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                                              from 'antd/lib/form/Form'
-import moment                                                                   from 'moment-timezone'
 import { useIntl }                                                              from 'react-intl'
 
-import {
-  Modal,
-  RangePicker
-} from '@acx-ui/components'
 import {
   AVAILABLE_SLOTS,
   FirmwareType,
@@ -16,7 +11,6 @@ import {
   FirmwareVersion,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
-import { useDateFilter, dateRangeForLast } from '@acx-ui/utils'
 
 import {
   getVersionLabel
@@ -44,7 +38,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const [form] = useForm()
   // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions } = props
-  // const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
@@ -92,7 +85,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString)
     setSelectedDate(dateString)
   }
 

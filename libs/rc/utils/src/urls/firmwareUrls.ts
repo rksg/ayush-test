@@ -3,6 +3,14 @@ import { ApiInfo } from '../apiService'
 const venueVersionParams = '?firmware_version=:version&firmware_type=:type&search=:search'
 
 export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
+  getUpgradePreferences: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/preference'
+  },
+  updateUpgradePreferences: {
+    method: 'put',
+    url: '/api/upgrade/tenant/:tenantId/preference'
+  },
   getVenueVersionList: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/upgrade/venue' + venueVersionParams
