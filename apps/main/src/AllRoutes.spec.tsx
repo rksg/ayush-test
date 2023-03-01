@@ -11,10 +11,13 @@ import AllRoutes from './AllRoutes'
 
 
 jest.mock('@acx-ui/main/components', () => ({
+  ...jest.requireActual('@acx-ui/main/components'),
+  LicenseBanner: () => <div data-testid='license-banner' />,
   ActivityButton: () => <div data-testid='activity-button' />,
   AlarmsButton: () => <div data-testid='alarms-button' />,
   HelpButton: () => <div data-testid='help-button' />,
-  UserButton: () => <div data-testid='user-button' />
+  UserButton: () => <div data-testid='user-button' />,
+  FetchBot: () => <div data-testid='fetch-bot' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,

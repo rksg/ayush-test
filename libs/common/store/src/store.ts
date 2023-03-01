@@ -13,13 +13,15 @@ import {
   baseUserApi as userApi,
   baseDhcpApi as dhcpApi,
   baseMspApi as mspApi,
+  baseLicenseApi as licenseApi,
   baseEdgeApi as edgeApi,
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
   baseAdministrationApi as administrationApi,
   baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi
+  basePersonaApi as personaApi,
+  baseNsgApi as nsgApi
 } from '@acx-ui/rc/services'
 
 import type { Middleware } from '@reduxjs/toolkit'
@@ -72,6 +74,7 @@ export const store = configureStore({
     [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
+    [licenseApi.reducerPath]: licenseApi.reducer,
     [edgeApi.reducerPath]: edgeApi.reducer,
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
@@ -79,7 +82,8 @@ export const store = configureStore({
     [administrationApi.reducerPath]: administrationApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
-    [networkHealthApi.reducerPath]: networkHealthApi.reducer
+    [networkHealthApi.reducerPath]: networkHealthApi.reducer,
+    [nsgApi.reducerPath]: nsgApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -100,6 +104,7 @@ export const store = configureStore({
       dhcpApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,
+      licenseApi.middleware,
       edgeApi.middleware,
       policyApi.middleware,
       clientApi.middleware,
@@ -107,7 +112,8 @@ export const store = configureStore({
       administrationApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
-      networkHealthApi.middleware
+      networkHealthApi.middleware,
+      nsgApi.middleware
     ])
   },
 

@@ -41,6 +41,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/api/switch/tenant/:tenantId/switches'
   },
+  deleteStackMember: {
+    method: 'delete',
+    url: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber'
+  },
+  acknowledgeSwitch: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch/:switchId/ack'
+  },
   getSwitchDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
@@ -75,15 +83,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitch: {
     method: 'post',
-    // url: '/switches',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
   },
   updateSwitch: {
     method: 'put',
-    // url: '/switches/:switchId',
     url: '/api/switch/tenant/:tenantId/switch'
-    // newApi: true
+    // url: '/switches/:switchId',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch',
+    // newApi: false
+  },
+  convertToStack: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch/ConvertToStack'
   },
   addStackMember: {
     method: 'post',
@@ -160,6 +174,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getAclUnion: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/aclUnion/switch/:switchId'
+  },
+  addAcl: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
   },
   addVePort: {
     method: 'post',
@@ -278,6 +296,26 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/state'
   },
+  getSwitchProfileList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/profilelist'
+  },
+  addSwitchConfigProfile: {
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  updateSwitchConfigProfile: {
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/profile'
+  },
+  getSwitchFrontView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+  },
+  getSwitchRearView: {
+    method: 'get',
+    url: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId'
+  },
   addCliTemplate: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/cli-template'
@@ -289,6 +327,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getProfiles: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/profiles/query'
+  },
+  getSwitchConfigProfile: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/:profileId'
+  },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/cliProfile/familyModels'
   },
   deleteProfiles: {
     method: 'delete',

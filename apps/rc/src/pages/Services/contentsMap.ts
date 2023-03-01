@@ -20,12 +20,14 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
-  [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Provides "portal" for guest access. Includes hotspot access (Passpoint, OpenRoaming)' }),
-  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
+  [ServiceType.PORTAL]: defineMessage({ defaultMessage: 'Create a web authentication guest portal for end user connectivity' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.DHCP]: defineMessage({ defaultMessage: 'Provide client DHCP address assignments from RUCKUS Access Points' }),
   [ServiceType.EDGE_DHCP]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   // eslint-disable-next-line max-len
-  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Provides voice calling service over Wi-Fi' }),
-  [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Provides mDNS service' }),
+  [ServiceType.WIFI_CALLING]: defineMessage({ defaultMessage: 'Identify clients using Wi-Fi calling and provide enhanced QoS' }),
+  // eslint-disable-next-line max-len
+  [ServiceType.MDNS_PROXY]: defineMessage({ defaultMessage: 'Proxy multicast DNS for discovery of layer 2 services' }),
   [ServiceType.DPSK]: defineMessage({ defaultMessage: 'RUCKUS Dynamic Pre Shared Key Service' }),
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),

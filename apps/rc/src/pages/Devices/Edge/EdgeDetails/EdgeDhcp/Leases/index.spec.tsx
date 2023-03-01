@@ -26,6 +26,6 @@ describe('Edge DHCP - Leases tab', () => {
         }
       })
     const row = await screen.findAllByRole('row', { name: /Host/i })
-    expect(row.length).toBe(3)
+    expect(row.length).toBe(1)
   })
 })
