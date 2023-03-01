@@ -11,14 +11,20 @@ import AutoSizer                                                      from 'reac
 import { SettingsOutlined }        from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { Button, DisabledButton } from '../Button'
-import { Dropdown }               from '../Dropdown'
-import { Tooltip }                from '../Tooltip'
+import { Button, DisabledButton, ButtonProps } from '../Button'
+import { Dropdown }                            from '../Dropdown'
+import { Tooltip }                             from '../Tooltip'
 
-import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                     from './ResizableColumn'
-import * as UI                                                 from './styledComponents'
-import { settingsKey, useColumnsState }                        from './useColumnsState'
+import {
+  Filter,
+  getFilteredData,
+  renderFilter,
+  renderSearch,
+  MIN_SEARCH_LENGTH
+} from './filters'
+import { ResizableColumn }              from './ResizableColumn'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -59,7 +65,7 @@ export interface TableProps <RecordType>
     rowActions?: Array<{
       label: string,
       disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
-      tooltip?: string,
+      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined),
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
@@ -108,8 +114,6 @@ function useSelectedRowKeys <RecordType> (
 
   return [selectedRowKeys, setSelectedRowKeys]
 }
-
-const MIN_SEARCH_LENGTH = 2
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -438,24 +442,34 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
-              const label = option.tooltip
-                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
+              const tooltip = typeof option.tooltip === 'function'
+                ? option.tooltip(rows)
+                : option.tooltip
+              const label = tooltip
+                ? <Tooltip placement='top' title={tooltip}>{option.label}</Tooltip>
                 : option.label
-              let visible = typeof option.visible === 'function'
+              const disabled = typeof option.disabled === 'function'
+                ? option.disabled(rows)
+                : option.disabled
+              const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
                 : option.visible ?? true
+              const buttonProps: ButtonProps & { key: React.Key } = {
+                type: 'link',
+                size: 'small',
+                key: option.label
+              }
 
               if (!visible) return null
+              if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>
+                {option.label}
+              </DisabledButton>
               return <Button
-                type='link'
-                size='small'
-                key={option.label}
-                disabled={typeof option.disabled === 'function'
-                  ? option.disabled(rows)
-                  : option.disabled
-                }
+                {...buttonProps}
+                disabled={disabled}
                 onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })
+                }
               >
                 {label}
               </Button>

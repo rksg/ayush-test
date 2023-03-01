@@ -9,8 +9,8 @@ import {
 } from './sorters'
 
 describe('defaultSort', () => {
-  const a = 1
-  const b = 2
+  const a = 2
+  const b = 111
 
   it('should sort smaller number', () => {
     const smaller = defaultSort(a, b)
@@ -25,6 +25,11 @@ describe('defaultSort', () => {
   it('should sort 0 number', () => {
     const zero = defaultSort(a, a)
     expect(zero).toBe(0)
+  })
+
+  it('should sort smaller undefined with number', () => {
+    const smaller = defaultSort(undefined, a)
+    expect(smaller).toBe(-1)
   })
 
   const textA = 'a'
@@ -43,6 +48,16 @@ describe('defaultSort', () => {
   it('should sort 0 string', () => {
     const zero = defaultSort(textA, textA)
     expect(zero).toBe(0)
+  })
+
+  it('should sort 0 case insensitive string', () => {
+    const zero = defaultSort(textA, textA.toUpperCase())
+    expect(zero).toBe(0)
+  })
+
+  it('should sort smaller undefined with string', () => {
+    const smaller = defaultSort(undefined, textA)
+    expect(smaller).toBe(-1)
   })
 })
 
@@ -63,6 +78,11 @@ describe('dateSort', () => {
   it('should sort 0 date time', () => {
     const zero = dateSort(startTime, startTime)
     expect(zero).toBe(0)
+  })
+
+  it('should sort smaller undefined', () => {
+    const smaller = dateSort(undefined, startTime)
+    expect(smaller).toBe(-1)
   })
 })
 

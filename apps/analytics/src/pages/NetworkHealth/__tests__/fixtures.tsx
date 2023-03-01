@@ -62,19 +62,34 @@ export const fetchAllServiceGuardSpecs = {
       tests: { items: [] }
     },
     {
-      id: 'spec-id-other',
+      id: 'spec-id-finished',
       name: 'test-2',
       type: TestType.Scheduled,
       apsCount: 2,
       userId: 'user-id-other',
       clientType: ClientType.VirtualWirelessClient,
+      schedule: { nextExecutionTime: '2023-02-24T16:00:00.000Z' },
       tests: { items: [
         { id: 1,
           createdAt: '2023-02-24T07:34:33.336Z',
           summary: { apsTestedCount: 2, apsSuccessCount: 2, apsPendingCount: 0 }
         }
-      ] },
-      schedule: { nextExecutionTime: '2023-02-24T16:00:00.000Z' }
+      ] }
+    },
+    {
+      id: 'spec-id-ongoing',
+      name: 'test-2',
+      type: TestType.Scheduled,
+      apsCount: 2,
+      userId: 'user-id',
+      clientType: ClientType.VirtualClient,
+      schedule: null,
+      tests: { items: [
+        { id: 2,
+          createdAt: '2023-02-24T07:34:33.336Z',
+          summary: { apsTestedCount: 2, apsSuccessCount: 1, apsPendingCount: 1 }
+        }
+      ] }
     }
   ]
 }
