@@ -11,7 +11,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Modal }                     from '@acx-ui/components'
-import { useHasRoles }                       from '@acx-ui/rbac'
 import { useGetWifiCallingServiceListQuery } from '@acx-ui/rc/services'
 
 import { WifiCallingSettingContext } from './ServicesForm'
@@ -100,7 +99,7 @@ export function WifiCallingSettingModal () {
       <Modal
         title={$t({ defaultMessage: 'Select Wi-Fi Calling Profiles' })}
         visible={visible}
-        okText={useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' })}
+        okText={$t({ defaultMessage: 'Save' })}
         onCancel={handleCancel}
         onOk={handleOk}
         width={850}

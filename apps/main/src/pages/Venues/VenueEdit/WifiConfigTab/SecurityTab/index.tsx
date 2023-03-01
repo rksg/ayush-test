@@ -5,7 +5,6 @@ import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { Button, Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
-import { useHasRoles }                                                                from '@acx-ui/rbac'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -158,7 +157,7 @@ export function SecurityTab () {
       <StepsForm
         formRef={formRef}
         onFinish={handleUpdateSecuritySettings}
-        buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
         onFormChange={handleChange}
       >
         <StepsForm.StepForm>

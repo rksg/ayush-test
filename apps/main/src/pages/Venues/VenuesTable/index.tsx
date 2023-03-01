@@ -11,7 +11,6 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useHasRoles }            from '@acx-ui/rbac'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -233,13 +232,13 @@ export const VenueTable = (
 
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
-    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Edit' }),
+    label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
     }
   },
   {
-    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Delete' }),
+    label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -302,7 +301,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Venues' })}
-        extra={useHasRoles('READ_ONLY')? [] : [
+        extra={[
           <TenantLink to='/venues/add' key='add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
           </TenantLink>

@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useHasRoles }                           from '@acx-ui/rbac'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
@@ -117,7 +116,7 @@ export function RadioTab () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
-      buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <AnchorLayout items={anchorItems} offsetTop={275} />

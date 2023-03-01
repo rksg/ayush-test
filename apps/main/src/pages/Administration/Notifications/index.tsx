@@ -9,7 +9,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useHasRoles }                     from '@acx-ui/rbac'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -108,7 +107,7 @@ export const NotificationsTable = () => {
   const rowActions: TableProps<NotificationRecipientUIModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Edit' }),
+      label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
@@ -117,7 +116,7 @@ export const NotificationsTable = () => {
       }
     },
     {
-      label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Delete' }),
+      label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -146,7 +145,7 @@ export const NotificationsTable = () => {
   ]
 
   const tableActions = [{
-    label: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Add Recipient' }),
+    label: $t({ defaultMessage: 'Add Recipient' }),
     onClick: handleClickAddRecipient
   }]
 

@@ -7,7 +7,6 @@ import { useIntl }       from 'react-intl'
 import { AnchorLayout, showToast, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                  from '@acx-ui/icons'
-import { useHasRoles }                                 from '@acx-ui/rbac'
 import { VenueApModelCellular }                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { directedMulticastInfo }                       from '@acx-ui/utils'
@@ -123,7 +122,7 @@ export function NetworkingTab () {
         ...basePath,
         pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
       })}
-      buttonLabel={{ submit: useHasRoles('READ_ONLY')? '' : $t({ defaultMessage: 'Save' }) }}
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
         <AnchorLayout items={items} offsetTop={275} />
