@@ -11,7 +11,8 @@ import {
   mockDpskPool,
   mockMacRegistration,
   mockMacRegistrationList,
-  mockPersonaGroupTableResult
+  mockPersonaGroupTableResult,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaGroupTable } from '.'
@@ -24,7 +25,7 @@ describe('Persona Group Table', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        PersonaUrls.searchPersonaGroupList.url,
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => {
           searchPersonaGroupApi()
           return res(ctx.json(mockPersonaGroupTableResult))
@@ -39,7 +40,7 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(
@@ -47,7 +48,7 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json(mockDpskPool))
       ),
       rest.get(
-        DpskUrls.getDpskList.url,
+        replacePagination(DpskUrls.getDpskList.url),
         (req, res, ctx) => res(ctx.json(mockDpskList))
       ),
       rest.post(
@@ -160,21 +161,24 @@ describe('Persona Group Table', () => {
     const exportFn = jest.fn()
 
     mockServer.use(
-      rest.post(PersonaUrls.exportPersonaGroup.url,(req, res, ctx) => {
-        const headers = req.headers['headers']
+      rest.post(
+        // eslint-disable-next-line max-len
+        PersonaUrls.exportPersonaGroup.url.replace('?timezone=:timezone&date-format=:dateFormat', ''),
+        (req, res, ctx) => {
+          const headers = req.headers['headers']
 
-        // Get List API: 'Content-Type': 'application/json'
-        if (headers['accept'] === 'application/json') {
-          return res(ctx.json(mockPersonaGroupTableResult))
-        } else {
-          exportFn()
+          // Get List API: 'Content-Type': 'application/json'
+          if (headers['accept'] === 'application/json') {
+            return res(ctx.json(mockPersonaGroupTableResult))
+          } else {
+            exportFn()
 
-          return res(ctx.set({
-            'content-disposition': 'attachment; filename=PersonaGroups_20230118100829.csv',
-            'content-type': 'text/csv;charset=ISO-8859-1'
-          }), ctx.text('PersonaGroup'))
-        }
-      })
+            return res(ctx.set({
+              'content-disposition': 'attachment; filename=PersonaGroups_20230118100829.csv',
+              'content-type': 'text/csv;charset=ISO-8859-1'
+            }), ctx.text('PersonaGroup'))
+          }
+        })
     )
 
     render(

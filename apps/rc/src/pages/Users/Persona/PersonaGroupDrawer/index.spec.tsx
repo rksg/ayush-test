@@ -16,7 +16,8 @@ import {
   mockDpskList,
   mockMacRegistrationList,
   mockPersonaGroup, mockPersonaGroupList,
-  mockPersonaGroupTableResult
+  mockPersonaGroupTableResult,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaGroupDrawer } from './index'
@@ -35,7 +36,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
-        PersonaUrls.searchPersonaGroupList.url,
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
       ),
       rest.patch(
@@ -47,7 +48,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(
