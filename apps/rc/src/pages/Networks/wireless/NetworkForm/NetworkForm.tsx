@@ -408,15 +408,16 @@ export default function NetworkForm (props:{
                 }
               }else {
                 if(!(editMode||cloneMode)){
-                  const settingData = {
+                  const settingCaptiveData = {
                     ...{ type: saveState.type },
                     ...data
                   }
-                  let settingSaveData = tranferSettingsToSave(settingData, editMode)
+                  let settingCaptiveSaveData = tranferSettingsToSave(settingCaptiveData, editMode)
                   if (!editMode) {
-                    settingSaveData = transferMoreSettingsToSave(data, settingSaveData)
+                    settingCaptiveSaveData =
+                      transferMoreSettingsToSave(data, settingCaptiveSaveData)
                   }
-                  updateSaveData(settingSaveData)
+                  updateSaveData(settingCaptiveSaveData)
                 }
                 return true
               }
