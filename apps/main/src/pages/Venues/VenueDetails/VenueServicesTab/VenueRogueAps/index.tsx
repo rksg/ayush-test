@@ -93,7 +93,6 @@ export function VenueRogueAps () {
         dataIndex: 'category',
         // filterable: true, // TODO: change to search or provide static list
         sorter: true,
-        align: 'left',
         render: (data, row) => {
           return <span>
             <Badge
@@ -119,14 +118,12 @@ export function VenueRogueAps () {
         key: 'channel',
         title: intl.$t({ defaultMessage: 'Channel' }),
         dataIndex: 'channel',
-        sorter: true,
-        align: 'center'
+        sorter: true
       },
       {
         key: 'band',
         title: intl.$t({ defaultMessage: 'Band' }),
-        dataIndex: 'band',
-        align: 'center'
+        dataIndex: 'band'
       },
       {
         key: 'closestAp_snr',
@@ -146,8 +143,7 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Closest Ap' }),
         dataIndex: 'closestAp_apName',
         // filterable: true, // TODO: change to search or provide static list
-        sorter: true,
-        align: 'left'
+        sorter: true
       },
       {
         key: 'detectingAps',
@@ -164,7 +160,6 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Last Seen' }),
         dataIndex: 'lastUpdTime',
         sorter: true,
-        align: 'left',
         defaultSortOrder: 'descend',
         render: (data, row) => {
           return formatDate(new Date(Number(row.lastUpdTime) * 1000))
@@ -175,7 +170,6 @@ export function VenueRogueAps () {
         title: intl.$t({ defaultMessage: 'Locate Rogue' }),
         dataIndex: 'locatable',
         sorter: true,
-        align: 'center',
         render: (data, row) => {
           return row.locatable
             ? <VenueMarkerRed />

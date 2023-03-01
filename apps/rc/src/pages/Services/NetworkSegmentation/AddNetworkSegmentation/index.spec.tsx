@@ -23,7 +23,7 @@ jest.mock('react-router-dom', () => ({
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
-describe('AddEdge', () => {
+describe('Create NetworkSegmentation', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     params = {
