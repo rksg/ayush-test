@@ -52,10 +52,10 @@ export function getPanelCallback (
   setEventState: CallableFunction,
   setVisible: CallableFunction
 ) {
-  return () => {
+  return (val: boolean) => {
     if (item && (item as FormattedEvent).event) {
       setEventState({ ...(item as FormattedEvent).event })
-      setVisible(true)
+      setVisible(val)
     }
   }
 }

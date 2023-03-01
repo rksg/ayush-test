@@ -27,7 +27,7 @@ type HistoryContentProps = {
   data?: ClientInfoData,
   filters: Filters | null,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
-    onClick: () => void,
+    onClick: (val: boolean) => void,
     selected: () => boolean | undefined
   }
 }
@@ -64,7 +64,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <UI.EventTypeIcon color={color}/>,
+      icon: <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>,
       event
     }
   }),
@@ -75,7 +75,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
 const renderItem = (
   item: IncidentDetails | FormattedEvent,
   onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
-    onClick: () => void,
+    onClick: (val: boolean) => void,
     selected: () => boolean | undefined
   }
 ) => {
@@ -90,7 +90,9 @@ const renderItem = (
 
 function WrappedItem (
   { item, onClick, selected }:
-  { item: IncidentDetails | FormattedEvent, onClick: () => void, selected: boolean | undefined }
+  { item: IncidentDetails | FormattedEvent,
+    onClick: (val: boolean) => void,
+    selected: boolean | undefined }
 ) {
   const ref = createRef<HTMLDivElement>()
   useEffect(() => {
@@ -98,27 +100,31 @@ function WrappedItem (
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selected, ref])
+  const icon = item.id
+    ? item.icon
+    : <ConnectionEventPopover
+      event={(item as FormattedEvent).event}
+      onVisibleChange={onClick}
+      visible={selected}
+      placement='bottom'
+    >
+      {item.icon}
+    </ConnectionEventPopover>
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
-      avatar={item.icon}
+      avatar={icon}
       title={item.date}
       description={item.description} />
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : <ConnectionEventPopover
-      event={(item as FormattedEvent).event}
-      arrowPointAtCenter
-      placement='bottom'
+    : <UI.HistoryItemWrapper
+      $selected={selected}
+      ref={ref}
     >
-      <UI.HistoryItemWrapper
-        onClick={onClick}
-        $selected={selected}
-        ref={ref}
-      >
-        {Item}
-      </UI.HistoryItemWrapper>
-    </ConnectionEventPopover>
+      {Item}
+    </UI.HistoryItemWrapper>
+
 }
 
 export function History (props : HistoryContentProps) {

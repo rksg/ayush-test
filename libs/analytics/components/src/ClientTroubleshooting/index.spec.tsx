@@ -180,8 +180,11 @@ describe('ClientTroubleshootingTab', () => {
       } as unknown as FormattedEvent
       const onClick = getPanelCallback(item, setEventState, setVisible)
       expect(onClick).toBeInstanceOf(Function)
-      onClick()
+      onClick(true)
       expect(setVisible).toBeCalledWith(true)
+      expect(setEventState).toBeCalledWith(item.event)
+      onClick(false)
+      expect(setVisible).toBeCalledWith(false)
       expect(setEventState).toBeCalledWith(item.event)
     })
   })

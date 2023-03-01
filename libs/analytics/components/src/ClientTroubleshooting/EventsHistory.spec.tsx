@@ -1,8 +1,8 @@
 import { cleanup } from '@testing-library/react'
 
-import { Incident }                  from '@acx-ui/analytics/utils'
-import { Provider }                  from '@acx-ui/store'
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+import { Incident }                       from '@acx-ui/analytics/utils'
+import { Provider }                       from '@acx-ui/store'
+import { act, render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
@@ -201,7 +201,8 @@ describe('EventsHistory', () => {
       connectionQualities: []
     }
     const setHistoryContentToggle = jest.fn()
-    const onClick = jest.fn(() => {})
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onClick = jest.fn((_val: boolean) => {})
     const onPanelCallback = jest.fn(() => ({ onClick, selected: () => true }))
     const scrollIntoView = jest.fn()
     const ogView = HTMLElement.prototype.scrollIntoView
@@ -224,10 +225,11 @@ describe('EventsHistory', () => {
       }
     )
     expect(await screen.findByText('History')).toBeVisible()
-    const firstEvent =
-      await screen.findByText('Client roamed @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz')
-    expect(firstEvent).toBeVisible()
-    fireEvent.click(firstEvent)
+    const events = await screen.findAllByTestId('history-item-icon')
+    expect(events).toBeTruthy()
+    const firstEvent = events[0]
+    // eslint-disable-next-line testing-library/no-unnecessary-act
+    act(() => { fireEvent.click(firstEvent) })
     expect(onPanelCallback).toBeCalledTimes(4)
     expect(onClick).toBeCalledTimes(1)
     expect(scrollIntoView).toBeCalledTimes(3)
