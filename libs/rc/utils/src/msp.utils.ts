@@ -48,7 +48,7 @@ export class EntitlementUtil {
     }
   }
 
-  public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType): string {
+  public static deviceSubTypeToText (deviceSubType: EntitlementDeviceSubType | undefined): string {
     switch (deviceSubType) {
       case EntitlementDeviceSubType.ICX71L:
         return 'ICX 7150-C08P'
