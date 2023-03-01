@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { RefObject, useState } from 'react'
 
 import { Row, Col }                   from 'antd'
-import { connect, EChartsType }       from 'echarts'
+import { EChartsType }                from 'echarts'
 import ReactECharts                   from 'echarts-for-react'
 import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
@@ -21,6 +21,7 @@ import {
   RoamingByAP,
   RoamingConfigParam,
   RoamingTimeSeriesData,
+  DisplayEvent,
   ALL
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
@@ -35,7 +36,6 @@ import {
   getRoamingSubtitleConfig,
   getTimelineData,
   getChartData,
-  useLabelFormatter,
   transformIncidents
 } from './util'
 
@@ -44,12 +44,26 @@ import { Filters } from '.'
 type TimeLineProps = {
   data?: ClientInfoData;
   filters: Filters;
+  setEventState: (event: DisplayEvent) => void,
+  setVisible: (visible: boolean) => void,
+  connectChart: (instance: ReactECharts) => void,
+  sharedChartName: string,
+  popoverRef: RefObject<HTMLDivElement>,
+  onChartReady: (instance: EChartsType) => void,
+}
+
+type CoordDisplayEvent = DisplayEvent & {
+  x: number,
+  y: number
 }
 
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
-  const { data, filters } = props
+  const {
+    data, filters, connectChart, sharedChartName, onChartReady,
+    popoverRef, setEventState, setVisible
+  } = props
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
@@ -109,30 +123,9 @@ export function TimeLine (props: TimeLineProps) {
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as unknown as RoamingTimeSeriesData[]
 
-  const sharedChartName = 'eventTimeSeriesGroup'
-  const chartsRef = useRef<EChartsType[]>([])
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = sharedChartName
-      chartsRef.current.push(instance)
-    }
-  }
-  useEffect(() => {
-    const isChartActive = (chart: EChartsType) => chart && chart.isDisposed && !chart.isDisposed()
-    connect(sharedChartName)
-    const charts = chartsRef.current
-
-    return () => {
-      const remainingCharts = charts.filter(isChartActive)
-      /* istanbul ignore next */
-      remainingCharts.forEach(chart => chart.dispose())
-      chartsRef.current = []
-    }
-  }, [])
-
   const { startDate, endDate } = useDateFilter()
   const chartBoundary = [moment(startDate).valueOf(), moment(endDate).valueOf()]
+
   const roamingTooltipCallback = (apMac: string, apModel: string, apFirmware: string) =>
     $t({ defaultMessage: 'MAC Address: {apMac} {br}Model: {apModel} {br}Firmware: {apFirmware}' },
       { br: '\n', apMac, apModel, apFirmware })
@@ -219,18 +212,19 @@ export function TimeLine (props: TimeLineProps) {
                 index={index}
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
-                  config?.value as keyof TimelineData,
-                  TimelineData.connectionEvents.all,
-                  expandObj[config?.value as keyof TimelineData],
-                  !Array.isArray(qualities) ? qualities.all : [],
-                  Array.isArray(incidents) ? incidents : [],
-                  {
-                    ...roamingEventsTimeSeries,
-                    [ALL]: TimelineData.roaming.all
-                  } as RoamingTimeSeriesData[]
+        config?.value as keyof TimelineData,
+        TimelineData.connectionEvents.all,
+        expandObj[config?.value as keyof TimelineData],
+        !Array.isArray(qualities) ? qualities.all : [],
+        Array.isArray(incidents) ? incidents : [],
+        {
+          ...roamingEventsTimeSeries,
+          [ALL]: TimelineData.roaming.all
+        } as RoamingTimeSeriesData[]
                 )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}
+                hasXaxisLabel={config?.hasXaxisLabel}
                 mapping={
                   expandObj[config?.value as keyof TimelineData]
                     ? config.value === TYPES.ROAMING
@@ -240,13 +234,18 @@ export function TimeLine (props: TimeLineProps) {
                       : config.chartMapping.slice().reverse()
                     : [config.chartMapping[0]]
                 }
-                hasXaxisLabel={config?.hasXaxisLabel}
+                onDotClick={
+                  /* istanbul ignore next */
+                  (params) => {
+                  /* istanbul ignore next */
+                    setEventState(params as CoordDisplayEvent)
+                    /* istanbul ignore next */
+                    setVisible(true)
+                  }}
                 chartRef={connectChart}
-                tooltipFormatter={useLabelFormatter}
                 sharedChartName={sharedChartName}
-                // caputuring scatterplot dot click to open popover
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                // onDotClick={(params) => {}}`
+                popoverRef={popoverRef}
+                onChartReady={onChartReady}
               />
             </Col>
           ))}
