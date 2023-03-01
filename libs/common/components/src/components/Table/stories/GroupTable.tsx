@@ -21,26 +21,6 @@ export const columns: TableProps<RecordType>['columns'] = [
     key: 'name',
     filterable: true,
     searchable: true
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-    align: 'center',
-    filterable: true
-  },
-  {
-    title: 'Description',
-    dataIndex: 'description',
-    key: 'description',
-    render: (text, _, __, highlightFn) => <u>{highlightFn(text as string)}</u>,
-    searchable: true
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-    searchable: true
   }
 ]
 
@@ -109,7 +89,89 @@ export function GroupTable () {
         rowActions={rowActions}
         dataSource={data}
         rowSelection={{ defaultSelectedRowKeys: [] }}
+        expandable={{
+          expandedRowRender,
+          defaultExpandAllRows: true,
+          fixed: 'right'
+        }}
       />
     </>
   )
+}
+
+function expandedRowRender (
+  record: RecordType,
+  index: number,
+  indent: number,
+  expanded: boolean
+) {
+  console.log(record, index, indent, expanded)
+  // might need to consider, conditionally rendering table based on row data
+  const columns: TableProps<RecordType>['columns'] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name'
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+      align: 'center'
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address'
+    }
+  ]
+  const data: TableProps<RecordType>['dataSource'] = [
+    {
+      key: '1',
+      name: 'John Doe',
+      givenName: 'John',
+      surname: 'Doe',
+      age: 32,
+      description: 'John Doe living at sample address',
+      address: 'sample address'
+    },
+    {
+      key: '2',
+      name: 'Jane Doe',
+      givenName: 'Jane',
+      surname: 'Doe',
+      age: 33,
+      description: 'Jane Doe living at new address',
+      address: 'new address'
+    },
+    {
+      key: '3',
+      name: 'Jordan Doe',
+      givenName: 'Jordan',
+      surname: 'Doe',
+      age: 33,
+      description: '',
+      address: 'another address'
+    },
+    {
+      key: '4',
+      name: 'Sam Smith',
+      givenName: 'Sam',
+      surname: 'Smiths',
+      age: 43,
+      description: 'a great singer',
+      address: 'mountain style'
+    }
+  ]
+  return <Table<RecordType>
+    columns={columns}
+    dataSource={data}
+    rowSelection={{ defaultSelectedRowKeys: [] }}
+    columnState={{}}
+  />
 }
