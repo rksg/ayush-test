@@ -9,7 +9,7 @@ import {
   useParams,
   useSearchParams
 } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
 
@@ -21,7 +21,6 @@ function DatePicker () {
   return enableAnalytics
     ? <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      enableDates={dateRangeForLast(3,'months')}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
