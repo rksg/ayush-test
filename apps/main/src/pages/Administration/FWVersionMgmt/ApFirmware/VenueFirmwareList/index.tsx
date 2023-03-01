@@ -94,7 +94,7 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.lastScheduleUpdate
+        return row.lastScheduleUpdate ?? '-'
       }
     },
     {
@@ -104,7 +104,7 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.nextSchedules[0]?.startDateTime
+        return row.nextSchedules? row.nextSchedules[0].startDateTime : 'Not scheduled'
       }
     }
   ]
