@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Menu } from 'antd'
+import _        from 'lodash'
 
 import {
   LayoutUI,
@@ -15,7 +16,8 @@ import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
 import { MSPUtils, RegionValue } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams }             from '@acx-ui/react-router-dom'
+
 
 import * as UI from '../styledComponents'
 
@@ -41,31 +43,35 @@ export default function RegionButton () {
   },[userProfile, mspEcProfileData])
 
   const getRegionURL = (region:string) => {
-    if(userProfile){
-      const currentRegion = userProfile.allowedRegions
-        .find(r => r.name === region)
-      return currentRegion!.link
-    }else{
-      return ''
-    }
+    const currentRegion = userProfile!.allowedRegions
+      .find(r => r.name === region)
+    return currentRegion!.link
   }
 
   const regionMenu = <Menu
     selectable
-    defaultSelectedKeys={['US']}
+    onClick={(e) => {
+      const region = _.find(userProfile?.allowedRegions,(item)=>{
+        return e.key===item.name
+      })
+      if(region && region.current) return
+      window.location.href = getRegionURL(e.key)
+    }}
+    defaultSelectedKeys={[_.find(userProfile?.allowedRegions,(item)=>{
+      return item.current
+    })?.name||'']}
     items={
       userProfile ? userProfile.allowedRegions.map((region:RegionValue) => {
         return {
           key: region['name'],
-          label: <TenantLink to={getRegionURL(region['name'])}>
-            {region['name']}
-          </TenantLink> }
+          label: region['name']
+        }
       }) : []
     }
   />
 
-  // eslint-disable-next-line max-len
-  return <UI.RegionBtnWrapper> {regionEnable && <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
+  return <UI.RegionBtnWrapper> {regionEnable &&
+  <Dropdown overlay={regionMenu}>{(selectedKeys) => <LayoutUI.DropdownText>
     <LayoutUI.Icon children={<WorldSolid />} />
     {selectedKeys}
     <LayoutUI.Icon children={<ArrowExpand />} />

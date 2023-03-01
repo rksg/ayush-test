@@ -1,9 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { LicenseUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }        from '@acx-ui/store'
+
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { DetailLevel }                                 from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -13,94 +16,56 @@ import {
 
 import RegionButton from './index'
 
-const list = [
-  {
-    deviceCount: 1,
-    deviceSubType: null,
-    deviceType: 'ANALYTICS',
-    effectDate: '2023-02-17T02:03:25.311+00:00',
-    effectDays: 0,
-    multipleLicense: false,
-    totalActiveDevices: 1,
-    totalRALicense: 0,
-    type: 'RA_BELOW_50_PERCENT_OF_DEVICES'
-  },
-  {
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'WIFI',
-    effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 53,
-    multipleLicense: false,
-    type: 'INITIAL'
-  },
-  {
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'SWITCH',
-    effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 54,
-    multipleLicense: false,
-    type: 'INITIAL'
-  },
-  {
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'WIFI',
-    effectDate: '2023-04-10T00:00:00.000+00:00',
-    effectDays: 53,
-    multipleLicense: false,
-    type: 'GRACE_PERIOD'
-  },
-  {
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'WIFI',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
-    multipleLicense: false,
-    type: 'CLOSE_TO_EXPIRATION'
-  },{
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'ANALYTICS',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 10,
-    multipleLicense: true,
-    type: 'INITIAL'
-  },{
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'ANALYTICS',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
-    multipleLicense: true,
-    type: 'CLOSE_TO_EXPIRATION'
-  },{
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'ANALYTICS',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
-    multipleLicense: true,
-    type: 'GRACE_PERIOD'
-  },{
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'ANALYTICS',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
-    multipleLicense: true,
-    type: 'EXPIRED'
-  },{
-    deviceCount: 40,
-    deviceSubType: null,
-    deviceType: 'WIFI',
-    effectDate: '2023-02-25T00:00:00.000+00:00',
-    effectDays: 5,
-    multipleLicense: true,
-    type: 'GRACE_PERIOD'
-  }]
+const mspUserData = {
+  msp_label: '',
+  name: '',
+  service_effective_date: '',
+  service_expiration_date: '',
+  is_active: false
+}
+
+const fakeUserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://devalto.ruckuswireless.com',
+      current: true
+    },
+    {
+      current: false,
+      description: 'APAC region',
+      link: 'https://asia.qaalto.ruckuswireless.com',
+      name: 'Asia'
+    }
+  ],
+  externalId: '0032h00000LUqcoAAD',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1551',
+  firstName: 'FisrtName 1551',
+  lastName: 'LastName 1551',
+  username: 'dog1551@email.com',
+  role: 'PRIME_ADMIN',
+  roles: ['PRIME_ADMIN'],
+  detailLevel: DetailLevel.DEBUGGING,
+  dateFormat: 'mm/dd/yyyy',
+  email: 'dog1551@email.com',
+  var: true,
+  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  support: false,
+  dogfood: false
+}
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
+
+
 
 
 describe('Region Button Component', () => {
@@ -108,12 +73,12 @@ describe('Region Button Component', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {
-      tenantId: 'e3d0c24e808d42b1832d47db4c2a7914'
+      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
     mockServer.use(
       rest.get(
-        LicenseUrlsInfo.getEntitlementsBanners.url,
-        (req, res, ctx) => res(ctx.json([list[0]]))
+        MspUrlsInfo.getMspEcProfile.url,
+        (req, res, ctx) => res(ctx.json(mspUserData))
       )
     )
   })
@@ -121,11 +86,31 @@ describe('Region Button Component', () => {
   it('should render Region Button Correctly', async () => {
     render(
       <Provider>
-        <RegionButton/>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}>
+          <RegionButton/>
+        </UserProfileContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard' }
       })
-    expect(await screen.findByText('Analytics service has been deactivated')).toBeVisible()
 
+    await userEvent.click(await screen.findByText('US'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'US' }))
   })
+
+  it('selected other region for Region Component', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}>
+          <RegionButton/>
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await userEvent.click(await screen.findByText('US'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Asia' }))
+  })
+
 })
