@@ -461,7 +461,7 @@ export const mspApi = baseMspApi.injectEndpoints({
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent ? JSON.parse(
-              headerContent.split('filename=')[1]) : 'Guests Information.csv'
+              headerContent.split('filename=')[1]) : 'MSP Device Inventory.csv'
             downloadFile(response, fileName)
           },
           body: payload,

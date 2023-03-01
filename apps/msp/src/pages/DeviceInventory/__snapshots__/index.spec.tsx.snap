@@ -32,7 +32,6 @@ exports[`Device Inventory Table should render table 1`] = `
           >
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <a
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/dashboard"
@@ -47,24 +46,6 @@ exports[`Device Inventory Table should render table 1`] = `
                 </button>
               </a>
             </div>
-            <div
-              class="ant-space-item"
-            >
-              <span
-                style="cursor: not-allowed;"
-              >
-                <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                  disabled=""
-                  style="pointer-events: none;"
-                  type="button"
-                >
-                  <svg
-                    data-testid="DownloadOutlined"
-                  />
-                </button>
-              </span>
-            </div>
           </div>
         </span>
       </div>
@@ -76,6 +57,23 @@ exports[`Device Inventory Table should render table 1`] = `
     <div
       class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
     >
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center"
+        style="display: flex; justify-content: flex-end; margin: 3px 0px;"
+      >
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+            type="button"
+          >
+            <span>
+              Export To CSV
+            </span>
+          </button>
+        </div>
+      </div>
       <div
         class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
       >

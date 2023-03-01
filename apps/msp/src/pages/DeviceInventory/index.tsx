@@ -4,14 +4,13 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
   Loader,
   PageHeader,
+  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DownloadOutlined }            from '@acx-ui/icons'
-import { useDeviceInventoryListQuery } from '@acx-ui/rc/services'
+import { useDeviceInventoryListQuery, useExportDeviceInventoryMutation } from '@acx-ui/rc/services'
 import {
   APView,
   ApDeviceStatusEnum,
@@ -21,7 +20,7 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -73,8 +72,21 @@ const transformSwitchStatus = ({ $t }: IntlShape, switchStatus: SwitchStatusEnum
 export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
+  const { tenantId } = useParams()
+
+  const [ downloadCsv ] = useExportDeviceInventoryMutation()
 
   const filterPayload = {
+    searchString: '',
+    fields: [
+      'venueName',
+      'serialNumber',
+      'tenantId',
+      'model',
+      'customerName' ]
+  }
+
+  const payload = {
     searchString: '',
     fields: [
       'venueName',
@@ -104,6 +116,18 @@ export function DeviceInventory () {
   const model =
     (list && list.totalCount > 0)
       ? _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model)) : []
+
+  const ExportInventory = () => {
+    // const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
+    // const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    downloadCsv({ params: { tenantId }, payload })
+      .catch(() => {
+        showToast({
+          type: 'error',
+          content: $t({ defaultMessage: 'Failed to download Inventory.' })
+        })
+      })
+  }
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
     {
@@ -181,6 +205,13 @@ export function DeviceInventory () {
     }
   ]
 
+  const actions = [
+    {
+      label: $t({ defaultMessage: 'Export To CSV' }),
+      onClick: () => ExportInventory()
+    }
+  ]
+
   const defaultPayload = {
     searchString: '',
     fields: [
@@ -209,6 +240,7 @@ export function DeviceInventory () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          actions={actions}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='name'
         />
@@ -223,8 +255,7 @@ export function DeviceInventory () {
         extra={[
           <TenantLink to='/dashboard' key='ownAccount'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
-          </TenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />}></DisabledButton>
+          </TenantLink>
         ]}
       />
       <DeviceTable />
