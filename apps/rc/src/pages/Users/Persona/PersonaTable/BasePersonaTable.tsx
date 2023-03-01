@@ -247,9 +247,15 @@ export function BasePersonaTable (props: PersonaTableProps) {
             deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
+                const fewItems = ids.length <= 5
                 showToast({
                   type: 'success',
-                  content: $t({ defaultMessage: 'Persona {names} was deleted' }, { names })
+                  content: $t({
+                    // eslint-disable-next-line max-len
+                    defaultMessage: '{fewItems, select, ' +
+                      'true {Persona {names} was deleted} ' +
+                      'other {{count} personas was deleted}}'
+                  }, { fewItems, names, count: ids.length })
                 })
                 clearSelection()
               })
