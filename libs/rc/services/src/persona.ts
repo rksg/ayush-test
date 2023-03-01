@@ -146,7 +146,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Persona', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Persona' }]
     }),
     getPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params }) => {

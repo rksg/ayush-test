@@ -53,7 +53,7 @@ export function SelectVlanModal (props: {
       taggedVlans: selectTaggedVlans.toString(),
       untaggedVlan: selectUntaggedVlan
     })
-    await onValuesChange({ untaggedVlan: Number(selectUntaggedVlan), revert: false })
+    onValuesChange({ untaggedVlan: Number(selectUntaggedVlan), revert: false })
     setUseVenueSettings(false)
     setSelectModalvisible(false)
   }

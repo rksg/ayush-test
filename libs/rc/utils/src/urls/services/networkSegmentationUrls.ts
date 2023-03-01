@@ -37,5 +37,25 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getDistributionSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+  },
+  createNetworkSegmentationGroup: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups'
+  },
+  getNetworkSegmentationStatsList: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups/query'
+  },
+  deleteNetworkSegmentationGroup: {
+    method: 'delete',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
+  },
+  updateNetworkSegmentationGroup: {
+    method: 'put',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
   }
 }

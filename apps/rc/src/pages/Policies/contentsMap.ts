@@ -5,6 +5,9 @@ import {
   PolicyType,
   RogueRuleType,
   Layer3ProtocolType,
+  FacilityEnum,
+  FlowLevelEnum,
+  ProtocolEnum,
   OsVendorEnum,
   DeviceTypeEnum,
   ApplicationAclType,
@@ -25,15 +28,18 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
-  [PolicyType.AAA]: defineMessage({ defaultMessage: 'AAA description (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Access Control description (TBD)' }),
+  [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
   // eslint-disable-next-line max-len
-  [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Client Isolation description (TBD)' }),
+  [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
   // eslint-disable-next-line max-len
-  [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Rogue AP Detection description (TBD)' }),
-  [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Syslog description (TBD)' }),
-  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'VLAN Pool description (TBD)' }),
+  [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
+  // eslint-disable-next-line max-len
+  [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
+  // eslint-disable-next-line max-len
+  [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
+  // eslint-disable-next-line max-len
+  [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
   [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration (TBD)' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy (TBD)' }),
   [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' }),
@@ -142,6 +148,25 @@ export const AppRuleLabelMapping: Record<ApplicationRuleType, MessageDescriptor>
   [ApplicationRuleType.USER_DEFINED]: defineMessage({ defaultMessage: 'User defined' })
 }
 
+export const protocolLabelMapping: Record<ProtocolEnum, MessageDescriptor> = {
+  [ProtocolEnum.TCP]: defineMessage({ defaultMessage: 'TCP' }),
+  [ProtocolEnum.UDP]: defineMessage({ defaultMessage: 'UDP' })
+}
 
+export const facilityLabelMapping: Record<FacilityEnum, MessageDescriptor> = {
+  [FacilityEnum.KEEP_ORIGINAL]: defineMessage({ defaultMessage: 'Keep Original' }),
+  [FacilityEnum.LOCAL0]: defineMessage({ defaultMessage: '0' }),
+  [FacilityEnum.LOCAL1]: defineMessage({ defaultMessage: '1' }),
+  [FacilityEnum.LOCAL2]: defineMessage({ defaultMessage: '2' }),
+  [FacilityEnum.LOCAL3]: defineMessage({ defaultMessage: '3' }),
+  [FacilityEnum.LOCAL4]: defineMessage({ defaultMessage: '4' }),
+  [FacilityEnum.LOCAL5]: defineMessage({ defaultMessage: '5' }),
+  [FacilityEnum.LOCAL6]: defineMessage({ defaultMessage: '6' }),
+  [FacilityEnum.LOCAL7]: defineMessage({ defaultMessage: '7' })
+}
 
-
+export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
+  [FlowLevelEnum.GENERAL_LOGS]: defineMessage({ defaultMessage: 'General Logs' }),
+  [FlowLevelEnum.CLIENT_FLOW]: defineMessage({ defaultMessage: 'Client Flow' }),
+  [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
+}

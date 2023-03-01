@@ -11,6 +11,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { RadioSettingsChannels } from '../RadioSettingsChannels'
 
+import { ChannelBarControlPopover } from './ChannelBarControlPopover'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -74,7 +75,6 @@ export function SingleRadioSettings (props:{
   } = useContext(editContext)
 
   const isSupportRadio = bandwidthOptions?.length > 0
-  const displayRadioBarSettings = ['5G', 'DFS']
   const radioDataKey = (context === 'venue') ?
     VenueRadioTypeDataKeyMap[radioType] : ApRadioTypeDataKeyMap[radioType]
 
@@ -85,6 +85,7 @@ export function SingleRadioSettings (props:{
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
+  const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(['5G', 'DFS'])
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
@@ -121,11 +122,9 @@ export function SingleRadioSettings (props:{
     //bandwidthList = Object.keys(supportChannels)
   }
 
-  /*
-  const showChannelBarCOntrolLink = (radioType !== ApRadioTypeEnum.Radio24G &&
+  const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
 
-  */
 
   const [
     channelMethod,
@@ -163,87 +162,100 @@ export function SingleRadioSettings (props:{
       ApRadioTypeEnum.RadioUpper5G
     ]
 
+    if (!channelBandwidth || isEmpty(supportChannels)) {
+      return
+    }
+
     // Reset to AUTO if AP doesn't not supported venue radio settings's bandwidth
     if (channelBandwidth !== 'AUTO' &&
         !bandwidthOptions.find(option => option.value === channelBandwidth)) {
       form.setFieldValue(channelBandwidthFieldName, 'AUTO')
     }
 
-    if (!isEmpty(supportChannels)) {
-      const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
-      const isRadio24G = radioType === ApRadioTypeEnum.Radio24G
-      const isManualSelect = channelMethod === 'MANUAL'
+    const bandwidth = (channelBandwidth === 'AUTO')? 'auto' : channelBandwidth
+    const isRadio24G = radioType === ApRadioTypeEnum.Radio24G
+    const isManualSelect = channelMethod === 'MANUAL'
 
-      const gz = (isRadio24G || isManualSelect) ? 1 : HzToSizeMap[bandwidth]
-      setGroupSize(gz)
+    const gz = (isRadio24G || isManualSelect) ? 1 : HzToSizeMap[bandwidth]
+    setGroupSize(gz)
 
-      if ( !hasIndoorBandwidth && !hasOutdoorBandwidth ) {
-        const availableCannels = supportChannels[bandwidth]
-        const selectedChannels = setSelectedChannels(availableCannels)
+    if ( !hasIndoorBandwidth && !hasOutdoorBandwidth ) {
+      const availableCannels = supportChannels[bandwidth]
+      let selectedChannels = setSelectedChannels(availableCannels)
 
-        const isShowChannelBar = showChannelBarRadios.includes(radioType)
-        if (isShowChannelBar) {
-          const chBars = Object.assign(channelBars, split5GChannels(availableCannels))
-          chBars.dfsChannels = (supportDfsChannels && supportDfsChannels[bandwidth]) || []
-          setIndoorChannelBars(chBars)
+      const isShowChannelBar = showChannelBarRadios.includes(radioType)
+      if (isShowChannelBar) {
+        const chBars = Object.assign(channelBars, split5GChannels(availableCannels))
+        chBars.dfsChannels = (supportDfsChannels && supportDfsChannels[bandwidth]) || []
+        setIndoorChannelBars(chBars)
+      }
+
+      let needResetChannel = false
+      if (oldBandwidth !== bandwidth) {
+        if (oldBandwidth) {
+          needResetChannel = true
         }
-
-        setChannelList(selectedChannels)
-        if (oldBandwidth !== bandwidth) {
-          if (oldBandwidth) {
-            form.setFieldValue(allowedChannelsFieldName, availableCannels)
-          }
-          setOldBandwidth(bandwidth)
+        setOldBandwidth(bandwidth)
+      }
+      if (oldChannelMethod !== channelMethod) {
+        if (oldChannelMethod) {
+          needResetChannel = true
         }
+        setOldChannelMethod(channelMethod)
+      }
 
-        if (context === 'ap') {
-          if (oldChannelMethod && isManualSelect) {
+      if (needResetChannel) {
+        if (isManualSelect) {
+          const allowChannels = form.getFieldValue(allowedChannelsFieldName)
+          if (allowChannels.length !== 1 || !availableCannels.includes(allowChannels)) {
             form.setFieldValue(allowedChannelsFieldName, [])
+            selectedChannels = setSelectedChannels(availableCannels, [])
           }
-
-          if (oldChannelMethod !== channelMethod) {
-            setOldChannelMethod(channelMethod)
-          }
+        } else {
+          form.setFieldValue(allowedChannelsFieldName, availableCannels)
+          selectedChannels = setSelectedChannels(availableCannels, availableCannels)
         }
+      }
 
-      } else {
-        const { indoor, outdoor, dfs } = supportChannels
-        const availableDfsChannels = (dfs && dfs[bandwidth]) || []
+      setChannelList(selectedChannels)
 
-        const availableIndoorChannels = indoor[bandwidth]
-        const selectedIndoorChannels = setSelectedChannels(availableIndoorChannels)
-        setIndoorChannelList(selectedIndoorChannels)
+    } else {
+      const { indoor, outdoor, dfs } = supportChannels
+      const availableDfsChannels = (dfs && dfs[bandwidth]) || []
 
-        // eslint-disable-next-line max-len
-        const indoorChBars = Object.assign(indoorChannelBars, split5GChannels(availableIndoorChannels))
-        indoorChBars.dfsChannels = availableDfsChannels
-        setIndoorChannelBars(indoorChBars)
+      const availableIndoorChannels = indoor[bandwidth]
+      const selectedIndoorChannels = setSelectedChannels(availableIndoorChannels)
+      setIndoorChannelList(selectedIndoorChannels)
 
-        const availableOutdoorChannels = outdoor[bandwidth]
-        const selectedOutdoorChannels = setSelectedChannels(availableOutdoorChannels)
-        setOutdoorChannelList(selectedOutdoorChannels)
+      // eslint-disable-next-line max-len
+      const indoorChBars = Object.assign(indoorChannelBars, split5GChannels(availableIndoorChannels))
+      indoorChBars.dfsChannels = availableDfsChannels
+      setIndoorChannelBars(indoorChBars)
 
-        // eslint-disable-next-line max-len
-        const outdoorChBars = Object.assign(outdoorChannelBars, split5GChannels(availableOutdoorChannels))
-        outdoorChBars.dfsChannels = availableDfsChannels
-        setOutdoorChannelBars(outdoorChBars)
+      const availableOutdoorChannels = outdoor[bandwidth]
+      const selectedOutdoorChannels = setSelectedChannels(availableOutdoorChannels)
+      setOutdoorChannelList(selectedOutdoorChannels)
 
-        // the bandwidth value is changed
-        if (oldBandwidth !== bandwidth) {
-          if (oldBandwidth) {
-            form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
-            form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
-          }
-          setOldBandwidth(bandwidth)
+      // eslint-disable-next-line max-len
+      const outdoorChBars = Object.assign(outdoorChannelBars, split5GChannels(availableOutdoorChannels))
+      outdoorChBars.dfsChannels = availableDfsChannels
+      setOutdoorChannelBars(outdoorChBars)
+
+      // the bandwidth value is changed
+      if (oldBandwidth !== bandwidth) {
+        if (oldBandwidth) {
+          form.setFieldValue(allowedIndoorChannelsFieldName, availableIndoorChannels)
+          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
         }
+        setOldBandwidth(bandwidth)
+      }
 
-        // the combinChannels value is changed
-        if (allowIndoorForOutdoor && oldCombinChannels !== combinChannels) {
-          if (combinChannels === false) {
-            form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
-          }
-          setOldCombinChannels(combinChannels)
+      // the combinChannels value is changed
+      if (allowIndoorForOutdoor && oldCombinChannels !== combinChannels) {
+        if (combinChannels === false) {
+          form.setFieldValue(allowedOutdoorChannelsFieldName, availableOutdoorChannels)
         }
+        setOldCombinChannels(combinChannels)
       }
     }
 
@@ -285,12 +297,16 @@ export function SingleRadioSettings (props:{
       ...editContextData,
       hasError: hasErrors
     })
-  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels])
+  }, [allowedChannels, allowedIndoorChannels, allowedOutdoorChannels, channelMethod])
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
       props.onResetDefaultValue(radioType)
     }
+  }
+
+  const updateChannelBarDisplaySettings = (values: string[]) => {
+    setDisplayRadioBarSettings(values)
   }
 
   return (
@@ -326,6 +342,13 @@ export function SingleRadioSettings (props:{
               <div style={{ color: cssStr('--acx-semantics-red-50') }}>
                 {channelErrMsg}
               </div>
+            </Col>
+          }
+          {showChannelBarControlLink &&
+            <Col offset={6} span={6} style={{ paddingLeft: 'unset' }}>
+              <ChannelBarControlPopover
+                initValue={displayRadioBarSettings}
+                onChannelBarDisplayChanged={updateChannelBarDisplaySettings} />
             </Col>
           }
         </Row>

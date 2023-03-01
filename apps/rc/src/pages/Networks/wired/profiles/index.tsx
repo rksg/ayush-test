@@ -1,11 +1,17 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
-import { useGetProfilesQuery }                      from '@acx-ui/rc/services'
-import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
+import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const navigate = useNavigate()
+  const linkToProfiles = useTenantLink('/networks/wired/profiles')
+
+  const [deleteProfiles] = useDeleteProfilesMutation()
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
@@ -41,14 +47,32 @@ export function ProfilesTab () {
   const rowActions: TableProps<SwitchProfileModel>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
-      disabled: true, //Waiting for support
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => {}
+      onClick: (selectedRows) => {
+        const row = selectedRows?.[0]
+        navigate(`${row?.profileType?.toLowerCase()}/${row?.id}/edit`, { replace: false })
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      disabled: true, //Waiting for support
-      onClick: () => {}
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: selectedRows.length > 1 ?
+              $t({ defaultMessage: 'Profiles' }) : $t({ defaultMessage: 'Profile' }),
+            entityValue: selectedRows[0].name,
+            numOfEntities: selectedRows.length
+          },
+          onOk: () => {
+            deleteProfiles({
+              params: { tenantId },
+              payload: selectedRows.map(r => r.id)
+            }).then(clearSelection)
+          }
+        })
+      }
     }
   ]
 
@@ -66,13 +90,13 @@ export function ProfilesTab () {
         rowSelection={{ type: 'checkbox' }}
         actions={[{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => navigate(`${linkToProfiles.pathname}/add`)
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => {
+            navigate('cli/add', { replace: false })
+          }
         }]}
       />
     </Loader></>

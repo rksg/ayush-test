@@ -17,8 +17,8 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { InformationSolid }               from '@acx-ui/icons'
-import { ToggleButton, IpPortSecretForm } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -26,8 +26,6 @@ import {
   SecurityOptionsPassphraseLabel,
   MacAuthMacFormatEnum,
   macAuthMacFormatOptions,
-  AaaServerTypeEnum,
-  AaaServerOrderEnum,
   trailingNorLeadingSpaces,
   WlanSecurityEnum,
   WifiNetworkMessages,
@@ -36,6 +34,7 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
+import AAAInstance                 from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
@@ -48,7 +47,7 @@ export function PskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   useEffect(()=>{
-    if((editMode || cloneMode) && data){
+    if((editMode || cloneMode) && data && !form.isFieldsTouched()) {
       form.setFieldsValue({
         wlan: {
           passphrase: data.wlan?.passphrase,
@@ -65,7 +64,9 @@ export function PskSettingsForm () {
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
-        accountingRadius: data.accountingRadius
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId,
+        authRadiusId: data.authRadiusId
       })
     }
   }, [data])
@@ -156,9 +157,18 @@ function SettingsForm () {
     }
   }
   const onMacAuthChange = (checked: boolean) => {
-    setData && setData({ ...data, wlan: { macAddressAuthentication: checked } })
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          macAddressAuthentication: checked
+        }
+      }
+    })
   }
 
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -260,7 +270,7 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode} onChange={onMacAuthChange} />
+                <Switch disabled={editMode||disableAAA} onChange={onMacAuthChange} />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'Use MAC Auth' })}</span>
               <Tooltip.Question
@@ -292,66 +302,27 @@ function SettingsForm () {
 function MACAuthService () {
   const intl = useIntl()
   const [
-    enableSecondaryAuthServer,
-    enableAccountingService,
-    enableSecondaryAcctServer
+    enableAccountingService
   ] = [
-    useWatch<boolean>(['enableSecondaryAuthServer']),
-    useWatch<boolean>(['enableAccountingService']),
-    useWatch<boolean>(['enableSecondaryAcctServer'])
+    useWatch<boolean>(['enableAccountingService'])
   ]
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <IpPortSecretForm
-          serverType={AaaServerTypeEnum.AUTHENTICATION}
-          order={AaaServerOrderEnum.PRIMARY}
-        />
-
-        <Form.Item noStyle name='enableSecondaryAuthServer'>
-          <ToggleButton
-            enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
-            disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
-          />
-        </Form.Item>
-
-        {enableSecondaryAuthServer &&
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.AUTHENTICATION}
-            order={AaaServerOrderEnum.SECONDARY}
-          />
-        }
+        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'/>
       </div>
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
           <Switch />
         </Form.Item>
-
-        {enableAccountingService && (<>
-          <IpPortSecretForm
-            serverType={AaaServerTypeEnum.ACCOUNTING}
-            order={AaaServerOrderEnum.PRIMARY}
-          />
-
-          <Form.Item noStyle name='enableSecondaryAcctServer'>
-            <ToggleButton
-              enableText={intl.$t({ defaultMessage: 'Remove Secondary Server' })}
-              disableText={intl.$t({ defaultMessage: 'Add Secondary Server' })}
-            />
-          </Form.Item>
-
-          {enableSecondaryAcctServer &&
-            <IpPortSecretForm
-              serverType={AaaServerTypeEnum.ACCOUNTING}
-              order={AaaServerOrderEnum.SECONDARY}
-            />
-          }
-        </>)}
+        {enableAccountingService &&
+          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>
+        }
       </div>
     </Space>
-
-
   )
 }

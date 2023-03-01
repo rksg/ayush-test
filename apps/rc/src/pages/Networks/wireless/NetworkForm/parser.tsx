@@ -18,96 +18,42 @@ import {
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
     enableAccountingService: data.enableAccountingService,
-    isCloudpathEnabled: data.isCloudpathEnabled
+    isCloudpathEnabled: data.isCloudpathEnabled,
+    accountingRadiusId: data.accountingRadiusId,
+    authRadiusId: data.authRadiusId
+  }
+  let authRadius = {}
+  if (get(data, 'authRadius.primary.ip')) {
+    authRadius = {
+      ...authRadius,
+      ...data.authRadius
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      enableAuthProxy: data.enableAuthProxy,
+      enableSecondaryAuthServer: data.enableSecondaryAuthServer,
+      authRadius
+    }
   }
 
-  if (data.isCloudpathEnabled) {
-    delete data?.accountingRadius
-    delete data?.authRadius
+  if (data.enableAccountingService) {
+    let accountingRadius = {}
+    accountingRadius = {
+      ...accountingRadius,
+      ...data.accountingRadius
+    }
     saveData = {
       ...saveData,
       ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
-  } else {
-    delete data?.cloudpathServerId
-    let authRadius = {}
-    if (get(data, 'authRadius.primary.ip')) {
-      authRadius = {
-        ...authRadius,
-        ...{
-          primary: {
-            ip: get(data, 'authRadius.primary.ip'),
-            port: get(data, 'authRadius.primary.port'),
-            sharedSecret: get(data, 'authRadius.primary.sharedSecret')
-          }
-        }
-      }
-    }
-    if (data.enableSecondaryAuthServer) {
-      authRadius = {
-        ...authRadius,
-        ...{
-          secondary: {
-            ip: get(data, 'authRadius.secondary.ip'),
-            port: get(data, 'authRadius.secondary.port'),
-            sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
-          }
-        }
-      }
-    }
-
-    saveData = {
-      ...saveData,
-      ...{
-        enableAuthProxy: data.enableAuthProxy,
-        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-        authRadius
-      }
-    }
-
-    if (data.enableAccountingService) {
-      let accountingRadius = {}
-      accountingRadius = {
-        ...accountingRadius,
-        ...{
-          primary: {
-            ip: get(data, 'accountingRadius.primary.ip'),
-            port: get(data, 'accountingRadius.primary.port'),
-            sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
-          }
-        }
-      }
-
-      if (data.enableSecondaryAcctServer) {
-        accountingRadius = {
-          ...accountingRadius,
-          ...{
-            secondary: {
-              ip: get(data, 'accountingRadius.secondary.ip'),
-              port: get(data, 'accountingRadius.secondary.port'),
-              sharedSecret: get(
-                data,
-                'accountingRadius.secondary.sharedSecret'
-              )
-            }
-          }
-        }
-      }
-
-      saveData = {
-        ...saveData,
-        ...{
-          enableAccountingProxy: data.enableAccountingProxy,
-          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
-          accountingRadius
-        }
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableSecondaryAcctServer: data.enableSecondaryAcctServer,
+        accountingRadius
       }
     }
   }
+
   if (editMode) {
     saveData = {
       ...saveData,
@@ -200,39 +146,18 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       }
     }
   }
-
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      cloudpathServerId: data.cloudpathServerId
-    }
-  }
   return saveData
 }
 
 const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
-    enableAccountingService: data.enableAccountingService
+    enableAccountingService: data.enableAccountingService,
+    accountingRadiusId: data.accountingRadiusId,
+    authRadiusId: data.authRadiusId
   }
   if (data.wlan?.macAddressAuthentication) {
     let authRadius = {
-      primary: {
-        ip: get(data, 'authRadius.primary.ip'),
-        port: get(data, 'authRadius.primary.port'),
-        sharedSecret: get(data, 'authRadius.primary.sharedSecret')
-      }
-    }
-    if (data.enableSecondaryAuthServer) {
-      authRadius = {
-        ...authRadius,
-        ...{
-          secondary: {
-            ip: get(data, 'authRadius.secondary.ip'),
-            port: get(data, 'authRadius.secondary.port'),
-            sharedSecret: get(data, 'authRadius.secondary.sharedSecret')
-          }
-        }
-      }
+      ...data.authRadius
     }
 
     saveData = {
@@ -245,28 +170,8 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
 
     if (data.enableAccountingService) {
       let accountingRadius = {
-        primary: {
-          ip: get(data, 'accountingRadius.primary.ip'),
-          port: get(data, 'accountingRadius.primary.port'),
-          sharedSecret: get(data, 'accountingRadius.primary.sharedSecret')
-        }
+        ...data.accountingRadius
 
-      }
-
-      if (data.enableSecondaryAcctServer) {
-        accountingRadius = {
-          ...accountingRadius,
-          ...{
-            secondary: {
-              ip: get(data, 'accountingRadius.secondary.ip'),
-              port: get(data, 'accountingRadius.secondary.port'),
-              sharedSecret: get(
-                data,
-                'accountingRadius.secondary.sharedSecret'
-              )
-            }
-          }
-        }
       }
 
       saveData = {
@@ -371,7 +276,10 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
 
   if (!get(data, 'accessControlProfileEnable')) {
     advancedCustomization.accessControlProfileId = null
+    advancedCustomization.accessControlEnable = false
   }
+
+  advancedCustomization.respectiveAccessControl = !get(data, 'accessControlProfileEnable')
 
   if (get(data, 'accessControlProfileEnable')
     && get(data, 'wlan.advancedCustomization.accessControlProfileId')) {
@@ -388,9 +296,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.accessControlProfileId = get(data, 'wlan.advancedCustomization.accessControlProfileId')
   }
 
-  if (get(data, 'wlan.advancedCustomization.vlanPool')) {
-    advancedCustomization.vlanPool = JSON.parse(get(data, 'wlan.advancedCustomization.vlanPool'))
-  }
+
   // accessControlForm
   if (!Number.isInteger(get(data, 'wlan.advancedCustomization.userUplinkRateLimiting'))) {
     advancedCustomization.userUplinkRateLimiting = 0

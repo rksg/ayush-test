@@ -80,10 +80,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
             required: true,
             message: $t({ defaultMessage: 'Please enter Serial Number' })
           },
-          {
-            max: 34,
-            message: $t({ defaultMessage: 'Serial Number must be up to 34 characters' })
-          }
+          { max: 34 }
         ]}
         children={
           <Input

@@ -11,6 +11,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { Button, StepsForm }            from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery }          from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
@@ -36,9 +37,14 @@ export function DpskSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
+        isCloudpathEnabled: data.authRadius?true:false,
         dpskServiceProfileId: data?.dpskServiceProfileId,
-        dpskWlanSecurity: data?.wlan?.wlanSecurity
+        dpskWlanSecurity: data?.wlan?.wlanSecurity,
+        enableAccountingService: data.accountingRadius,
+        authRadius: data.authRadius,
+        accountingRadius: data.accountingRadius,
+        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+        authRadiusId: data.authRadiusId||data.authRadius?.id
       })
     }
   }, [data])
@@ -66,7 +72,7 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
-
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -95,7 +101,7 @@ function SettingsForm () {
                 <Radio value={false} disabled={editMode}>
                   { $t({ defaultMessage: 'Use the DPSK Service' }) }
                 </Radio>
-                <Radio value={true} disabled={editMode}>
+                <Radio value={true} disabled={editMode||disableAAA}>
                   { $t({ defaultMessage: 'Use Cloudpath Server' }) }
                 </Radio>
               </Space>
