@@ -21,47 +21,43 @@ export const columns: TableProps<RecordType>['columns'] = [
     key: 'name',
     filterable: true,
     searchable: true
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+    align: 'center'
+  },
+  {
+    title: 'Description',
+    dataIndex: 'description',
+    key: 'description'
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address'
   }
 ]
 
-export const data: TableProps<RecordType>['dataSource'] = [
+export const data = [
   {
     key: '1',
-    name: 'John Doe',
-    givenName: 'John',
-    surname: 'Doe',
-    age: 32,
-    description: 'John Doe living at sample address',
-    address: 'sample address'
+    name: 'John Doe'
   },
   {
     key: '2',
-    name: 'Jane Doe',
-    givenName: 'Jane',
-    surname: 'Doe',
-    age: 33,
-    description: 'Jane Doe living at new address',
-    address: 'new address'
+    name: 'Jane Doe'
   },
   {
     key: '3',
-    name: 'Jordan Doe',
-    givenName: 'Jordan',
-    surname: 'Doe',
-    age: 33,
-    description: '',
-    address: 'another address'
+    name: 'Jordan Doe'
   },
   {
     key: '4',
-    name: 'Sam Smith',
-    givenName: 'Sam',
-    surname: 'Smiths',
-    age: 43,
-    description: 'a great singer',
-    address: 'mountain style'
+    name: 'Sam Smith'
   }
-]
+] as unknown as TableProps<RecordType>['dataSource']
 
 const rowActions: TableProps<(typeof data)[0]>['rowActions'] = [
   {
@@ -171,7 +167,7 @@ function expandedRowRender (
   return <Table<RecordType>
     columns={columns}
     dataSource={data}
-    rowSelection={{ defaultSelectedRowKeys: [] }}
     columnState={{}}
+    showHeader={false}
   />
 }
