@@ -50,9 +50,8 @@ function AccessPointLanPortSelector (props: { venueId: string, macAddress?: stri
   const { apOptions } = useApListQuery({
     params: useParams(),
     payload: {
-      ...apListQueryDefaultPayload
-      // FIXME: need to remove comment
-      // filters: { venueId: venueId ? [venueId] : [] }
+      ...apListQueryDefaultPayload,
+      filters: { venueId: venueId ? [venueId] : [] }
     }
   }, {
     selectFromResult ({ data }) {
@@ -107,8 +106,7 @@ function AccessPointLanPortSelector (props: { venueId: string, macAddress?: stri
                   <Checkbox
                     key={index}
                     value={port.portId ?? index}
-                    // FIXME: need to remove comment
-                    // disabled={port.type === 'TRUNK'}
+                    disabled={port.type === 'TRUNK'}
                   >
                     {`LAN${port.portId}`}
                   </Checkbox>
@@ -135,7 +133,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [personaGroupId, setPersonaGroupId] = useState<string>()
-  // FIXME: just for testing
   const [withNsg, setWithNsg] = useState(false)
 
   // VLAN fields state
@@ -163,9 +160,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       const groupId = propertyConfigsQuery.data.personaGroupId
       setPersonaGroupId(groupId)
 
-      // FIXME: just for testing
-      // getPersonaGroupById({ params: { groupId } })
-      //   .then(result => setWithNsg(!!result.data?.nsgId))
+      getPersonaGroupById({ params: { groupId } })
+        .then(result => setWithNsg(!!result.data?.nsgId))
     }
   }, [propertyConfigsQuery.data])
 
@@ -481,54 +477,63 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         : $t({ defaultMessage: 'Add Unit' })
       }
       children={
-        <Form
-          preserve={false}
-          name='propertyUnitForm'
-          form={form}
-          layout={'vertical'}
+        <Loader
+          states={[
+            { isLoading: unitResult.isLoading },
+            propertyConfigsQuery,
+            personaResult
+          ]}
         >
-          <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
-          <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
-          <Form.Item name='guestPersonaId' noStyle><Input type='hidden' /></Form.Item>
+          <Form
+            preserve={false}
+            name='propertyUnitForm'
+            form={form}
+            layout={'vertical'}
+          >
+            <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
+            <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>
+            <Form.Item name='guestPersonaId' noStyle><Input type='hidden' /></Form.Item>
 
-          <Form.Item
-            name={'name'}
-            label={$t({ defaultMessage: 'Unit Name' })}
-            children={<Input />}
-            rules={[
-              { required: true }
-            ]}
-          />
-          <Form.Item
-            name={['unitPersona', 'dpskPassphrase']}
-            label={$t({ defaultMessage: 'DPSK Passphrase' })}
-            children={<Input />}
-          />
-          <Form.Item
-            name={['guestPersona', 'dpskPassphrase']}
-            label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
-            children={<Input />}
-          />
+            <Form.Item
+              name={'name'}
+              label={$t({ defaultMessage: 'Unit Name' })}
+              children={<Input />}
+              rules={[
+                { required: true }
+              ]}
+            />
+            <Form.Item
+              name={['unitPersona', 'dpskPassphrase']}
+              label={$t({ defaultMessage: 'DPSK Passphrase' })}
+              children={<Input />}
+            />
+            <Form.Item
+              name={['guestPersona', 'dpskPassphrase']}
+              label={$t({ defaultMessage: 'Guest DPSK Passphrase' })}
+              children={<Input />}
+            />
 
-          {withNsg ? withNsgForm : withoutNsgForm}
+            {withNsg ? withNsgForm : withoutNsgForm}
 
-          <Form.Item
-            name={['resident', 'name']}
-            label={$t({ defaultMessage: 'Resident Name' })}
-            children={<Input />}
-          />
-          <Form.Item
-            name={['resident', 'email']}
-            label={$t({ defaultMessage: 'Resident\'s Email' })}
-            rules={[{ validator: (_, value) => emailRegExp(value) }]}
-            children={<Input />}
-          />
-          <Form.Item
-            name={['resident', 'phoneNumber']}
-            label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
-            children={<Input />}
-          />
-        </Form>}
+            <Form.Item
+              name={['resident', 'name']}
+              label={$t({ defaultMessage: 'Resident Name' })}
+              children={<Input />}
+            />
+            <Form.Item
+              name={['resident', 'email']}
+              label={$t({ defaultMessage: 'Resident\'s Email' })}
+              rules={[{ validator: (_, value) => emailRegExp(value) }]}
+              children={<Input />}
+            />
+            <Form.Item
+              name={['resident', 'phoneNumber']}
+              label={$t({ defaultMessage: 'Resident\'s Phone Number' })}
+              children={<Input />}
+            />
+          </Form>
+        </Loader>
+      }
       footer={<Drawer.FormFooter
         buttonLabel={{
           save: isEdit
