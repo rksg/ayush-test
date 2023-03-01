@@ -22,7 +22,7 @@ import {
   baseAdministrationApi as administrationApi,
   baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi,
-  msgTemplateApi
+  msgTemplateApi,
   baseNsgApi as nsgApi
 } from '@acx-ui/rc/services'
 
@@ -86,7 +86,7 @@ export const store = configureStore({
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
-    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer
+    [msgTemplateApi.reducerPath]: msgTemplateApi.reducer,
     [nsgApi.reducerPath]: nsgApi.reducer
   },
 
@@ -118,7 +118,7 @@ export const store = configureStore({
       edgeDhcpApi.middleware,
       personaApi.middleware,
       networkHealthApi.middleware,
-      msgTemplateApi.middleware
+      msgTemplateApi.middleware,
       nsgApi.middleware
     ])
   },
