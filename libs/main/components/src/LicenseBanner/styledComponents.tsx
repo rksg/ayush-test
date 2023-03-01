@@ -177,6 +177,7 @@ export const LicenseWarningBtn = styled.div.attrs((props: { isCritical: boolean,
   height: 40px;
   width:100%;
   align-items: center;
+  margin-right:5px;
   border-radius: ${props => (props.isExpanded && props.isCritical) ? ';':'4px;'}
 `
 

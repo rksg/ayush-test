@@ -16,6 +16,14 @@ exports[`useAnalyticsFilter gets initial value from search parameters 1`] = `
 </DocumentFragment>
 `;
 
+exports[`useAnalyticsFilter imports dashboard filter with single venue 1`] = `
+<DocumentFragment>
+  <div>
+    {"startDate":"2021-12-31T00:00:00+00:00","endDate":"2022-01-01T00:00:00+00:00","range":"Last 24 Hours","filter":{"networkNodes":[[{"type":"zone","name":"venueId1"}]],"switchNodes":[[{"type":"switchGroup","name":"venueId1"}]]},"path":[{"type":"network","name":"Network"}]}
+  </div>
+</DocumentFragment>
+`;
+
 exports[`useAnalyticsFilter should render correctly 1`] = `
 <DocumentFragment>
   <div>

@@ -26,12 +26,12 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
+        isCloudpathEnabled: data.authRadius,
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
+        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+        authRadiusId: data.authRadiusId||data.authRadius?.id
       })
     }
   }, [data])
@@ -49,24 +49,14 @@ export function OpenSettingsForm () {
 }
 
 function SettingsForm () {
-  const form = Form.useFormInstance()
   const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
   const onCloudPathChange = (checked: boolean) => {
-    if(checked){
-      delete data?.authRadius
-      delete data?.accountingRadius
-    }else{
-      delete data?.cloudpathServerId
-      form.setFieldsValue({
-        cloudpathServerId: ''
-      })
-    }
     setData && setData({ ...data, isCloudpathEnabled: checked })
   }
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>

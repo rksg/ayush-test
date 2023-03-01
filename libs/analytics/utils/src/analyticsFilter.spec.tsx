@@ -201,4 +201,22 @@ describe('useAnalyticsFilter', () => {
     )
     expect(asFragment()).toMatchSnapshot()
   })
+  it('imports dashboard filter with single venue', () => {
+    const venues = fixedEncodeURIComponent(JSON.stringify({
+      nodes: [['venueId1']]
+    }))
+    function Component () {
+      const { filters } = useAnalyticsFilter()
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const { asFragment } = render(
+      <MemoryRouter initialEntries={[{
+        pathname: '/analytics/incidents',
+        search: `?dashboardVenueFilter=${venues}`
+      }]}>
+        <Component />
+      </MemoryRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
 })
