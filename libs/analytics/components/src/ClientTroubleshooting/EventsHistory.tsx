@@ -14,6 +14,7 @@ import {
   eventColorByCategory,
   IncidentDetails
 } from './config'
+import { ConnectionEventPopover }                              from './ConnectionEvent'
 import { ClientInfoData }                                      from './services'
 import * as UI                                                 from './styledComponents'
 import { transformEvents,formatEventDesc, transformIncidents } from './util'
@@ -105,13 +106,19 @@ function WrappedItem (
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : <UI.HistoryItemWrapper
-      onClick={onClick}
-      $selected={selected}
-      ref={ref}
+    : <ConnectionEventPopover
+      event={(item as FormattedEvent).event}
+      arrowPointAtCenter
+      placement='bottom'
     >
-      {Item}
-    </UI.HistoryItemWrapper>
+      <UI.HistoryItemWrapper
+        onClick={onClick}
+        $selected={selected}
+        ref={ref}
+      >
+        {Item}
+      </UI.HistoryItemWrapper>
+    </ConnectionEventPopover>
 }
 
 export function History (props : HistoryContentProps) {
