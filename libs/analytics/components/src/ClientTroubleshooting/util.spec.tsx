@@ -735,8 +735,8 @@ describe('util', () => {
     it('should return day for greater than week period', () => {
       const start = moment('01/02/2023').valueOf()
       const end = moment('01/11/2023').valueOf()
-      const halfday = (1000 * 60 * 60 * 24) / 2
-      expect(calculateInterval([start, end])).toEqual(halfday)
+      const day = (1000 * 60 * 60 * 24)
+      expect(calculateInterval([start, end])).toEqual(day)
     })
     it('should return hour for 3 day period', () => {
       const start = moment('01/02/2023 08:00').valueOf()
