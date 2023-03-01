@@ -442,6 +442,12 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
+
+              const visible = typeof option.visible === 'function'
+                ? option.visible(rows)
+                : option.visible ?? true
+              if (!visible) return null
+
               const tooltip = typeof option.tooltip === 'function'
                 ? option.tooltip(rows)
                 : option.tooltip
@@ -451,19 +457,16 @@ function Table <RecordType extends Record<string, any>> ({
               const disabled = typeof option.disabled === 'function'
                 ? option.disabled(rows)
                 : option.disabled
-              const visible = typeof option.visible === 'function'
-                ? option.visible(rows)
-                : option.visible ?? true
               const buttonProps: ButtonProps & { key: React.Key } = {
                 type: 'link',
                 size: 'small',
                 key: option.label
               }
 
-              if (!visible) return null
               if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>
                 {option.label}
               </DisabledButton>
+
               return <Button
                 {...buttonProps}
                 disabled={disabled}
