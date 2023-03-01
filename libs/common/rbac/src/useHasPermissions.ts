@@ -1,8 +1,7 @@
 import { getJwtTokenPayload } from '@acx-ui/utils'
 
-import { useGetTenantAllowedOperations } from '../RbacAuthContext'
-
-import { RolesMappingDic } from './role-mapping'
+import { useGetTenantAllowedOperations } from './RbacAuthContext'
+import { RolesMappingDic }               from './role-mapping'
 
 export function useHasPermissions (buttonId: string): boolean {
   let isAllowed = false

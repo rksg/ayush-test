@@ -4,4 +4,7 @@ export * from './rbac-services'
 export * from './useHasPermissions'
 export * from './useHasRoles'
 export * from './rbac'
-export * from '../RbacAuthContext'
+export * from './RbacAuthContext'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function hasAccess (id?: string) { return true }
