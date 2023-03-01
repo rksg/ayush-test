@@ -63,6 +63,8 @@ export default function MyServices () {
       category: RadioCardCategory.EDGE,
       tableQuery: useGetNetworkSegmentationStatsListQuery({
         params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
       }),
       disabled: !networkSegmentationEnabled
     },
