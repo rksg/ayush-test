@@ -54,7 +54,7 @@ export { SwitchClientsTable } from './SwitchClientsTable'
 export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/ClientsTable'
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
-export { TemplateSelector } from './TemplateSelectionWidget'
+export { TemplateSelector } from './TemplateSelector'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
