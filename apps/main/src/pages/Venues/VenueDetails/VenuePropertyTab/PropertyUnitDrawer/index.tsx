@@ -173,7 +173,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
           if (result.data) {
             const { personaId, guestPersonaId } = result.data
             // TODO: access point need to parsing here
-            console.log('Unit :: ', result.data)
+            // console.log('Unit :: ', result.data)
             form.setFieldsValue(result.data)
             fetchPersonaInfo(personaId, guestPersonaId)
           }
@@ -190,7 +190,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase, vni } = result.data
-            console.log('Persona :: ', result.data)
+            // console.log('Persona :: ', result.data)
             form.setFieldValue(['unitPersona', 'vlan'], vlan)
             form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
             form.setFieldValue('vxlan', vni)
@@ -203,7 +203,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase } = result.data
-            console.log('Guest Persona :: ', result.data)
+            // console.log('Guest Persona :: ', result.data)
             form.setFieldValue('enableGuestVlan', !!vlan)
             // if no timeout would not render exactly
             setTimeout(() => {
@@ -216,14 +216,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const errorCloseDrawer = () => {
-    console.log('Something wrong so close the Drawer ...')
+    // console.log('Something wrong so close the Drawer ...')
     onClose()
   }
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception for more detail information
     const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona } = formValues
-    console.log('Edit action :: ', formValues)
+    // console.log('Edit action :: ', formValues)
 
     // update Unit
     const unitUpdateResult = await updateUnitMutation({
@@ -285,7 +285,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const handleOnFinish = async (values: PropertyUnitFormFields) => {
-    console.log('Form finish values = ', values)
+    // console.log('Form finish values = ', values)
 
     try {
       isEdit ? await handleEditUnit(values) : await handleAddUnit(values)
