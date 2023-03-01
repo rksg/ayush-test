@@ -11,6 +11,17 @@ export interface NetworkSegmentationGroup {
   adminName: string
 }
 
+export interface NetworkSegmentationGroupStats {
+  id: string
+  name: string
+  tags: string[]
+  networkIds: string[]
+  venueInfos: VenueInfo[]
+  edgeInfos: EdgeInfo[]
+  distributionSwitchInfos: DistributionSwitch[]
+  accessSwitchInfos: AccessSwitch[]
+}
+
 export interface VenueInfo {
   venueId: string
   personaId: string

@@ -5,6 +5,7 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
+  useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
   useServiceListQuery
 } from '@acx-ui/rc/services'
@@ -31,6 +32,7 @@ export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
@@ -53,8 +55,20 @@ export default function MyServices () {
       category: RadioCardCategory.EDGE,
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeDhcpEnabled
       }),
       disabled: !isEdgeDhcpEnabled
+    },
+    {
+      type: ServiceType.NETWORK_SEGMENTATION,
+      category: RadioCardCategory.EDGE,
+      tableQuery: useGetNetworkSegmentationStatsListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
+      }),
+      disabled: !networkSegmentationEnabled
     },
     {
       type: ServiceType.DPSK,

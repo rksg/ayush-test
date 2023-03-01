@@ -12,6 +12,10 @@ import * as UI                          from '../styledComponents'
 
 import { VenueTable } from './VenueTable'
 
+interface GeneralSettingsFormProps {
+  editMode?: boolean
+}
+
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
   pageSize: 10000,
@@ -19,7 +23,7 @@ const venueOptionsDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-export const GeneralSettingsForm = () => {
+export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
 
   const { $t } = useIntl()
   const { tenantId } = useParams()
@@ -113,6 +117,7 @@ export const GeneralSettingsForm = () => {
                   { label: $t({ defaultMessage: 'Select...' }), value: null },
                   ...(venueOptions || [])
                 ]}
+                disabled={props.editMode}
               />
             }
           />

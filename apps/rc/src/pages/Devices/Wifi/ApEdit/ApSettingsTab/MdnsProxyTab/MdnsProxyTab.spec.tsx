@@ -114,6 +114,9 @@ describe('MdnsProxyTab', () => {
     await userEvent.click(screen.getByRole('button', { name: /Apply mDNS Proxy/ }))
     await waitFor(() => {
       expect(changeMdnsProxyFn).toHaveBeenCalledWith([params.serialNumber])
+    }, {
+      interval: 100,
+      timeout: 2000
     })
 
     // Verify removing the mDNS Proxy & error message
@@ -121,6 +124,9 @@ describe('MdnsProxyTab', () => {
     await userEvent.click(screen.getByRole('button', { name: /Apply mDNS Proxy/ }))
     await waitFor(() => {
       expect(removeMdnsProxyFn).toHaveBeenCalledWith([params.serialNumber])
+    }, {
+      interval: 100,
+      timeout: 2000
     })
     expect(await screen.findByText('An error occurred')).toBeVisible()
   })

@@ -146,3 +146,9 @@ export const staticRoutes = [
     adminDistance: 254
   }
 ]
+
+export const standaloneSwitches = [{
+  id: 'FEK3224R07X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R07X'
+}, {
+  id: 'FEK3224R08X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R08X'
+}]

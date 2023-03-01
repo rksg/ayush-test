@@ -1,5 +1,5 @@
 import { ConfigProvider }                    from '@acx-ui/components'
-import { ManageCustomer }                    from '@acx-ui/msp/components'
+import { ManageCustomer, ManageIntegrator }  from '@acx-ui/msp/components'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
@@ -43,8 +43,8 @@ function CustomersRoutes () {
       </Route>
       <Route path='v/:tenantId/integrators'>
         <Route index element={<Integrators />} />
-        {/* <Route path='create' element={<AddIntegrator />} />
-        <Route path=':action/:mspEcTenantId' element={<AddIntegrator />} /> */}
+        <Route path='create' element={<ManageIntegrator />} />
+        <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
       </Route>
     </Route>
   )

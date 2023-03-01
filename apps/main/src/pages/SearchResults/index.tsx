@@ -130,16 +130,18 @@ const searches = [
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
       defaultPayload: {
-        ...defaultSwitchPayload,
+        ...defaultSwitchPayload
+      },
+      search: {
         searchString,
-        searchTargetFields: ['name', 'model', 'ipAddress', 'switchMac']
+        searchTargetFields: defaultSwitchPayload.searchTargetFields
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'Switches' }),
-      component: <SwitchTable tableQuery={result} />
+      component: <SwitchTable tableQuery={result} searchable={false}/>
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

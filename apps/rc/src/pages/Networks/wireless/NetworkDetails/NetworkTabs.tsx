@@ -1,10 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Tooltip }                               from '@acx-ui/components'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { notAvailableMsg }                       from '@acx-ui/utils'
 
 function NetworkTabs () {
   const { $t } = useIntl()
@@ -19,10 +17,9 @@ function NetworkTabs () {
   const { tenantId, networkId } = params
   const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
 
-  const [apsCount, venuesCount, servicesCount] = [
+  const [apsCount, venuesCount] = [
     data?.aps.totalApCount ?? 0,
-    data?.activeVenueCount ?? 0,
-    0
+    data?.activeVenueCount ?? 0
   ]
 
   return (
@@ -35,12 +32,12 @@ function NetworkTabs () {
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
         key='venues' />
-      <Tabs.TabPane
+      {/* <Tabs.TabPane
         disabled
         tab={<Tooltip title={$t(notAvailableMsg)}>
           {$t({ defaultMessage: 'Services ({servicesCount})' }, { servicesCount })}
         </Tooltip>}
-        key='services' />
+        key='services' /> */}
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Incidents' })}
