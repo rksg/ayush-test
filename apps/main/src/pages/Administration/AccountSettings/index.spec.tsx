@@ -3,10 +3,10 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { UserProfileContext, UserProfileContextProps }       from '@acx-ui/rc/components'
-import { administrationApi, mspApi }                         from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo, UserUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                                  from '@acx-ui/store'
+import { UserProfileContext, UserProfileContextProps }                         from '@acx-ui/rc/components'
+import { administrationApi, mspApi }                                           from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo, UserUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                    from '@acx-ui/store'
 import {
   render,
   screen,
@@ -40,6 +40,10 @@ jest.mock('./MFAFormItem', () => ({
 }))
 jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
+}))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
 }))
 
 const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
@@ -136,6 +140,7 @@ describe('Account Settings', () => {
   it('should not display enable MFA checkbox', async () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
     fakeUser.varTenantId = 'test_tenant'
+    jest.mocked(isDelegationMode).mockReturnValue(true)
 
     render(
       <Provider>

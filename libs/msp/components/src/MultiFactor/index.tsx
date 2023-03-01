@@ -14,7 +14,7 @@ import {
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/rc/services'
-import { MFAMethod } from '@acx-ui/rc/utils'
+import { MFAMethod, isDelegationMode } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
@@ -31,6 +31,7 @@ export const MultiFactor = () => {
   const { data: details } = useGetMfaAdminDetailsQuery({
     params: { userId: data?.userId } },
   { skip: !mfaStatus })
+  const isMasqueraded = isDelegationMode()
 
   useEffect(() => {
     if (details) {
@@ -47,6 +48,8 @@ export const MultiFactor = () => {
       })
     }
   }, [form, data, details])
+
+  const configurable = mfaStatus && !isMasqueraded
 
   return (
     <Form
@@ -71,14 +74,14 @@ export const MultiFactor = () => {
           </Form.Item>
         </Col>
       </Row>
-      {mfaStatus && (
+      {configurable && (
         <Row gutter={20}>
           <Col span={8}>
             <AuthenticationMethod formRef={form} />
           </Col>
         </Row>
       )}
-      {mfaStatus && (
+      {configurable && (
         <Row gutter={20}>
           <Col span={8}>
             <BackupAuthenticationMethod
