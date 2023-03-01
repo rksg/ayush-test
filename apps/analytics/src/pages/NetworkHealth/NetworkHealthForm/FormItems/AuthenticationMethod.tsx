@@ -1,6 +1,6 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode } from 'react'
 
-import { Form, Select }                             from 'antd'
+import { Form, FormInstance, Select }               from 'antd'
 import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
@@ -19,21 +19,31 @@ import * as contents             from '../../contents'
 import { useWlanAuthMethodsMap } from '../../services'
 import {
   AuthenticationMethod as AuthenticationMethodEnum,
-  NetworkHealthFormDto
+  NetworkHealthFormDto,
+  ClientType as ClientTypeEnum
 } from '../../types'
 
 import { ClientType } from './ClientType'
+import { Password }   from './Password'
+import { Username }   from './Username'
 import { WlanName }   from './WlanName'
 
 const fieldName = ['configs', 0, 'authenticationMethod'] as NamePath
 const label = defineMessage({ defaultMessage: 'Authentication Method' })
 
+function reset (form: FormInstance, clientType: ClientTypeEnum) {
+  const methods = authMethodsByClientType[clientType]
+  const code = form.getFieldValue(fieldName)
+
+  if (!methods.some(method => method.code === code))
+    form.setFieldValue(fieldName, undefined)
+}
+
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const map = useWlanAuthMethodsMap()
-  const [code, clientType, wlanName] = [
-    Form.useWatch(fieldName, form),
+  const [clientType, wlanName] = [
     Form.useWatch(ClientType.fieldName, form),
     Form.useWatch(WlanName.fieldName, form)
   ]
@@ -67,12 +77,6 @@ export function AuthenticationMethod () {
     </>
   }
 
-  useEffect(() => {
-    if (!code) return
-    if (methods?.some(method => method.code === code)) return
-    form.setFieldValue(fieldName, undefined)
-  }, [form, methods, code, clientType])
-
   const mainLabel = <>
     {$t(label)}
     <Tooltip.Question
@@ -93,6 +97,10 @@ export function AuthenticationMethod () {
         children={<Select
           placeholder={$t({ defaultMessage: 'Select an authentication method' })}
           children={options}
+          onChange={(code: AuthenticationMethodEnum) => {
+            Username.reset(form, code)
+            Password.reset(form, code)
+          }}
         />}
       />
     </Form.Item>
@@ -101,6 +109,7 @@ export function AuthenticationMethod () {
 
 AuthenticationMethod.fieldName = fieldName
 AuthenticationMethod.label = label
+AuthenticationMethod.reset = reset
 
 AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary () {
   const { $t } = useIntl()

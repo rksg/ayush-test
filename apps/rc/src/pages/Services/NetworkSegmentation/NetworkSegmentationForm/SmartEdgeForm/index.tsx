@@ -9,6 +9,7 @@ import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery }
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
@@ -25,11 +26,11 @@ export const SmartEdgeForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const venueId = Form.useWatch('venueId', form)
-  const edgeId = Form.useWatch('edgeId', form)
-  const dhcpId = Form.useWatch('dhcpId', form)
-  const poolId = Form.useWatch('poolId', form)
-  const poolName = Form.useWatch('poolName', form)
+  const venueId = useWatch('venueId', form)
+  const edgeId = useWatch('edgeId', form)
+  const dhcpId = useWatch('dhcpId', form)
+  const poolId = useWatch('poolId', form)
+  const poolName = useWatch('poolName', form)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
 

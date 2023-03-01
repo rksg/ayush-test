@@ -1,47 +1,49 @@
-import { useEffect } from 'react'
-
-import { Form, Input }            from 'antd'
-import { NamePath }               from 'antd/es/form/interface'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form, FormInstance, Input } from 'antd'
+import { NamePath }                  from 'antd/es/form/interface'
+import { defineMessage, useIntl }    from 'react-intl'
 
 import {
   StepsFormNew,
   useStepFormContext
 } from '@acx-ui/components'
 
-import { authMethodsByCode }    from '../../authMethods'
-import { NetworkHealthFormDto } from '../../types'
+import { authMethodsByCode }                         from '../../authMethods'
+import {
+  NetworkHealthFormDto,
+  AuthenticationMethod as AuthenticationMethodEnum
+} from '../../types'
 
 import { AuthenticationMethod } from './AuthenticationMethod'
 
 const name = ['configs', 0, 'wlanUsername'] as const
 const label = defineMessage({ defaultMessage: 'Username' })
 
+function fieldOfCode (code?: AuthenticationMethodEnum) {
+  const spec = code ? authMethodsByCode[code] : undefined
+  return spec?.fields.find(field => field.key === 'wlanUsername')
+}
+
 const useField = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
   const code = Form.useWatch(AuthenticationMethod.fieldName as unknown as NamePath, form)
 
-  const spec = authMethodsByCode[code]
-  const field = spec?.fields.find(field => field.key === 'wlanUsername')
+  return fieldOfCode(code)
+}
 
-  return { field, form }
+function reset (form: FormInstance, code: AuthenticationMethodEnum) {
+  const field = fieldOfCode(code)
+
+  if (!field) form.setFieldValue(name as unknown as NamePath, undefined)
 }
 
 export function Username () {
   const { $t } = useIntl()
-  const { field, form } = useField()
-  const fieldName = name as unknown as NamePath
-
-  useEffect(() => {
-    if (field) return
-
-    form.setFieldValue(fieldName, undefined)
-  }, [form, field, fieldName])
+  const field = useField()
 
   if (!field) return null
 
   return <Form.Item
-    name={fieldName}
+    name={name as unknown as NamePath}
     label={$t(label)}
     rules={[{ required: true }]}
     children={<Input />}
@@ -50,10 +52,11 @@ export function Username () {
 
 Username.fieldName = name
 Username.label = label
+Username.reset = reset
 
 Username.FieldSummary = function UsernameFieldSummary () {
   const { $t } = useIntl()
-  const { field } = useField()
+  const field = useField()
 
   if (!field) return null
 

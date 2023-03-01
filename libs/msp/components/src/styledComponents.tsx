@@ -63,6 +63,12 @@ export const FieldLabeServiceDate = styled.div<{ width: string }>`
   grid-template-columns: 150px 150px 150px;
   align-items: baseline;
 `
+export const FieldLabelAccessPeriod = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 110px 90px 100px;
+  align-items: baseline;
+`
 export const CaretDownIcon = styled(CaretDownOutlined)`
 cursor: pointer;
 margin-left: 7px;

@@ -70,7 +70,7 @@ export type NetworkHealthConfig = {
   id: string
   specId: string
   radio: Band
-  authenticationMethod: string
+  authenticationMethod: AuthenticationMethod
   wlanName: string
   networkPaths: { networkNodes: NetworkPaths }
   wlanUsername?: string

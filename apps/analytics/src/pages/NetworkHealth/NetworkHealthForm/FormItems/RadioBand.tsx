@@ -1,8 +1,6 @@
-import { useEffect } from 'react'
-
-import { Form, Radio }            from 'antd'
-import { NamePath }               from 'antd/es/form/interface'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form, FormInstance, Radio } from 'antd'
+import { NamePath }                  from 'antd/es/form/interface'
+import { defineMessage, useIntl }    from 'react-intl'
 
 import {
   StepsFormNew,
@@ -23,15 +21,21 @@ const name = ['configs', 0, 'radio'] as const
 const label = defineMessage({ defaultMessage: 'Radio Band' })
 const format = formatter('radioFormat')
 
+function reset (form: FormInstance, clientType: ClientTypeEnum) {
+  if (clientType === ClientTypeEnum.VirtualWirelessClient) return
+
+  const fieldName = name as unknown as NamePath
+  const radio = form.getFieldValue(fieldName)
+  if (radio !== Band.Band6) return
+
+  form.setFieldValue(fieldName, Band.Band2_4)
+}
+
 export function RadioBand () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
+  const clientType = Form.useWatch(ClientType.fieldName, form)
   const fieldName = name as unknown as NamePath
-
-  const [clientType, radio] = [
-    Form.useWatch(ClientType.fieldName, form),
-    Form.useWatch(fieldName, form)
-  ]
 
   const tooltipTitle = $t({ defaultMessage: '6 GHz is not supported for Virtual Client test' })
   const mainLabel = clientType === ClientTypeEnum.VirtualClient
@@ -40,12 +44,6 @@ export function RadioBand () {
       <Tooltip.Question title={tooltipTitle} />
     </>
     : $t(label)
-
-  useEffect(() => {
-    if (clientType === ClientTypeEnum.VirtualWirelessClient) return
-    if (radio !== Band.Band6) return
-    form.setFieldValue(fieldName, Band.Band2_4)
-  }, [form, clientType, radio, fieldName])
 
   return <Form.Item label={mainLabel}>
     <Form.Item noStyle name={fieldName} label={$t(label)}>
@@ -64,6 +62,7 @@ export function RadioBand () {
 
 RadioBand.fieldName = name
 RadioBand.label = label
+RadioBand.reset = reset
 
 RadioBand.FieldSummary = function RadioBandFieldSummary () {
   const { $t } = useIntl()

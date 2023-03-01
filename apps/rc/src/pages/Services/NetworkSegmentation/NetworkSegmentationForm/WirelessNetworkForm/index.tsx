@@ -11,6 +11,7 @@ import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { useVenueNetworkListQuery }      from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 
 import * as UI from './styledComponents'
 
@@ -27,12 +28,13 @@ export const WirelessNetworkForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const venueId = Form.useWatch('venueId', form)
-  const tunnelProfileId = Form.useWatch('vxlanTunnelProfileId', form)
+  const venueId = useWatch('venueId', form)
+  const tunnelProfileId = useWatch('vxlanTunnelProfileId', form)
   const { networkOptions } = useVenueNetworkListQuery({
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
+    skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
         networkOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -56,6 +58,8 @@ export const WirelessNetworkForm = () => {
 
   return(
     <>
+      <Form.Item name='venueId' hidden />{/* Added so useWatch could work */}
+
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'Wireless Network Settings' })}</StepsForm.Title>
@@ -67,7 +71,6 @@ export const WirelessNetworkForm = () => {
                 options={[
                   { label: $t({ defaultMessage: 'Default' }), value: null }
                 ]}
-                defaultValue={null}
               />
             }
           />

@@ -1,8 +1,9 @@
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { NamePath } from 'antd/es/form/interface'
 
 import { screen, within } from '@acx-ui/test-utils'
 
-import { renderForm }                 from '../../__tests__/fixtures'
+import { renderForm, renderFormHook } from '../../__tests__/fixtures'
 import { AuthenticationMethod, Band } from '../../types'
 
 import { Username } from './Username'
@@ -68,6 +69,24 @@ describe('Username', () => {
     await click(submit)
 
     expect(await screen.findByTestId('form-values')).not.toHaveTextContent(value)
+  })
+
+  describe('reset', () => {
+    const name = Username.fieldName as unknown as NamePath
+
+    it('resets to undefined if field not needed', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-username')
+      Username.reset(form, AuthenticationMethod.OPEN_AUTH)
+      expect(form.getFieldValue(name)).toEqual(undefined)
+    })
+
+    it('does not reset', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-username')
+      Username.reset(form, AuthenticationMethod.WPA2_ENTERPRISE)
+      expect(form.getFieldValue(name)).toEqual('some-username')
+    })
   })
 })
 

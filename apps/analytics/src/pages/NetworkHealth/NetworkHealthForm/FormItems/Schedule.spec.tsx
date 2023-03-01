@@ -1,6 +1,6 @@
 import { screen, within } from '@acx-ui/test-utils'
 
-import { renderForm }                  from '../../__tests__/fixtures'
+import { renderForm, renderFormHook }  from '../../__tests__/fixtures'
 import { TestType, ScheduleFrequency } from '../../types'
 
 import { Schedule } from './Schedule'
@@ -111,6 +111,32 @@ describe('Schedule', () => {
       name: (_, el) => (el as HTMLInputElement).value !== ''
     })
     expect(timeOptions).toHaveLength(96)
+  })
+
+  describe('reset', () => {
+    const name = Schedule.fieldName
+
+    it('resets all fields', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue([name, 'frequency'], ScheduleFrequency.Monthly)
+      form.setFieldValue([name, 'day'], 7)
+      form.setFieldValue([name, 'hour'], 11)
+      Schedule.reset(form, TestType.OnDemand)
+      expect(form.getFieldValue([name, 'frequency'])).toEqual(null)
+      expect(form.getFieldValue([name, 'day'])).toEqual(null)
+      expect(form.getFieldValue([name, 'hour'])).toEqual(null)
+    })
+
+    it('set frequency and resets day', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue([name, 'frequency'], ScheduleFrequency.Monthly)
+      form.setFieldValue([name, 'day'], 7)
+      form.setFieldValue([name, 'hour'], 11)
+      Schedule.reset(form, ScheduleFrequency.Weekly)
+      expect(form.getFieldValue([name, 'frequency'])).toEqual(ScheduleFrequency.Weekly)
+      expect(form.getFieldValue([name, 'day'])).toEqual(null)
+      expect(form.getFieldValue([name, 'hour'])).toEqual(11)
+    })
   })
 })
 

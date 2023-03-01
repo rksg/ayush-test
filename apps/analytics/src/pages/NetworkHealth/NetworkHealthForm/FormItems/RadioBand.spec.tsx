@@ -1,13 +1,11 @@
-import userEvent from '@testing-library/user-event'
+import { NamePath } from 'antd/es/form/interface'
 
 import { screen } from '@acx-ui/test-utils'
 
-import { renderForm }       from '../../__tests__/fixtures'
-import { ClientType, Band } from '../../types'
+import { renderForm, renderFormHook } from '../../__tests__/fixtures'
+import { ClientType, Band }           from '../../types'
 
 import { RadioBand } from './RadioBand'
-
-const { click } = userEvent
 
 describe('RadioBand', () => {
   it('render field for virtual-client', async () => {
@@ -36,21 +34,28 @@ describe('RadioBand', () => {
     })).toHaveLength(3)
   })
 
-  // eslint-disable-next-line max-len
-  it('sets value to 2.4 when switch to virtual-client from virtual-wireless-client + 6 GHz', async () => {
-    renderForm(<RadioBand />, {
-      initialValues: {
-        clientType: ClientType.VirtualWirelessClient,
-        configs: [{ radio: Band.Band6 }]
-      },
-      valuesToUpdate: {
-        clientType: ClientType.VirtualClient
-      }
+  describe('reset', () => {
+    const name = RadioBand.fieldName as unknown as NamePath
+
+    it('resets to 2.4', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, Band.Band6)
+      RadioBand.reset(form, ClientType.VirtualClient)
+      expect(form.getFieldValue(name)).toEqual(Band.Band2_4)
     })
 
-    expect(screen.getByRole('radio', { name: '6 GHz' })).toBeChecked()
+    it('does not reset to 2.4 if virtual wireless client', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, Band.Band6)
+      RadioBand.reset(form, ClientType.VirtualWirelessClient)
+      expect(form.getFieldValue(name)).toEqual(Band.Band6)
+    })
 
-    await click(screen.getByRole('button', { name: 'Update' }))
-    await screen.findByRole('radio', { name: '2.4 GHz', checked: true })
+    it('does not reset to 2.4 if band is not 6', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, Band.Band5)
+      RadioBand.reset(form, ClientType.VirtualClient)
+      expect(form.getFieldValue(name)).toEqual(Band.Band5)
+    })
   })
 })

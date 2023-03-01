@@ -1,6 +1,17 @@
-import { Form, Row, Col, Select, Input }            from 'antd'
-import moment                                       from 'moment-timezone'
-import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
+import {
+  Form,
+  FormInstance,
+  Row,
+  Col,
+  Select,
+  Input
+} from 'antd'
+import moment from 'moment-timezone'
+import {
+  FormattedMessage,
+  defineMessage,
+  useIntl
+} from 'react-intl'
 
 import {
   StepsFormNew,
@@ -8,12 +19,13 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 
-import * as contents from '../../contents'
+import * as contents     from '../../contents'
 import {
   NetworkHealthFormDto,
   Schedule as ScheduleType,
   ScheduleFrequency,
-  TestType
+  TestType,
+  TestTypeWithSchedule
 } from '../../types'
 import * as UI from '../styledComponents'
 
@@ -76,6 +88,17 @@ const useTypeWithSchedule = () => {
 const atDayHour = defineMessage({
   defaultMessage: '<day></day> <at>at</at> <hour></hour>'
 })
+
+function reset (form: FormInstance, typeWithSchedule: TestTypeWithSchedule) {
+  if (typeWithSchedule === TestType.OnDemand) {
+    form.setFieldValue([name, 'frequency'], null)
+    form.setFieldValue([name, 'day'], null)
+    form.setFieldValue([name, 'hour'], null)
+  } else {
+    form.setFieldValue([name, 'frequency'], typeWithSchedule)
+    form.setFieldValue([name, 'day'], null)
+  }
+}
 
 export function Schedule () {
   const { $t } = useIntl()
@@ -182,6 +205,7 @@ export function Schedule () {
 
 Schedule.fieldName = name
 Schedule.label = label
+Schedule.reset = reset
 
 Schedule.FieldSummary = function ScheduleFieldSummary () {
   const { $t } = useIntl()

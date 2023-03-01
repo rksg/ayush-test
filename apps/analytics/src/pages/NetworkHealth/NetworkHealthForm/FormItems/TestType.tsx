@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { Form, Select, Input }    from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -8,8 +6,12 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 
-import * as contents                                      from '../../contents'
-import { NetworkHealthFormDto, TestType as TestTypeEnum } from '../../types'
+import * as contents     from '../../contents'
+import {
+  NetworkHealthFormDto,
+  TestType as TestTypeEnum,
+  TestTypeWithSchedule
+} from '../../types'
 
 import { Schedule } from './Schedule'
 
@@ -19,14 +21,6 @@ const label = defineMessage({ defaultMessage: 'Test Type' })
 export function TestType () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const typeWithSchedule = Form.useWatch('typeWithSchedule', form)
-  const type = typeWithSchedule && typeWithSchedule === TestTypeEnum.OnDemand
-    ? TestTypeEnum.OnDemand
-    : TestTypeEnum.Scheduled
-
-  useEffect(() => {
-    form.setFieldValue(name, type)
-  }, [type, form])
 
   return <>
     <Form.Item
@@ -40,13 +34,12 @@ export function TestType () {
           value={type}
           children={$t(contents.testTypesWithSchedule[type])}
         />)}
-        onChange={(typeWithSchedule) => {
-          form.setFieldValue(
-            [Schedule.fieldName, 'frequency'],
-            typeWithSchedule === TestTypeEnum.OnDemand ? null : typeWithSchedule
-          )
-          form.setFieldValue([Schedule.fieldName, 'day'], null)
-          form.setFieldValue([Schedule.fieldName, 'hour'], null)
+        onChange={(typeWithSchedule: TestTypeWithSchedule) => {
+          const type = typeWithSchedule === TestTypeEnum.OnDemand
+            ? TestTypeEnum.OnDemand
+            : TestTypeEnum.Scheduled
+          form.setFieldValue(name, type)
+          Schedule.reset(form, typeWithSchedule)
         }}
       />}
     />
