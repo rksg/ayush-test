@@ -28,7 +28,7 @@ describe('ApTabs', () => {
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
-    expect(screen.getAllByRole('tab')).toHaveLength(8)
+    expect(screen.getAllByRole('tab')).toHaveLength(7)
   })
 
   it('should handle tab changes', async () => {

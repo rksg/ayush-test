@@ -24,19 +24,19 @@ export default function DpskOverview (props: DpskOverviewProps) {
       <GridCol col={{ span: 24 }}>
         <Card>
           <GridRow>
-            <GridCol col={{ span: 4 }}>
+            <GridCol col={{ span: 5 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Format' })}</Card.Title>
               <Typography.Paragraph>
                 {data && transformDpskNetwork(intl, DpskNetworkType.FORMAT, data.passphraseFormat)}
               </Typography.Paragraph>
             </GridCol>
-            <GridCol col={{ span: 4 }}>
+            <GridCol col={{ span: 5 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Length' })}</Card.Title>
               <Typography.Paragraph>
                 {data && transformDpskNetwork(intl, DpskNetworkType.LENGTH, data.passphraseLength)}
               </Typography.Paragraph>
             </GridCol>
-            <GridCol col={{ span: 4 }}>
+            <GridCol col={{ span: 5 }}>
               <Card.Title>{intl.$t({ defaultMessage: 'Passphrase Expiration' })}</Card.Title>
               <Typography.Paragraph>
                 {data && transformAdvancedDpskExpirationText(
