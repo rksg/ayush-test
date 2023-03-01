@@ -30,7 +30,7 @@ describe('SwitchTimelineTab', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findAllByText('123roam')).toHaveLength(1)
-    await userEvent.click(screen.getByRole('tab', { name: /events/i }))
+    await userEvent.click(screen.getByRole('tab', { name: /events switch/i }))
     await new Promise(resolve => setTimeout(resolve, 300))
     expect(await screen.findAllByText('730-11-60')).toHaveLength(4)
   })
