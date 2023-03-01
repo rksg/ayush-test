@@ -8,6 +8,7 @@ import { CheckMarkCircleSolid }                 from '@acx-ui/icons'
 import { useVenuesListQuery }                   from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 import * as UI                          from '../styledComponents'
 
 import { VenueTable } from './VenueTable'
@@ -28,7 +29,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
-  const venue = Form.useWatch('venueId', form)
+  const venue = useWatch('venueId', form)
   const { venueOptions, isLoading: isVenueOptionsLoading } = useVenuesListQuery(
     { params: { tenantId: tenantId }, payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data, isLoading }) => {

@@ -6,6 +6,7 @@ import { useIntl }        from 'react-intl'
 import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 import * as UI                          from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
@@ -15,16 +16,16 @@ export const SummaryForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
   const [smartEdgeData, setSmartEdgeData] = useState<SmartEdgeTableData[]>([])
-  const nsgName = Form.useWatch('name', form)
-  const tags = Form.useWatch('tags', form)
-  const venueName = Form.useWatch('venueName', form)
-  const edgeName = Form.useWatch('edgeName', form)
-  const segments = Form.useWatch('segments', form)
-  const devices = Form.useWatch('devices', form)
-  const dhcpName = Form.useWatch('dhcpName', form)
-  const poolName = Form.useWatch('poolName', form)
-  const tunnelProfileName = Form.useWatch('tunnelProfileName', form)
-  const networkNames = Form.useWatch('networkNames', form)
+  const nsgName = useWatch('name', form)
+  const tags = useWatch('tags', form)
+  const venueName = useWatch('venueName', form)
+  const edgeName = useWatch('edgeName', form)
+  const segments = useWatch('segments', form)
+  const devices = useWatch('devices', form)
+  const dhcpName = useWatch('dhcpName', form)
+  const poolName = useWatch('poolName', form)
+  const tunnelProfileName = useWatch('tunnelProfileName', form)
+  const networkNames = useWatch('networkNames', form)
 
   useEffect(() => {
     setSmartEdgeData([
