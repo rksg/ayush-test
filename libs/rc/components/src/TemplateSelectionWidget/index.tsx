@@ -12,7 +12,7 @@ export interface TemplateSelectorProps {
   registrationId: string
 }
 
-export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
+export const TemplateSelector = (props: TemplateSelectorProps) => {
   const { $t } = useIntl()
   const { 
     scopeId, 
@@ -27,7 +27,7 @@ export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
   const registrationRequest = 
     useGetRegistrationByIdQuery({params: {templateScopeId: scopeId, registrationId: registrationId}})
 
-  let selectedTemplateId = ''
+  let selectedTemplateId = undefined
   let registrationRequestFailed = false;
   if(registrationRequest.isError 
     && 'status' in registrationRequest.error
@@ -47,7 +47,6 @@ export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
     content = <Spin />
 
   } else if(templateScopeRequest.isSuccess && templatesRequest.isSuccess && !registrationRequest.isLoading) {
-    // const options = templatesRequest.data.content.map((template) => ({...template, localizedName: $t({id: template.nameLocalizationKey})}))
     const form = Form.useFormInstance()
     const formItemProps = {
       name: props.scopeId + 'templateId',
@@ -55,9 +54,8 @@ export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
       ...props.formItemProps,
     }
 
-    // const labelMessage = defineMessage({id: templateScopeRequest.data.nameLocalizationKey})
-    content = (<Form.Item {...formItemProps}>      
-        <Select defaultValue={selectedTemplateId}
+    content = (<Form.Item {...formItemProps}>
+        <Select
           placeholder={placeholder}
           options={templatesRequest.data.content.map(({id, nameLocalizationKey, userProvidedName}) => ({value: id, label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey]))}))}
           onSelect={(templateId:string) => {
@@ -65,7 +63,9 @@ export const TemplateSelectionWidget = (props: TemplateSelectorProps) => {
             form.validateFields()
           }}/>
       </Form.Item>)
-      // TODO: add link to preview
+      if(selectedTemplateId) {
+        form.setFieldValue(formItemProps.name, selectedTemplateId)
+      }
 
   } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
     content=(<p><Typography.Text type="warning">{$t({defaultMessage: 'Failed to load templates, please reload the page.'})}</Typography.Text></p>)
