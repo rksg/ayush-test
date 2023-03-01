@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Form, Input } from 'antd'
+import { isEqual }     from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { Drawer, showToast }                   from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
@@ -42,6 +43,13 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     form.resetFields()
   }
 
+  const ipAddressExistCheck = (value: string) =>{
+    // eslint-disable-next-line max-len
+    if (clientConfig.ipAddress?.filter(item => isEqual(item, value)).length !== 0) {
+      return Promise.reject($t({ defaultMessage: 'IP Address already exists' }))
+    }
+    return Promise.resolve()
+  }
   const ipAddressRegExp = (value: string) =>{
     // eslint-disable-next-line max-len
     const REG = new RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
@@ -52,20 +60,17 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
   }
 
   const content = <Form layout='vertical' form={form}>
-    <Row>
-      <Col span={12}>
-        <Form.Item
-          name='singleIpAddress'
-          label={$t({ defaultMessage: 'IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => ipAddressRegExp(value) }
-          ]}
-          validateFirst
-          hasFeedback
-          children={<Input/>}/>
-      </Col>
-    </Row>
+    <Form.Item
+      name='singleIpAddress'
+      label={$t({ defaultMessage: 'IP Address' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => ipAddressRegExp(value) },
+        { validator: (_, value) => ipAddressExistCheck(value) }
+      ]}
+      validateFirst
+      hasFeedback
+      children={<Input/>}/>
   </Form>
 
   return (
@@ -103,6 +108,15 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               } else {
                 form.resetFields()
               }
+
+              showToast({
+                type: 'success',
+                content: $t(
+                  { defaultMessage: 'IP Address {ipAddress} was added' },
+                  { ipAddress }
+                )
+              })
+
             } catch(error) {
               if (error instanceof Error){
                 throw error
@@ -112,7 +126,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
                 if (errorResponse.status === 409) {
                   showToast({
                     type: 'error',
-                    content: $t({ defaultMessage: 'IP Address already exists' })
+                    // eslint-disable-next-line max-len
+                    content: $t({ defaultMessage: 'IP address is already used by another tenant' })
                   })
                 } else {
                   showToast({
