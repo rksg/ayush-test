@@ -216,6 +216,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      // We would not allow the user to delete the persons which was created by the Unit.
+      disabled: (selectedItems => selectedItems.filter(p => !p.identityId).length > 0),
       onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
