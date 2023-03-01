@@ -61,7 +61,8 @@ export default function RegionButton () {
       return item.current
     })?.name||'']}
     items={
-      userProfile ? userProfile.allowedRegions.map((region:RegionValue) => {
+      // eslint-disable-next-line max-len
+      (userProfile && userProfile.allowedRegions) ? userProfile.allowedRegions.map((region:RegionValue) => {
         return {
           key: region['name'],
           label: region['name']
