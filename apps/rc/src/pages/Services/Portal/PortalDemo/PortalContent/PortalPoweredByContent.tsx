@@ -5,10 +5,10 @@ import { RcFile } from 'antd/lib/upload'
 import { Demo } from '@acx-ui/rc/utils'
 
 
-import { PortalDemoDefaultSize } from '../../../commonUtils'
-import * as UI                   from '../../styledComponents'
-import PortalImageTools          from '../PortalImageTools'
-import PortalPopover             from '../PortalPopover'
+import { PortalDemoDefaultSize, hoverOutline } from '../../../commonUtils'
+import * as UI                                 from '../../styledComponents'
+import PortalImageTools                        from '../PortalImageTools'
+import PortalPopover                           from '../PortalPopover'
 
 export default function PortalPoweredByContent (props: {
   portalLang: { [key:string]:string },
@@ -17,7 +17,6 @@ export default function PortalPoweredByContent (props: {
     textsize?:number,bgcolor?:string,color?:string, file?:RcFile }) => void
 }) {
   const { demoValue, updatePoweredBy } = props
-  const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const [cursorTwo, setCursorTwo] = useState('none')
   const [outlineTwo, setOutlineTwo] = useState('none')
   const [cursorTwoText, setCursorTwoText] = useState('none')
@@ -76,7 +75,7 @@ export default function PortalPoweredByContent (props: {
           backgroundColor: demoValue.poweredBgColor }}
         onMouseOver={() => {
           setCursorTwo('pointer')
-          setOutlineTwo(dashedOutline)
+          setOutlineTwo(hoverOutline)
         }}
         placeholder='poweredbackground'
         onMouseLeave={() => {
@@ -90,7 +89,7 @@ export default function PortalPoweredByContent (props: {
           setOutlineTwoImg('none')
           setCursorTwo('pointer')
           setPoweredClicked(true)
-          setOutlineTwo(dashedOutline)
+          setOutlineTwo(hoverOutline)
         }}>
           {demoValue.componentDisplay?.poweredBy &&
         <PortalPopover
@@ -111,7 +110,7 @@ export default function PortalPoweredByContent (props: {
             e.stopPropagation()
             closeDivPopover()
             setCursorTwoText('pointer')
-            setOutlineTwoText(dashedOutline)
+            setOutlineTwoText(hoverOutline)
           }}
           onMouseLeave={(e) => {
             e.stopPropagation()
@@ -126,7 +125,7 @@ export default function PortalPoweredByContent (props: {
             setOutlineTwoImg('none')
             setCursorTwoText('pointer')
             setPoweredTextClicked(true)
-            setOutlineTwoText(dashedOutline)
+            setOutlineTwoText(hoverOutline)
           }}
           >
             {props.portalLang.poweredBy}</UI.FieldText></PortalPopover>}
@@ -146,7 +145,7 @@ export default function PortalPoweredByContent (props: {
                 e.stopPropagation()
                 closeDivPopover()
                 setCursorTwoImg('pointer')
-                setOutlineTwoImg(dashedOutline)
+                setOutlineTwoImg(hoverOutline)
               }}
               onMouseLeave={(e) => {
                 e.stopPropagation()
@@ -161,7 +160,7 @@ export default function PortalPoweredByContent (props: {
                 closeDivPopover()
                 setCursorTwoImg('pointer')
                 setPoweredImgClicked(true)
-                setOutlineTwoImg(dashedOutline)
+                setOutlineTwoImg(hoverOutline)
               }}
             ></UI.Img></PortalPopover>}</div></PortalPopover></UI.SelectedDiv>
   )

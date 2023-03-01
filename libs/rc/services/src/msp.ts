@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
+  AssignedEc,
+  BaseUrl,
   MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
@@ -20,7 +22,9 @@ import {
   SupportDelegation,
   VarCustomer,
   MspProfile,
-  MspEcProfile
+  EntitlementBanner,
+  MspEcProfile,
+  MspPortal
 } from '@acx-ui/rc/utils'
 
 export const baseMspApi = createApi({
@@ -217,6 +221,24 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getMspEcAdmin: build.query<MspEcProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getMspEcAdmin, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateMspEcAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspEcAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
       query: ({ params }) => {
         const mspEcAdminListReq =
@@ -286,6 +308,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignedEcListReq =
+          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+        return {
+          ...mspAssignedEcListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
@@ -349,6 +381,54 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEntitlementBanners: build.query<EntitlementBanner[], RequestPayload>({
+      query: ({ params }) => {
+        const EntitlementBannerReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlementBanner, params)
+        return {
+          ...EntitlementBannerReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'BANNERS' }]
+    }),
+    getMspBaseURL: build.query<BaseUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspLabel: build.query<MspPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspLabel, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -370,6 +450,8 @@ export const {
   useSupportMspCustomerListQuery,
   useGetMspProfileQuery,
   useGetMspEcProfileQuery,
+  useGetMspEcAdminQuery,
+  useUpdateMspEcAdminMutation,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useAddCustomerMutation,
@@ -377,11 +459,17 @@ export const {
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
+  useGetAssignedMspEcToIntegratorQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
   useReactivateMspEcMutation,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
-  useRefreshMspEntitlementMutation
+  useGetMspEntitlementBannersQuery,
+  useRefreshMspEntitlementMutation,
+  useGetMspBaseURLQuery,
+  useGetMspLabelQuery,
+  useAddMspLabelMutation,
+  useUpdateMspLabelMutation
 } = mspApi

@@ -17,7 +17,8 @@ import {
   transformVLAN,
   transformAps,
   transformRadios,
-  transformScheduling
+  transformScheduling,
+  NetworkVenueScheduleDialog
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -34,13 +35,12 @@ import {
   generateDefaultNetworkVenue,
   useScheduleSlotIndexMap,
   aggregateApGroupPayload,
-  RadioTypeEnum
+  RadioTypeEnum,
+  SchedulingModalState
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from '../services'
-
-import { SchedulingModalState, NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 

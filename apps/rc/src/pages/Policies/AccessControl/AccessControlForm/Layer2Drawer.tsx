@@ -5,7 +5,15 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
 
-import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps }             from '@acx-ui/components'
+import {
+  Button,
+  Drawer,
+  GridCol,
+  GridRow,
+  showToast,
+  Table,
+  TableProps
+} from '@acx-ui/components'
 import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
@@ -14,8 +22,20 @@ import { useParams }                                                            
 const { useWatch } = Form
 const { Option } = Select
 
+export interface editModeProps {
+  id: string,
+  isEdit: boolean
+}
+
 export interface Layer2DrawerProps {
   inputName?: string[]
+  onlyViewMode?: {
+    id: string,
+    viewText: string
+  },
+  isOnlyViewMode?: boolean
+  editMode?: editModeProps,
+  setEditMode?: (editMode: editModeProps) => void
 }
 
 const RuleContentWrapper = styled.div`
@@ -45,7 +65,13 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { inputName = [] } = props
+  const {
+    inputName = [],
+    onlyViewMode = {} as { id: string, viewText: string },
+    isOnlyViewMode = false,
+    editMode = { id: '', isEdit: false } as editModeProps,
+    setEditMode = () => {}
+  } = props
   const inputRef = useRef(null)
   const [visible, setVisible] = useState(false)
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
@@ -90,9 +116,9 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   const { data: layer2PolicyInfo } = useGetL2AclPolicyQuery(
     {
-      params: { ...params, l2AclPolicyId: l2AclPolicyId }
+      params: { ...params, l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
     },
-    { skip: l2AclPolicyId === '' || l2AclPolicyId === undefined }
+    { skip: !isOnlyViewMode && (l2AclPolicyId === '' || l2AclPolicyId === undefined) }
   )
 
   const isViewMode = () => {
@@ -100,11 +126,22 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       return false
     }
 
+    if (editMode) {
+      return !editMode.isEdit
+    }
+
     return !_.isNil(layer2PolicyInfo)
   }
 
   useEffect(() => {
-    if (isViewMode() && layer2PolicyInfo) {
+    if (editMode.isEdit && editMode.id !== '') {
+      setVisible(true)
+      setQueryPolicyId(editMode.id)
+    }
+  }, [editMode])
+
+  useEffect(() => {
+    if (layer2PolicyInfo) {
       contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
       contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
       setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
@@ -192,6 +229,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     setVisible(false)
     setQueryPolicyId('')
     clearFieldsValue()
+    if (editMode.isEdit) {
+      setEditMode({
+        id: '', isEdit: false
+      })
+    }
   }
 
   const handleTagClose = (removedTag: string) => {
@@ -434,7 +476,16 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   return (
     <>
-      <GridRow style={{ width: '350px' }}>
+      { isOnlyViewMode ? <Button
+        type='link'
+        size={'small'}
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId(onlyViewMode.id)
+        }
+        }>
+        {onlyViewMode.viewText}
+      </Button>: <GridRow style={{ width: '350px' }}>
         <GridCol col={{ span: 12 }}>
           <Form.Item
             name={[...inputName, 'l2AclPolicyId']}
@@ -474,7 +525,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             {$t({ defaultMessage: 'Add New' })}
           </Button>
         </AclGridCol>
-      </GridRow>
+      </GridRow> }
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
@@ -509,6 +560,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
