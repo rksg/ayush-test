@@ -61,8 +61,7 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </Link> }
-          { showHomeButton && <RegionButton/> }
-
+          <RegionButton/>
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
             <LicenseBanner/>
