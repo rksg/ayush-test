@@ -12,7 +12,7 @@ import {
   AAAPolicyType,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
