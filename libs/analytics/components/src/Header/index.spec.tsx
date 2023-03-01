@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import { dataApiURL }                       from '@acx-ui/analytics/services'
+import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
 import { Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -12,13 +13,12 @@ import { Header } from './index'
 jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div>network filter</div>
 }))
-
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   useAnalyticsFilter: () => ({
     filters: {
       path: [{ type: 'network', name: 'Network' }],
-      filter: { networkNodes: [[{ type: 'zone', name: 'Venue' }]] }
+      filter: { networkNodes: [[{ type: 'zone', name: 'v1' }]] }
     },
     getNetworkFilter: jest
       .fn()
@@ -37,6 +37,44 @@ describe('Analytics header', () => {
       <Header title={''} shouldQuerySwitch/>
     </Provider></BrowserRouter>)
     expect(screen.getAllByRole('img', { name: 'loader' })).toHaveLength(2)
+  })
+  it('renders venue name', async () => {
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
+      data: { network: { hierarchyNode: {
+        children: [{
+          id: 'v1',
+          type: 'zone',
+          name: 'Venue 1',
+          path: [...defaultNetworkPath, { type: 'zone', name: 'venue' }],
+          aps: [{ name: 'ap', mac: 'ap-mac' }],
+          switches: []
+        }, {
+          id: 'id2',
+          type: 'switchGroup',
+          name: 'Venue 2',
+          path: [...defaultNetworkPath, { type: 'switchGroup', name: 'venue' }],
+          aps: [],
+          switches: [{ name: 'switch', mac: 'switch-mac' }]
+        }
+        ],
+        name: 'Network',
+        type: 'network',
+        path: defaultNetworkPath
+      } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
+      data: {
+        network: {
+          node: {
+            apCount: 50
+          }
+        }
+      }
+    })
+    render(<BrowserRouter><Provider>
+      <Header title={'Title'} shouldQuerySwitch/>
+    </Provider></BrowserRouter>)
+    expect(await screen.findByText('Venue 1')).toBeVisible()
   })
   it('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
