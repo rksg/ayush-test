@@ -1,3 +1,8 @@
+import { RefObject } from 'react'
+
+import { connect }  from 'echarts'
+import EChartsReact from 'echarts-for-react'
+
 import { Incident }                 from '@acx-ui/analytics/utils'
 import { Provider }                 from '@acx-ui/store'
 import { render, screen,fireEvent } from '@acx-ui/test-utils'
@@ -55,57 +60,61 @@ const incidents = [{
 }
 ] as Incident[]
 
-const connectionEventsArray: ConnectionEvent[] = [ ...connectionEvents,{
-  timestamp: '2022-11-14T06:33:31.646Z',
-  event: 'EVENT_CLIENT_INFO_UPDATED',
-  ttc: null,
-  mac: '94:B3:4F:3D:15:B0',
-  apName: 'R750-11-112',
-  path: [
-    {
-      type: 'zone',
-      name: 'cliexp4'
-    },
-    {
-      type: 'apGroup',
-      name: 'No group (inherit from Venue)'
-    },
-    {
-      type: 'ap',
-      name: '94:B3:4F:3D:15:B0'
-    }
-  ],
-  code: null,
-  state: 'normal',
-  failedMsgId: null,
-  radio: '5'
-},
-{
-  timestamp: '2022-11-14T06:33:31.646Z',
-  event: 'EVENT_CLIENT_INFO_UPDATED',
-  ttc: 4800,
-  mac: '94:B3:4F:3D:15:B0',
-  apName: 'R750-11-112',
-  path: [
-    {
-      type: 'zone',
-      name: 'cliexp4'
-    },
-    {
-      type: 'apGroup',
-      name: 'No group (inherit from Venue)'
-    },
-    {
-      type: 'ap',
-      name: '94:B3:4F:3D:15:B0'
-    }
-  ],
-  code: null,
-  state: 'normal',
-  failedMsgId: null,
-  radio: '5'
-}]
+const connectionEventsArray: ConnectionEvent[] = [
+  ...connectionEvents,
+  {
+    timestamp: '2022-11-14T06:33:31.646Z',
+    event: 'EVENT_CLIENT_INFO_UPDATED',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: null,
+    state: 'normal',
+    failedMsgId: null,
+    radio: '5',
+    key: 'first_timeline'
+  },
+  {
+    timestamp: '2022-11-14T06:33:31.646Z',
+    event: 'EVENT_CLIENT_INFO_UPDATED',
+    ttc: 4800,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: null,
+    state: 'normal',
+    failedMsgId: null,
+    radio: '5'
+  }]
 describe('EventsTimeLine', () => {
+  const sharedChartName = 'testingChartConnections'
   it('should render correctly with out search params', async () => {
     const params = {
       tenantId: 'tenant-id',
@@ -118,10 +127,22 @@ describe('EventsTimeLine', () => {
       connectionDetailsByAp: connectionDetailsByAp,
       connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
-        <TimeLine filters={{}}
+        <TimeLine
+          filters={{}}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -150,10 +171,21 @@ describe('EventsTimeLine', () => {
       connectionDetailsByAp: connectionDetailsByAp,
       connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -182,10 +214,21 @@ describe('EventsTimeLine', () => {
       connectionDetailsByAp: connectionDetailsByAp,
       connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -195,7 +238,7 @@ describe('EventsTimeLine', () => {
         }
       }
     )
-    expect((await screen.findAllByTestId('PlusSquareOutlined'))).toHaveLength(4)
+    expect(await screen.findAllByTestId('PlusSquareOutlined')).toHaveLength(4)
   })
   it('should expand chart when click on expand icon', async () => {
     const params = {
@@ -213,10 +256,21 @@ describe('EventsTimeLine', () => {
       connectionDetailsByAp: connectionDetailsByAp,
       connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -251,10 +305,21 @@ describe('EventsTimeLine', () => {
       connectionDetailsByAp: connectionDetailsByAp,
       connectionQualities: connectionQualities as unknown as ConnectionQuality[]
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -280,14 +345,25 @@ describe('EventsTimeLine', () => {
     } as unknown as Filters
     const data = {
       connectionEvents: [],
-      incidents,
-      connectionDetailsByAp: connectionDetailsByAp,
-      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
+      incidents: [],
+      connectionDetailsByAp: [],
+      connectionQualities: []
     }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
     render(
       <Provider>
         <TimeLine filters={filters}
           data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
         />
       </Provider>,
       {
@@ -298,5 +374,65 @@ describe('EventsTimeLine', () => {
       }
     )
     expect((await screen.findAllByText('0'))[0]).toBeVisible()
+  })
+
+  it('should handle onDotClick for scatter properly', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      userId: 'user-id',
+      activeTab: 'troubleshooting'
+    }
+    const data = {
+      connectionEvents,
+      incidents,
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
+    }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn((chart: EChartsReact | null) => {
+      if (chart) {
+        const instance = chart.getEchartsInstance()
+        instance.group = sharedChartName
+        connect(sharedChartName)
+      }
+    })
+    const testRect = {
+      x: 30,
+      y: 30,
+      width: 20,
+      height: 20,
+      top: 10,
+      right: 10,
+      bottom: 10,
+      left: 10
+    }
+    const popoverRef = {
+      current: {
+        getBoundingClientRect: jest.fn(() => testRect)
+      }
+    } as unknown as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
+    render(
+      <Provider>
+        <TimeLine
+          filters={{}}
+          data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/aps/:userId/details/:activeTab'
+        }
+      }
+    )
+    expect(onChartReady).toBeCalledTimes(4)
   })
 })
