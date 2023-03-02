@@ -21,9 +21,10 @@ import { useParams }             from '@acx-ui/react-router-dom'
 
 import * as UI from '../styledComponents'
 
+const mspUtils = MSPUtils()
+
 export default function RegionButton () {
   const params = useParams()
-  const mspUtils = MSPUtils()
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -39,7 +40,6 @@ export default function RegionButton () {
         setRegionEnable(true)
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[userProfile, mspEcProfileData])
 
   const getRegionURL = (region:string) => {
