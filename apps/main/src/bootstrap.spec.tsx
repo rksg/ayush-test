@@ -16,10 +16,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
-  />,
-  RbacAuthProvider: (props: { children: React.ReactNode }) => <div
-    {...props}
-    data-testid='rbac-auth-provider'
   />
 }))
 
@@ -31,7 +27,6 @@ describe('bootstrap.init', () => {
     document.body.appendChild(root)
 
     await act(() => bootstrap.init())
-    expect(screen.getByTestId('rbac-auth-provider')).toBeVisible()
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })

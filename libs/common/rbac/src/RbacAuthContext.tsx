@@ -7,7 +7,7 @@ import {
   useSwitchAllowedOperationsQuery,
   useTenantAllowedOperationsQuery, useUpgradeAllowedOperationsQuery, useVenueAllowedOperationsQuery,
   useWifiAllowedOperationsQuery
-} from '../rbac'
+} from './rbac'
 
 export const RbacAuthContext = createContext<Array<string>>([])
 

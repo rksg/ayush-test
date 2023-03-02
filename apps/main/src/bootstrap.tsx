@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import { RbacAuthProvider }                    from '@acx-ui/rbac'
 import { UserProfileProvider }                 from '@acx-ui/rc/components'
 import { CommonUrlsInfo, createHttpRequest }   from '@acx-ui/rc/utils'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
@@ -117,9 +116,7 @@ export async function init () {
           <BrowserRouter>
             <UserProfileProvider>
               <React.Suspense fallback={null}>
-                <RbacAuthProvider>
-                  <AllRoutes />
-                </RbacAuthProvider>
+                <AllRoutes />
               </React.Suspense>
             </UserProfileProvider>
           </BrowserRouter>

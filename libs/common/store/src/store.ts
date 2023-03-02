@@ -2,7 +2,6 @@ import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
-import { baseRbacApi as rbacApi }    from '@acx-ui/rbac'
 import {
   baseCommonApi as commonApi,
   baseNetworkApi as networkApi,
@@ -73,7 +72,6 @@ export const store = configureStore({
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [dataApi.reducerPath]: dataApi.reducer,
-    [rbacApi.reducerPath]: rbacApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
@@ -104,7 +102,6 @@ export const store = configureStore({
       dataApi.middleware,
       apApi.middleware,
       userApi.middleware,
-      rbacApi.middleware,
       dataApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
