@@ -13,8 +13,7 @@ import {
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  TableResult,
-  PersonaGroup
+  PersonaGroup, NewTableResult, NewTablePageable
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -2753,6 +2752,19 @@ export const validChannelsData = {
   }
 }
 
+const defaultPageable: NewTablePageable = {
+  offset: 0,
+  pageNumber: 0,
+  pageSize: 10,
+  paged: true,
+  sort: {
+    unsorted: true,
+    sorted: false,
+    empty: false
+  },
+  unpaged: false
+}
+
 export const mockEnabledPropertyConfig: PropertyConfigs = {
   status: PropertyConfigStatus.ENABLED,
   enableGuestDpsk: false,
@@ -2783,10 +2795,12 @@ export const mockPersonaGroupWithoutNSG: PersonaGroup = {
   propertyId: 'propertyId-100'
 }
 
-export const mockPropertyUnitList: TableResult<PropertyUnit> = {
-  totalCount: 1,
-  page: 1,
-  data: [
+export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
+  pageable: defaultPageable,
+  sort: defaultPageable.sort,
+  totalElements: 1,
+  totalPages: 1,
+  content: [
     {
       id: 'unit-id-1',
       name: 'unit-1',
@@ -2798,7 +2812,7 @@ export const mockPropertyUnitList: TableResult<PropertyUnit> = {
   ]
 }
 
-export const mockPropertyUnit: PropertyUnit = mockPropertyUnitList.data[0]
+export const mockPropertyUnit: PropertyUnit = mockPropertyUnitList.content[0]
 
 export const venueSyslog = {
   serviceProfileId: '31846cfe930b49b4802b302f35029589',
