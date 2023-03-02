@@ -22,52 +22,38 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     accountingRadiusId: data.accountingRadiusId,
     authRadiusId: data.authRadiusId
   }
+  let authRadius = {}
+  if (get(data, 'authRadius.primary.ip')) {
+    authRadius = {
+      ...authRadius,
+      ...data.authRadius
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      enableAuthProxy: data.enableAuthProxy,
+      enableSecondaryAuthServer: data.enableSecondaryAuthServer,
+      authRadius
+    }
+  }
 
-  if (data.isCloudpathEnabled) {
-    delete data?.accountingRadius
-    delete data?.authRadius
+  if (data.enableAccountingService) {
+    let accountingRadius = {}
+    accountingRadius = {
+      ...accountingRadius,
+      ...data.accountingRadius
+    }
     saveData = {
       ...saveData,
       ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
-  } else {
-    delete data?.cloudpathServerId
-    let authRadius = {}
-    if (get(data, 'authRadius.primary.ip')) {
-      authRadius = {
-        ...authRadius,
-        ...data.authRadius
-      }
-    }
-    saveData = {
-      ...saveData,
-      ...{
-        enableAuthProxy: data.enableAuthProxy,
-        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-        authRadius
-      }
-    }
-
-    if (data.enableAccountingService) {
-      let accountingRadius = {}
-      accountingRadius = {
-        ...accountingRadius,
-        ...data.accountingRadius
-      }
-      saveData = {
-        ...saveData,
-        ...{
-          enableAccountingProxy: data.enableAccountingProxy,
-          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
-          accountingRadius
-        }
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableSecondaryAcctServer: data.enableSecondaryAcctServer,
+        accountingRadius
       }
     }
   }
+
   if (editMode) {
     saveData = {
       ...saveData,
@@ -158,13 +144,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
           advancedCustomization: new DpskWlanAdvancedCustomization()
         }
       }
-    }
-  }
-
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      cloudpathServerId: data.cloudpathServerId
     }
   }
   return saveData

@@ -16,7 +16,7 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { dateRangeForLast, formatter, useDateFilter } from '@acx-ui/utils'
+import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
 
@@ -164,7 +164,6 @@ function SwitchPageHeader () {
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-            enableDates={dateRangeForLast(3, 'months')}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}

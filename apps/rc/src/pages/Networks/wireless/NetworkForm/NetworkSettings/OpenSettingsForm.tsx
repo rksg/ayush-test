@@ -28,12 +28,12 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
+        isCloudpathEnabled: data.authRadius,
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
+        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+        authRadiusId: data.authRadiusId||data.authRadius?.id
       })
     }
   }, [data])
@@ -65,15 +65,6 @@ function SettingsForm () {
   const { $t } = useIntl()
 
   const onCloudPathChange = (checked: boolean) => {
-    if(checked){
-      delete data?.authRadius
-      delete data?.accountingRadius
-    }else{
-      delete data?.cloudpathServerId
-      form.setFieldsValue({
-        cloudpathServerId: ''
-      })
-    }
     setData && setData({ ...data, isCloudpathEnabled: checked })
   }
 

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { NetworkSaveData, NetworkVenue, SchedulerTypeEnum, Venue, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { NetworkVenue, SchedulerTypeEnum, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import {
   fireEvent,
   render,
@@ -19,7 +19,7 @@ import {
   networkVenueResponse,
   networkResponseWithNoSchedule,
   networkVenueResponseWithNoSchedule
-} from '../../__test__/fixtures'
+} from './__tests__/fixtures'
 
 import { NetworkVenueScheduleDialog } from './index'
 
@@ -40,8 +40,8 @@ describe('NetworkVenueTabScheduleDialog', () => {
   it('should render network venue tab schedule dialog successfully', async () => {
     const props = {
       formName: 'networkVenueScheduleForm',
-      venue: venueResponse as Venue,
-      network: networkResponse as NetworkSaveData,
+      venue: venueResponse,
+      network: networkResponse,
       networkVenue: networkVenueResponse as NetworkVenue
     }
 
@@ -79,8 +79,8 @@ describe('NetworkVenueTabScheduleDialog', () => {
 
     const props = {
       formName: 'networkVenueScheduleForm',
-      venue: venueResponse as Venue,
-      network: networkResponse as NetworkSaveData,
+      venue: venueResponse,
+      network: networkResponse,
       networkVenue: networkVenueResponse as NetworkVenue
     }
 
@@ -103,8 +103,8 @@ describe('NetworkVenueTabScheduleDialog', () => {
   it('should render schedule dialog with schedule NULL successfully', async () => {
     const props = {
       formName: 'networkVenueScheduleForm',
-      venue: venueResponse as Venue,
-      network: networkResponseWithNoSchedule as NetworkSaveData,
+      venue: venueResponse,
+      network: networkResponseWithNoSchedule,
       networkVenue: networkVenueResponseWithNoSchedule as NetworkVenue
     }
 
