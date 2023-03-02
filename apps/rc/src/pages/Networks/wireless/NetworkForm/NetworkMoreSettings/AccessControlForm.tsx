@@ -366,6 +366,18 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
     {enableAccessControlProfile && <Form.Item
       label={$t({ defaultMessage: 'Access Control Policy' })}
       name={['wlan','advancedCustomization','accessControlProfileId']}
+      rules={[
+        { validator: async () => {
+          if (!form.getFieldValue(['wlan','advancedCustomization','accessControlProfileId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'If you enable the access control, access control policy could not be empty'
+            }))
+          }
+
+          return Promise.resolve()
+        } }
+      ]}
     >
       <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
         style={{ width: '180px' }}

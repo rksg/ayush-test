@@ -3,23 +3,23 @@ import { ApiInfo } from '../../apiService'
 export const AaaUrls: { [key: string]: ApiInfo } = {
   deleteAAAPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/radius/:policyId'
+    url: '/radiusServerProfiles/:policyId'
   },
   addAAAPolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/radius'
+    url: '/radiusServerProfiles'
   },
   getAAAPolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/radius/:policyId'
+    url: '/radiusServerProfiles/:policyId'
   },
   updateAAAPolicy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/radius/:policyId'
+    url: '/radiusServerProfiles/:policyId'
   },
   getAAAPolicyList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/radius'
+    url: '/radiusServerProfiles'
   },
   getAAANetworkInstances: {
     method: 'get',
