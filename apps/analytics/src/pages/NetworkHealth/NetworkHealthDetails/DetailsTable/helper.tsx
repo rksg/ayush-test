@@ -2,12 +2,14 @@ import { defineMessage }                       from '@formatjs/intl'
 import { upperFirst, without }                 from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
+import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
 import { mapCodeToReason }             from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
 import type { TableColumn }            from '@acx-ui/components'
 import { EyeOpenSolid }                from '@acx-ui/icons'
 import { TenantLink }                  from '@acx-ui/react-router-dom'
 import { getIntl, formatter }          from '@acx-ui/utils'
+import { NetworkPath }                 from '@acx-ui/utils'
 
 import * as contents from '../../contents'
 import {
@@ -26,6 +28,24 @@ const badgeTextMap = {
   'fail': defineMessage({ defaultMessage: 'Fail' }),
   'n/a': defineMessage({ defaultMessage: 'N/A' }),
   'pending': defineMessage({ defaultMessage: 'Pending' })
+}
+
+export type ConnectionEvent = {
+  start: number,
+  end: number,
+  code: string | null,
+  apName: string,
+  mac: string,
+  radio: string,
+  state: string,
+  event: string,
+  category: string,
+  timestamp: string,
+  ttc: number | null,
+  failedMsgId: string | null,
+  ssid?: string | null,
+  messageIds?: Array<string>,
+  path: NetworkPath
 }
 export type TrendType = 'success' | 'fail' | 'n/a' | 'error' | 'pending'
 const stationAPDetailsText = defineMessage({ defaultMessage: 'Station AP Details' })
@@ -121,8 +141,9 @@ export const getTableColumns = ({
       dataIndex: key,
       key: key,
       filterable: false,
-      searchable: true,
+      searchable: false,
       align: 'center',
+      width: 100,
       render: function (text: string, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
         const failureCode = failure?.event
@@ -145,12 +166,23 @@ export const getTableColumns = ({
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         const type = row[key] as TrendType
         return (
-          <TableCell
-            tooltipContent={wrappedContent}
-            type={type}
-            displayText={$t(badgeTextMap[type])}
-            id={`${key}-${index}`}
-          />
+          failure ?
+            <TableCell
+              tooltipContent={wrappedContent}
+              type={type}
+              displayText={
+                <ConnectionEventPopover event={failure as unknown as ConnectionEvent}>
+                  {$t(badgeTextMap[type])}
+                </ConnectionEventPopover>}
+              id={`${key}-${index}`}
+            />
+            :
+            <TableCell
+              tooltipContent={wrappedContent}
+              type={type}
+              displayText={$t(badgeTextMap[type])}
+              id={`${key}-${index}`}
+            />
         )
       }
     } as TableColumn<TestResultByAP>)
@@ -162,6 +194,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
+      width: 100,
       render: function (text: string, row: TestResultByAP, index : number) {
         const { speedTest, speedTestServer } = row
         const error = row?.error || row.speedTestFailure
@@ -191,6 +224,7 @@ export const getTableColumns = ({
       key: 'apName',
       filterable: false,
       searchable: true,
+      width: 150,
       render: function (text, row, index) {
         const { apMac } = row
         return (
@@ -211,6 +245,7 @@ export const getTableColumns = ({
       key: 'apMac',
       filterable: false,
       searchable: true,
+      width: 150,
       render: function (text, row, index) {
         const { apMac } = row
         return (
@@ -233,6 +268,7 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
+        width: 150,
         render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
@@ -252,6 +288,7 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
+        width: 150,
         render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
@@ -271,6 +308,7 @@ export const getTableColumns = ({
         filterable: false,
         searchable: true,
         align: 'center',
+        width: 150,
         render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
@@ -293,6 +331,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
+      width: 100,
       render: function (text: unknown, row,index : number ) {
         const { ping, avgPingTime, pingTotal, pingReceive, error } = row
 
@@ -329,6 +368,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: false,
       align: 'center',
+      width: 100,
       render: function (text: unknown, row, index : number) {
         const { traceroute, tracerouteLog, error } = row
         const toolTipText = traceroute === 'n/a' ? null : tracerouteLog

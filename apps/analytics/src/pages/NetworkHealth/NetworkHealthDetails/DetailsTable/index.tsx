@@ -18,8 +18,8 @@ const Details = () => {
   const { tableQuery, onPageChange, pagination } = useNetworkHealthTestResults()
   const queryResults = tableQuery
   const config = (queryResults?.data)?.config as NetworkHealthConfig
-  const clientType = (queryResults?.data)?.spec?.clientType
   const items = (queryResults?.data)?.aps?.items
+  const clientType = (queryResults?.data)?.spec?.clientType
   const wlanAuthSettings = (queryResults?.data)?.wlanAuthSettings
   const isWirelessClient = clientType === ClientType.VirtualWirelessClient
   const stagesFromConfig = (config : NetworkHealthConfig) => {
