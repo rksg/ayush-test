@@ -1,0 +1,135 @@
+/* eslint-disable max-len */
+import {
+  FirmwareCategory
+} from '@acx-ui/rc/utils'
+
+export const successResponse = {
+  requestId: 'request-id'
+}
+
+export const versionLatest = [
+  {
+    name: '6.2.1.103.1580',
+    category: 'RECOMMENDED',
+    id: '6.2.1.103.1580',
+    createdDate: '2022-12-16T06:22:23.337+0000',
+    updatedDate: '2023-02-02T06:36:09.359+0000'
+  }
+]
+
+export const versionRelease = [
+  {
+    releaseDate: '2023-01-31T02:20:38.415+0000',
+    category: 'RECOMMENDED',
+    onboardDate: '2022-12-16T06:22:23.337+0000',
+    name: '6.2.1.103.1580',
+    id: '6.2.1.103.1580'
+  }
+]
+
+export const preference = {
+  days: [
+    'Sunday',
+    'Saturday'
+  ],
+  times: [
+    '00:00-02:00',
+    '02:00-04:00',
+    '04:00-06:00'
+  ],
+  autoSchedule: true,
+  betaProgram: false
+}
+
+export const venue = [
+  {
+    id: '0842f2133565438d85e1e46103889744',
+    name: 'Peter-Venue',
+    apCount: 1,
+    apModels: [
+      'R750'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: '8ee8acc996734a5dbe43777b72469857',
+    name: 'Ben-Venue-US',
+    apCount: 1,
+    apModels: [
+      'R610'
+    ],
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ],
+    lastScheduleUpdate: '2023-02-18T01:07:33.203-08:00'
+  },
+  {
+    id: '02b81f0e31e34921be5cf47e6dce1f3f',
+    name: 'My-Venue',
+    apCount: 0,
+    versions: [
+      {
+        version: '6.2.1.103.1580',
+        type: 'AP_FIRMWARE_UPGRADE',
+        category: 'RECOMMENDED'
+      }
+    ]
+  }
+]
+
+export const version = [
+  '6.2.1.103.1583',
+  '6.2.1.103.1582',
+  '6.2.1.103.1581',
+  '6.2.1.103.1580',
+  '6.2.1.103.1579'
+]
+
+export const availableVersions = [{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1722',
+  id: '6.2.1.103.1722'
+},{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1721',
+  id: '6.2.1.103.1721'
+},{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1720',
+  id: '6.2.1.103.1720'
+},{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1719',
+  id: '6.2.1.103.1719'
+},{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1718',
+  id: '6.2.1.103.1718'
+},{
+  onboardDate: '2023-02-02T06:36:55.375+0000',
+  releaseDate: '2023-02-07T08:59:31.873+0000',
+  category: 'RECOMMENDED' as FirmwareCategory,
+  name: '6.2.1.103.1579',
+  id: '6.2.1.103.1579'
+}]
+
