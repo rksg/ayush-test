@@ -16,8 +16,51 @@ import { mockedRegistration, mockedTemplates, mockedTemplateScope, mockedTemplat
 
 import { TemplateSelector } from '.'
 
-
 describe('TemplateSelector', () => {
+
+  it('should render the selector with no template if error', async () => {
+    mockServer.resetHandlers()
+    mockServer.use(
+      rest.get(
+        MsgTemplateUrls.getTemplateScopeById.url,
+        (req, res, ctx) => res(ctx.status(500))
+      ),
+      rest.get(
+        // Remove the query parameter to make MSW happy
+        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
+        (req, res, ctx) => res(ctx.status(500))
+      ),
+      rest.get(
+        MsgTemplateUrls.getRegistrationById.url,
+        (req, res, ctx) => res(ctx.status(500))
+      )
+    )
+
+    const formItemName = 'templateSelectorTest'
+    const scopeId = mockedTemplateScope.id
+    const registrationId = mockedRegistration.id
+
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+            <TemplateSelector scopeId={scopeId} registrationId={registrationId} formItemProps={{name: formItemName}}/>
+        </Form>
+      </Provider>, {
+        route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
+      }
+    )
+
+    const targetAp = mockedTemplateScope.id
+
+    await waitFor(() => {
+      expect(formRef.current.getFieldValue(formItemName)).toEqual(undefined)
+    })
+  })
 
   it('should render the selector with registration template', async () => {
     mockServer.resetHandlers()

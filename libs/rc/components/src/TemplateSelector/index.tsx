@@ -42,38 +42,56 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
     registrationRequestFailed = true;
   }
 
-  let content
+  const form = Form.useFormInstance()
+
+  let isLoading = true
+  let isDisabled = true
+  let options = new Array<{value:string,label:string}>()
+  let formItemProps = {
+    name: props.scopeId + 'templateId',
+    label: $t({defaultMessage:"Loading Templates..."}),
+    ...props.formItemProps,
+  }
   if(templateScopeRequest.isLoading || templatesRequest.isLoading || registrationRequest.isLoading) {
-    content = <Spin />
+    
+    isLoading = true
+    isDisabled = true
+    formItemProps.label = $t({defaultMessage:"Loading Templates..."})
+    options = []
 
   } else if(templateScopeRequest.isSuccess && templatesRequest.isSuccess && !registrationRequest.isLoading) {
-    const form = Form.useFormInstance()
-    const formItemProps = {
-      name: props.scopeId + 'templateId',
-      label: $t(templateScopeLabels[templateScopeRequest.data.nameLocalizationKey]),
-      ...props.formItemProps,
+
+    formItemProps.label = $t(templateScopeLabels[templateScopeRequest.data.nameLocalizationKey])
+    isLoading = false
+    isDisabled = false
+    options = templatesRequest.data.content.map(({id, nameLocalizationKey, userProvidedName}) => ({value: id, label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey]))}))
+
+    if(selectedTemplateId) {
+      form.setFieldValue(formItemProps.name, selectedTemplateId)
     }
 
-    content = (<Form.Item {...formItemProps}>
-        <Select
-          placeholder={placeholder}
-          options={templatesRequest.data.content.map(({id, nameLocalizationKey, userProvidedName}) => ({value: id, label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey]))}))}
-          onSelect={(templateId:string) => {
-            form.setFieldValue(formItemProps.name, templateId)
-            form.validateFields()
-          }}/>
-      </Form.Item>)
-      if(selectedTemplateId) {
-        form.setFieldValue(formItemProps.name, selectedTemplateId)
-      }
-
   } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
-    content=(<p><Typography.Text type="warning">{$t({defaultMessage: 'Failed to load templates, please reload the page.'})}</Typography.Text></p>)
+    
+    isLoading=false
+    isDisabled=true
+    formItemProps.label = $t({defaultMessage:"Error Loading templates..."})
+    options=[]
+
   }
 
   return (
     <>
-      {content}
+      <Form.Item {...formItemProps}>
+        <Select
+          loading={isLoading}
+          disabled={isDisabled}
+          placeholder={placeholder}
+          options={options}
+          onSelect={(templateId:string) => {
+            form.setFieldValue(formItemProps.name, templateId)
+            form.validateFields()
+          }}/>
+      </Form.Item>
     </>
   )
 }
