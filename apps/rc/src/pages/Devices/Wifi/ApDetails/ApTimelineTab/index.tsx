@@ -109,8 +109,6 @@ export function ApTimelineTab () {
   const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/timeline/`)
-  // TODO: remove istanbul and add unit test once there are more than 1 tab
-  /* istanbul ignore next */
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
