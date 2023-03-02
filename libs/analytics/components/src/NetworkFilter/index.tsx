@@ -89,7 +89,6 @@ type ConnectedNetworkFilterProps = {
     withIncidents?: boolean,
     showRadioBand?: boolean,
     multiple?: boolean,
-    replaceWithId?:boolean,
     filterMode?: FilterMode,
     filterFor?: 'analytics' | 'reports',
     defaultValue?: SingleValueType | SingleValueType[],
@@ -152,8 +151,7 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode: FilterMode,
-  replaceWithId?: boolean
+  filterMode: FilterMode
 ): Option[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: Option } = {}
@@ -181,7 +179,7 @@ export const getNetworkFilterData = (
             name={name}
           />
         ),
-        value: replaceWithId ? JSON.stringify(path).replace(name,id) : JSON.stringify(path),
+        value: JSON.stringify([path[0], { ...path[1], name: id }]), // replace venue name with id to be compatible with rc/reports
         displayLabel: name,
         children: [] as Option[]
       }
@@ -289,7 +287,6 @@ function ConnectedNetworkFilter (
     filterMode='both',
     filterFor='analytics',
     multiple,
-    replaceWithId,
     defaultValue,
     defaultRadioBand,
     isRadioBandDisabled=false,
@@ -317,7 +314,7 @@ function ConnectedNetworkFilter (
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
         getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
-          filterMode, replaceWithId) : [],
+          filterMode) : [],
       ...rest
     })
   })

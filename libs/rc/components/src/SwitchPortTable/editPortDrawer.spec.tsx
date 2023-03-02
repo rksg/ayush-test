@@ -3,10 +3,19 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }                                                                     from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                                                                from '@acx-ui/rc/utils'
-import { Provider, store }                                                               from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  within,
+  waitForElementToBeRemoved,
+  waitFor
+} from '@acx-ui/test-utils'
 
 import {
   aclUnion,
@@ -134,7 +143,9 @@ describe('EditPortDrawer', () => {
         }
       })
 
-      await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
       await screen.findByText('Edit Port')
       await screen.findByText('Selected Port')
 

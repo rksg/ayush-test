@@ -1,16 +1,24 @@
 import {
-  Dispatch,
   RefObject,
-  SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
   RefCallback,
-  useImperativeHandle
+  useImperativeHandle,
+  useMemo,
+  MutableRefObject
 } from 'react'
 
-
+import {
+  ECharts,
+  EChartsOption,
+  SeriesOption,
+  CustomSeriesRenderItemAPI,
+  CustomSeriesRenderItemParams,
+  TooltipComponentOption,
+  connect
+} from 'echarts'
 import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
@@ -27,7 +35,8 @@ import {
   cssStr,
   cssNumber
 } from '@acx-ui/components'
-import type { TimeStampRange } from '@acx-ui/types'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TimeStampRange }        from '@acx-ui/types'
 
 import {
   eventColorByCategory,
@@ -42,16 +51,10 @@ import {
   INCIDENTS,
   ALL
 } from './config'
-import { getQualityColor, useLabelFormatter } from './util'
+import * as UI                             from './styledComponents'
+import { getQualityColor, labelFormatter } from './util'
 
-import type {
-  ECharts,
-  EChartsOption,
-  SeriesOption,
-  CustomSeriesRenderItemAPI,
-  CustomSeriesRenderItemParams,
-  TooltipComponentOption
-} from 'echarts'
+
 import type { EChartsReactProps } from 'echarts-for-react'
 
 type OnDatazoomEvent = {
@@ -68,12 +71,14 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   chartBoundary: number[];
   selectedData?: number;
   onDotClick?: (params: unknown) => void;
+  sharedChartName: string;
   chartRef?: RefCallback<ReactECharts>;
   hasXaxisLabel?: boolean;
-  tooltipFormatter: CallableFunction;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
+  onClick?: Function
   index?: React.Attributes['key'];
+  popoverRef?: RefObject<HTMLDivElement>;
 }
 
 export const getSeriesData = (
@@ -159,25 +164,49 @@ export function getBarColor (params: {
 export const useDotClick = (
   eChartsRef: RefObject<ReactECharts>,
   onDotClick: ((param: unknown) => void) | undefined,
-  setSelected: Dispatch<SetStateAction<number | undefined>>
+  popoverRef: RefObject<HTMLDivElement> | undefined,
+  navigate: CallableFunction,
+  basePath: string
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
-      if (params.componentSubType !== 'scatter') return
-      const data = params.data as [number, string, Event]
-      setSelected(data[2] as unknown as number)
-      onDotClick && onDotClick(data[2])
+      const typedParams = (params as
+        { componentSubType: string; data: unknown, seriesName: string })
+
+      if (params.componentSubType === 'scatter') {
+        const data = params.data as [number, string, Event]
+        const { clientX, clientY } = (params as unknown as
+          { event: { event: PointerEvent } }).event.event
+        const popoverChild = popoverRef && popoverRef.current
+        if (!popoverChild) return
+        const { x, y, width } = popoverChild.getBoundingClientRect()
+        const calcX = clientX - (x + width / 2)
+        const calcY = clientY - y
+        onDotClick && onDotClick(({
+          ...data[2],
+          x: -calcX,
+          y: -calcY
+        }))
+      }
+
+      if (params.componentSubType === 'custom' && typedParams.seriesName === 'incidents') {
+        const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
+        const { id } = typedIncidentParam.data[3]
+        navigate(`${basePath}/analytics/incidents/${id}`)
+      }
     },
-    [setSelected, onDotClick]
+    [onDotClick, navigate, basePath, popoverRef]
   )
   useEffect(() => {
     if (!eChartsRef || !eChartsRef.current) return
     const echartInstance = eChartsRef.current?.getEchartsInstance() as ECharts
     echartInstance.on('click', handler)
+
     return () => {
-      if (echartInstance && echartInstance.isDisposed && echartInstance.isDisposed()) {
-        echartInstance.off('click', handler)
-        echartInstance.dispose()
+      if (echartInstance && echartInstance.isDisposed && !echartInstance.isDisposed()) {
+        if (echartInstance && echartInstance.off) {
+          echartInstance.off('click', handler)
+        }
       }
     }
   }, [eChartsRef, handler])
@@ -204,7 +233,8 @@ export const renderCustomItem = (
 export const useDataZoom = (
   eChartsRef: RefObject<ReactECharts>,
   zoomEnabled: boolean,
-  onDataZoom?: (range: TimeStampRange, isReset: boolean) => void
+  defaultWindow: [number, number],
+  onDataZoom: (range: TimeStampRange) => void
 ): [boolean, () => void] => {
   const [canResetZoom, setCanResetZoom] = useState<boolean>(false)
 
@@ -212,7 +242,7 @@ export const useDataZoom = (
     (e: unknown) => {
       const event = e as unknown as OnDatazoomEvent
       const firstBatch = event.batch?.[0]
-      firstBatch && onDataZoom && onDataZoom([firstBatch.startValue, firstBatch.endValue], false)
+      firstBatch && onDataZoom([firstBatch.startValue, firstBatch.endValue])
       if (event.start === 0 && event.end === 100) {
         setCanResetZoom(false)
       } else {
@@ -230,13 +260,21 @@ export const useDataZoom = (
       dataZoomSelectActive: true
     })
     echartInstance.on('datazoom', onDatazoomCallback)
+    return () => {
+      if (echartInstance && echartInstance.isDisposed && !echartInstance.isDisposed()) {
+        if (echartInstance && echartInstance.off) {
+          echartInstance.off('datazoom', onDatazoomCallback)
+        }
+      }
+    }
   })
 
   const resetZoomCallback = useCallback(() => {
     if (!eChartsRef?.current) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.dispatchAction({ type: 'dataZoom', start: 0, end: 100 })
-  }, [eChartsRef])
+    onDataZoom(defaultWindow)
+  }, [eChartsRef, onDataZoom, defaultWindow])
 
   return [canResetZoom, resetZoomCallback]
 }
@@ -258,20 +296,31 @@ const tooltipOptions = () =>
     extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
   } as TooltipComponentOption)
 
+export function updateBoundary (window: TimeStampRange, ref: MutableRefObject<TimeStampRange>) {
+  ref.current = window
+}
+
 export function TimelineChart ({
   data,
   chartBoundary,
   selectedData,
   onDotClick,
   chartRef,
-  tooltipFormatter,
   mapping,
   hasXaxisLabel,
   showResetZoom,
+  onClick,
   index,
+  sharedChartName,
+  popoverRef,
+  onChartReady,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
+  const eChartsRef = useRef<ReactECharts>(null)
+  const navigate = useNavigate()
+  const currentPath = useTenantLink('/')
+  const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
@@ -279,16 +328,20 @@ export function TimelineChart ({
   const legendWidth = 85
   const xAxisHeight = hasXaxisLabel ? 30 : 0
 
-  const eChartsRef = useRef<ReactECharts>(null)
-  const [canResetZoom, resetZoomCallback] = useDataZoom(eChartsRef, true)
-  // use selected event on dot click to show popover
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selected, setSelected] = useState<number | undefined>(selectedData)
-  useDotClick(eChartsRef, onDotClick, setSelected)
+  const timewindowRef = useRef<TimeStampRange>(chartBoundary as [number, number])
 
-  const seriesData = mapping
-    .reverse()
+  const [canResetZoom, resetZoomCallback] =
+  useDataZoom(
+    eChartsRef,
+    true,
+    chartBoundary as [number, number],
+    (window: TimeStampRange) => updateBoundary(window, timewindowRef)
+  )
+  useDotClick(eChartsRef, onDotClick, popoverRef, navigate, basePath)
+
+  const mappedData = useMemo(() => mapping
     .slice()
+    .reverse()
     .map(({ key, series, chartType }) =>
       chartType === 'scatter'
         ? ({
@@ -301,23 +354,34 @@ export function TimelineChart ({
           itemStyle: {
             color: getSeriesItemColor
           },
-          connectNulls: true
-        } as SeriesOption)
-        : {
+          clip: true,
+          cursor: 'pointer'
+        })
+        : ({
           type: 'custom',
           name: series,
           renderItem: renderCustomItem as unknown as CustomSeriesRenderItem,
           itemStyle: {
             color: getBarColor as unknown as string
           },
+          animation: false,
           data: getSeriesData(data, key, series),
-          connectNulls: true
-        }
-    ) as SeriesOption[]
+          clip: true,
+          cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
+        })
+    ) as SeriesOption[], [data, mapping])
 
-  const option: EChartsOption = {
+  const hasData = useMemo(() => {
+    const seriesDatas = mappedData
+      .map(({ data }) => data as [number, string, number | Object, Object])
+      .flat()
+    return seriesDatas.length > 0
+  }, [mappedData])
+
+  const option: EChartsOption = useMemo(() => ({
     animation: false,
     grid: {
+      show: false,
       top: 0,
       bottom: 0,
       left: chartPadding,
@@ -327,12 +391,12 @@ export function TimelineChart ({
     },
     tooltip: {
       trigger: 'axis',
-      zlevel: 10,
       triggerOn: 'mousemove',
-      show: seriesData.length > 0,
+      show: hasData,
       axisPointer: {
         axis: 'x',
-        status: seriesData.length > 0 ? 'show' : 'hide',
+        status: hasData ? 'show' : 'hide',
+        show: hasData,
         snap: false,
         animation: false,
         lineStyle: {
@@ -341,16 +405,18 @@ export function TimelineChart ({
           width: 1
         }
       },
-      // use this formatter to add popover content
-      formatter: /* istanbul ignore next */ () => '',
+      // disable default tooltip formatter
+      formatter:
+        /* istanbul ignore next */
+        () => '',
       ...tooltipOptions(),
-      // Need to address test coverage for the postion
-      position: /* istanbul ignore next */ (point) => [point[0] + 10, mapping.length * 25]
+      position:
+      /* istanbul ignore next */
+        (point: [number, number]) => [point[0] + 10, mapping.length * 25]
     },
     xAxis: {
       ...xAxisOptions(),
       type: 'time',
-      boundaryGap: false,
       ...(hasXaxisLabel
         ? {
           axisLabel: {
@@ -377,13 +443,18 @@ export function TimelineChart ({
         lineStyle: { color: cssStr('--acx-neutrals-20') }
       },
       axisPointer: {
-        show: true,
+        show: hasData,
         snap: false,
         triggerTooltip: false,
         label: {
           ...tooltipOptions() as Object,
           show: true,
-          formatter: useLabelFormatter as unknown as string,
+          formatter:
+            /* istanbul ignore next */
+            (val) => {
+            /* istanbul ignore next*/
+              return labelFormatter(val, timewindowRef.current)
+            },
           margin: -35
         },
         type: 'line',
@@ -439,21 +510,30 @@ export function TimelineChart ({
         id: 'zoom',
         type: 'inside',
         zoomLock: true,
-        minValueSpan: 60,
-        start: 0,
-        end: 100
+        minValueSpan: 60 * 1000 * 10,
+        filterMode: 'none'
       }
     ],
-    series: seriesData
-  }
+    series: mappedData
+  }), [chartBoundary, hasXaxisLabel, mapping, props.style?.width, mappedData, hasData])
+
+  useEffect(() => {
+    const chart = eChartsRef && eChartsRef.current
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.setOption(option)
+      connect(sharedChartName)
+    }
+  }, [option, sharedChartName])
+
   return (
-    <>
+    <UI.ChartWrapper $selected={mapping[0].series === INCIDENTS}>
       <ReactECharts
         {...{
           ...props,
           style: {
             ...props.style,
-            WebkitUserSelect: 'none',
+            // WebkitUserSelect: 'none',
             marginBottom: 0,
             width: (props.style?.width as number) + legendWidth,
             height: (mapping.length + placeholderRows) * rowHeight + xAxisHeight
@@ -461,17 +541,19 @@ export function TimelineChart ({
         }}
         ref={eChartsRef}
         option={option}
+        opts={{ renderer: 'svg' }}
         key={index}
+        onChartReady={onChartReady}
       />
-      {canResetZoom && showResetZoom && (
-        <ResetButton
-          size='small'
-          onClick={resetZoomCallback}
-          children={$t({ defaultMessage: 'Reset Zoom' })}
-          $disableLegend={true}
-          style={{ top: -24, right: 8 }}
-        />
+      {canResetZoom && showResetZoom
+      && (<ResetButton
+        size='small'
+        onClick={resetZoomCallback}
+        children={$t({ defaultMessage: 'Reset Zoom' })}
+        $disableLegend={true}
+        style={{ top: -24, right: 8 }}
+      />
       )}
-    </>
+    </UI.ChartWrapper>
   )
 }

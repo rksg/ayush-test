@@ -37,6 +37,7 @@ export interface ClientList {
   networkId: string
   healthStatusReason: string
   lastUpdateTime: string
+  switchId?: string
   switchSerialNumber?: string
   switchName?: string
   healthClass: string

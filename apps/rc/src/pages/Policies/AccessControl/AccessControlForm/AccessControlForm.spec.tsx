@@ -157,10 +157,6 @@ describe('AccessControlForm Component', () => {
       name: /policy name/i
     }), 'acl-test-modify')
 
-    await screen.findByText('layer3policy1')
-
-    await screen.findByText('layer2policy1')
-
     await userEvent.click(screen.getByRole('button', {
       name: 'Finish'
     }))

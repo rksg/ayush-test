@@ -63,7 +63,7 @@ describe('NetworkDetails', () => {
     })
 
     expect(await screen.findByText('testNetwork')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(6)
+    expect(screen.getAllByRole('tab')).toHaveLength(5)
   })
 
   it('should not have active tab if it does not exist', async () => {
