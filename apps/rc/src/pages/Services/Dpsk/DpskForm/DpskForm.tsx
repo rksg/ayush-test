@@ -16,7 +16,8 @@ import {
   PassphraseFormatEnum,
   ServiceType,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  DpskSaveData
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -30,7 +31,7 @@ import { transferFormFieldsToSaveData, transferSaveDataToFormFields } from './pa
 interface DpskFormProps {
   editMode?: boolean,
   modalMode?: boolean,
-  modalCallBack?: () => void
+  modalCallBack?: (result?: DpskSaveData) => void
 }
 
 export default function DpskForm (props: DpskFormProps) {
@@ -39,7 +40,7 @@ export default function DpskForm (props: DpskFormProps) {
   // eslint-disable-next-line max-len
   const linkToServices = useTenantLink(getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST }))
   const params = useParams()
-  const { editMode = false, modalMode, modalCallBack } = props
+  const { editMode = false, modalMode = false, modalCallBack } = props
 
   const [ createDpsk ] = useCreateDpskMutation()
   const [ updateDpsk ] = useUpdateDpskMutation()
@@ -58,15 +59,16 @@ export default function DpskForm (props: DpskFormProps) {
 
   const saveData = async (data: CreateDpskFormFields) => {
     const dpskSaveData = transferFormFieldsToSaveData(data)
+    let result: DpskSaveData
 
     try {
       if (editMode) {
-        await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
+        result = await updateDpsk({ params, payload: _.omit(dpskSaveData, 'id') }).unwrap()
       } else {
-        await createDpsk({ payload: dpskSaveData }).unwrap()
+        result = await createDpsk({ payload: dpskSaveData }).unwrap()
       }
 
-      modalMode ? modalCallBack?.() : navigate(linkToServices, { replace: true })
+      modalMode ? modalCallBack?.(result) : navigate(linkToServices, { replace: true })
     } catch {
       showToast({
         type: 'error',
@@ -79,8 +81,8 @@ export default function DpskForm (props: DpskFormProps) {
     <>
       {!modalMode && <PageHeader
         title={editMode
-          ? $t({ defaultMessage: 'Edit DPSK service' })
-          : $t({ defaultMessage: 'Add DPSK service' })
+          ? $t({ defaultMessage: 'Edit DPSK Service' })
+          : $t({ defaultMessage: 'Add DPSK Service' })
         }
         breadcrumb={[
           {
@@ -98,6 +100,7 @@ export default function DpskForm (props: DpskFormProps) {
           name='details'
           title={$t({ defaultMessage: 'Settings' })}
           initialValues={initialValues}
+          preserve={modalMode ? false : true}
         >
           <DpskSettingsForm />
         </StepsForm.StepForm>
