@@ -12,10 +12,10 @@ import { StepsForm, Tooltip }     from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { WifiNetworkMessages }    from '@acx-ui/rc/utils'
 
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext from '../NetworkFormContext'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { NetworkMoreSettingsForm }  from './../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { CloudpathServerForm }      from './CloudpathServerForm'
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 
@@ -28,7 +28,12 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.authRadius,
+        wlan: {
+          isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId
+        },
+        isCloudpathEnabled: data.authRadius ?? false,
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
@@ -51,7 +56,6 @@ export function OpenSettingsForm () {
 }
 
 function SettingsForm () {
-  const form = Form.useFormInstance()
   const [
     isCloudpathEnabled,
     macAddressAuthentication,
@@ -106,7 +110,7 @@ function SettingsForm () {
             name={['wlan', 'isMacRegistrationList']}
             initialValue={false}
           >
-            <Radio.Group>
+            <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
                 <Radio value={true}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
@@ -118,7 +122,10 @@ function SettingsForm () {
             </Radio.Group>
           </Form.Item>
 
-          { isMacRegistrationList && <MacRegistrationListComponent inputName={['wlan']} />}
+          { isMacRegistrationList && <MacRegistrationListComponent
+            editMode={editMode}
+            inputName={['wlan']}
+          />}
 
           { !isMacRegistrationList && <>
             <Form.Item>

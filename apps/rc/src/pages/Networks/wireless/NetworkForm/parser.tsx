@@ -1,4 +1,4 @@
-import { get, omit } from 'lodash'
+import { get, isEmpty, omit } from 'lodash'
 
 import {
   NetworkTypeEnum,
@@ -34,7 +34,7 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     ...{
       enableAuthProxy: data.enableAuthProxy,
       enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-      authRadius
+      authRadius: isEmpty(authRadius) ? null : authRadius
     }
   }
 
@@ -93,6 +93,8 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       ...{
         wlan: {
           advancedCustomization: new OpenWlanAdvancedCustomization(),
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId,
           enable: true,
           vlanId: 1
         }
@@ -164,7 +166,7 @@ const parsePskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
       ...saveData,
       ...{
         enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-        authRadius
+        authRadius: isEmpty(authRadius) ? null : authRadius
       }
     }
 

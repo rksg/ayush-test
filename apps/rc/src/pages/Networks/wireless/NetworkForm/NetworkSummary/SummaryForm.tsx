@@ -85,7 +85,11 @@ export function SummaryForm (props: {
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
             label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
-            children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
+            children={
+              summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
+                ? 'Yes'
+                : 'No'
+            }
           />
           }
           {summaryData.isCloudpathEnabled &&

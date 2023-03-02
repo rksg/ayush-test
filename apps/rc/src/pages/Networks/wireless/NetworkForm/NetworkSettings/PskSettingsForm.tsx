@@ -17,7 +17,7 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { InformationSolid } from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
@@ -58,6 +58,7 @@ export function PskSettingsForm () {
           wlanSecurity: data.wlan?.wlanSecurity,
           managementFrameProtection: data.wlan?.managementFrameProtection,
           macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId,
           macAuthMacFormat: data.wlan?.macAuthMacFormat
         },
         enableAuthProxy: data.enableAuthProxy,
@@ -172,7 +173,7 @@ function SettingsForm () {
     })
   }
 
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
+  // const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -274,7 +275,7 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode||disableAAA} onChange={onMacAuthChange} />
+                <Switch disabled={editMode} onChange={onMacAuthChange} />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
@@ -300,7 +301,11 @@ function SettingsForm () {
               </Radio.Group>
             </Form.Item>
 
-            { isMacRegistrationList && <MacRegistrationListComponent inputName={['wlan']} />}
+            { isMacRegistrationList &&
+            <MacRegistrationListComponent
+              editMode={editMode}
+              inputName={['wlan']}
+            />}
 
             { !isMacRegistrationList && <>
               <Form.Item
