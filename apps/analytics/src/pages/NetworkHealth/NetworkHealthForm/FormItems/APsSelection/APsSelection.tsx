@@ -34,7 +34,7 @@ function useNetworkHierarchy () {
 export function APsSelection () {
   const { $t } = useIntl()
   const response = useNetworkHierarchy()
-  const options = getNetworkFilterData(response.data ?? [], {}, 'ap', false)
+  const options = getNetworkFilterData(response.data ?? [], {}, 'ap')
 
   return <Loader states={[response]} style={{ height: 'auto', minHeight: 346 }}>
     <Form.Item
