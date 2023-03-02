@@ -30,7 +30,7 @@ export interface AP {
   apMac?: string,
   apStatusData?: {
     APRadio?: Array<RadioProperties>,
-    cellularInfo: CelluarInfo,
+    cellularInfo?: CelluarInfo,
     APSystem?: APSystem,
     lanPortStatus?: Array<LanPortStatusProperties>
   },
@@ -61,7 +61,7 @@ export interface AP {
   }
   hops?: number,
   apDownRssi?: number,
-  apUpRssi: number,
+  apUpRssi?: number,
   poePort?: string,
   healthStatus?: string
 }
@@ -299,9 +299,9 @@ export interface PingAp {
 }
 
 export interface RadioProperties {
-  Rssi: string,
-  txPower?: string,
-  channel: string,
+  Rssi: string | null,
+  txPower?: string | null,
+  channel: string | number,
   band?: string,
   radioId?: number,
   operativeChannelBandwidth?: string
