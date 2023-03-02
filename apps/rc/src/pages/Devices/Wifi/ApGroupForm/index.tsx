@@ -171,7 +171,7 @@ export function ApGroupForm () {
         pathname: `${basePath.pathname}/wifi`
       })}
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Add' })
+        submit: action === 'add' ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsForm.StepForm>
