@@ -6,6 +6,8 @@ import { IntlShape }   from 'react-intl'
 
 import * as UI from './styledComponents'
 
+import { TableProps } from '.'
+
 import type { TableColumn, RecordWithChildren } from './types'
 
 export interface Filter extends Record<string, FilterValue|null> {}
@@ -130,18 +132,21 @@ export function renderFilter <RecordType> (
 }
 
 export function renderGroupBy<RecordType> (
-  groupables: TableColumn<RecordType, 'text'>[]
+  groupables: TableProps<RecordType>['groupable']
 ) {
+  if (!groupables) return null
+  const { selectors, onChange } = groupables
   return <UI.FilterSelect
     placeholder='Group By...'
     allowClear
-    onChange={() => groupables[1]?.groupable && groupables[1]?.groupable()}
+    onChange={(val) => onChange(val)}
   >
-    {groupables.map(col => <Select.Option
-      key={col.key}
-      data-testid={`option-${col.key}`}
+    {selectors.map(item => <Select.Option
+      key={item.key}
+      value={item.key}
+      data-testid={`option-${item.key}`}
     >
-      {col.title as string}
+      {item.label}
     </Select.Option>)}
   </UI.FilterSelect>
 }

@@ -75,7 +75,12 @@ export interface TableProps <RecordType>
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
-    ) => void
+    ) => void,
+    groupable?: {
+      selectors: Array<{ key: string, label: string }>
+      onChange: CallableFunction
+      actions?: { key: string, label: string, callback: CallableFunction }[]
+    }
   }
 
 export interface TableHighlightFnArgs {
@@ -114,7 +119,7 @@ const MIN_SEARCH_LENGTH = 2
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
+  type = 'tall', columnState, enableApiFilter, onFilterChange, groupable, ...props
 }: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
@@ -240,7 +245,6 @@ function Table <RecordType extends Record<string, any>> ({
 
   const filterables = aggregator(columns, 'filterable')
   const searchables = aggregator(columns, 'searchable')
-  const groupables = aggregator(columns, 'groupable')
 
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
@@ -382,9 +386,7 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
-            {Boolean(groupables.length) &&
-              renderGroupBy(groupables)
-            }
+            {renderGroupBy(groupable)}
           </Space>
         </div>
         <UI.HeaderRight>

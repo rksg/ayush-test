@@ -495,10 +495,8 @@ export function GroupTable () {
         break
       }
     }
-    return setTimeout(() => {
-      const data = cleanResponse(response)
-      setCurrData(data)
-    }, 1500)
+    const data = cleanResponse(response)
+    setCurrData(data)
   }
 
   // can do mocked table query here with pagination and delay + loader
@@ -512,14 +510,12 @@ export function GroupTable () {
       title: 'Status',
       dataIndex: 'deviceStatus',
       key: 'deviceStatus',
-      filterable: true,
-      groupable: () => groupableCallback('deviceStatus')
+      filterable: true
     },
     {
       title: 'Model',
       dataIndex: 'model',
-      key: 'model',
-      groupable: () => groupableCallback('model')
+      key: 'model'
     },
     {
       title: 'IP Address',
@@ -551,8 +547,7 @@ export function GroupTable () {
       title: 'AP Group',
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
-      filterable: true,
-      groupable: () => groupableCallback('deviceGroupName')
+      filterable: true
     },
     {
       title: 'RF Channels',
@@ -573,9 +568,13 @@ export function GroupTable () {
       <Table<APExtendedGroupedResponse['data']>
         columns={columns}
         dataSource={currData}
-        rowKey='serialNumber'
+        rowKey='serialNumber' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
+        groupable={{
+          selectors: [{ key: 'deviceGroupName', label: 'AP Group'}, { key: 'deviceStatus' , label: 'Status' }, { key: 'model', label: 'Model' }],
+          onChange: groupableCallback
+        }}
       />
     </>
   )

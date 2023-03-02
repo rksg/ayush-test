@@ -81,13 +81,6 @@ type AdditionalColumnType <RecordType, ValueType> = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     props: any
   }
-  /**
-   * Set the column to be groupable
-   * This will be a single select input, using a callback to be triggered
-   *
-   * @default undefined
-   */
-  groupable?: CallableFunction
 }
 
 type ProColumnTypeSubset <RecordType, ValueType> = Omit<
