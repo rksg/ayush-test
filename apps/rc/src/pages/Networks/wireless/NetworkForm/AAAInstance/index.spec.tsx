@@ -20,7 +20,7 @@ describe('AAA Instance Page', () => {
     mockServer.use(
       rest.get(
         AaaUrls.getAAAPolicyList.url,
-        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))
+        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1', type: 'AUTHENTICATION' }]))
       ),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
         res(ctx.json({}))
@@ -40,12 +40,12 @@ describe('AAA Instance Page', () => {
       )
     )
   })
-  it.skip('should render instance page', async () => {
+  it('should render instance page', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
     render(<Provider><NetworkFormContext.Provider value={{
       editMode: false, cloneMode: false, data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} } }
-    }}><Form><AAAInstance serverLabel='' type=''/>
+    }}><Form><AAAInstance serverLabel='' type='authRadius'/>
       </Form></NetworkFormContext.Provider></Provider>,
     {
       route: { params }
@@ -61,7 +61,7 @@ describe('AAA Instance Page', () => {
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[0],
       'test1234')
     await userEvent.type((await screen.findAllByRole('textbox', { name: 'IP Address' }))[1],
-      '8.8.8.8')
+      '8.8.8.7')
     await userEvent.type((await screen.findAllByLabelText('Shared Secret'))[1],
       'test1234')
     await userEvent.click(await screen.findByText('Finish'))

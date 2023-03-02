@@ -193,7 +193,7 @@ describe('Network Filter', () => {
     fireEvent.click(screen.getByText('venue1'))
     const path = [
       { type: 'network', name: 'Network' },
-      { type: 'zone', name: 'venue1' }
+      { type: 'zone', name: 'id3' }
     ]
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
@@ -211,7 +211,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
@@ -273,7 +272,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
       filterMode={'ap'}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -292,7 +290,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       showRadioBand={true}
       filterFor='reports'
-      replaceWithId={true}
       filterMode={'switch'}
     /></Provider>)
     await screen.findByText('Entire Organization')
@@ -311,7 +308,6 @@ describe('Network Filter', () => {
       shouldQuerySwitch
       filterFor='reports'
       showRadioBand={true}
-      replaceWithId={true}
     /></Provider>)
     await screen.findByText('Entire Organization')
     await userEvent.click(await screen.findByRole('combobox'))
@@ -342,7 +338,7 @@ describe('Network Filter', () => {
     fireEvent.click(screen.getByText('swg'))
     const path = [
       { type: 'network', name: 'Network' },
-      { type: 'switchGroup', name: 'swg' }
+      { type: 'switchGroup', name: 'id4' }
     ]
     const raw = [JSON.stringify(path)]
     expect(mockSetNetworkPath).toHaveBeenCalledTimes(1)
