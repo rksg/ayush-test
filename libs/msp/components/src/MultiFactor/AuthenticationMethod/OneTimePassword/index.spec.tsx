@@ -16,7 +16,6 @@ import { fakeMFADisabledTenantDetail } from '../../__tests__/fixtures'
 
 import { OneTimePassword } from './'
 
-
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
 const mockedOTPMethodResponse = {

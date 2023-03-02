@@ -11,20 +11,15 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showToast } from '@acx-ui/components'
-import {
-  Subtitle
-} from '@acx-ui/components'
-import {
-  useDisableMFAMethodMutation
-} from '@acx-ui/rc/services'
-import { MFAMethod } from '@acx-ui/rc/utils'
+import { showToast }                   from '@acx-ui/components'
+import { Subtitle }                    from '@acx-ui/components'
+import { useDisableMFAMethodMutation } from '@acx-ui/rc/services'
+import { MFAMethod }                   from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
 import { AuthApp }         from './AuthApp'
 import { OneTimePassword } from './OneTimePassword'
-
 
 export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
   const { formRef } = props

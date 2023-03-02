@@ -9,8 +9,6 @@ import { fakeRecoveryCodes } from '../__tests__/fixtures'
 import { BackupAuthenticationMethod } from './'
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-// export const fakeRecoveryCodes = ['123456','287600','230200','791660','169111']
-
 describe('MFA Backup Authentication Method', () => {
   it('should correctly render', async () => {
     render(

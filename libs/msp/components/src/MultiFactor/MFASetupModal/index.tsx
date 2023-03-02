@@ -11,7 +11,6 @@ import { MFAMethod }                                               from '@acx-ui
 import { AuthenticationMethod }       from '../AuthenticationMethod'
 import { BackupAuthenticationMethod } from '../BackupAuthenticationMethod'
 
-
 interface MFASetupModalProps {
   onFinish: () => void
 }

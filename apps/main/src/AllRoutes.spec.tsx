@@ -49,12 +49,6 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
 jest.mock('msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
-jest.mock('@acx-ui/msp/components', () => ({
-  ...jest.requireActual('@acx-ui/msp/components'),
-  MFASetupModal: () => {
-    return <div data-testid='mfaSetup' />
-  }
-}), { virtual: true })
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })

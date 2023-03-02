@@ -2,7 +2,6 @@ import { MFAStatus, MFAMethod } from '../models/MFAEnum'
 
 import { RolesEnum } from './msp'
 
-
 export interface UserSettings {
   [key: string]: string
 }

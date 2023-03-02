@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 
 import { Form, Input, Modal, Button } from 'antd'
@@ -9,9 +8,7 @@ import {
   useMfaResendOTPMutation,
   useSetupMFAAccountMutation
 } from '@acx-ui/rc/services'
-import {
-  MFAMethod
-} from '@acx-ui/rc/utils'
+import { MFAMethod } from '@acx-ui/rc/utils'
 
 import { OTPMethodProps } from '../OneTimePassword'
 

@@ -8,7 +8,6 @@ import { isDelegationMode, MfaDetailStatus }                               from 
 import { Outlet }                                                          from '@acx-ui/react-router-dom'
 import { getJwtTokenPayload }                                              from '@acx-ui/utils'
 
-
 export const MFACheck = () => {
   const { tenantId } = getJwtTokenPayload()
   const[mfaDetails, setMfaDetails] = useState({} as MfaDetailStatus)

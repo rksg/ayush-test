@@ -6,7 +6,7 @@ import styled                                         from 'styled-components/ma
 import { Card, showActionModal, showToast } from '@acx-ui/components'
 import { SpaceWrapper }                     from '@acx-ui/rc/components'
 import { useToggleMFAMutation }             from '@acx-ui/rc/services'
-import { MFAStatus, MFASession }            from '@acx-ui/rc/utils'
+import { MFAStatus, MfaDetailStatus }       from '@acx-ui/rc/utils'
 import { useParams }                        from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
@@ -17,7 +17,7 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
   className?: string;
-  mfaTenantDetailsData?: MFASession;
+  mfaTenantDetailsData?: MfaDetailStatus;
   isPrimeAdminUser: boolean;
 }
 

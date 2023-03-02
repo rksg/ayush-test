@@ -29,7 +29,6 @@ import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
 
-
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const { data: userProfile } = useUserProfileContext()

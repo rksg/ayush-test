@@ -2,16 +2,12 @@ import { Form, Input, Tooltip, Typography, Row } from 'antd'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import {
-  Drawer
-} from '@acx-ui/components'
+import { Drawer }              from '@acx-ui/components'
 import {
   useMfaRegisterPhoneQuery,
   useSetupMFAAccountMutation
 } from '@acx-ui/rc/services'
-import {
-  MFAMethod
-} from '@acx-ui/rc/utils'
+import { MFAMethod } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -24,16 +20,10 @@ interface AuthAppProps {
 
 export const AuthApp = styled((props: AuthAppProps) => {
   const { $t } = useIntl()
-
   const { visible, setVisible, userId } = props
   const [form] = Form.useForm()
-
   const { data } = useMfaRegisterPhoneQuery({ params: { userId: userId } })
   const [setupMFAAccount] = useSetupMFAAccountMutation()
-
-  // let key = 'ASFVZB7MCMYICUNR'
-  // let url =
-  // 'https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=otpauth%3A%2F%2Ftotp%2FRUCKUSCloud%3Anull%3Fsecret%3DASFVZB7MCMYICUNR%26issuer%3DRUCKUSCloud'
 
   const onClose = () => {
     setVisible(false)

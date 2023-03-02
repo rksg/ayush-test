@@ -145,4 +145,22 @@ describe('Enable MFA Checkbox', () => {
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
     expect(formItem).toBeDisabled()
   })
+
+  it('should display correctly if no data', async () => {
+    render(
+      <Provider>
+        <MFAFormItem
+          mfaTenantDetailsData={undefined}
+          isPrimeAdminUser={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
+    expect(formItem).toBeDisabled()
+    const copyBtn = await screen.findByText( 'Copy Codes' )
+    fireEvent.click(copyBtn)
+    expect(mockedNavigatorWriteText).toBeCalledWith('')
+  })
 })

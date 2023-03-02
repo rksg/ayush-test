@@ -1,23 +1,15 @@
 import { useEffect } from 'react'
 
-import {
-  Row,
-  Col,
-  Form
-} from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Col, Form } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import {
-  Subtitle
-} from '@acx-ui/components'
+import { Subtitle }             from '@acx-ui/components'
 import {
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import { MFAMethod, isDelegationMode } from '@acx-ui/rc/utils'
-import {
-  useParams
-} from '@acx-ui/react-router-dom'
+import { useParams }                   from '@acx-ui/react-router-dom'
 
 import { AuthenticationMethod }       from './AuthenticationMethod'
 import { BackupAuthenticationMethod } from './BackupAuthenticationMethod'

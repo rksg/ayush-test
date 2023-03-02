@@ -3,9 +3,7 @@ import TextArea             from 'antd/lib/input/TextArea'
 import { useIntl }          from 'react-intl'
 import styled               from 'styled-components'
 
-import {
-  Drawer
-} from '@acx-ui/components'
+import { Drawer }       from '@acx-ui/components'
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
 import * as UI from './styledComponents'
