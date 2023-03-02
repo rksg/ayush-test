@@ -309,7 +309,7 @@ export const getTableColumns = ({
           const { stationAp } = row
           return (
             <span key={`${stationAp?.snr}-${index}`}>
-              {formatter('decibelFormat')(stationAp?.snr)}
+              {formatter('decibelFormat')(stationAp?.snr || '-')}
             </span>
           )
         }
