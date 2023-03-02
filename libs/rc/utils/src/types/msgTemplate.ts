@@ -8,9 +8,9 @@ export interface TemplateScope {
 }
 
 enum MessageType {
-    EMAIL = "EMAIL",
-    SMS = "SMS",
-    WEBPUSH = "WEBPUSH"
+    EMAIL = 'EMAIL',
+    SMS = 'SMS',
+    WEBPUSH = 'WEBPUSH'
 }
 
 export interface Registration {

@@ -2,8 +2,6 @@ import { ApiInfo } from '../apiService'
 
 export const msgTemplateBaseUrl = '/templateScopes'
 
-const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
-
 export const MsgTemplateUrls: { [key: string]: ApiInfo } = {
   getTemplateScopeById: {
     method: 'get',

@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { MsgTemplateUrls } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { Provider }        from '@acx-ui/store'
 import {
   mockServer,
   screen,
@@ -12,7 +12,10 @@ import {
   waitFor
 }    from '@acx-ui/test-utils'
 
-import { mockedRegistration, mockedTemplates, mockedTemplateScope, mockedTemplateScopeNoDefault } from './__tests__/fixtures'
+import { mockedRegistration,
+  mockedTemplates,
+  mockedTemplateScope,
+  mockedTemplateScopeNoDefault } from './__tests__/fixtures'
 
 import { TemplateSelector } from '.'
 
@@ -48,14 +51,14 @@ describe('TemplateSelector', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-            <TemplateSelector scopeId={scopeId} registrationId={registrationId} formItemProps={{name: formItemName}}/>
+          <TemplateSelector scopeId={scopeId}
+            registrationId={registrationId}
+            formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
         route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
       }
     )
-
-    const targetAp = mockedTemplateScope.id
 
     await waitFor(() => {
       expect(formRef.current.getFieldValue(formItemName)).toEqual(undefined)
@@ -92,14 +95,14 @@ describe('TemplateSelector', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-            <TemplateSelector scopeId={scopeId} registrationId={registrationId} formItemProps={{name: formItemName}}/>
+          <TemplateSelector scopeId={scopeId}
+            registrationId={registrationId}
+            formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
         route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
       }
     )
-
-    const targetAp = mockedTemplateScope.id
 
     await waitFor(() => {
       expect(formRef.current.getFieldValue(formItemName)).toEqual(mockedRegistration.templateId)
@@ -136,7 +139,10 @@ describe('TemplateSelector', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-            <TemplateSelector scopeId={scopeId} registrationId={registrationId} formItemProps={{name: formItemName}}/>
+          <TemplateSelector
+            scopeId={scopeId}
+            registrationId={registrationId}
+            formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
         route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
@@ -144,25 +150,26 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName)).toEqual(mockedTemplateScope.defaultTemplateId)
+      expect(formRef.current.getFieldValue(formItemName))
+        .toEqual(mockedTemplateScope.defaultTemplateId)
     })
   })
-  
+
   it('should change value when new item is selected', async () => {
-    
+
     mockServer.use(
       rest.get(
         MsgTemplateUrls.getTemplateScopeById.url,
-        (req, res, ctx) => res(ctx.json({...mockedTemplateScopeNoDefault}))
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplateScopeNoDefault }))
       ),
       rest.get(
         // Remove the query parameter to make MSW happy
         MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json({...mockedTemplates}))
+        (req, res, ctx) => res(ctx.json({ ...mockedTemplates }))
       ),
       rest.get(
         MsgTemplateUrls.getRegistrationById.url,
-        (req, res, ctx) => res(ctx.json({...mockedRegistration}))
+        (req, res, ctx) => res(ctx.json({ ...mockedRegistration }))
       )
     )
 
@@ -178,7 +185,10 @@ describe('TemplateSelector', () => {
     render(
       <Provider>
         <Form form={formRef.current}>
-            <TemplateSelector scopeId={scopeId} registrationId={registrationId} formItemProps={{name: formItemName}}/>
+          <TemplateSelector
+            scopeId={scopeId}
+            registrationId={registrationId}
+            formItemProps={{ name: formItemName }}/>
         </Form>
       </Provider>, {
         route: { params: { tenantId: '__tenant_ID__' }, path: '/:tenantId/' }
@@ -186,10 +196,11 @@ describe('TemplateSelector', () => {
     )
 
     await userEvent.click(await screen.findByRole('combobox'))
-    await userEvent.click(await screen.findByText("User Created Template 1"))
+    await userEvent.click(await screen.findByText('User Created Template 1'))
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName)).toEqual("746ac7b2-1ec5-412c-9354-e5ac274b7bd9")
+      expect(formRef.current.getFieldValue(formItemName))
+        .toEqual('746ac7b2-1ec5-412c-9354-e5ac274b7bd9')
     })
   })
 })

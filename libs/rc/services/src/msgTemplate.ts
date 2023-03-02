@@ -7,7 +7,7 @@ import {
   RequestPayload,
   Pageable,
   Template,
-  Registration,
+  Registration
 } from '@acx-ui/rc/utils'
 
 export const baseMsgTemplateApi = createApi({
@@ -23,37 +23,41 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
 
     // Template Scope /////////////////////////////////////
     getTemplateScopeById: build.query<TemplateScope, RequestPayload>({
-        query: ({ params }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(MsgTemplateUrls.getTemplateScopeById, params)
-            return {
-                ...req
-            }
-        },
-        providesTags: (result, error, arg) => [{ type: 'TemplateScope', id: (arg.templateScopeId as string) }]
+        return {
+          ...req
+        }
+      },
+      providesTags: (result, error, arg) =>
+        [{ type: 'TemplateScope', id: (arg.templateScopeId as string) }]
     }),
 
     // Templates ///////////////////////////////////////////
     getAllTemplatesByTemplateScopeId: build.query<Pageable<Template>, RequestPayload>({
       query: ({ params }) => {
-      const req = createHttpRequest(MsgTemplateUrls.getAllTemplatesByTemplateScopeId, params)
-          return {
-              ...req
-          }
+        const req = createHttpRequest(MsgTemplateUrls.getAllTemplatesByTemplateScopeId, params)
+        return {
+          ...req
+        }
       },
-      providesTags: (result, error, arg) => result && result.content ? 
-        [...result.content.map(({id}) => ({type: 'Template' as const, id})), { type: 'Template', id: 'LIST' + arg.templateScopeId}] : [{ type: 'Template', id: 'LIST' + arg.templateScopeId }] 
+      providesTags: (result, error, arg) => result && result.content ?
+        [...result.content.map(({ id }) => ({ type: 'Template' as const, id })),
+          { type: 'Template', id: 'LIST' + arg.templateScopeId }] :
+        [{ type: 'Template', id: 'LIST' + arg.templateScopeId }]
     }),
 
     // Registrations ///////////////////////////////////////
     getRegistrationById: build.query<Registration, RequestPayload>({
       query: ({ params }) => {
-      const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params)
-          return {
-              ...req
-          }
+        const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params)
+        return {
+          ...req
+        }
       },
-      providesTags: (result, error, arg) => [{ type: 'Registration', id: (arg.registrationId as string) }]
-    }),
+      providesTags: (result, error, arg) =>
+        [{ type: 'Registration', id: (arg.registrationId as string) }]
+    })
   })
 })
 
