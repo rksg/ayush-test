@@ -15,5 +15,9 @@ export const MsgTemplateUrls: { [key: string]: ApiInfo } = {
   getRegistrationById: {
     method: 'get',
     url: msgTemplateBaseUrl + '/:templateScopeId/registrations/:registrationId'
+  },
+  putRegistrationById: {
+    method: 'put',
+    url: msgTemplateBaseUrl + '/:templateScopeId/registrations/:registrationId'
   }
 }

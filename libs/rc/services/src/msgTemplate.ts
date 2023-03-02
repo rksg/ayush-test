@@ -57,6 +57,17 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
       },
       providesTags: (result, error, arg) =>
         [{ type: 'Registration', id: (arg.registrationId as string) }]
+    }),
+    putRegistrationById: build.mutation<Registration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MsgTemplateUrls.putRegistrationById, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: (result, error, arg) =>
+        [{ type: 'Registration', id: (arg.registrationId as string) }]
     })
   })
 })
@@ -64,5 +75,6 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
 export const {
   useGetTemplateScopeByIdQuery,
   useGetAllTemplatesByTemplateScopeIdQuery,
-  useGetRegistrationByIdQuery
+  useGetRegistrationByIdQuery,
+  usePutRegistrationByIdMutation
 } = msgTemplateApi
