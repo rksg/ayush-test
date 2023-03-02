@@ -39,7 +39,7 @@ describe('DpskSettingsForm', () => {
 
     const { asFragment } = render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
@@ -53,7 +53,7 @@ describe('DpskSettingsForm', () => {
 
     render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
@@ -73,7 +73,7 @@ describe('DpskSettingsForm', () => {
           data: partialDpskNetworkEntity,
           setData: jest.fn()
         }}>
-          <Form><DpskSettingsForm saveState={{}} /></Form>
+          <Form><DpskSettingsForm /></Form>
         </NetworkFormContext.Provider>
       </Provider>, {
         route: { params }
@@ -89,7 +89,7 @@ describe('DpskSettingsForm', () => {
 
     render(
       <Provider>
-        <Form><DpskSettingsForm saveState={{}} /></Form>
+        <Form><DpskSettingsForm /></Form>
       </Provider>, {
         route: { params }
       }
