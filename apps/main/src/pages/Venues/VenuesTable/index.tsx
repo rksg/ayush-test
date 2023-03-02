@@ -54,7 +54,6 @@ function useColumns (
       dataIndex: 'city',
       sorter: true,
       filterable: filterables ? filterables['city'] : false,
-      // filterMultiple: true,
       width: 120,
       render: function (data, row) {
         return `${row.country}, ${row.city}`
@@ -164,7 +163,7 @@ function useColumns (
       render: function (data, row) {
         return (
           <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
+            to={`/venues/${row.id}/venue-details/devices/edge`}
             children={data ? data : 0}
           />
         )

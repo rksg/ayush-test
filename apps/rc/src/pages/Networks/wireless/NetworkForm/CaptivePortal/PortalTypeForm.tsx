@@ -4,20 +4,18 @@ import {
   Form,
   Radio,
   RadioChangeEvent,
-  Space,
-  Tooltip
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsForm }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { notAvailableMsg }                       from '@acx-ui/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'
 import { NetworkDiagram }                                     from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext                                     from '../NetworkFormContext'
 import { RadioDescription }                                   from '../styledComponents'
-
 
 
 export function PortalTypeForm () {
@@ -61,6 +59,7 @@ function TypesForm () {
       form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
     }
   },[createType])
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <StepsForm.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsForm.Title>
@@ -87,13 +86,11 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={true}>
-              <Tooltip title={intl.$t(notAvailableMsg)}>
-                {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
-                <RadioDescription>
-                  {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
-                </RadioDescription>
-              </Tooltip>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={disableAAA}>
+              {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
+              <RadioDescription>
+                {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
+              </RadioDescription>
             </Radio>
 
             <Radio value={GuestNetworkTypeEnum.HostApproval}>
@@ -110,7 +107,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr}>
+            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={disableAAA}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

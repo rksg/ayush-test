@@ -1,96 +1,84 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 
 import {
   Form,
-  Input,
-  Select
+  Switch,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Button, Subtitle }      from '@acx-ui/components'
-import { useCloudpathListQuery } from '@acx-ui/rc/services'
-import { useParams }             from '@acx-ui/react-router-dom'
+import { Subtitle, Tooltip }          from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { NetworkTypeEnum }            from '@acx-ui/rc/utils'
 
+import AAAInstance        from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
 
-const { Option } = Select
+
 
 const { useWatch } = Form
 
 export function CloudpathServerForm () {
-  const { data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+  const { data } = useContext(NetworkFormContext)
 
-  const selectedId = useWatch('cloudpathServerId')
-  const { selectOptions, selected } = useCloudpathListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        selected: data?.find((item) => item.id === selectedId)
-      }
-    }
-  })
 
-  const onSelect = (selectedId: string) => {
-    setData && setData({ ...data, cloudpathServerId: selectedId })
-  }
+  const proxyServiceTooltip = <Tooltip
+    placement='bottom'
+    children={<QuestionMarkCircleOutlined />}
+    title={$t({
+      // eslint-disable-next-line max-len
+      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+    })}
+  />
+  const enableAccountingService = useWatch('enableAccountingService')
   return (
-    <>
-      <Form.Item
-        name='cloudpathServerId'
-        label={$t({ defaultMessage: 'Cloudpath Server' })}
-        initialValue={data?.cloudpathServerId}
-        rules={[{ required: true }]}>
-        <Select placeholder={$t({ defaultMessage: 'Select...' })}
-          onSelect={onSelect}
-          children={selectOptions} />
-      </Form.Item>
-
-      <Button type='link' style={{ marginBottom: '16px' }}>
-        { $t({ defaultMessage: 'Add Server' }) }
-      </Button>
-
-      {selected && (<>
+    <Space direction='vertical' size='middle'>
+      <div>
+        <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'/>
+        {(data?.type===NetworkTypeEnum.AAA || data?.type===NetworkTypeEnum.OPEN)&&
+        <Form.Item>
+          <Form.Item
+            noStyle
+            name='enableAuthProxy'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch/>}
+          />
+          <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
+          {proxyServiceTooltip}
+        </Form.Item>}
+      </div>
+      <div>
+        <Subtitle level={3}>{$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item
-          label={$t({ defaultMessage: 'Deployment Type' })}
-          children={selected.deploymentType}
+          name='enableAccountingService'
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch/>}
         />
-        <Subtitle level={4}>
-          { $t({ defaultMessage: 'Radius Authentication Service' }) }
-        </Subtitle>
-        <Form.Item
-          label={$t({ defaultMessage: 'IP Address' })}
-          children={
-            selected.authRadius.primary.ip +
-            ':' +
-            selected.authRadius.primary.port
-          }
-        />
-        { selected.accountingRadius &&
-          <>
-            <Subtitle level={4}>
-              { $t({ defaultMessage: 'Radius Accounting Service' }) }
-            </Subtitle>
+        {enableAccountingService &&
+        <>
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>
+          {(data?.type===NetworkTypeEnum.AAA || data?.type===NetworkTypeEnum.OPEN)&&
+          <Form.Item>
             <Form.Item
-              label={$t({ defaultMessage: 'IP Address' })}
-              children={
-                selected.accountingRadius?.primary.ip +
-                ':' +
-                selected.accountingRadius?.primary.port
-              }
+              noStyle
+              name='enableAccountingProxy'
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch/>}
             />
-          </>
+            <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
+            {proxyServiceTooltip}
+          </Form.Item>}
+        </>
         }
-        <Form.Item
-          label={$t({ defaultMessage: 'Radius Shared Secret' })}
-          children={<Input.Password
-            readOnly
-            bordered={false}
-            value={selected.authRadius.primary.sharedSecret}
-          />}
-        />
-      </>)}
-    </>
+      </div>
+    </Space>
   )
 }

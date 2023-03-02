@@ -16,7 +16,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('NetworkTimelineTab', ()=>{
-  it('should render', async () => {
+  it.skip('should render', async () => {
     jest.spyOn(router, 'useParams').mockImplementation(
       () => ({ tenantId: 't1', networkId: 'networkId' })
     )

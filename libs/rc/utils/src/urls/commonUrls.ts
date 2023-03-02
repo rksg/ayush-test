@@ -99,21 +99,42 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/venue'
   },
+  getVenues: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venues'
+  },
+  newAddVenue: { // Only for IT test
+    method: 'post',
+    newApi: true,
+    url: '/venues'
+    // url: '/api/tenant/:tenantId/venue'
+  },
   addVenue: {
     method: 'post',
-    url: '/api/tenant/:tenantId/venue'
+    newApi: false,
+    url: '/venues',
+    oldUrl: '/api/tenant/:tenantId/venue'
   },
   updateVenue: {
     method: 'put',
     url: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: false,
+    // url: '/venues/:venueId',
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   getVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/venue/:venueId'
+    // newApi: false,
+    // url: '/venues/:venueId',
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenue: {
     method: 'delete',
     url: '/api/tenant/:tenantId/venue/:venueId'
+    // url: '/venues/:venueId',
+    // newApi: false,
+    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
   },
   deleteVenues: {
     method: 'delete',
@@ -338,5 +359,37 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
+  },
+  fetchBotAuth: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/chatbot/idtoken'
+  },
+  getTopology: {
+    method: 'get',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
+  },
+  wifiAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/allowed-operations'
+  },
+  switchAllowedOperations: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/allowed-operations'
+  },
+  tenantAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/allowed-operations'
+  },
+  venueAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/allowed-operations'
+  },
+  guestAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+  },
+  upgradeAllowedOperations: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
   }
 }

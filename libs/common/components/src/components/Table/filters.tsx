@@ -10,6 +10,8 @@ import type { TableColumn, RecordWithChildren } from './types'
 
 export interface Filter extends Record<string, FilterValue|null> {}
 
+export const MIN_SEARCH_LENGTH = 2
+
 function hasChildrenColumn <RecordType> (
   column: RecordType | RecordWithChildren<RecordType>
 ): column is RecordWithChildren<RecordType> {
@@ -31,7 +33,7 @@ export function getFilteredData <RecordType> (
         return false
       }
     }
-    if (searchValue) {
+    if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         return (row[column.dataIndex as keyof RecordType] as unknown as string)
           .toString()
@@ -104,11 +106,18 @@ export function renderFilter <RecordType> (
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
-    mode='multiple'
+    mode={column.filterMultiple === false ? undefined : 'multiple'}
     value={filterValues[key as keyof Filter]}
-    onChange={(value: unknown) =>
-      setFilterValues({ ...filterValues, [key]: (value as string[]).length ? value: undefined })
-    }
+    onChange={(value: unknown) => {
+      const isValidValue = Array.isArray(value) ? (value as string[]).length : value
+      const filterValue = Array.isArray(value) ? value : [value]
+      if (column.filterValueNullable === false &&
+        filterValue.filter(v => v != null).length === 0) {
+        setFilterValues({ ...filterValues, [key]: undefined })
+      } else {
+        setFilterValues({ ...filterValues, [key]: isValidValue ? filterValue : undefined })
+      }
+    }}
     placeholder={column.title as string}
     showArrow
     allowClear

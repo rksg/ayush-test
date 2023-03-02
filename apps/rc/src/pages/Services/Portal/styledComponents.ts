@@ -21,7 +21,8 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   GoogleSolidPlus,
   LinkedinOutlined as LinkedIn,
   TwitterOutlined as Twitter,
-  SMSOutlined
+  SMSOutlined,
+  EyeOpenSolid
 }   from '@acx-ui/icons'
 
 export const popoverClassName = 'portal-demo-popover'
@@ -282,6 +283,7 @@ export const ViewSection = styled.div`
   border: 2px solid var(--acx-neutrals-30);
 `
 export const ViewSectionNoBorder = styled.div`
+  margin-top:10px;
   height:auto;
   width:420px;
   max-width:100%;
@@ -571,7 +573,7 @@ export const LinkedinOutlined = styled(LinkedIn)`
 ${socialIconStyle}
 `
 export const SMSMobileOutlined = styled(SMSOutlined)`
-${socialIconStyle}
+
 `
 export const GoogleOutlined = styled(GoogleSolidPlus)`
 ${socialIconStyle}
@@ -582,4 +584,14 @@ border-radius:5px;
 width:272px;
 margin-left:45px;
 margin-bottom:10px;
+`
+export const EyeOpenPreview = styled(EyeOpenSolid)`
+cursor: pointer;
+path{
+  fill:var(--acx-accents-blue-50) !important;
+  stroke:var(--acx-accents-blue-50) !important;
+}
+path:nth-child(1){
+  fill: var(--acx-primary-white) !important;
+}
 `

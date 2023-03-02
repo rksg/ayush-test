@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { AnalyticsFilter }                                                       from '@acx-ui/analytics/utils'
-import { apApi, venueApi, networkApi, clientApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic } from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
+import { AnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
+import { apApi, venueApi, networkApi, clientApi }                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo, Client, ClientStatistic, getUrlForTest } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -21,7 +21,8 @@ import {
   clientNetworkList,
   clientReportList,
   eventMetaList,
-  histClientList
+  histClientList,
+  GuestClient
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -33,6 +34,10 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TrafficByBand: () => <div data-testid={'analytics-TrafficByBand'} title='TrafficByBand' />,
   TrafficByUsage: () => <div data-testid={'analytics-TrafficByUsage'} title='TrafficByUsage' />,
   ClientHealth: () => <div data-testid='anayltics-ClientHealth' title='ClientHealth' />
+}))
+
+jest.mock('./TopApplications', () => ({
+  TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
 }))
 
 const params = {
@@ -64,7 +69,8 @@ describe('ClientOverviewTab', () => {
         (_, res, ctx) => res(ctx.json(clientApList[0]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
-      rest.get(CommonUrlsInfo.getVenue.url,
+      rest.get(
+        getUrlForTest(CommonUrlsInfo.getVenue),
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
@@ -214,7 +220,7 @@ describe('ClientOverviewTab', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json(null)))
         )
 
@@ -237,7 +243,7 @@ describe('ClientOverviewTab', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null
@@ -247,8 +253,14 @@ describe('ClientOverviewTab', () => {
               ...clientNetworkList[0],
               type: 'guest',
               name: null
-            }))
-          )
+            }))),
+          rest.post(CommonUrlsInfo.getGuestsList.url,
+            (_, res, ctx) => res(ctx.json({
+              ...GuestClient,
+              data: [{
+                ...GuestClient.data[3]
+              }]
+            })))
         )
         const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
@@ -309,7 +321,7 @@ describe('ClientOverviewTab', () => {
             (_, res, ctx) => res(ctx.json(null))),
           rest.get(WifiUrlsInfo.getNetwork.url,
             (_, res, ctx) => res(ctx.json(null))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json(null)))
         )
         const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
@@ -335,7 +347,7 @@ describe('ClientOverviewTab', () => {
               ...clientApList[0],
               name: null
             }))),
-          rest.get(CommonUrlsInfo.getVenue.url,
+          rest.get(getUrlForTest(CommonUrlsInfo.getVenue),
             (_, res, ctx) => res(ctx.json({
               ...clientVenueList[0],
               name: null
@@ -345,8 +357,14 @@ describe('ClientOverviewTab', () => {
               ...clientNetworkList[0],
               type: 'guest',
               name: null
-            }))
-          )
+            }))),
+          rest.post(CommonUrlsInfo.getGuestsList.url,
+            (_, res, ctx) => res(ctx.json({
+              ...GuestClient,
+              data: [{
+                ...GuestClient.data[3]
+              }]
+            })))
         )
         const { asFragment } = render(<Provider><ClientOverviewTab /></Provider>, {
           route: {

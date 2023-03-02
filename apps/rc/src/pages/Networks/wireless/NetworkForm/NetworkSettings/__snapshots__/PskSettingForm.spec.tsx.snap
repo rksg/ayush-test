@@ -455,13 +455,14 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio"
+                                                  class="ant-radio ant-radio-disabled"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
+                                                    disabled=""
                                                     type="radio"
                                                     value="aaa"
                                                   />
@@ -622,7 +623,8 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                             >
                               <button
                                 aria-checked="false"
-                                class="ant-switch"
+                                class="ant-switch ant-switch-disabled"
+                                disabled=""
                                 id="settings_isCloudpathEnabled"
                                 role="switch"
                                 type="button"

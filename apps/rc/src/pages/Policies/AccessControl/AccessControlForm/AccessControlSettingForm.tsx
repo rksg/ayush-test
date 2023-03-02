@@ -9,16 +9,23 @@ import { useParams }   from 'react-router-dom'
 import { GridCol, GridRow }                                                     from '@acx-ui/components'
 import { StepsForm }                                                            from '@acx-ui/components'
 import { useGetAccessControlProfileListQuery, useGetAccessControlProfileQuery } from '@acx-ui/rc/services'
+import { AclEmbeddedObject }                                                    from '@acx-ui/rc/utils'
 
 import AccessControlComponent from './AccessControlComponent'
 
 type AccessControlSettingFormProps = {
-  editMode: boolean
+  editMode: boolean,
+  embeddedMode?: boolean,
+  embeddedObject?: AclEmbeddedObject
 }
 
 const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
   const { $t } = useIntl()
-  const { editMode } = props
+  const {
+    editMode,
+    embeddedMode = false,
+    embeddedObject = {} as AclEmbeddedObject
+  } = props
   const params = useParams()
   const form = Form.useFormInstance()
 
@@ -62,6 +69,32 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
     }
   }, [data, editMode])
 
+  useEffect(() => {
+    if (embeddedMode) {
+      form.setFieldValue('enableLayer2', Boolean(embeddedObject?.l2AclPolicyId))
+      form.setFieldValue('l2AclPolicyId', embeddedObject?.l2AclPolicyId)
+      form.setFieldValue('enableLayer3', Boolean(embeddedObject?.l3AclPolicyId))
+      form.setFieldValue('l3AclPolicyId', embeddedObject?.l3AclPolicyId)
+      form.setFieldValue('enableDeviceOs', Boolean(embeddedObject?.devicePolicyId))
+      form.setFieldValue('devicePolicyId', embeddedObject?.devicePolicyId)
+      form.setFieldValue('enableApplications', Boolean(embeddedObject?.applicationPolicyId))
+      form.setFieldValue('applicationPolicyId', embeddedObject?.applicationPolicyId)
+      form.setFieldValue(
+        'enableClientRateLimit', Boolean(
+          embeddedObject?.uplinkLimit || embeddedObject?.downlinkLimit
+        )
+      )
+      form.setFieldValue(['rateLimiting', 'uplinkLimit'], embeddedObject?.uplinkLimit ?? 0)
+      form.setFieldValue(['rateLimiting', 'enableUploadLimit'],
+        embeddedObject?.uplinkLimit && embeddedObject?.uplinkLimit > 0
+      )
+      form.setFieldValue(['rateLimiting', 'downlinkLimit'], embeddedObject?.downlinkLimit ?? 0)
+      form.setFieldValue(['rateLimiting', 'enableDownloadLimit'],
+        embeddedObject?.downlinkLimit && embeddedObject?.downlinkLimit > 0
+      )
+    }
+  }, [embeddedMode, embeddedObject])
+
   return (
     <GridRow>
       <GridCol col={{ span: 10 }}>
@@ -101,34 +134,6 @@ const AccessControlSettingForm = (props: AccessControlSettingFormProps) => {
         <Form.Item
           name='accessControlComponent'
           label={$t({ defaultMessage: 'Access Control Components' })}
-          rules={[
-            { validator: async () => {
-              if (form.getFieldValue('enableLayer2') && !form.getFieldValue('l2AclPolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'l2AclPolicy could not be empty' }))
-              }
-              if (form.getFieldValue('enableLayer3') && !form.getFieldValue('l3AclPolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'l3AclPolicy could not be empty' }))
-              }
-              if (form.getFieldValue('enableDeviceOs') && !form.getFieldValue('devicePolicyId')) {
-                return Promise.reject($t({ defaultMessage: 'devicePolicyId could not be empty' }))
-              }
-              // eslint-disable-next-line max-len
-              if (form.getFieldValue('enableApplications') && !form.getFieldValue('applicationPolicyId')) {
-                return Promise.reject($t({
-                  defaultMessage: 'applicationPolicyId could not be empty'
-                }))
-              }
-              if (form.getFieldValue('enableClientRateLimit')
-                  && !form.getFieldValue(['rateLimiting', 'enableUploadLimit'])
-                  && !form.getFieldValue(['rateLimiting', 'enableDownloadLimit'])) {
-                return Promise.reject($t({
-                  defaultMessage: 'one of the client rate limit setting could not be empty'
-                }))
-              }
-
-              return Promise.resolve()
-            } }
-          ]}
           children={<AccessControlComponent />}
         />
       </GridCol>

@@ -15,7 +15,7 @@ export interface PersonaDeviceItem extends PersonaDevice {
 interface PersonaDevicesFormProps {
   groupId?: string,
   value?: PersonaDeviceItem[],
-  onChange?: (value: PersonaDeviceItem[]) => void
+  onChange?: (value: Partial<PersonaDeviceItem>[]) => void
 }
 
 export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
@@ -23,7 +23,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
   const { value, onChange } = props
   const [modelVisible, setModelVisible] = useState(false)
 
-  const triggerOnChange = (changeValue: PersonaDeviceItem[]) => {
+  const triggerOnChange = (changeValue: Partial<PersonaDeviceItem>[]) => {
     onChange?.(changeValue ?? [])
   }
 
@@ -31,7 +31,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
     setModelVisible(false)
   }
 
-  const handleModalSubmit = (data: Extract<PersonaDeviceItem, ['macAddress', 'hostname']>[]) => {
+  const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     triggerOnChange([ ...value ?? [], ...data ])
   }
 
@@ -82,6 +82,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
       <PersonaDevicesImportDialog
         visible={modelVisible}
         personaGroupId={props.groupId}
+        selectedMacAddress={value?.map(v => v.macAddress.replaceAll('-', ':')) ?? []}
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
       />

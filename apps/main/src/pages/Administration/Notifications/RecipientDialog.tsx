@@ -23,8 +23,7 @@ import {
   NotificationEndpointType,
   emailRegExp,
   phoneRegExp,
-  CommonErrorsResult,
-  catchErrorDetails
+  CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -188,7 +187,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
 
       handleClose()
     } catch(err) {
-      const respData = err as CommonErrorsResult<catchErrorDetails>
+      const respData = err as CatchErrorResponse
       const errors = respData.data.errors
 
       let errMsg: string

@@ -1,19 +1,18 @@
 import { useEffect } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Form, Input, InputNumber, Select } from 'antd'
+import { useIntl }                          from 'react-intl'
+import { useParams }                        from 'react-router-dom'
 
 import { Alert, Drawer, showToast }                                                                      from '@acx-ui/components'
 import { useAddSubInterfacesMutation, useUpdateSubInterfacesMutation }                                   from '@acx-ui/rc/services'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSubInterface, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                            from '@acx-ui/utils'
 
 interface StaticRoutesDrawerProps {
   mac: string
   visible: boolean
   setVisible: (visible: boolean) => void
-  addSubInterface?: (data: EdgeSubInterface) => void
-  editSubInterface?: (data: EdgeSubInterface) => void
   data?: EdgeSubInterface
 }
 
@@ -151,8 +150,16 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
     <Form.Item
       name='vlan'
       label={$t({ defaultMessage: 'VLAN' })}
-      rules={[{ required: true }]}
-      children={<Input />}
+      rules={[
+        { required: true },
+        {
+          type: 'number',
+          min: 1,
+          max: 4094,
+          message: $t(validationMessages.vlanRange)
+        }
+      ]}
+      children={<InputNumber />}
     />
   </Form>
 
