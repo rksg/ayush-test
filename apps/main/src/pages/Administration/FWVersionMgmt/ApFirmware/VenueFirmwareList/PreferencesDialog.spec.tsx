@@ -11,7 +11,6 @@ import {
   render,
   screen,
   fireEvent,
-  within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
