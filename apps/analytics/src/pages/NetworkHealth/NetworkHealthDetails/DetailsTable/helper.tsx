@@ -247,14 +247,10 @@ export const getTableColumns = ({
       searchable: true,
       width: 150,
       render: function (text, row, index) {
-        const { apMac } = row
         return (
-          <AnchorTextCell
-            to={`devices/wifi/${apMac}/details/overview`}
-            title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
-            text={text}
-            id={`apMac-${index}`}
-          />
+          <span id={`apMac-${index}`}>
+            {text}
+          </span>
         )
       }
     }
@@ -292,12 +288,9 @@ export const getTableColumns = ({
         render: function (text: unknown, row, index) {
           const { stationAp } = row
           return (
-            <AnchorTextCell
-              to={`devices/wifi/${stationAp?.mac}/details/overview`}
-              title={$t(stationAPDetailsText)}
-              text={stationAp?.mac}
-              id={`${stationAp?.mac}-${index}`}
-            />
+            <span id={`${stationAp?.mac}-${index}`}>
+              {stationAp?.mac}
+            </span>
           )
         }
       },
