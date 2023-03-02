@@ -30,7 +30,7 @@ import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
 describe('useNetworkHealthSpec', () => {
-  it.only('load spec data if specId in URL', async () => {
+  it('load spec data if specId in URL', async () => {
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpec })
 
     const { result } = renderHook(useNetworkHealthSpec, {
