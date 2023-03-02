@@ -395,14 +395,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
-        { required: true,
-          validator: (_, value) => {
-            if (deviceList && deviceList.find(device => device === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { required: true },
+        { validator: (_, value) => {
+          if (deviceList && deviceList.find(device => device === value)) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -449,6 +449,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Device & OS profile' })
             }]}
             children={
@@ -495,6 +497,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleDeviceOSDrawerClose}
             onSave={async () => {
               try {
