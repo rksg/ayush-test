@@ -30,4 +30,5 @@ export const Badge = styled.span`
   line-height: var(--acx-subtitle-6-line-height);
   ${textStyle}
   font-weight: var(--acx-subtitle-6-font-weight-bold);
+  cursor: default;
 `
