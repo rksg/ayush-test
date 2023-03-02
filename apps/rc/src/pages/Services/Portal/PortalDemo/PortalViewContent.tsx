@@ -3,10 +3,10 @@ import { useContext, useState } from 'react'
 
 import { Demo, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 
-import Wifi4eu                   from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
-import { PortalDemoDefaultSize } from '../../commonUtils'
-import PortalFormContext         from '../PortalForm/PortalFormContext'
-import * as UI                   from '../styledComponents'
+import Wifi4eu                                 from '../../../../assets/images/portal-demo/WiFi4euBanner.svg'
+import { PortalDemoDefaultSize, hoverOutline } from '../../commonUtils'
+import PortalFormContext                       from '../PortalForm/PortalFormContext'
+import * as UI                                 from '../styledComponents'
 
 import PortalPhotoContent         from './PortalContent/PortalPhotoContent'
 import PortalPoweredByContent     from './PortalContent/PortalPoweredByContent'
@@ -32,7 +32,6 @@ export default function PortalViewContent (props:{
     portalData,
     setPortalData
   } = useContext(PortalFormContext)
-  const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const { view, demoValue, updateViewContent, portalLang } = props
   const [cursor, setCursor]=useState('none')
   const [outline, setOutline]=useState('none')
@@ -70,15 +69,16 @@ export default function PortalViewContent (props:{
           style={{ height: (demoValue.logoRatio||PortalDemoDefaultSize.logoRatio),
             cursor: cursor, outline: outline,maxWidth: 425, marginTop: 50, marginBottom: 20 }}
           onMouseOver={()=>{setCursor('pointer')
-            setOutline(dashedOutline)}}
+            setOutline(hoverOutline)}}
           onMouseLeave={()=>{
             if(!clicked){setCursor('none')
               setOutline('none')}}}
           onClick={()=>{setCursor('pointer')
             setClicked(true)
-            setOutline(dashedOutline)}}
+            setOutline(hoverOutline)}}
         /></PortalPopover>}
       {componentDisplay.welcome && <PortalWelcomeContent
+        portalLang={portalLang}
         demoValue={demoValue}
         updateWelcome={(data)=>{
           updateViewContent({ ...demoValue, welcomeSize: data.size||demoValue.welcomeSize,

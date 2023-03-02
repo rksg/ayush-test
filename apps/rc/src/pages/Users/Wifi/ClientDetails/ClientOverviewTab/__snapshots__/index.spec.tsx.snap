@@ -3250,7 +3250,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    test4
                                   </span>
                                 </div>
                               </td>
@@ -3273,7 +3273,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    +886933222333
                                   </span>
                                 </div>
                               </td>
@@ -3296,7 +3296,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    a@email.com
                                   </span>
                                 </div>
                               </td>
@@ -3342,7 +3342,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Nov 20 2022 08:57
                                   </span>
                                 </div>
                               </td>
@@ -3365,7 +3365,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Dec 13 2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -3388,7 +3388,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    2
                                   </span>
                                 </div>
                               </td>
@@ -3411,7 +3411,11 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -11149,7 +11153,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    test4
                                   </span>
                                 </div>
                               </td>
@@ -11172,7 +11176,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    +886933222333
                                   </span>
                                 </div>
                               </td>
@@ -11195,7 +11199,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    a@email.com
                                   </span>
                                 </div>
                               </td>
@@ -11241,7 +11245,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Nov 20 2022 08:57
                                   </span>
                                 </div>
                               </td>
@@ -11264,7 +11268,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Dec 13 2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -11287,7 +11291,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    2
                                   </span>
                                 </div>
                               </td>
@@ -11310,7 +11314,11 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
