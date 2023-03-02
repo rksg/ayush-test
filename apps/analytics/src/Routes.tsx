@@ -31,7 +31,7 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/configChange'
         element={<div>{$t({ defaultMessage: 'Config Change' }) }</div>} />
 
-      {<Route path='serviceValidation'>
+      {useIsTierAllowed('ANLT-ADV') && <Route path='serviceValidation'>
         <Route path=''
           element={<TenantNavigate replace to='./serviceValidation/networkHealth' />}
         />
