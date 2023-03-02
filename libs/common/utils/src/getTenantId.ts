@@ -1,6 +1,6 @@
-import { useLocation } from '@acx-ui/react-router-dom'
+import { useLocation } from 'react-router-dom'
 
-export function extractTenantIdFromPathname (pathname: string): string | undefined {
+export function getTenantId (pathname = window.location.pathname): string | undefined {
   const chunks = pathname.split('/')
   for (const c in chunks) {
     if (['v', 't'].includes(chunks[c])) { return chunks[Number(c) + 1] }
@@ -8,11 +8,7 @@ export function extractTenantIdFromPathname (pathname: string): string | undefin
   return
 }
 
-export function getTenantId () {
-  return extractTenantIdFromPathname(window.location.pathname)
-}
-
 export function useTenantId () {
   const location = useLocation()
-  return extractTenantIdFromPathname(location.pathname)
+  return getTenantId(location.pathname)
 }
