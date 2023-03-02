@@ -162,6 +162,7 @@ function processWifiTab (
       break
     case 'servers':
       editServerContextData?.updateSyslog?.()
+      editServerContextData?.updateBonjourFencing?.()
       break
   }
 }
@@ -204,6 +205,7 @@ export function showUnsavedModal (
         })
       } else if(editContextData?.unsavedTabKey === 'servers'){
         editServerContextData?.discardSyslog?.()
+        editServerContextData?.discardBonjourFencing?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,
@@ -230,7 +232,7 @@ export function showUnsavedModal (
     key: 'save',
     closeAfterAction: true,
     handler: async () => {
-      const wifiTab = ['radio', 'networking', 'security', 'services', 'settings']
+      const wifiTab = ['radio', 'networking', 'security', 'servers', 'settings']
 
       if(wifiTab.includes(editContextData?.unsavedTabKey as string)){
         processWifiTab(

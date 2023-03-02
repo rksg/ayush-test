@@ -363,5 +363,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getTopology: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
+  },
+  getVenueBonjourFencingPolicy: {
+    method: 'get',
+    url: '/api/venues/:venueId/bonjourFencingSettings'
+  },
+  updateVenueBonjourFencingPolicy: {
+    method: 'put',
+    url: '/api/venues/:venueId/bonjourFencingSettings'
   }
 }

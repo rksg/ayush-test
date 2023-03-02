@@ -26,5 +26,7 @@ export enum Features {
   HELP_SUPPORT='acx-ui-help-support',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
+  BONJOUR_FENCING='wifi-consumer-bonjour-fencing-toggle',
+  AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api'
 }
