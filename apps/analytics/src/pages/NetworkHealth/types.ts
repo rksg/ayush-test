@@ -170,7 +170,7 @@ export type NetworkHealthTestResults = {
   spec: NetworkHealthSpec
   config: NetworkHealthConfig
   wlanAuthSettings: WlanAuthSettings
-  aps: { items : TestResultByAP[] }
+  aps: { items : TestResultByAP[], total : number }
 }
 export type Pagination = {
   page: number,

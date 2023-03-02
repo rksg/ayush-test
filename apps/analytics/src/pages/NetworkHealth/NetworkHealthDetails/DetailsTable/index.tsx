@@ -13,6 +13,7 @@ const Details = () => {
   const { tableQuery: queryResults, onPageChange, pagination } = useNetworkHealthTestResults()
   const config = queryResults?.data?.config as NetworkHealthConfig
   const items = queryResults?.data?.aps?.items
+  const totalTests = queryResults?.data?.aps?.total
   const clientType = queryResults?.data?.spec?.clientType
   const wlanAuthSettings = queryResults?.data?.wlanAuthSettings
   const isWirelessClient = clientType === ClientType.VirtualWirelessClient
@@ -52,7 +53,7 @@ const Details = () => {
         })}
         dataSource={items}
         onChange={onPageChange}
-        pagination={{ ...pagination, total: items?.length || 0 }}
+        pagination={{ ...pagination, total: totalTests || 0 }}
       />
     </Loader>
   )
