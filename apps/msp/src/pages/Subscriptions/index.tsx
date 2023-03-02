@@ -16,6 +16,9 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
+  SubscriptionUsageReportDialog
+} from '@acx-ui/msp/components'
+import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useRefreshMspEntitlementMutation
@@ -33,6 +36,7 @@ export function Subscriptions () {
   const [usedWifiCount, setUsedWifiCount] = useState(0)
   const [totalSwitchCount, setTotalSwitchCount] = useState(0)
   const [usedSwitchCount, setUsedSwitchCount] = useState(0)
+  const [showDialog, setShowDialog] = useState(false)
 
   const { tenantId } = useParams()
 
@@ -103,10 +107,11 @@ export function Subscriptions () {
       label: $t({ defaultMessage: 'Generate Usage Report' }),
       onClick: () => {
         // TODO
+        setShowDialog(true)
       }
     },
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
         window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
       }
@@ -238,6 +243,10 @@ export function Subscriptions () {
           actions={actions}
           dataSource={subscriptionData}
           rowKey='id'
+        />
+        <SubscriptionUsageReportDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
         />
       </Loader>
     )
