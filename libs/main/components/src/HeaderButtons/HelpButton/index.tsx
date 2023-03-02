@@ -7,7 +7,6 @@ import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
 import { useGetGlobalValuesQuery } from '@acx-ui/rc/services'
 import { useParams  }              from '@acx-ui/react-router-dom'
 import { notAvailableMsg }         from '@acx-ui/utils'
@@ -17,7 +16,8 @@ import { DisabledButton } from '../styledComponents'
 import Firewall from './Firewall'
 import HelpPage from './HelpPage'
 
-
+// eslint-disable-next-line max-len
+const DOCUMENTATION_CENTER = 'https://docs.cloud.ruckuswireless.com/alto/master--1-220111/index.html'
 export interface HelpButtonProps{
   supportStatus?: string
 }
@@ -32,7 +32,6 @@ const HelpButton = (props:HelpButtonProps) => {
 
   const params = useParams()
   const { data } = useGetGlobalValuesQuery({ params })
-  const { data: userProfile } = useUserProfileContext()
   useEffect(()=>{
     switch (supportStatus) {
       case 'ready':
@@ -70,8 +69,7 @@ const HelpButton = (props:HelpButtonProps) => {
             if(data?.MY_OPEN_CASES) window.open(data?.MY_OPEN_CASES, '_blank')
             break
           case 'documentation':
-            // eslint-disable-next-line max-len
-            if(data?.DOCUMENTATION_CENTER) window.open(data?.DOCUMENTATION_CENTER, '_blank')
+            window.open(DOCUMENTATION_CENTER, '_blank')
             break
           case 'videos':
             if(data?.HOW_TO_VIDEOS) window.open(data?.HOW_TO_VIDEOS, '_blank')
@@ -79,7 +77,7 @@ const HelpButton = (props:HelpButtonProps) => {
         }
       }}
     >
-      <Menu.Item disabled={!data?.DOCUMENTATION_CENTER} key='documentation'>
+      <Menu.Item key='documentation'>
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
 
