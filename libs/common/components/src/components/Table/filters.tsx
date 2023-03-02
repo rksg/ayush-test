@@ -128,3 +128,20 @@ export function renderFilter <RecordType> (
     )}
   </UI.FilterSelect>
 }
+
+export function renderGroupBy<RecordType> (
+  groupables: TableColumn<RecordType, 'text'>[]
+) {
+  return <UI.FilterSelect
+    placeholder='Group By...'
+    allowClear
+    onChange={() => groupables[1]?.groupable && groupables[1]?.groupable()}
+  >
+    {groupables.map(col => <Select.Option
+      key={col.key}
+      data-testid={`option-${col.key}`}
+    >
+      {col.title as string}
+    </Select.Option>)}
+  </UI.FilterSelect>
+}

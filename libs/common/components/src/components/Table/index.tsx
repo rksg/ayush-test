@@ -15,10 +15,10 @@ import { Button, DisabledButton } from '../Button'
 import { Dropdown }               from '../Dropdown'
 import { Tooltip }                from '../Tooltip'
 
-import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                     from './ResizableColumn'
-import * as UI                                                 from './styledComponents'
-import { settingsKey, useColumnsState }                        from './useColumnsState'
+import { Filter, getFilteredData, renderFilter, renderGroupBy, renderSearch } from './filters'
+import { ResizableColumn }                                                    from './ResizableColumn'
+import * as UI                                                                from './styledComponents'
+import { settingsKey, useColumnsState }                                       from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -240,6 +240,7 @@ function Table <RecordType extends Record<string, any>> ({
 
   const filterables = aggregator(columns, 'filterable')
   const searchables = aggregator(columns, 'searchable')
+  const groupables = aggregator(columns, 'groupable')
 
   const activeFilters = filterables.filter(column => {
     const key = column.dataIndex as keyof RecordType
@@ -381,6 +382,9 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
+            {Boolean(groupables.length) &&
+              renderGroupBy(groupables)
+            }
           </Space>
         </div>
         <UI.HeaderRight>
