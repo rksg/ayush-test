@@ -59,6 +59,11 @@ describe('defaultSort', () => {
     const smaller = defaultSort(undefined, textA)
     expect(smaller).toBe(-1)
   })
+
+  it('should sort 0 undefined', () => {
+    const zero = defaultSort(undefined, undefined)
+    expect(zero).toBe(0)
+  })
 })
 
 describe('dateSort', () => {
@@ -83,6 +88,11 @@ describe('dateSort', () => {
   it('should sort smaller undefined', () => {
     const smaller = dateSort(undefined, startTime)
     expect(smaller).toBe(-1)
+  })
+
+  it('should sort 0 undefined', () => {
+    const zero = dateSort(undefined, undefined)
+    expect(zero).toBe(0)
   })
 })
 
