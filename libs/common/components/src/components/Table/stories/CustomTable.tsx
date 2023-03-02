@@ -69,6 +69,7 @@ const customData = [
 const rowActions: TableProps<(typeof customData)[0]>['rowActions'] = [{
   label: 'Delete',
   disabled: (rows) => rows.length > 1,
+  tooltip: (rows) => rows.length > 1 ? 'Cannot delete' : undefined,
   onClick: () => {}
 }]
 
