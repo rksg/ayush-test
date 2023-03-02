@@ -18,6 +18,7 @@ import { useIntl }        from 'react-intl'
 
 import {
   PageHeader,
+  showActionModal,
   showToast,
   StepsForm,
   StepsFormInstance,
@@ -260,7 +261,7 @@ export function PortalSettings () {
     if (!imageType) {
       showToast({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        content: intl.$t({ defaultMessage: 'load default logo failed' })
       })
     }
     const extension: string = getFileExtension(imageType)
@@ -376,10 +377,13 @@ export function PortalSettings () {
       const formData = await getMspPortalToSave(values)
       await addMspLabel({ params, payload: formData }).unwrap()
       navigate(linkDashboard, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Onboard MSP Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -389,10 +393,13 @@ export function PortalSettings () {
       const portal: MspPortal = await getMspPortalToSave(values)
       await updateMspLabel({ params, payload: portal }).unwrap()
       navigate(linkDashboard, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Update Portal Setting Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -463,20 +470,12 @@ export function PortalSettings () {
               </Form.Item>
               {selectedLogo !== 'defaultLogo' &&
                   <>
-                    <div><label>{intl.$t({
-                      defaultMessage: '- You can upload up to 5 logos to support' +
-                        ' different logo placements'
-                    })}</label></div>
-                    <div><label>{intl.$t({
-                      defaultMessage: '- Supported formats: PNG, JPG, GIF'
-                    })}
-                    </label></div><div><label>{intl.$t({
-                      defaultMessage: '- Maximal file size is 750 Kb'
-                    })}
-                    </label></div><div><label>{intl.$t({
-                      defaultMessage: '- It is recommended to use logos with ' +
-                        'transparent background'
-                    })}</label></div>
+                    <div>{intl.$t({ defaultMessage: '- You can upload up to 5 logos to support' +
+                        ' different logo placements' })} <br/>
+                    {intl.$t({ defaultMessage: '- Supported formats: PNG, JPG, GIF' })} <br/>
+                    {intl.$t({ defaultMessage: '- It is recommended to use logos with ' +
+                        'transparent background' })}
+                    </div>
                     <Upload
                       action=''
                       listType='picture'
