@@ -1,15 +1,20 @@
-import { useEffect } from 'react'
+import { useCallback } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsFormNew, showToast } from '@acx-ui/components'
 import { useNavigateToPath }                   from '@acx-ui/react-router-dom'
 
-import * as contents                               from '../contents'
-import { specToDto, useNetworkHealthSpecMutation } from '../services'
+import * as contents          from '../contents'
+import {
+  specToDto,
+  useNetworkHealthSpecMutation,
+  useMutationResponseEffect
+} from '../services'
 import {
   Band,
   ClientType,
+  MutationResponse,
   NetworkHealthFormDto,
   TestType
 } from '../types'
@@ -40,23 +45,15 @@ export function NetworkHealthForm () {
     ? $t({ defaultMessage: 'Edit Test' })
     : $t({ defaultMessage: 'Create Test' })
 
-  useEffect(() => {
-    if (!response.data) return
-
-    if (!response.data.userErrors) {
-      showToast({
-        type: 'success',
-        content: response.originalArgs?.id
-          ? $t(contents.messageMapping.TEST_UPDATED)
-          : $t(contents.messageMapping.TEST_CREATED)
-      })
-      navigateToList()
-    } else {
-      const key = response.data.userErrors[0].message as keyof typeof contents.messageMapping
-      const errorMessage = $t(contents.messageMapping[key])
-      showToast({ type: 'error', content: errorMessage })
-    }
-  }, [$t, navigateToList, response])
+  useMutationResponseEffect(response, useCallback((response: MutationResponse) => {
+    showToast({
+      type: 'success',
+      content: response.originalArgs?.id
+        ? $t(contents.messageMapping.TEST_UPDATED)
+        : $t(contents.messageMapping.TEST_CREATED)
+    })
+    navigateToList()
+  }, [$t, navigateToList]))
 
   return <>
     <PageHeader title={title} breadcrumb={breadcrumb} />
