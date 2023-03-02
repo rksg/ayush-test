@@ -60,21 +60,21 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(await within(targetRow).findByRole('img', { name: /eye-invisible/ }))
     const passwordElem = await within(targetRow).findByDisplayValue(targetRecord.passphrase)
     expect(passwordElem).toBeInTheDocument()
-  })
 
-  it('should render Add Passphrases drawer', async () => {
-    render(
-      <Provider>
-        <DpskPassphraseManagement />
-      </Provider>, {
-        route: { params: paramsForPassphraseTab, path: detailPath }
-      }
-    )
-
+    // Verify Add Passphrases
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    // eslint-disable-next-line max-len
-    const noOfPassphrasesElem = await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })
-    expect(noOfPassphrasesElem).toBeVisible()
+    expect(await screen.findByRole('spinbutton', {
+      name: /Number of Passphrases/
+    })).toBeVisible()
+
+    // Verify Add DPSK Network
+    await userEvent.click(await screen.findByRole('button', { name: /Add DPSK Network/ }))
+    const networkDialog = await screen.findByRole('dialog', { name: /Add DPSK Network/ })
+    expect(networkDialog).toBeVisible()
+    await userEvent.click(within(networkDialog).getAllByRole('button', { name: /Cancel/ })[0])
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: /Add DPSK Network/ })).toBeNull()
+    })
   })
 
   it('should delete selected passphrase', async () => {

@@ -854,21 +854,21 @@ exports[`Integrators should render table 1`] = `
                               <td
                                 class="ant-table-cell"
                               >
-                                MSP_INTEGRATOR
-                              </td>
-                              <td
-                                class="ant-table-cell"
-                              >
-                                0
+                                Integrator
                               </td>
                               <td
                                 class="ant-table-cell"
                               >
                                 <a
-                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                  href="/ecc2d7cf9d2342fdb31ae0e24958fcac/integrators"
                                 >
-                                  1
+                                  0
                                 </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                1
                               </td>
                               <td
                                 class="ant-table-cell"

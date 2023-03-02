@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { usePolicyListQuery }                            from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useDelSyslogPolicyMutation, usePolicyListQuery }                 from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -11,12 +11,12 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
   filters: {
-    type: [PolicyType.SYSLOG]
+    type: ['Syslog Server']
   },
   fields: [
     'id',
@@ -30,7 +30,9 @@ const defaultPayload = {
 export default function SyslogTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const [ deleteFn ] = useDelSyslogPolicyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: usePolicyListQuery,
@@ -38,23 +40,22 @@ export default function SyslogTable () {
   })
 
   const rowActions: TableProps<Policy>['rowActions'] = [
-    // TODO Need to implement delete function
-    // {
-    //   label: $t({ defaultMessage: 'Delete' }),
-    //   onClick: ([{ name }], clearSelection) => {
-    //     showActionModal({
-    //       type: 'confirm',
-    //       customContent: {
-    //         action: 'DELETE',
-    //         entityName: $t({ defaultMessage: 'Policy' }),
-    //         entityValue: name
-    //       },
-    //       onOk: () => {
-    //         clearSelection()
-    //       }
-    //     })
-    //   }
-    // },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Policy' }),
+            entityValue: name
+          },
+          onOk: () => {
+            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+          }
+        })
+      }
+    },
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
