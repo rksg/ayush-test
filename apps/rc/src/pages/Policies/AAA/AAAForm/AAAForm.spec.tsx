@@ -41,9 +41,6 @@ describe('AAAForm', () => {
       rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
-      rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>
-        res(ctx.json(successResponse))
-      ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
         (_, res, ctx) => {return res(ctx.json(aaaData))}
