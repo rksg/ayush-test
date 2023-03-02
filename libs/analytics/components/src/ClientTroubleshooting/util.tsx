@@ -14,6 +14,7 @@ import {
   categoryCodeMap,
   IncidentCode
 } from '@acx-ui/analytics/utils'
+import { TimeStampRange }              from '@acx-ui/types'
 import { formatter, getIntl, formats } from '@acx-ui/utils'
 
 import {
@@ -596,7 +597,29 @@ export const getChartData = (
   return []
 }
 
-export const useLabelFormatter = (params: { value:number, seriesData: Object }) => {
+export function calculateInterval (timewindow: TimeStampRange) {
+  const [start, end] = timewindow
+  const interval = moment.duration(moment(end).diff(moment(start))).asHours()
+  const second = 1000
+  const minute = second * 60
+  const hour = minute * 60
+  const day = hour * 24
+  switch (true) {
+    case interval > 24 * 7:
+      return day
+    case interval > 24:
+      return hour
+    case interval > 1:
+      return minute
+    case interval > 0.5:
+      return second * 10
+    default:
+      return second * 5
+  }
+}
+
+export const labelFormatter = (input: unknown, timewindow: TimeStampRange) => {
+  const params = input as { value:number, seriesData: Object }
   const intl = getIntl()
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData
@@ -607,7 +630,7 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[2]
       : undefined) as unknown as DisplayEvent
-    const interval = 1000 * 60
+    const interval = calculateInterval(timewindow)
     const trackerHasData =
     ((trackerDate >= (obj?.start - interval)) && (trackerDate <= (obj?.end + interval)))
     const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null

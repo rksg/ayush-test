@@ -81,6 +81,8 @@ export class EntitlementUtil {
       case EntitlementNetworkDeviceType.SWITCH: type = 'switch'; break
       case EntitlementNetworkDeviceType.WIFI:
       case EntitlementNetworkDeviceType.LTE: type = 'ap'; break
+      default:
+        return ''
     }
     return getIntl().$t(devicesCountMap[type], { count })
   }
@@ -91,6 +93,8 @@ export class EntitlementUtil {
     switch (deviceType) {
       case 'MSP_SWITCH': type = 'switch'; break
       case 'MSP_WIFI': type = 'ap'; break
+      default:
+        return ''
     }
     return getIntl().$t(devicesCountMap[type], { count })
   }
