@@ -65,7 +65,7 @@ export function getToolTipText ({
   const { $t } = getIntl()
 
   const toolTipContent =
-    error && error !== 'WLAN_CONF_ERROR'
+    error
       ? contents.stagesErrorMappings?.[error]
         ? $t(contents.stagesErrorMappings?.[error]?.text)
         : $t(contents.errorMappings?.[error]?.text)
@@ -80,10 +80,13 @@ export function getToolTipText ({
     { errorText }
   )
   return error === 'WLAN_CONF_ERROR' && clientType ? (
-    <FormattedMessage
-      {...contents.unsupportedAuthMethods[clientType]}
-      values={contents.formatValues}
-    />
+    <>
+      <div>{errorText}</div>
+      <FormattedMessage
+        {...contents.unsupportedAuthMethods[clientType]}
+        values={contents.formatValues}
+      />
+    </>
   ) : (wlanAuthSettings?.wpaVersion || '').match('WPA3') && error === 'NO_STATION_AP' ? (
     noStationAPText
   ) : (
