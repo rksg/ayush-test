@@ -27,6 +27,8 @@ import {
   MspPortal,
   downloadFile
 } from '@acx-ui/rc/utils'
+import { truncateSync } from 'fs'
+import { truncate } from 'fs/promises'
 
 export const baseMspApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -460,8 +462,9 @@ export const mspApi = baseMspApi.injectEndpoints({
           ...req,
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
-            const fileName = headerContent ? JSON.parse(
-              headerContent.split('filename=')[1]) : 'MSP Device Inventory.csv'
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'MSP Device Inventory.csv'
             downloadFile(response, fileName)
           },
           body: payload,
@@ -481,6 +484,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getGenerateLicenseUsageRpt: build.query<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const licenseUsageRptReq =
+          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt, params)
+        return {
+          ...licenseUsageRptReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
@@ -525,5 +538,6 @@ export const {
   useAddMspLabelMutation,
   useUpdateMspLabelMutation,
   useExportDeviceInventoryMutation,
-  useAcceptRejectInvitationMutation
+  useAcceptRejectInvitationMutation,
+  useGetGenerateLicenseUsageRptQuery
 } = mspApi

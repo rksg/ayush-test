@@ -8,11 +8,12 @@ import { useIntl } from 'react-intl'
 
 import { showActionModal, Subtitle } from '@acx-ui/components'
 import {
+  useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
-  CommonErrorsResult,
-  CatchErrorDetails,
+  // CommonErrorsResult,
+  // CatchErrorDetails,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
@@ -27,29 +28,25 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
   const { $t } = useIntl()
   // const params = useParams()
   const [form] = Form.useForm()
-  const [selectedPeriod, setSelectedPeriod] = useState('calendar')
+  const [selectedPeriod, setSelectedPeriod] = useState('')
   const [periodOptions, setPeriodOptions] = useState<SelectProps['options']>([])
-  const [selectedFormat, setSelectedFormat] = useState('pdf')
+  const [selectedFormat, setSelectedFormat] = useState('csv')
   const [selectedCustomers, setSelectedCustomers] = useState('all')
   const [selectedCustomerOption, setSelectedCustomerOption] = useState()
   const [customerOptions, setCustomerOptions] = useState<SelectProps['options']>([])
 
-  const defaultPayload = {
-    searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
-    fields: [
-      'id',
-      'name',
-      'tenantType',
-      'status',
-      'wifiLicense',
-      'switchLicens',
-      'streetAddress'
-    ]
-  }
   const { data: customers } = useTableQuery({
     useQuery: useMspCustomerListQuery,
-    defaultPayload
+    defaultPayload: {
+      filters: {},
+      fields: [
+        'id',
+        'name'
+      ],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
 
   useEffect(() => {
@@ -73,6 +70,7 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
       }
     }
     setPeriodOptions([ ...opts ])
+    setSelectedPeriod('calendar')
     setCustomerOptions(customers?.data?.map(customer => {
       return {
         label: customer.name, value: customer.id
@@ -84,19 +82,108 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
 
   }
 
-  const handleGenerate = async () => {
-    // try {
-    // } catch(error) {
-    //   const respData = error as CommonErrorsResult<CatchErrorDetails>
-    //   const errors = respData.data.errors
+  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?month=03&year=2023&deviceDetails=false&page=1&dailyReportsPerPage=31
+  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?startDate=2023-02-28&endDate=2023-02-28&deviceDetails=false&page=1&dailyReportsPerPage=31
+  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?month=03&year=2023&mspEcTenantId=4bd80809ee7d48efb2b84ec7469cca67&deviceDetails=false&page=1&dailyReportsPerPage=31
 
+  /* eslint-disable max-len */
+  const getGenerateUsagePayload = (currentmonth: boolean, startMonth: string, startYear: string, startDate: string, endDate: string, mspEcTenantId: string) => {
+    const deviceDetails = false
+    const page = 1
+    const dailyReportsPerPage = '31'
+    const url = 'usage-report'
+    let payload = `${url}`
+    if (currentmonth && startMonth && startYear) {
+      if (mspEcTenantId) {
+        payload = `${url}?month=${startMonth}&year=${startYear}&mspEcTenantId=${mspEcTenantId}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
+      } else {
+        payload = `${url}?month=${startMonth}&year=${startYear}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
+      }
+    } else if (startDate && endDate) {
+      if (mspEcTenantId) {
+        payload = `${url}?startDate=${startDate}&endDate=${endDate}&mspEcTenantId=${mspEcTenantId}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
+      } else {
+        payload = `${url}?startDate=${startDate}&endDate=${endDate}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
+      }
+    }
+    return payload
+  }
+
+  const handleGenerate = async () => {
+    const currentMonth = true
+    const startMonth = '3'
+    const startYear = '2022'
+    const startDate = '2023-02-28'
+    const endDate = '2023-02-28'
+    const selectTenant = '3061bd56e37445a8993ac834c01e2710'
+    const urlPayload =
+      getGenerateUsagePayload(currentMonth, startMonth, startYear, startDate, endDate, selectTenant)
+
+    // this.entitlementService.getGenerateLicenseUsageRpt(urlPayload, selectedFormat).subscribe(res => {
+    const nowTime = '20230301121212' //DateTimeUtilsService.getCurrentDate('YYYYMMDDHHMMSS')
+
+    let filename = 'Licenses Usage Report - ' + nowTime + '.' + selectedFormat
+
+    // if (selectedFormat === 'CSV') {
+    //   const blob = new Blob([res.body], { type: 'text/csv;charset=utf-8;' });
+    //   const url = window.URL.createObjectURL(blob);
+    //   that.fileService.downloadFile(url, filename);
     // }
+    // else if (selectedFormat === 'JSON') {
+    //   const blob = new Blob([res.body], { type: 'text/json;charset=utf-8;' });
+    //   const url = window.URL.createObjectURL(blob);
+    //   that.fileService.downloadFile(url, filename);
+    // }
+    // else if (selectedFormat === 'PDF') {
+    //   const blob = new Blob([res.body]);
+    //   const url = window.URL.createObjectURL(blob);
+    //   that.fileService.downloadFile(url, filename);
+
+    // } else {
+    // const title = 'Generate Usage Report';
+    // const msg = `format is not supported. `;
+    // this.notificationService.showInfo(msg, title, 'Ok')
+    // .then(result => {
+    // });
+    // }
+    // this.showSpinner = false;
+    // this.dialogService.close('MspLicensesUsageRptComponent');
+    // },
+    // error => {
+    // this.showSpinner = false;
+    // });
+
   }
 
   const handleCancel = () => {
     setVisible(false)
-    form.resetFields()
+    // form.resetFields()
+    setSelectedPeriod('calendar')
+    setSelectedFormat('csv')
+    setSelectedCustomers('all')
   }
+
+  // public getGenerateLicenseUsageRpt(urlUsageReport, selectedFormat): Observable<any> {
+  //   const payload = urlUsageReport;
+  //   let customHeaders: { [index: string]: any; };
+  //   let hasOptions: any = true;
+  //   customHeaders = {};
+  //   if (selectedFormat === 'CSV') {
+  //     customHeaders['Content-Type'] = 'text/csv';
+  //   } else if (selectedFormat === 'JSON') {
+  //     customHeaders['Content-Type'] = 'text/json';
+  //   } else if (selectedFormat === 'PDF') {
+  //     customHeaders['Content-Type'] = 'application/pdf';
+  //     hasOptions = {
+  //       observe: 'response',
+  //       responseType: 'blob'
+  //     };
+  //   } else {
+  //     customHeaders = null;
+  //   }
+  //   return this.apiService.get<any[]>(`/api/entitlement-assign/tenant/${this.tenantId}/${payload}`, null, customHeaders, true, hasOptions);
+  // }
+
 
   return (
     <Modal
@@ -117,99 +204,98 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
       >
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Period' })}</Subtitle>
-        <Form.Item
+        {/* <Form.Item
           name='period'
           initialValue={selectedPeriod}
+        > */}
+        <Radio.Group
+          style={{ paddingLeft: '2px' }}
+          onChange={(e: RadioChangeEvent) => setSelectedPeriod(e.target.value)}
+          value={selectedPeriod}
         >
-          <Radio.Group
-            style={{ paddingLeft: '2px' }}
-            onChange={(e: RadioChangeEvent) => setSelectedPeriod(e.target.value)}
-            value={selectedPeriod}
-            // initialValue={periodOptions?.at(0)?.value}
-          >
-            <Space direction='vertical'>
-              <Space direction='horizontal'>
-                <Radio value='calendar'>
-                  { $t({ defaultMessage: 'Calendar Month' }) }
-                </Radio>
-                {selectedPeriod === 'calendar' &&
-                  <Select
-                    defaultValue={periodOptions?.at(0)?.value}
-                    // onChange={}
-                    options={periodOptions}
-                    style={{ width: '200px' }}
-                  />
-                }
-              </Space>
-              <Radio value='hours'>
-                { $t({ defaultMessage: 'Last 24 Hours' }) }
+          <Space direction='vertical'>
+            <Space direction='horizontal'>
+              <Radio value='calendar'>
+                { $t({ defaultMessage: 'Calendar Month' }) }
               </Radio>
-              <Radio value='week'>
-                { $t({ defaultMessage: 'Last 7 Days' }) }
-              </Radio>
-              <Radio value='month'>
-                { $t({ defaultMessage: 'Last 30 Days' }) }
-              </Radio>
+              {selectedPeriod === 'calendar' &&
+                <Select
+                  defaultValue={periodOptions?.at(0)?.value}
+                  // onChange={}
+                  options={periodOptions}
+                  style={{ width: '200px' }}
+                />
+              }
             </Space>
-          </Radio.Group>
-        </Form.Item>
+            <Radio value='hours'>
+              { $t({ defaultMessage: 'Last 24 Hours' }) }
+            </Radio>
+            <Radio value='week'>
+              { $t({ defaultMessage: 'Last 7 Days' }) }
+            </Radio>
+            <Radio value='month'>
+              { $t({ defaultMessage: 'Last 30 Days' }) }
+            </Radio>
+          </Space>
+        </Radio.Group>
+        {/* </Form.Item> */}
 
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Format' })}</Subtitle>
-        <Form.Item
+        {/* <Form.Item
           name='format'
           initialValue={selectedFormat}
+        > */}
+        <Radio.Group
+          style={{ paddingLeft: '2px' }}
+          onChange={(e: RadioChangeEvent) => setSelectedFormat(e.target.value)}
+          value={selectedFormat}
         >
-          <Radio.Group
-            style={{ paddingLeft: '2px' }}
-            onChange={(e: RadioChangeEvent) => setSelectedFormat(e.target.value)}
-            value={selectedFormat}
-          >
-            <Space direction='vertical'>
-              <Radio value='csv'>
-                { $t({ defaultMessage: 'CSV' }) }
-              </Radio>
-              <Radio value='json'>
-                { $t({ defaultMessage: 'JSON' }) }
-              </Radio>
-              <Radio value='pdf'>
-                { $t({ defaultMessage: 'PDF' }) }
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </Form.Item>
+          <Space direction='vertical'>
+            <Radio value='csv'>
+              { $t({ defaultMessage: 'CSV' }) }
+            </Radio>
+            <Radio value='json'>
+              { $t({ defaultMessage: 'JSON' }) }
+            </Radio>
+            <Radio value='pdf'>
+              { $t({ defaultMessage: 'PDF' }) }
+            </Radio>
+          </Space>
+        </Radio.Group>
+        {/* </Form.Item> */}
 
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Select Customers' })}</Subtitle>
-        <Form.Item
+        {/* <Form.Item
           name='customers'
           initialValue={selectedCustomers}
+        > */}
+        <Radio.Group
+          style={{ paddingLeft: '2px' }}
+          onChange={(e: RadioChangeEvent) => setSelectedCustomers(e.target.value)}
+          value={selectedCustomers}
         >
-          <Radio.Group
-            style={{ paddingLeft: '2px' }}
-            onChange={(e: RadioChangeEvent) => setSelectedCustomers(e.target.value)}
-            value={selectedCustomers}
-          >
-            <Space direction='vertical'>
-              <Radio value='all'>
-                { $t({ defaultMessage: 'All Customers' }) }
+          <Space direction='vertical'>
+            <Radio value='all'>
+              { $t({ defaultMessage: 'All Customers' }) }
+            </Radio>
+            <Space direction='horizontal'>
+              <Radio value='specific'>
+                { $t({ defaultMessage: 'Specific Customers' }) }
               </Radio>
-              <Space direction='horizontal'>
-                <Radio value='specific'>
-                  { $t({ defaultMessage: 'Specific Customers' }) }
-                </Radio>
-                {selectedCustomers === 'specific' &&
-                  <Select
-                    onChange={onSelectCustomerChange}
-                    placeholder='Select a customer'
-                    options={customerOptions}
-                    style={{ width: '200px' }}
-                  />
-                }
-              </Space>
+              {selectedCustomers === 'specific' &&
+                <Select
+                  onChange={onSelectCustomerChange}
+                  placeholder='Select a customer'
+                  options={customerOptions}
+                  style={{ width: '200px' }}
+                />
+              }
             </Space>
-          </Radio.Group>
-        </Form.Item>
+          </Space>
+        </Radio.Group>
+        {/* </Form.Item> */}
       </Form>
     </Modal>
   )

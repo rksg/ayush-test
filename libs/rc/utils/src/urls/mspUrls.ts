@@ -176,5 +176,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   acceptRejectInvitation: {
     method: 'put',
     url: '/api/tenant/:tenantId/delegation/:delegationId'
+  },
+  getGenerateLicenseUsageRpt: {
+    method: 'get',
+    url: '/api/entitlement-assign/tenant/:tenantId/:payload'
   }
 }

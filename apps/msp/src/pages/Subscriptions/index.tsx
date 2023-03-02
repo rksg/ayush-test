@@ -167,7 +167,7 @@ export function Subscriptions () {
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Subscription Utilization' })}</Subtitle>
         <Row>
-          <label>Wi-Fi</label>
+          <label>{$t({ defaultMessage: 'Wi-Fi' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
@@ -187,7 +187,7 @@ export function Subscriptions () {
           />
           <label style={{ marginLeft: 8 }}>{usedWifiCount} / {totalWifiCount}</label>
 
-          <label style={{ marginLeft: 40 }}>Switch</label>
+          <label style={{ marginLeft: 40 }}>{$t({ defaultMessage: 'Switch' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
