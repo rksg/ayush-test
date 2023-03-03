@@ -83,7 +83,7 @@ describe('APsSelection', () => {
 describe('APsSelection.FieldSummary', () => {
   beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
 
-  it('renders selected APS in Venues', async () => {
+  it('renders selected APs in Venues', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
 
     renderForm(<APsSelection.FieldSummary />, {
@@ -99,7 +99,7 @@ describe('APsSelection.FieldSummary', () => {
 
     const field = within(screen.getByTestId('field'))
 
-    expect(await field.findByText('Venue 2 — 3 APs')).toBeVisible()
-    expect(await field.findByText('Venue 1 — 1 AP')).toBeVisible()
+    expect(await field.findByText(/Venue 2 — 3 APs/)).toBeVisible()
+    expect(await field.findByText(/Venue 1 — 1 AP/)).toBeVisible()
   })
 })

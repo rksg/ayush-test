@@ -151,7 +151,8 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode: FilterMode
+  filterMode: FilterMode,
+  replaceVenueNameWithId: boolean
 ): Option[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: Option } = {}
@@ -166,7 +167,10 @@ export const getNetworkFilterData = (
 
       return false
     }
-
+    // replace venue name with id to be compatible with rc/reports
+    const venuePath = replaceVenueNameWithId
+      ? [path[0], { ...path[1], name: id }]
+      : path
     if (shouldPushVenue() && !venues[name]) {
       venues[name] = {
         label: (
@@ -179,7 +183,7 @@ export const getNetworkFilterData = (
             name={name}
           />
         ),
-        value: JSON.stringify([path[0], { ...path[1], name: id }]), // replace venue name with id to be compatible with rc/reports
+        value: JSON.stringify(venuePath),
         displayLabel: name,
         children: [] as Option[]
       }
@@ -200,7 +204,7 @@ export const getNetworkFilterData = (
         ),
         displayLabel: $t({ defaultMessage: 'APs' }),
         ignoreSelection: true,
-        value: `aps${name}`,
+        value: `aps${replaceVenueNameWithId ? id : name}`,
         children: aps.map((ap: ApOrSwitch) => {
           return {
             label: (
@@ -213,7 +217,7 @@ export const getNetworkFilterData = (
               />
             ),
             displayLabel: ap.name,
-            value: JSON.stringify([...path, { type: 'AP', name: ap.mac }])
+            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
           }
         })
       })
@@ -233,7 +237,7 @@ export const getNetworkFilterData = (
         ),
         displayLabel: $t({ defaultMessage: 'Switches' }),
         ignoreSelection: true,
-        value: `switches${name}`,
+        value: `switches${replaceVenueNameWithId ? id : name}`,
         children: switches.map((switchNode: ApOrSwitch) => {
           return {
             label: (
@@ -246,7 +250,7 @@ export const getNetworkFilterData = (
               />
             ),
             displayLabel: switchNode.name,
-            value: JSON.stringify([...path, { type: 'switch', name: switchNode.mac }])
+            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }
         })
       })
@@ -314,7 +318,7 @@ function ConnectedNetworkFilter (
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
         getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
-          filterMode) : [],
+          filterMode, true) : [],
       ...rest
     })
   })

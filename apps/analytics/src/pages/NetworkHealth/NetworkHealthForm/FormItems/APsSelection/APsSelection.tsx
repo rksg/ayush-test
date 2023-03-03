@@ -10,7 +10,6 @@ import { getNetworkFilterData, useNetworkFilterQuery } from '@acx-ui/analytics/c
 import { Loader, StepsFormNew }                        from '@acx-ui/components'
 import { APListNode, DateRange }                       from '@acx-ui/utils'
 
-import * as contents                     from '../../../contents'
 import { isAPListNodes, isNetworkNodes } from '../../../types'
 
 import { APsSelectionInput } from './APsSelectionInput'
@@ -34,7 +33,7 @@ function useNetworkHierarchy () {
 export function APsSelection () {
   const { $t } = useIntl()
   const response = useNetworkHierarchy()
-  const options = getNetworkFilterData(response.data ?? [], {}, 'ap')
+  const options = getNetworkFilterData(response.data ?? [], {}, 'ap', false)
 
   return <Loader states={[response]} style={{ height: 'auto', minHeight: 346 }}>
     <Form.Item
