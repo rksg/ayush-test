@@ -1,5 +1,5 @@
-import { Drawer as AntDrawer, Divider as AntDivider } from 'antd'
-import styled                                         from 'styled-components'
+import { Drawer as AntDrawer } from 'antd'
+import styled                  from 'styled-components'
 
 export const Drawer = styled(AntDrawer)`
   .ant-drawer-body {
@@ -35,9 +35,4 @@ export const SubTitle = styled.div`
   padding-top: 8px;
   color: var(--acx-neutrals-60);
   font-weight: var(--acx-headline-5-font-weight);
-`
-
-export const Divider = styled(AntDivider)`
-  height: 12px;
-  border-left-color: var(--acx-neutrals-30);
 `
