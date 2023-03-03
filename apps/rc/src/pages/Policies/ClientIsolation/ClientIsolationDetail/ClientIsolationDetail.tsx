@@ -2,6 +2,7 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, PageHeader } from '@acx-ui/components'
+import { hasAccesses }                                from '@acx-ui/rbac'
 import { useGetClientIsolationQuery }                 from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -31,18 +32,15 @@ export default function ClientIsolationDetail () {
             link: getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
           }
         ]}
-        extra={[
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.CLIENT_ISOLATION,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}
-            key='edit'
-          >
+        extra={hasAccesses([
+          <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.CLIENT_ISOLATION,
+            oper: PolicyOperation.EDIT,
+            policyId: params.policyId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

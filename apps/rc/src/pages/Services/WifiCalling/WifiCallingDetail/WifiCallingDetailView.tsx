@@ -10,6 +10,7 @@ import {
   PageHeader
 } from '@acx-ui/components'
 import { ClockOutlined }                 from '@acx-ui/icons'
+import { hasAccesses }                   from '@acx-ui/rbac'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -52,12 +53,11 @@ const WifiCallingDetailView = () => {
             link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={[
+        extra={hasAccesses([
           <Button key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </Button>,
           <TenantLink
-            key='edit'
             to={getServiceDetailsLink({
               type: ServiceType.WIFI_CALLING,
               oper: ServiceOperation.EDIT,
@@ -68,7 +68,7 @@ const WifiCallingDetailView = () => {
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
 
       <GridRow>

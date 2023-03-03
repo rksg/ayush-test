@@ -14,6 +14,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { CopyOutlined }              from '@acx-ui/icons'
+import { hasAccesses }               from '@acx-ui/rbac'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
@@ -251,8 +252,8 @@ export default function DpskPassphraseManagement () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
       />

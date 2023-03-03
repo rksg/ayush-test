@@ -3,6 +3,7 @@ import { Path, useParams } from 'react-router-dom'
 
 import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
 import { ClockOutlined }                            from '@acx-ui/icons'
+import { hasAccesses }                              from '@acx-ui/rbac'
 import { useGetDpskQuery }                          from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -60,7 +61,7 @@ export default function DpskDetails () {
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={[
+        extra={hasAccesses([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
@@ -70,11 +71,10 @@ export default function DpskDetails () {
               oper: ServiceOperation.EDIT,
               serviceId: serviceId!
             })}
-            key='edit'
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             <Tabs.TabPane

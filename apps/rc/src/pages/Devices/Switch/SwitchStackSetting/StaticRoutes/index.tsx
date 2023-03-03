@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
+import { hasAccesses }                                                        from '@acx-ui/rbac'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
 import { StaticRoute }                                                        from '@acx-ui/rc/utils'
 
@@ -89,7 +90,7 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
         headerTitle={$t({ defaultMessage: 'Static Routes' })}
         toolBarRender={readOnly ? undefined : toolBarRender}
         columns={columns}
-        rowActions={readOnly ? undefined : rowActions}
+        rowActions={readOnly ? undefined : hasAccesses(rowActions)}
         dataSource={data}
         rowSelection={readOnly ? undefined : { type: 'checkbox' }}
         rowKey='id'

@@ -9,6 +9,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
+import { hasAccesses }                                                          from '@acx-ui/rbac'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
 import { useParams }                                                            from '@acx-ui/react-router-dom'
@@ -293,8 +294,8 @@ export const AAAServerTable = (props: {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'checkbox', onChange: onSelectChange }}
       />
     </Loader>

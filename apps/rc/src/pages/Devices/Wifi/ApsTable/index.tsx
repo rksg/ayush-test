@@ -10,6 +10,7 @@ import {
   PageHeader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { hasAccesses }                                                   from '@acx-ui/rbac'
 import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
@@ -80,11 +81,11 @@ export default function ApsTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Wi-Fi' })}
-        extra={[
-          <Dropdown overlay={addMenu} key='addMenu'>{() =>
+        extra={hasAccesses([
+          <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
-        ]}
+        ])}
       />
       <ApTable
         searchable={true}

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }    from '@acx-ui/components'
+import { hasAccesses }           from '@acx-ui/rbac'
 import { useGetMacRegListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -27,10 +28,9 @@ function MacRegistrationListPageHeader () {
           // eslint-disable-next-line max-len
           link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
       ]}
-      extra={[
+      extra={hasAccesses([
         // eslint-disable-next-line max-len
         <TenantLink
-          key='edit'
           to={getPolicyDetailsLink({
             type: PolicyType.MAC_REGISTRATION_LIST,
             oper: PolicyOperation.EDIT,
@@ -39,7 +39,7 @@ function MacRegistrationListPageHeader () {
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<MacRegistrationListTabs />}
     />
   )

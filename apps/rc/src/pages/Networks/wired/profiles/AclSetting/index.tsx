@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import {
   Acl,
   AclRule,
@@ -120,10 +121,10 @@ export function AclSetting () {
           <StepsForm.Title children={$t({ defaultMessage: 'ACLs' })} />
           <Table
             rowKey='name'
-            rowActions={rowActions}
+            rowActions={hasAccesses(rowActions)}
             columns={aclsColumns}
             dataSource={aclsTable}
-            actions={[{
+            actions={hasAccesses([{
               label: $t({ defaultMessage: 'Add ACL' }),
               onClick: () => {
                 setDrawerFormRule({
@@ -135,7 +136,7 @@ export function AclSetting () {
                 setDrawerEditMode(false)
                 setDrawerVisible(true)
               }
-            }]}
+            }])}
             rowSelection={{
               type: 'radio',
               onChange: () => {

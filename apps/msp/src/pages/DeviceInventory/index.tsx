@@ -11,6 +11,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DownloadOutlined }            from '@acx-ui/icons'
+import { hasAccesses }                 from '@acx-ui/rbac'
 import { useDeviceInventoryListQuery } from '@acx-ui/rc/services'
 import {
   APView,
@@ -220,12 +221,12 @@ export function DeviceInventory () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={hasAccesses([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />}></DisabledButton>
-        ]}
+          <DisabledButton icon={<DownloadOutlined />}></DisabledButton>
+        ])}
       />
       <DeviceTable />
     </>

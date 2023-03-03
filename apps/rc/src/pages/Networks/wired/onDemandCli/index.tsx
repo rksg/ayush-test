@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
+import { hasAccesses }                                            from '@acx-ui/rbac'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
@@ -86,14 +87,14 @@ export function OnDemandCliTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'checkbox' }}
-        actions={[{
+        actions={hasAccesses([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
           onClick: () => {
             navigate('add', { replace: false })
           }
-        }]}
+        }])}
       />
     </Loader></>
   )

@@ -31,6 +31,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { VenueFilter }    from '@acx-ui/main/components'
+import { hasAccesses }    from '@acx-ui/rbac'
 import {
   AlarmWidget,
   ClientsWidget,
@@ -83,7 +84,7 @@ function DashboardPageHeader () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Dashboard' })}
-      extra={[
+      extra={hasAccesses([
         <VenueFilter key='hierarchy-filter'/>,
         <RangePicker
           key='range-picker'
@@ -94,9 +95,8 @@ function DashboardPageHeader () {
         />,
         <DisabledButton
           tooltipPlacement='topRight'
-          key='download'
           icon={<DownloadOutlined />} />
-      ]}
+      ])}
     />
   )
 }

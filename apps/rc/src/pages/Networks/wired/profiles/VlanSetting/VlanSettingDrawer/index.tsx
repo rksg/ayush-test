@@ -13,6 +13,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }               from '@acx-ui/rbac'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -340,7 +341,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       </Row>
       <Table
         rowKey='model'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',

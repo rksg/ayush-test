@@ -16,6 +16,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { hasAccesses }               from '@acx-ui/rbac'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
@@ -338,11 +339,11 @@ export default function GuestsTable () {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
+        actions={hasAccesses([{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -355,8 +356,7 @@ export default function GuestsTable () {
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }
-        ]}
+        }])}
       />
 
       <Drawer

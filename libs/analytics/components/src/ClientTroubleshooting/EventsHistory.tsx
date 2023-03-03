@@ -100,31 +100,21 @@ function WrappedItem (
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     }
   }, [selected, ref])
-  const icon = item.id
-    ? item.icon
-    : <ConnectionEventPopover
-      event={(item as FormattedEvent).event}
-      onVisibleChange={onClick}
-      visible={selected}
-      placement='bottom'
-    >
-      {item.icon}
-    </ConnectionEventPopover>
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
-      avatar={icon}
+      avatar={item.icon}
       title={item.date}
       description={item.description} />
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : <UI.HistoryItemWrapper
-      $selected={selected}
-      ref={ref}
-    >
-      {Item}
-    </UI.HistoryItemWrapper>
-
+    : <ConnectionEventPopover
+      event={(item as FormattedEvent).event}
+      onVisibleChange={onClick}
+      visible={selected}
+      placement='leftBottom'>
+      <UI.HistoryItemWrapper $selected={selected} ref={ref}>{Item}</UI.HistoryItemWrapper>
+    </ConnectionEventPopover>
 }
 
 export function History (props : HistoryContentProps) {

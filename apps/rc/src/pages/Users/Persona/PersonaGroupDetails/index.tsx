@@ -6,6 +6,7 @@ import { useParams }    from 'react-router-dom'
 
 import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
+import { hasAccesses }                                                  from '@acx-ui/rbac'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -19,8 +20,6 @@ import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, VenueLi
 import { PersonaGroupDrawer }                                                        from '../PersonaGroupDrawer'
 import { BasePersonaTable }                                                          from '../PersonaTable/BasePersonaTable'
 
-
-
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,
   onClick: () => void
@@ -28,11 +27,11 @@ function PersonaGroupDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = [
-    <Button key={'config-btn'} type={'primary'} onClick={onClick}>
+  const extra = hasAccesses([
+    <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
-  ]
+  ])
 
   return (
     <PageHeader

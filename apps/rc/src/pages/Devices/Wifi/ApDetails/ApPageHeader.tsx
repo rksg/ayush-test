@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                     from '@acx-ui/icons'
+import { hasAccesses }                     from '@acx-ui/rbac'
 import { APStatus }                        from '@acx-ui/rc/components'
 import { useApActions }                    from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
@@ -85,7 +86,7 @@ function ApPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -93,7 +94,7 @@ function ApPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu} key='actionMenu'>
+        <Dropdown overlay={menu}>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -102,7 +103,6 @@ function ApPageHeader () {
           </Button>
         </Dropdown>,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -111,7 +111,7 @@ function ApPageHeader () {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

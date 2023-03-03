@@ -15,6 +15,7 @@ import {
   Modal
 } from '@acx-ui/components'
 import { DeleteOutlined } from '@acx-ui/icons'
+import { hasAccesses }    from '@acx-ui/rbac'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
@@ -188,7 +189,7 @@ export function MultiSelectTable (props: {
     <Table
       columns={useColumns()}
       dataSource={dnsProxyList}
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowKey='domainName'
       rowSelection={{ type: 'checkbox' }}
     />

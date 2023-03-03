@@ -19,6 +19,7 @@ import {
   AssignEcDrawer,
   ResendInviteModal
 } from '@acx-ui/msp/components'
+import { hasAccesses }      from '@acx-ui/rbac'
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery
@@ -186,7 +187,7 @@ export function Integrators () {
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
           columns={columns}
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -202,15 +203,15 @@ export function Integrators () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '3rd Party' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={hasAccesses([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <MspTenantLink to='/integrators/create' key='add'>
+          <MspTenantLink to='/integrators/create'>
             <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
           </MspTenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />} />
-        ]}
+          <DisabledButton icon={<DownloadOutlined />} />
+        ])}
       />
       <IntegratorssTable />
       {setDrawerEcVisible && <AssignEcDrawer

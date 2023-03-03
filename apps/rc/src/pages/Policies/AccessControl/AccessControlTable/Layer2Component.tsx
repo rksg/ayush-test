@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                from '@acx-ui/rbac'
 import {
   useDelL2AclPolicyMutation,
   useGetAccessControlProfileListQuery,
@@ -96,7 +97,7 @@ const Layer2Component = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>

@@ -12,6 +12,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { hasAccesses }            from '@acx-ui/rbac'
 import {
   NetworkApGroupDialog,
   transformVLAN,
@@ -442,7 +443,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}

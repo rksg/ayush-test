@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { hasAccesses }                                  from '@acx-ui/rbac'
 import { useGetVLANPoolPolicyDetailQuery }              from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
@@ -28,17 +29,16 @@ export default function VLANPoolDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
-        extra={[
+        extra={hasAccesses([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.VLAN_POOL,
             oper: PolicyOperation.EDIT,
             policyId: queryResults.data?.id||''
           })}>
-
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

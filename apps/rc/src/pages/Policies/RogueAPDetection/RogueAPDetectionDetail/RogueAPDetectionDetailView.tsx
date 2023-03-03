@@ -9,6 +9,7 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
+import { hasAccesses }   from '@acx-ui/rbac'
 import {
   PolicyType,
   RogueApConstant,
@@ -40,18 +41,17 @@ const RogueAPDetectionDetailView = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
-        extra={policyName !== RogueApConstant.DefaultProfile ? [
+        extra={policyName !== RogueApConstant.DefaultProfile ? hasAccesses([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ROGUE_AP_DETECTION,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]: []}
+        ]) : []}
       />
 
       <GridRow>

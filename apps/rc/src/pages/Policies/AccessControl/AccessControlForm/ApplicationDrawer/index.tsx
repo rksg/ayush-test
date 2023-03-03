@@ -15,6 +15,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }   from '@acx-ui/rbac'
 import {
   useAddAppPolicyMutation,
   useAppPolicyListQuery, useAvcAppListQuery, useAvcCategoryListQuery,
@@ -486,8 +487,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={hasAccesses(actions)}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>

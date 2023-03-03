@@ -8,6 +8,7 @@ import { Button,
   cssStr, Modal,
   Table, TableProps,
   Tabs, Tooltip } from '@acx-ui/components'
+import { hasAccesses }                      from '@acx-ui/rbac'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
@@ -157,10 +158,10 @@ export function ConfigProfileModal (props: {
               onChange: onChangeCLI
             }}
             // TODO:
-            actions={[{
+            actions={hasAccesses([{
               label: 'Add CLI Profile',
               onClick: () => {}
-            }]}
+            }])}
           />
         </>
       </Tabs.TabPane>

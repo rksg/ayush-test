@@ -4,6 +4,7 @@ import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                 from '@acx-ui/rbac'
 import { useLazyGetDhcpServerQuery }                   from '@acx-ui/rc/services'
 import {
   getDhcpOptionList,
@@ -223,7 +224,7 @@ export function AddPoolDrawer (props: {
         </Row>
         <Table
           rowKey='seq'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{
             type: 'radio',
             selectedRowKeys: selected ? [selected.seq]:[],

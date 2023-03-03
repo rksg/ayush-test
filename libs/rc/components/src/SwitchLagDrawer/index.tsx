@@ -18,6 +18,7 @@ import {
   DeleteOutlinedIcon,
   EditOutlinedIcon
 } from '@acx-ui/icons'
+import { hasAccesses }         from '@acx-ui/rbac'
 import {
   useDeleteLagMutation,
   useGetLagListQuery,
@@ -167,17 +168,14 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               type='compact'
               dataSource={data}
               rowKey='name'
-              actions={
-                [{
-                  label: $t({ defaultMessage: 'Add LAG' }),
-                  disabled: !isOperational,
-                  onClick: () => {
-                    setModalVisible(true)
-                    setIsEditMode(false)
-                  }
-                }]
-
-              }
+              actions={hasAccesses([{
+                label: $t({ defaultMessage: 'Add LAG' }),
+                disabled: !isOperational,
+                onClick: () => {
+                  setModalVisible(true)
+                  setIsEditMode(false)
+                }
+              }])}
             />
           </Loader>
         }

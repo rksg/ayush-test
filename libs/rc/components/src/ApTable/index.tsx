@@ -12,6 +12,7 @@ import {
   ColumnType
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { hasAccesses }            from '@acx-ui/rbac'
 import {
   useApListQuery
 } from '@acx-ui/rc/services'
@@ -365,8 +366,8 @@ export function ApTable (props: ApTableProps) {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        rowActions={rowActions}
-        actions={props.enableActions ? [{
+        rowActions={hasAccesses(rowActions)}
+        actions={props.enableActions ? hasAccesses([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
             navigate({
@@ -382,8 +383,7 @@ export function ApTable (props: ApTableProps) {
               pathname: `${basePath.pathname}/apgroups/add`
             })
           }
-        }
-        ] : []}
+        }]) : []}
       />
     </Loader>
   )

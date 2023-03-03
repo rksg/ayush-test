@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import {
   Vlan,
   SwitchModel,
@@ -133,7 +134,7 @@ export function VlanSetting () {
           <Table
             rowKey='vlanId'
             columns={vlansColumns}
-            rowActions={rowActions}
+            rowActions={hasAccesses(rowActions)}
             dataSource={vlanTable}
             rowSelection={{
               type: 'radio',
@@ -143,7 +144,7 @@ export function VlanSetting () {
                 )
               }
             }}
-            actions={[{
+            actions={hasAccesses([{
               label: $t({ defaultMessage: 'Add VLAN' }),
               onClick: () => {
                 form.resetFields()
@@ -157,7 +158,7 @@ export function VlanSetting () {
                   { vlanId: defaultVlan?.vlanId }) :
                 $t({ defaultMessage: 'Default VLAN settings' }),
               onClick: () => { setDefaultVlanDrawerVisible(true) }
-            }]} />
+            }])} />
         </Col>
       </Row>
       <VlanSettingDrawer

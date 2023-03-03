@@ -12,6 +12,7 @@ import {
   Subtitle,
   Loader
 } from '@acx-ui/components'
+import { hasAccesses }          from '@acx-ui/rbac'
 import {
   useGetDelegationsQuery,
   useRevokeInvitationMutation
@@ -163,7 +164,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
         }}
-        actions={tableActions}
+        actions={hasAccesses(tableActions)}
       />
 
       <DelegationInviteDialog

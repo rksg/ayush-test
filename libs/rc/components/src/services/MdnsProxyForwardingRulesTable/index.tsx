@@ -4,6 +4,7 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                        from '@acx-ui/rbac'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
@@ -148,8 +149,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         columns={columns}
         dataSource={rules}
         rowKey='id'
-        actions={readonly ? [] : actions}
-        rowActions={rowActions}
+        actions={readonly ? [] : hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={readonly ? false : { type: 'radio' }}
       />
     </>

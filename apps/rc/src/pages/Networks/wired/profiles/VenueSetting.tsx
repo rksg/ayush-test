@@ -10,6 +10,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { hasAccesses } from '@acx-ui/rbac'
 import {
   useGetCliFamilyModelsQuery,
   useVenuesListQuery } from '@acx-ui/rc/services'
@@ -171,7 +172,7 @@ export function VenueSetting () {
           <StepsForm.Title children={$t({ defaultMessage: 'Venues' })} />
           <Table
             rowKey='id'
-            rowActions={rowActions}
+            rowActions={hasAccesses(rowActions)}
             rowSelection={{
               type: 'checkbox',
               ...rowSelection

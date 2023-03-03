@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
+import { hasAccesses }        from '@acx-ui/rbac'
 import { useGetApQuery }      from '@acx-ui/rc/services'
 import {
   useNavigate,
@@ -24,9 +25,8 @@ function ApEditPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <Button
-          key='back'
           type='primary'
           onClick={() =>
             navigate({
@@ -34,7 +34,7 @@ function ApEditPageHeader () {
               pathname: `${basePath.pathname}/details/overview`
             })
           }>{ $t({ defaultMessage: 'Back to device details' }) }</Button>
-      ]}
+      ])}
       footer={<ApEditTabs />}
     />
   )

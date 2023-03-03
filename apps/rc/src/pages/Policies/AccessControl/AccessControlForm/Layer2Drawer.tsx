@@ -15,6 +15,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
+import { hasAccesses }                                                                from '@acx-ui/rbac'
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
@@ -458,7 +459,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           columns={basicColumns}
           dataSource={macAddressList}
           rowKey='macAddress'
-          actions={actions}
+          actions={hasAccesses(actions)}
           columnState={{ hidden: true }}
         />
       </Form.Item>

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, DisabledButton, GridRow, Loader, GridCol } from '@acx-ui/components'
 import { ClockOutlined }                                                from '@acx-ui/icons'
+import { hasAccesses }                                                  from '@acx-ui/rbac'
 import { useGetPortalProfileDetailQuery }                               from '@acx-ui/rc/services'
 import {
   Demo,
@@ -31,7 +32,7 @@ export default function PortalServiceDetail () {
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={[
+        extra={hasAccesses([
           <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
@@ -41,12 +42,11 @@ export default function PortalServiceDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId!
             })}
-            key='edit'
           >
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

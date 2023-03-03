@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { hasAccesses }                                             from '@acx-ui/rbac'
 import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
@@ -94,11 +95,11 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        extra={[
-          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
+        extra={hasAccesses([
+          <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         {services.map(service => {

@@ -7,6 +7,7 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
+import { hasAccesses }             from '@acx-ui/rbac'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation
@@ -136,7 +137,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={actions}
+        actions={hasAccesses(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

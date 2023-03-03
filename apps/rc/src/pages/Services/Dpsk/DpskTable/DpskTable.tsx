@@ -9,6 +9,7 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
+import { hasAccesses }                                from '@acx-ui/rbac'
 import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -149,12 +150,12 @@ export default function DpskTable () {
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
@@ -163,7 +164,7 @@ export default function DpskTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

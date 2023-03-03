@@ -2,6 +2,7 @@ import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
+import { hasAccesses }                           from '@acx-ui/rbac'
 import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { useDateFilter }                         from '@acx-ui/utils'
@@ -53,7 +54,7 @@ function Timeline () {
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }
-        extra={[
+        extra={hasAccesses([
           <RangePicker
             key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -61,7 +62,7 @@ function Timeline () {
             showTimePicker
             selectionType={range}
           />
-        ]}
+        ])}
       />
       {Tab && <Tab/>}
     </>
