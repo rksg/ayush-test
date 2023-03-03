@@ -5,7 +5,7 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
+import { Button, Loader, Tooltip }                       from '@acx-ui/components'
 import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
@@ -27,11 +27,8 @@ export function ApTraceRouteForm () {
       if (traceRouteApResult) {
         form.setFieldValue('traceRoute', _.get(traceRouteApResult, 'response.response'))
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

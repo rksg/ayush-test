@@ -3,11 +3,11 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal, showToast } from '@acx-ui/components'
-import { SpaceWrapper }                     from '@acx-ui/rc/components'
-import { useUpdateMFAAccountMutation }      from '@acx-ui/rc/services'
-import { MFAStatus, MFASession }            from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { Card, showActionModal }       from '@acx-ui/components'
+import { SpaceWrapper }                from '@acx-ui/rc/components'
+import { useUpdateMFAAccountMutation } from '@acx-ui/rc/services'
+import { MFAStatus, MFASession }       from '@acx-ui/rc/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -52,11 +52,8 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
               enable: isChecked + ''
             }
           }).unwrap()
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({ defaultMessage: 'An error occurred' })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     })

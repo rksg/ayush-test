@@ -20,7 +20,7 @@ import {
   Fieldset,
   GridCol,
   GridRow,
-  showActionModal, showToast,
+  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -406,12 +406,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         setRequestId(l3AclRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

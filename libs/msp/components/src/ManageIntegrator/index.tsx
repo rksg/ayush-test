@@ -19,7 +19,6 @@ import { useIntl } from 'react-intl'
 import {
   GoogleMap,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
@@ -364,11 +363,8 @@ export function ManageIntegrator () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToIntegrators, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -410,11 +406,8 @@ export function ManageIntegrator () {
       await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
         payload: customer }).unwrap()
       navigate(linkToIntegrators, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

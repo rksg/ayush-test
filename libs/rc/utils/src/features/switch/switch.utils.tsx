@@ -1,9 +1,7 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showActionModal } from '@acx-ui/components'
-import { getIntl }         from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import { STACK_MEMBERSHIP,
@@ -353,22 +351,6 @@ export const isL3FunctionSupported = (switchType: string | undefined) => {
   return isRouter(switchType as SWITCH_TYPE)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const showGeneralError = (error: any) => { // TODO: check res format
-  const { $t } = getIntl()
-
-  showActionModal({
-    type: 'error',
-    title: $t({ defaultMessage: 'Server Error' }),
-    content: $t({
-      defaultMessage: 'An internal error has occurred. Please contact support.'
-    }),
-    customContent: {
-      action: 'SHOW_ERRORS',
-      errorDetails: error?.data
-    }
-  })
-}
 
 export const getDhcpOptionList = () => {
   const { $t } = getIntl()

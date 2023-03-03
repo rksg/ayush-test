@@ -1,15 +1,14 @@
 import { useRef, useReducer } from 'react'
 
-import { FormattedList, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
@@ -104,15 +103,8 @@ const SyslogForm = (props: SyslogFormProps) => {
         }).unwrap()
       }
       navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      const errorResponse = error as CatchErrorResponse
-      showToast({
-        type: 'error',
-        content: (<div>
-          <p style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'An error occurred' })}</p>
-          <FormattedList value={errorResponse.data.errors.map(error => error.message)} />
-        </div>)
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

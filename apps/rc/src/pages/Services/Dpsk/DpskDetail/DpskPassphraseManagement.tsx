@@ -221,14 +221,8 @@ export default function DpskPassphraseManagement () {
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          if (error.data?.message) {
-            showToast({
-              type: 'error',
-              content: error.data.message
-            })
-          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }}
       onClose={() => setUploadCsvDrawerVisible(false)} >

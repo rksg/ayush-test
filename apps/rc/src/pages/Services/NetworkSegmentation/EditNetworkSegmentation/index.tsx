@@ -5,7 +5,7 @@ import { Form }                   from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsFormNew }                                                from '@acx-ui/components'
+import { PageHeader, StepsFormNew }                                                           from '@acx-ui/components'
 import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGroupMutation } from '@acx-ui/rc/services'
 import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
@@ -73,11 +73,8 @@ const EditNetworkSegmentation = () => {
     try{
       await updateNetworkSegmentationGroup({ params, payload }).unwrap()
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

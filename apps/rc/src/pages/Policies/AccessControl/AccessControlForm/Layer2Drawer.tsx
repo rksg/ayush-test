@@ -325,15 +325,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         setRequestId(l2AclRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      const responseData = error as { status: number, data: { [key: string]: string } }
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, {
-          error: responseData.data.error
-        })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

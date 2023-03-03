@@ -114,13 +114,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       })
       onClose()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      if (error.data?.message) {
-        showToast({
-          type: 'error',
-          content: intl.$t({ defaultMessage: 'An error occurred' })
-        })
-      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

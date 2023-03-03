@@ -8,7 +8,6 @@ import { FormattedMessage, useIntl }            from 'react-intl'
 import {
   Button,
   Loader,
-  showToast,
   Tabs,
   StepsForm,
   StepsFormInstance
@@ -147,11 +146,8 @@ export function LanPorts () {
         }
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

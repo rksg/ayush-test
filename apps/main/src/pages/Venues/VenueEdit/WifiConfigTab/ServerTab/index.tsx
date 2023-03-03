@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { AnchorLayout, StepsForm }               from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
@@ -45,11 +45,8 @@ export function ServerTab () {
         ...editContextData,
         isDirty: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

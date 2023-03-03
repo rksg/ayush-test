@@ -11,7 +11,6 @@ import {
   GridCol,
   GridRow,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -418,12 +417,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         setRequestId(appRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

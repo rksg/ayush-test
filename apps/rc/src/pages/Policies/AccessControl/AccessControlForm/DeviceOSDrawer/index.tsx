@@ -9,7 +9,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps,
   Drawer, GridCol, GridRow,
-  showActionModal, showToast,
+  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -347,12 +347,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(deviceRes.requestId)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

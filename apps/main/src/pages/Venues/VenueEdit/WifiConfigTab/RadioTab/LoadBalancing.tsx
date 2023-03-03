@@ -5,7 +5,7 @@ import { Col, Form, Radio, Row, Slider, Space, Switch } from 'antd'
 import { defineMessage, useIntl }                       from 'react-intl'
 import { useParams }                                    from 'react-router-dom'
 
-import { cssStr, Loader, showToast, Tooltip }                                 from '@acx-ui/components'
+import { cssStr, Loader, Tooltip }                                            from '@acx-ui/components'
 import { InformationSolid, QuestionMarkCircleOutlined }                       from '@acx-ui/icons'
 import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
 import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
@@ -111,11 +111,8 @@ export function LoadBalancing () {
         payload
       }).unwrap()
 
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

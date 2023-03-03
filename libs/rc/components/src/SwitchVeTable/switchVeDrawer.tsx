@@ -6,7 +6,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, showToast } from '@acx-ui/components'
+import { Button, Drawer }   from '@acx-ui/components'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -210,11 +210,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }).unwrap()
       }
     }
-    catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
     setLoading(false)
     onClose()

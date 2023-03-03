@@ -6,7 +6,7 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Button, Loader, showToast }    from '@acx-ui/components'
+import { Button, Loader }               from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
   useIpRouteMutation,
@@ -70,11 +70,8 @@ export function SwitchIpRouteForm () {
       if (result) {
         refetchResult()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

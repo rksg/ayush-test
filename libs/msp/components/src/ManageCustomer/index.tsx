@@ -395,11 +395,8 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -456,11 +453,8 @@ export function ManageCustomer () {
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

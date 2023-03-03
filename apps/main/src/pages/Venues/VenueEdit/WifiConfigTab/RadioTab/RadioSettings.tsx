@@ -13,8 +13,8 @@ import { includes, isEmpty } from 'lodash'
 import { useIntl }           from 'react-intl'
 import styled                from 'styled-components/macro'
 
-import { Loader, showToast, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Loader, StepsForm, StepsFormInstance, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
@@ -360,11 +360,8 @@ export function RadioSettings () {
         params: { tenantId, venueId },
         payload: formData
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

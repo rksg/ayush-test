@@ -10,8 +10,8 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
+import { Button, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -195,11 +195,8 @@ export function AdvancedSettingForm () {
         params: { tenantId, venueId },
         payload: tableData.filter(data => data.model)
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

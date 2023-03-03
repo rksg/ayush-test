@@ -4,8 +4,8 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, showToast, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Loader, StepsForm }       from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -107,11 +107,8 @@ export function Syslog () {
           payload
         }).unwrap()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

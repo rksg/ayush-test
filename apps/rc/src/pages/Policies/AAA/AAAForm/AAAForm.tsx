@@ -4,7 +4,7 @@ import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
-  PageHeader, showActionModal, showToast,
+  PageHeader, showActionModal,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -159,12 +159,8 @@ const AAAForm = (props: AAAFormProps) => {
       if(!hasRadiusError){
         await addOrUpdateAAA(data, edit)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

@@ -30,7 +30,6 @@ import {
   StepsFormInstance,
   TableProps,
   Table,
-  showToast,
   Tabs,
   Tooltip,
   Alert
@@ -48,7 +47,6 @@ import {
   useLazyGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   Switch,
   getSwitchModel,
   SWITCH_SERIAL_PATTERN,
@@ -305,12 +303,8 @@ export function StackForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -368,12 +362,8 @@ export function StackForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -397,13 +387,7 @@ export function StackForm () {
         pathname: `${basePath.pathname}/switch`
       })
     } catch (error) {
-      const errorRes = error as CatchErrorResponse
-      const message
-        = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

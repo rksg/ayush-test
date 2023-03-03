@@ -2,9 +2,9 @@
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }               from '@acx-ui/rc/services'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { PageHeader, StepsFormNew, useStepFormContext } from '@acx-ui/components'
+import { useCreateNetworkSegmentationGroupMutation }    from '@acx-ui/rc/services'
+import { useTenantLink }                                from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
 import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
@@ -58,11 +58,8 @@ const AddNetworkSegmentation = () => {
     try{
       await createNetworkSegmentationGroup({ payload }).unwrap()
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
