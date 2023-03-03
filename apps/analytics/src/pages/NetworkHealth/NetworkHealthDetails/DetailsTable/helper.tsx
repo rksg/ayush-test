@@ -254,7 +254,6 @@ export const getTableColumns = ({
         title: $t(defineMessage({ defaultMessage: 'Station AP Name' })),
         dataIndex: 'stationAp',
         key: 'stationAp',
-        align: 'center',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
@@ -270,7 +269,6 @@ export const getTableColumns = ({
         title: $t(defineMessage({ defaultMessage: 'Station AP MAC' })),
         dataIndex: 'stationAp',
         key: 'stationAp',
-        align: 'center',
         width: 150,
         render: function (_, row) {
           const { stationAp } = row
