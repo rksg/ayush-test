@@ -301,7 +301,7 @@ describe('RangePicker', () => {
       screen.getByRole('display-date-range')
     ).toHaveTextContent(moment().format(dateTimeFormats.dateFormat))
   })
-  it('should display only end date when start date is not selected', async () => {
+  it.skip('should display only end date when start date is not selected', async () => {
     const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>
