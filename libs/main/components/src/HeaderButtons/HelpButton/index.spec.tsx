@@ -36,6 +36,7 @@ const GLOBAL_VALUES = {
   DISABLE_GA: 'false',
   API_DOCS: 'https://support.ruckuswireless.com/documents/3238',
   DISABLE_PENDO: 'false',
+  // eslint-disable-next-line max-len
   AG_GRID_KEY: 'CompanyName=SHI International Corp_on_behalf_of_Ruckus Wireless Inc.,LicensedApplication=RUCKUS Cloud,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=4,LicensedProductionInstancesCount=1,AssetReference=AG-008704,ExpiryDate=26_June_2021_[v2]_MTYyNDY2MjAwMDAwMA==ef3978ee7b737efd48c697339589c921',
   DOCUMENTATION_CENTER: 'https://support.ruckuswireless.com/documents/3506',
   AUTO_UPDATE_TABLE_INTERVALS: '30000',
