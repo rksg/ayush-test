@@ -4,8 +4,8 @@ import { Row, Typography } from 'antd'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { Card, GridCol, GridRow } from '@acx-ui/components'
-import { useRoguePolicyQuery }    from '@acx-ui/rc/services'
+import { Card, GridCol, GridRow }  from '@acx-ui/components'
+import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
@@ -13,7 +13,7 @@ const SyslogDetailContent = () => {
   const { Paragraph } = Typography
   const { $t } = useIntl()
 
-  const { data } = useRoguePolicyQuery({
+  const { data } = useGetSyslogPolicyQuery({
     params: useParams()
   })
 
@@ -35,6 +35,8 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Primary Server' })}
           </Card.Title>
           <Paragraph>
+            {`${data.primary.server}
+            :${data.primary.port} ${data.primary.protocol}`}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
@@ -42,19 +44,25 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Secondary Server' })}
           </Card.Title>
           <Paragraph>
+            {data.secondary?.server ? `${data.secondary?.server}
+            :${data.secondary?.port} ${data.secondary?.protocol}` : ''}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Event Facility' })}
           </Card.Title>
-          <Paragraph></Paragraph>
+          <Paragraph>
+            {data.facility}
+          </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
           <Card.Title>
             {$t({ defaultMessage: 'Send Logs' })}
           </Card.Title>
-          <Paragraph></Paragraph>
+          <Paragraph>
+            {data.flowLevel}
+          </Paragraph>
         </GridCol>
       </GridRow>
     </Card>

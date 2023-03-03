@@ -21,6 +21,29 @@ export interface SyslogPolicyType {
   venueIds: string[]
 }
 
+export interface Server {
+  server?: string,
+  port?: number,
+  protocol?: ProtocolEnum,
+}
+
+export interface Venue {
+  id: string,
+  name: string
+}
+
+export interface SyslogPolicyDetailType {
+  policyName?: string,
+  name: string,
+  id?: string,
+  primary: Server,
+  secondary: Server,
+  facility?: FacilityEnum,
+  priority?: PriorityEnum,
+  flowLevel?: FlowLevelEnum,
+  venues: Venue[]
+}
+
 export interface SyslogContextType {
   policyName: string,
   server: string,
@@ -45,6 +68,11 @@ export interface SyslogDetailContextType {
   policyName: string,
   setFiltersId: (filtersId: string[]) => void
   setPolicyName: (policyName: string) => void
+}
+
+export interface VenueSyslogSettingType {
+  enabled: boolean,
+  serviceProfileId: string
 }
 
 export interface VenueSyslogPolicyType {

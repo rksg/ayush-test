@@ -965,8 +965,6 @@ export const {
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
-  useGetVenueSyslogApQuery,
-  useUpdateVenueSyslogApMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
