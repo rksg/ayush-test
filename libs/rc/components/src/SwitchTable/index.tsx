@@ -147,6 +147,7 @@ export function SwitchTable (props : {
     key: 'model',
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
+    filterable: filterableKeys ? filterableKeys['model'] : false,
     sorter: true,
     searchable: searchable
   }, {

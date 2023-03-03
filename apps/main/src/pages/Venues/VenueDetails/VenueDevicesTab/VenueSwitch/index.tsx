@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 
 import { LineChartOutline, ListSolid, PortSolid } from '@acx-ui/icons'
 import { SwitchPortTable, SwitchTable }           from '@acx-ui/rc/components'
+import { useGetSwitchModelListQuery }             from '@acx-ui/rc/services'
 import { EmbeddedReport }                         from '@acx-ui/reports/components'
 import {
   ReportType,
@@ -16,6 +17,21 @@ import { IconRadioGroup } from '../VenueWifi/styledComponents'
 export function VenueSwitch () {
   const params = useParams()
   const [ showIdx, setShowIdx ] = useState(1)
+
+  const { getSwitchModelList } = useGetSwitchModelListQuery({
+    params: { tenantId: params.tenantId }, payload: {
+      fields: ['name', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { venueId: [params.venueId] }
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      getSwitchModelList: data?.data.map(v => ({ key: v.name, value: v.name })) || true
+    })
+  })
+
   return (<>
     <IconRadioGroup value={showIdx}
       size='small'
@@ -33,7 +49,8 @@ export function VenueSwitch () {
         />
       </div>
     }
-    { showIdx === 1 && <SwitchTable />}
+    {showIdx === 1 && <SwitchTable searchable={true}
+      filterableKeys={{ model: getSwitchModelList }} />}
     { showIdx === 2 && <SwitchPortTable isVenueLevel={true} />}
   </>)
 }
