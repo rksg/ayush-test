@@ -577,6 +577,37 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
             >
               <label
                 class=""
+                title="Authentication Server"
+              >
+                Authentication Server
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  undefined
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
                 title="Security Protocol:"
               >
                 Security Protocol

@@ -87,6 +87,7 @@ export interface MspEc {
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  edgeLicenses?: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
@@ -110,13 +111,14 @@ export interface MspEcData {
   is_active?: string;
   tenant_id?: string;
   parent_tenant_id?: string;
-  admin_email?: string,
-  admin_firstname?: string,
-  admin_lastname?: string,
-  admin_role?: string,
-  licenses?: {},
-  delegations?: MspIntegratorDelegated[],
-  admin_delegations?: MspEcDelegatedAdmins[]
+  admin_email?: string;
+  admin_firstname?: string;
+  admin_lastname?: string;
+  admin_role?: string;
+  licenses?: {};
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+  number_of_days?: string;
 }
 
 export interface VarCustomer {
@@ -271,8 +273,10 @@ export interface MspEcDelegatedAdmins {
 }
 
 export interface MspIntegratorDelegated {
+  mspec_list?: string[];
   delegation_type: string;
-  delegation_id: string;
+  delegation_id?: string;
+  number_of_days?: string;
 }
 
 export interface EcInvitation {
@@ -355,4 +359,47 @@ export interface SupportDelegation {
   delegatedToName: string;
   expiryDate: string;
   updatedDate: string;
+}
+
+export interface AssignedEc {
+  delegated_to: string;
+  delegation_type: string;
+  mspec_list: string[];
+}
+
+export interface BaseUrl {
+  base_url: string;
+}
+
+export interface MspPreferredWisprProvider {
+  providerName: string;
+  apiKey?: string;
+  apiSecret?: string;
+  customExternalProvider?: boolean;
+  auth?: string;
+  acct?: string;
+  externalProviderDisplayName?: string;
+}
+
+export interface MspPortal {
+  msp_label?: string;
+  logo_uuid?: string;
+  alarm_notification_logo_uuid?: string;
+  ping_notification_logo_uuid?: string;
+  mlisa_logo_uuid?: string;
+  ping_login_logo_uuid?: string;
+  default_logo_uuid?: string;
+  mspLogoFileDataList?: Array<unknown>;
+  msp_fqdn?: string;
+  contact_support_url?: string;
+  contact_support_behavior?: string;
+  open_case_url?: string;
+  open_case_behavior?: string;
+  my_open_case_url?: string;
+  my_open_case_behavior?: string;
+  change_password_url?: string;
+  msp_phone?: string;
+  msp_email?: string;
+  msp_website?: string;
+  preferredWisprProvider?: MspPreferredWisprProvider;
 }

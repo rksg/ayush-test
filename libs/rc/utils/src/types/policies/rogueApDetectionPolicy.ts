@@ -46,7 +46,7 @@ export interface RogueAPDetectionTempType {
     name: string,
     description?: string,
     venues: RogueVenue[],
-    rules: number
+    rules: RogueAPRule[]
 }
 
 export interface VenueRoguePolicyType {
