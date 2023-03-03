@@ -4,10 +4,10 @@ import { IntlShape, MessageDescriptor, defineMessage, useIntl } from 'react-intl
 import { Loader, SuspenseBoundary } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/utils'
 
-import { authMethodsByCode }                                                        from '../../authMethods'
-import { useNetworkHealthTest }                                                     from '../../services'
-import { NetworkHealthTest }                                                        from '../../types'
-import { StatsFromSummary, formatApsUnderTest, formatLastResult, statsFromSummary } from '../../utils'
+import { authMethodsByCode }                                      from '../../authMethods'
+import { useNetworkHealthTest }                                   from '../../services'
+import { NetworkHealthTest }                                      from '../../types'
+import { formatApsUnderTest, formatLastResult, statsFromSummary } from '../../utils'
 
 import { ReRunButton }   from './ReRunTestButton'
 import { TestRunButton } from './TestRunButton'
@@ -28,19 +28,19 @@ const getHeaderData = (details: NetworkHealthTest) => {
 interface Subtitle {
   key: string,
   title: MessageDescriptor,
-  format?: (details: StatsFromSummary, $t: IntlShape['$t']) => string
+  format?: (details: NetworkHealthTest | undefined, $t: IntlShape['$t']) => string
 }
 
 const subtitles: Subtitle[] = [
   {
-    key: 'apsUnderTest',
+    key: 'summary.apsTestedCount',
     title: defineMessage({ defaultMessage: 'APs Under Test' }),
-    format: formatApsUnderTest
+    format: (details) => formatApsUnderTest(details?.summary)
   },
   {
-    key: 'lastResult',
+    key: 'summary.apsSuccessCount',
     title: defineMessage({ defaultMessage: 'Test Result' }),
-    format: formatLastResult
+    format: (details) => formatLastResult(details?.summary)
   },
   {
     key: 'config.wlanName',
@@ -50,14 +50,14 @@ const subtitles: Subtitle[] = [
     key: 'config.radio',
     title: defineMessage({ defaultMessage: 'Radio Band' }),
     format: (details, $t) => _.get(details, 'config.radio')
-      ? formatter('radioFormat')(details.config.radio)
+      ? formatter('radioFormat')(details!.config.radio)
       : $t({ defaultMessage: 'Unknown' })
   },
   {
     key: 'config.authenticationMethod',
     title: defineMessage({ defaultMessage: 'Authentication Method' }),
     format: (details, $t) => _.get(details, 'config.authenticationMethod')
-      ? $t(authMethodsByCode[details.config.authenticationMethod].title)
+      ? $t(authMethodsByCode[details!.config.authenticationMethod].title)
       : $t({ defaultMessage: 'Unknown' })
   }
 ]
@@ -65,18 +65,15 @@ const subtitles: Subtitle[] = [
 const SubTitle = () => {
   const { $t } = useIntl()
   const queryResults = useNetworkHealthTest()
-  const state = { ...queryResults, isLoading: false }
-  const headerData = queryResults.data
-    ? getHeaderData(queryResults.data) : {} as NetworkHealthTest
 
-  return <Loader states={[state]} fallback={<Spinner size='small' />}>
+  return <Loader states={[queryResults]} fallback={<Spinner size='small' />}>
     {subtitles
-      .filter(({ key }) => _.has(headerData, key))
+      .filter(({ key }) => _.has(queryResults.data, key))
       .map(({ key, title, format }) => [
         $t(title),
         format
-          ? format(headerData, $t)
-          : (_.get(headerData, key) || $t({ defaultMessage: 'Unknown' }))
+          ? format(queryResults.data, $t)
+          : (_.get(queryResults.data, key) || $t({ defaultMessage: 'Unknown' }))
       ].join(': ')).join(' | ') || $t({ defaultMessage: 'Test details' })}
   </Loader>
 }
