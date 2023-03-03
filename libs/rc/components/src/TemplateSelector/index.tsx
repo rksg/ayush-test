@@ -1,13 +1,9 @@
-
 import { Form, Select, FormItemProps } from 'antd'
 import { useIntl }                     from 'react-intl'
-
 import { useGetTemplateScopeByIdQuery,
   useGetAllTemplatesByTemplateScopeIdQuery,
   useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
-
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
-
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
@@ -16,8 +12,9 @@ export interface TemplateSelectorProps {
   registrationId: string
 }
 
-export const TemplateSelector = (props: TemplateSelectorProps) => {
+export function TemplateSelector(props: TemplateSelectorProps) {
   const { $t } = useIntl()
+
   const {
     scopeId,
     registrationId,
@@ -32,17 +29,17 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
     useGetRegistrationByIdQuery({
       params: { templateScopeId: scopeId, registrationId: registrationId } })
 
-  let selectedTemplateId = undefined
+  let initialTemplateId:string = ''
   let registrationRequestFailed = false
   if(registrationRequest.isError
     && 'status' in registrationRequest.error
     && registrationRequest.error.status === 404
     && templateScopeRequest.data?.defaultTemplateId) {
 
-    selectedTemplateId = templateScopeRequest.data.defaultTemplateId
+    initialTemplateId = templateScopeRequest.data.defaultTemplateId
 
   } else if(registrationRequest.isSuccess && registrationRequest.data?.templateId) {
-    selectedTemplateId = registrationRequest.data.templateId
+    initialTemplateId = registrationRequest.data.templateId
   } else if(registrationRequest.isError) {
     registrationRequestFailed = true
   }
@@ -51,7 +48,7 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
 
   let isLoading = true
   let isDisabled = true
-  let options = new Array<{ value:string,label:string }>()
+  let options = new Array<{ value:string, label:string }>()
   let formItemProps = {
     name: props.scopeId + 'templateId',
     label: $t({ defaultMessage: 'Loading Templates...' }),
@@ -60,7 +57,7 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
   if(templateScopeRequest.isLoading
     || templatesRequest.isLoading
     || registrationRequest.isLoading) {
-
+      
     isLoading = true
     isDisabled = true
     formItemProps.label = $t({ defaultMessage: 'Loading Templates...' })
@@ -77,9 +74,10 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
       ({ value: id,
         label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey])) }))
 
-    if(selectedTemplateId) {
-      form.setFieldValue(formItemProps.name, selectedTemplateId)
-    }
+        if(initialTemplateId) {
+          let initialSelection = options.find(t => t.value === initialTemplateId);
+          form.setFieldValue(formItemProps.name, initialSelection)
+        }
 
   } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
 
@@ -97,10 +95,11 @@ export const TemplateSelector = (props: TemplateSelectorProps) => {
         disabled={isDisabled}
         placeholder={placeholder}
         options={options}
-        onSelect={(templateId:string) => {
-          form.setFieldValue(formItemProps.name, templateId)
+        onSelect={(item:any, option:any) => {
+          form.setFieldValue(formItemProps.name, option)
           form.validateFields()
-        }}/>
+        }}
+      />
     </Form.Item>
   )
 }

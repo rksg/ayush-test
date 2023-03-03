@@ -105,7 +105,7 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName)).toEqual(mockedRegistration.templateId)
+      expect(formRef.current.getFieldValue(formItemName).value).toEqual(mockedRegistration.templateId)
     })
   })
 
@@ -150,7 +150,7 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName))
+      expect(formRef.current.getFieldValue(formItemName).value)
         .toEqual(mockedTemplateScope.defaultTemplateId)
     })
   })
@@ -199,7 +199,7 @@ describe('TemplateSelector', () => {
     await userEvent.click(await screen.findByText('User Created Template 1'))
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName))
+      expect(formRef.current.getFieldValue(formItemName).value)
         .toEqual('746ac7b2-1ec5-412c-9354-e5ac274b7bd9')
     })
   })
