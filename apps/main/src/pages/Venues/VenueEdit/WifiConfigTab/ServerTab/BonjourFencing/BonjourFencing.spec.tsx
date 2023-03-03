@@ -35,7 +35,10 @@ describe('Venue Bonjour Fencing', () => {
         (_, res, ctx) => res(ctx.json(mockBonjourFencing))),
       rest.post(
         CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
 

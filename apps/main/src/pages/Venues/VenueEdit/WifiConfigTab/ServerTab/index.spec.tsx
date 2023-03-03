@@ -49,7 +49,16 @@ describe('ServerTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+        (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
+      rest.get(
+        CommonUrlsInfo.getVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   it('should render correctly', async () => {
