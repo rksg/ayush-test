@@ -2,7 +2,8 @@ import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { ReportType }                        from '@acx-ui/reports/components'
 import { Provider }                          from '@acx-ui/store'
 
-import { Report } from './pages/Report'
+import { DataStudio } from './pages/DataStudio'
+import { Report }     from './pages/Report'
 
 const reports = {
   overview: <Report type={ReportType.OVERVIEW} showFilter={false} />,
@@ -29,6 +30,7 @@ export default function ReportsRoutes () {
       <Route path='reports/applications' element={reports.applications} />
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
+      <Route path='dataStudio' element={<DataStudio />} />
     </Route>
   )
   return (
