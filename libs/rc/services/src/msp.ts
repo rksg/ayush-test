@@ -28,6 +28,7 @@ import {
   MspPortal,
   downloadFile
 } from '@acx-ui/rc/utils'
+import { getJwtToken } from '@acx-ui/utils'
 
 export const baseMspApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -469,7 +470,8 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload,
           headers: {
             'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*'
+            'accept': 'application/json,text/plain,*/*',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
       }
@@ -484,7 +486,7 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    getGenerateLicenseUsageRpt: build.query<Response, RequestPayload>({
+    getGenerateLicenseUsageRpt: build.query<{ status: number }, RequestPayload>({
       query: ({ params, payload, selectedFormat }) => {
         const contentType: string = selectedFormat === 'csv'
           ? 'text/csv'
@@ -504,14 +506,14 @@ export const mspApi = baseMspApi.injectEndpoints({
             const fileName =
             `License Usage Report ${moment().format('YYYYMMDDHHmmss')}.${selectedFormat}`
             downloadFile(response, fileName)
-            return response
+            return { status: response.status }
           },
           headers: {
-            'Content-Type': contentType
+            'Content-Type': contentType,
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
-      },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      }
     })
   })
 })

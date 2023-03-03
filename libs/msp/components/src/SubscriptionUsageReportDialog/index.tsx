@@ -5,7 +5,7 @@ import moment                                                               from
 import { useIntl }                                                          from 'react-intl'
 import { useParams }                                                        from 'react-router-dom'
 
-import { showToast, Subtitle } from '@acx-ui/components'
+import { Subtitle }         from '@acx-ui/components'
 import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
@@ -50,8 +50,20 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
   })
 
   useEffect(() => {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December']
+    const months = [
+      $t({ defaultMessage: 'January' }),
+      $t({ defaultMessage: 'February' }),
+      $t({ defaultMessage: 'March' }),
+      $t({ defaultMessage: 'April' }),
+      $t({ defaultMessage: 'May' }),
+      $t({ defaultMessage: 'June' }),
+      $t({ defaultMessage: 'July' }),
+      $t({ defaultMessage: 'August' }),
+      $t({ defaultMessage: 'September' }),
+      $t({ defaultMessage: 'October' }),
+      $t({ defaultMessage: 'November' }),
+      $t({ defaultMessage: 'December' })
+    ]
     const today = new Date()
     let month = today.getMonth()
     let year = today.getFullYear()
@@ -87,12 +99,6 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
       setSelectedFormat('csv')
       setSelectedCustomers('all')
     }
-    else if (data) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to download usage report.' })
-      })
-    }
   }, [data])
 
   /* eslint-disable max-len */
@@ -119,19 +125,20 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
   }
 
   const handleGenerate = async () => {
+    const dateFormat = 'YYYY-MM-DD'
     const currentMonth = selectedPeriod === 'calendar'
     const selectedMonth = selectedCalendarMonth.split(' ').at(0)
     const selectedYear = selectedCalendarMonth.split(' ').at(1)
     const startMonth = selectedPeriod === 'calendar' && selectedMonth ? selectedMonth : ''
     const startYear = selectedPeriod === 'calendar' && selectedYear ? selectedYear : ''
     const startDate = selectedPeriod === 'hours'
-      ? moment().subtract(1, 'days').format('YYYY-MM-DD')
+      ? moment().subtract(1, 'days').format(dateFormat)
       : selectedPeriod === 'week'
-        ? moment().subtract(7, 'days').format('YYYY-MM-DD')
+        ? moment().subtract(7, 'days').format(dateFormat)
         : selectedPeriod === 'month'
-          ? moment().subtract(30, 'days').format('YYYY-MM-DD')
+          ? moment().subtract(30, 'days').format(dateFormat)
           : ''
-    const endDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
+    const endDate = moment().subtract(1, 'days').format(dateFormat)
 
     const mspEcTenantId = selectedCustomerOption ?? ''
     setPayload(getGenerateUsagePayload(currentMonth, startMonth, startYear, startDate, endDate, mspEcTenantId))
@@ -178,7 +185,7 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
                   defaultValue={periodOptions?.at(0)?.value?.toString()}
                   onChange={(value: string) => setSelectedCalendarMonth(value)}
                   options={periodOptions}
-                  style={{ width: '200px' }}
+                  style={{ width: '200px', marginTop: '-10px', marginBottom: '-10px' }}
                 />
               }
             </Space>
@@ -227,14 +234,14 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
             </Radio>
             <Space direction='horizontal'>
               <Radio value='specific'>
-                { $t({ defaultMessage: 'Specific Customers' }) }
+                { $t({ defaultMessage: 'Specific Customer' }) }
               </Radio>
               {selectedCustomers === 'specific' &&
                 <Select
                   onChange={(value: string) => setSelectedCustomerOption(value)}
                   placeholder='Select a customer'
                   options={customerOptions}
-                  style={{ width: '200px' }}
+                  style={{ width: '200px', marginTop: '-10px', marginBottom: '-10px' }}
                 />
               }
             </Space>

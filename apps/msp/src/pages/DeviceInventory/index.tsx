@@ -6,7 +6,6 @@ import {
   Button,
   Loader,
   PageHeader,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -86,16 +85,6 @@ export function DeviceInventory () {
       'customerName' ]
   }
 
-  const payload = {
-    searchString: '',
-    fields: [
-      'venueName',
-      'serialNumber',
-      'tenantId',
-      'model',
-      'customerName' ]
-  }
-
   const filterResults = useTableQuery({
     useQuery: useDeviceInventoryListQuery,
     pagination: {
@@ -118,15 +107,7 @@ export function DeviceInventory () {
       ? _.uniq(list?.data.filter(item => !!item.model).map(c=>c.model)) : []
 
   const ExportInventory = () => {
-    // const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
-    // const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    downloadCsv({ params: { tenantId }, payload })
-      .catch(() => {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download Inventory.' })
-        })
-      })
+    downloadCsv({ params: { tenantId }, payload: filterPayload })
   }
 
   const columns: TableProps<EcDeviceInventory>['columns'] = [
