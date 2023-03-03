@@ -20,6 +20,8 @@ import {
   NetworksSolid,
   PoliciesOutlined,
   PoliciesSolid as PoliciesSolidBase,
+  DataStudioOutlined,
+  DataStudioSolid,
   ReportsOutlined,
   ReportsSolid,
   ServicesOutlined,
@@ -95,51 +97,6 @@ export function useMenuConfig (userRole: RolesEnum) {
       ],
       disabled: !showSV
     }] : []),
-    {
-      path: '/reports',
-      name: $t({ defaultMessage: 'Reports' }),
-      inactiveIcon: ReportsOutlined,
-      activeIcon: ReportsSolid,
-      disabled: false,
-      routes: [
-        {
-          path: '/reports/overview',
-          name: $t({ defaultMessage: 'Overview' })
-        },
-        {
-          path: '/reports/wireless',
-          name: $t({ defaultMessage: 'Wireless' })
-        },
-        {
-          path: '/reports/wired',
-          name: $t({ defaultMessage: 'Wired' })
-        },
-        {
-          path: '/reports/aps',
-          name: $t({ defaultMessage: 'APs' })
-        },
-        {
-          path: '/reports/switches',
-          name: $t({ defaultMessage: 'Switches' })
-        },
-        {
-          path: '/reports/wlans',
-          name: $t({ defaultMessage: 'WLANs' })
-        },
-        {
-          path: '/reports/clients',
-          name: $t({ defaultMessage: 'Wireless Clients' })
-        },
-        {
-          path: '/reports/applications',
-          name: $t({ defaultMessage: 'Applications' })
-        },
-        {
-          path: '/reports/airtime',
-          name: $t({ defaultMessage: 'Airtime Utilization' })
-        }
-      ]
-    },
     genPlaceholder(),
     {
       path: '/venues',
@@ -229,6 +186,58 @@ export function useMenuConfig (userRole: RolesEnum) {
           path: '/users/persona-management',
           name: $t({ defaultMessage: 'Persona Management' }),
           disabled: !useIsSplitOn(Features.SERVICES)
+        }
+      ]
+    },
+    genPlaceholder(),
+    {
+      path: '/dataStudio',
+      name: $t({ defaultMessage: 'Data Studio' }),
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    },
+    {
+      path: '/reports',
+      name: $t({ defaultMessage: 'Reports' }),
+      inactiveIcon: ReportsOutlined,
+      activeIcon: ReportsSolid,
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/overview',
+          name: $t({ defaultMessage: 'Overview' })
+        },
+        {
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/wlans',
+          name: $t({ defaultMessage: 'WLANs' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        },
+        {
+          path: '/reports/airtime',
+          name: $t({ defaultMessage: 'Airtime Utilization' })
         }
       ]
     },
