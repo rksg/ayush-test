@@ -11,6 +11,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { hasAccesses }            from '@acx-ui/rbac'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
@@ -506,12 +507,12 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={rowSelection}
-        actions={[{
+        actions={hasAccesses([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }]}
+        }])}
       />
       <UpdateNowDialog
         visible={updateModelVisible}
