@@ -329,7 +329,7 @@ export default function DHCPPoolTable ({
         destroyOnClose={true}
         width={900}
         footer={<Drawer.FormFooter
-          showAddAnother={!isEdit()}
+          showAddAnother={!isEdit()&&values().length<3}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another pool' }),
             save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })
