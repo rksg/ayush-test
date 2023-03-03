@@ -6,9 +6,9 @@ import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc
 import {
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   ServiceOperation,
-  MdnsProxyScopeData
+  MdnsProxyScopeData,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -35,7 +35,10 @@ export default function MdnsProxyDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+          }
         ]}
         extra={[
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
