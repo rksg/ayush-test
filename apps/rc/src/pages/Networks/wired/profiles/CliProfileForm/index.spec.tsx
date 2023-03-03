@@ -11,7 +11,7 @@ import {
   screen,
   fireEvent,
   within,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -106,7 +106,7 @@ describe('Cli Profile Form - Add', () => {
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
-    await userEvent.click(within(row1).getByRole('checkbox'))
+    await userEvent.click(await within(row1).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
@@ -241,20 +241,12 @@ describe('Cli Profile Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
     expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Models' })
-    await screen.findByText('Select switch models')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
-    await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
-    await userEvent.click(addExampleBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -270,19 +262,11 @@ describe('Cli Profile Form - Edit', () => {
       route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Models' })
-    await screen.findByText('Select switch models')
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
-    await screen.findByText('CLI commands')
-    const addExampleBtns = await screen.findAllByTestId('add-example-btn')
-    await userEvent.click(addExampleBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Venues' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
@@ -293,7 +277,9 @@ describe('Cli Profile Form - Edit', () => {
     render(<Provider><CliProfileForm /></Provider>, {
       route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })

@@ -23,11 +23,14 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
     {
       title: $t({ defaultMessage: 'Network Name' }),
       dataIndex: 'name',
+      align: 'left',
+      searchable: true,
       key: 'name'
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'nwSubType',
+      align: 'left',
       key: 'nwSubType',
       render: (data, row) => {
         return $t(networkTypes[row.nwSubType as NetworkTypeEnum])
@@ -36,6 +39,7 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
     {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
+      align: 'center',
       key: 'venues',
       renderText: (row) => row.count
     }
@@ -68,7 +72,9 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
     })}>
       <Table
         columns={basicColumns}
+        enableApiFilter={true}
         dataSource={tableQuery.data?.data}
+        onFilterChange={tableQuery.handleFilterChange}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'

@@ -1,3 +1,5 @@
+import { createRef, ReactNode, useEffect } from 'react'
+
 import { List }               from 'antd'
 import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
@@ -19,13 +21,27 @@ import { transformEvents,formatEventDesc, transformIncidents } from './util'
 
 import { Filters } from '.'
 
-
 type HistoryContentProps = {
   historyContentToggle : boolean,
   setHistoryContentToggle : CallableFunction,
   data?: ClientInfoData,
-  filters: Filters | null
+  filters: Filters | null,
+  onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
+    onClick: (val: boolean) => void,
+    selected: () => boolean | undefined
+  }
 }
+
+export type FormattedEvent = {
+  start: number,
+  date: string,
+  description: string,
+  title: string,
+  icon: ReactNode,
+  id: string,
+  event: DisplayEvent
+}
+
 const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
@@ -48,33 +64,73 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       date: formatter('dateTimeFormatWithSeconds')(event.start),
       description: formatEventDesc(event, intl),
       title: formatEventDesc(event, intl),
-      icon: <ConnectionEventPopover event={event}>
-        <UI.EventTypeIcon color={color} />
-      </ConnectionEventPopover>
+      icon: <UI.EventTypeIcon color={color} data-testid='history-item-icon'/>,
+      event
     }
   }),
   ...incidents
   ].sort((a,b) => a.start - b.start)
 }
 
+const renderItem = (
+  item: IncidentDetails | FormattedEvent,
+  onPanelCallback: (item: IncidentDetails | FormattedEvent) => {
+    onClick: (val: boolean) => void,
+    selected: () => boolean | undefined
+  }
+) => {
+  const { onClick, selected } = onPanelCallback(item)
+  return <WrappedItem
+    item={item}
+    onClick={onClick}
+    selected={selected()}
+    key={item.id ?? (item as FormattedEvent).event.key}
+  />
+}
 
-const renderItem = (item: IncidentDetails) => {
+function WrappedItem (
+  { item, onClick, selected }:
+  { item: IncidentDetails | FormattedEvent,
+    onClick: (val: boolean) => void,
+    selected: boolean | undefined }
+) {
+  const ref = createRef<HTMLDivElement>()
+  useEffect(() => {
+    if (selected && ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selected, ref])
+  const icon = item.id
+    ? item.icon
+    : <ConnectionEventPopover
+      event={(item as FormattedEvent).event}
+      onVisibleChange={onClick}
+      visible={selected}
+      placement='bottom'
+    >
+      {item.icon}
+    </ConnectionEventPopover>
   const Item = <List.Item title={item.title}>
     <List.Item.Meta
-      avatar={item.icon}
+      avatar={icon}
       title={item.date}
-      description={item.description}
-    />
+      description={item.description} />
   </List.Item>
   return item.id
     ? <TenantLink to={`analytics/incidents/${item.id}`}>{Item}</TenantLink>
-    : Item
+    : <UI.HistoryItemWrapper
+      $selected={selected}
+      ref={ref}
+    >
+      {Item}
+    </UI.HistoryItemWrapper>
+
 }
 
 export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
-  const { setHistoryContentToggle, historyContentToggle, data, filters } = props
+  const { setHistoryContentToggle, historyContentToggle, data, filters, onPanelCallback } = props
   const histData = transformData(data!, filters!, intl)
   return (
     <UI.History>
@@ -97,7 +153,7 @@ export function History (props : HistoryContentProps) {
             <List
               itemLayout='horizontal'
               dataSource={histData}
-              renderItem={renderItem}
+              renderItem={(item) => renderItem(item, onPanelCallback)}
             />
           </UI.HistoryContent>
         )}

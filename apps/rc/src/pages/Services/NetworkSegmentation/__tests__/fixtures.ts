@@ -122,3 +122,92 @@ export const mockNetworkGroup = {
     { networkId: '3' }
   ]
 }
+
+export const mockNsgStatsList = {
+  fields: [
+    'venueInfos',
+    'edgeInfos',
+    'networkIds',
+    'name',
+    'id',
+    'tags'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'nsg1',
+      networkIds: [
+        'wlan-1',
+        'wlan2'
+      ],
+      venueInfos: [
+        {
+          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
+          venueId: 'mock_venue_1',
+          personaGroupId: 'per-444'
+        }
+      ],
+      edgeInfos: [
+        {
+          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+          edgeId: '0000000001',
+          segments: 10,
+          devices: 10,
+          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+          vniRange: ''
+        }
+      ]
+    },
+    {
+      id: '2',
+      name: 'nsg2',
+      networkIds: [
+        'wlan-1',
+        'wlan2'
+      ],
+      venueInfos: [
+        {
+          id: '7a5474bf-be4a-4207-b808-e3aaa8be7a3e',
+          venueId: 'mock_venue_2',
+          personaGroupId: 'per-444'
+        }
+      ],
+      edgeInfos: [
+        {
+          id: '5e5a85d5-1540-4aab-86c4-a8d8b9f3e28b',
+          edgeId: '0000000002',
+          segments: 10,
+          devices: 10,
+          dhcpInfoId: 'ee61bd6e-c637-4177-b070-0ded060af3bd',
+          dhcpPoolId: '6a408e31-30a0-4ac1-a672-76b666f57d6e',
+          vniRange: ''
+        }
+      ]
+    }
+  ]
+}
+
+export const mockNsgData = {
+  id: '2599f95d-86a2-470c-9679-e739de054ba1',
+  name: 'RLTestNsg-1',
+  vxlanTunnelProfileId: 'test123',
+  venueInfos: [
+    {
+      venueId: 'mock_venue_1',
+      personaId: ''
+    }
+  ],
+  edgeInfos: [
+    {
+      edgeId: '0000000001',
+      segments: 10,
+      devices: 10,
+      dhcpInfoId: '1',
+      dhcpPoolId: '1'
+    }
+  ],
+  networkIds: ['1', '2']
+}

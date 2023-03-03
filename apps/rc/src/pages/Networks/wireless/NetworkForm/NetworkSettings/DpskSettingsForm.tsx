@@ -38,14 +38,14 @@ export function DpskSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
+        isCloudpathEnabled: data.authRadius?true:false,
         dpskServiceProfileId: data?.dpskServiceProfileId,
         dpskWlanSecurity: data?.wlan?.wlanSecurity,
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
+        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+        authRadiusId: data.authRadiusId||data.authRadius?.id
       })
     }
   }, [data])
@@ -73,7 +73,7 @@ function SettingsForm () {
 
     setData && setData({ ...data, isCloudpathEnabled: e.target.value })
   }
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
