@@ -53,7 +53,7 @@ export type NetworkHealthSpec = {
   clientType: ClientType
   configs: NetworkHealthConfig[]
   tests: { items: NetworkHealthTest[] }
-  schedule: Schedule
+  schedule: Schedule | null
 }
 
 export type NetworkHealthConfig = {
@@ -87,16 +87,16 @@ export type NetworkHealthTest = {
   config: NetworkHealthConfig,
   summary: {
     apsTestedCount: number
-    apsSuccessCount: number
-    apsFailureCount: number
-    apsErrorCount: number
     apsPendingCount: number
+    apsSuccessCount: number
+    apsFailureCount?: number
+    apsErrorCount?: number
   } & Record<string, number|string>
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
 
-type Schedule = { nextExecutionTime: number }
+type Schedule = { nextExecutionTime: string }
 
 export type NetworkHealthFormDto = {
   id?: NetworkHealthSpec['id']

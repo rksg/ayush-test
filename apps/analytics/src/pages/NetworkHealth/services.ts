@@ -78,8 +78,9 @@ const fetchAllServiceGuardSpecs = gql`
     }
   }`
 
-export type NetworkHealthTableRow = NetworkHealthSpec & {
-  latestTest: NetworkHealthTest
+export type NetworkHealthTableRow = Omit<NetworkHealthSpec, 'configs' | 'tests'> & {
+  tests: { items: Pick<NetworkHealthTest, 'id' | 'createdAt' | 'summary'>[] }
+  latestTest: Pick<NetworkHealthTest, 'id' | 'createdAt' | 'summary'> | undefined
 }
 
 export const {

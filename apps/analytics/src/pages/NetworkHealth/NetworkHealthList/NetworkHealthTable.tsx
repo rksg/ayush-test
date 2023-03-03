@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react'
 
-import { Form, Input }            from 'antd'
+import { Form, Input, Modal }     from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { noDataSymbol, sortProp, defaultSort }                          from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
-import { useUserProfileContext }                                        from '@acx-ui/rc/components'
-import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
-import { formatter }                                                    from '@acx-ui/utils'
+import { noDataSymbol, sortProp, defaultSort, dateSort }         from '@acx-ui/analytics/utils'
+import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
+import { useUserProfileContext }                                 from '@acx-ui/rc/components'
+import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
+import { formatter }                                             from '@acx-ui/utils'
 
 import * as contents      from '../contents'
 import {
@@ -18,9 +18,16 @@ import {
   useRunNetworkHealthTestMutation,
   useCloneNetworkHealthTestMutation,
   NetworkHealthTableRow
-}                                                              from '../services'
-import { ClientType, NetworkHealthSpec, TestType }             from '../types'
-import { formatApsUnderTest, formatLastResult, getTestStatus } from '../utils'
+}                                                                 from '../services'
+import { ClientType, NetworkHealthSpec, TestType }                from '../types'
+import { statsFromSummary, formatApsUnderTest, formatLastResult } from '../utils'
+
+export function lastResultSort (a: NetworkHealthTableRow, b: NetworkHealthTableRow) {
+  return defaultSort(
+    statsFromSummary(a.latestTest?.summary).lastResult ?? -1,
+    statsFromSummary(b.latestTest?.summary).lastResult ?? -1
+  )
+}
 
 export function NetworkHealthTable () {
   const { $t } = useIntl()
@@ -63,16 +70,30 @@ export function NetworkHealthTable () {
         runTest({ id })
         clearSelection()
       },
-      disabled: (selectedRow) =>
-        (selectedRow[0]?.apsCount === 0) ||
-        (selectedRow[0]?.latestTest && selectedRow[0].latestTest.summary?.apsPendingCount > 0)
+      disabled: ([selectedRow]) =>
+        selectedRow?.apsCount === 0 ||
+        statsFromSummary(selectedRow?.latestTest?.summary).isOngoing,
+      tooltip: ([selectedRow]) => {
+        if (selectedRow?.apsCount === 0)
+          return $t(contents.messageMapping.RUN_TEST_NO_APS)
+        if (statsFromSummary(selectedRow?.latestTest?.summary).isOngoing)
+          return $t(contents.messageMapping.TEST_IN_PROGRESS)
+        return undefined
+      }
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
         navigate(`${networkHealthPath.pathname}/${selectedRows[0].id}/edit`)
       },
-      disabled: (selectedRow) => selectedRow[0]?.userId === userProfile?.externalId ? false : true
+      disabled: ([selectedRow]) => {
+        return selectedRow?.userId === userProfile?.externalId
+          ? false
+          : true
+      },
+      tooltip: ([selectedRow]) => selectedRow?.userId === userProfile?.externalId
+        ? undefined
+        : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
@@ -140,19 +161,22 @@ export function NetworkHealthTable () {
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
       searchable: true,
-      render: (value, row) => row.latestTest?.summary?.apsTestedCount
-        ? <TenantLink to={`/serviceValidation/networkHealth/${row.id}/tests/${row.latestTest?.id}`}>
-          {value}
-        </TenantLink>
-        : value
+      render: (value, row, _, highlightFn) => {
+        const highlightedValue = highlightFn(String(value))
+        return row.latestTest?.summary.apsTestedCount
+          ? <TenantLink
+            to={`/serviceValidation/networkHealth/${row.id}/tests/${row.latestTest?.id}`}
+          >
+            {highlightedValue}
+          </TenantLink>
+          : highlightedValue
+      }
     },
     {
       key: 'clientType',
       title: $t(defineMessage({ defaultMessage: 'Client Type' })),
       dataIndex: 'clientType',
       sorter: { compare: sortProp('clientType', defaultSort) },
-      filterable: Object.entries(contents.clientTypes).map(
-        ([key, value])=>({ key, value: $t(value) })),
       render: (value) => $t(contents.clientTypes[value as ClientType])
     },
     {
@@ -160,8 +184,6 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Test Type' })),
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
-      filterable: Object.entries(contents.testTypes).map(
-        ([key, value])=>({ key, value: $t(value) })),
       render: (value) => $t(contents.testTypes[value as TestType])
     },
     {
@@ -169,7 +191,8 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'APs' })),
       dataIndex: 'apsCount',
       render: (value) => value,
-      sorter: { compare: sortProp('apsCount', defaultSort) }
+      sorter: { compare: sortProp('apsCount', defaultSort) },
+      align: 'center'
     },
     {
       key: 'lastRun',
@@ -177,21 +200,23 @@ export function NetworkHealthTable () {
       dataIndex: ['latestTest', 'createdAt'],
       render: (_, row) => row.latestTest?.createdAt
         ? formatter('dateTimeFormatWithSeconds')(row.latestTest?.createdAt)
-        : noDataSymbol
+        : noDataSymbol,
+      sorter: { compare: sortProp('latestTest.createdAt', dateSort) }
     },
     {
       key: 'apsUnderTest',
       title: $t(defineMessage({ defaultMessage: 'APs Under Test' })),
-      dataIndex: ['latestTest', 'summary', 'apsUnderTest'],
-      render: (_, row) =>
-        formatApsUnderTest(row.latestTest?.summary ? getTestStatus(row.latestTest) : {}, $t)
+      dataIndex: ['latestTest', 'summary', 'apsTestedCount'],
+      render: (_, row) => formatApsUnderTest(row.latestTest?.summary),
+      sorter: { compare: sortProp('latestTest.summary.apsTestedCount', defaultSort) },
+      align: 'center'
     },
     {
       key: 'lastResult',
       title: $t(defineMessage({ defaultMessage: 'Last Result' })),
-      dataIndex: ['latestTest', 'summary', 'lastResult'],
-      render: (_, row) =>
-        formatLastResult(row.latestTest?.summary ? getTestStatus(row.latestTest) : {}, $t)
+      dataIndex: ['latestTest', 'summary', 'apsSuccessCount'],
+      render: (_, row) => formatLastResult(row.latestTest?.summary),
+      sorter: { compare: lastResultSort }
     }
   ]
 

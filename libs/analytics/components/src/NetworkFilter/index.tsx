@@ -89,7 +89,6 @@ type ConnectedNetworkFilterProps = {
     withIncidents?: boolean,
     showRadioBand?: boolean,
     multiple?: boolean,
-    replaceWithId?:boolean,
     filterMode?: FilterMode,
     filterFor?: 'analytics' | 'reports',
     defaultValue?: SingleValueType | SingleValueType[],
@@ -153,8 +152,7 @@ const getFilterData = (
   data: Child[],
   $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode:string,
-  replaceWithId?: boolean
+  filterMode:string
 ): Option[] => {
   const venues: { [key: string]: Option } = {}
   for (const { id, name, path, aps, switches } of data) {
@@ -181,7 +179,7 @@ const getFilterData = (
             name={name}
           />
         ),
-        value: replaceWithId ? JSON.stringify(path).replace(name,id) : JSON.stringify(path),
+        value: JSON.stringify([path[0], { ...path[1], name: id }]), // replace venue name with id to be compatible with rc/reports
         displayLabel: name,
         children: [] as Option[]
       }
@@ -289,7 +287,6 @@ function ConnectedNetworkFilter (
     filterMode='both',
     filterFor='analytics',
     multiple,
-    replaceWithId,
     defaultValue,
     defaultRadioBand,
     isRadioBandDisabled=false,
@@ -318,8 +315,7 @@ function ConnectedNetworkFilter (
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
-        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes,
-          filterMode, replaceWithId) : [],
+        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes, filterMode) : [],
       ...rest
     })
   })
@@ -337,6 +333,7 @@ function ConnectedNetworkFilter (
           radioBandDisabledReason={radioBandDisabledReason}
           value={defaultValue || rawVal}
           options={queryResults.data}
+          dropdownAlign={{ overflow: { adjustX: false, adjustY: false } }}
           onApply={(value,bands) => {
             if(showRadioBand || multiple){
               let paths:NetworkPath[]=[]
