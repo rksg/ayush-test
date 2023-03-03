@@ -7,7 +7,8 @@ import { Provider }                                                            f
 import {
   fireEvent, mockServer, render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockVenueData, mockVenueNetworkData } from '../__tests__/fixtures'
@@ -61,6 +62,14 @@ describe('Create NetworkSegmentation', () => {
       ),
       rest.post(
         NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.post(
+        EdgeDhcpUrls.addDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.patch(
+        EdgeDhcpUrls.patchDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       )
     )
@@ -123,5 +132,87 @@ describe('Create NetworkSegmentation', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('Add DHCP service', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddNetworkSegmentation />
+      </Provider>, {
+        route: { params, path: createNsgPath }
+      })
+    // step 1
+    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    await user.type(serviceNameInput, 'TestService')
+    const venueSelect = await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })
+    user.click(venueSelect)
+    user.click(await screen.findByText('Mock Venue 1'))
+    expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    const edgeSelect = await screen.findByRole('combobox', { name: 'SmartEdge' })
+    user.click(edgeSelect)
+    user.click(await screen.findByText('Smart Edge 1'))
+    user.click(await screen.findByRole('button', { name: 'Add' }))
+
+    const dhcpServiceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    await user.type(dhcpServiceNameInput, 'myTest')
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
+    await user.type(startIpInput, '1.1.1.1')
+    await user.type(endIpInput, '1.1.1.5')
+    await user.type(gatewayInput, '1.2.3.4')
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
+    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+    const addDhcpModal = screen.getAllByRole('dialog')[0]
+    await user.click(within(addDhcpModal).getByRole('button', { name: 'Add' }))
+  })
+
+  it('Add DHCP pool', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddNetworkSegmentation />
+      </Provider>, {
+        route: { params, path: createNsgPath }
+      })
+    // step 1
+    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    await user.type(serviceNameInput, 'TestService')
+    const venueSelect = await screen.findByRole('combobox', { name: 'Venue with the property management enabled' })
+    user.click(venueSelect)
+    user.click(await screen.findByText('Mock Venue 1'))
+    expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    const edgeSelect = await screen.findByRole('combobox', { name: 'SmartEdge' })
+    user.click(edgeSelect)
+    user.click(await screen.findByText('Smart Edge 1'))
+    const dhcpSelect = await screen.findByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    user.click(dhcpSelect)
+    user.click(await screen.findByText('TestDhcp-1'))
+    user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    const poolNameInput = await screen.findByRole('textbox', { name: 'Pool Name' })
+    const subnetMaskInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+    const startIpInput = await screen.findByRole('textbox', { name: 'Start IP Address' })
+    const endIpInput = await screen.findByRole('textbox', { name: 'End IP Address' })
+    const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+    await user.type(poolNameInput, 'Pool1')
+    await user.type(subnetMaskInput, '255.255.255.0')
+    await user.type(startIpInput, '1.1.1.1')
+    await user.type(endIpInput, '1.1.1.5')
+    await user.type(gatewayInput, '1.2.3.4')
+    const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
+    await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
   })
 })

@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { Fragment, ReactElement, useState } from 'react'
 
-import { DrawerProps as AntDrawerProps } from 'antd'
-import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import { useIntl }                       from 'react-intl'
+import { DrawerProps as AntDrawerProps, Space } from 'antd'
+import Checkbox, { CheckboxChangeEvent }        from 'antd/lib/checkbox'
+import { useIntl }                              from 'react-intl'
 
-import { CloseSymbol, ArrowBack } from '@acx-ui/icons'
+import { ArrowBack, CloseSymbol } from '@acx-ui/icons'
 
 import { Button } from '../Button'
 
@@ -15,6 +15,7 @@ interface DrawerHeaderProps {
   icon?: React.ReactNode,
   subTitle?: string,
   onBackClick?: () => void
+  extra?: ReactElement[]
 }
 
 export interface DrawerProps extends
@@ -32,12 +33,18 @@ const Header = (props: DrawerHeaderProps) => {
       {props.title}
     </UI.Title>
     {props.subTitle ? <UI.SubTitle>{props.subTitle}</UI.SubTitle> : null}
+    {props.extra && <Space
+      size={0}
+      split={<UI.Divider type='vertical' />}
+      style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
+      {props.extra.map((item, index) => <Fragment key={index}>{item}</Fragment>)}
+    </Space>}
   </>
 }
 
 export const Drawer = (props: DrawerProps) => {
-  const { title, icon, subTitle, onBackClick, ...rest } = props
-  const headerProps = { title, icon, subTitle, onBackClick }
+  const { title, icon, subTitle, onBackClick, extra, ...rest } = props
+  const headerProps = { title, icon, subTitle, onBackClick, extra }
   return (
     <UI.Drawer
       {...rest}
