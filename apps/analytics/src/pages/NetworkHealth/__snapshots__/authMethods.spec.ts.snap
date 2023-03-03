@@ -113,10 +113,22 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "PSK",
+              "value": "EAP",
             },
           ],
-          "id": "HJp6oV",
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
         },
       },
       Object {
@@ -448,10 +460,22 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "PSK",
+              "value": "EAP",
             },
           ],
-          "id": "HJp6oV",
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
         },
       },
       Object {
@@ -801,10 +825,22 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "PSK",
+            "value": "EAP",
           },
         ],
-        "id": "HJp6oV",
+        "id": "QBomBf",
+      },
+    },
+    Object {
+      "key": "radius",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "RADIUS",
+          },
+        ],
+        "id": "pS5Lez",
       },
     },
     Object {
