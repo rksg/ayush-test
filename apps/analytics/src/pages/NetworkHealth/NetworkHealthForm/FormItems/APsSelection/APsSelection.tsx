@@ -76,11 +76,11 @@ APsSelection.FieldSummary = function APsSelectionFieldSummary () {
       .concat(aps)
       .map(item => <FormattedMessage
         key={item.name}
-        defaultMessage='<li>{name} — {count} {count, plural, one {AP} other {APs}}</li>'
-        values={{ ...contents.formatValues, ...item }}
+        defaultMessage='{name} — {count} {count, plural, one {AP} other {APs}}{br}'
+        values={{ ...item, br: <br/> }}
       />)
 
-    return <ul>{list}</ul>
+    return list
   }
 
   return <Loader states={[response]} style={{ height: 'auto' }}>
