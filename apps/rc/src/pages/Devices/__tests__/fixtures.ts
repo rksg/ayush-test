@@ -62,6 +62,65 @@ export const apGroupsList = {
   ]
 }
 
+export const getApGroup = {
+  venueId: '923f6df894c340498894a6b7c68feaae',
+  aps: [
+    {
+      serialNumber: '123432223233',
+      apGroupId: 'd318e522e2364b77a3032e641e6944d0',
+      venueId: '923f6df894c340498894a6b7c68feaae',
+      radio: {
+        apRadioParams24G: {
+          manualChannel: 0,
+          channelBandwidth: 'AUTO',
+          txPower: 'MAX',
+          method: 'BACKGROUND_SCANNING',
+          changeInterval: 33
+        },
+        apRadioParams50G: {
+          channelBandwidth: 'AUTO',
+          manualChannel: 0,
+          txPower: 'MAX',
+          method: 'BACKGROUND_SCANNING',
+          changeInterval: 33
+        },
+        apRadioParamsDual5G: {
+          enabled: true,
+          radioParamsLower5G: {
+            channelBandwidth: 'AUTO',
+            manualChannel: 0,
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          },
+          radioParamsUpper5G: {
+            channelBandwidth: 'AUTO',
+            manualChannel: 0,
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          }
+        },
+        apRadioParams6G: {
+          manualChannel: 0,
+          method: 'CHANNELFLY',
+          channelBandwidth: 'AUTO',
+          bssMinRate6G: 'HE_MCS_0',
+          mgmtTxRate6G: '6',
+          txPower: 'MAX',
+          changeInterval: 33
+        },
+        useVenueSettings: true
+      },
+      name: '123432223233',
+      softDeleted: false
+    }
+  ],
+  isDefault: false,
+  name: 'TEST AP GROUP',
+  id: 'd318e522e2364b77a3032e641e6944d0'
+}
+
 export const venueDefaultApGroup = {
   venueId: '74f058ee8ea141a0b09a89c022a04a10',
   aps: [
