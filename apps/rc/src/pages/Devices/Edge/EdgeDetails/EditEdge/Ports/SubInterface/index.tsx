@@ -39,9 +39,16 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const [deleteSubInterfaces] = useDeleteSubInterfacesMutation()
 
   useEffect(() => {
+    setDrawerVisible(false)
     setSelectedRows([])
     tableQuery.setPayload(DEFAULT_PAGINATION)
   }, [props.mac])
+
+  useEffect(() => {
+    if (params.activeSubTab !== 'sub-interface') {
+      setDrawerVisible(false)
+    }
+  }, [params])
 
   const columns: TableProps<EdgeSubInterface>['columns'] = [
     {
