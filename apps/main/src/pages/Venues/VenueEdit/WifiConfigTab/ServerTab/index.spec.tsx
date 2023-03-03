@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { SyslogUrls }                                                                from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, SyslogUrls }                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
