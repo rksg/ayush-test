@@ -54,7 +54,7 @@ import {
   VenueLoadBalancing,
   TopologyData
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, getJwtToken } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -286,7 +286,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           headers: {
             'accept': 'application/json, text/plain, */*',
             'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8'
+            'content-type': 'application/json; charset=UTF-8',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           },
           body: payload
         }

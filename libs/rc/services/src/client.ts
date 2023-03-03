@@ -23,7 +23,7 @@ import {
   WifiUrlsInfo,
   RequestFormData
 } from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
+import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
 
 export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -123,7 +123,6 @@ export const clientApi = baseClientApi.injectEndpoints({
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
-
         return {
           ...req,
           responseHandler: async (response) => {
@@ -135,7 +134,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload,
           headers: {
             'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*'
+            'accept': 'application/json,text/plain,*/*',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
       }
