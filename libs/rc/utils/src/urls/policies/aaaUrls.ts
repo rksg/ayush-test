@@ -27,6 +27,6 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   },
   getAAAProfileDetail: {
     method: 'get',
-    url: '/api/tenant/:tenantId/aaa-policy-profile/:policyId'
+    url: '/api/tenant/:tenantId/wifi/radius/:policyId'
   }
 }
