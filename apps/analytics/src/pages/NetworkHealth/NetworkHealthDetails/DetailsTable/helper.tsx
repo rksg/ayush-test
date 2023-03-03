@@ -147,7 +147,7 @@ export const getTableColumns = ({
       searchable: false,
       align: 'center',
       width: 100,
-      render: function (text: string, row: TestResultByAP, index: number) {
+      render: function (_, row: TestResultByAP, index: number) {
         const failure = getClientFailureInfo(row)[key]
         const failureCode = failure?.event
         const intl = getIntl()
@@ -228,15 +228,13 @@ export const getTableColumns = ({
       filterable: false,
       searchable: true,
       width: 150,
-      render: function (text, row, index) {
+      render: function (text, row) {
         const { apMac } = row
         return (
-          <AnchorTextCell
+          <TenantLink
             to={`devices/wifi/${apMac}/details/overview`}
             title={isWirelessClient ? $t(targetApDetailsText) : $t(apDetails)}
-            text={text}
-            id={`apName-${index}`}
-          />
+          >{text}</TenantLink>
         )
       }
     },
@@ -249,7 +247,7 @@ export const getTableColumns = ({
       filterable: false,
       searchable: true,
       width: 150,
-      render: function (text, row, index) {
+      render: function (text, _, index) {
         return (
           <span id={`apMac-${index}`}>
             {text}
@@ -268,16 +266,14 @@ export const getTableColumns = ({
         searchable: true,
         align: 'center',
         width: 150,
-        render: function (text: unknown, row, index) {
+        render: function (_, row) {
           const { stationAp } = row
-          return (
-            <AnchorTextCell
+          return stationAp ? (
+            <TenantLink
               to={`devices/wifi/${stationAp?.mac}/details/overview`}
               title={$t(stationAPDetailsText)}
-              text={stationAp?.name}
-              id={`${stationAp?.name}-${index}`}
-            />
-          )
+            >{stationAp?.name}</TenantLink>
+          ) : '-'
         }
       },
       {
@@ -288,13 +284,9 @@ export const getTableColumns = ({
         searchable: true,
         align: 'center',
         width: 150,
-        render: function (text: unknown, row, index) {
+        render: function (text: unknown, row) {
           const { stationAp } = row
-          return (
-            <span id={`${stationAp?.mac}-${index}`}>
-              {stationAp?.mac}
-            </span>
-          )
+          return stationAp?.mac ?? '-'
         }
       },
       {
@@ -416,23 +408,3 @@ export const TableCell = ({
       <UI.Badge type={type}>{displayText}</UI.Badge>
     </Tooltip>
   )
-
-export const AnchorTextCell = ({
-  to,
-  title,
-  text,
-  id
-}: {
-  to: string;
-  title: string;
-  text: string | React.ReactNode;
-  id: string
-}) => (
-  <UI.ColumnAnchorText key={id}>
-    <TenantLink
-      to={to}
-      title={title}>
-      {text}
-    </TenantLink>
-  </UI.ColumnAnchorText>
-)

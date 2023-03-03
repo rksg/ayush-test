@@ -16,12 +16,6 @@ const textStyle = css`
   font-size: var(--acx-subtitle-6-font-size);
   color: var(--acx-primary-white);
 `
-export const ColumnAnchorText = styled.div`
-    white-space: nowrap;
-    width: 125px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`
 export const Badge = styled.span`
   display: inline-block;
   border-radius: 10px;
