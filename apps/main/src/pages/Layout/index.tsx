@@ -15,7 +15,8 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext
+  HeaderContext,
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -28,6 +29,7 @@ import { useParams }                                             from '@acx-ui/r
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+
 
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
@@ -71,6 +73,7 @@ function Layout () {
               {$t({ defaultMessage: 'Home' })}
             </UI.Home>
           </Link> }
+          <RegionButton/>
           <HeaderContext.Provider value={{
             searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
             <LicenseBanner/>
