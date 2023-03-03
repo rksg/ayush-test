@@ -73,9 +73,6 @@ const HelpButton = (props:HelpButtonProps) => {
           case 'documentation':
             window.open(DOCUMENTATION_CENTER, '_blank')
             break
-          case 'videos':
-            if(data?.HOW_TO_VIDEOS) window.open(data?.HOW_TO_VIDEOS, '_blank')
-            break
         }
       }}
     >
@@ -83,7 +80,7 @@ const HelpButton = (props:HelpButtonProps) => {
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
 
-      <Menu.Item disabled={!data?.HOW_TO_VIDEOS} key='videos'>
+      <Menu.Item disabled key='videos'>
         {$t({ defaultMessage: 'How-To Videos' })}
       </Menu.Item>
 
