@@ -3,8 +3,7 @@ import React from 'react'
 import { APExtended } from '../../../../../../rc/utils/src/index'
 
 import { Table, TableProps } from '..'
-import { showToast }         from '../../Toast'
-import { omit } from 'lodash'
+import { omit, uniqueId } from 'lodash'
 
 type RecordType = {
   key: string
@@ -38,15 +37,15 @@ type APExtendedGroupedResponse = {
 
 function cleanResponse(response: APExtendedGroupedResponse) {
   return response.data.map(apGroup => {
-    const parent = omit(apGroup, ['deviceGroupName', 'clients'])
-    const { deviceGroupName, members, incidents, clients, networks } = apGroup
+    const parent = omit(apGroup, ['deviceGroupName', 'clients', 'aps'])
+    const { deviceGroupName, members, incidents, clients, networks, aps } = apGroup
     return {
       ...parent,
-      serialNumber: apGroup.deviceGroupId,
+      id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
       name: `${deviceGroupName !== ' ' ? deviceGroupName : 'Uncategorized'} Members: ${members} Incidents: ${incidents} Connected Clients: ${clients} Wireless Networks: ${networks.count}`,
-      children: apGroup.aps.map(ap => ({ ...ap, deviceGroupName: (ap.deviceGroupName !== '') ? ap.deviceGroupName : 'Uncategorized' }))
+      children: aps.map(ap => ({ ...ap, deviceGroupName: (ap.deviceGroupName !== '') ? ap.deviceGroupName : 'Uncategorized', id: uniqueId() }))
     }
-  }) as unknown as TableProps<APExtendedGroupedResponse['data']>['dataSource']
+  })
 }
 
 // group-by apGroup
@@ -476,8 +475,10 @@ const modelResponse: APExtendedGroupedResponse = {
   ]
 }
 
+const cleanedData = cleanResponse(apGroupResponse)
+
 export function GroupTable () {
-  const [ currData, setCurrData ] = React.useState(() => cleanResponse(apGroupResponse))
+  const [ currData, setCurrData ] = React.useState<typeof cleanedData>(() => cleanedData)
 
   const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName') => {
     let response: APExtendedGroupedResponse;
@@ -495,16 +496,20 @@ export function GroupTable () {
         break
       }
     }
+    if (!response) return []
     const data = cleanResponse(response)
-    setCurrData(data)
+    console.log(data, key)
+    setCurrData(() => data)
+    return data
   }
 
   // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<APExtendedGroupedResponse['data']>['columns'] = [
+  const columns: TableProps<typeof cleanedData>['columns'] = [
     {
       title: 'AP Name',
       dataIndex: 'name',
       key: 'name',
+      searchable: true
     },
     {
       title: 'Status',
@@ -525,7 +530,8 @@ export function GroupTable () {
     {
       title: 'MAC Addresse',
       dataIndex: 'apMac',
-      key: 'apMac'
+      key: 'apMac',
+      searchable: true
     },
     {
       title: 'Venue',
@@ -562,18 +568,23 @@ export function GroupTable () {
     }
   ]
   
+  React.useEffect(() => {
+    console.log(currData)
+  }, [currData])
+
   return (
     <>
-    with selection:
-      <Table<APExtendedGroupedResponse['data']>
+    with groupby:
+      <Table<typeof cleanedData>
         columns={columns}
-        dataSource={currData}
-        rowKey='serialNumber' // need to set unique entry per record to ensure proper behaviour
+        dataSource={currData as unknown as TableProps<typeof cleanedData>['dataSource']}
+        rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
         groupable={{
           selectors: [{ key: 'deviceGroupName', label: 'AP Group'}, { key: 'deviceStatus' , label: 'Status' }, { key: 'model', label: 'Model' }],
-          onChange: groupableCallback
+          onChange: groupableCallback,
+          onClear: () => setCurrData([])
         }}
       />
     </>

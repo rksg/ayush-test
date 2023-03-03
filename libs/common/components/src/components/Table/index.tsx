@@ -77,8 +77,9 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void,
     groupable?: {
-      selectors: Array<{ key: string, label: string }>
-      onChange: CallableFunction
+      selectors: { key: string, label: string }[]
+      onChange: CallableFunction,
+      onClear: CallableFunction
       actions?: { key: string, label: string, callback: CallableFunction }[]
     }
   }
@@ -131,6 +132,8 @@ function Table <RecordType extends Record<string, any>> ({
 
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+
+  const { GroupBySelect } = renderGroupBy(groupable)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -386,20 +389,19 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
-            {renderGroupBy(groupable)}
+            <GroupBySelect />
+            <UI.HeaderRight>
+              {(Boolean(activeFilters.length) ||
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH))
+            && <Button onClick={() => {
+              setFilterValues({} as Filter)
+              setSearchValue('')
+            }}>
+              {$t({ defaultMessage: 'Clear Filters' })}
+            </Button>}
+            </UI.HeaderRight>
           </Space>
         </div>
-        <UI.HeaderRight>
-          {(
-            Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
-          ) && <Button onClick={() => {
-            setFilterValues({} as Filter)
-            setSearchValue('')
-          }}>
-            {$t({ defaultMessage: 'Clear Filters' })}
-          </Button>}
-        </UI.HeaderRight>
       </UI.Header>
     )}
     <ProTable<RecordType>

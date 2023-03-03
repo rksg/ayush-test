@@ -35,7 +35,8 @@ export function getFilteredData <RecordType> (
     }
     if (searchValue) {
       return searchables.some(column => {
-        return (row[column.dataIndex as keyof RecordType] as unknown as string)
+        const target = row[column.dataIndex as keyof RecordType]
+        return typeof target === 'string' && target
           .toString()
           .toLowerCase()
           .includes(searchValue.toLowerCase())
@@ -43,7 +44,8 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-  return dataSource?.reduce((
+  const typedData = Array.isArray(dataSource) ? dataSource : []
+  return typedData.reduce((
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
   ) => {
@@ -86,11 +88,11 @@ export function renderFilter <RecordType> (
       data.push(value)
     }
   }
-
+  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource : []
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
-      ? dataSource?.reduce((data: string[], datum: RecordType) => {
+      ? typedData.reduce((data: string[], datum: RecordType) => {
         const { children } = hasChildrenColumn(datum) ? datum : { children: undefined }
         if (children) {
           for (const child of children) {
@@ -134,19 +136,40 @@ export function renderFilter <RecordType> (
 export function renderGroupBy<RecordType> (
   groupables: TableProps<RecordType>['groupable']
 ) {
-  if (!groupables) return null
-  const { selectors, onChange } = groupables
-  return <UI.FilterSelect
-    placeholder='Group By...'
-    allowClear
-    onChange={(val) => onChange(val)}
-  >
-    {selectors.map(item => <Select.Option
-      key={item.key}
-      value={item.key}
-      data-testid={`option-${item.key}`}
-    >
-      {item.label}
-    </Select.Option>)}
-  </UI.FilterSelect>
+  if (groupables) {
+    const { selectors, onChange, onClear } = groupables
+    const GroupBySelect = () => {
+      const [value, setValue] = React.useState<string | undefined>(undefined)
+      return <UI.FilterSelect
+        placeholder='Group By...'
+        allowClear
+        showArrow
+        value={value}
+        onChange={(val, options) => {
+          onChange(val)
+          const typedOption = options as { key: string, children: string }
+          setValue(typedOption.children)
+        }}
+        onClear={() => {
+          onClear()
+          setValue(undefined)
+        }}
+        key='group-by-select'
+      >
+        {selectors.map(item => <Select.Option
+          key={item.key}
+          value={item.key}
+          data-testid={`option-${item.key}`}
+        >
+          {item.label}
+        </Select.Option>)}
+      </UI.FilterSelect>
+    }
+
+    return { GroupBySelect }
+  }
+
+  return {
+    GroupBySelect: () => null
+  }
 }
