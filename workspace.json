@@ -9,6 +9,7 @@
     "common-config": "libs/common/config",
     "common-feature-toggle": "libs/common/feature-toggle",
     "common-icons": "libs/common/icons",
+    "common-rbac": "libs/common/rbac",
     "common-store": "libs/common/store",
     "common-test-utils": "libs/common/test-utils",
     "common-types": "libs/common/types",

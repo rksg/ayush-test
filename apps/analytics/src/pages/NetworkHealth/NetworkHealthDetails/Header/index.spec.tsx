@@ -43,7 +43,7 @@ describe('SubTitle', () => {
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
     expect(await screen.findByText([
-      'APs Under Test: 2 APs',
+      'APs Under Test: 2',
       'Test Result: 100% pass',
       'WLAN: Wifi Name',
       'Radio Band: 2.4 GHz',

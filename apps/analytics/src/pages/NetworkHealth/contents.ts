@@ -99,7 +99,8 @@ export const messageMapping = {
   DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
   TEST_CREATED: defineMessage({ defaultMessage: 'Network Health test created' }),
   TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' }),
-  TEST_RUN_CREATED: defineMessage({ defaultMessage: 'Network Health test run created' })
+  TEST_DELETED: defineMessage({ defaultMessage: 'Network Health test deleted' }),
+  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Network Health test running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

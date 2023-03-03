@@ -1,4 +1,7 @@
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
+
+import { NetworkHealthBaseQuery } from '@acx-ui/analytics/services'
+import { APListNode, PathNode }   from '@acx-ui/utils'
 
 type UUID = string
 
@@ -50,11 +53,11 @@ export type NetworkHealthSpec = {
   name: string
   type: TestType
   apsCount: number
-  userId: string
+  userId: string,
   clientType: ClientType
   configs: NetworkHealthConfig[]
   tests: { items: NetworkHealthTest[] }
-  schedule: Schedule
+  schedule: Schedule | null
 }
 
 export type NetworkHealthConfig = {
@@ -88,10 +91,10 @@ export type NetworkHealthTest = {
   config: NetworkHealthConfig,
   summary: {
     apsTestedCount: number
-    apsSuccessCount: number
-    apsFailureCount: number
-    apsErrorCount: number
     apsPendingCount: number
+    apsSuccessCount: number
+    apsFailureCount?: number
+    apsErrorCount?: number
   } & Record<string, number|string>
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
@@ -178,3 +181,6 @@ export type Pagination = {
   defaultPageSize: number,
   total: number
 }
+export type MutationResponse <
+  Result extends { userErrors?: MutationUserError[] } = { userErrors?: MutationUserError[] }
+> = TypedUseMutationResult<Result, { id?: string }, NetworkHealthBaseQuery>

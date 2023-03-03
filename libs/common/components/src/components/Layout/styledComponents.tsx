@@ -238,6 +238,8 @@ export const LogoDivider = styled(AntDivider).attrs({ type: 'vertical' })`
 
 export const RightHeaderContentWrapper = styled.div`
   display: flex;
+  flex: 1;
+  justify-content: end;
   flex-direction: row;
   align-items: center;
   gap: var(--acx-header-button-margin);
