@@ -32,7 +32,7 @@ export function ServerTab () {
   } = useContext(VenueEditContext)
 
   const supportBonjourFencing = useIsSplitOn(Features.BONJOUR_FENCING)
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
+  //const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const items = [{
     title: $t({ defaultMessage: 'Syslog Server' }),
@@ -55,7 +55,7 @@ export function ServerTab () {
       </>
     })
   }
-
+  /*
   if (supportApSnmp) {
     items.push({
       title: $t({ defaultMessage: 'AP SNMP' }),
@@ -67,6 +67,7 @@ export function ServerTab () {
       </>
     })
   }
+  */
 
   const handleUpdateSetting = async () => {
     try {

@@ -135,17 +135,6 @@ exports[`ServerTab should render correctly 1`] = `
                                   Bonjour Fencing
                                 </a>
                               </div>
-                              <div
-                                class="ant-anchor-link"
-                              >
-                                <a
-                                  class="ant-anchor-link-title"
-                                  href="#AP-SNMP"
-                                  title="AP SNMP"
-                                >
-                                  AP SNMP
-                                </a>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -360,20 +349,6 @@ exports[`ServerTab should render correctly 1`] = `
                               </label>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                      <div
-                        class="styledComponents__Container-sc-1u6w09d-1 bASGBa"
-                        id="AP-SNMP"
-                      >
-                        <h3
-                          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__SectionTitle-sc-1ibvcih-4 fPbHyn lgYLAA"
-                          id="ap-snmp"
-                        >
-                          AP SNMP
-                        </h3>
-                        <div>
-                          AP SNMP
                         </div>
                       </div>
                     </div>
