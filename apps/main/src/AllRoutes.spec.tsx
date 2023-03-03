@@ -78,6 +78,15 @@ describe('AllRoutes', () => {
     })
     await screen.findByTestId('reports')
   })
+  test('should navigate to dataStudio', async () => {
+    render(<Provider><AllRoutes /></Provider>, {
+      route: {
+        path: '/t/tenantId/dataStudio',
+        wrapRoutes: false
+      }
+    })
+    await screen.findByTestId('reports')
+  })
 
   test('should navigate to devices/*', async () => {
     render(<Provider><AllRoutes /></Provider>, {
