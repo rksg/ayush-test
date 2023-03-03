@@ -781,6 +781,17 @@ export const hostapprovalData = {
 export const cloudPathDataNone = {
   authRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448a',
   accountingRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448cd',
+  accountingRadius: {
+    name: 'acc1',
+    id: '22',
+    type: 'ACCOUNTING'
+
+  },
+  authRadius: {
+    name: 'auth1',
+    id: '21',
+    type: 'AUTHENTICATION'
+  },
   guestPortal: {
     walledGardens: ['aa.com'],
     guestNetworkType: GuestNetworkTypeEnum.Cloudpath,
