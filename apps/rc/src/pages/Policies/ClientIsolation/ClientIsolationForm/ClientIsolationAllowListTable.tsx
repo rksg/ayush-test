@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                        from '@acx-ui/rbac'
 import {
   ClientIsolationClient
 } from '@acx-ui/rc/utils'
@@ -168,7 +169,7 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
         columns={columns}
         dataSource={allowList}
         rowKey='mac'
-        actions={[
+        actions={hasAccesses([
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
             onClick: () => handleSelectConnectedClientAction(),
@@ -179,8 +180,8 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
             onClick: () => handleAddNewClientAction(),
             disabled: allowList.length === ALLOW_LIST_MAX_COUNT
           }
-        ]}
-        rowActions={rowActions}
+        ])}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
     </>

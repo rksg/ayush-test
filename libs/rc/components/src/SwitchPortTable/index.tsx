@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader }            from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import { useGetSwitchVlanQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -264,7 +265,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey='portId'
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -279,10 +280,10 @@ export function SwitchPortTable ({ isVenueLevel }: {
         }
       }}
       actions={!isVenueLevel
-        ? [{
+        ? hasAccesses([{
           label: $t({ defaultMessage: 'Manage LAG' }),
           onClick: () => {setLagDrawerVisible(true)}
-        }]
+        }])
         : []
       }
     />

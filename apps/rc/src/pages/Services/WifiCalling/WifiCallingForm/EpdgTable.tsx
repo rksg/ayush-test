@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { showActionModal, Table, TableProps }                     from '@acx-ui/components'
+import { hasAccesses }                                            from '@acx-ui/rbac'
 import { useGetWifiCallingServiceQuery }                          from '@acx-ui/rc/services'
 import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
 
@@ -121,8 +122,8 @@ const EpdgTable = (props: { edit?: boolean }) => {
         columns={basicColumns}
         dataSource={tableData}
         rowKey='domain'
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
     </>

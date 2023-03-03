@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, DisabledButton, GridRow, Loader, GridCol } from '@acx-ui/components'
 import { ClockOutlined }                                                from '@acx-ui/icons'
+import { hasAccesses }                                                  from '@acx-ui/rbac'
 import { useGetPortalProfileDetailQuery }                               from '@acx-ui/rc/services'
 import { Demo }                                                         from '@acx-ui/rc/utils'
 import { TenantLink }                                                   from '@acx-ui/react-router-dom'
@@ -22,15 +23,15 @@ export default function PortalServiceDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
-        extra={[
+        extra={hasAccesses([
           <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink to={`/services/portal/${queryResults.data?.id}/edit`} key='edit'>
+          <TenantLink to={`/services/portal/${queryResults.data?.id}/edit`}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

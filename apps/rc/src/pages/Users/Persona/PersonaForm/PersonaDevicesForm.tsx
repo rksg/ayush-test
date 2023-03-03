@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {  Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }        from '@acx-ui/rbac'
 import { PersonaDevice }      from '@acx-ui/rc/utils'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
@@ -75,8 +76,8 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         rowKey='macAddress'
         columns={columns}
         dataSource={value ?? []}
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ defaultSelectedRowKeys: [] }}
       />
       <PersonaDevicesImportDialog

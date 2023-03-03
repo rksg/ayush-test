@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { ArrowExpand, ClockOutlined }                      from '@acx-ui/icons'
+import { hasAccesses }                                     from '@acx-ui/rbac'
 import {
   useParams,
   useSearchParams
@@ -65,9 +66,9 @@ function ClientDetailPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu} key='actions'>
+        <Dropdown overlay={menu}>
           <Button type='secondary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
@@ -75,7 +76,7 @@ function ClientDetailPageHeader () {
             </Space>
           </Button>
         </Dropdown>
-      ]}
+      ])}
       footer={<ClientDetailTabs />}
     />
   )

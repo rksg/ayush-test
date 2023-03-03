@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
+import { hasAccesses }        from '@acx-ui/rbac'
 import { useGetVenueQuery }   from '@acx-ui/rc/services'
 import {
   useNavigate,
@@ -24,7 +25,7 @@ function VenueEditPageHeader () {
       breadcrumb={[
         { text: 'Venues', link: '/venues' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <Button
           key='back'
           type='primary'
@@ -34,7 +35,7 @@ function VenueEditPageHeader () {
               pathname: `${basePath.pathname}/overview`
             })
           }>{ $t({ defaultMessage: 'Back to venue details' }) }</Button>
-      ]}
+      ])}
       footer={<VenueEditTabs />}
     />
   )

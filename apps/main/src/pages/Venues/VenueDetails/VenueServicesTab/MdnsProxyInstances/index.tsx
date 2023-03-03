@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                from '@acx-ui/rbac'
 import {
   useGetMdnsProxyApsQuery,
   useDeleteMdnsProxyApsMutation
@@ -136,13 +137,13 @@ export default function MdnsProxyInstances () {
         <Table<MdnsProxyAp>
           columns={columns}
           dataSource={tableQuery.data?.data}
-          actions={[{
+          actions={hasAccesses([{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction
-          }]}
+          }])}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

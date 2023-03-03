@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
+import { hasAccesses }        from '@acx-ui/rbac'
 import {
   PolicyType,
   PolicyOperation,
@@ -27,16 +28,15 @@ export default function AccessControlTable () {
           link: getPolicyListRoutePath(true)
         }
       ]}
-      extra={[
+      extra={hasAccesses([
         <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
-          })}
-          key='add'>
+          })}>
           <Button type='primary'>{$t({ defaultMessage: 'Add Access Control Set' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<AccessControlTabs />}
     />
   )

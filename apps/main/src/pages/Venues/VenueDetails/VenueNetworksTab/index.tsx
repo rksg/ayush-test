@@ -365,7 +365,7 @@ export function VenueNetworksTab () {
       </Row> */}
       <Table
         rowKey='id'
-        // actions={actions}  TODO: Waiting for API support
+        // actions={hasAccesses(actions)}  TODO: Waiting for API support
         // rowSelection={{
         //   type: 'checkbox'
         // }}

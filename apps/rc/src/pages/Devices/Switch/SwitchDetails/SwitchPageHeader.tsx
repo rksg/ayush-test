@@ -8,6 +8,7 @@ import { useIntl }                          from 'react-intl'
 
 import { Button, PageHeader, RangePicker, Tooltip }         from '@acx-ui/components'
 import { ArrowExpand }                                      from '@acx-ui/icons'
+import { hasAccesses }                                      from '@acx-ui/rbac'
 import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/components'
 import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
 import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
@@ -160,7 +161,7 @@ function SwitchPageHeader () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
         ]}
-        extra={[
+        extra={hasAccesses([
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -168,7 +169,7 @@ function SwitchPageHeader () {
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu} key='actionMenu'>
+          <Dropdown overlay={menu}>
             <Button>
               <Space>
                 {$t({ defaultMessage: 'More Actions' })}
@@ -177,7 +178,6 @@ function SwitchPageHeader () {
             </Button>
           </Dropdown>,
           <Button
-            key='configure'
             type='primary'
             onClick={() =>
               navigate({
@@ -186,7 +186,7 @@ function SwitchPageHeader () {
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>
-        ]}
+        ])}
         footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
       />
       <SwitchCliSession

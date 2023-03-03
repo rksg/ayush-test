@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Table, TableProps }                                  from '@acx-ui/components'
+import { hasAccesses }                                        from '@acx-ui/rbac'
 import { useGetWifiCallingServiceQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network, NetworkTypeEnum, networkTypes,
@@ -136,7 +137,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'checkbox' }}
     />
   )

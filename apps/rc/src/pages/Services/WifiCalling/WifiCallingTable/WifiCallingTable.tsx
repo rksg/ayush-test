@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { hasAccesses }                                                    from '@acx-ui/rbac'
 import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -86,9 +87,9 @@ export default function WifiCallingTable () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}>
             <Button
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= WIFICALLING_LIMIT_NUMBER
@@ -97,7 +98,7 @@ export default function WifiCallingTable () {
               {$t({ defaultMessage: 'Add Wi-Fi Calling Service' })}
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<Service>
@@ -106,7 +107,7 @@ export default function WifiCallingTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

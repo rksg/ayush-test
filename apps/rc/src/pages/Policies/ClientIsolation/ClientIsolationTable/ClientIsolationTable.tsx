@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { hasAccesses }                                                    from '@acx-ui/rbac'
 import { useDeleteClientIsolationMutation, usePolicyListQuery }           from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -83,12 +84,12 @@ export default function ClientIsolationTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Pofile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<Policy>
@@ -97,7 +98,7 @@ export default function ClientIsolationTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

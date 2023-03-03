@@ -4,6 +4,7 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
+import { hasAccesses }                               from '@acx-ui/rbac'
 import { useGetWebAuthTemplateQuery }                from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -80,21 +81,18 @@ export default function NetworkSegAuthDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
-        extra={[
-          <Button key='preview' disabled>
+        extra={hasAccesses([
+          <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.WEBAUTH_SWITCH,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId as string
-            })}
-            key='edit'
-          >
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Card title={$t({ defaultMessage: 'Attributes' })}>
         <NetworkSegAuthSummary data={data} />

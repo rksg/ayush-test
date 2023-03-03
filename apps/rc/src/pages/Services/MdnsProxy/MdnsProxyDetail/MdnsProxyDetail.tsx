@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import { ClockOutlined }                                        from '@acx-ui/icons'
+import { hasAccesses }                                          from '@acx-ui/rbac'
 import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -37,21 +38,18 @@ export default function MdnsProxyDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.MDNS_PROXY,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId as string
-            })}
-            key='edit'
-          >
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.MDNS_PROXY,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

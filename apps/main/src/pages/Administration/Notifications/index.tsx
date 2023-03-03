@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }                     from '@acx-ui/rbac'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -160,9 +161,9 @@ export const NotificationsTable = () => {
           columns={columns}
           dataSource={notificationList.data}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'checkbox' }}
-          actions={tableActions}
+          actions={hasAccesses(tableActions)}
         />
       </Loader>
 

@@ -4,6 +4,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }  from '@acx-ui/rbac'
 import { EdgeDhcpPool } from '@acx-ui/rc/utils'
 
 export function PoolTable (props:{
@@ -73,8 +74,8 @@ export function PoolTable (props:{
       rowKey='id'
       columns={columns}
       dataSource={data}
-      rowActions={rowActions}
-      actions={actions}
+      rowActions={hasAccesses(rowActions)}
+      actions={hasAccesses(actions)}
       rowSelection={{}}
     />
   )

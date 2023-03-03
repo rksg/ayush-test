@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
+import { hasAccesses }                                       from '@acx-ui/rbac'
 import { EdgeStatusLight }                                   from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {
@@ -123,7 +124,7 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -131,7 +132,7 @@ export const EdgeDetailsPageHeader = () => {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu} key='actionMenu'>
+        <Dropdown overlay={menu}>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -140,7 +141,6 @@ export const EdgeDetailsPageHeader = () => {
           </Button>
         </Dropdown>,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -150,7 +150,7 @@ export const EdgeDetailsPageHeader = () => {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>,
         <EdgeBulb key='bulbCount' count={0} />
-      ]}
+      ])}
       footer={<EdgeDetailsTabs currentEdge={currentEdge as EdgeStatus} />}
     />
   )

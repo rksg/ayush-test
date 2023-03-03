@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                           from '@acx-ui/rbac'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
@@ -297,8 +298,8 @@ export function PersonaGroupTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
 

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { hasAccesses }                                                    from '@acx-ui/rbac'
 import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
 import {
@@ -147,15 +148,15 @@ export default function PortalTable () {
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= PORTAL_LIMIT_NUMBER
                 : false} >{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<Portal>
@@ -164,7 +165,7 @@ export default function PortalTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

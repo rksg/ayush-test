@@ -8,6 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }                                                                                                                 from '@acx-ui/rbac'
 import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationStatsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -210,12 +211,12 @@ const NetworkSegmentationTable = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         tableQuery,
@@ -227,7 +228,7 @@ const NetworkSegmentationTable = () => {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

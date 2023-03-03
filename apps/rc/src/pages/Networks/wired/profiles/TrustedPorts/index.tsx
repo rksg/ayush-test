@@ -4,6 +4,7 @@ import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
 import { getIntl }                                       from '@acx-ui/utils'
 
@@ -118,15 +119,15 @@ export function TrustedPorts () {
           </label>
           <Table
             rowKey='model'
-            rowActions={rowActions}
+            rowActions={hasAccesses(rowActions)}
             columns={aclsColumns}
             dataSource={ruleList}
-            actions={[{
+            actions={hasAccesses([{
               label: $t({ defaultMessage: 'Add Model' }),
               onClick: () => {
                 setOpenModal(true)
               }
-            }]}
+            }])}
             rowSelection={{
               type: 'radio',
               onChange: (keys: React.Key[]) => {

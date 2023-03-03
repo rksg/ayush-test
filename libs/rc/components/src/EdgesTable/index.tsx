@@ -7,6 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }                                                            from '@acx-ui/rbac'
 import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }         from '@acx-ui/rc/services'
 import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
@@ -206,7 +207,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='serialNumber'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
       />
     </Loader>
   )

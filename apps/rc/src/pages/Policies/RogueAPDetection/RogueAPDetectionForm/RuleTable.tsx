@@ -6,6 +6,7 @@ import { SortableContainer, SortableElement, SortableHandle, SortableElementProp
 
 import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
 import { Drag }                                                    from '@acx-ui/icons'
+import { hasAccesses }                                             from '@acx-ui/rbac'
 import { useRoguePolicyQuery }                                     from '@acx-ui/rc/services'
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 
@@ -188,8 +189,8 @@ const RuleTable = (props: RuleTableProps) => {
         columns={basicColumns}
         dataSource={state.rules}
         rowKey='name'
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         components={{
           body: {

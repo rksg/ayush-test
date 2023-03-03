@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { noDataSymbol }                                                             from '@acx-ui/analytics/utils'
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
+import { hasAccesses }                                                              from '@acx-ui/rbac'
 import { OSIconContainer }                                                          from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
@@ -207,8 +208,8 @@ export function PersonaDevicesTable (props: {
         rowKey={'macAddress'}
         columns={columns}
         dataSource={dataSource}
-        rowActions={rowActions}
-        actions={actions}
+        rowActions={hasAccesses(rowActions)}
+        actions={hasAccesses(actions)}
         rowSelection={{ type: 'checkbox' }}
         pagination={{ defaultPageSize: 5 }}
       />

@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }               from '@acx-ui/components'
+import { hasAccesses }                            from '@acx-ui/rbac'
 import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                from '@acx-ui/utils'
@@ -77,11 +78,11 @@ const EditEdge = () => {
             link: '/devices/edge/list'
           }
         ]}
-        extra={
+        extra={hasAccesses([
           <TenantLink to={`/devices/edge/${serialNumber}/edge-details/overview`}>
             <Button type='primary'>{ $t({ defaultMessage: 'Back to device details' }) }</Button>
           </TenantLink>
-        }
+        ])}
         footer={<EditEdgeTabs />}
       />
       {activeTabContent}

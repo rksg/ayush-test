@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                           from '@acx-ui/rbac'
 import {
   useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
@@ -136,16 +137,16 @@ export function SwitchDhcpPoolTable () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={[{
+        actions={hasAccesses([{
           label: $t({ defaultMessage: 'Add Pool' }),
           disabled: !isOperational || !!switchDetail?.cliApplied,
           onClick: () => {
             setSelected(undefined)
             setDrawerVisible(true)
           }
-        }]}
+        }])}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{
           type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[],

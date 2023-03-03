@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { ClockOutlined }                                   from '@acx-ui/icons'
+import { hasAccesses }                                     from '@acx-ui/rbac'
 import { useVenueDetailsHeaderQuery }                      from '@acx-ui/rc/services'
 import { VenueDetailHeader }                               from '@acx-ui/rc/utils'
 import {
@@ -48,11 +49,10 @@ function VenuePageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
-      extra={[
+      extra={hasAccesses([
         <DatePicker key='date-filter' />,
         <Button
           key='configure'
-          type='primary'
           onClick={() =>
             navigate({
               ...basePath,
@@ -60,7 +60,7 @@ function VenuePageHeader () {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
   )

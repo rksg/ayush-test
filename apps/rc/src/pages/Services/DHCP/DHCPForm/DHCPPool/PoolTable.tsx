@@ -8,6 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }         from '@acx-ui/rbac'
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
 
 import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
@@ -127,8 +128,8 @@ export function PoolTable (props:{
         rowKey='id'
         columns={columns}
         dataSource={data}
-        rowActions={rowActions}
-        actions={actions}
+        rowActions={hasAccesses(rowActions)}
+        actions={hasAccesses(actions)}
         rowSelection={{}}
       />
     </>

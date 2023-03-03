@@ -5,6 +5,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
+import { hasAccesses }                                                                                                                                 from '@acx-ui/rbac'
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
@@ -214,7 +215,7 @@ export function SwitchConfigBackupTable () {
   ]
 
   const viewModalActions = {
-    compare:　showCompareModal,
+    compare: showCompareModal,
     restore: showRestoreModal,
     download: downloadBackup,
     delete: showDeleteModal
@@ -235,8 +236,8 @@ export function SwitchConfigBackupTable () {
         rowKey='id'
         columns={columns}
         dataSource={tableData}
-        rowActions={rowActions}
-        actions={rightActions}
+        rowActions={hasAccesses(rowActions)}
+        actions={hasAccesses(rightActions)}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
           type: 'checkbox',

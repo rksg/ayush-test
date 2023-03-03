@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,
@@ -195,7 +196,7 @@ const RogueVenueTable = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'checkbox' }}
     />
   )

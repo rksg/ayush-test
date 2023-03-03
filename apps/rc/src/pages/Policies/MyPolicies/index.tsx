@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
+import { hasAccesses }                                                        from '@acx-ui/rbac'
 import {
   usePolicyListQuery
 } from '@acx-ui/rc/services'
@@ -52,11 +53,11 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
-        extra={[
-          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
+        extra={hasAccesses([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         {policies.filter(policy => !policy.disabled).map((policy, index) => {

@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, showToast, StepsForm, Table, TableProps }        from '@acx-ui/components'
+import { hasAccesses }                                            from '@acx-ui/rbac'
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
@@ -137,9 +138,9 @@ const StaticRoutes = () => {
                 {$t({ defaultMessage: 'Static Routes' })}
               </Typography.Title>
               <Table<EdgeStaticRoute>
-                actions={actionButtons}
+                actions={hasAccesses(actionButtons)}
                 columns={columns}
-                rowActions={rowActions}
+                rowActions={hasAccesses(rowActions)}
                 dataSource={routesData}
                 rowSelection={{ type: 'checkbox' }}
                 rowKey='id'

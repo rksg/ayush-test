@@ -15,6 +15,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }               from '@acx-ui/rbac'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
@@ -235,7 +236,7 @@ export function Subscriptions () {
       <Loader states={[queryResults]}>
         <Table
           columns={columns}
-          actions={actions}
+          actions={hasAccesses(actions)}
           dataSource={subscriptionData}
           rowKey='id'
         />
@@ -247,11 +248,11 @@ export function Subscriptions () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={hasAccesses([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <SubscriptionUtilization />
       <SubscriptionTable />

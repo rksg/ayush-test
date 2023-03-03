@@ -8,6 +8,7 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
+import { hasAccesses }                                      from '@acx-ui/rbac'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -151,7 +152,7 @@ export default function MacRegistrationListsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -167,15 +168,14 @@ export default function MacRegistrationListsTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={[
+        extra={hasAccesses([
           <TenantLink
-            key='add'
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <MacRegistrationListsTable />
     </>

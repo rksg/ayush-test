@@ -27,6 +27,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Drag }                                                                       from '@acx-ui/icons'
+import { hasAccesses }                                                                from '@acx-ui/rbac'
 import { useAddL3AclPolicyMutation, useGetL3AclPolicyQuery, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
 import {
   AccessStatus,
@@ -633,8 +634,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       columns={basicColumns}
       dataSource={layer3RuleList as Layer3Rule[]}
       rowKey='priority'
-      actions={actions}
-      rowActions={rowActions}
+      actions={hasAccesses(actions)}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'radio' }}
       columnState={{ hidden: true }}
       components={{

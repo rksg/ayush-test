@@ -12,6 +12,7 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import { useUserProfileContext } from '@acx-ui/rc/components'
+import { hasAccesses } from '@acx-ui/rbac'
 import {
   useGetAdminListQuery,
   useGetMspProfileQuery,
@@ -199,7 +200,9 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         columns={columns}
         dataSource={adminList}
         rowKey='id'
-        rowActions={isPrimeAdminUser ? rowActions : undefined}
+        rowActions={isPrimeAdminUser
+          ? hasAccesses(rowActions)
+          : undefined}
         rowSelection={{
           type: isPrimeAdminUser ? 'checkbox' : 'radio',
           getCheckboxProps: (record: Administrator) => ({
@@ -209,7 +212,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
 
           })
         }}
-        actions={tableActions}
+        actions={hasAccesses(tableActions)}
       />
 
       { editMode ?

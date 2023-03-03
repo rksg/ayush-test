@@ -5,6 +5,7 @@ import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Dropdown, PageHeader }                  from '@acx-ui/components'
+import { hasAccesses }                                   from '@acx-ui/rbac'
 import { ImportFileDrawer, CsvSize, SwitchTable }        from '@acx-ui/rc/components'
 import { useImportSwitchesMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { TenantLink, useParams }                         from '@acx-ui/react-router-dom'
@@ -63,11 +64,11 @@ export default function SwitchesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Switch' })}
-        extra={[
-          <Dropdown overlay={addMenu} key='addMenu'>{() =>
+        extra={hasAccesses([
+          <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
-        ]}
+        ])}
       />
       <ImportFileDrawer type='Switch'
         title={$t({ defaultMessage: 'Import from file' })}

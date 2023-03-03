@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                                        from '@acx-ui/rbac'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -300,8 +301,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         pagination={personaListQuery.pagination}
         onChange={personaListQuery.handleTableChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={hasAccesses(actions)}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
       />

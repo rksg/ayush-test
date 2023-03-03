@@ -4,6 +4,7 @@ import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { hasAccesses }                                           from '@acx-ui/rbac'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,
@@ -160,15 +161,15 @@ export function RadiusServerForm () {
                     dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                     showHeader={false}
                     rowSelection={{ type: 'radio' }}
-                    rowActions={ipTableRowActions}
+                    rowActions={hasAccesses(ipTableRowActions)}
                     type={'form'}
-                    actions={[{
+                    actions={hasAccesses([{
                       label: $t({ defaultMessage: 'Add IP Address' }),
                       onClick: () => {
                         setVisible(true)
                         setIsEditMode(false)
                       }
-                    }]}
+                    }])}
                   />
                 </Col>
               </Row>

@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
+import { hasAccesses }                                                                                                                  from '@acx-ui/rbac'
 import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery }                                                                      from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'
@@ -175,12 +176,12 @@ const EdgeDhcpTable = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         tableQuery,
@@ -192,7 +193,7 @@ const EdgeDhcpTable = () => {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={hasAccesses(rowActions)}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

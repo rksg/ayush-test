@@ -10,6 +10,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { useUserProfileContext } from '@acx-ui/rc/components'
+import { hasAccesses } from '@acx-ui/rbac'
 import {
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
@@ -194,11 +195,11 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={[
+        extra={hasAccesses([
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
 
       <VarCustomerTable />

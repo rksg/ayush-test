@@ -10,6 +10,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
+import { hasAccesses }                                                                       from '@acx-ui/rbac'
 import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
   isOperationalSwitch,
@@ -185,7 +186,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -196,13 +197,12 @@ export function SwitchVeTable ( { isVenueLevel } : {
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
       }}
-      actions={[{
+      actions={hasAccesses([{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
         onClick: () => {
           setIsEditMode(false)
           setVisible(true) }
-      }]
-      }
+      }])}
     />
     {visible && <SwitchVeDrawer
       visible={visible}

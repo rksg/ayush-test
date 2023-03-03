@@ -11,6 +11,7 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
+import { hasAccesses }                                 from '@acx-ui/rbac'
 import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
@@ -286,7 +287,7 @@ export function SwitchTable (props : {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={rowActions}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {

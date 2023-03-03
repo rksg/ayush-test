@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }  from '@acx-ui/rbac'
 import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
@@ -371,7 +372,7 @@ export function Venues () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={rowActions}
+            rowActions={hasAccesses(rowActions)}
             rowSelection={{
               type: 'checkbox'
             }}

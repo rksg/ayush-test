@@ -11,6 +11,7 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { hasAccesses }            from '@acx-ui/rbac'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -272,7 +273,7 @@ export const VenueTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={hasAccesses(rowActions)}
         rowSelection={rowSelection}
       />
     </Loader>
@@ -301,11 +302,11 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Venues' })}
-        extra={[
-          <TenantLink to='/venues/add' key='add'>
+        extra={hasAccesses([
+          <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <VenueTable tableQuery={tableQuery}
         rowSelection={{ type: 'checkbox' }}

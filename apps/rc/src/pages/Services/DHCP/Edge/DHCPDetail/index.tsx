@@ -3,6 +3,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                                         from '@acx-ui/components'
+import { hasAccesses }                                                                                                   from '@acx-ui/rbac'
 import { useGetDhcpStatsQuery }                                                                                          from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
@@ -112,17 +113,16 @@ const EdgeDHCPDetail = () => {
             })
           }
         ]}
-        extra={[
+        extra={hasAccesses([
           // eslint-disable-next-line max-len
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.EDGE_DHCP,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId! })}
-            key='edit'>
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.EDGE_DHCP,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId!
+          })}>
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         { isFetching: isLoading, isLoading: false }
@@ -189,7 +189,7 @@ const EdgeDHCPDetail = () => {
               <Table
                 columns={columns}
                 rowKey='id'
-                // rowActions={rowActions}
+                // rowActions={hasAccesses(rowActions)}
                 rowSelection={{ type: 'checkbox' }}
               />
             </UI.InstancesMargin>

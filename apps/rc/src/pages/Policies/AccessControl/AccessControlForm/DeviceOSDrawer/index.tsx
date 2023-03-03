@@ -13,6 +13,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { hasAccesses }                                from '@acx-ui/rbac'
 import {
   useAddDevicePolicyMutation,
   useDevicePolicyListQuery, useGetDevicePolicyQuery
@@ -427,8 +428,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={hasAccesses(actions)}
+      rowActions={hasAccesses(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>

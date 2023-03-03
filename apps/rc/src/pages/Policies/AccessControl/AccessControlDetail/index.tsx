@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
+import { hasAccesses }                          from '@acx-ui/rbac'
 import { useGetAccessControlProfileQuery }      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -30,18 +31,17 @@ export default function AccessControlDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={hasAccesses([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
