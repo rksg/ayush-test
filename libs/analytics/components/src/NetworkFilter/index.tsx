@@ -14,7 +14,7 @@ import { NetworkPath, getIntl }              from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { LabelWithSeverityCicle }                   from './LabelWithSeverityCircles'
+import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
@@ -170,7 +170,7 @@ export const getNetworkFilterData = (
     if (shouldPushVenue() && !venues[name]) {
       venues[name] = {
         label: (
-          <LabelWithSeverityCicle
+          <LabelWithSeverityCircle
             severityCircles={getSeverityCircles(
               getApsAndSwitches(data, name),
               nodesWithSeverities[name],
@@ -189,7 +189,7 @@ export const getNetworkFilterData = (
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCicle
+            <LabelWithSeverityCircle
               severityCircles={getSeverityCircles(
                 aps,
                 nodesWithSeverities[name]
@@ -204,7 +204,7 @@ export const getNetworkFilterData = (
         children: aps.map((ap: ApOrSwitch) => {
           return {
             label: (
-              <LabelWithSeverityCicle
+              <LabelWithSeverityCircle
                 severityCircles={getSeverityCircles(
                   [ap],
                   nodesWithSeverities[name]
@@ -222,7 +222,7 @@ export const getNetworkFilterData = (
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCicle
+            <LabelWithSeverityCircle
               severityCircles={getSeverityCircles(
                 switches,
                 nodesWithSeverities[name]
@@ -237,7 +237,7 @@ export const getNetworkFilterData = (
         children: switches.map((switchNode: ApOrSwitch) => {
           return {
             label: (
-              <LabelWithSeverityCicle
+              <LabelWithSeverityCircle
                 severityCircles={getSeverityCircles(
                   [switchNode],
                   nodesWithSeverities[name]
