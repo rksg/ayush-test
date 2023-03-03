@@ -13,8 +13,10 @@ import { notAvailableMsg }         from '@acx-ui/utils'
 
 import { DisabledButton } from '../styledComponents'
 
-import Firewall from './Firewall'
-import HelpPage from './HelpPage'
+
+import Firewall          from './Firewall'
+import HelpPage          from './HelpPage'
+import { ButtonWrapper } from './styledComponents'
 
 // eslint-disable-next-line max-len
 const DOCUMENTATION_CENTER = 'https://docs.cloud.ruckuswireless.com/alto/master--1-220111/index.html'
@@ -122,12 +124,11 @@ const HelpButton = (props:HelpButtonProps) => {
     </Menu>
   )
 
-  return (<>
+  return (<ButtonWrapper>
     <Dropdown disabled={!isHelpEnabled}
       overlay={menuHeaderDropdown}
       trigger={['click']}
       placement='bottomLeft'>
-
       <Tooltip title={isHelpEnabled ? '' : $t(notAvailableMsg)}>
         {isHelpEnabled ? <LayoutUI.ButtonSolid icon={<QuestionMarkCircleSolid />} /> :
           <DisabledButton disabled icon={<QuestionMarkCircleSolid />} />}
@@ -135,7 +136,7 @@ const HelpButton = (props:HelpButtonProps) => {
     </Dropdown>
     <Firewall modalState={firewallModalState} setIsModalOpen={setFirewallModalOpen}/>
     <HelpPage modalState={helpPageModalState} setIsModalOpen={setHelpPageModalOpen}/>
-  </>
+  </ButtonWrapper>
   )
 }
 

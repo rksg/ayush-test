@@ -6,15 +6,19 @@ import { getJwtToken } from '@acx-ui/utils'
 // eslint-disable-next-line max-len
 export const networkHealthApiURL = `${window.location.origin}/api/a4rc/api/rsa-mlisa-service-guard/graphql`
 
+const baseQuery = graphqlRequestBaseQuery({
+  url: networkHealthApiURL,
+  ...(getJwtToken() ? { requestHeaders: { Authorization: `Bearer ${getJwtToken()}` } } : {})
+})
+
+export type NetworkHealthBaseQuery = typeof baseQuery
+
 // GraphQL queries are place in the context of their respective route/widget,
 // please refer to them in source folder under /apps/analytics/src
 export const networkHealthApi = createApi({
-  baseQuery: graphqlRequestBaseQuery({
-    url: networkHealthApiURL,
-    ...(getJwtToken() ? { requestHeaders: { Authorization: `Bearer ${getJwtToken()}` } } : {})
-  }),
+  baseQuery: baseQuery,
   reducerPath: 'analytics-network-health-api',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['NetworkHeath'],
+  tagTypes: ['NetworkHealth'],
   endpoints: () => ({ })
 })
