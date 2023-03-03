@@ -143,8 +143,6 @@ export const getTableColumns = ({
       title: $t(stages?.find((s) => s?.key === key)?.title as MessageDescriptor),
       dataIndex: key,
       key: key,
-      filterable: false,
-      searchable: false,
       align: 'center',
       width: 100,
       render: function (_, row: TestResultByAP, index: number) {
@@ -194,8 +192,6 @@ export const getTableColumns = ({
       title: upperFirst(key),
       dataIndex: key,
       key: key,
-      filterable: false,
-      searchable: false,
       align: 'center',
       width: 100,
       render: function (text: string, row: TestResultByAP, index : number) {
@@ -225,8 +221,6 @@ export const getTableColumns = ({
         : $t(defineMessage({ defaultMessage: 'AP Name' })),
       dataIndex: 'apName',
       key: 'apName',
-      filterable: false,
-      searchable: true,
       width: 150,
       render: function (text, row) {
         const { apMac } = row
@@ -244,8 +238,6 @@ export const getTableColumns = ({
         : $t(defineMessage({ defaultMessage: 'AP MAC' })),
       dataIndex: 'apMac',
       key: 'apMac',
-      filterable: false,
-      searchable: true,
       width: 150,
       render: function (text, _, index) {
         return (
@@ -262,8 +254,6 @@ export const getTableColumns = ({
         title: $t(defineMessage({ defaultMessage: 'Station AP Name' })),
         dataIndex: 'stationAp',
         key: 'stationAp',
-        filterable: false,
-        searchable: true,
         align: 'center',
         width: 150,
         render: function (_, row) {
@@ -280,11 +270,9 @@ export const getTableColumns = ({
         title: $t(defineMessage({ defaultMessage: 'Station AP MAC' })),
         dataIndex: 'stationAp',
         key: 'stationAp',
-        filterable: false,
-        searchable: true,
         align: 'center',
         width: 150,
-        render: function (text: unknown, row) {
+        render: function (_, row) {
           const { stationAp } = row
           return stationAp?.mac ?? '-'
         }
@@ -293,11 +281,9 @@ export const getTableColumns = ({
         title: $t(defineMessage({ defaultMessage: 'Station AP SNR' })),
         dataIndex: 'stationAp',
         key: 'stationAp',
-        filterable: false,
-        searchable: true,
         align: 'center',
         width: 150,
-        render: function (text: unknown, row, index) {
+        render: function (_, row, index) {
           const { stationAp } = row
           return (
             <span key={`${stationAp?.snr}-${index}`}>
@@ -316,8 +302,6 @@ export const getTableColumns = ({
       title: $t(stages?.find((s) => s.key === 'ping')?.title as MessageDescriptor),
       dataIndex: 'ping',
       key: 'ping',
-      filterable: false,
-      searchable: false,
       align: 'center',
       width: 100,
       render: function (text: unknown, row,index : number ) {
@@ -353,11 +337,9 @@ export const getTableColumns = ({
       title: $t(stages?.find((s) => s.key === 'traceroute')?.title as MessageDescriptor),
       dataIndex: 'tracerouteLog',
       key: 'tracerouteLog',
-      filterable: false,
-      searchable: false,
       align: 'center',
       width: 100,
-      render: function (text: unknown, row, index : number) {
+      render: function (_, row, index : number) {
         const { traceroute, tracerouteLog, error } = row
         const toolTipText = traceroute === 'n/a' ? null : tracerouteLog
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
