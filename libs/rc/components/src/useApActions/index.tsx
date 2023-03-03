@@ -40,6 +40,7 @@ export function useApActions () {
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
+  // const [ deleteApGroups ] = useDeleteApGroupsMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
@@ -119,6 +120,26 @@ export function useApActions () {
     showDeleteAps(apList.data, tenantId, callBack)
   }
 
+  // ACX-25402: Waiting for integration with group by table
+  // const showDeleteApGroups = async (rows: any[],
+  //   tenantId?: string, callBack?: () => void) => {
+  //   showActionModal({
+  //     type: 'confirm',
+  //     customContent: {
+  //       action: 'DELETE',
+  //       entityName: rows.length === 1 ?
+  //         $t({ defaultMessage: 'AP Group' }) : $t({ defaultMessage: 'AP Groups' }),
+  //       entityValue: rows.length === 1 ? rows[0].name : undefined,
+  //       numOfEntities: rows.length
+  //     },
+  //     onOk: () => {
+  //       const apGroupIdList = rows.map(item => item.id)
+  //       deleteApGroups({ params: { tenantId }, payload: apGroupIdList })
+  //         .then(callBack)
+  //     }
+  //   })
+  // }
+
   const showDeleteAps = async ( rows: AP[], tenantId?: string, callBack?: ()=>void ) => {
     const dhcpAps = await getDhcpAp({
       params: { tenantId: tenantId },
@@ -162,6 +183,7 @@ export function useApActions () {
   return {
     showDeleteAp,
     showDeleteAps,
+    // showDeleteApGroups,
     showDownloadApLog,
     showRebootAp,
     showBlinkLedAp
