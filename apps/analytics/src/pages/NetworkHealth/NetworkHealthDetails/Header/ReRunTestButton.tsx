@@ -8,7 +8,6 @@ import { useTenantLink }                             from '@acx-ui/react-router-
 
 import * as contents                                             from '../../contents'
 import { useNetworkHealthTest, useRunNetworkHealthTestMutation } from '../../services'
-import { NetworkHealthTest }                                     from '../../types'
 import { statsFromSummary }                                      from '../../utils'
 
 export const ReRunButton = () => {
@@ -18,9 +17,7 @@ export const ReRunButton = () => {
   const params = useParams<{ specId: string }>()
 
   const queryResults = useNetworkHealthTest()
-  const summary = queryResults.data
-    ? statsFromSummary(queryResults.data?.summary)
-    : {} as NetworkHealthTest['summary']
+  const summary = statsFromSummary(queryResults.data?.summary)
 
   const { runTest, response } = useRunNetworkHealthTestMutation()
 
