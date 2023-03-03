@@ -1,23 +1,24 @@
+import _ from 'lodash'
+
 import {
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
-import { Provider, store }                                                 from '@acx-ui/store'
-import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
-import * as fixtures             from './__tests__/fixtures'
+import * as fixtures          from './__tests__/fixtures'
 import {
   specToDto,
   useNetworkHealthSpec,
-  useNetworkHealthSpecMutation
-} from './services'
-import {
-  AuthenticationMethod,
-  Band,
-  ClientType,
-  TestType,
-  NetworkPaths
-} from './types'
+  useNetworkHealthSpecMutation,
+  useAllNetworkHealthSpecsQuery,
+  useRunNetworkHealthTestMutation,
+  useDeleteNetworkHealthTestMutation,
+  useMutationResponseEffect
+}                                                                         from './services'
+import { AuthenticationMethod, Band, ClientType, TestType, NetworkPaths, MutationResponse, MutationUserError } from './types'
+
 
 const networkNodes = [[
   { type: 'zone', name: 'VENUE' },
@@ -44,6 +45,45 @@ describe('useNetworkHealthSpec', () => {
     const { result } = renderHook(useNetworkHealthSpec, { wrapper: Provider })
     expect(result.current.isUninitialized).toBe(true)
   })
+})
+
+describe('useAllNetworkHealthSpecsQuery', () => {
+  it('should return empty data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([])
+  })
+  it('should return correct data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: fixtures.fetchAllServiceGuardSpecs })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data)
+      .toEqual(fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs
+        .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') })))
+  })
+})
+
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
+})
+
+it('useDeleteNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
+  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
 })
 
 describe('useNetworkHealthSpecMutation', () => {
@@ -147,5 +187,27 @@ describe('specToDto', () => {
 
   it('handle spec = undefined', () => {
     expect(specToDto()).toBe(undefined)
+  })
+})
+
+describe('useMutationResponseEffect', () => {
+  it('should return when no data', async () => {
+    const response = {} as MutationResponse<{ userErrors?: MutationUserError[] }>
+    const { result } = renderHook(() =>
+      useMutationResponseEffect(response), { wrapper: Provider })
+    expect(result.current).toEqual(undefined)
+  })
+  it('should return when no error', async () => {
+    const onOk = jest.fn()
+    const response = { data: {} } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response, onOk), { wrapper: Provider })
+    expect(onOk).toBeCalled()
+  })
+  it('should show error', async () => {
+    const response = {
+      data: { userErrors: [{ field: 'spec', message: 'RUN_TEST_NO_APS' }] }
+    } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response), { wrapper: Provider })
+    expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
   })
 })

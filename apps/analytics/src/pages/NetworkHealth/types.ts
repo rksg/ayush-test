@@ -1,6 +1,8 @@
-import _ from 'lodash'
+import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
+import _                          from 'lodash'
 
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { NetworkHealthBaseQuery } from '@acx-ui/analytics/services'
+import { APListNode, PathNode }   from '@acx-ui/utils'
 
 type UUID = string
 
@@ -57,8 +59,12 @@ export type NetworkHealthSpec = {
   id: UUID
   name: string
   type: TestType
+  apsCount: number
+  userId: string,
   clientType: ClientType
   configs: NetworkHealthConfig[]
+  tests: { items: NetworkHealthTest[] }
+  schedule: Schedule | null
 }
 
 export type NetworkHealthConfig = {
@@ -77,6 +83,31 @@ export type NetworkHealthConfig = {
   updatedAt: string // timestamp
   createdAt: string // timestamp
 }
+
+type WlanAuthSettings = {
+  authType?: string
+  authentication?: string
+  wpaEncryption?: string
+  wpaVersion?: string
+}
+
+export type NetworkHealthTest = {
+  id: number
+  createdAt: string // timestamp
+  spec: NetworkHealthSpec,
+  config: NetworkHealthConfig,
+  summary: {
+    apsTestedCount: number
+    apsPendingCount: number
+    apsSuccessCount: number
+    apsFailureCount?: number
+    apsErrorCount?: number
+  } & Record<string, number|string>
+  previousTest: NetworkHealthTest
+  wlanAuthSettings: WlanAuthSettings
+}
+
+type Schedule = { nextExecutionTime: string }
 
 export type NetworkHealthFormDto = {
   id?: NetworkHealthSpec['id']
@@ -102,3 +133,7 @@ export type MutationUserError = {
 export type MutationResult <Result> = {
   userErrors: MutationUserError[]
 } & Result
+
+export type MutationResponse <
+  Result extends { userErrors?: MutationUserError[] } = { userErrors?: MutationUserError[] }
+> = TypedUseMutationResult<Result, { id?: string }, NetworkHealthBaseQuery>

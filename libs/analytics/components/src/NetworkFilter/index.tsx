@@ -336,6 +336,7 @@ function ConnectedNetworkFilter (
           radioBandDisabledReason={radioBandDisabledReason}
           value={defaultValue || rawVal}
           options={queryResults.data}
+          dropdownAlign={{ overflow: { adjustX: false, adjustY: false } }}
           onApply={(value,bands) => {
             if(showRadioBand || multiple){
               let paths:NetworkPath[]=[]

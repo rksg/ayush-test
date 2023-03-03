@@ -27,7 +27,6 @@ describe('bootstrap.init', () => {
     document.body.appendChild(root)
 
     await act(() => bootstrap.init())
-
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })
