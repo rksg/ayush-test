@@ -21,36 +21,24 @@ const list = {
   page: 1,
   data: [
     {
-      id: '1',
-      network: {
-        id: '6',
-        name: 'Network A',
-        captiveType: 'Open'
-      }
+      id: '6',
+      name: 'Network A',
+      captiveType: 'Open'
     },
     {
-      id: '7',
-      network: {
-        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
-        name: 'Network B',
-        captiveType: 'Captive Portal - 3rd Party Captive Portal (WiSPr)'
-      }
+      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
+      name: 'Network B',
+      captiveType: 'Captive Portal - 3rd Party Captive Portal (WiSPr)'
     },
     {
-      id: '8',
-      network: {
-        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
-        name: 'Network C',
-        captiveType: 'AAA (802.1x)'
-      }
+      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
+      name: 'Network C',
+      captiveType: 'AAA (802.1x)'
     },
     {
-      id: '4',
-      network: {
-        id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
-        name: 'Network E',
-        captiveType: 'Captive Portal - Self Sign In'
-      }
+      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
+      name: 'Network E',
+      captiveType: 'Captive Portal - Self Sign In'
     }
   ]
 }
@@ -79,7 +67,7 @@ params = {
 describe('AAA Detail Page', () => {
   it('should render aaa detail page', async () => {
     mockServer.use(
-      rest.get(
+      rest.post(
         AaaUrls.getAAANetworkInstances.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
