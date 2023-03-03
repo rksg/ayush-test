@@ -554,7 +554,8 @@ describe('Table component', () => {
       { label: 'Edit', onClick: onEdit },
       { label: 'Delete', onClick: onDelete, disabled: true, tooltip: 'can not delete' },
       { label: 'Backup', onClick: onBackup,
-        disabled: (rows) => rows.length !== 1, tooltip: 'can not backup' }
+        disabled: (rows) => rows.length !== 1,
+        tooltip: (rows) => rows.length !== 1 ? 'can not backup' : undefined }
     ]
 
     render(<Table
@@ -568,10 +569,11 @@ describe('Table component', () => {
     fireEvent.click(within(row1).getByRole('checkbox'))
     const deleteButton = screen.getByRole('button', { name: /delete/i })
     expect(deleteButton).toBeDisabled()
-    const backupButton = screen.getByRole('button', { name: /backup/i })
+    let backupButton = screen.getByRole('button', { name: /backup/i })
     expect(backupButton).not.toBeDisabled()
     const row2 = await screen.findByRole('row', { name: /jane/i })
     fireEvent.click(within(row2).getByRole('checkbox'))
+    backupButton = screen.getByRole('button', { name: /backup/i })
     expect(backupButton).toBeDisabled()
   })
 
@@ -605,11 +607,19 @@ describe('Table component', () => {
         dataSource={filteredData}
         rowSelection={{ selectedRowKeys: [] }}
       />)
-      const validSearchTerm = 'John Doe'
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+
+      const invalidSearchTerm = 'w'
+      fireEvent.change(input, { target: { value: invalidSearchTerm } })
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(5)
+
+      const validSearchTerm = 'John Doe'
       fireEvent.change(input, { target: { value: validSearchTerm } })
       expect(await screen.findAllByText(validSearchTerm)).toHaveLength(1)
+      expect(await screen.findAllByRole('checkbox')).toHaveLength(2)
 
       fireEvent.change(input, { target: { value: 'edna' } })
       expect(await screen.findAllByText('Jane')).toHaveLength(1)
