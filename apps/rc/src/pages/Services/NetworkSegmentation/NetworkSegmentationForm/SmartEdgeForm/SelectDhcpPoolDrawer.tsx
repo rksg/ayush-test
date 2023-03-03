@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Divider, Form, Radio } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Col, Divider, Form, Row } from 'antd'
+import { useIntl }                 from 'react-intl'
 
 import { Button, Drawer, StepsForm, Subtitle } from '@acx-ui/components'
 import { PoolDrawer }                          from '@acx-ui/rc/components'
@@ -49,6 +49,15 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
+    <Row justify='end'>
+      <Col>
+        <Button
+          type='link'
+          children={$t({ defaultMessage: 'Add DHCP Pool' })}
+          onClick={()=> {setPoolDrawerVisible(true)}}
+        />
+      </Col>
+    </Row>
     <Form.Item
       name='poolId'
       rules={[
@@ -58,7 +67,7 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         }
       ]}
     >
-      <Radio.Group
+      <UI.RadioGroup
         options={
           pools?.map(item => ({
             label: <>
@@ -115,13 +124,6 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         onClose={handleClose}
         children={drawerContent}
         footer={footer}
-        extra={[
-          <Button
-            type='link'
-            children={$t({ defaultMessage: 'Add DHCP Pool' })}
-            onClick={()=> {setPoolDrawerVisible(true)}}
-          />
-        ]}
       />
     </>
   )
