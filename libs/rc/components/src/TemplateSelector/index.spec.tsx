@@ -105,7 +105,8 @@ describe('TemplateSelector', () => {
     )
 
     await waitFor(() => {
-      expect(formRef.current.getFieldValue(formItemName).value).toEqual(mockedRegistration.templateId)
+      expect(formRef.current.getFieldValue(formItemName).value)
+        .toEqual(mockedRegistration.templateId)
     })
   })
 

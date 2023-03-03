@@ -1,8 +1,10 @@
 import { Form, Select, FormItemProps } from 'antd'
 import { useIntl }                     from 'react-intl'
+
 import { useGetTemplateScopeByIdQuery,
   useGetAllTemplatesByTemplateScopeIdQuery,
   useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
+
 import { templateNames, templateScopeLabels } from './MsgTemplateLocalizedMessages'
 
 export interface TemplateSelectorProps {
@@ -12,7 +14,7 @@ export interface TemplateSelectorProps {
   registrationId: string
 }
 
-export function TemplateSelector(props: TemplateSelectorProps) {
+export function TemplateSelector (props: TemplateSelectorProps) {
   const { $t } = useIntl()
 
   const {
@@ -57,7 +59,7 @@ export function TemplateSelector(props: TemplateSelectorProps) {
   if(templateScopeRequest.isLoading
     || templatesRequest.isLoading
     || registrationRequest.isLoading) {
-      
+
     isLoading = true
     isDisabled = true
     formItemProps.label = $t({ defaultMessage: 'Loading Templates...' })
@@ -74,10 +76,10 @@ export function TemplateSelector(props: TemplateSelectorProps) {
       ({ value: id,
         label: (userProvidedName? userProvidedName : $t(templateNames[nameLocalizationKey])) }))
 
-        if(initialTemplateId) {
-          let initialSelection = options.find(t => t.value === initialTemplateId);
-          form.setFieldValue(formItemProps.name, initialSelection)
-        }
+    if(initialTemplateId) {
+      let initialSelection = options.find(t => t.value === initialTemplateId)
+      form.setFieldValue(formItemProps.name, initialSelection)
+    }
 
   } else if(templateScopeRequest.isError || templatesRequest.isError || registrationRequestFailed) {
 
@@ -95,7 +97,7 @@ export function TemplateSelector(props: TemplateSelectorProps) {
         disabled={isDisabled}
         placeholder={placeholder}
         options={options}
-        onSelect={(item:any, option:any) => {
+        onSelect={(item:unknown, option:unknown) => {
           form.setFieldValue(formItemProps.name, option)
           form.validateFields()
         }}
