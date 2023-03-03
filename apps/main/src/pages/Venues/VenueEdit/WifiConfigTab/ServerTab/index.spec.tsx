@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
 import { SyslogUrls }                                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -38,6 +39,7 @@ jest.mock('react-router-dom', () => ({
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
         SyslogUrls.getVenueSyslogAp.url,
@@ -47,7 +49,16 @@ describe('ServerTab', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+        (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
+      rest.get(
+        CommonUrlsInfo.getVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   it('should render correctly', async () => {
