@@ -169,7 +169,7 @@ export const getTableColumns = ({
         const wrappedContent = getToolTipText({ error, toolTipText, wlanAuthSettings, clientType })
         const type = row[key] as TrendType
         return (
-          failure ?
+          failure?.messageIds ?
             <TableCell
               tooltipContent={wrappedContent}
               type={type}
