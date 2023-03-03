@@ -67,7 +67,8 @@ export const mockedSummary =
       deviceSubType: 'ICX',
       deviceType: 'SWITCH',
       isTrial: false,
-      quantity: 10,
+      quantity: 130,
+      deviceCount: 2,
       remainingDevices: 5,
       trial: false
     },
@@ -75,7 +76,8 @@ export const mockedSummary =
       deviceSubType: null,
       deviceType: 'WIFI',
       isTrial: false,
-      quantity: 45,
+      quantity: 80,
+      deviceCount: 3,
       remainingDevices: 15,
       trial: false
     },
@@ -84,6 +86,7 @@ export const mockedSummary =
       deviceType: 'EDGE',
       isTrial: false,
       quantity: 70,
+      deviceCount: 2,
       remainingDevices: 20,
       trial: false
     },
@@ -91,7 +94,8 @@ export const mockedSummary =
       deviceSubType: null,
       deviceType: 'UNKOWNTYPE',
       isTrial: false,
-      quantity: 60,
+      quantity: 50,
+      deviceCount: 0,
       remainingDevices: 25,
       trial: false
     }

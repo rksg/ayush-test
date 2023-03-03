@@ -9,6 +9,9 @@ import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
 
 import Subscriptions from '.'
 
+jest.spyOn(Date, 'now').mockImplementation(() => {
+  return new Date('2023-01-11T12:33:37.101+00:00').getTime()
+})
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   StackedBarChart: () => (<div data-testid='rc-StackedBarChart' />)
@@ -55,7 +58,7 @@ describe('Subscriptions', () => {
       })
 
     await screen.findByRole('columnheader', { name: 'Device Count' })
-    expect(await screen.findByText(/45\s+\/\s+60/i)).toBeVisible()
+    expect(await screen.findByText(/2\s+\/\s+130/i)).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Expired/i })).toBeVisible()
     expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
