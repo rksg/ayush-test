@@ -45,7 +45,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
             <ConnectedClientsOverTime filters={healthPageFilters} />
           </GridCol>
           <GridCol col={{ span: 16 }} >
-            <Tabs activeKey={selectedTab} onChange={onTabChange}>
+            <Tabs style={{ marginRight: '-20px' }} activeKey={selectedTab} onChange={onTabChange}>
               {categoryTabs.map(({ value, label }) => (
                 <Tabs.TabPane tab={$t(label)} key={value} />
               ))}
