@@ -200,7 +200,7 @@ const allOperationalAp = (selectedRows: AP[]) => {
     ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
   )
 }
-const hasInvaildAp = (selectedRows: AP[]) => {
+const hasInvalidAp = (selectedRows: AP[]) => {
   return !selectedRows.every(ap => {
     if (ap.fwVersion === undefined) {
       return true
@@ -232,8 +232,8 @@ const genDeleteModal = (
 ) => {
   const { $t } = getIntl()
 
-  const showResetFirmwareOption = allOperationalAp(rows) && !hasInvaildAp(rows)
-  const invalidAp = allOperationalAp(rows) && hasInvaildAp(rows)
+  const showResetFirmwareOption = allOperationalAp(rows) && !hasInvalidAp(rows)
+  const invalidAp = allOperationalAp(rows) && hasInvalidAp(rows)
   const hideConfirmation = !hasContactedAp(rows)
 
   const entityValue = rows.length === 1 ? rows[0].name : undefined
