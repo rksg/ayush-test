@@ -5,7 +5,7 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, showToast, StepsForm }  from '@acx-ui/components'
+import { Loader, StepsForm }             from '@acx-ui/components'
 import {
   useGetVenueBonjourFencingQuery,
   useUpdateVenueBonjourFencingMutation
@@ -100,13 +100,8 @@ export function BonjourFencing () {
         payload
       }).unwrap()
 
-
-
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

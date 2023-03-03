@@ -26,13 +26,18 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
 
   const [inputVisible, setInputVisible] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [editInputIndex, setEditInputIndex] = useState(-1)
-  const [editInputValue, setEditInputValue] = useState('')
   const [hasMacFormatError, setHasMacFormatError] = useState(false)
   const [isUsedMacAddr, setIsUsedMacAddr] = useState(false)
 
   const inputRef = useRef<InputRef>(null)
   const editInputRef = useRef<InputRef>(null)
+
+  useEffect(() => {
+    if (tags.length === 0) {
+      setHasMacFormatError(false)
+      setIsUsedMacAddr(false)
+    }
+  }, [tags])
 
   useEffect(() => {
     if (inputVisible) {
@@ -120,23 +125,6 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
     setInputValue('')
   }
 
-
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditInputValue(e.target.value)
-  }
-
-  const handleEditInputConfirm = () => {
-    if (editInputValue) {
-      const editTag = createTagData(editInputValue)
-
-      const newTags = [...tags]
-      newTags[editInputIndex] = editTag
-      tagsChanged(newTags)
-    }
-    setEditInputIndex(-1)
-    setInputValue('')
-  }
-
   const tagWidth = '140px'
   const borderRadius = '20px'
 
@@ -168,6 +156,7 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
 
   const InputTag =(inputVisible ? (
     <Input
+      data-testid='InputTagField'
       ref={inputRef}
       type='text'
       size='small'
@@ -179,6 +168,7 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
     />
   ) : (
     <Tag
+      data-testid='InputTag'
       style={tagPlusStyle}
       onClick={showInput}
       icon={<Plus style={{ verticalAlign: 'middle' }}/>}
@@ -191,25 +181,12 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
     <Space direction='vertical' style={{ paddingTop: '20px' }}>
       <Space size={[0, 8]} wrap>
         <Space size={[0, 8]} wrap>
-          {tags.map((tag, index) => {
+          {tags.map((tag) => {
             const tagValue = tag.value
-            if (editInputIndex === index) {
-              return (
-                <Input
-                  ref={editInputRef}
-                  key={tagValue}
-                  size='small'
-                  style={tagInputStyle}
-                  value={editInputValue}
-                  onChange={handleEditInputChange}
-                  onBlur={handleEditInputConfirm}
-                  onPressEnter={handleEditInputConfirm}
-                />
-              )
-            }
             const isLongTag = tagValue.length > 20
             const tagElem = (
               <Tag
+                data-testid={`${tagValue}_tag`}
                 key={tagValue}
                 closable={true}
                 color='white'

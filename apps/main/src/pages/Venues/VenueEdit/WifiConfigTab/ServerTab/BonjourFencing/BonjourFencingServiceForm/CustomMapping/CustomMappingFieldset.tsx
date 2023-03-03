@@ -46,7 +46,7 @@ const CustomMappingModal = (props: CustomMappingModalPorps) => {
       children={<Input />}
       rules={[
         { min: 2 },
-        { max: 64 },
+        { max: 65 },
         { required: true }
       ]}
     />
