@@ -1,11 +1,15 @@
-import { gql } from 'graphql-request'
-import _       from 'lodash'
+import { useEffect } from 'react'
+
+import { gql }     from 'graphql-request'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { networkHealthApi }     from '@acx-ui/analytics/services'
+import { showToast }            from '@acx-ui/components'
 import { useParams }            from '@acx-ui/react-router-dom'
 import { APListNode, PathNode } from '@acx-ui/utils'
 
-import { stages } from './contents'
+import { messageMapping, stages } from './contents'
 
 import type {
   APListNodes,
@@ -15,8 +19,9 @@ import type {
   NetworkPaths,
   MutationResult,
   NetworkHealthConfig,
-  NetworkHealthTest,
-  UserErrors
+  MutationUserError,
+  MutationResponse,
+  NetworkHealthTest
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -131,12 +136,47 @@ const fetchServiceGuardRelatedTests = gql`
   }
 `
 
-const {
+const fetchAllServiceGuardSpecs = gql`
+  query FetchAllServiceGuardSpecs {
+    allServiceGuardSpecs {
+      id
+      name
+      type
+      apsCount
+      userId
+      clientType
+      schedule { nextExecutionTime }
+      tests(limit: 1) {
+        items {
+          id
+          createdAt
+          summary { apsTestedCount apsSuccessCount apsPendingCount }
+        }
+      }
+    }
+  }`
+
+export type NetworkHealthTableRow = Omit<NetworkHealthSpec, 'configs' | 'tests'> & {
+  tests: { items: Pick<NetworkHealthTest, 'id' | 'createdAt' | 'summary'>[] }
+  latestTest: Pick<NetworkHealthTest, 'id' | 'createdAt' | 'summary'> | undefined
+}
+
+export const {
+  useAllNetworkHealthSpecsQuery,
   useNetworkHealthDetailsQuery,
   useNetworkHealthTestQuery,
   useNetworkHealthRelatedTestsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
+    allNetworkHealthSpecs: build.query<NetworkHealthTableRow[], void>({
+      query: () => ({
+        document: fetchAllServiceGuardSpecs
+      }),
+      providesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { allServiceGuardSpecs: NetworkHealthTableRow[] }) =>
+        response.allServiceGuardSpecs
+          .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') }))
+    }),
     networkHealthDetails: build.query<NetworkHealthSpec, { id: string }>({
       query: (variables) => ({
         variables,
@@ -292,15 +332,19 @@ type CreateUpdateMutationResult = MutationResult<{
   spec: Pick<NetworkHealthSpec, 'id'>
 }>
 
+type DeleteNetworkHealthTestResult = MutationResult<{
+  deletedSpecId: NetworkHealthSpec['id']
+}>
+
 type RunNetworkHealthTestResult = MutationResult<{
-  spec: NetworkHealthSpec,
-  userErrors: UserErrors
+  spec: Pick<NetworkHealthSpec,'id'|'tests'>
 }>
 
 const {
   useCreateNetworkHealthSpecMutation,
   useUpdateNetworkHealthSpecMutation,
-  useRunNetworkHealthTestMutation
+  useDeleteNetworkHealthMutation,
+  useRunNetworkHealthMutation
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     createNetworkHealthSpec: build.mutation<CreateUpdateMutationResult, NetworkHealthFormDto>({
@@ -331,13 +375,29 @@ const {
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
         response.updateServiceGuardSpec
     }),
-    runNetworkHealthTest: build.mutation<
-      RunNetworkHealthTestResult, { specId: NetworkHealthSpec['id'] }
+    deleteNetworkHealth: build.mutation<
+      DeleteNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }
     >({
       query: (variables) => ({
         variables,
-        document: gql`mutation RunNetworkHealthTest ($specId: String!){
-          runServiceGuardTest (id: $specId) {
+        document: gql`
+          mutation DeleteServiceGuardSpec ($id: String!) {
+            deleteServiceGuardSpec (id: $id) {
+              deletedSpecId
+              userErrors { field message }
+            }
+          }
+        `
+      }),
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { deleteServiceGuardSpec: DeleteNetworkHealthTestResult }) =>
+        response.deleteServiceGuardSpec
+    }),
+    runNetworkHealth: build.mutation<RunNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }>({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation RunNetworkHealthTest ($id: String!){
+          runServiceGuardTest (id: $id) {
             userErrors { field message }
             spec {
               id
@@ -363,7 +423,33 @@ export function useNetworkHealthSpecMutation () {
   return { editMode, spec, submit, response }
 }
 
-export function useNetworkHealthTestMutation () {
-  const [runTest, response] = useRunNetworkHealthTestMutation()
+export function useRunNetworkHealthTestMutation () {
+  const [runTest, response] = useRunNetworkHealthMutation()
   return { runTest, response }
+}
+
+export function useDeleteNetworkHealthTestMutation () {
+  const [deleteTest, response] = useDeleteNetworkHealthMutation()
+  return { deleteTest, response }
+}
+
+export function useMutationResponseEffect <
+  Result extends { userErrors?: MutationUserError[] }
+> (
+  response: MutationResponse<Result>,
+  onOk?: (result: MutationResponse<Result>) => void
+) {
+  const { $t } = useIntl()
+
+  useEffect(() => {
+    if (!response.data) return
+
+    if (!response.data.userErrors) {
+      onOk?.(response)
+    } else {
+      const key = response.data.userErrors[0].message as keyof typeof messageMapping
+      const errorMessage = $t(messageMapping[key])
+      showToast({ type: 'error', content: errorMessage })
+    }
+  }, [$t, response, onOk])
 }

@@ -1,7 +1,5 @@
-import { IntlShape } from 'react-intl'
-
-import { noDataSymbol } from '@acx-ui/analytics/utils'
-import { intlFormats }  from '@acx-ui/utils'
+import { noDataSymbol }         from '@acx-ui/analytics/utils'
+import { intlFormats, getIntl } from '@acx-ui/utils'
 
 import { authMethodsByCode }                      from './authMethods'
 import { stage }                                  from './stages'
@@ -16,45 +14,46 @@ export const stagesFromConfig = (config: NetworkHealthConfig) => {
   return stages.map((item) => ({ ...item }))
 }
 
-export interface StatsFromSummary extends NetworkHealthTest {
-  isOngoing?: boolean
+export interface StatsFromSummary {
+  isOngoing: boolean
   apsUnderTest?: number
   apsFinishedTest?: number
   lastResult?: number
 }
 
-export const statsFromSummary = (
-  summary: NetworkHealthTest['summary']
-) => {
-  const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount }
-    = summary
-  const isOngoing = apsPendingCount !== undefined && apsPendingCount > 0
-  const apsFinishedTest = apsUnderTest
-    ? apsUnderTest - apsPendingCount
-    : undefined
-  const lastResult = apsUnderTest
-    ? apsSuccessCount / apsUnderTest
-    : undefined
-  return { isOngoing, apsFinishedTest, lastResult, apsUnderTest }
+export const statsFromSummary = (summary: NetworkHealthTest['summary'] | undefined) => {
+  if (!summary) return {
+    isOngoing: false,
+    apsUnderTest: undefined,
+    apsFinishedTest: undefined,
+    lastResult: undefined
+  } as StatsFromSummary
+  const { apsTestedCount: apsUnderTest, apsPendingCount, apsSuccessCount } = summary
+  const isOngoing = apsPendingCount > 0
+  const apsFinishedTest = apsUnderTest - apsPendingCount
+  const lastResult = apsSuccessCount / apsUnderTest
+  return { isOngoing, apsUnderTest, apsFinishedTest, lastResult } as StatsFromSummary
 }
 
-export const formatApsUnderTest = (
-  details: StatsFromSummary, $t: IntlShape['$t']
-) => details.isOngoing
-  ? $t(
+export const formatApsUnderTest = (summary: NetworkHealthTest['summary'] | undefined) => {
+  const stats = statsFromSummary(summary)
+  const { $t } = getIntl()
+  if (stats.isOngoing) return $t(
     { defaultMessage:
       '{apsFinishedTest} of {apsUnderTest} {apsUnderTest, plural, one {AP} other {APs}} tested' },
-    { apsFinishedTest: details.apsFinishedTest, apsUnderTest: details.apsUnderTest })
-  : details.apsUnderTest
-    ? $t({ defaultMessage: '{apsUnderTest} APs' }, { apsUnderTest: details.apsUnderTest })
-    : noDataSymbol
+    { apsFinishedTest: stats.apsFinishedTest, apsUnderTest: stats.apsUnderTest }
+  )
+  if (stats.apsUnderTest) return `${stats.apsUnderTest}`
+  return noDataSymbol
+}
 
-export const formatLastResult = (
-  details: StatsFromSummary, $t: IntlShape['$t']
-) => details.isOngoing
-  ? $t({ defaultMessage: 'In progress...' })
-  : details.lastResult !== undefined
-    ? $t({ defaultMessage: '{lastResultPercent} pass' }, {
-      lastResultPercent: $t(intlFormats.percentFormat, { value: details.lastResult })
-    })
-    : noDataSymbol
+export const formatLastResult = (summary: NetworkHealthTest['summary'] | undefined) => {
+  const stats = statsFromSummary(summary)
+  const { $t } = getIntl()
+  if (stats.isOngoing) return $t({ defaultMessage: 'In progress...' })
+  if (stats.lastResult !== undefined) return $t(
+    { defaultMessage: '{lastResultPercent} pass' },
+    { lastResultPercent: $t(intlFormats.percentFormat, { value: stats.lastResult }) }
+  )
+  return noDataSymbol
+}

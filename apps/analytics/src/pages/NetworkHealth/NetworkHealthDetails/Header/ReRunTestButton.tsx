@@ -6,10 +6,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, DisabledButton, Loader, showToast } from '@acx-ui/components'
 import { useTenantLink }                             from '@acx-ui/react-router-dom'
 
-import * as contents                                          from '../../contents'
-import { useNetworkHealthTest, useNetworkHealthTestMutation } from '../../services'
-import { NetworkHealthTest }                                  from '../../types'
-import { statsFromSummary }                                   from '../../utils'
+import * as contents                                             from '../../contents'
+import { useNetworkHealthTest, useRunNetworkHealthTestMutation } from '../../services'
+import { statsFromSummary }                                      from '../../utils'
 
 export const ReRunButton = () => {
   const { $t } = useIntl()
@@ -18,11 +17,9 @@ export const ReRunButton = () => {
   const params = useParams<{ specId: string }>()
 
   const queryResults = useNetworkHealthTest()
-  const summary = queryResults.data
-    ? statsFromSummary(queryResults.data?.summary)
-    : {} as NetworkHealthTest['summary']
+  const summary = statsFromSummary(queryResults.data?.summary)
 
-  const { runTest, response } = useNetworkHealthTestMutation()
+  const { runTest, response } = useRunNetworkHealthTestMutation()
 
   useEffect(() => {
     if (!response.data) return
@@ -30,7 +27,7 @@ export const ReRunButton = () => {
       const testId = response.data.spec.tests.items[0].id
       showToast({
         type: 'success',
-        content: $t(contents.messageMapping.TEST_RUN_CREATED)
+        content: $t(contents.messageMapping.RUN_TEST_SUCCESS)
       })
       navigate({
         ...basePath,
@@ -47,7 +44,7 @@ export const ReRunButton = () => {
     {(!summary.isOngoing && queryResults.data?.spec.apsCount)
       ? <Button
         type='primary'
-        onClick={async () => runTest({ specId: params.specId! })}
+        onClick={async () => runTest({ id: params.specId! })}
       >
         {$t({ defaultMessage: 'Re-Run Test' })}
       </Button>

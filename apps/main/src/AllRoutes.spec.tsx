@@ -7,6 +7,8 @@ import { render, screen, cleanup } from '@acx-ui/test-utils'
 import AllRoutes from './AllRoutes'
 
 jest.mock('@acx-ui/main/components', () => ({
+  ...jest.requireActual('@acx-ui/main/components'),
+  LicenseBanner: () => <div data-testid='license-banner' />,
   ActivityButton: () => <div data-testid='activity-button' />,
   AlarmsButton: () => <div data-testid='alarms-button' />,
   HelpButton: () => <div data-testid='help-button' />,

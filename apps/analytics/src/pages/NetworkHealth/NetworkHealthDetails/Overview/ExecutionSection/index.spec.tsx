@@ -193,7 +193,7 @@ describe('getChatData', () => {
           color: cssStr('--acx-neutrals-50') },
         { name: 'Pending',
           data: [ 1, 1, 1, 1, 1, 1, 1, 1],
-          color: 'transparent' }
+          color: cssStr('--acx-primary-white') }
       ]
     })
   })

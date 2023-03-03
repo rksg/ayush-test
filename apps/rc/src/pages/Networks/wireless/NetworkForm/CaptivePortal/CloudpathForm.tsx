@@ -84,6 +84,15 @@ export function CloudpathForm () {
         form.setFieldValue('walledGardensString',
           data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
       }
+      if(data.accountingRadius){
+        form.setFieldValue('enableAccountingService', true)
+        form.setFieldValue('accountingRadiusId',
+          data.accountingRadius.id)
+      }
+      if(data.authRadius){
+        form.setFieldValue('authRadiusId',
+          data.authRadius.id)
+      }
     }
   },[data])
   return (
