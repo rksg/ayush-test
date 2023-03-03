@@ -215,6 +215,8 @@ export { ReactComponent as QuestionMarkCircleOutlined } from './icons/QuestionMa
 export { ReactComponent as QuestionMarkCircleSolid } from './icons/QuestionMarkCircleSolid.svg'
 export { ReactComponent as ReportsOutlined } from './icons/ReportsOutlined.svg'
 export { ReactComponent as ReportsSolid } from './icons/ReportsSolid.svg'
+export { ReactComponent as DataStudioOutlined } from './icons/DataStudioOutlined.svg'
+export { ReactComponent as DataStudioSolid } from './icons/DataStudioSolid.svg'
 export { ReactComponent as RocketOutlined } from './icons/RocketOutlined.svg'
 export { ReactComponent as RocketSolid } from './icons/RocketSolid.svg'
 export { ReactComponent as SearchFitOutlined } from './icons/SearchFitOutlined.svg'

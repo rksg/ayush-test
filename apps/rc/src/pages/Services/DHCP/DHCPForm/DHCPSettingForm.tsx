@@ -61,7 +61,7 @@ export function SettingForm (props: DHCPFormProps) {
   const {
     data
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
-
+  const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
   return (<>
     <Row gutter={20}>
       <Col span={10}>
@@ -82,7 +82,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
+          children={<Input disabled={isDefaultService}/>}
         />
 
         <Form.Item
@@ -92,7 +92,7 @@ export function SettingForm (props: DHCPFormProps) {
           rules={[{ required: true,
             message: $t({ defaultMessage: 'Please select DHCP Configuration' }) }]}
         >
-          <Radio.Group>
+          <Radio.Group disabled={isDefaultService}>
             <Space direction='vertical'>
               {types.map(type => (
                 <Radio key={type} value={type}>
@@ -127,7 +127,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
           children={<DHCPPoolTable dhcpMode={type}
-            isDefaultService={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
+            isDefaultService={isDefaultService}/>}
         />
       </Col>
     </Row>
