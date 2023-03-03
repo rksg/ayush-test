@@ -81,8 +81,6 @@ export function SwitchConfigHistoryTable (props: {
     }
   })
 
-  const tableData = tableQuery.data?.data ?? []
-
   const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
     key: ctype, value: transformConfigType(ctype)
   }))
@@ -123,7 +121,7 @@ export function SwitchConfigHistoryTable (props: {
     return columns.filter(c => isVenueLevel || !c.key.includes('numberOfSwitches'))
   }
 
-  const onSelectConfingChange = (row: ConfigurationHistory) => {
+  const onSelectConfigChange = (row: ConfigurationHistory) => {
     setSelectedConfigRow(row)
     setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
     setCollapseActive(!row?.dispatchFailedReason?.length)
@@ -182,9 +180,9 @@ export function SwitchConfigHistoryTable (props: {
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='transactionId'
+        rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
-        dataSource={tableData}
+        dataSource={tableQuery.data?.data ?? []}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
@@ -221,7 +219,7 @@ export function SwitchConfigHistoryTable (props: {
             isVenueLevel && configDetails && <SwitchConfigDetailsTable
               configDetails={configDetails}
               filterType={filterType}
-              onSelectConfingChange={onSelectConfingChange}
+              onSelectConfingChange={onSelectConfigChange}
               onFilterConfigDetails={onFilterConfigDetails}
             />
           }

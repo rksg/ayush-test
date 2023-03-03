@@ -79,6 +79,18 @@ describe('ClientHealth', () => {
     expect(await screen.findAllByText(noDataDisplay)).toHaveLength(3)
   })
 
+  it('should render warning icon for max event error', async () => {
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', { error: {
+      message: 'CTP:MAX_EVENTS_EXCEEDED'
+    } })
+
+    render(<Provider>
+      <ClientHealth filter={filters} clientMac={testMac}/>
+    </Provider>)
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    expect(await screen.findByTestId('WarningTriangleOutlined')).toBeDefined()
+  })
+
   describe('durations', () => {
     it('should handle undefined', () => {
       const undef = durations(undefined)

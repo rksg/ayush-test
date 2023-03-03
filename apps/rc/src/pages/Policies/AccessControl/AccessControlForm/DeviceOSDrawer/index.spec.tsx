@@ -196,94 +196,7 @@ const selectOptionSet = async (device: string, vendor: string) => {
   )
 }
 
-describe('DeviceOSDrawer Component', () => {
-  it('Render DeviceOSDrawer component successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDevice)
-      )
-    ), rest.post(
-      AccessControlUrls.addDevicePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(deviceResponse)
-      )
-    ))
-
-    render(
-      <Provider>
-        <Form>
-          <DeviceOSDrawer />
-        </Form>
-      </Provider>, {
-        route: {
-          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe' }
-        }
-      }
-    )
-
-    await screen.findByRole('option', { name: 'allowl2' })
-
-    await userEvent.click(screen.getByText(/add new/i))
-
-    await userEvent.click(screen.getAllByText('Cancel')[0])
-
-    await userEvent.click(screen.getByText(/add new/i))
-
-    await screen.findByText(/device & os access settings/i)
-
-    await userEvent.click(screen.getByText(/block traffic/i))
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /policy name:/i
-    }), 'device1-another')
-
-    await userEvent.click(screen.getByText('Add'))
-
-    await screen.findByText(/add rule/i)
-
-    await userEvent.type(await screen.findByRole('textbox', {
-      name: /rule name/i
-    }), 'rule1')
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await selectOptionSet('Laptop', 'Windows')
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await userEvent.click(await screen.findByText(/rule1/i))
-
-    await userEvent.click(screen.getByRole('button', {
-      name: /edit/i
-    }))
-
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /from client:/i
-    }))
-
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /to client:/i
-    }))
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /vlan/i
-    }), '12')
-
-    await userEvent.click(screen.getAllByText('Save')[1])
-
-    await userEvent.click(screen.getAllByText('Save')[0])
-
-    mockServer.use(rest.post(
-      AccessControlUrls.getDevicePolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryDeviceUpdate)
-      )
-    ))
-
-    await screen.findByRole('option', { name: 'device1-another' })
-  })
-
+describe('DeviceOSDrawer Component setting I', () => {
   it('Render DeviceOSDrawer component successfully with Smartphone & Ios', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getDevicePolicy.url,
@@ -451,7 +364,9 @@ describe('DeviceOSDrawer Component', () => {
     await selectOptionSet('Voip', 'CiscoIpPhone')
 
   })
+})
 
+describe('DeviceOSDrawer Component setting II', () => {
   it('Render DeviceOSDrawer component successfully with Gaming & XBOX360', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getDevicePolicy.url,
@@ -598,7 +513,9 @@ describe('DeviceOSDrawer Component', () => {
     await selectOptionSet('IotDevice', 'NestCamera')
 
   })
+})
 
+describe('DeviceOSDrawer Component setting III', () => {
   it('Render DeviceOSDrawer component successfully with HomeAvEquipment & SonyPlayer', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getDevicePolicy.url,
@@ -695,6 +612,95 @@ describe('DeviceOSDrawer Component', () => {
 
     await selectOptionSet('WdsDevice', 'TelnetCpe')
 
+  })
+})
+
+describe('DeviceOSDrawer Component', () => {
+  it('Render DeviceOSDrawer component successfully', async () => {
+    mockServer.use(rest.post(
+      AccessControlUrls.getDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDevice)
+      )
+    ), rest.post(
+      AccessControlUrls.addDevicePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(deviceResponse)
+      )
+    ))
+
+    render(
+      <Provider>
+        <Form>
+          <DeviceOSDrawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: '6de6a5239a1441cfb9c7fde93aa613fe' }
+        }
+      }
+    )
+
+    await screen.findByRole('option', { name: 'allowl2' })
+
+    await userEvent.click(screen.getByText(/add new/i))
+
+    await userEvent.click(screen.getAllByText('Cancel')[0])
+
+    await userEvent.click(screen.getByText(/add new/i))
+
+    await screen.findByText(/device & os access settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'device1-another')
+
+    await userEvent.click(screen.getByText('Add'))
+
+    await screen.findByText(/add rule/i)
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /rule name/i
+    }), 'rule1')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await selectOptionSet('Laptop', 'Windows')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.click(await screen.findByText(/rule1/i))
+
+    await userEvent.click(screen.getByRole('button', {
+      name: /edit/i
+    }))
+
+    await userEvent.click(screen.getByRole('checkbox', {
+      name: /from client:/i
+    }))
+
+    await userEvent.click(screen.getByRole('checkbox', {
+      name: /to client:/i
+    }))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /vlan/i
+    }), '12')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    await userEvent.click(screen.getAllByText('Save')[0])
+
+    mockServer.use(rest.post(
+      AccessControlUrls.getDevicePolicyList.url,
+      (_, res, ctx) => res(
+        ctx.json(queryDeviceUpdate)
+      )
+    ))
+
+    await screen.findByRole('option', { name: 'device1-another' })
   })
 
   it('Render DeviceDrawer component in viewMode successfully', async () => {

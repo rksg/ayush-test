@@ -11,7 +11,7 @@ import {
   screen,
   fireEvent,
   within,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -79,7 +79,7 @@ async function addVariable (variableName, type) {
 
 describe('Cli Template Form - Add', () => {
   const params = {
-    tenantId: 'tenant-id', action: 'add', templateId: 'template-id'
+    tenantId: 'tenant-id', action: 'add', configType: 'onDemandCli'
   }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -106,7 +106,7 @@ describe('Cli Template Form - Add', () => {
   })
   it('should render correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -125,29 +125,26 @@ describe('Cli Template Form - Add', () => {
     await userEvent.click(addExampleBtns[0])
     await userEvent.click(fontOptions[0])
 
-    await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Variable' }))
-    const dialog = await screen.findByRole('dialog')
-    await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
-
-    await addVariable('var1', 'range')
+    // await addVariable('var1', 'range')
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Switches' })
     await userEvent.click(await screen.findByText('My-Venue'))
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     const row1 = await screen.findByRole('row', { name: /7150stack/i })
-    await userEvent.click(within(row1).getByRole('checkbox'))
+    await userEvent.click(await within(row1).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
     await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   }, 30000)
 
-  it('should render variable list correctly', async () => {
+  it('should add address variable correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -162,13 +159,49 @@ describe('Cli Template Form - Add', () => {
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
     await addVariable('var1', 'address')
+  })
+
+  it('should add range variable correctly', async () => {
+    render(<Provider><CliTemplateForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
+    })
+
+    expect(await screen.findByText('Add CLI Template')).toBeVisible()
+    expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+    await userEvent.type(
+      await screen.findByLabelText(/Please type “AGREE” here to continue/), 'agree')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
+    await screen.findByText('CLI commands')
+    await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
     await addVariable('var2', 'range')
+  })
+
+  it('should add string variable correctly', async () => {
+    render(<Provider><CliTemplateForm /></Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
+    })
+
+    expect(await screen.findByText('Add CLI Template')).toBeVisible()
+    expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+    await userEvent.type(
+      await screen.findByLabelText(/Please type “AGREE” here to continue/), 'agree')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
+    await screen.findByText('CLI commands')
+    await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
+
+    await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
     await addVariable('var3', 'string')
-  }, 25000)
+  })
 
   it('should add variable to CLI editor correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -192,7 +225,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should filter variables correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -206,7 +239,7 @@ describe('Cli Template Form - Add', () => {
     await userEvent.type(await screen.findByLabelText(/Template Name/), 'test-template')
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
-    const tabPanel = screen.getByRole('tabpanel', { hidden: false })
+    const tabPanel = await screen.findByRole('tabpanel', { hidden: false })
     fireEvent.mouseDown(await within(tabPanel).findByRole('combobox'))
     const options = await screen.findAllByText(/Range/)
     await userEvent.click(options[0])
@@ -214,7 +247,7 @@ describe('Cli Template Form - Add', () => {
 
   it('should handle CLI valiation', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -240,7 +273,7 @@ describe('Cli Template Form - Add', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/add' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/add' }
     })
 
     expect(await screen.findByText('Add CLI Template')).toBeVisible()
@@ -270,7 +303,8 @@ describe('Cli Template Form - Add', () => {
 
 describe('Cli Template Form - Edit', () => {
   const params = {
-    tenantId: 'tenant-id', action: 'edit', templateId: 'f14c4116e30743bfa3180ba4b68cd069'
+    tenantId: 'tenant-id', action: 'edit', configType: 'onDemandCli',
+    templateId: 'f14c4116e30743bfa3180ba4b68cd069'
   }
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
@@ -303,10 +337,35 @@ describe('Cli Template Form - Edit', () => {
     render(<Provider>
       <CliTemplateForm />
     </Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+    expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+    expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
+    await screen.findByText('CLI commands')
+    await screen.findByText('test CLI commands')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'Switches' })
+    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
+  it('should render tooltip correctly', async () => {
+    render(<Provider>
+      <CliTemplateForm />
+    </Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     expect(await screen.findByText(/Read this before you start/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
@@ -316,6 +375,24 @@ describe('Cli Template Form - Edit', () => {
     await screen.findByText('test CLI commands')
     // trigger tooltip
     fireEvent.mouseOver(await screen.findByTestId('tooltip-example'))
+    await screen.findByText(/Click on the template to add it to the CLI configuration/)
+  })
+
+  it('should handle close edit variable modal', async () => {
+    render(<Provider>
+      <CliTemplateForm />
+    </Provider>, {
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
+    expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
+    await screen.findByText('CLI commands')
 
     // open edit variable modal
     await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
@@ -327,25 +404,23 @@ describe('Cli Template Form - Edit', () => {
     const dialog = await screen.findByRole('dialog')
     await screen.findByText('Edit Variable')
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Cancel' }))
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-
-    await screen.findByRole('heading', { level: 3, name: 'Switches' })
-    await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
   it('should handle edit variable', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
     await screen.findByText('CLI commands')
 
+    // open edit variable modal
     await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
     const editVarBtns = await screen.findAllByTestId('edit-var-btn')
     await userEvent.click(editVarBtns[1])
@@ -359,10 +434,12 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle delete variable', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -378,10 +455,12 @@ describe('Cli Template Form - Edit', () => {
 
   xit('should render variable hint menu correctly', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -401,10 +480,12 @@ describe('Cli Template Form - Edit', () => {
 
   it('should handle import from file', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -423,17 +504,17 @@ describe('Cli Template Form - Edit', () => {
   //     rest.get(SwitchUrlsInfo.getCliTemplate.url,
   //       (_, res, ctx) => res(ctx.json({
   //         ...cliTemplate,
-  //         variables: Array(200).fill(null).map((a, idx) => ({ name: "test"+idx, type: "STRING", value: "aaaa" }))
+  //         variables: Array(200).fill(null).map((a, idx) => ({ name: 'test'+idx, type: 'STRING', value: 'aaaa' }))
   //       }))
   //     )
   //   )
   //   render(<Provider><CliTemplateForm /></Provider>, {
-  //     route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+  //     route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
   //   })
 
   //   await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
   //   expect(await screen.findByText('Edit CLI Template')).toBeVisible()
-  //   await userEvent.click(await screen.getByRole('button', { name: 'Next' }))
+  //   await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
   //   await screen.findByRole('heading', { level: 3, name: 'CLI Configuration' })
   //   await screen.findByText('CLI commands')
@@ -450,10 +531,12 @@ describe('Cli Template Form - Edit', () => {
     )
 
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
@@ -469,9 +552,11 @@ describe('Cli Template Form - Edit', () => {
 
   it('should redirect to list table after clicking cancel button', async () => {
     render(<Provider><CliTemplateForm /></Provider>, {
-      route: { params, path: '/:tenantId/networks/wired/onDemandCli/:templateId/:action' }
+      route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
     })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
     expect(await screen.findByText('Edit CLI Template')).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
   })

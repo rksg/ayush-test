@@ -29,15 +29,15 @@ export const VlanDetail = (props: { row : Vlan }) => {
       />
       <Form.Item
         label={$t({ defaultMessage: 'IPv4 DHCP Snooping:' })}
-        children={transformDisplayOnOff(row.ipv4DhcpSnooping)}
+        children={transformDisplayOnOff(row.ipv4DhcpSnooping || false)}
       />
       <Form.Item
         label={$t({ defaultMessage: 'ARP Inspection:' })}
-        children={transformDisplayOnOff(row.arpInspection)}
+        children={transformDisplayOnOff(row.arpInspection || false)}
       />
       <Form.Item
         label={$t({ defaultMessage: 'IGMP Snooping:' })}
-        children={transformTitleCase(row.igmpSnooping)}
+        children={transformTitleCase(row.igmpSnooping || '')}
       />
       <Form.Item
         label={$t({ defaultMessage: 'Multicast Version:' })}

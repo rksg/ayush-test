@@ -11,7 +11,7 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { useDateFilter } from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -24,7 +24,6 @@ function DatePicker () {
   return (enableVenueAnalytics)
     ? <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      enableDates={dateRangeForLast(3,'months')}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}

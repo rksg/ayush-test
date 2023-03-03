@@ -1,11 +1,38 @@
-
-
-export interface CreateNetworkSegmentationFormFields {
+export interface NetworkSegmentationGroup {
+  id: string
   name: string
+  vxlanTunnelProfileId: string
+  venueInfos: VenueInfo[]
+  edgeInfos: EdgeInfo[]
+  networkIds: string[]
+  distributionSwitchInfos: DistributionSwitch[]
+  accessSwitchInfos: AccessSwitch[]
+  forceOverwriteReboot: boolean
+  adminName: string
 }
 
-export interface NetworkSegmentationSaveData extends CreateNetworkSegmentationFormFields{
-  id?: string;
+export interface NetworkSegmentationGroupStats {
+  id: string
+  name: string
+  tags: string[]
+  networkIds: string[]
+  venueInfos: VenueInfo[]
+  edgeInfos: EdgeInfo[]
+  distributionSwitchInfos: DistributionSwitch[]
+  accessSwitchInfos: AccessSwitch[]
+}
+
+export interface VenueInfo {
+  venueId: string
+  personaId: string
+}
+
+export interface EdgeInfo {
+  edgeId: string
+  segments: number
+  devices: number
+  dhcpInfoId: string
+  dhcpPoolId: string
 }
 
 export interface WebAuthTemplate {
@@ -43,9 +70,4 @@ export interface DistributionSwitch {
   loopbackInterfaceId: string
   loopbackInterfaceIpAddress: string
   loopbackInterfaceSubnetMask: string
-}
-
-export interface NetworkSegmentationGroup {
-  id: string,
-  name: string
 }

@@ -24,8 +24,10 @@ export enum Features {
   SERVICE_VALIDATION = 'acx-ui-service-validation-toggle',
   DIRECTED_MULTICAST='wifi-consumer-directed-multicast-toggle',
   HELP_SUPPORT='acx-ui-help-support',
+  LICENSE_BANNER='acx-ui-license-banner',
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
+  SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
   BONJOUR_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api'

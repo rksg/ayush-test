@@ -360,9 +360,37 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
   },
+  fetchBotAuth: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/chatbot/idtoken'
+  },
   getTopology: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
+  },
+  wifiAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/allowed-operations'
+  },
+  switchAllowedOperations: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/allowed-operations'
+  },
+  tenantAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/allowed-operations'
+  },
+  venueAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/venue/allowed-operations'
+  },
+  guestAllowedOperations: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
+  },
+  upgradeAllowedOperations: {
+    method: 'get',
+    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',

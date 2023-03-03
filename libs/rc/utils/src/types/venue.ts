@@ -319,6 +319,10 @@ export interface AclRule {
 	sequence: number
 	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
+	specificSrcNetwork?: string
+	specificDestNetwork?: string
+	sourcePort?: string | null
+	destinationPort?: string | null
 }
 
 export interface Acl {
@@ -350,18 +354,19 @@ export interface SwitchModel {
 }
 
 export interface Vlan {
-	arpInspection: boolean,
+	arpInspection?: boolean,
 	id: string,
-	igmpSnooping: 'active' | 'passive' | 'none'
-	ipv4DhcpSnooping: boolean,
-	multicastVersion: number,
-	spanningTreePriority: number,
+	igmpSnooping?: 'active' | 'passive' | 'none'
+	ipv4DhcpSnooping?: boolean,
+	multicastVersion?: number,
+	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
   untaggedPorts?: string,
-  taggedPorts?: string
+  taggedPorts?: string,
+  title?: string
 }
 
 export interface ConfigurationProfile {
