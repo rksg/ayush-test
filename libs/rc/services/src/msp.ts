@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import moment                        from 'moment-timezone'
 
 import {
   AssignedEc,
@@ -27,8 +28,6 @@ import {
   MspPortal,
   downloadFile
 } from '@acx-ui/rc/utils'
-import { truncateSync } from 'fs'
-import { truncate } from 'fs/promises'
 
 export const baseMspApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -464,7 +463,7 @@ export const mspApi = baseMspApi.injectEndpoints({
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : 'MSP Device Inventory.csv'
+              : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
             downloadFile(response, fileName)
           },
           body: payload,
@@ -485,12 +484,31 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
-    getGenerateLicenseUsageRpt: build.query<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+    getGenerateLicenseUsageRpt: build.query<Response, RequestPayload>({
+      query: ({ params, payload, selectedFormat }) => {
+        const contentType: string = selectedFormat === 'csv'
+          ? 'text/csv'
+          : selectedFormat === 'json'
+            ? 'text/json'
+            : selectedFormat === 'pdf'
+              ? 'application/pdf'
+              : ''
+
         const licenseUsageRptReq =
-          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt, params)
+          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
+            { ...params })
+        licenseUsageRptReq.url += '/' + payload
         return {
-          ...licenseUsageRptReq
+          ...licenseUsageRptReq,
+          responseHandler: async (response) => {
+            const fileName =
+            `License Usage Report ${moment().format('YYYYMMDDHHmmss')}.${selectedFormat}`
+            downloadFile(response, fileName)
+            return response
+          },
+          headers: {
+            'Content-Type': contentType
+          }
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]

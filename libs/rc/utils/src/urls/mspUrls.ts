@@ -179,6 +179,6 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGenerateLicenseUsageRpt: {
     method: 'get',
-    url: '/api/entitlement-assign/tenant/:tenantId/:payload'
+    url: '/api/entitlement-assign/tenant/:tenantId'
   }
 }

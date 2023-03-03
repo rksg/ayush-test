@@ -2,18 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { Form, Modal, Radio, RadioChangeEvent, Select, SelectProps, Space } from 'antd'
 import moment                                                               from 'moment'
-// import { FieldData }                                                                    from 'rc-field-form/lib/interface'
-import { useIntl } from 'react-intl'
-// import { useParams }                                                                    from 'react-router-dom'
+import { useIntl }                                                          from 'react-intl'
+import { useParams }                                                        from 'react-router-dom'
 
-import { showActionModal, Subtitle } from '@acx-ui/components'
+import { showToast, Subtitle } from '@acx-ui/components'
 import {
   useGetGenerateLicenseUsageRptQuery,
   useMspCustomerListQuery
 } from '@acx-ui/rc/services'
 import {
-  // CommonErrorsResult,
-  // CatchErrorDetails,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
@@ -24,16 +21,19 @@ interface SubscriptionUsageReportDialogProps {
 
 export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDialogProps) =>{
   const { visible, setVisible } = props
-  const [isValid, setIsValid] = useState<boolean>(true)
   const { $t } = useIntl()
-  // const params = useParams()
+  const params = useParams()
   const [form] = Form.useForm()
   const [selectedPeriod, setSelectedPeriod] = useState('')
+  const [selectedCalendarMonth, setSelectedCalendarMonth] = useState('')
   const [periodOptions, setPeriodOptions] = useState<SelectProps['options']>([])
   const [selectedFormat, setSelectedFormat] = useState('csv')
   const [selectedCustomers, setSelectedCustomers] = useState('all')
-  const [selectedCustomerOption, setSelectedCustomerOption] = useState()
+  const [selectedCustomerOption, setSelectedCustomerOption] = useState('')
   const [customerOptions, setCustomerOptions] = useState<SelectProps['options']>([])
+  const [payload, setPayload] = useState('')
+  const { data } = useGetGenerateLicenseUsageRptQuery({ params, payload, selectedFormat },
+    { skip: payload === '' })
 
   const { data: customers } = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -59,18 +59,20 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
     for (let i = 0; i < 12; i++) {
       opts.push({
         label: months.at(month) + ' ' + year.toString(),
-        value: months.at(month) + ' ' + year.toString()
+        value: (month + 1).toString() + ' ' + year.toString()
       })
       if (month === 0) {
-        month = 12
-        year -=1
+        month = 11
+        year--
       }
       else {
-        month -=1
+        month--
       }
     }
     setPeriodOptions([ ...opts ])
     setSelectedPeriod('calendar')
+    const defaultCalendarMonth = opts?.at(0)?.value
+    setSelectedCalendarMonth(defaultCalendarMonth ?? '')
     setCustomerOptions(customers?.data?.map(customer => {
       return {
         label: customer.name, value: customer.id
@@ -78,13 +80,20 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
     }))
   }, [customers])
 
-  const onSelectCustomerChange = () => {
-
-  }
-
-  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?month=03&year=2023&deviceDetails=false&page=1&dailyReportsPerPage=31
-  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?startDate=2023-02-28&endDate=2023-02-28&deviceDetails=false&page=1&dailyReportsPerPage=31
-  // api/entitlement-assign/tenant/3061bd56e37445a8993ac834c01e2710/usage-report?month=03&year=2023&mspEcTenantId=4bd80809ee7d48efb2b84ec7469cca67&deviceDetails=false&page=1&dailyReportsPerPage=31
+  useEffect(() => {
+    if (data && data.status === 200) {
+      setVisible(false)
+      setSelectedPeriod('calendar')
+      setSelectedFormat('csv')
+      setSelectedCustomers('all')
+    }
+    else if (data) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to download usage report.' })
+      })
+    }
+  }, [data])
 
   /* eslint-disable max-len */
   const getGenerateUsagePayload = (currentmonth: boolean, startMonth: string, startYear: string, startDate: string, endDate: string, mspEcTenantId: string) => {
@@ -94,13 +103,13 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
     const url = 'usage-report'
     let payload = `${url}`
     if (currentmonth && startMonth && startYear) {
-      if (mspEcTenantId) {
+      if (mspEcTenantId !== '') {
         payload = `${url}?month=${startMonth}&year=${startYear}&mspEcTenantId=${mspEcTenantId}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
       } else {
         payload = `${url}?month=${startMonth}&year=${startYear}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
       }
     } else if (startDate && endDate) {
-      if (mspEcTenantId) {
+      if (mspEcTenantId !== '') {
         payload = `${url}?startDate=${startDate}&endDate=${endDate}&mspEcTenantId=${mspEcTenantId}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
       } else {
         payload = `${url}?startDate=${startDate}&endDate=${endDate}&deviceDetails=${deviceDetails}&page=${page}&dailyReportsPerPage=${dailyReportsPerPage}`
@@ -110,80 +119,30 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
   }
 
   const handleGenerate = async () => {
-    const currentMonth = true
-    const startMonth = '3'
-    const startYear = '2022'
-    const startDate = '2023-02-28'
-    const endDate = '2023-02-28'
-    const selectTenant = '3061bd56e37445a8993ac834c01e2710'
-    const urlPayload =
-      getGenerateUsagePayload(currentMonth, startMonth, startYear, startDate, endDate, selectTenant)
+    const currentMonth = selectedPeriod === 'calendar'
+    const selectedMonth = selectedCalendarMonth.split(' ').at(0)
+    const selectedYear = selectedCalendarMonth.split(' ').at(1)
+    const startMonth = selectedPeriod === 'calendar' && selectedMonth ? selectedMonth : ''
+    const startYear = selectedPeriod === 'calendar' && selectedYear ? selectedYear : ''
+    const startDate = selectedPeriod === 'hours'
+      ? moment().subtract(1, 'days').format('YYYY-MM-DD')
+      : selectedPeriod === 'week'
+        ? moment().subtract(7, 'days').format('YYYY-MM-DD')
+        : selectedPeriod === 'month'
+          ? moment().subtract(30, 'days').format('YYYY-MM-DD')
+          : ''
+    const endDate = moment().subtract(1, 'days').format('YYYY-MM-DD')
 
-    // this.entitlementService.getGenerateLicenseUsageRpt(urlPayload, selectedFormat).subscribe(res => {
-    const nowTime = '20230301121212' //DateTimeUtilsService.getCurrentDate('YYYYMMDDHHMMSS')
-
-    let filename = 'Licenses Usage Report - ' + nowTime + '.' + selectedFormat
-
-    // if (selectedFormat === 'CSV') {
-    //   const blob = new Blob([res.body], { type: 'text/csv;charset=utf-8;' });
-    //   const url = window.URL.createObjectURL(blob);
-    //   that.fileService.downloadFile(url, filename);
-    // }
-    // else if (selectedFormat === 'JSON') {
-    //   const blob = new Blob([res.body], { type: 'text/json;charset=utf-8;' });
-    //   const url = window.URL.createObjectURL(blob);
-    //   that.fileService.downloadFile(url, filename);
-    // }
-    // else if (selectedFormat === 'PDF') {
-    //   const blob = new Blob([res.body]);
-    //   const url = window.URL.createObjectURL(blob);
-    //   that.fileService.downloadFile(url, filename);
-
-    // } else {
-    // const title = 'Generate Usage Report';
-    // const msg = `format is not supported. `;
-    // this.notificationService.showInfo(msg, title, 'Ok')
-    // .then(result => {
-    // });
-    // }
-    // this.showSpinner = false;
-    // this.dialogService.close('MspLicensesUsageRptComponent');
-    // },
-    // error => {
-    // this.showSpinner = false;
-    // });
-
+    const mspEcTenantId = selectedCustomerOption ?? ''
+    setPayload(getGenerateUsagePayload(currentMonth, startMonth, startYear, startDate, endDate, mspEcTenantId))
   }
 
   const handleCancel = () => {
     setVisible(false)
-    // form.resetFields()
     setSelectedPeriod('calendar')
     setSelectedFormat('csv')
     setSelectedCustomers('all')
   }
-
-  // public getGenerateLicenseUsageRpt(urlUsageReport, selectedFormat): Observable<any> {
-  //   const payload = urlUsageReport;
-  //   let customHeaders: { [index: string]: any; };
-  //   let hasOptions: any = true;
-  //   customHeaders = {};
-  //   if (selectedFormat === 'CSV') {
-  //     customHeaders['Content-Type'] = 'text/csv';
-  //   } else if (selectedFormat === 'JSON') {
-  //     customHeaders['Content-Type'] = 'text/json';
-  //   } else if (selectedFormat === 'PDF') {
-  //     customHeaders['Content-Type'] = 'application/pdf';
-  //     hasOptions = {
-  //       observe: 'response',
-  //       responseType: 'blob'
-  //     };
-  //   } else {
-  //     customHeaders = null;
-  //   }
-  //   return this.apiService.get<any[]>(`/api/entitlement-assign/tenant/${this.tenantId}/${payload}`, null, customHeaders, true, hasOptions);
-  // }
-
 
   return (
     <Modal
@@ -204,10 +163,6 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
       >
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Period' })}</Subtitle>
-        {/* <Form.Item
-          name='period'
-          initialValue={selectedPeriod}
-        > */}
         <Radio.Group
           style={{ paddingLeft: '2px' }}
           onChange={(e: RadioChangeEvent) => setSelectedPeriod(e.target.value)}
@@ -220,8 +175,8 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
               </Radio>
               {selectedPeriod === 'calendar' &&
                 <Select
-                  defaultValue={periodOptions?.at(0)?.value}
-                  // onChange={}
+                  defaultValue={periodOptions?.at(0)?.value?.toString()}
+                  onChange={(value: string) => setSelectedCalendarMonth(value)}
                   options={periodOptions}
                   style={{ width: '200px' }}
                 />
@@ -238,14 +193,9 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
             </Radio>
           </Space>
         </Radio.Group>
-        {/* </Form.Item> */}
 
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Format' })}</Subtitle>
-        {/* <Form.Item
-          name='format'
-          initialValue={selectedFormat}
-        > */}
         <Radio.Group
           style={{ paddingLeft: '2px' }}
           onChange={(e: RadioChangeEvent) => setSelectedFormat(e.target.value)}
@@ -263,14 +213,9 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
             </Radio>
           </Space>
         </Radio.Group>
-        {/* </Form.Item> */}
 
         <Subtitle level={4} style={{ marginTop: '5px', marginBottom: '5px' }}>
           {$t({ defaultMessage: 'Select Customers' })}</Subtitle>
-        {/* <Form.Item
-          name='customers'
-          initialValue={selectedCustomers}
-        > */}
         <Radio.Group
           style={{ paddingLeft: '2px' }}
           onChange={(e: RadioChangeEvent) => setSelectedCustomers(e.target.value)}
@@ -286,7 +231,7 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
               </Radio>
               {selectedCustomers === 'specific' &&
                 <Select
-                  onChange={onSelectCustomerChange}
+                  onChange={(value: string) => setSelectedCustomerOption(value)}
                   placeholder='Select a customer'
                   options={customerOptions}
                   style={{ width: '200px' }}
@@ -295,7 +240,6 @@ export const SubscriptionUsageReportDialog = (props: SubscriptionUsageReportDial
             </Space>
           </Space>
         </Radio.Group>
-        {/* </Form.Item> */}
       </Form>
     </Modal>
   )
