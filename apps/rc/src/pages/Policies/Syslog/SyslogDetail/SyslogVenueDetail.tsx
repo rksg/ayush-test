@@ -2,8 +2,11 @@ import { CheckOutlined } from '@ant-design/icons'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Card, Table, TableProps }              from '@acx-ui/components'
-import { useVenueSyslogPolicyQuery }            from '@acx-ui/rc/services'
+import { Card, Table, TableProps } from '@acx-ui/components'
+import {
+  useVenueSyslogPolicyQuery ,
+  useGetSyslogPolicyQuery
+} from '@acx-ui/rc/services'
 import { useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                           from '@acx-ui/react-router-dom'
 
@@ -22,15 +25,11 @@ const defaultPayload = {
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
-  pageSize: 25,
-  filters: {
-    'rogueDetection.policyId': [] as string[]
-  }
+  pageSize: 25
 }
 
 const SyslogVenueDetail = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: 'Venue Name' }),
@@ -52,8 +51,8 @@ const SyslogVenueDetail = () => {
       title: $t({ defaultMessage: 'Wi-Fi' }),
       dataIndex: 'syslogEnable',
       key: 'syslogEnable',
-      render: (data, row) => {
-        return row.rogueDetection?.enabled ? <CheckOutlined /> : null
+      render: () => {
+        return <CheckOutlined />
       }
     }
   ]
@@ -61,25 +60,31 @@ const SyslogVenueDetail = () => {
   const tableQuery = useTableQuery({
     useQuery: useVenueSyslogPolicyQuery,
     defaultPayload: {
-      ...defaultPayload,
-      filters: {
-        'rogueDetection.policyId': [params.policyId]
-      }
+      ...defaultPayload
     }
   })
 
+  const { data } = useGetSyslogPolicyQuery({
+    params: useParams()
+  })
+
   const basicData = tableQuery.data?.data
+  let detailData = [] as VenueSyslogPolicyType[] | undefined
+  if (data?.venues && basicData) {
+    const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
+    detailData = basicData?.filter(policy => venueIdList.includes(policy.id as string))
+  }
 
   return (
     <Card title={
       $t(
         { defaultMessage: 'Instance ({count})' },
-        { count: tableQuery.data?.totalCount }
+        { count: detailData ? detailData.length : '' }
       )
     }>
       <Table
         columns={basicColumns}
-        dataSource={basicData}
+        dataSource={detailData}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
