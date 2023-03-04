@@ -12,7 +12,10 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { useImportSwitchesMutation, useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
+import { hasAccesses } from '@acx-ui/rbac'
+import { useImportSwitchesMutation,
+  useLazyGetJwtTokenQuery,
+  useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -33,7 +36,6 @@ import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
-import { hasAccesses } from 'libs/common/rbac/src'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
