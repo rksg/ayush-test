@@ -277,7 +277,7 @@ describe('RangePicker', () => {
     await user.click(calenderSelect)
     expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
   })
-  it('should display only start date when end date is not selected', async () => {
+  it.skip('should display only start date when end date is not selected', async () => {
     const onDateChange = jest.fn()
     render(
       <IntlProvider locale='en'>

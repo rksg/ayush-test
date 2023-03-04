@@ -10,11 +10,11 @@ import {
   Incident } from '@acx-ui/analytics/utils'
 import { Select, Option, Loader, RadioBand } from '@acx-ui/components'
 import { useReportsFilter }                  from '@acx-ui/reports/utils'
-import { NetworkPath }                       from '@acx-ui/utils'
+import { NetworkPath, getIntl }              from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 
-import { LabelWithSeverityCicle }                   from './LabelWithSeverityCircles'
+import { LabelWithSeverityCircle }                  from './LabelWithSeverityCircles'
 import { Child, useNetworkFilterQuery, ApOrSwitch } from './services'
 import * as UI                                      from './styledComponents'
 
@@ -148,16 +148,17 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
     return acc
   }, [] )
 
-const getFilterData = (
+export const getNetworkFilterData = (
   data: Child[],
-  $t: CallableFunction,
   nodesWithSeverities: VenuesWithSeverityNodes,
-  filterMode:string
+  filterMode: FilterMode,
+  replaceVenueNameWithId: boolean
 ): Option[] => {
+  const { $t } = getIntl()
   const venues: { [key: string]: Option } = {}
   for (const { id, name, path, aps, switches } of data) {
     const shouldPushVenue = ()=>{
-      if(filterMode==='both')
+      if(filterMode === 'both')
         return true
       if(filterMode === 'ap' && aps?.length)
         return true
@@ -166,11 +167,14 @@ const getFilterData = (
 
       return false
     }
-
+    // replace venue name with id to be compatible with rc/reports
+    const venuePath = replaceVenueNameWithId
+      ? [path[0], { ...path[1], name: id }]
+      : path
     if (shouldPushVenue() && !venues[name]) {
       venues[name] = {
         label: (
-          <LabelWithSeverityCicle
+          <LabelWithSeverityCircle
             severityCircles={getSeverityCircles(
               getApsAndSwitches(data, name),
               nodesWithSeverities[name],
@@ -179,7 +183,7 @@ const getFilterData = (
             name={name}
           />
         ),
-        value: JSON.stringify([path[0], { ...path[1], name: id }]), // replace venue name with id to be compatible with rc/reports
+        value: JSON.stringify(venuePath),
         displayLabel: name,
         children: [] as Option[]
       }
@@ -189,7 +193,7 @@ const getFilterData = (
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCicle
+            <LabelWithSeverityCircle
               severityCircles={getSeverityCircles(
                 aps,
                 nodesWithSeverities[name]
@@ -200,11 +204,11 @@ const getFilterData = (
         ),
         displayLabel: $t({ defaultMessage: 'APs' }),
         ignoreSelection: true,
-        value: `aps${name}`,
+        value: `aps${replaceVenueNameWithId ? id : name}`,
         children: aps.map((ap: ApOrSwitch) => {
           return {
             label: (
-              <LabelWithSeverityCicle
+              <LabelWithSeverityCircle
                 severityCircles={getSeverityCircles(
                   [ap],
                   nodesWithSeverities[name]
@@ -213,7 +217,7 @@ const getFilterData = (
               />
             ),
             displayLabel: ap.name,
-            value: JSON.stringify([...path, { type: 'AP', name: ap.mac }])
+            value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
           }
         })
       })
@@ -222,7 +226,7 @@ const getFilterData = (
       venue.children.push({
         label: (
           <UI.NonSelectableItem key={name}>
-            <LabelWithSeverityCicle
+            <LabelWithSeverityCircle
               severityCircles={getSeverityCircles(
                 switches,
                 nodesWithSeverities[name]
@@ -233,11 +237,11 @@ const getFilterData = (
         ),
         displayLabel: $t({ defaultMessage: 'Switches' }),
         ignoreSelection: true,
-        value: `switches${name}`,
+        value: `switches${replaceVenueNameWithId ? id : name}`,
         children: switches.map((switchNode: ApOrSwitch) => {
           return {
             label: (
-              <LabelWithSeverityCicle
+              <LabelWithSeverityCircle
                 severityCircles={getSeverityCircles(
                   [switchNode],
                   nodesWithSeverities[name]
@@ -246,7 +250,7 @@ const getFilterData = (
               />
             ),
             displayLabel: switchNode.name,
-            value: JSON.stringify([...path, { type: 'switch', name: switchNode.mac }])
+            value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }
         })
       })
@@ -297,25 +301,24 @@ function ConnectedNetworkFilter (
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   const { bands: selectedBands } = reportsFilter
-  /* eslint-disable react-hooks/rules-of-hooks */
-  const incidentsList = withIncidents
-    ? useIncidentsListQuery(
-      omit({
-        ...filters, path: defaultNetworkPath, includeMuted: false
-      }, 'filter'),
-      {
-        selectFromResult: ({ data }) => ({
-          data: data ? getSeverityFromIncidents(data) : []
-        })
-      }
-    )
-    : { data: [] }
+  const incidentsList = useIncidentsListQuery(
+    omit({
+      ...filters, path: defaultNetworkPath, includeMuted: false
+    }, 'filter'),
+    {
+      skip: !Boolean(withIncidents),
+      selectFromResult: ({ data }) => ({
+        data: data ? getSeverityFromIncidents(data) : []
+      })
+    }
+  )
 
   const networkFilter = { ...filters, shouldQuerySwitch }
   const queryResults = useNetworkFilterQuery(omit(networkFilter, 'path', 'filter'), {
     selectFromResult: ({ data, ...rest }) => ({
       data: data ?
-        getFilterData(data, $t, incidentsList.data as VenuesWithSeverityNodes, filterMode) : [],
+        getNetworkFilterData(data, incidentsList.data as VenuesWithSeverityNodes,
+          filterMode, true) : [],
       ...rest
     })
   })

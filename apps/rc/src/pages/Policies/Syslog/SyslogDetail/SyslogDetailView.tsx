@@ -52,7 +52,7 @@ const SyslogDetailView = () => {
           <SyslogDetailContent />
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          { filtersId.length && <SyslogVenueDetail /> }
+          { (filtersId.length > 0) && <SyslogVenueDetail /> }
         </GridCol>
       </GridRow>
     </SyslogDetailContext.Provider>
