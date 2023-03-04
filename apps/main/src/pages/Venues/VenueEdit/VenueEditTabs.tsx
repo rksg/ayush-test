@@ -77,12 +77,7 @@ function VenueEditTabs () {
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       <Tabs.TabPane
         key='switch'
-        disabled={!useIsSplitOn(Features.UNRELEASED)}
-        tab={
-          <Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
-            intl.$t(notAvailableMsg)}>
-            {intl.$t({ defaultMessage: 'Switch Configuration' })}
-          </Tooltip>}
+        tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
       />
     </Tabs>
   )
