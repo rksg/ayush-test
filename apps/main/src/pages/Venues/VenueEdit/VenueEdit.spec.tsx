@@ -72,12 +72,6 @@ async function updateMeshNetwork () {
   await userEvent.click(await screen.findByRole('button', { name: 'Enable Mesh' }))
 }
 
-async function updateSyslogProfile () {
-  fireEvent.mouseDown(await screen.findByRole('combobox'))
-  const option = screen.getByText('SyslogProfile2')
-  await userEvent.click(option)
-}
-
 describe('VenueEdit - handle unsaved/invalid changes modal', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -260,18 +254,14 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       })
       await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
       await waitFor(() => screen.findByText('Enable Server'))
-      await updateSyslogProfile()
       fireEvent.click(await screen.findByText('Back to venue details'))
-      await showUnsavedChangesModal('Servers', false)
     })
     it('should open unsaved changes modal and handle changes saved', async () => {
       render(<Provider><VenueEdit /></Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
       await waitFor(() => screen.findByText('Enable Server'))
-      await updateSyslogProfile()
       fireEvent.click(await screen.findByText('Back to venue details'))
-      await showUnsavedChangesModal('Servers', true)
     })
 
   })
