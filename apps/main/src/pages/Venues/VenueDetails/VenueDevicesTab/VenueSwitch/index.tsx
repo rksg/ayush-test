@@ -16,7 +16,7 @@ import { IconRadioGroup } from '../VenueWifi/styledComponents'
 
 export function VenueSwitch () {
   const params = useParams()
-  const [ showIdx, setShowIdx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(0)
 
   const { getSwitchModelList } = useGetSwitchModelListQuery({
     params: { tenantId: params.tenantId }, payload: {
