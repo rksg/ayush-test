@@ -49,7 +49,10 @@ function AllRoutes () {
           <Route path='reports/*' element={<ReportsBase />}>
             <Route path='*' element={<ReportsRoutes />} />
           </Route>
-          <Route path='devices/*' element={<DevicesBase />}>
+          <Route path='dataStudio/*' element={<ReportsBase />}>
+          <Route path='*' element={<ReportsRoutes />} />
+        </Route>
+        <Route path='devices/*' element={<DevicesBase />}>
             <Route path='*' element={<RcRoutes />} />
           </Route>
           <Route path='networks/*' element={<NetworksBase />}>

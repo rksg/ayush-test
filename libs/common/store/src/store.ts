@@ -19,6 +19,7 @@ import {
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
   baseAdministrationApi as administrationApi,
+  baseFirmwareApi as firmwareApi,
   baseEdgeDhcpApi as edgeDhcpApi,
   basePersonaApi as personaApi,
   baseNsgApi as nsgApi
@@ -80,6 +81,7 @@ export const store = configureStore({
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
+    [firmwareApi.reducerPath]: firmwareApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
     [personaApi.reducerPath]: personaApi.reducer,
     [networkHealthApi.reducerPath]: networkHealthApi.reducer,
@@ -110,6 +112,7 @@ export const store = configureStore({
       clientApi.middleware,
       switchApi.middleware,
       administrationApi.middleware,
+      firmwareApi.middleware,
       edgeDhcpApi.middleware,
       personaApi.middleware,
       networkHealthApi.middleware,

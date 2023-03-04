@@ -102,6 +102,12 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   Features: {}
 }), { virtual: true })
 
+jest.mock('@acx-ui/rbac', () => ({
+  hasAccess: jest.fn().mockReturnValue(true),
+  hasRoles: jest.fn().mockReturnValue(true),
+  hasAccesses: jest.fn().mockImplementation((items) => items)
+}), { virtual: true })
+
 jest.mock('@acx-ui/icons', ()=> {
   const React = jest.requireActual('react')
   const icons = jest.requireActual('@acx-ui/icons')
