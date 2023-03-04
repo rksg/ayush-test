@@ -391,5 +391,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   upgradeAllowedOperations: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/allowed-operations'
+  },
+  getVenueBonjourFencingPolicy: {
+    method: 'get',
+    url: '/api/venues/:venueId/bonjourFencingSettings'
+  },
+  updateVenueBonjourFencingPolicy: {
+    method: 'put',
+    url: '/api/venues/:venueId/bonjourFencingSettings'
   }
 }
