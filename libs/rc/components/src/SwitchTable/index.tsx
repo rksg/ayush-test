@@ -33,6 +33,7 @@ import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
+import { hasAccesses } from 'libs/common/rbac/src'
 
 export const SwitchStatus = (
   { row, showText = true }: { row: SwitchRow, showText?: boolean }
@@ -303,7 +304,7 @@ export function SwitchTable (props : {
             : null
         }
       }}
-      actions={props.enableActions ? [{
+      actions={hasAccesses(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {
           navigate(`${linkToEditSwitch.pathname}/add`)
@@ -319,7 +320,7 @@ export function SwitchTable (props : {
           setImportVisible(true)
         }
       }
-      ] : []}
+      ] : [])}
     />
     <SwitchCliSession
       modalState={cliModalState}
