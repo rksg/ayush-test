@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react'
 
-import { Badge }   from 'antd'
-import { useIntl } from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { Badge }               from 'antd'
+import { useIntl }             from 'react-intl'
 
 import {
   Loader,
@@ -11,7 +12,7 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useApListQuery, useImportApMutation
 } from '@acx-ui/rc/services'
@@ -32,10 +33,9 @@ import {
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { seriesMappingAP } from '../DevicesWidget/helper'
-import { useApActions }    from '../useApActions'
+import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { useApActions }              from '../useApActions'
 
 
 
