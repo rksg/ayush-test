@@ -212,7 +212,7 @@ export function ApForm () {
   }
 
   const getApGroupOptions = async (venueId: string) => {
-    const result = []
+    let result: { label: string; value: string | null }[] = []
     result.push({
       label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
       value: null
@@ -220,7 +220,12 @@ export function ApForm () {
 
     const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
     if (venueId && list?.length) {
-      list?.filter((item) => !item.isDefault)
+      list?.filter((item) => {
+        if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
+          result[0].value = item.id
+        }
+        return !item.isDefault
+      })
         .sort((a, b) => (a.name > b.name) ? 1 : -1)
         .forEach((item) => (
           result.push({
