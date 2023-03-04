@@ -81,19 +81,35 @@ export function RadiusServerForm () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: (rows, clearSelection) => {
+    onClick: ([{ ipAddress }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'IP address' }),
-          entityValue: rows[0].ipAddress
+          entityValue: ipAddress
         },
         onOk: () => {
           const payload = {
-            ipAddress: [...queryResultData?.ipAddress ?? []].filter((e) => e !== rows[0].ipAddress)
+            ipAddress: [...queryResultData?.ipAddress ?? []].filter((e) => e !== ipAddress)
           }
-          updateConfig({ payload }).then(clearSelection)
+          updateConfig({ payload }).unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t(
+                  // eslint-disable-next-line max-len
+                  { defaultMessage: 'IP Address {ipAddress} was deleted' },
+                  { ipAddress }
+                )
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
         }
       })
     }
