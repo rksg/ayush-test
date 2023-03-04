@@ -2,15 +2,13 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Tabs }                                   from '@acx-ui/components'
 import {
   useNavigate,
   useParams,
   useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
