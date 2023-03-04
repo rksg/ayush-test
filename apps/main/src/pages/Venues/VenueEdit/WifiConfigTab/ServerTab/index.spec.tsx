@@ -42,10 +42,10 @@ describe('ServerTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueSyslogAp.url,
+        SyslogUrls.getVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json(venueSyslog))),
       rest.post(
-        CommonUrlsInfo.updateVenueSyslogAp.url,
+        SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
