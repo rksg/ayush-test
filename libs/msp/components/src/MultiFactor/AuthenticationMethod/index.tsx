@@ -11,7 +11,6 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { showToast }                   from '@acx-ui/components'
 import { Subtitle }                    from '@acx-ui/components'
 import { useDisableMFAMethodMutation } from '@acx-ui/rc/services'
 import { MFAMethod }                   from '@acx-ui/rc/utils'
@@ -40,12 +39,8 @@ export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
       const mfaMethod = mfaMethods.includes(MFAMethod.SMS)
         ? MFAMethod.SMS : MFAMethod.EMAIL
       await disableMFAMethod({ params: { mfaMethod } }).unwrap()
-    } catch {
-      // TODO: handle disable failed error?
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -61,12 +56,8 @@ export const AuthenticationMethod = (props: { formRef: FormInstance }) => {
           mfaMethod: MFAMethod.MOBILEAPP
         }
       }).unwrap()
-    } catch {
-      // TODO: handle disable failed error?
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

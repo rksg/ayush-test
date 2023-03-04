@@ -142,7 +142,7 @@ export function UserProfile () {
   return (
     <>
       <PageHeader
-        title='User Profile'
+        title={$t({ defaultMessage: 'User Profile' })}
       />
       <UserData/>
 
