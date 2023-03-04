@@ -11,7 +11,7 @@ exports[`WifiCallingScopeForm should render wifiCallingScopeForm successfully 1`
       style="padding-left: 10px; padding-right: 10px;"
     >
       <h3
-        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+        class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
       >
         Scope
       </h3>
