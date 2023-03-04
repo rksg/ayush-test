@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty }         from 'lodash'
+import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -699,7 +699,8 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const oldData = pick(originalData, checkFields)
   const newData = { ...omit(formData, 'deviceGps'), deviceGps: deviceGps }
   //omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
-  return !!Object.values(formData).length && !isEqual(oldData, newData)
+  return !!Object.values(formData).length &&
+    !isEqual(omitBy(oldData, isEmpty), omitBy(newData, isEmpty))
 }
 
 function checkFormIsInvalid (form: StepsFormInstance) {
