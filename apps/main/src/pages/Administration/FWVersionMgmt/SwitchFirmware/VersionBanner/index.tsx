@@ -3,7 +3,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
-  useGetLatestFirmwareListQuery
+  useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   firmwareTypeTrans,
@@ -17,7 +17,7 @@ const transform = firmwareTypeTrans()
 export const VersionBanner = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
   const d = new Date(firmware?.createdDate ?? '' as string)

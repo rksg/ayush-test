@@ -24,6 +24,7 @@ import {
 import {
   Schedule,
   UpgradePreferences,
+  FirmwareCategory,
   FirmwareType,
   FirmwareVenue,
   FirmwareVersion,
@@ -31,19 +32,24 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
+  firmwareTypeTrans,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import {
   compareVersions,
-  getApVersion
+  getApVersion,
+  getApNextScheduleTpl,
+  toUserDate
 } from '../../FirmwareUtils'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
 import { PreferencesDialog }    from './PreferencesDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
+
+const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,
@@ -73,7 +79,7 @@ function useColumns (
       filterable: filterables ? filterables['version'] : false,
       width: 120,
       render: function (data, row) {
-        return row.versions[0].version
+        return row.versions[0].version ?? '--'
       }
     },
     {
@@ -84,7 +90,11 @@ function useColumns (
       filterable: filterables ? filterables['type'] : false,
       width: 120,
       render: function (data, row) {
-        return row.versions[0].category
+        if (!row.versions[0]) return '--'
+        const text = transform(row.versions[0].category as FirmwareCategory, 'type')
+        const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
+        if (!subText) return text
+        return `${text} (${subText})`
       }
     },
     {
@@ -94,7 +104,8 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.lastScheduleUpdate ?? '-'
+        if (!row.lastScheduleUpdate) return '--'
+        return toUserDate(row.lastScheduleUpdate)
       }
     },
     {
@@ -104,7 +115,7 @@ function useColumns (
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.nextSchedules? row.nextSchedules[0].startDateTime : 'Not scheduled'
+        return getApNextScheduleTpl(row)
       }
     }
   ]
@@ -442,7 +453,7 @@ export const VenueFirmwareTable = (
         onOk () {
           skipVenueUpgradeSchedules({
             params: { ...params },
-            payload: { ...selectedRows.map((row) => row.id) }
+            payload: selectedRows.map((row) => row.id)
           }).then(clearSelection)
         },
         onCancel () {}
