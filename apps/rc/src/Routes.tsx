@@ -123,6 +123,7 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
