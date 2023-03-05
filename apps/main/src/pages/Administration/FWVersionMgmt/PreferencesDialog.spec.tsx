@@ -19,9 +19,8 @@ import {
   venue,
   preference,
   availableVersions
-} from '../../__tests__/fixtures'
-
-import { VenueFirmwareList } from '.'
+} from './__tests__/fixtures'
+import { VenueFirmwareList } from './ApFirmware/VenueFirmwareList/index'
 
 
 describe('Firmware Venues Table', () => {

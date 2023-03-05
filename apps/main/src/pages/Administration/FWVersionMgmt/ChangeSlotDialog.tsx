@@ -78,7 +78,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       valueDays: valueDays,
       valueTimes: valueTimes
     })
-    onModalCancel()
+    onCancel()
   }
 
   const onModalCancel = () => {

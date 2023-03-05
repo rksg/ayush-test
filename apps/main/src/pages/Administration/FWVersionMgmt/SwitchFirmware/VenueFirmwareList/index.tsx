@@ -36,9 +36,9 @@ import {
   getNextScheduleTpl,
   toUserDate
 } from '../../FirmwareUtils'
+import { PreferencesDialog } from '../../PreferencesDialog'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { PreferencesDialog }    from './PreferencesDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
 
 const transform = firmwareTypeTrans()
