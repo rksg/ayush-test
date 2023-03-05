@@ -98,6 +98,39 @@ describe('MFA First-time Setup Check', () => {
     )
   })
 
+  it('should not popup setup modal if MFA is auth method is already set', async () => {
+    const { result } = renderHook(() => {
+      const[mfaDetails, setMfaDetails] = useState({})
+      return { mfaDetails, setMfaDetails }
+    })
+
+    render(<Provider>
+      <MFACheck />
+    </Provider>, {
+      route: {
+        path: '/t/:tenantId/dashboard',
+        params
+      }
+    })
+
+    await waitFor(() => {
+      expect(mockedGetMfaAdminDetails).toBeCalled()
+    })
+
+    act(() => {
+      result.current.setMfaDetails({
+        tenantStatus: MFAStatus.ENABLED,
+        mfaMethods: [MFAMethod.EMAIL],
+        userId: 'userId',
+        enabled: true
+      })
+    })
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('mfaSetup')).toBeNull()
+    })
+  })
+
   it('should popup setup modal', async () => {
     const { result } = renderHook(() => {
       const[mfaDetails, setMfaDetails] = useState({})
@@ -131,34 +164,6 @@ describe('MFA First-time Setup Check', () => {
   })
 
 
-  it('should not popup setup modal if MFA is auth method is already set', async () => {
-    const { result } = renderHook(() => {
-      const[mfaDetails, setMfaDetails] = useState({})
-      return { mfaDetails, setMfaDetails }
-    })
 
-    render(<Provider>
-      <MFACheck />
-    </Provider>, {
-      route: {
-        path: '/t/:tenantId/dashboard',
-        params
-      }
-    })
-
-    await waitFor(() => {
-      expect(mockedGetMfaAdminDetails).toBeCalled()
-    })
-
-    act(() => {
-      result.current.setMfaDetails({
-        tenantStatus: MFAStatus.ENABLED,
-        mfaMethods: [MFAMethod.EMAIL],
-        userId: 'userId',
-        enabled: true
-      })
-    })
-    expect(screen.queryByTestId('mfaSetup')).not.toBeInTheDocument()
-  })
 })
 
