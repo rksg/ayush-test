@@ -262,10 +262,9 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
               name='port'
               label={$t({ defaultMessage: 'Port' })}
               rules={[
-                { required: true },
-                { min: 1 },
-                { max: 5 }
+                { required: true }
               ]}
+              initialValue='514'
               children={<Input
                 data-testid='port'
                 onChange={(event => {handlePort(event.target.value)})}/>}
@@ -301,10 +300,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
             <Form.Item
               name='secondaryPort'
               label={$t({ defaultMessage: 'Port' })}
-              rules={[
-                { min: 1 },
-                { max: 5 }
-              ]}
+              initialValue='514'
               children={<Input
                 data-testid='port2'
                 onChange={(event => {handleSecondaryPort(event.target.value)})}/>}
