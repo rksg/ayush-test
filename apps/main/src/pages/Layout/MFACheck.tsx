@@ -38,7 +38,7 @@ export const MFACheck = () => {
   // no need to check MFA first-time setup in delegation mode
   return !isDelegationMode()
   && (mfaDetails.enabled
-    && mfaDetails.mfaMethods.length === 0
+    && mfaDetails.mfaMethods?.length === 0
     && mfaSetupFinish === false)
     ? <MFASetupModal onFinish={handleMFASetupFinish} />
     : <Outlet/>

@@ -1,9 +1,12 @@
+import { useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
-import { UserUrlsInfo, MFAStatus }             from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { render, screen, mockServer, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo, MFAStatus, MFAMethod, MfaDetailStatus } from '@acx-ui/rc/utils'
+import { Provider }                                            from '@acx-ui/store'
+import { render, renderHook, screen, mockServer, waitFor }     from '@acx-ui/test-utils'
 
 import { MFACheck } from './MFACheck'
 
@@ -23,17 +26,63 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
+}))
+
+
 const params = { tenantId: 'tenantId' }
+
+describe('MFA is not enabled', () => {
+  it('should not popup setup modal', async () => {
+    const mockedGetMfaTenantDetDetails = jest.fn()
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => {
+          mockedGetMfaTenantDetDetails()
+          return res(ctx.json({
+            tenantStatus: MFAStatus.DISABLED,
+            userId: 'userId',
+            enabled: false
+          }))
+        }
+      )
+    )
+
+    renderHook(() => {
+      const[mfaDetails, setMfaDetails] = useState({} as MfaDetailStatus)
+      return { mfaDetails, setMfaDetails }
+    })
+
+    render(<Provider>
+      <MFACheck />
+    </Provider>, {
+      route: {
+        path: '/t/:tenantId/dashboard',
+        params
+      }
+    })
+
+    await waitFor(() => {
+      expect(mockedGetMfaTenantDetDetails).toBeCalled()
+    })
+
+    expect(screen.queryByTestId('mfaSetup')).not.toBeInTheDocument()
+  })
+})
+
 describe('MFA First-time Setup Check', () => {
   const mockedGetMfaAdminDetails = jest.fn()
+  const mockedMFATenantDetail = {
+    tenantStatus: MFAStatus.ENABLED,
+    mfaMethods: [],
+    userId: 'userId',
+    enabled: true
+  }
 
   beforeEach(() => {
-    const mockedMFATenantDetail = {
-      tenantStatus: MFAStatus.ENABLED,
-      mfaMethods: [],
-      userId: 'userId'
-    }
-
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
@@ -49,7 +98,13 @@ describe('MFA First-time Setup Check', () => {
     )
   })
 
-  test('should popup setup modal', async () => {
+  it('should popup setup modal', async () => {
+    const { result } = renderHook(() => {
+      const[mfaDetails, setMfaDetails] = useState({})
+      const[mfaSetupFinish, setMfaSetupFinish] = useState(false)
+      return { mfaDetails, setMfaDetails, mfaSetupFinish, setMfaSetupFinish }
+    })
+
     render(<Provider>
       <MFACheck />
     </Provider>, {
@@ -63,10 +118,25 @@ describe('MFA First-time Setup Check', () => {
       expect(mockedGetMfaAdminDetails).toBeCalled()
     })
 
+    act(() => {
+      result.current.setMfaDetails(mockedMFATenantDetail)
+    })
+
     await screen.findByTestId('mfaSetup')
+    await userEvent.click(await screen.findByRole('button'))
+    act(() => {
+      result.current.setMfaSetupFinish(true)
+    })
+    expect(screen.queryByTestId('mfaSetup')).toBeNull()
   })
 
-  test('should close setup modal after settings finished', async () => {
+
+  it('should not popup setup modal if MFA is auth method is already set', async () => {
+    const { result } = renderHook(() => {
+      const[mfaDetails, setMfaDetails] = useState({})
+      return { mfaDetails, setMfaDetails }
+    })
+
     render(<Provider>
       <MFACheck />
     </Provider>, {
@@ -80,8 +150,15 @@ describe('MFA First-time Setup Check', () => {
       expect(mockedGetMfaAdminDetails).toBeCalled()
     })
 
-    await screen.findByTestId('mfaSetup')
-
-    await userEvent.click(await screen.findByRole('button'))
+    act(() => {
+      result.current.setMfaDetails({
+        tenantStatus: MFAStatus.ENABLED,
+        mfaMethods: [MFAMethod.EMAIL],
+        userId: 'userId',
+        enabled: true
+      })
+    })
+    expect(screen.queryByTestId('mfaSetup')).not.toBeInTheDocument()
   })
 })
+
