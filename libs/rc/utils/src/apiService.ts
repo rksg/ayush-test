@@ -111,7 +111,7 @@ export const getFilters = (params: Params) => {
 }
 
 export const enableNewApi = function (apiInfo: ApiInfo) {
-  const hasOldUrl = !_.isEmpty(apiInfo.oldUrl)
+  const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if(apiInfo.newApi) {
     return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
   } else {

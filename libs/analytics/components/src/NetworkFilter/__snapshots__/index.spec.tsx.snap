@@ -1059,7 +1059,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     <li
                       aria-checked="true"
                       class="ant-cascader-menu-item ant-cascader-menu-item-expand"
-                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__apsvenue"
+                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__apsid1"
                       role="menuitemcheckbox"
                     >
                       <span
@@ -1117,7 +1117,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     <li
                       aria-checked="true"
                       class="ant-cascader-menu-item ant-cascader-menu-item-expand"
-                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__switchesvenue"
+                      data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"id1\\"}]__RC_CASCADER_SPLIT__switchesid2"
                       role="menuitemcheckbox"
                     >
                       <span

@@ -25,12 +25,15 @@ export const getDocsURL = () => process.env['NODE_ENV'] === 'development'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
-const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+// eslint-disable-next-line max-len
+const reg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+
 const useBasePath = () => {
   const location = useLocation()
   const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
   return _.replace(basePath, reg, (matchStr)=>{
-    const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
+    // eslint-disable-next-line max-len
+    const paramReg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
     return matchStr.replaceAll(paramReg,'*')
   })
 }
