@@ -11,6 +11,7 @@ import {
   FacilityEnum,
   FlowLevelEnum,
   ProtocolEnum,
+  PriorityEnum,
   SyslogActionTypes,
   SyslogContextType,
   serverIpAddressRegExp
@@ -45,11 +46,31 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
         payload: {
           state: {
             ...state,
-            policyName: policyData.name ?? ''
+            policyName: policyData.name ?? '',
+            server: policyData?.primary?.server ?? '',
+            port: policyData.primary?.port?.toString() ?? '',
+            protocol: policyData.primary?.protocol ?? ProtocolEnum.UDP,
+            secondaryServer: policyData.secondary?.server ?? '',
+            secondaryPort: policyData.secondary?.port?.toString() ?? '',
+            secondaryProtocol: policyData.secondary?.protocol ?? ProtocolEnum.TCP,
+            facility: policyData.facility ?? FacilityEnum.KEEP_ORIGINAL,
+            priority: policyData.priority ?? PriorityEnum.INFO,
+            flowLevel: policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW,
+            venues: policyData.venues ?? []
           }
         }
       })
       formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
+      formRef?.current?.setFieldValue('server', policyData.primary.server ?? '')
+      formRef?.current?.setFieldValue('port', policyData.primary.port ?? '')
+      formRef?.current?.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
+      formRef?.current?.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
+      formRef?.current?.setFieldValue('secondaryPort', policyData.secondary?.port ?? '')
+      // eslint-disable-next-line max-len
+      formRef?.current?.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
+      formRef?.current?.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
+      // eslint-disable-next-line max-len
+      formRef?.current?.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
     }
   }, [data])
 

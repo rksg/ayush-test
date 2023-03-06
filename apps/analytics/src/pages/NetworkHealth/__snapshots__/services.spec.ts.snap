@@ -1,135 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`processDtoToPayload handle zone + apGroup 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-              Object {
-                "name": "VENUE",
-                "type": "apGroup",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`processDtoToPayload handle zone only 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`processDtoToPayload process dto to payload for GraphQL input 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-              Object {
-                "list": Array [
-                  "00:00:00:00:00:00",
-                ],
-                "type": "apMac",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`specToDto handles path without AP list 1`] = `
-Object {
-  "authenticationMethod": "WPA3_PERSONAL",
-  "clientType": "virtual-wireless-client",
-  "dnsServer": "10.10.10.10",
-  "id": "spec-id",
-  "isDnsServerCustom": true,
-  "name": "Test Name",
-  "networkPaths": Object {
-    "networkNodes": "VENUE>AP Group",
-  },
-  "pingAddress": "10.10.10.10",
-  "radio": "6",
-  "tracerouteAddress": "10.10.10.10",
-  "type": "on-demand",
-  "wlanName": "WLAN Name",
-  "wlanPassword": "12345",
-  "wlanUsername": "user",
-}
-`;
-
 exports[`specToDto process spec of GraphQL result to dto 1`] = `
 Object {
   "authenticationMethod": "WPA3_PERSONAL",
@@ -139,7 +9,20 @@ Object {
   "isDnsServerCustom": true,
   "name": "Test Name",
   "networkPaths": Object {
-    "networkNodes": "VENUE|00:00:00:00:00:00",
+    "networkNodes": Array [
+      Array [
+        Object {
+          "name": "VENUE",
+          "type": "zone",
+        },
+        Object {
+          "list": Array [
+            "00:00:00:00:00:00",
+          ],
+          "type": "apMac",
+        },
+      ],
+    ],
   },
   "pingAddress": "10.10.10.10",
   "radio": "6",

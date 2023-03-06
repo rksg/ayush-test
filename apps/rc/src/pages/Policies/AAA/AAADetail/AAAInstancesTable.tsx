@@ -1,60 +1,53 @@
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { useEffect } from 'react'
-
-import { useIntl } from 'react-intl'
-
-import { Table, TableProps, Card, Loader }                          from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery, useGetAAAProfileDetailQuery } from '@acx-ui/rc/services'
-import { AAADetailInstances, useTableQuery }                        from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                    from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
+import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
 
 export default function AAAInstancesTable (){
 
   const { $t } = useIntl()
-  const params = useParams()
-  const { data } = useGetAAAProfileDetailQuery({ params })
   const tableQuery = useTableQuery({
     useQuery: useAaaNetworkInstancesQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
-      filters: {
-        id: data?.networkIds?.length? data?.networkIds : ['none']
-      },
-      sortField: 'name',
-      sortOrder: 'ASC'
+      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType']
+    },
+    sorter: {
+      sortField: 'networkName',
+      sortOrder: 'DESC'
     }
   })
-
-  useEffect(()=>{
-    if(data){
-      tableQuery.setPayload({
-        ...tableQuery.payload,
-        filters: {
-          id: data?.networkIds?.length? data?.networkIds : ['none']
-        }
-      })
-    }
-  },[data])
-  const columns: TableProps<AAADetailInstances>['columns'] = [
+  const columns: TableProps<AAAPolicyNetwork>['columns'] = [
     {
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'network',
+      dataIndex: 'networkName',
       sorter: true,
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/networks/${row.network.id}/network-details/aps`}>
-            {row.network.name}</TenantLink>
+            to={`/networks/wireless/${row.networkId}/network-details/aps`}>
+            {row.networkName}</TenantLink>
         )
       }
     },
     {
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'type',
-      render: function (_data, row) {
-        return row.network.captiveType
+      dataIndex: 'networkType',
+      render: (data, row) => {
+        const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
+        return data === 'GUEST'
+          ? <FormattedMessage
+            defaultMessage={'Captive Portal - {captiveNetworkType}'}
+            values={{
+              captiveNetworkType: $t(captiveNetworkTypes[
+                row.guestNetworkType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
+              ])
+            }}
+          />
+          : <FormattedMessage {...message}/>
       }
     }
   ]

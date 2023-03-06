@@ -8,7 +8,8 @@ import { SyslogUrls }                 from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import SyslogDetailView from './SyslogDetailView'
+import SyslogDetailView  from './SyslogDetailView'
+import SyslogVenueDetail from './SyslogVenueDetail'
 
 const detailContent = {
   venues: [
@@ -103,7 +104,7 @@ describe('SyslogDetailView', () => {
         ctx.json(detailContent)
       )
     ), rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueDetailContent)
       )
@@ -128,7 +129,7 @@ describe('SyslogDetailView', () => {
         ctx.json(emptyDetailContent)
       )
     ), rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueDetailContent)
       )
@@ -146,4 +147,31 @@ describe('SyslogDetailView', () => {
 
     await screen.findByText(/configure/i)
   })
+
+  it('should render SyslogVenueDetail successfully', async () => {
+    mockServer.use(rest.get(
+      SyslogUrls.getSyslogPolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(emptyDetailContent)
+      )
+    ), rest.post(
+      SyslogUrls.getVenueSyslogList.url,
+      (_, res, ctx) => res(
+        ctx.json(venueDetailContent)
+      )
+    ))
+
+    render(
+      <SyslogVenueDetail />
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId2', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByText(/Venue Name/i)
+  })
+
 })

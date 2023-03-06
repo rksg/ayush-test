@@ -95,6 +95,36 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    getApGroup: build.query<ApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    updateApGroup: build.mutation<ApGroup, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.updateApGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
+    deleteApGroups: build.mutation<ApGroup[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.deleteApGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     addAp: build.mutation<ApDeep, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.addAp, params)
@@ -251,10 +281,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.rebootAp, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -267,10 +298,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     blinkLedAp: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.blinkLedAp, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -579,7 +611,10 @@ export const {
   useResetApDirectedMulticastMutation,
   useGetApNetworkSettingsQuery,
   useUpdateApNetworkSettingsMutation,
-  useResetApNetworkSettingsMutation
+  useResetApNetworkSettingsMutation,
+  useDeleteApGroupsMutation,
+  useUpdateApGroupMutation,
+  useGetApGroupQuery
 } = apApi
 
 
