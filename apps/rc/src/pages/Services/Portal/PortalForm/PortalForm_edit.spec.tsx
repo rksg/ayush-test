@@ -108,7 +108,7 @@ describe('PortalForm', () => {
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
 
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {

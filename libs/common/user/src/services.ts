@@ -189,7 +189,7 @@ export const {
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
-    //   query: ({ params }) => createHttpRequest(Urls.getMfaMasterCode, params),
+    //   query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaMasterCode, params),
     //   transformResponse (userProfile: UserProfile) {
     //     userProfile.initials =
     //       userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()

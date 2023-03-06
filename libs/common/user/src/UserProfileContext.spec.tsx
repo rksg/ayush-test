@@ -77,7 +77,7 @@ describe('UserProfileContext', () => {
   it('user profile hasRole()', async () => {
     mockServer.use(
       rest.get(
-        Urls.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json({
           ...mockedUserProfile,
           roles: [RolesEnum.ADMINISTRATOR]
