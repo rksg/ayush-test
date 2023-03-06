@@ -65,6 +65,7 @@ describe('Recovery Network Passphrase Drawer', () => {
     await userEvent.type(inputElem, '1236')
 
     await waitForElementToBeRemoved(() => screen.queryByRole('alert'))
+    // expect(changeBtn).not.toBeDisabled()
   })
 
   it('should close dialog after submit succeed', async () => {

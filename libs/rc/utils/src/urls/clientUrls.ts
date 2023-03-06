@@ -15,26 +15,43 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteGuests: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/guest-user'
+    url: '/guestUsers',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    newApi: true
   },
   importGuestPass: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/import'
   },
+  guestsAction: {
+    method: 'patch',
+    url: '/guestUsers/:guestUserId',
+    newApi: true
+  },
   enableGuests: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
+    url: '/guestUsers/:guestUserId',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    newApi: true
   },
   disableGuests: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
+    url: '/guestUsers/:guestUserId',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    newApi: true
   },
   getGuests: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    url: '/guestUsers/query/csvFiles',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    newApi: true
   },
   generateGuestPassword: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate'
+  },
+  disconnectClient: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/disconnect-client'
   }
 }

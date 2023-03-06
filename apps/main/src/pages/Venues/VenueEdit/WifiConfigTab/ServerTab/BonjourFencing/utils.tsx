@@ -92,7 +92,7 @@ export function ProtocolRadioGroup (props: RadioGroupProps) {
 
   const options = [
     { label: defineMessage({ defaultMessage: 'TCP' }), value: 'tcp' },
-    { label: defineMessage({ defaultMessage: 'UTP' }), value: 'utp' }
+    { label: defineMessage({ defaultMessage: 'UDP' }), value: 'udp' }
   ]
 
   return (
