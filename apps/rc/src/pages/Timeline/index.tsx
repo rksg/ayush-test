@@ -2,9 +2,9 @@ import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
-import { hasAccesses }                           from '@acx-ui/user'
 import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                           from '@acx-ui/user'
 import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'

@@ -4,13 +4,13 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/user'
 import {
   useDelL2AclPolicyMutation,
   useGetAccessControlProfileListQuery,
   useL2AclPolicyListQuery
 } from '@acx-ui/rc/services'
 import { L2AclPolicy, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { hasAccesses }                            from '@acx-ui/user'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 

@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/user'
 import {
   useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
@@ -17,7 +16,8 @@ import {
   CatchErrorResponse,
   isOperationalSwitch
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 

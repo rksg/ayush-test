@@ -4,7 +4,6 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
-import { hasAccesses }                               from '@acx-ui/user'
 import { useGetWebAuthTemplateQuery }                from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -13,6 +12,7 @@ import {
   ServiceOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {

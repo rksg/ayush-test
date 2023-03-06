@@ -11,7 +11,6 @@ import {
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/user'
 import {
   useVenuesListQuery,
   useDeleteVenueMutation,
@@ -25,6 +24,7 @@ import {
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }                        from '@acx-ui/user'
 
 function useColumns (
   searchable?: boolean,

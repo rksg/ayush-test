@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { hasAccesses }                          from '@acx-ui/user'
 import { useGetAccessControlProfileQuery }      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -12,7 +11,8 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import AccessControlNetworksDetail from './AccessControlNetworksDetail'
 import AccessControlOverview       from './AccessControlOverview'

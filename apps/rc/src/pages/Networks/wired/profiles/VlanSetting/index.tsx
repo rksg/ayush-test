@@ -3,12 +3,12 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/user'
 import {
   Vlan,
   SwitchModel,
   SpanningTreeProtocolName } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { hasAccesses } from '@acx-ui/user'
+import { getIntl }     from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 

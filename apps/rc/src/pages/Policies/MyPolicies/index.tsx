@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { hasAccesses }                                                        from '@acx-ui/user'
 import {
   usePolicyListQuery
 } from '@acx-ui/rc/services'
@@ -18,6 +17,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import {
   policyTypeDescMapping,

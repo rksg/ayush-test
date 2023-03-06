@@ -18,7 +18,6 @@ import {
   DeleteOutlinedIcon,
   EditOutlinedIcon
 } from '@acx-ui/icons'
-import { hasAccesses }         from '@acx-ui/user'
 import {
   useDeleteLagMutation,
   useGetLagListQuery,
@@ -26,6 +25,7 @@ import {
 }                            from '@acx-ui/rc/services'
 import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
+import { hasAccesses }              from '@acx-ui/user'
 
 import { SwitchLagModal } from './SwitchLagModal'
 

@@ -5,7 +5,6 @@ import moment                                  from 'moment'
 import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal, showToast }         from '@acx-ui/components'
-import { useLazyGetUserProfileQuery }       from '@acx-ui/user'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
 import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
@@ -14,7 +13,8 @@ import {
   LangCode,
   PdfGeneratorService
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { useLazyGetUserProfileQuery } from '@acx-ui/user'
+import { getIntl }                    from '@acx-ui/utils'
 
 import {
   getHumanizedLocale,

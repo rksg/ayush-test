@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,
@@ -13,6 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
+import { hasAccesses }                    from '@acx-ui/user'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { toTimeString }     from '../../MacRegistrationListUtils'

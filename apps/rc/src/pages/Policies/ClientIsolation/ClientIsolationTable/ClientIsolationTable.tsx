@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { hasAccesses }                                                    from '@acx-ui/user'
 import { useDeleteClientIsolationMutation, usePolicyListQuery }           from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -13,6 +12,7 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                             from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',

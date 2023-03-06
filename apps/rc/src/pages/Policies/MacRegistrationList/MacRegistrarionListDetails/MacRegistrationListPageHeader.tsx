@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }    from '@acx-ui/components'
-import { hasAccesses }           from '@acx-ui/user'
 import { useGetMacRegListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -10,6 +9,7 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 

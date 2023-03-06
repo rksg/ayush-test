@@ -10,9 +10,9 @@ import { useIntl }               from 'react-intl'
 
 import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
-import { Urls }                              from '@acx-ui/user'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { Urls }                              from '@acx-ui/user'
 
 
 declare global {

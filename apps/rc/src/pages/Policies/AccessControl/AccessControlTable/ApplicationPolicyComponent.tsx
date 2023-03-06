@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps }            from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/user'
 import {
   useApplicationPolicyListQuery,
   useDelAppPolicyMutation, useGetAccessControlProfileListQuery
@@ -13,6 +12,7 @@ import {
   PolicyType,
   useTableQuery, ApplicationPolicy
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
 

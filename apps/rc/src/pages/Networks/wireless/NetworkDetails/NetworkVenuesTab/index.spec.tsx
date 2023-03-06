@@ -5,7 +5,6 @@ import { rest } from 'msw'
 
 import * as config      from '@acx-ui/config'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Urls }         from '@acx-ui/user'
 import { networkApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -23,6 +22,7 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { Urls } from '@acx-ui/user'
 
 import {
   network,

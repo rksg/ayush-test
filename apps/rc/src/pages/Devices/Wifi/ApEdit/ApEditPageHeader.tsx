@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
-import { hasAccesses }        from '@acx-ui/user'
 import { useGetApQuery }      from '@acx-ui/rc/services'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import ApEditTabs from './ApEditTabs'
 

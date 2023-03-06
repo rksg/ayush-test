@@ -9,7 +9,6 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { hasAccesses }   from '@acx-ui/user'
 import {
   PolicyType,
   RogueApConstant,
@@ -18,7 +17,8 @@ import {
   PolicyOperation,
   getPolicyDetailsLink
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'

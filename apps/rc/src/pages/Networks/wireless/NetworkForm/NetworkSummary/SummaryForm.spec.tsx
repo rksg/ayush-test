@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { Urls }                                                             from '@acx-ui/user'
 import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render }                                               from '@acx-ui/test-utils'
+import { Urls }                                                             from '@acx-ui/user'
 
 import {
   venuesResponse,

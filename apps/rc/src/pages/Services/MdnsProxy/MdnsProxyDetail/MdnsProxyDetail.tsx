@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import { ClockOutlined }                                        from '@acx-ui/icons'
-import { hasAccesses }                                          from '@acx-ui/user'
 import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -12,6 +11,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'

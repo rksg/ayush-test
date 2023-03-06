@@ -4,9 +4,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
-import { hasAccesses }                                                        from '@acx-ui/user'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
 import { StaticRoute }                                                        from '@acx-ui/rc/utils'
+import { hasAccesses }                                                        from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 

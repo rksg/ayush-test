@@ -8,7 +8,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }                                                                                                                 from '@acx-ui/user'
 import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationStatsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -20,6 +19,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                       from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [

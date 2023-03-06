@@ -9,7 +9,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                     from '@acx-ui/icons'
-import { hasAccesses }                     from '@acx-ui/user'
 import { APStatus }                        from '@acx-ui/rc/components'
 import { useApActions }                    from '@acx-ui/rc/components'
 import { useApDetailHeaderQuery }          from '@acx-ui/rc/services'
@@ -21,6 +20,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { hasAccesses }   from '@acx-ui/user'
 import { useDateFilter } from '@acx-ui/utils'
 
 import { useApContext } from './ApContext'

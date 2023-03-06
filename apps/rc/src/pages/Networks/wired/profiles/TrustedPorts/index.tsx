@@ -4,8 +4,8 @@ import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/user'
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
+import { hasAccesses }                                   from '@acx-ui/user'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'

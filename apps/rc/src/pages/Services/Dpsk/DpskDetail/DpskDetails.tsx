@@ -3,7 +3,6 @@ import { Path, useParams } from 'react-router-dom'
 
 import { Button, DisabledButton, PageHeader, Tabs } from '@acx-ui/components'
 import { ClockOutlined }                            from '@acx-ui/icons'
-import { hasAccesses }                              from '@acx-ui/user'
 import { useGetDpskQuery }                          from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -13,6 +12,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { hasAccesses }                            from '@acx-ui/user'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'

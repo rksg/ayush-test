@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
-import { Provider  }                                   from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }              from '@acx-ui/store'
 import {
   render,
   screen,
   fireEvent
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
 import { fakeUserProfile } from './AccountSettings/__tests__/fixtures'
 

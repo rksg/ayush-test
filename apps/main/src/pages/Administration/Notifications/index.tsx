@@ -9,7 +9,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }                     from '@acx-ui/user'
 import {
   useGetNotificationRecipientsQuery,
   useDeleteNotificationRecipientsMutation,
@@ -17,6 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import { NotificationRecipientUIModel, NotificationEndpointType } from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
+import { hasAccesses }                                            from '@acx-ui/user'
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'

@@ -4,7 +4,6 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/user'
 import {
   useGetMdnsProxyApsQuery,
   useDeleteMdnsProxyApsMutation
@@ -17,6 +16,7 @@ import {
   useTableQuery
 }   from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'

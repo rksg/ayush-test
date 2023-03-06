@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 
-import { UserProfile } from '@acx-ui/user'
-import { Provider }    from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { UserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile } from '../__tests__/fixtures'
 

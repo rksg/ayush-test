@@ -2,10 +2,10 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }                                             from '@acx-ui/components'
-import { hasAccesses }                                                                              from '@acx-ui/user'
 import { useGetAAAProfileDetailQuery }                                                              from '@acx-ui/rc/services'
 import { AAAPolicyType, getPolicyDetailsLink, getPolicyListRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
+import { hasAccesses }                                                                              from '@acx-ui/user'
 
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'

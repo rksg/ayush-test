@@ -9,7 +9,6 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/user'
 import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -25,6 +24,7 @@ import {
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                  from '@acx-ui/user'
 
 export default function DpskTable () {
   const intl = useIntl()

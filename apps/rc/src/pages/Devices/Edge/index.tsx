@@ -2,9 +2,9 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }     from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/user'
 import { EdgesTable }             from '@acx-ui/rc/components'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import { hasAccesses }            from '@acx-ui/user'
 
 
 const Edges = () => {

@@ -11,15 +11,15 @@ import {
   TableProps,
   Subtitle
 } from '@acx-ui/components'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 import {
   useGetAdminListQuery,
   useGetMspProfileQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils } from '@acx-ui/rc/utils'
-import { RolesEnum }               from '@acx-ui/types'
+import { Administrator, MSPUtils }            from '@acx-ui/rc/utils'
+import { RolesEnum }                          from '@acx-ui/types'
+import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 

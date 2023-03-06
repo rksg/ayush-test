@@ -14,10 +14,10 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { Table, TableProps, Modal, showToast }                 from '@acx-ui/components'
-import { hasAccesses }                                         from '@acx-ui/user'
 import { useAddAclMutation }                                   from '@acx-ui/rc/services'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
+import { hasAccesses }                                         from '@acx-ui/user'
 
 import { ACLRuleModal } from './ACLRuleModal'
 

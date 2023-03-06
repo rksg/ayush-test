@@ -4,9 +4,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { showActionModal, Table, TableProps }                     from '@acx-ui/components'
-import { hasAccesses }                                            from '@acx-ui/user'
 import { useGetWifiCallingServiceQuery }                          from '@acx-ui/rc/services'
 import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
+import { hasAccesses }                                            from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
