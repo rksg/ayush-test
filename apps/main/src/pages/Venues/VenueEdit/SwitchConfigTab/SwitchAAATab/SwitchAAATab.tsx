@@ -11,7 +11,6 @@ import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/r
 import { AAAServers }  from './AAAServers'
 import { AAASettings } from './AAASettings'
 
-
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()

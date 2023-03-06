@@ -15,7 +15,7 @@ import { IconRadioGroup } from '../VenueWifi/styledComponents'
 
 export function VenueSwitch () {
   const params = useParams()
-  const [ showIdx, setShowIdx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(0)
   return (<>
     <IconRadioGroup value={showIdx}
       size='small'

@@ -165,6 +165,26 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap-group',
     newApi: true
   },
+  getApsByApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId/ap'
+  },
+  getApGroup: {
+    method: 'get',
+    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+  },
+  updateApGroup: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+  },
+  deleteApGroup: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+  },
+  deleteApGroups: {
+    method: 'delete',
+    url: '/api/tenant/:tenantId/wifi/ap-group'
+  },
   getDhcpAp: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'

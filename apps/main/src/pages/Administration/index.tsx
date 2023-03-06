@@ -60,7 +60,8 @@ const tabPanes = {
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
-  const isEnable = useIsSplitOn(Features.UNRELEASED || Features.EDGE_EARLY_BETA)
+  const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
   const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {

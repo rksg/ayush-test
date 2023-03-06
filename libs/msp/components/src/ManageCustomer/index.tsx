@@ -19,6 +19,7 @@ import {
   Button,
   GoogleMap,
   PageHeader,
+  showActionModal,
   showToast,
   StepsForm,
   StepsFormInstance,
@@ -153,6 +154,7 @@ const defaultAddress: Address = {
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -395,10 +397,13 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Add Customer Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -456,10 +461,13 @@ export function ManageCustomer () {
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Update Customer Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -840,6 +848,10 @@ export function ManageCustomer () {
           <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
+        {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
@@ -961,6 +973,12 @@ export function ManageCustomer () {
         >
           <Paragraph>{switchAssigned}</Paragraph>
         </Form.Item>
+        {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+        >
+          <Paragraph>25</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >

@@ -7,7 +7,8 @@ import {
   RequestPayload,
   UserSettings,
   UserProfile,
-  CloudVersion
+  CloudVersion,
+  GlobalValues
 } from '@acx-ui/rc/utils'
 
 
@@ -88,7 +89,19 @@ export const userApi = baseUserApi.injectEndpoints({
           ...messageBannerReq
         }
       }
+    }),
+    getGlobalValues: build.query<GlobalValues, RequestPayload>({
+      query: ({ params }) => {
+        const values = createHttpRequest(
+          CommonUrlsInfo.getGlobalValues,
+          params
+        )
+        return {
+          ...values
+        }
+      }
     })
+
   })
 })
 export const {
@@ -97,5 +110,6 @@ export const {
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetPlmMessageBannerQuery
+  useGetPlmMessageBannerQuery,
+  useGetGlobalValuesQuery
 } = userApi

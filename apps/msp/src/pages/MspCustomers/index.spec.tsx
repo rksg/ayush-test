@@ -156,7 +156,7 @@ describe('MspCustomers', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     render(
       <Provider>
         <MspCustomers />

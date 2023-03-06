@@ -49,5 +49,9 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   generateGuestPassword: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate'
+  },
+  disconnectClient: {
+    method: 'post',
+    url: '/api/tenant/:tenantId/wifi/disconnect-client'
   }
 }

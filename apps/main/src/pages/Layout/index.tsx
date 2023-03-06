@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -11,7 +13,10 @@ import {
   AlarmsButton,
   FetchBot,
   HelpButton,
-  UserButton
+  UserButton,
+  LicenseBanner,
+  HeaderContext,
+  RegionButton
 } from '@acx-ui/main/components'
 import {
   MspEcDropdownList
@@ -19,16 +24,25 @@ import {
 import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
+import { useParams }                                 from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
-import { Home }          from './styledComponents'
+import * as UI           from './styledComponents'
+
 
 function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
+  const { $t } = useIntl()
+
+  const params = useParams()
+  const searchFromUrl = params.searchVal || ''
+
+  const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
+  const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
 
   return (
     <LayoutComponent
@@ -40,16 +54,26 @@ function Layout () {
         </>
       }
       leftHeaderContent={
-        showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
-          <Home>
-            <LayoutUI.Icon children={<HomeSolid />} />
-            Home
-          </Home>
-        </Link>
+        <UI.LeftHeaderWrapper>
+          { showHomeButton && <Link to={`${getBasePath()}/v/${TenantIdFromJwt()}`}>
+            <UI.Home>
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Home' })}
+            </UI.Home>
+          </Link> }
+          <RegionButton/>
+          <HeaderContext.Provider value={{
+            searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+            <LicenseBanner/>
+          </HeaderContext.Provider>
+        </UI.LeftHeaderWrapper>
       }
 
       rightHeaderContent={<>
-        <SearchBar />
+        <HeaderContext.Provider value={{
+          searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
+          <SearchBar />
+        </HeaderContext.Provider>
         <LayoutUI.Divider />
         {isDelegationMode()
           ? <MspEcDropdownList/>

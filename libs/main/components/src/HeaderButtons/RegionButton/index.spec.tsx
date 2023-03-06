@@ -1,0 +1,116 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { DetailLevel }                                 from '@acx-ui/rc/utils'
+import { MspUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen
+} from '@acx-ui/test-utils'
+
+
+import RegionButton from './index'
+
+const mspUserData = {
+  msp_label: '',
+  name: '',
+  service_effective_date: '',
+  service_expiration_date: '',
+  is_active: false
+}
+
+const fakeUserProfile = {
+  region: '[NA]',
+  allowedRegions: [
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://devalto.ruckuswireless.com',
+      current: true
+    },
+    {
+      current: false,
+      description: 'APAC region',
+      link: 'https://asia.qaalto.ruckuswireless.com',
+      name: 'Asia'
+    }
+  ],
+  externalId: '0032h00000LUqcoAAD',
+  pver: 'acx-hybrid',
+  companyName: 'Dog Company 1551',
+  firstName: 'FisrtName 1551',
+  lastName: 'LastName 1551',
+  username: 'dog1551@email.com',
+  role: 'PRIME_ADMIN',
+  roles: ['PRIME_ADMIN'],
+  detailLevel: DetailLevel.DEBUGGING,
+  dateFormat: 'mm/dd/yyyy',
+  email: 'dog1551@email.com',
+  var: true,
+  tenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
+  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  support: false,
+  dogfood: false
+}
+
+const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
+const userProfileContextValues = {
+  data: fakeUserProfile,
+  isPrimeAdmin
+} as UserProfileContextProps
+
+
+
+
+describe('Region Button Component', () => {
+  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  let params: { tenantId: string }
+  beforeEach(async () => {
+    params = {
+      tenantId: '8c36a0a9ab9d4806b060e112205add6f'
+    }
+    mockServer.use(
+      rest.get(
+        MspUrlsInfo.getMspEcProfile.url,
+        (req, res, ctx) => res(ctx.json(mspUserData))
+      )
+    )
+  })
+
+  it('should render Region Button Correctly', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}>
+          <RegionButton/>
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await userEvent.click(await screen.findByText('US'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'US' }))
+  })
+
+  it('selected other region for Region Component', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}>
+          <RegionButton/>
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await userEvent.click(await screen.findByText('US'))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Asia' }))
+  })
+
+})
