@@ -49,14 +49,18 @@ export enum TestType {
   Scheduled = 'scheduled'
 }
 
+export enum ScheduleFrequency {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly'
+}
+
+export type TestTypeWithSchedule = TestType.OnDemand | ScheduleFrequency
+
 export enum Band {
   Band2_4 = '2.4',
   Band5 = '5',
   Band6 = '6',
-}
-
-type Schedule = {
-  nextExecutionTime: string // timestamp
 }
 
 export type NetworkHealthSpec = {
@@ -66,16 +70,25 @@ export type NetworkHealthSpec = {
   apsCount: number
   userId: string,
   clientType: ClientType
+  schedule: Schedule | null
   configs: NetworkHealthConfig[]
   tests: { items: NetworkHealthTest[] }
-  schedule: Schedule | null
+}
+
+export type Schedule = {
+  type: 'service_guard'
+  timezone: string
+  frequency: ScheduleFrequency | null
+  day: number | null
+  hour: number | null
+  nextExecutionTime?: string // timestamp
 }
 
 export type NetworkHealthConfig = {
   id: string
   specId: string
   radio: Band
-  authenticationMethod: string
+  authenticationMethod: AuthenticationMethod
   wlanName: string
   networkPaths: { networkNodes: NetworkPaths }
   wlanUsername?: string
@@ -86,6 +99,15 @@ export type NetworkHealthConfig = {
   speedTestEnabled?: boolean
   updatedAt: string // timestamp
   createdAt: string // timestamp
+}
+
+export type NetworkHealthFormDto = Pick<NetworkHealthSpec, 'clientType' | 'schedule'> & {
+  id?: NetworkHealthSpec['id']
+  name?: NetworkHealthSpec['name']
+  type?: NetworkHealthSpec['type']
+  configs: Array<Partial<NetworkHealthConfig>>
+  typeWithSchedule?: TestTypeWithSchedule
+  isDnsServerCustom: boolean
 }
 
 type WlanAuthSettings = {
@@ -110,22 +132,6 @@ export type NetworkHealthTest = {
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
-
-export type NetworkHealthFormDto = {
-  id?: NetworkHealthSpec['id']
-  isDnsServerCustom: boolean
-} & Pick<NetworkHealthSpec, 'name' | 'type' | 'clientType'>
-  & Pick<NetworkHealthConfig, 'radio'
-    | 'wlanName'
-    | 'authenticationMethod'
-    | 'wlanPassword'
-    | 'wlanUsername'
-    | 'speedTestEnabled'
-    | 'dnsServer'
-    | 'pingAddress'
-    | 'tracerouteAddress'
-    | 'networkPaths'
-  >
 
 export type MutationUserError = {
   field: string
