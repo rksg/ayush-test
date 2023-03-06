@@ -45,7 +45,7 @@ describe('SubTitle', () => {
     expect(await screen.findByText([
       'APs Under Test: 2',
       'Test Result: 100% pass',
-      'WLAN: Wifi Name',
+      'Network: Wifi Name',
       'Radio Band: 2.4 GHz',
       'Authentication Method: Pre-Shared Key (PSK)'
     ].join(' | '))).toBeVisible()
@@ -67,7 +67,7 @@ describe('SubTitle', () => {
     expect(await screen.findByText([
       'APs Under Test: 0 of 2 APs tested',
       'Test Result: In progress...',
-      'WLAN: Wifi Name',
+      'Network: Wifi Name',
       'Radio Band: 2.4 GHz',
       'Authentication Method: Pre-Shared Key (PSK)'
     ].join(' | '))).toBeVisible()
@@ -84,7 +84,7 @@ describe('SubTitle', () => {
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
     expect(await screen.findByText([
-      'WLAN: Unknown',
+      'Network: Unknown',
       'Radio Band: Unknown',
       'Authentication Method: Unknown'
     ].join(' | '))).toBeVisible()

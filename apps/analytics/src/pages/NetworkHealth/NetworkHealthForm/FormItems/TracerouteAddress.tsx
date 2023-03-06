@@ -1,8 +1,9 @@
-
 import { Form }                   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew } from '@acx-ui/components'
+
+import { notSetMessage } from '../../NetworkHealthDetails/Overview/ConfigSection'
 
 import { IPDomainField } from './IPDomainField'
 
@@ -21,8 +22,10 @@ TracerouteAddress.FieldSummary = function TracerouteAddressFieldSummary () {
   const { $t } = useIntl()
 
   return <Form.Item
-    name={name}
+    name={name || $t(notSetMessage)}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary />}
+    children={<StepsFormNew.FieldSummary<string>
+      convert={(value) => value || $t(notSetMessage)}
+    />}
   />
 }

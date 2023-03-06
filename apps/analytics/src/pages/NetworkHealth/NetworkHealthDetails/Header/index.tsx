@@ -5,6 +5,9 @@ import { Loader, SuspenseBoundary } from '@acx-ui/components'
 import { formatter }                from '@acx-ui/utils'
 
 import { authMethodsByCode }                    from '../../authMethods'
+import { AuthenticationMethod }                 from '../../NetworkHealthForm/FormItems/AuthenticationMethod'
+import { RadioBand }                            from '../../NetworkHealthForm/FormItems/RadioBand'
+import { WlanName }                             from '../../NetworkHealthForm/FormItems/WlanName'
 import { useNetworkHealthTest }                 from '../../services'
 import { NetworkHealthTest }                    from '../../types'
 import { formatApsUnderTest, formatLastResult } from '../../utils'
@@ -33,18 +36,18 @@ const subtitles: Subtitle[] = [
   },
   {
     keys: ['config.wlanName'],
-    title: defineMessage({ defaultMessage: 'WLAN' })
+    title: WlanName.label
   },
   {
     keys: ['config.radio'],
-    title: defineMessage({ defaultMessage: 'Radio Band' }),
+    title: RadioBand.label,
     format: (details, $t) => _.get(details, 'config.radio')
       ? formatter('radioFormat')(details!.config.radio)
       : $t({ defaultMessage: 'Unknown' })
   },
   {
     keys: ['config.authenticationMethod'],
-    title: defineMessage({ defaultMessage: 'Authentication Method' }),
+    title: AuthenticationMethod.label,
     format: (details, $t) => _.get(details, 'config.authenticationMethod')
       ? $t(authMethodsByCode[details!.config.authenticationMethod].title)
       : $t({ defaultMessage: 'Unknown' })
