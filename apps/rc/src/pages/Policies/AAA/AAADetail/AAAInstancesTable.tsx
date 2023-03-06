@@ -1,0 +1,69 @@
+import { FormattedMessage, useIntl } from 'react-intl'
+
+import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
+import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
+
+export default function AAAInstancesTable (){
+
+  const { $t } = useIntl()
+  const tableQuery = useTableQuery({
+    useQuery: useAaaNetworkInstancesQuery,
+    defaultPayload: {
+      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType']
+    },
+    sorter: {
+      sortField: 'networkName',
+      sortOrder: 'DESC'
+    }
+  })
+  const columns: TableProps<AAAPolicyNetwork>['columns'] = [
+    {
+      key: 'NetworkName',
+      title: $t({ defaultMessage: 'Network Name' }),
+      dataIndex: 'networkName',
+      sorter: true,
+      render: function (_data, row) {
+        return (
+          <TenantLink
+            to={`/networks/wireless/${row.networkId}/network-details/aps`}>
+            {row.networkName}</TenantLink>
+        )
+      }
+    },
+    {
+      key: 'Type',
+      title: $t({ defaultMessage: 'Type' }),
+      dataIndex: 'networkType',
+      render: (data, row) => {
+        const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
+        return data === 'GUEST'
+          ? <FormattedMessage
+            defaultMessage={'Captive Portal - {captiveNetworkType}'}
+            values={{
+              captiveNetworkType: $t(captiveNetworkTypes[
+                row.guestNetworkType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
+              ])
+            }}
+          />
+          : <FormattedMessage {...message}/>
+      }
+    }
+  ]
+
+  return (
+    <Loader states={[tableQuery]}>
+      <Card title={$t({ defaultMessage: 'Instances ({count})' },
+        { count: tableQuery.data?.totalCount })}>
+        <Table
+          columns={columns}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          dataSource={tableQuery.data?.data}
+          rowKey='id'
+        />
+      </Card>
+    </Loader>
+  )
+}

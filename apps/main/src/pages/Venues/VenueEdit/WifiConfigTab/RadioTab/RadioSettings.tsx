@@ -117,7 +117,10 @@ export function RadioSettings () {
 
   // default radio data
   const { data: defaultRadioSettingsData } =
-    useGetDefaultRadioCustomizationQuery({ params: { tenantId, venueId } })
+    useGetDefaultRadioCustomizationQuery({
+      params: { tenantId, venueId },
+      payload: { defaultonly: true }
+    })
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
@@ -360,7 +363,7 @@ export function RadioSettings () {
         params: { tenantId, venueId },
         payload: formData
       }).unwrap()
-    }catch {
+    } catch {
       showToast({
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })

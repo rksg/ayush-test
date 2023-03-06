@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { showActionModal } from '@acx-ui/components'
 import { getIntl }         from '@acx-ui/utils'
 
-import { DeviceConnectionStatus } from '../../constants'
+import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import { STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
   SwitchRow,
@@ -66,6 +66,61 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMS', 'ICX7550-48F']
 ])
 
+export const ICX_MODELS_MODULES = {
+  ICX7150: {
+    'C12P': [['12X1G'], ['2X1G'], ['2X1/10G']],
+    'C08P': [['8X1G'], ['2X1G']],
+    'C08PT': [['8X1G'], ['2X1G']],
+    'C10ZP': [['8X2.5G'], ['2X10G'], ['2X1/10G']],
+    '24': [['24X1G'], ['2X1G'], ['4X1/10G']],
+    '24P': [['24X1G'], ['2X1G'], ['4X1/10G']],
+    '24F': [['24X1G'], ['2X1G'], ['4X1/10G']],
+    '48': [['48X1G'], ['2X1G'], ['4X1/10G']],
+    '48P': [['48X1G'], ['2X1G'], ['4X1/10G']],
+    '48PF': [['48X1G'], ['2X1G'], ['4X1/10G']],
+    '48ZP': [['48X1/2.5G'], ['8X1/10G']]
+  },
+  ICX7550: {
+    '24': [['24X1G'], ['2X40G'], ['2X40G', '4X10GF']],
+    '24P': [['24X1G'], ['2X40G'], ['2X40G', '4X10GF']],
+    '48': [['48X1G'], ['2X40G'], ['2X40G', '4X10GF']],
+    '48P': [['48X1G'], ['2X40G'], ['2X40G', '4X10GF']],
+    '24ZP': [['24X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
+    '48ZP': [['48X2.5/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
+    '24F': [['24X10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']],
+    '48F': [['48X1/10G'], ['2X40G'], ['1X100G', '2X40G', '4X10GF']]
+  },
+  ICX7650: {
+    '48P': [['48X1G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']],
+    '48ZP': [['48X1/2.5/5/10G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']],
+    '48F': [['48X10G'], ['1X40/100G', '2X40G', '4X10G'], ['2X100G', '4X40G', '2X40G']]
+  },
+  ICX7850: {
+    '32Q': [['12X40/100G'], ['12X40/100G'], ['8X40/100G']],
+    '48FS': [['48X1/10G'], ['8X40/100G']],
+    '48F': [['48X1/10G'], ['8X40/100G']],
+    '48C': [['48X1/10G'], ['8X40/100G']]
+  },
+  ICX8200: { //TODO: Need more information
+    '24': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
+    '24P': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
+    '48': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
+    '48P': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
+    '48PF': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
+    '48PF2': [['48X10/100/1000Mbps'], ['4X1/10/25G']],
+    'C08P': [['8X10/100/1000Mbps'], ['2X1G']],
+    'C08PF': [['8X10/100/1000Mbps'], ['2X1/10G']],
+    '24ZP': [['24X100/1000/2500Mbps'], ['4X1/20/25G']],
+    '48ZP2': [['48X10/100/1000/2500Mbps'], ['4X1/10/25G']],
+    '24FX': [['16X1/10G'], ['8X1/10/25G']],
+    '24F': [['24X1G'], ['4X1/10/25G']],
+    '48F': [['48X1G'], ['4X1/10/25G']],
+    'C08ZP': [['4X100M/1/2.5/5/10G'], ['2X1/10/25G']],
+    'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
+    'C08PDC': [['8X10/100/1000Mbps'], ['1X1G']]
+  }
+}
+
 export const isOperationalSwitch = (status: SwitchStatusEnum, syncedSwitchConfig: boolean) => {
   return status === SwitchStatusEnum.OPERATIONAL && syncedSwitchConfig
 }
@@ -85,6 +140,43 @@ export const getSwitchModel = (serial: string) => {
 
 export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
+}
+
+export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
+  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+  const { $t } = getIntl()
+  switch (switchStatusEnum) {
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+    case SwitchStatusEnum.INITIALIZING:
+      return $t({ defaultMessage: 'Initializing' })
+    case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
+    case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
+    case SwitchStatusEnum.FIRMWARE_UPD_START:
+    case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
+    case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      return $t({ defaultMessage: 'Firmware Updating' })
+    case SwitchStatusEnum.OPERATIONAL:
+      if (configReady && syncedSwitchConfig) {
+        if (suspendingDeployTime && suspendingDeployTime.length > 0) {
+          return $t({ defaultMessage: 'Operational - applying configuration' })
+        }
+        return $t({ defaultMessage: 'Operational' })
+      } else if (!syncedSwitchConfig) {
+        return $t({ defaultMessage: 'Synchronizing data' })
+      } else {
+        return $t({ defaultMessage: 'Operational - Synchronizing' })
+      }
+    case SwitchStatusEnum.DISCONNECTED:
+      return $t({ defaultMessage: 'Disconnected from cloud' })
+    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      return $t({ defaultMessage: 'Never contacted Active Switch' })
+    default:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+  }
 }
 
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
@@ -208,6 +300,50 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
     return $t({ defaultMessage: 'Member' })
   }
   return
+}
+
+export const isEmpty = (params?: unknown) => {
+  if (params == null) {
+    return true
+  } else if (params === undefined) {
+    return true
+  } else if (params === 'undefined') {
+    return true
+  } else if (params === '') {
+    return true
+  }
+  return false
+}
+
+export const getSwitchModelInfo = (switchModel: string) => {
+
+  const modelFamily = switchModel.split('-')[0]
+  const subModel = switchModel.split('-')[1]
+
+  const modelFamilyInfo = ICX_MODELS_INFORMATION[modelFamily]
+  if (!modelFamilyInfo) {
+    return null
+  }
+
+  const subModelInfo = modelFamilyInfo[subModel]
+  if (!subModelInfo) {
+    return null
+  }
+
+  return subModelInfo
+}
+
+export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
+  if (!slotNumber || !switchModel || slotNumber < 1) {
+    return ''
+  }
+
+  const modelInfo = getSwitchModelInfo(switchModel)
+  if (!modelInfo) {
+    return ''
+  }
+
+  return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
 }
 
 export const isL3FunctionSupported = (switchType: string | undefined) => {

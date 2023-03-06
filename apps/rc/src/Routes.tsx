@@ -1,87 +1,99 @@
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  PolicyType,
-  ServiceType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  PolicyOperation,
-  getServiceListRoutePath,
   getSelectServiceRoutePath,
-  ServiceOperation,
+  getServiceCatalogRoutePath,
+  getServiceListRoutePath,
   getServiceRoutePath,
-  getServiceCatalogRoutePath
+  PolicyOperation,
+  PolicyType,
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
-import { rootRoutes, Route, TenantNavigate, Navigate } from '@acx-ui/react-router-dom'
+import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 
-import Edges                       from './pages/Devices/Edge'
-import AddEdge                     from './pages/Devices/Edge/AddEdge'
-import EdgeDetails                 from './pages/Devices/Edge/EdgeDetails'
-import EditEdge                    from './pages/Devices/Edge/EdgeDetails/EditEdge'
-import { StackForm }               from './pages/Devices/Switch/StackForm'
-import SwitchDetails               from './pages/Devices/Switch/SwitchDetails'
-import { SwitchClientDetailsPage } from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
-import SwitchesTable               from './pages/Devices/Switch/SwitchesTable'
-import { SwitchForm }              from './pages/Devices/Switch/SwitchForm'
-import ApDetails                   from './pages/Devices/Wifi/ApDetails'
-import { ApEdit }                  from './pages/Devices/Wifi/ApEdit'
-import { ApForm }                  from './pages/Devices/Wifi/ApForm'
-import { ApGroupForm }             from './pages/Devices/Wifi/ApGroupForm'
-import ApsTable                    from './pages/Devices/Wifi/ApsTable'
-import Wired                       from './pages/Networks/wired'
-import CliTemplateForm             from './pages/Networks/wired/onDemandCli/CliTemplateForm'
-import NetworkDetails              from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
-import NetworkForm                 from './pages/Networks/wireless/NetworkForm/NetworkForm'
-import NetworksTable               from './pages/Networks/wireless/NetworksTable'
-import AccessControlDetail         from './pages/Policies/AccessControl/AccessControlDetail'
-import AccessControlForm           from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
-import ClientIsolationDetail       from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
-import ClientIsolationForm         from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
-import MacRegistrationListDetails
-  from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
-import MacRegistrationListsTable  from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MacRegistrationListForm    from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
-import PoliciesTable              from './pages/Policies/PoliciesTable'
-import RogueAPDetectionDetailView
-  from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
-import RogueAPDetectionForm     from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
-import SelectPolicyForm         from './pages/Policies/SelectPolicyForm'
-import VLANPoolDetail           from './pages/Policies/VLANPool/VLANPoolDetail'
-import VLANPoolForm             from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
-import DHCPDetail               from './pages/Services/DHCP/DHCPDetail'
-import DHCPForm                 from './pages/Services/DHCP/DHCPForm/DHCPForm'
-import DHCPTable                from './pages/Services/DHCP/DHCPTable/DHCPTable'
-import AddDHCP                  from './pages/Services/DHCP/Edge/AddDHCP'
-import EdgeDHCPDetail           from './pages/Services/DHCP/Edge/DHCPDetail'
-import EdgeDhcpTable            from './pages/Services/DHCP/Edge/DHCPTable'
-import EditDhcp                 from './pages/Services/DHCP/Edge/EditDHCP'
-import DpskDetails              from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskForm                 from './pages/Services/Dpsk/DpskForm/DpskForm'
-import DpskTable                from './pages/Services/Dpsk/DpskTable/DpskTable'
-import MdnsProxyDetail          from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm            from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import MdnsProxyTable           from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
-import MyServices               from './pages/Services/MyServices'
-import NetworkSegmentationForm  from './pages/Services/NetworkSegmentationForm/NetworkSegmentationForm'
-import NetworkSegAuthDetail     from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
-import NetworkSegAuthForm       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
-import PortalServiceDetail      from './pages/Services/Portal/PortalDetail'
-import PortalForm               from './pages/Services/Portal/PortalForm/PortalForm'
-import PortalTable              from './pages/Services/Portal/PortalTable'
-import SelectServiceForm        from './pages/Services/SelectServiceForm'
-import ServiceCatalog           from './pages/Services/ServiceCatalog'
-import WifiCallingDetailView    from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
-import WifiCallingConfigureForm from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
-import WifiCallingForm          from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
-import WifiCallingTable         from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                 from './pages/Timeline'
-import PersonaPortal            from './pages/Users/Persona'
-import PersonaDetails           from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails      from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList         from './pages/Users/Switch/ClientList'
-import WifiClientDetails        from './pages/Users/Wifi/ClientDetails'
-import WifiClientList           from './pages/Users/Wifi/ClientList'
+import Edges                        from './pages/Devices/Edge'
+import AddEdge                      from './pages/Devices/Edge/AddEdge'
+import EdgeDetails                  from './pages/Devices/Edge/EdgeDetails'
+import EditEdge                     from './pages/Devices/Edge/EdgeDetails/EditEdge'
+import { StackForm }                from './pages/Devices/Switch/StackForm'
+import SwitchDetails                from './pages/Devices/Switch/SwitchDetails'
+import { SwitchClientDetailsPage }  from './pages/Devices/Switch/SwitchDetails/SwitchClientsTab/SwitchClientDetailsPage'
+import SwitchesTable                from './pages/Devices/Switch/SwitchesTable'
+import { SwitchForm }               from './pages/Devices/Switch/SwitchForm'
+import ApDetails                    from './pages/Devices/Wifi/ApDetails'
+import { ApEdit }                   from './pages/Devices/Wifi/ApEdit'
+import { ApForm }                   from './pages/Devices/Wifi/ApForm'
+import { ApGroupForm }              from './pages/Devices/Wifi/ApGroupForm'
+import ApsTable                     from './pages/Devices/Wifi/ApsTable'
+import Wired                        from './pages/Networks/wired'
+import CliTemplateForm              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
+import CliProfileForm               from './pages/Networks/wired/profiles/CliProfileForm'
+import { ConfigurationProfileForm } from './pages/Networks/wired/profiles/ConfigurationProfileForm'
+import NetworkDetails               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
+import NetworkForm                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
+import NetworksTable                from './pages/Networks/wireless/NetworksTable'
+import AAAPolicyDetail              from './pages/Policies/AAA/AAADetail'
+import AAAForm                      from './pages/Policies/AAA/AAAForm/AAAForm'
+import AAATable                     from './pages/Policies/AAA/AAATable/AAATable'
+import AccessControlDetail          from './pages/Policies/AccessControl/AccessControlDetail'
+import AccessControlForm            from './pages/Policies/AccessControl/AccessControlForm/AccessControlForm'
+import AccessControlTable           from './pages/Policies/AccessControl/AccessControlTable/AccessControlTable'
+import ClientIsolationDetail        from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
+import ClientIsolationForm          from './pages/Policies/ClientIsolation/ClientIsolationForm/ClientIsolationForm'
+import ClientIsolationTable         from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
+import MacRegistrationListDetails   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
+import MacRegistrationListsTable    from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MacRegistrationListForm      from './pages/Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
+import MyPolicies                   from './pages/Policies/MyPolicies'
+import RogueAPDetectionDetailView   from './pages/Policies/RogueAPDetection/RogueAPDetectionDetail/RogueAPDetectionDetailView'
+import RogueAPDetectionForm         from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
+import RogueAPDetectionTable        from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
+import SelectPolicyForm             from './pages/Policies/SelectPolicyForm'
+import SyslogDetailView             from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
+import SyslogForm                   from './pages/Policies/Syslog/SyslogForm/SyslogForm'
+import SyslogTable                  from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import VLANPoolDetail               from './pages/Policies/VLANPool/VLANPoolDetail'
+import VLANPoolForm                 from './pages/Policies/VLANPool/VLANPoolForm/VLANPoolForm'
+import VLANPoolTable                from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
+import DHCPDetail                   from './pages/Services/DHCP/DHCPDetail'
+import DHCPForm                     from './pages/Services/DHCP/DHCPForm/DHCPForm'
+import DHCPTable                    from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                      from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail               from './pages/Services/DHCP/Edge/DHCPDetail'
+import EdgeDhcpTable                from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                     from './pages/Services/DHCP/Edge/EditDHCP'
+import DpskDetails                  from './pages/Services/Dpsk/DpskDetail/DpskDetails'
+import DpskForm                     from './pages/Services/Dpsk/DpskForm/DpskForm'
+import DpskTable                    from './pages/Services/Dpsk/DpskTable/DpskTable'
+import MdnsProxyDetail              from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm                from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import MdnsProxyTable               from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MyServices                   from './pages/Services/MyServices'
+import AddNetworkSegmentation       from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
+import EditNetworkSegmentation      from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
+import NetworkSegmentationTable     from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
+import NetworkSegAuthDetail         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
+import NetworkSegAuthForm           from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
+import PortalServiceDetail          from './pages/Services/Portal/PortalDetail'
+import PortalForm                   from './pages/Services/Portal/PortalForm/PortalForm'
+import PortalTable                  from './pages/Services/Portal/PortalTable'
+import SelectServiceForm            from './pages/Services/SelectServiceForm'
+import ServiceCatalog               from './pages/Services/ServiceCatalog'
+import WifiCallingDetailView        from './pages/Services/WifiCalling/WifiCallingDetail/WifiCallingDetailView'
+import WifiCallingConfigureForm     from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingConfigureForm'
+import WifiCallingForm              from './pages/Services/WifiCalling/WifiCallingForm/WifiCallingForm'
+import WifiCallingTable             from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                     from './pages/Timeline'
+import PersonaPortal                from './pages/Users/Persona'
+import PersonaDetails               from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails          from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList             from './pages/Users/Switch/ClientList'
+import WifiClientDetails            from './pages/Users/Wifi/ClientDetails'
+import WifiClientList               from './pages/Users/Wifi/ClientList'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -110,6 +122,7 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
@@ -147,6 +160,7 @@ function DeviceRoutes () {
       <Route path='devices/switch/:action' element={<SwitchForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
+      <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
       <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
       <Route path='devices/edge/list' element={<Edges />} />
     </Route>
@@ -167,9 +181,9 @@ function NetworkRoutes () {
         path='networks/wireless/:networkId/network-details/:activeTab/:activeSubTab'
         element={<NetworkDetails />}
       />
-      <Route path='networks/wired/onDemandCli/add' element={<CliTemplateForm />} />
+      <Route path='networks/wired/:configType/add' element={<CliTemplateForm />} />
       <Route
-        path='networks/wired/onDemandCli/:templateId/:action'
+        path='networks/wired/:configType/:templateId/:action'
         element={<CliTemplateForm />}
       />
       <Route
@@ -178,6 +192,19 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab' element={<Wired />} />
+      <Route
+        path='networks/wired/profiles/add'
+        element={<ConfigurationProfileForm />}
+      />
+      <Route
+        path='networks/wired/profiles/regular/:profileId/:action'
+        element={<ConfigurationProfileForm />}
+      />
+      <Route path='networks/wired/:configType/cli/add' element={<CliProfileForm />} />
+      <Route
+        path='networks/wired/:configType/cli/:profileId/:action'
+        element={<CliProfileForm />}
+      />
     </Route>
   )
 }
@@ -264,12 +291,17 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.CREATE })}
-        element={<NetworkSegmentationForm/>}
+        element={<AddNetworkSegmentation />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.LIST })}
+        element={<NetworkSegmentationTable />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
-        element={<NetworkSegmentationForm/>}
+        element={<EditNetworkSegmentation />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
@@ -321,7 +353,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
-      <Route path={getPolicyListRoutePath()} element={<PoliciesTable />} />
+      <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
       <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
       <Route
         // eslint-disable-next-line max-len
@@ -340,8 +372,41 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+        element={<AAAForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
+        element={<AAAForm edit={true}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
+        element={<AAAPolicyDetail/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
+        element={<RogueAPDetectionTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-        element={<div />}
+        element={<SyslogForm edit={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
+        element={<SyslogForm edit={true}/>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
+        element={<SyslogTable />} />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
+        element={<SyslogDetailView />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -376,6 +441,10 @@ function PolicyRoutes () {
         element={<VLANPoolDetail/>}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
+        element={<VLANPoolTable />}
+      />
+      <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
         element={<AccessControlForm editMode={false}/>}
       />
@@ -390,6 +459,10 @@ function PolicyRoutes () {
         element={<AccessControlDetail />}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
+        element={<AccessControlTable />}
+      />
+      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
         element={<ClientIsolationForm editMode={false}/>}
@@ -398,6 +471,14 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
         element={<ClientIsolationForm editMode={true}/>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })}
+        element={<ClientIsolationTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
+        element={<AAATable />}
       />
       <Route
         // eslint-disable-next-line max-len

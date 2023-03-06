@@ -6,14 +6,15 @@ import { Form, Input } from 'antd'
 import { createStepsFormContext } from '@acx-ui/components'
 import { Provider }               from '@acx-ui/store'
 import { render, screen, within } from '@acx-ui/test-utils'
+import { defaultNetworkPath }     from '@acx-ui/utils'
 
 import {
   Band,
   ClientType,
   TestType,
-  NetworkPaths
+  NetworkPaths,
+  NetworkHealthFormDto
 } from '../types'
-import { NetworkHealthFormDto } from '../types'
 
 export const serviceGuardSpecNames = {
   allServiceGuardSpecs: [
@@ -46,6 +47,104 @@ export const fetchServiceGuardSpec = {
         ]] as NetworkPaths
       }
     }]
+  }
+}
+
+export const mockNetworkHierarchy = {
+  network: {
+    hierarchyNode: {
+      name: 'Network',
+      type: 'network',
+      path: defaultNetworkPath,
+      children: [{
+        id: 'id1',
+        type: 'zone',
+        name: 'Venue 1',
+        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 1' }],
+        aps: [
+          { name: 'AP 1', mac: '00:00:00:00:00:01' },
+          { name: 'AP 2', mac: '00:00:00:00:00:02' }
+        ]
+      }, {
+        id: 'id2',
+        type: 'zone',
+        name: 'Venue 2',
+        path: [...defaultNetworkPath, { type: 'zone', name: 'Venue 2' }],
+        aps: [
+          { name: 'AP 3', mac: '00:00:00:00:00:03' },
+          { name: 'AP 4', mac: '00:00:00:00:00:04' },
+          { name: 'AP 5', mac: '00:00:00:00:00:05' }
+        ]
+      }]
+    }
+  }
+}
+
+export const fetchAllServiceGuardSpecs = {
+  allServiceGuardSpecs: [
+    {
+      id: 'spec-id',
+      name: 'test-1',
+      type: TestType.OnDemand,
+      apsCount: 0,
+      userId: 'user-id',
+      clientType: ClientType.VirtualClient,
+      schedule: null,
+      tests: { items: [] }
+    },
+    {
+      id: 'spec-id-finished',
+      name: 'test-2',
+      type: TestType.Scheduled,
+      apsCount: 2,
+      userId: 'user-id-other',
+      clientType: ClientType.VirtualWirelessClient,
+      schedule: { nextExecutionTime: '2023-02-24T16:00:00.000Z' },
+      tests: { items: [
+        { id: 1,
+          createdAt: '2023-02-24T07:34:33.336Z',
+          summary: { apsTestedCount: 2, apsSuccessCount: 2, apsPendingCount: 0 }
+        }
+      ] }
+    },
+    {
+      id: 'spec-id-ongoing',
+      name: 'test-2',
+      type: TestType.Scheduled,
+      apsCount: 2,
+      userId: 'user-id',
+      clientType: ClientType.VirtualClient,
+      schedule: null,
+      tests: { items: [
+        { id: 2,
+          createdAt: '2023-02-24T07:34:33.336Z',
+          summary: { apsTestedCount: 2, apsSuccessCount: 1, apsPendingCount: 1 }
+        }
+      ] }
+    }
+  ]
+}
+
+export const runServiceGuardTest = {
+  runServiceGuardTest: {
+    spec: {
+      id: 'spec-id',
+      tests: {
+        items: [{
+          id: 3,
+          createdAt: '2023-02-16T00:00:00.000Z',
+          summary: { apsTestedCount: 0, apsSuccessCount: 0, apsPendingCount: 0 }
+        }]
+      }
+    },
+    userErrors: null
+  }
+}
+
+export const deleteNetworkHealth = {
+  deleteServiceGuardSpec: {
+    deletedSpecId: 'spec-id',
+    userErrors: null
   }
 }
 

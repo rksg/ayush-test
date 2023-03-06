@@ -247,7 +247,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Network Details
                     </h3>
@@ -446,7 +446,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Open Settings
                     </h3>
@@ -1469,7 +1469,6 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                             </h4>
                             <button
                               class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                              disabled=""
                               type="button"
                             >
                               <span>
@@ -2407,7 +2406,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Venues
                 </h3>

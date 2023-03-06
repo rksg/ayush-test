@@ -14,6 +14,7 @@ import {
   categoryCodeMap,
   IncidentCode
 } from '@acx-ui/analytics/utils'
+import { TimeStampRange }              from '@acx-ui/types'
 import { formatter, getIntl, formats } from '@acx-ui/utils'
 
 import {
@@ -596,11 +597,47 @@ export const getChartData = (
   return []
 }
 
-export const useLabelFormatter = (params: { value:number, seriesData: Object }) => {
+export function calculateInterval (timewindow: TimeStampRange) {
+  const [start, end] = timewindow
+  const interval = moment.duration(moment(end).diff(moment(start))).asHours()
+  const second = 1000
+  const minute = second * 60
+  const hour = minute * 60
+  const day = hour * 24
+  switch (true) {
+    case interval > 24 * 7:
+      return day
+    case interval > 24:
+      return hour
+    case interval > 1:
+      return minute
+    case interval > 0.5:
+      return second * 10
+    default:
+      return second * 5
+  }
+}
+
+export const labelFormatter = (input: unknown, timewindow: TimeStampRange) => {
+  const params = input as { value:number, seriesData: Object }
   const intl = getIntl()
   const trackerDate = (params)?.value
   const seriesData = (params)?.seriesData
   const seriesName = Array.isArray(seriesData) ? seriesData[0]?.seriesName : ''
+  const seriesType = Array.isArray(seriesData) ? seriesData[0]?.seriesType : null
+
+  const getScatterText = () => {
+    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+      ? seriesData[0].data[2]
+      : undefined) as unknown as DisplayEvent
+    const interval = calculateInterval(timewindow)
+    const trackerHasData =
+    ((trackerDate >= (obj?.start - interval)) && (trackerDate <= (obj?.end + interval)))
+    const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null
+    const date = moment(obj?.start).format(dateFormat)
+    return tooltipText ? `${date} ${tooltipText}` : ''
+  }
+
   if (seriesName === QUALITY) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
@@ -622,26 +659,24 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
                 .formatter as keyof typeof formats
           )(
             (obj as unknown as LabelledQuality)[key as keyof typeof connectionQualityLabels].value
-          )}${index + 1 !== Object.keys(connectionQualityLabels).length ? '/ ' : ''}`
+          )}${index + 1 !== Object.keys(connectionQualityLabels).length ? ' / ' : ''}`
       )
       : null
     if ((obj as unknown as LabelledQuality)?.all) {
-      return tooltipSuffixText
-        ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText?.join('')}`
+      const validValuesLen = tooltipSuffixText && tooltipSuffixText
+        .filter(val => !val.match('^- /|-$'))
+        .length
+
+      return validValuesLen && validValuesLen !== 0
+        ? `${date} ${tooltipPrefixText.join('')} : ${tooltipSuffixText.join('')}`
         : ''
     }
   }
-  if (seriesName === EVENTS) {
-    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
-      ? seriesData[0].data[2]
-      : undefined) as unknown as DisplayEvent
 
-    const trackerHasData =
-      ((trackerDate >= (obj?.start - 300000)) && (trackerDate <= (obj?.end + 300000)))
-    const tooltipText = trackerHasData ? formatEventDesc(obj, intl) : null
-    const date = moment(obj?.start).format(dateFormat)
-    return tooltipText ? `${date} ${tooltipText}` : ''
+  if (seriesName === EVENTS) {
+    return getScatterText()
   }
+
   if (seriesName === INCIDENTS) {
     const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
       ? seriesData[0].data[3]
@@ -651,18 +686,27 @@ export const useLabelFormatter = (params: { value:number, seriesData: Object }) 
     const date = moment(obj?.start).format(dateFormat)
     return tooltipText ? `${date} ${tooltipText}` : ''
   }
-  if (seriesName === ROAMING) {
-    const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
-      ? seriesData[0].data[3]
-      : undefined) as unknown as RoamingTimeSeriesData
-    const trackerHasData =
-      trackerDate >= moment(obj?.start).valueOf() && trackerDate <= moment(obj?.end).valueOf()
-    const tooltipText = trackerHasData ? roamingEventFormatter(obj.details) : null
-    const date = moment(obj?.start).format(dateFormat)
 
-    return tooltipText
-      ? `${date} ${tooltipText?.[0].label} : ${tooltipText?.[0].value}`
-      : ''
+  if (seriesName === ROAMING) {
+
+    if (seriesType === 'scatter') {
+      return getScatterText()
+    }
+
+    if (seriesType === 'custom') {
+      const obj = (Array.isArray(seriesData) && Array.isArray(seriesData[0].data)
+        ? seriesData[0].data[3]
+        : undefined) as unknown as RoamingTimeSeriesData
+      const trackerHasData =
+      trackerDate >= moment(obj?.start).valueOf() && trackerDate <= moment(obj?.end).valueOf()
+      const tooltipText = trackerHasData ? roamingEventFormatter(obj.details) : null
+      const date = moment(obj?.start).format(dateFormat)
+
+      return tooltipText
+        ? `${date} ${tooltipText?.[0].label} : ${tooltipText?.[0].value}`
+        : ''
+    }
   }
+
   return ''
 }

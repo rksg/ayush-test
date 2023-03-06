@@ -1,15 +1,23 @@
 import { SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }      from '@acx-ui/analytics/components'
 import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }        from '@acx-ui/components'
+import { StackMember }             from '@acx-ui/rc/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
+import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
 
 export function SwitchOverviewPanel (props:{
-  filters: AnalyticsFilter
+  filters: AnalyticsFilter,
+  stackMember: StackMember[]
 }) {
-  const { filters } = props
+  const { filters, stackMember } = props
+
   return <GridRow>
+    <GridCol col={{ span: 24 }}>
+      <SwitchFrontRearView stackMember={stackMember} />
+    </GridCol>
     { filters && <SwitchWidgets filters={{ ...filters }}/> }
   </GridRow>
 }
@@ -18,6 +26,9 @@ function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
   return (
     <>
+      <GridCol col={{ span: 24 }} style={{ height: '100px' }}>
+        <SwitchStatusByTime filters={filters} />
+      </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <SwitchesTrafficByVolume filters={filters} />
       </GridCol>

@@ -60,7 +60,8 @@ const tabPanes = {
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
-  const isEnable = useIsSplitOn(Features.UNRELEASED)
+  const isEdgeEarlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const isEnable = useIsSplitOn(Features.UNRELEASED) || isEdgeEarlyBetaEnabled
   const { data: userProfileData } = useUserProfileContext()
 
   if (!isEnable) {
@@ -81,7 +82,7 @@ export default function Administration () {
 
   const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
 
-  return <>
+  return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Administration' })}
       breadcrumb={[
@@ -90,5 +91,5 @@ export default function Administration () {
       footer={<AdministrationTabs hasAdministratorTab={hasAdministratorTab} />}
     />
     { ActiveTabPane && <ActiveTabPane /> }
-  </>
+  </>)
 }

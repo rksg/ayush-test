@@ -23,7 +23,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
           >
             <div>
               <h3
-                class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
               >
                 DPSK Settings
               </h3>
@@ -169,13 +169,14 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                               class="ant-space-item"
                             >
                               <label
-                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
                               >
                                 <span
-                                  class="ant-radio"
+                                  class="ant-radio ant-radio-disabled"
                                 >
                                   <input
                                     class="ant-radio-input"
+                                    disabled=""
                                     type="radio"
                                     value="true"
                                   />

@@ -28,10 +28,10 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return false//window.location.hostname === 'devalto.ruckuswireless.com'
+  return window.location.hostname === 'devalto.ruckuswireless.com'
 }
 
-export const isInt = () => {
+export const isIntEnv = () => {
   return window.location.hostname === 'intalto.ruckuswireless.com'
 }
 
@@ -63,15 +63,6 @@ export const createHttpRequest = (
     Authorization: ''
   }
 
-  const enableNewApi = function () {
-    const hasOldUrl = !_.isEmpty(apiInfo.oldUrl)
-    if(apiInfo.newApi) {
-      return !hasOldUrl || isInt() || isDev() || isLocalHost()
-    } else {
-      return false
-    }
-  }
-
   const jwtToken = getJwtToken()
   const tenantId = getTenantId()
   if (jwtToken !== null) {
@@ -85,10 +76,10 @@ export const createHttpRequest = (
       : { ...tokenHeader, ...defaultHeaders, ...extraHeader }
   }
   const headers = { ...defaultHeaders, ...customHeaders }
-  const domain = (enableNewApi() && !isLocalHost()) ?
+  const domain = (enableNewApi(apiInfo) && !isLocalHost()) ?
     window.location.origin.replace('//', '//api.') :
     window.location.origin
-  const url = enableNewApi() ? generatePath(`${apiInfo.url}`, paramValues) :
+  const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
   return {
     headers,
@@ -117,4 +108,17 @@ export const getFilters = (params: Params) => {
   }
 
   return filters
+}
+
+export const enableNewApi = function (apiInfo: ApiInfo) {
+  const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
+  if(apiInfo.newApi) {
+    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
+  } else {
+    return false
+  }
+}
+
+export const getUrlForTest = (apiInfo: ApiInfo) => {
+  return enableNewApi(apiInfo) ? apiInfo.url : (apiInfo.oldUrl || apiInfo.url)
 }

@@ -260,6 +260,71 @@ describe('StepsForm', () => {
     await waitForElementToBeRemoved(error2)
   })
 
+  it('allow navigate back without trigger validate in non edit mode', async () => {
+    render(
+      <StepsForm>
+        <StepsForm.StepForm title='Step 1'>
+          <StepsForm.Title>Step 1</StepsForm.Title>
+          <Form.Item
+            name='field1'
+            label='Field 1'
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+
+        <StepsForm.StepForm title='Step 2'>
+          <StepsForm.Title>Step 2</StepsForm.Title>
+          <Form.Item
+            name='field2'
+            label='Field 2'
+            rules={[{ required: true }]}
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+    expect(await screen.findByRole('alert')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
+    expect(await screen.findByRole('heading', { name: 'Step 1' })).toBeVisible()
+  })
+
+  it('prevent navigate back and trigger validate in edit mode', async () => {
+    render(
+      <StepsForm editMode>
+        <StepsForm.StepForm title='Step 1'>
+          <StepsForm.Title>Step 1</StepsForm.Title>
+          <Form.Item
+            name='field1'
+            label='Field 1'
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+
+        <StepsForm.StepForm title='Step 2'>
+          <StepsForm.Title>Step 2</StepsForm.Title>
+          <Form.Item
+            name='field2'
+            label='Field 2'
+            rules={[{ required: true }]}
+            children={<Input />}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(await screen.findByRole('heading', { name: 'Step 2' })).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
+    expect(await screen.findByRole('alert')).toBeVisible()
+  })
+
   it('supports onFinish on individual step', async () => {
     const onFinish = jest.fn()
     const onFinish1 = jest.fn().mockResolvedValue(true)
@@ -380,14 +445,14 @@ describe('StepsForm.FieldSummary', () => {
     </Form>
   }
 
-  it('renders empty by default', async () => {
+  it('renders no data symbol by default', async () => {
     render(<Component
       name='field'
     />)
 
-    expect(await screen.findByRole('generic', {
+    expect((await screen.findByRole('generic', {
       name: (_, el) => el.nodeName === 'SPAN'
-    })).toBeEmptyDOMElement()
+    })).textContent).toEqual('-')
   })
 
   it('renders given value', () => {

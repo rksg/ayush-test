@@ -8,7 +8,6 @@ import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, showToast }         from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
@@ -29,6 +28,7 @@ import {
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
 import * as UI                  from './styledComponents'
+import { TopApplications }      from './TopApplications'
 
 const clientPayload = {
   searchString: '',
@@ -95,7 +95,7 @@ export function ClientOverviewTab () {
     clientStatus === ClientStatusEnum.CONNECTED
       ? getClientData()
       : getHistoricalClientData()
-  }, [])
+  }, [clientId])
 
   useEffect(() => {
     const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
@@ -157,10 +157,12 @@ export function ClientOverviewTab () {
             />
           </UI.CardWrapper>
         </GridCol>
-        {useIsSplitOn(Features.UNRELEASED) &&
-          <GridCol col={{ span: 24 }} style={{ height: '292px', background: '#F7F7F7' }}>
-            {$t({ defaultMessage: 'TODO: Top 10 Applications by traffic volume' })}
-          </GridCol>}
+        <GridCol col={{ span: 8 }} style={{ height: '292px' }}>
+          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='donut' />
+        </GridCol>
+        <GridCol col={{ span: 16 }} style={{ height: '292px' }}>
+          <TopApplications filters={{ ...filters, mac: clientId?.toUpperCase() }} type='line' />
+        </GridCol>
         <GridCol col={{ span: 24 }} style={{ height: '292px' }}>
           <TrafficByUsage filters={{ ...filters, mac: clientId?.toUpperCase() }} />
         </GridCol>
