@@ -78,7 +78,8 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean
+    enableApiFilter?: boolean,
+    floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
@@ -389,7 +390,7 @@ function Table <RecordType extends Record<string, any>> ({
       })}
     </Space>}
     {hasHeader && (
-      <UI.Header>
+      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
@@ -412,6 +413,19 @@ function Table <RecordType extends Record<string, any>> ({
             </UI.HeaderRight>
           </Space>
         </div>
+        <UI.HeaderRight>
+          {(
+            Boolean(activeFilters.length) ||
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
+          ) && <Button
+            style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+            onClick={() => {
+              setFilterValues({} as Filter)
+              setSearchValue('')
+            }}>
+            {$t({ defaultMessage: 'Clear Filters' })}
+          </Button>}
+        </UI.HeaderRight>
       </UI.Header>
     )}
     <ProTable<RecordType>
