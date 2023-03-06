@@ -577,10 +577,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],

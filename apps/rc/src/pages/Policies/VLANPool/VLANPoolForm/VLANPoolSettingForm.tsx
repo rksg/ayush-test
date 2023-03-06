@@ -33,7 +33,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
         vlanPool.name === value) !== -1
       ) {
         return reject(
-          $t({ defaultMessage: 'The DHCP service with that name already exists' })
+          $t({ defaultMessage: 'The VLAN Pool with that name already exists' })
         )
       }
       return resolve()
