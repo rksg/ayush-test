@@ -206,6 +206,51 @@ describe('HelpPage Component URLs', () => {
 
 describe('HelpPage menus Button', () => {
   const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
+  it('should invoke menus link correctly without global values API', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.get(getMappingURL(), (_, res, ctx) =>
+        res(ctx.json({
+          '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
+          '/t/*/administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
+          '/t/*/venues': 'GUID-800174C7-D49A-4C02-BCEB-CE0D9581BABA.html'
+        }))
+      ),
+      rest.get(getDocsURL()+':docID', (_, res, ctx) =>
+        res(
+          // Send a valid HTTP status code
+          ctx.status(404),
+          // And a response body, if necessary
+          ctx.json({
+            errorMessage: 'File not found'
+          })
+        )
+      ),
+      rest.get(CommonUrlsInfo.getGlobalValues.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ))
+    const mockOpenFn = jest.fn()
+    window.open = mockOpenFn
+    render(<Provider>
+      <HelpButton/>
+    </Provider>, { route: { params } })
+    const helpBtn = screen.getByRole('button')
+    await userEvent.click(helpBtn)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Documentation Center' }))
+
+    await userEvent.click(helpBtn)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'My Open Cases' }))
+
+    await userEvent.click(helpBtn)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Privacy' }))
+
+    await userEvent.click(helpBtn)
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Supported Device Models' }))
+
+    expect(mockOpenFn).toBeCalledTimes(4)
+  })
+
+
   it('should invoke menus link correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
