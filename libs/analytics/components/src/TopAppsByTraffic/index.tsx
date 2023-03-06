@@ -30,6 +30,10 @@ function getTopAppsByTrafficChartData (data: HierarchyNodeData): DonutChartData[
   return chartData
 }
 
+export function dataFormatter (value: unknown){
+  return formatter('bytesFormat')(value)
+}
+
 export function TopAppsByTraffic ({
   filters
 }: {
@@ -42,6 +46,7 @@ export function TopAppsByTraffic ({
       ...rest
     })
   })
+
   const isDataAvailable = queryResults.data && queryResults.data.length > 0
 
   return (
@@ -57,7 +62,8 @@ export function TopAppsByTraffic ({
                   showLegend={true}
                   showTotal={false}
                   legend='name'
-                  dataFormatter={(v) => formatter('bytesFormat')(v)}
+                  //dataFormatter={(v) => formatter('bytesFormat')(v)}
+                  dataFormatter={dataFormatter}
                   size={'thick'}
                 />
               </div>
