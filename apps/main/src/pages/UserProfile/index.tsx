@@ -7,12 +7,12 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rbac'
+import { useUserProfileContext } from '@acx-ui/user'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUpdateUserProfileMutation
-} from '@acx-ui/rbac'
+} from '@acx-ui/user'
 import {
   useLocation,
   useNavigate,

@@ -5,7 +5,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
-import { hasAccesses }                                                                                                                                 from '@acx-ui/rbac'
+import { hasAccesses }                                                                                                                                 from '@acx-ui/user'
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
@@ -71,7 +71,11 @@ export function SwitchConfigBackupTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
 
   const tableData = tableQuery.data?.data ?? []
@@ -105,8 +109,8 @@ export function SwitchConfigBackupTable () {
     key: 'name',
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
-    sorter: true,
-    disable: true
+    disable: true,
+    sorter: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),

@@ -1,11 +1,11 @@
 module.exports = {
-  displayName: 'common-rbac',
+  displayName: 'common-user',
   preset: '../../../jest.preset.ts',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../coverage/libs/common/rbac',
+  coverageDirectory: '../../../coverage/libs/common/user',
   coverageThreshold: {
     global: {
       statements: 0,

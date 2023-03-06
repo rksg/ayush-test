@@ -4,7 +4,7 @@ import { Modal }   from 'antd'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { Urls }                                  from '@acx-ui/rbac'
+import { Urls }                                  from '@acx-ui/user'
 import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'

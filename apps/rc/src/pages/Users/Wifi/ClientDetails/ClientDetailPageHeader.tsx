@@ -5,7 +5,7 @@ import { useIntl }                          from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/components'
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
-import { hasAccesses }                                           from '@acx-ui/rbac'
+import { hasAccesses }                                           from '@acx-ui/user'
 import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
 import {
   useNavigate,

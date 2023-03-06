@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Urls }         from '@acx-ui/rbac'
+import { Urls }         from '@acx-ui/user'
 import { Provider }     from '@acx-ui/store'
 import {
   mockServer,

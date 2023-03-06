@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { ClockOutlined }                                   from '@acx-ui/icons'
-import { hasAccesses }                                     from '@acx-ui/rbac'
+import { hasAccesses }                                     from '@acx-ui/user'
 import { useVenueDetailsHeaderQuery }                      from '@acx-ui/rc/services'
 import { VenueDetailHeader }                               from '@acx-ui/rc/utils'
 import {

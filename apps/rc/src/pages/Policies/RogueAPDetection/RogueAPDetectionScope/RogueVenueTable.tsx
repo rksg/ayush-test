@@ -4,7 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/rbac'
+import { hasAccesses }                                   from '@acx-ui/user'
 import { useVenueRoguePolicyQuery }                      from '@acx-ui/rc/services'
 import {
   RogueAPDetectionActionPayload,

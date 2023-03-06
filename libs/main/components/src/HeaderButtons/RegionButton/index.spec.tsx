@@ -7,7 +7,7 @@ import {
   DetailLevel,
   UserProfileContext,
   UserProfileContextProps
-} from '@acx-ui/rbac'
+} from '@acx-ui/user'
 import { MspUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }    from '@acx-ui/store'
 import {

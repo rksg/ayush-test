@@ -11,7 +11,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DownloadOutlined }            from '@acx-ui/icons'
-import { hasAccesses }                 from '@acx-ui/rbac'
+import { hasAccesses }                 from '@acx-ui/user'
 import { useDeviceInventoryListQuery } from '@acx-ui/rc/services'
 import {
   APView,

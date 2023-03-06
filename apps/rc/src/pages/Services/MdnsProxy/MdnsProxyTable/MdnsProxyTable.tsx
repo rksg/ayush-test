@@ -9,7 +9,7 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { hasAccesses }                                     from '@acx-ui/rbac'
+import { hasAccesses }                                     from '@acx-ui/user'
 import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,

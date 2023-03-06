@@ -15,7 +15,7 @@ import {
   Modal
 } from '@acx-ui/components'
 import { DeleteOutlined } from '@acx-ui/icons'
-import { hasAccesses }    from '@acx-ui/rbac'
+import { hasAccesses }    from '@acx-ui/user'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,

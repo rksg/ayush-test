@@ -10,7 +10,7 @@ import {
   PageHeader
 } from '@acx-ui/components'
 import { ClockOutlined }                 from '@acx-ui/icons'
-import { hasAccesses }                   from '@acx-ui/rbac'
+import { hasAccesses }                   from '@acx-ui/user'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,

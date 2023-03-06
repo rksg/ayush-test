@@ -8,7 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }                                                                                                                 from '@acx-ui/rbac'
+import { hasAccesses }                                                                                                                 from '@acx-ui/user'
 import { useDeleteNetworkSegmentationGroupMutation, useGetEdgeListQuery, useGetNetworkSegmentationStatsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,

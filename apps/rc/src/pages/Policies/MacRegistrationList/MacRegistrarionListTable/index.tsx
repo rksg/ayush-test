@@ -8,7 +8,7 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
-import { hasAccesses }                                      from '@acx-ui/rbac'
+import { hasAccesses }                                      from '@acx-ui/user'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,

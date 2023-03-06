@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Row, Col, Form, Input } from 'antd'
 
 import { showActionModal, Table, TableProps, StepsForm } from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/rbac'
+import { hasAccesses }                                   from '@acx-ui/user'
 import {
   Vlan,
   SwitchModel,

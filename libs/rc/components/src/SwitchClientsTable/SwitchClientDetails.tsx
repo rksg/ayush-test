@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } from '@acx-ui/components'
-import { hasAccesses }                                                          from '@acx-ui/rbac'
+import { hasAccesses }                                                          from '@acx-ui/user'
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
 import { exportCSV, SWITCH_CLIENT_TYPE }                                        from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'

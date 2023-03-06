@@ -14,7 +14,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { CopyOutlined }              from '@acx-ui/icons'
-import { hasAccesses }               from '@acx-ui/rbac'
+import { hasAccesses }               from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,

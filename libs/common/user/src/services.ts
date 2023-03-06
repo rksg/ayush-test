@@ -25,11 +25,15 @@ export const Urls = {
   },
   updateUserProfile: {
     method: 'put',
-    url: '/api/tenant/:tenantId/user-profile'
+    url: '/tenants/userProfiles',
+    oldUrl: '/api/tenant/:tenantId/user-profile',
+    newApi: true
   },
   getUserProfile: {
     method: 'get',
-    url: '/api/tenant/:tenantId/user-profile'
+    url: '/tenants/userProfiles',
+    oldUrl: '/api/tenant/:tenantId/user-profile',
+    newApi: true
   },
   getCloudVersion: {
     method: 'get',

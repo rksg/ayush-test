@@ -4,7 +4,7 @@ import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/rbac'
+import { hasAccesses }                                           from '@acx-ui/user'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,

@@ -9,7 +9,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
-import { hasAccesses }                                                          from '@acx-ui/rbac'
+import { hasAccesses }                                                          from '@acx-ui/user'
 import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }           from '@acx-ui/rc/services'
 import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting } from '@acx-ui/rc/utils'
 import { useParams }                                                            from '@acx-ui/react-router-dom'

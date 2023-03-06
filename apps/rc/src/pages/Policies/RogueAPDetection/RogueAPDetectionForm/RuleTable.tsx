@@ -6,7 +6,7 @@ import { SortableContainer, SortableElement, SortableHandle, SortableElementProp
 
 import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
 import { Drag }                                                    from '@acx-ui/icons'
-import { hasAccesses }                                             from '@acx-ui/rbac'
+import { hasAccesses }                                             from '@acx-ui/user'
 import { useRoguePolicyQuery }                                     from '@acx-ui/rc/services'
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
 

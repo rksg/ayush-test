@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                                        from '@acx-ui/rbac'
+import { hasAccesses }                                                        from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,

@@ -4,7 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/rbac'
+import { hasAccesses }                                from '@acx-ui/user'
 import {
   useGetMdnsProxyApsQuery,
   useDeleteMdnsProxyApsMutation

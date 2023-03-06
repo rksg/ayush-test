@@ -2,7 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps }                                                               from '@acx-ui/components'
-import { hasAccesses }                                                                                                                  from '@acx-ui/rbac'
+import { hasAccesses }                                                                                                                  from '@acx-ui/user'
 import { useDeleteEdgeDhcpServicesMutation, useGetDhcpStatsQuery }                                                                      from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                                                                       from '@acx-ui/react-router-dom'

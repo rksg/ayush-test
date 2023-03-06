@@ -12,7 +12,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/rbac'
+import { hasAccesses }            from '@acx-ui/user'
 import {
   NetworkApGroupDialog,
   transformVLAN,

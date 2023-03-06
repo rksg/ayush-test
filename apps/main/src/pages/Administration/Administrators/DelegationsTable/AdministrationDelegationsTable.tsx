@@ -12,7 +12,7 @@ import {
   Subtitle,
   Loader
 } from '@acx-ui/components'
-import { hasAccesses }          from '@acx-ui/rbac'
+import { hasAccesses }          from '@acx-ui/user'
 import {
   useGetDelegationsQuery,
   useRevokeInvitationMutation

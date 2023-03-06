@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Urls }  from '@acx-ui/rbac'
+import { Urls }  from '@acx-ui/user'
 import {
   VlanPoolUrls,
   WifiUrlsInfo } from '@acx-ui/rc/utils'

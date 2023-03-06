@@ -11,7 +11,7 @@ import {
   TableProps,
   Subtitle
 } from '@acx-ui/components'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/rbac'
+import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 import {
   useGetAdminListQuery,
   useGetMspProfileQuery,

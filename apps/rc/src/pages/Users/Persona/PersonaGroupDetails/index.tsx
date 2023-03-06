@@ -6,7 +6,7 @@ import { useParams }    from 'react-router-dom'
 
 import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
-import { hasAccesses }                                                  from '@acx-ui/rbac'
+import { hasAccesses }                                                  from '@acx-ui/user'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,

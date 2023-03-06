@@ -32,6 +32,10 @@ export const isDev = () => {
   return window.location.hostname === 'devalto.ruckuswireless.com'
 }
 
+export const isIntEnv = () => {
+  return window.location.hostname === 'intalto.ruckuswireless.com'
+}
+
 const getTenantIdFromJwt = (jwt: string) => {
   if (jwt) {
     let tokens = jwt.split('.')
@@ -110,7 +114,7 @@ export const getFilters = (params: Params) => {
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isLocalHost()
+    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
   } else {
     return false
   }

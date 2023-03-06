@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { DetailLevel }                                        from '@acx-ui/rbac'
+import { DetailLevel }                                        from '@acx-ui/user'
 import { MspUrlsInfo, AdministrationUrlsInfo, Administrator } from '@acx-ui/rc/utils'
 import { Provider }                                           from '@acx-ui/store'
 import {

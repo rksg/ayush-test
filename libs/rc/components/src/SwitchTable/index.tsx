@@ -11,7 +11,7 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { hasAccesses }                                 from '@acx-ui/rbac'
+import { hasAccesses }                                 from '@acx-ui/user'
 import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,

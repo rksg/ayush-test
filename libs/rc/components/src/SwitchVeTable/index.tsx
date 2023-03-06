@@ -10,7 +10,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { hasAccesses }                                                                       from '@acx-ui/rbac'
+import { hasAccesses }                                                                       from '@acx-ui/user'
 import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
   isOperationalSwitch,

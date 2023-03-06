@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import { ClockOutlined }                                        from '@acx-ui/icons'
-import { hasAccesses }                                          from '@acx-ui/rbac'
+import { hasAccesses }                                          from '@acx-ui/user'
 import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc/services'
 import {
   ServiceType,

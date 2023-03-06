@@ -10,7 +10,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
-import { hasAccesses }                                       from '@acx-ui/rbac'
+import { hasAccesses }                                       from '@acx-ui/user'
 import { EdgeStatusLight }                                   from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {

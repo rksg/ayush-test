@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                        from '@acx-ui/rbac'
+import { hasAccesses }                        from '@acx-ui/user'
 import {
   ClientIsolationClient
 } from '@acx-ui/rc/utils'

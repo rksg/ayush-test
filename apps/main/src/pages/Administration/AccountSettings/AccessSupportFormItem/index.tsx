@@ -6,7 +6,7 @@ import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
 import { showToast }             from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rbac'
+import { useUserProfileContext } from '@acx-ui/user'
 import { SpaceWrapper }          from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
