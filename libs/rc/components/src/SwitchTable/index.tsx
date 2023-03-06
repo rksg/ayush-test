@@ -12,7 +12,6 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { hasAccesses } from '@acx-ui/rbac'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -308,7 +307,7 @@ export function SwitchTable (props : {
             : null
         }
       }}
-      actions={hasAccesses(props.enableActions ? [{
+      actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {
           navigate(`${linkToEditSwitch.pathname}/add`)
