@@ -167,7 +167,11 @@ export function useGroupBy<RecordType> (
     const groupColumns: TableProps<RecordType>['columns'] = actionsList.map((val) => ({
       key: val.key,
       dataIndex: '',
-      render: (_, record) => enableAction && isParent(record) ? val.label : null
+      render: (_, record) => enableAction && isParent(record)
+        ? <div onClick={() => val.callback && val.callback(record)}>
+          {val.label}
+        </div>
+        : null
     }))
 
     const GroupBySelect = () => {
@@ -200,7 +204,6 @@ export function useGroupBy<RecordType> (
     }
 
     const expandable: TableProps<RecordType>['expandable'] = {
-      expandRowByClick: true,
       defaultExpandAllRows: true,
       expandIconColumnIndex: colLength + 1,
       rowExpandable: (record) => hasValidChildren(record),
@@ -209,7 +212,11 @@ export function useGroupBy<RecordType> (
         const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
           ? <CollapseInactive />
           : <CollapseActive />
-        return <ExpandIcon isActive={props.expanded}/>
+        const WrappedExpand = () => <UI.ExpandWrapper
+          onClick={(e) => props.onExpand(props.record, e)}>
+          <ExpandIcon isActive={props.expanded}/>
+        </UI.ExpandWrapper>
+        return <WrappedExpand />
       }
     }
 

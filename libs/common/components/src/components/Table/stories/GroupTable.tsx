@@ -582,7 +582,11 @@ export function GroupTable () {
           onChange: groupableCallback,
           actions: [{
             key: 'edit',
-            label: <Button>Edit</Button>
+            label: <Button>Edit</Button>,
+            callback: (record) => {
+              // eslint-disable-next-line no-console
+              console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
+            }
           }],
           onClear: () => {
             // eslint-disable-next-line no-console

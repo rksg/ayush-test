@@ -87,7 +87,7 @@ export interface TableProps <RecordType>
       selectors: { key: string, label: string, actionEnable?: boolean }[]
       onChange: CallableFunction
       onClear: CallableFunction
-      actions?: { key: string, label: React.ReactNode, callback?: CallableFunction }[]
+      actions?: { key: string, label: React.ReactNode, callback?: (record: RecordType) => void }[]
     }
   }
 

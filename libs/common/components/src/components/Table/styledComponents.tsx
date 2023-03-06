@@ -474,3 +474,7 @@ export const Divider = styled(AntDivider)`
 export const Highlighter = styled.span`
   font-weight: bold;
 `
+
+export const ExpandWrapper = styled.div`
+  cursor: pointer;
+`
