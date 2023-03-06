@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import {
+  useGetApSnmpViewModelQuery,
   usePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -154,6 +155,18 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.SNMP_AGENT,
+      category: RadioCardCategory.WIFI,
+      //totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
+      //  params, payload: { ...defaultPayload, filters: { type: [PolicyType.VLAN_POOL] } }
+      //}).data?.totalCount,
+      totalCount: useGetApSnmpViewModelQuery({
+        params, payload: { ...defaultPayload }
+      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))
     }
   ]
 }
