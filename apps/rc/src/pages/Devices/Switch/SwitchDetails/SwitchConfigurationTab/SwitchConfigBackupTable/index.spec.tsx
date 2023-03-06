@@ -30,29 +30,34 @@ jest.mock('@acx-ui/rc/components', () => ({
   CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
 }))
 
-const list = [
-  {
-    id: '93999bfb05d34a438ff5ff40b8648967',
-    createdDate: '2023-01-11T10:12:48.880+00:00',
-    name: 'Manual_20230111181247',
-    backupType: 'MANUAL',
-    backupName: 'c0:c5:20:aa:32:79-1673431968878',
-    status: 'SUCCESS',
-    config: 'ver 09.0.10eT213\n!\nstack unit 1',
-    switchId: 'c0:c5:20:aa:32:79'
-  },
-  {
-    id: 'f89fee4468d2405cbfc7fb012d0632c8',
-    createdDate: '2023-01-10T05:00:00.408+00:00',
-    name: 'SCHEDULED_1',
-    backupType: 'SCHEDULED',
-    backupName: 'c0:c5:20:aa:32:79-1673326800403',
-    status: 'SUCCESS',
-    restoreStatus: 'SUCCESS',
-    config: 'ver 09.0.10eT213\n!\nstack unit 2',
-    switchId: 'c0:c5:20:aa:32:79'
-  }
-]
+const list = {
+  data: [
+    {
+      id: '93999bfb05d34a438ff5ff40b8648967',
+      createdDate: '2023-01-11T10:12:48.880+00:00',
+      name: 'Manual_20230111181247',
+      backupType: 'MANUAL',
+      backupName: 'c0:c5:20:aa:32:79-1673431968878',
+      status: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 1',
+      switchId: 'c0:c5:20:aa:32:79'
+    },
+    {
+      id: 'f89fee4468d2405cbfc7fb012d0632c8',
+      createdDate: '2023-01-10T05:00:00.408+00:00',
+      name: 'SCHEDULED_1',
+      backupType: 'SCHEDULED',
+      backupName: 'c0:c5:20:aa:32:79-1673326800403',
+      status: 'SUCCESS',
+      restoreStatus: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 2',
+      switchId: 'c0:c5:20:aa:32:79'
+    }
+  ],
+  page: 1,
+  totalCount: 2,
+  totalPages: 1
+}
 
 describe('SwitchConfigBackupTable', () => {
   afterEach(() => jest.restoreAllMocks())
@@ -113,7 +118,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     await userEvent.click(await screen.findByText(/Backup Now/i))
     const backupDialog = await screen.findByRole('dialog')
@@ -175,7 +180,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -225,7 +230,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -276,7 +281,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -326,7 +331,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -340,7 +345,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render inRestoreProgress correctly', async () => {
     const inRestoreProgressList = JSON.parse(JSON.stringify(list))
-    inRestoreProgressList.push({
+    inRestoreProgressList.data.push({
       id: 'f89fee4468d2405cbfc7fb012d0632c8',
       createdDate: '2023-01-10T05:00:00.408+00:00',
       name: 'testBackup',
@@ -351,7 +356,7 @@ describe('SwitchConfigBackupTable', () => {
       config: 'ver 09.0.10eT213\n!\nstack unit 2',
       switchId: 'c0:c5:20:aa:32:79'
     })
-    inRestoreProgressList[0].restoreStatus = 'STARTED'
+    inRestoreProgressList.data[0].restoreStatus = 'STARTED'
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
@@ -386,7 +391,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(inRestoreProgressList.length)
+    expect(rows).toHaveLength(inRestoreProgressList.data.length)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
