@@ -2,22 +2,25 @@ import { useEffect } from 'react'
 
 import { gql }     from 'graphql-request'
 import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { networkHealthApi } from '@acx-ui/analytics/services'
 import { showToast }        from '@acx-ui/components'
 import { useParams }        from '@acx-ui/react-router-dom'
 
-import { messageMapping, stages } from './contents'
+import { messageMapping, stages }      from './contents'
+import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'
+import { TestType, ScheduleFrequency } from './types'
 
 import type {
   NetworkHealthFormDto,
   NetworkHealthSpec,
-  MutationResult,
   NetworkHealthConfig,
+  NetworkHealthTest,
+  MutationResult,
   MutationUserError,
-  MutationResponse,
-  NetworkHealthTest
+  MutationResponse
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -221,51 +224,49 @@ export function useNetworkHealthRelatedTests () {
     { skip: !Boolean(params.testId) })
 }
 
-const configKeys: Array<keyof NetworkHealthFormDto> = [
-  'authenticationMethod',
-  'dnsServer',
-  'pingAddress',
-  'radio',
-  'speedTestEnabled',
-  'tracerouteAddress',
-  'wlanName',
-  'wlanPassword',
-  'wlanUsername',
-  'networkPaths'
-]
-
 export function processDtoToPayload (dto: NetworkHealthFormDto) {
   const spec = {
-    ..._.omit(dto, configKeys.concat(['isDnsServerCustom'])),
-    configs: [_.pick(dto, configKeys)]
+    ..._.omit(dto, ['typeWithSchedule', 'isDnsServerCustom']),
+    configs: [{ ..._.omit(dto.configs[0], ['updatedAt']) }]
   }
   return { spec }
 }
 
-export function specToDto (spec?: Pick<NetworkHealthSpec, 'id' | 'clientType' | 'name' | 'type'> & {
-  configs: Pick<
-    NetworkHealthConfig,
-    'authenticationMethod' | 'dnsServer' | 'pingAddress' | 'radio' | 'speedTestEnabled' |
-    'tracerouteAddress' | 'wlanName' | 'wlanPassword' | 'wlanUsername' |
-    'networkPaths'
-  >[]
-}): NetworkHealthFormDto | undefined {
+const mod = (a: number, b: number) => ((a % b) + b) % b
+
+export function specToDto (
+  spec?: Omit<NetworkHealthSpec, 'apsCount' | 'userId' | 'tests' | 'configs'> & {
+    configs: Omit<NetworkHealthConfig, 'id' | 'specId' | 'updatedAt' | 'createdAt'>[]
+  }
+): NetworkHealthFormDto | undefined {
   if (!spec) return undefined
+
+  const localTimezone = moment.tz.guess()
+  const schedule = { ...(spec.schedule! || initialValues.schedule) }
+  const { frequency, day, hour, timezone } = schedule
+  const typeWithSchedule = spec.type === TestType.OnDemand ? TestType.OnDemand : frequency!
+
+  if (frequency) {
+    const db = moment().tz(timezone!).format('YYYY-MM-DDTHH:mm')
+    const local = moment().tz(localTimezone).format('YYYY-MM-DDTHH:mm')
+    const differenceInHours = moment(local).diff(moment(db), 'hour', true)
+    const totalHours = hour! + differenceInHours
+    const rolloverHours = totalHours > 0 ? totalHours - 24 : Math.abs(totalHours)
+    const differenceInDays = Math.ceil(rolloverHours / 24) * Math.sign(totalHours)
+    schedule.hour = mod(totalHours, 24)
+    if (frequency === ScheduleFrequency.Weekly) {
+      schedule.day = mod(day! + differenceInDays, 7)
+    }
+    if (frequency === ScheduleFrequency.Monthly) {
+      schedule.day = mod(day! - 1 + differenceInDays, 31) + 1
+    }
+  }
+
   return {
+    typeWithSchedule,
     isDnsServerCustom: Boolean(spec.configs[0].dnsServer),
-    ..._.pick(spec, ['id', 'name', 'type', 'clientType']),
-    ..._.pick(spec.configs[0], [
-      'radio',
-      'wlanName',
-      'authenticationMethod',
-      'wlanPassword',
-      'wlanUsername',
-      'speedTestEnabled',
-      'dnsServer',
-      'pingAddress',
-      'tracerouteAddress',
-      'networkPaths'
-    ])
+    ..._.omit(spec, ['schedule']),
+    schedule
   }
 }
 
