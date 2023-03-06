@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 
 import { Urls }                                  from '@acx-ui/rbac'
-import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
+import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 

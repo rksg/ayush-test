@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Urls }                                                             from '@acx-ui/rbac'
-import { CommonUrlsInfo, defaultComDisplay, Portal, PortalUrlsInfo }        from '@acx-ui/rc/utils'
+import { defaultComDisplay, Portal, PortalUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 

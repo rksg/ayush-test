@@ -4,7 +4,6 @@ import { rest }  from 'msw'
 
 import { Urls }  from '@acx-ui/rbac'
 import {
-  CommonUrlsInfo,
   VlanPoolUrls,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { VLANPoolPolicyType }         from '@acx-ui/rc/utils'
