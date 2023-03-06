@@ -87,6 +87,7 @@ export interface MspEc {
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  edgeLicenses?: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
@@ -388,7 +389,7 @@ export interface MspPortal {
   mlisa_logo_uuid?: string;
   ping_login_logo_uuid?: string;
   default_logo_uuid?: string;
-  mspLogoFileDataList?: Array<unknown>;
+  mspLogoFileDataList?: Array<MspLogoFile>;
   msp_fqdn?: string;
   contact_support_url?: string;
   contact_support_behavior?: string;
@@ -401,4 +402,12 @@ export interface MspPortal {
   msp_email?: string;
   msp_website?: string;
   preferredWisprProvider?: MspPreferredWisprProvider;
+}
+
+export interface MspLogoFile {
+  id?: string,
+  logo_file_name: string,
+  logo_fileuuid: string,
+  createdDate?: Date,
+  updatedDate?: Date
 }

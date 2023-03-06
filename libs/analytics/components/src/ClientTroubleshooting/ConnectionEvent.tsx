@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Popover } from 'antd'
+import { Popover, PopoverProps } from 'antd'
 
 import { clientEventDescription, mapCodeToFailureText, mapDisconnectCodeToReason } from '@acx-ui/analytics/utils'
 import { formatter, getIntl }                                                      from '@acx-ui/utils'
@@ -10,7 +10,7 @@ import { ConnectionSequenceDiagram }               from './ConnectionSequenceDia
 import { Details }                                 from './EventDetails'
 import * as UI                                     from './styledComponents'
 
-const useConnectionDetail = (event: DisplayEvent) => {
+export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
   const { mac, apName, ssid, radio, code, ttc, state } = event
@@ -66,28 +66,40 @@ const useConnectionDetail = (event: DisplayEvent) => {
   return eventDetails
 }
 
-export function ConnectionEventPopover ({ children, event }:
-  { children?: React.ReactNode, event: DisplayEvent }) {
-  const [open, setOpen] = React.useState(false)
-  const hide = () => { setOpen(false) }
-  const rowData = useConnectionDetail(event)
-  const failureExtra: ReactNode = (event.category === FAILURE)
+export const getFailureExtra = (event: DisplayEvent) => {
+  return (event.category === FAILURE)
     ? <ConnectionSequenceDiagram
       failedMsgId={event.failedMsgId ?? ''}
       messageIds={event.messageIds ?? []}
-      apMac={event.mac}
-    />
+      apMac={event.mac} />
     : null
+}
+
+type ConnectionEventPopoverProps = Omit<PopoverProps, 'content'> & {
+  children?: React.ReactNode,
+  event: DisplayEvent
+}
+
+export function ConnectionEventPopover ({ children, event, ...rest }: ConnectionEventPopoverProps) {
+  const [open, setOpen] = React.useState(rest.visible ?? false)
+  const hide = () => {
+    setOpen(false)
+    rest.onVisibleChange && rest.onVisibleChange(false)
+  }
+  const rowData = getConnectionDetails(event)
+  const failureExtra: ReactNode = getFailureExtra(event)
+  const visibleHandle = (val: boolean) => {
+    rest.onVisibleChange && rest.onVisibleChange(val)
+    setOpen(val)
+  }
   return (
     <UI.PopoverWrapper>
       <Popover
+        {...rest}
         content={<Details fields={rowData} openHandler={hide} extra={failureExtra}/>}
         trigger='click'
-        placement='bottom'
-        // getPopupContainer={(triggerNode) => triggerNode.parentElement as HTMLElement}
         visible={open}
-        onVisibleChange={setOpen}
-        arrowPointAtCenter
+        onVisibleChange={visibleHandle}
       >
         {children}
       </Popover>

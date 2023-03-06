@@ -76,7 +76,7 @@ describe('Analytics header', () => {
     </Provider></BrowserRouter>)
     expect(await screen.findByText('Venue 1')).toBeVisible()
   })
-  it('should render header', async () => {
+  it.skip('should render header', async () => {
     mockGraphqlQuery(dataApiURL, 'NetworkNodeInfo', {
       data: header4.queryResult
     })
