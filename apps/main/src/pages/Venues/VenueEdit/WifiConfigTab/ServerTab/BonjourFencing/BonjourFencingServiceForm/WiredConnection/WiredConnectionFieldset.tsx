@@ -454,13 +454,16 @@ export const WiredConnectionFieldset = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
+  const { currentService } = useContext(BonjourFencingServiceContext)
+
   const [ tableData, setTableData ] = useState<WiredRulesTableEntry[]>([])
 
   useEffect(() => {
-    const wiredRules = form.getFieldValue('wiredRules') || []
-
+    const wiredRules = currentService?.wiredRules || []
+    //console.log('===== set WiredConnectFieldset data =====')
+    //console.log(wiredRules)
     setTableData(wiredRules)
-  }, [ form ] )
+  }, [ currentService ] )
 
   const handleTableDataChanged = (data: WiredRulesTableEntry[]) => {
     setTableData(data)
