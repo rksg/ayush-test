@@ -28,3 +28,9 @@ export enum AAAPurposeEnum{
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting'
 }
+export interface AAAPolicyNetwork {
+  networkId: string,
+  networkName: string,
+  networkType: string,
+  guestNetworkType?: string
+}

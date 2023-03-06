@@ -14,31 +14,37 @@ import AAAPolicyDetail from '.'
 
 const list = {
   fields: [
-    'id',
-    'network'
+    'networkId',
+    'networkName'
   ],
   totalCount: 4,
   page: 1,
   data: [
     {
-      id: '6',
-      name: 'Network A',
-      captiveType: 'Open'
+      id: 1,
+      networkId: '6',
+      networkName: 'Network A',
+      networkType: 'OPEN'
     },
     {
-      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
-      name: 'Network B',
-      captiveType: 'Captive Portal - 3rd Party Captive Portal (WiSPr)'
+      id: 2,
+      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
+      networkName: 'Network B',
+      networkType: 'GUEST',
+      guestNetworkType: 'WISPr'
     },
     {
-      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
-      name: 'Network C',
-      captiveType: 'AAA (802.1x)'
+      id: 3,
+      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
+      networkName: 'Network C',
+      networkType: 'AAA'
     },
     {
-      id: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
-      name: 'Network E',
-      captiveType: 'Captive Portal - Self Sign In'
+      id: 4,
+      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
+      networkName: 'Network E',
+      networkType: 'GUEST',
+      guestNetworkType: 'Cloudpath'
     }
   ]
 }

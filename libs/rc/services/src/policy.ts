@@ -44,7 +44,7 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, Network
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -407,7 +407,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    aaaNetworkInstances: build.query<TableResult<Network>, RequestPayload>({
+    aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
       query: ({ params, payload }) => {
         const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
         return {

@@ -1,9 +1,9 @@
-import { useIntl } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                      from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery }                          from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                           from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                                           from '@acx-ui/components'
+import { useAaaNetworkInstancesQuery }                                                                               from '@acx-ui/rc/services'
+import { AAAPolicyNetwork, captiveNetworkTypes, GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                from '@acx-ui/react-router-dom'
 
 export default function AAAInstancesTable (){
 
@@ -11,33 +11,44 @@ export default function AAAInstancesTable (){
   const tableQuery = useTableQuery({
     useQuery: useAaaNetworkInstancesQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType'],
-      sortField: 'name',
-      sortOrder: 'ASC'
+      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType']
+    },
+    sorter: {
+      sortField: 'networkName',
+      sortOrder: 'DESC'
     }
   })
-  const columns: TableProps<Network>['columns'] = [
+  const columns: TableProps<AAAPolicyNetwork>['columns'] = [
     {
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'name',
+      dataIndex: 'networkName',
       sorter: true,
       render: function (_data, row) {
         return (
           <TenantLink
-            to={`/networks/${row.id}/network-details/aps`}>
-            {row.name}</TenantLink>
+            to={`/networks/wireless/${row.networkId}/network-details/aps`}>
+            {row.networkName}</TenantLink>
         )
       }
     },
     {
       key: 'Type',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'nwSubType',
-      render: (data: unknown, row) => <NetworkType
-        networkType={data as NetworkTypeEnum}
-        row={row}
-      />
+      dataIndex: 'networkType',
+      render: (data, row) => {
+        const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
+        return data === 'GUEST'
+          ? <FormattedMessage
+            defaultMessage={'Captive Portal - {captiveNetworkType}'}
+            values={{
+              captiveNetworkType: $t(captiveNetworkTypes[
+                row.guestNetworkType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
+              ])
+            }}
+          />
+          : <FormattedMessage {...message}/>
+      }
     }
   ]
 
