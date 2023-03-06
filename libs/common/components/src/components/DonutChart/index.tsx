@@ -27,7 +27,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   legend: 'value' | 'name' | 'name-value',
-  size: 'small' | 'large'
+  size: 'small' | 'large' | 'thick'
 }
 
 const defaultProps: DonutChartOptionalProps = {
@@ -77,6 +77,14 @@ export function DonutChart ({
     })
   }
 
+  const legendStyles = {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-5-font-weight')
+  }
+
   const commonStyles = {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-chart-font'),
@@ -103,6 +111,20 @@ export function DonutChart ({
       }
     },
     large: {
+      title: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-body-2-font-size'),
+        lineHeight: cssNumber('--acx-body-2-line-height'),
+        fontWeight: cssNumber('--acx-body-font-weight')
+      },
+      value: {
+        ...commonFontStyle,
+        fontSize: cssNumber('--acx-subtitle-1-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-1-line-height'),
+        fontWeight: cssNumber('--acx-subtitle-1-font-weight')
+      }
+    },
+    thick: {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-body-2-font-size'),
@@ -150,11 +172,11 @@ export function DonutChart ({
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
-      itemGap: 4,
+      itemGap: props.size === 'thick'? 17: 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
-        ...commonStyles
+        ...legendStyles
       },
       itemStyle: {
         borderWidth: 0
@@ -180,7 +202,7 @@ export function DonutChart ({
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
         radius: isEmpty
           ? ['82%', '92%']
-          : props.showLabel ? ['62%', '78%'] : ['78%', '92%'],
+          : props.showLabel ? ['62%', '78%'] : [ props.size ==='thick'? '65%': '78%', '92%'],
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
