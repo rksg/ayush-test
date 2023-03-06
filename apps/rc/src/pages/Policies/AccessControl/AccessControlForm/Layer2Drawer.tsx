@@ -182,7 +182,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       align: 'right',
       render: (data, row: { macAddress: string }) => {
         return <div>
-          { _.isNil(layer2PolicyInfo) && <DeleteSolid
+          { !isViewMode() && <DeleteSolid
             data-testid={row.macAddress}
             height={21}
             onClick={() => handleDelAction(row.macAddress)}
@@ -255,15 +255,41 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     return Promise.resolve()
   }
 
+  const invalidateMacToast = () => {
+    showToast({
+      type: 'error',
+      duration: 10,
+      content: $t({ defaultMessage: 'invalided or existing MAC Address has been found' })
+    })
+  }
+
   const handleInputChange = async (event: { target: { value: SetStateAction<string> } }) => {
     const split = [',', ';']
     let inputValue = event.target.value
     for (const char of split) {
-      if (event.target.value.toString().includes(char)) {
-        inputValue = event.target.value.toString().split(char)[0]
-        await handleInputConfirm(inputValue)
-        inputValue = ''
+      let inputValueString = inputValue.toString()
+      if (!inputValueString.includes(char)) {
+        continue
       }
+
+      let inputValues = inputValueString.split(char).map(async (inputValue) => {
+        const trimValue = inputValue.trim()
+        const macAddressValidation = await MacAddressFilterRegExp(trimValue)
+        if (addressTags.indexOf(trimValue) === -1 && macAddressValidation === undefined) {
+          return Promise.resolve(trimValue)
+        }
+        return Promise.reject()
+      })
+      const results = await Promise.allSettled(inputValues)
+      const addAddressTags = results.filter(result => {
+        return result.status === 'fulfilled' && result.value !== ''
+      }).map(result=> (result as { status: 'fulfilled', value: string }).value)
+
+      if (results.findIndex(result => result.status === 'rejected') !== -1) {
+        invalidateMacToast()
+      }
+      setAddressTags([...addressTags, ...addAddressTags])
+      inputValue = ''
     }
 
     setInputValue(inputValue)
@@ -276,19 +302,17 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       const macAddressValidation = await MacAddressFilterRegExp(inputValue)
       // eslint-disable-next-line max-len
       if (inputValue && addressTags.indexOf(inputValue) === -1 && macAddressValidation === undefined) {
-        setAddressTags([...addressTags, inputValue])
-      } else {
-        showToast({
-          type: 'error',
-          duration: 10,
-          content: $t({ defaultMessage: 'invalided or existing MAC Address' })
+        await new Promise((resolve) => {
+          setAddressTags([...addressTags, inputValue])
+          return resolve
         })
+      } else {
+        invalidateMacToast()
       }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      setInputValue('')
+    } catch (e) {
+      console.log(e) // eslint-disable-line no-console
     }
-
-    setInputValue('')
   }
 
   const actions = !isViewMode() ? [{
@@ -332,6 +356,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         name={'policyName'}
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
+          { required: true },
           { required: true,
             validator: (_, value) => {
               if (layer2List && layer2List.find(layer2 => layer2 === value)) {
@@ -427,6 +452,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           dataSource={macAddressList}
           rowKey='macAddress'
           actions={actions}
+          columnState={{ hidden: true }}
         />
       </Form.Item>
     </Form>
@@ -479,6 +505,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           <Form.Item
             name={[...inputName, 'l2AclPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Layer 2 profile' })
             }]}
             children={
@@ -524,6 +552,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleLayer2DrawerClose}
             onSave={async () => {
               try {
@@ -549,24 +578,29 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
-                if (addressTags.length
-                  && macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT
-                ) {
-                  setMacAddressList([...macAddressList, ...addressTags.map(tag => {
-                    return {
-                      macAddress: tag
-                    }
-                  })])
-                } else {
+                if (!addressTags.length) {
                   showToast({
                     type: 'error',
                     duration: 10,
-                    content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+                    content: $t({ defaultMessage: 'No validate MAC Address could add' })
                   })
+                } else {
+                  if (macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT) {
+                    setMacAddressList([...macAddressList, ...addressTags.map(tag => {
+                      return {
+                        macAddress: tag
+                      }
+                    })])
+                  } else {
+                    showToast({
+                      type: 'error',
+                      duration: 10,
+                      content: $t({ defaultMessage: 'reached the maximum number of MAC Address' })
+                    })
+                  }
                 }
 
                 handleRuleDrawerClose()

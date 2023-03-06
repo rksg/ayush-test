@@ -15,7 +15,8 @@ import styled from 'styled-components/macro'
 
 import {
   Button,
-  ContentSwitcher, ContentSwitcherProps,
+  ContentSwitcher,
+  ContentSwitcherProps,
   Drawer,
   Fieldset,
   GridCol,
@@ -24,17 +25,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }             from '@acx-ui/icons'
-import {
-  useAddL3AclPolicyMutation,
-  useGetL3AclPolicyQuery,
-  useL3AclPolicyListQuery
-} from '@acx-ui/rc/services'
+import { Drag }                                                                       from '@acx-ui/icons'
+import { useAddL3AclPolicyMutation, useGetL3AclPolicyQuery, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
   Layer3ProtocolType,
-  MacAddressFilterRegExp,
+  portRegExp,
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
@@ -111,6 +108,49 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
+const DEFAULT_LAYER3_RULES = [
+  {
+    priority: 1,
+    description: 'Allow DHCP',
+    access: 'ALLOW',
+    protocol: 'ANYPROTOCOL',
+    source: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: ''
+    },
+    destination: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: '67'
+    }
+  },
+  {
+    priority: 2,
+    description: 'Allow DNS',
+    access: 'ALLOW',
+    protocol: 'ANYPROTOCOL',
+    source: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: ''
+    },
+    destination: {
+      type: 'Any',
+      subnet: '',
+      mask: '',
+      ip: '',
+      port: '53'
+    }
+  }
+]
+
 const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -125,7 +165,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
-  const [layer3RuleList, setLayer3RuleList] = useState([] as Layer3Rule[])
+  const [layer3RuleList, setLayer3RuleList] = useState(DEFAULT_LAYER3_RULES as Layer3Rule[])
   const [layer3Rule, setLayer3Rule] = useState({} as Layer3Rule)
   const [queryPolicyId, setQueryPolicyId] = useState('')
   const [queryPolicyName, setQueryPolicyName] = useState('')
@@ -199,7 +239,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         access: l3Rule.access,
         description: l3Rule.description,
         priority: l3Rule.priority,
-        protocol: 'l3Rule.protocol',
+        protocol: l3Rule.protocol as Layer3ProtocolType ?? Layer3ProtocolType.ANYPROTOCOL,
         source: { ...l3Rule.source },
         destination: { ...l3Rule.destination }
       }))] as Layer3Rule[])
@@ -259,7 +299,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
-      key: 'protocol'
+      key: 'protocol',
+      render: (data, row) => {
+        const protocol = row.protocol ?? Layer3ProtocolType.ANYPROTOCOL
+        return $t(layer3ProtocolLabelMapping[protocol as keyof typeof Layer3ProtocolType])
+      }
     },
     {
       dataIndex: 'sort',
@@ -392,7 +436,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                 access: rule.access,
                 source: { ..._.omitBy(rule.source, _.isEmpty) },
                 destination: { ..._.omitBy(rule.destination, _.isEmpty) },
-                description: rule.description
+                description: rule.description,
+                protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
               }
             })],
             description: null
@@ -506,11 +551,13 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         })
       }}
     >
-      {Object.keys(Layer3ProtocolType).map((type) => (
-        <Option value={type}>
-          {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
-        </Option>
-      ))}
+      {Object.keys(Layer3ProtocolType).map((type) => {
+        return (
+          <Option value={type}>
+            {$t(layer3ProtocolLabelMapping[type as keyof typeof Layer3ProtocolType])}
+          </Option>
+        )
+      })}
     </Select>
   )
 
@@ -550,6 +597,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
+        { required: true },
         { required: true,
           validator: (_, value) => {
             if (layer3List && layer3List.find(layer3 => layer3 === value)) {
@@ -583,6 +631,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       actions={actions}
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
+      columnState={{ hidden: true }}
       components={{
         body: {
           wrapper: DraggableContainer,
@@ -646,7 +695,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                   name='sourceNetworkAddress'
                   rules={[
                     { required: true },
-                    { validator: (_, value) => MacAddressFilterRegExp(value) }
+                    { validator: (_, value) => serverIpAddressRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Source Network Address' })}/>
@@ -682,17 +731,18 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <DrawerFormItem
+      {/* eslint-disable-next-line max-len */}
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='sourcePort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { max: 64 }
+          { validator: (_, value) => portRegExp(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
         />}
-      />
+      /> }
     </Fieldset>
     <Fieldset
       label={$t({ defaultMessage: 'Destination' })}
@@ -725,7 +775,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify subnet network' })
-                    }
+                    },
+                    { validator: (_, value) => serverIpAddressRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Network Address' })}/>
@@ -736,7 +787,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
                     {
                       required: true,
                       message: $t({ defaultMessage: 'You must specify mask' })
-                    }
+                    },
+                    { validator: (_, value) => subnetMaskIpRegExp(value) }
                   ]}
                 >
                   <Input placeholder={$t({ defaultMessage: 'Destination Mask' })}/>
@@ -755,7 +807,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               rules={[
                 { required: true, message: $t({
                   defaultMessage: 'You must specify IP Address'
-                }) }
+                }) },
+                { validator: (_, value) => serverIpAddressRegExp(value) }
               ]}
             >
               <Input placeholder={$t({ defaultMessage: 'Destination Ip' })}/>
@@ -764,17 +817,18 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         </GridRow>
 
       </Radio.Group>
-      <DrawerFormItem
+      {/* eslint-disable-next-line max-len */}
+      { drawerForm.getFieldValue('protocol') !== Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4 && <DrawerFormItem
         name='destPort'
         label={$t({ defaultMessage: 'Port' })}
         initialValue={''}
         rules={[
-          { max: 64 }
+          { validator: (_, value) => portRegExp(value) }
         ]}
         children={<Input
           placeholder={$t({ defaultMessage: 'Enter a port number or range (x-xxxx)' })}
         />}
-      />
+      /> }
     </Fieldset>
   </Form>
 
@@ -794,6 +848,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
           <Form.Item
             name={[...inputName, 'l3AclPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Layer 3 profile' })
             }]}
             children={
@@ -840,6 +896,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleLayer3DrawerClose}
             onSave={async () => {
               try {
@@ -869,7 +926,6 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {

@@ -1,3 +1,5 @@
+import { ElementType } from 'react'
+
 import styled, { css } from 'styled-components/macro'
 
 import {  PlusSquareOutlined, MinusSquareOutlined } from '@acx-ui/icons'
@@ -22,6 +24,7 @@ export const HistoryContent = styled.div`
   .ant-list-item {
     border-bottom: none;
     padding: 0 0 8px 0;
+    pointer-events: auto;
   }
   padding: 0 16px 0px 16px;
   .ant-list-item-meta-title {
@@ -39,6 +42,9 @@ export const HistoryContent = styled.div`
     margin-right: 5px;
   }
   overflow: auto;
+  .ant-list-item-meta {
+    pointer-events: auto;
+  }
 `
 export const HistoryContentTitle = styled.span`
   font-weight: 600;
@@ -264,7 +270,40 @@ export const StepLabel = styled.p`
   margin-bottom: 0px;
   font-size: var(--acx-body-5-font-size);
 `
+type ChartWrapperProps = ElementType<HTMLDivElement> & {
+  $selected?: boolean
+}
 
+export const ChartWrapper = styled.div.attrs((props: ChartWrapperProps) => props)`
+  path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
+    cursor: pointer !important; 
+  }
+  ${({ $selected }) => $selected
+  && `
+    div[_echarts_instance_] {
+      g[clip-path] {
+        cursor: pointer !important;
+      }
+    }
+  `
+}
+`
+
+type HistoryItemWrapperProps = ElementType<HTMLDivElement> & {
+  $selected: boolean
+}
+
+export const HistoryItemWrapper = styled.div.attrs((props: HistoryItemWrapperProps) => props)`
+  ${({ $selected }) => $selected
+  && `
+    font-weight: var(--acx-body-font-weight-bold);
+
+    .ant-list-item-meta-title {
+      font-weight: var(--acx-body-font-weight-bold); 
+    }
+  `
+}
+`
 export const ErrorPanel = styled.div`
   display: flex;
   flex-grow: 1;

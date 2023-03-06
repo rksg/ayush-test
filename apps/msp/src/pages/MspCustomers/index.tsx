@@ -12,6 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
@@ -97,6 +98,7 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -234,6 +236,16 @@ export function MspCustomers () {
       sorter: true,
       render: function (data, row) {
         return transformSwitchEntitlement(row)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'SmartEdge Licenses' }),
+      dataIndex: 'edgeLicenses',
+      key: 'edgeLicenses',
+      sorter: true,
+      show: edgeEnabled,
+      render: function (data, row) {
+        return row?.edgeLicenses ? row?.edgeLicenses : 0
       }
     },
     {

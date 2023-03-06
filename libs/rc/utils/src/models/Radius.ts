@@ -6,4 +6,6 @@ export class Radius {
   secondary?: RadiusServer
 
   id?: string
+  name?: string
+  type?: string
 }

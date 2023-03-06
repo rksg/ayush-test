@@ -14,8 +14,7 @@ import {
 import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType,
-  VenueSyslog
+  PolicyType
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -43,7 +42,7 @@ export function Syslog () {
   } = useContext(VenueEditContext)
 
   const syslogPolicyList = useGetSyslogPolicyListQuery({ params: { tenantId } })
-  const venueSettings = useGetVenueSyslogApQuery({ params: { tenantId, venueId } })
+  const venueSettings = useGetVenueSyslogApQuery({ params: { venueId } })
   const [updateVenueSyslog, {
     isLoading: isUpdatingVenueSyslog }] = useUpdateVenueSyslogApMutation()
 
@@ -93,7 +92,7 @@ export function Syslog () {
     })
   }
 
-  const updateSyslog = async (data?: VenueSyslog) => {
+  const updateSyslog = async (data?: VenueSettings) => {
     try {
       setEditContextData({
         ...editContextData,
@@ -103,7 +102,7 @@ export function Syslog () {
       const payload = data
       if (payload) {
         await updateVenueSyslog({
-          params: { tenantId, venueId },
+          params: { venueId },
           payload
         }).unwrap()
       }

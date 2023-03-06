@@ -209,7 +209,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           taggedVlans
         }
         delete payload.portsType
-        await updateLag({ params: { tenantId, switchId }, payload }).unwrap()
+        await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
         onClose()
       } catch (err) {
         console.log(err) // eslint-disable-line no-console

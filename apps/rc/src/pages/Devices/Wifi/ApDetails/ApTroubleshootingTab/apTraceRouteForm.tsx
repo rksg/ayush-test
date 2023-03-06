@@ -20,7 +20,8 @@ export function ApTraceRouteForm () {
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: form.getFieldValue('name')
+        targetHost: form.getFieldValue('name'),
+        action: 'traceRoute'
       }
       const traceRouteApResult =
         await traceRouteAp({ params: { tenantId, serialNumber }, payload }).unwrap()

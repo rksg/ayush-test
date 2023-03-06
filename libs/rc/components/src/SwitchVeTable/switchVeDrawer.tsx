@@ -175,8 +175,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     setDisableIpSetting(false)
   }
 
-  const onSumbit = async (data: VeForm) => {
-    const params = { switchId, tenantId }
+  const onSubmit = async (data: VeForm) => {
+    const params = { switchId, tenantId, vePortId: editData.id || '' }
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -250,7 +250,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         <Form
           layout='vertical'
           form={form}
-          onFinish={onSumbit}
+          onFinish={onSubmit}
         >
           { isVenueLevel && !isEditMode && <Form.Item
             label={$t({ defaultMessage: 'Switch' })}

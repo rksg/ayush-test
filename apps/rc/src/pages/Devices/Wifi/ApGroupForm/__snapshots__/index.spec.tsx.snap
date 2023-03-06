@@ -149,7 +149,7 @@ exports[`AP Group Form - Add should render correctly 1`] = `
                       style="padding-left: 10px; padding-right: 10px;"
                     >
                       <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                       >
                         Group Details
                       </h3>
@@ -297,7 +297,7 @@ exports[`AP Group Form - Add should render correctly 1`] = `
                       class="ant-col"
                     >
                       <h3
-                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                        class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                         style="padding: 10px 0px;"
                       >
                         Group Member

@@ -461,14 +461,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
-        { required: true,
-          validator: (_, value) => {
-            if (appList && appList.find(app => app === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { required: true },
+        { validator: (_, value) => {
+          if (appList && appList.find(app => app === value)) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -503,6 +503,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           <Form.Item
             name={[...inputName, 'applicationPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Application profile' })
             }]}
             children={
@@ -549,6 +551,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleApplicationsDrawerClose}
             onSave={async () => {
               try {
@@ -583,7 +586,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
