@@ -20,7 +20,7 @@ import {
 } from '../../../__tests__/fixtures'
 
 
-import GuestsTable from '.'
+import { GuestsTable } from '.'
 
 jest.mock('socket.io-client')
 
