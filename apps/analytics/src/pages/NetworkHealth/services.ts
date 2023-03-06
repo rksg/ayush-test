@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
-import { gql }     from 'graphql-request'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { gql }           from 'graphql-request'
+import _                 from 'lodash'
+import { ValidatorRule } from 'rc-field-form/lib/interface'
+import { useIntl }       from 'react-intl'
 
 import { networkHealthApi }     from '@acx-ui/analytics/services'
 import { showToast }            from '@acx-ui/components'
@@ -23,18 +24,6 @@ import type {
   MutationResponse,
   NetworkHealthTest
 } from './types'
-
-export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
-  endpoints: (build) => ({
-    networkHealthSpecNames: build.query<string[], undefined>({
-      query: () => ({
-        document: gql`query ServiceGuardSpecNames { allServiceGuardSpecs { name } }`
-      }),
-      transformResponse: (result: { allServiceGuardSpecs: Array<{ name: string }> }) =>
-        result.allServiceGuardSpecs.map(value => value.name)
-    })
-  })
-})
 
 const fetchServiceGuardSpec = gql`
   query FetchServiceGuardSpec ($id: String!) {
@@ -367,4 +356,30 @@ export function useMutationResponseEffect <
       showToast({ type: 'error', content: errorMessage })
     }
   }, [$t, response, onOk])
+}
+
+const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
+  endpoints: (build) => ({
+    networkHealthSpecNames: build.query<string[], void>({
+      query: () => ({
+        document: gql`query ServiceGuardSpecNames { allServiceGuardSpecs { name } }`
+      }),
+      transformResponse: (result: { allServiceGuardSpecs: Array<{ name: string }> }) =>
+        result.allServiceGuardSpecs.map(value => value.name)
+    })
+  })
+})
+export function useDuplicateNameValidator (editMode = false, initialName?: string) {
+  const { $t } = useIntl()
+  const [getNames] = useLazyNetworkHealthSpecNamesQuery()
+  const validator: ValidatorRule['validator'] = useCallback(async (rule, value: string) => {
+    if (editMode && initialName === value) return
+
+    const names = await getNames().unwrap()
+    if (!names.includes(value)) return
+
+    throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
+  }, [$t, getNames, editMode, initialName])
+
+  return validator
 }

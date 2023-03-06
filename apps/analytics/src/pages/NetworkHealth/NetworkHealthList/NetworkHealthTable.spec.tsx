@@ -145,6 +145,9 @@ describe('Network Health Table', () => {
       { data: fixtures.fetchAllServiceGuardSpecs })
     mockGraphqlMutation(networkHealthApiURL, 'CloneServiceGuardSpec',
       { data: fixtures.cloneNetworkHealth })
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecNames',
+      { data: fixtures.serviceGuardSpecNames })
+
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])

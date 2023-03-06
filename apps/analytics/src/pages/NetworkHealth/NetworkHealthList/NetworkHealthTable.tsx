@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Form, Input, Modal }     from 'antd'
+import { Form, Modal }            from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
@@ -11,6 +11,7 @@ import { TenantLink, useTenantLink }                             from '@acx-ui/r
 import { formatter }                                             from '@acx-ui/utils'
 
 import * as contents      from '../contents'
+import { TestName }       from '../NetworkHealthForm/FormItems'
 import {
   useMutationResponseEffect,
   useAllNetworkHealthSpecsQuery,
@@ -146,11 +147,7 @@ export function NetworkHealthTable () {
       validateTrigger='onBlur'
       onFinish={handleFinish}
     >
-      <Form.Item
-        label={$t({ defaultMessage: 'Test name' })}
-        name='name'
-        rules={[{ required: true, message: $t({ defaultMessage: 'This field is required' }) }]}
-      ><Input/></Form.Item>
+      <TestName />
     </Form>
   </Modal>
 
