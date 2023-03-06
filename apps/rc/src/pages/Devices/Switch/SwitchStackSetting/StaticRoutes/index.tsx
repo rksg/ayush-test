@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
 import { StaticRoute }                                                        from '@acx-ui/rc/utils'
-import { hasAccesses }                                                        from '@acx-ui/user'
+import { filterByAccess }                                                     from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -90,7 +90,7 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
         headerTitle={$t({ defaultMessage: 'Static Routes' })}
         toolBarRender={readOnly ? undefined : toolBarRender}
         columns={columns}
-        rowActions={readOnly ? undefined : hasAccesses(rowActions)}
+        rowActions={readOnly ? undefined : filterByAccess(rowActions)}
         dataSource={data}
         rowSelection={readOnly ? undefined : { type: 'checkbox' }}
         rowKey='id'

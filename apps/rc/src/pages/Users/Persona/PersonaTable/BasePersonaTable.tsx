@@ -14,7 +14,7 @@ import {
   useDeletePersonasMutation
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { hasAccesses }                                          from '@acx-ui/user'
+import { filterByAccess }                                       from '@acx-ui/user'
 
 import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                        from '../PersonaDrawer'
@@ -301,8 +301,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         pagination={personaListQuery.pagination}
         onChange={personaListQuery.handleTableChange}
         rowKey='id'
-        actions={hasAccesses(actions)}
-        rowActions={hasAccesses(rowActions)}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
       />

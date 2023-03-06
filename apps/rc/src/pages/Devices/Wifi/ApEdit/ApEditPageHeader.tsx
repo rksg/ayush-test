@@ -7,7 +7,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import ApEditTabs from './ApEditTabs'
 
@@ -25,7 +25,7 @@ function ApEditPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <Button
           type='primary'
           onClick={() =>

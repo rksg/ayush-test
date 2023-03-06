@@ -29,8 +29,8 @@ import {
   generateDefaultNetworkVenue,
   SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -372,7 +372,7 @@ export function Venues () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={hasAccesses(rowActions)}
+            rowActions={filterByAccess(rowActions)}
             rowSelection={{
               type: 'checkbox'
             }}

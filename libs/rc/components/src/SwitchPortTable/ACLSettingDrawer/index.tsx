@@ -17,7 +17,7 @@ import { Table, TableProps, Modal, showToast }                 from '@acx-ui/com
 import { useAddAclMutation }                                   from '@acx-ui/rc/services'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
-import { hasAccesses }                                         from '@acx-ui/user'
+import { filterByAccess }                                      from '@acx-ui/user'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
@@ -310,7 +310,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       </Row>
       <Table
         rowKey='sequence'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',

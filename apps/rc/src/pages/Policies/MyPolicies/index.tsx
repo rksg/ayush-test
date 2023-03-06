@@ -17,7 +17,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   policyTypeDescMapping,
@@ -53,7 +53,7 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>

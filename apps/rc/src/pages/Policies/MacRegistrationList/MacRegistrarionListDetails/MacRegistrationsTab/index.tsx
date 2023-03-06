@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
-import { hasAccesses }                    from '@acx-ui/user'
+import { filterByAccess }                 from '@acx-ui/user'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { toTimeString }     from '../../MacRegistrationListUtils'
@@ -210,9 +210,9 @@ export function MacRegistrationsTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
-        actions={hasAccesses([{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)

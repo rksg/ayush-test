@@ -20,8 +20,8 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink }      from '@acx-ui/react-router-dom'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
+import { getBasePath, Link, TenantLink }         from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -194,7 +194,7 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>

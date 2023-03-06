@@ -12,7 +12,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                             from '@acx-ui/user'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -87,7 +87,7 @@ export default function WifiCallingTable () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}>
             <Button
@@ -107,7 +107,7 @@ export default function WifiCallingTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

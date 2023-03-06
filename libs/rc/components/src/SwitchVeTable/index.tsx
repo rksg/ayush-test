@@ -16,8 +16,8 @@ import {
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 
@@ -186,7 +186,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={hasAccesses(rowActions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -197,7 +197,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
         getCheckboxProps: (record) => ({ disabled: record?.inactiveRow }),
         onChange: onSelectChange
       }}
-      actions={hasAccesses([{
+      actions={filterByAccess([{
         label: $t({ defaultMessage: 'Add VLAN interface (VE)' }),
         onClick: () => {
           setIsEditMode(false)

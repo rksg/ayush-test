@@ -7,8 +7,8 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink }  from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import AccessControlTabs from './AccessControlTabs'
 
@@ -28,7 +28,7 @@ export default function AccessControlTable () {
           link: getPolicyListRoutePath(true)
         }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <TenantLink
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,

@@ -5,7 +5,7 @@ import { PageHeader, Button, GridRow, Loader, GridCol }                         
 import { useGetAAAProfileDetailQuery }                                                              from '@acx-ui/rc/services'
 import { AAAPolicyType, getPolicyDetailsLink, getPolicyListRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
-import { hasAccesses }                                                                              from '@acx-ui/user'
+import { filterByAccess }                                                                           from '@acx-ui/user'
 
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'
@@ -21,7 +21,7 @@ export default function AAAPolicyDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.AAA,
             oper: PolicyOperation.EDIT,

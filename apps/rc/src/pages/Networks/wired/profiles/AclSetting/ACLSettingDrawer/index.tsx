@@ -14,7 +14,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
-import { hasAccesses }                                                                   from '@acx-ui/user'
+import { filterByAccess }                                                                from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
@@ -297,7 +297,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       </Row>
       <Table
         rowKey='sequence'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',

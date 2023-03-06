@@ -17,8 +17,8 @@ import {
   Entitlement,
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
@@ -141,7 +141,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={hasAccesses(actions)}
+        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

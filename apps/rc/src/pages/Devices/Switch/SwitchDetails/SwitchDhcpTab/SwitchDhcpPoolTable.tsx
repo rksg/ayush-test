@@ -16,8 +16,8 @@ import {
   CatchErrorResponse,
   isOperationalSwitch
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
@@ -137,7 +137,7 @@ export function SwitchDhcpPoolTable () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={hasAccesses([{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
           disabled: !isOperational || !!switchDetail?.cliApplied,
           onClick: () => {
@@ -146,7 +146,7 @@ export function SwitchDhcpPoolTable () {
           }
         }])}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[],

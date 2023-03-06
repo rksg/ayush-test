@@ -21,7 +21,7 @@ import {
   Delegation,
   getDelegetionStatusIntlString
 } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -164,7 +164,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
         }}
-        actions={hasAccesses(tableActions)}
+        actions={filterByAccess(tableActions)}
       />
 
       <DelegationInviteDialog

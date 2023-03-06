@@ -19,8 +19,8 @@ import {
   ServiceType,
   WifiCallingDetailContextType
 }  from '@acx-ui/rc/utils'
-import { TenantLink }  from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import WifiCallingDetailContent  from './WifiCallingDetailContent'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
@@ -54,7 +54,7 @@ const WifiCallingDetailView = () => {
             link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,

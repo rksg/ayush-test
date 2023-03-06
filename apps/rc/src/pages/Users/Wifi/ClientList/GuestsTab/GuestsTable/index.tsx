@@ -34,7 +34,7 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses, GuestErrorRes }                        from '@acx-ui/user'
+import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
@@ -338,11 +338,11 @@ export default function GuestsTable () {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={hasAccesses([{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false

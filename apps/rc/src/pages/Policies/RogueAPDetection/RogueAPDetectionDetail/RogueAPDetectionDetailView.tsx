@@ -17,8 +17,8 @@ import {
   PolicyOperation,
   getPolicyDetailsLink
 } from '@acx-ui/rc/utils'
-import { TenantLink }  from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 
 import RogueAPDetectionDetailContent from './RogueAPDetectionDetailContent'
@@ -41,7 +41,7 @@ const RogueAPDetectionDetailView = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
         ]}
-        extra={policyName !== RogueApConstant.DefaultProfile ? hasAccesses([
+        extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ROGUE_AP_DETECTION,
             oper: PolicyOperation.EDIT,

@@ -17,9 +17,9 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils }            from '@acx-ui/rc/utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
+import { Administrator, MSPUtils }               from '@acx-ui/rc/utils'
+import { RolesEnum }                             from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -201,7 +201,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         dataSource={adminList}
         rowKey='id'
         rowActions={isPrimeAdminUser
-          ? hasAccesses(rowActions)
+          ? filterByAccess(rowActions)
           : undefined}
         rowSelection={{
           type: isPrimeAdminUser ? 'checkbox' : 'radio',
@@ -212,7 +212,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
 
           })
         }}
-        actions={hasAccesses(tableActions)}
+        actions={filterByAccess(tableActions)}
       />
 
       { editMode ?

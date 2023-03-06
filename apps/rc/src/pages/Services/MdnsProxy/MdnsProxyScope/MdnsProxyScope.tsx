@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { StepsForm, Table, Loader, TableProps }     from '@acx-ui/components'
 import { useVenuesListQuery }                       from '@acx-ui/rc/services'
 import { useTableQuery, Venue, MdnsProxyScopeData } from '@acx-ui/rc/utils'
-import { hasAccesses }                              from '@acx-ui/user'
+import { filterByAccess }                           from '@acx-ui/user'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -134,7 +134,7 @@ export function MdnsProxyScope () {
         <Loader states={[tableQuery]}>
           <Table
             rowKey='id'
-            rowActions={hasAccesses(rowActions)}
+            rowActions={filterByAccess(rowActions)}
             rowSelection={{ type: 'radio' }}
             columns={columns}
             dataSource={tableData}

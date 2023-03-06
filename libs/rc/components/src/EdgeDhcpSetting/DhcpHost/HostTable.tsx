@@ -4,8 +4,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { EdgeDhcpHost } from '@acx-ui/rc/utils'
-import { hasAccesses }  from '@acx-ui/user'
+import { EdgeDhcpHost }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 export function HostTable (props:{
   data: EdgeDhcpHost[]
@@ -62,8 +62,8 @@ export function HostTable (props:{
       rowKey='id'
       columns={columns}
       dataSource={data}
-      rowActions={hasAccesses(rowActions)}
-      actions={hasAccesses(actions)}
+      rowActions={filterByAccess(rowActions)}
+      actions={filterByAccess(actions)}
       rowSelection={{}}
     />
   )

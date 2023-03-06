@@ -12,7 +12,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
-import { hasAccesses }                            from '@acx-ui/user'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'
@@ -61,7 +61,7 @@ export default function DpskDetails () {
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,

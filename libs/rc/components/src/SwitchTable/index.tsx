@@ -27,7 +27,7 @@ import {
   isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                       from '@acx-ui/user'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { SwitchCliSession }          from '../SwitchCliSession'
@@ -288,7 +288,7 @@ export function SwitchTable (props : {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={hasAccesses(rowActions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {

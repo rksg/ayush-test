@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                                     from '@acx-ui/icons'
 import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
-import { hasAccesses }                                     from '@acx-ui/user'
+import { filterByAccess }                                  from '@acx-ui/user'
 import { useDateFilter }                                   from '@acx-ui/utils'
 
 import NetworkTabs       from './NetworkTabs'
@@ -22,7 +22,7 @@ function NetworkPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <DisabledButton key='hierarchy-filter'>
           {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
         <RangePicker

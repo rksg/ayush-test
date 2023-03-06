@@ -8,7 +8,7 @@ import { Features, useIsSplitOn }                                            fro
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'
-import { hasAccesses }                                                       from '@acx-ui/user'
+import { filterByAccess }                                                    from '@acx-ui/user'
 import { getIntl, notAvailableMsg }                                          from '@acx-ui/utils'
 
 
@@ -236,7 +236,7 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio', ...rowSelection(intl) } : undefined}
       />
     </Loader>

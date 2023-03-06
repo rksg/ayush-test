@@ -28,9 +28,9 @@ import {
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
-import { formatter }   from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { formatter }      from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -252,8 +252,8 @@ export default function DpskPassphraseManagement () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={hasAccesses(actions)}
-        rowActions={hasAccesses(rowActions)}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
       />

@@ -12,7 +12,7 @@ import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-import { UserUrlsInfo }                              from '@acx-ui/user'
+import { UserUrlsInfo }                      from '@acx-ui/user'
 
 
 declare global {

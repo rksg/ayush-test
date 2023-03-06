@@ -9,8 +9,8 @@ import {
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig } from '@acx-ui/rc/utils'
-import { hasAccesses }  from '@acx-ui/user'
+import { ClientConfig }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -161,9 +161,9 @@ export function RadiusServerForm () {
                     dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                     showHeader={false}
                     rowSelection={{ type: 'radio' }}
-                    rowActions={hasAccesses(ipTableRowActions)}
+                    rowActions={filterByAccess(ipTableRowActions)}
                     type={'form'}
-                    actions={hasAccesses([{
+                    actions={filterByAccess([{
                       label: $t({ defaultMessage: 'Add IP Address' }),
                       onClick: () => {
                         setVisible(true)

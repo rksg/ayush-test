@@ -11,7 +11,7 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }           from '@acx-ui/user'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 
@@ -32,7 +32,7 @@ export default function ClientIsolationDetail () {
             link: getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.CLIENT_ISOLATION,
             oper: PolicyOperation.EDIT,

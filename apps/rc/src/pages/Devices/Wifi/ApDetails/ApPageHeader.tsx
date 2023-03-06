@@ -20,8 +20,8 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { hasAccesses }   from '@acx-ui/user'
-import { useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import { useApContext } from './ApContext'
 import ApTabs           from './ApTabs'
@@ -86,7 +86,7 @@ function ApPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

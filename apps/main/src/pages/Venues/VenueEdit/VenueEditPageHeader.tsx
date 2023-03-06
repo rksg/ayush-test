@@ -7,7 +7,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import VenueEditTabs from './VenueEditTabs'
 
@@ -25,7 +25,7 @@ function VenueEditPageHeader () {
       breadcrumb={[
         { text: 'Venues', link: '/venues' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <Button
           key='back'
           type='primary'

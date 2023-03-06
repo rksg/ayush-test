@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import { NotificationRecipientUIModel, NotificationEndpointType } from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
-import { hasAccesses }                                            from '@acx-ui/user'
+import { filterByAccess }                                         from '@acx-ui/user'
 
 import RecipientDialog from './RecipientDialog'
 import * as UI         from './styledComponents'
@@ -161,9 +161,9 @@ export const NotificationsTable = () => {
           columns={columns}
           dataSource={notificationList.data}
           rowKey='id'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'checkbox' }}
-          actions={hasAccesses(tableActions)}
+          actions={filterByAccess(tableActions)}
         />
       </Loader>
 

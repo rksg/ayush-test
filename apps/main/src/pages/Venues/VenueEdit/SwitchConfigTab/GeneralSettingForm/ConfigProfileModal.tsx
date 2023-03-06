@@ -10,8 +10,8 @@ import { Button,
   Tabs, Tooltip } from '@acx-ui/components'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
-import { getIntl }     from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -158,7 +158,7 @@ export function ConfigProfileModal (props: {
               onChange: onChangeCLI
             }}
             // TODO:
-            actions={hasAccesses([{
+            actions={filterByAccess([{
               label: 'Add CLI Profile',
               onClick: () => {}
             }])}

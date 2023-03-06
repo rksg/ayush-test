@@ -12,7 +12,7 @@ import {
   WifiCallingActionPayload,
   WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -137,7 +137,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={hasAccesses(rowActions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'checkbox' }}
     />
   )

@@ -11,7 +11,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }           from '@acx-ui/user'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'
@@ -41,7 +41,7 @@ export default function MdnsProxyDetail () {
             link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,

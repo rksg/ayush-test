@@ -33,8 +33,8 @@ import {
   RequestPayload,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   compareVersions,
@@ -507,9 +507,9 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={rowSelection}
-        actions={hasAccesses([{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }])}

@@ -21,8 +21,8 @@ import {
   SwitchStatusEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }  from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -221,7 +221,7 @@ export function DeviceInventory () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,

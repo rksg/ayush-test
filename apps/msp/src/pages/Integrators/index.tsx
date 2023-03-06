@@ -28,7 +28,7 @@ import {
   MspEc
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                                              from '@acx-ui/user'
+import { filterByAccess }                                                           from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -187,7 +187,7 @@ export function Integrators () {
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
           columns={columns}
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
@@ -203,7 +203,7 @@ export function Integrators () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '3rd Party' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,

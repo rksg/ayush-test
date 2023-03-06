@@ -8,7 +8,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
-import { hasAccesses }         from '@acx-ui/user'
+import { filterByAccess }      from '@acx-ui/user'
 
 export function PoolTable (props:{
   data: DHCPPool[]
@@ -114,8 +114,8 @@ export function PoolTable (props:{
         rowKey='id'
         columns={columns}
         dataSource={data}
-        rowActions={hasAccesses(rowActions)}
-        actions={hasAccesses(actions)}
+        rowActions={filterByAccess(rowActions)}
+        actions={filterByAccess(actions)}
         rowSelection={{}}
       />
     </>

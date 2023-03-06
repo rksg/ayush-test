@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Button, PageHeader, Tabs }               from '@acx-ui/components'
 import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                            from '@acx-ui/user'
+import { filterByAccess }                         from '@acx-ui/user'
 import { getIntl }                                from '@acx-ui/utils'
 
 import DnsServer       from './DnsServer'
@@ -78,7 +78,7 @@ const EditEdge = () => {
             link: '/devices/edge/list'
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to={`/devices/edge/${serialNumber}/edge-details/overview`}>
             <Button type='primary'>{ $t({ defaultMessage: 'Back to device details' }) }</Button>
           </TenantLink>

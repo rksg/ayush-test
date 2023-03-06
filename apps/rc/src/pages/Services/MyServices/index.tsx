@@ -14,7 +14,7 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }           from '@acx-ui/user'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -95,7 +95,7 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>

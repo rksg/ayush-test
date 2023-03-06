@@ -21,8 +21,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { hasAccesses }   from '@acx-ui/user'
-import { useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -124,7 +124,7 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

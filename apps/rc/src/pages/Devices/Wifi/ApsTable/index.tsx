@@ -13,7 +13,7 @@ import { Features, useIsSplitOn }                                        from '@
 import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
-import { hasAccesses }                                                   from '@acx-ui/user'
+import { filterByAccess }                                                from '@acx-ui/user'
 
 export default function ApsTable () {
   const { $t } = useIntl()
@@ -81,7 +81,7 @@ export default function ApsTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Wi-Fi' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>

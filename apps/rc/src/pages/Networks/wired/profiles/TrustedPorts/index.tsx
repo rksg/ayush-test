@@ -5,7 +5,7 @@ import _                         from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
-import { hasAccesses }                                   from '@acx-ui/user'
+import { filterByAccess }                                from '@acx-ui/user'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
@@ -119,10 +119,10 @@ export function TrustedPorts () {
           </label>
           <Table
             rowKey='model'
-            rowActions={hasAccesses(rowActions)}
+            rowActions={filterByAccess(rowActions)}
             columns={aclsColumns}
             dataSource={ruleList}
-            actions={hasAccesses([{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Model' }),
               onClick: () => {
                 setOpenModal(true)

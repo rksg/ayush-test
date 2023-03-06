@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
-import { hasAccesses }                            from '@acx-ui/user'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -428,8 +428,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
-      actions={hasAccesses(actions)}
-      rowActions={hasAccesses(rowActions)}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>

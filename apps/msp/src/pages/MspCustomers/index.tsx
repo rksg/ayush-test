@@ -34,7 +34,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses, useUserProfileContext }                                       from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -400,7 +400,7 @@ export function MspCustomers () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -433,7 +433,7 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,

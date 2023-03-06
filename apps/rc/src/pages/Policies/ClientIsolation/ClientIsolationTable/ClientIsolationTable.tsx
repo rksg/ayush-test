@@ -12,7 +12,7 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                             from '@acx-ui/user'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -84,7 +84,7 @@ export default function ClientIsolationTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Pofile' })}</Button>
@@ -98,7 +98,7 @@ export default function ClientIsolationTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

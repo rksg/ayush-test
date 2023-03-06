@@ -31,7 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                       from '@acx-ui/user'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesMappingAP } from '../DevicesWidget/helper'
 import { useApActions }    from '../useApActions'
@@ -372,8 +372,8 @@ export function ApTable (props: ApTableProps) {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        rowActions={hasAccesses(rowActions)}
-        actions={props.enableActions ? hasAccesses([{
+        rowActions={filterByAccess(rowActions)}
+        actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
             navigate({

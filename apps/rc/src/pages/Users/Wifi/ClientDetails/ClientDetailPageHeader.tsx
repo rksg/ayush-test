@@ -12,7 +12,7 @@ import {
   useSearchParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                           from '@acx-ui/user'
+import { filterByAccess }                                        from '@acx-ui/user'
 import { DateFilter, DateRange, encodeParameter, useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
@@ -107,7 +107,7 @@ function ClientDetailPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }
       ]}
-      extra={hasAccesses([
+      extra={filterByAccess([
         <DatePicker key='date-filter' />,
         <Dropdown overlay={menu}>
           <Button type='secondary'>

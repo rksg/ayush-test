@@ -24,7 +24,7 @@ import {
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }                        from '@acx-ui/user'
+import { filterByAccess }                     from '@acx-ui/user'
 
 function useColumns (
   searchable?: boolean,
@@ -273,7 +273,7 @@ export const VenueTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={rowSelection}
       />
     </Loader>
@@ -302,7 +302,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Venues' })}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Venue' }) }</Button>
           </TenantLink>

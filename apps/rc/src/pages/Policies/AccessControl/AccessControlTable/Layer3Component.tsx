@@ -15,7 +15,7 @@ import {
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
 
@@ -102,7 +102,7 @@ const Layer3Component = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={hasAccesses(rowActions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>

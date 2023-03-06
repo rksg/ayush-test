@@ -17,8 +17,8 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -172,7 +172,7 @@ export function VenueSetting () {
           <StepsForm.Title children={$t({ defaultMessage: 'Venues' })} />
           <Table
             rowKey='id'
-            rowActions={hasAccesses(rowActions)}
+            rowActions={filterByAccess(rowActions)}
             rowSelection={{
               type: 'checkbox',
               ...rowSelection

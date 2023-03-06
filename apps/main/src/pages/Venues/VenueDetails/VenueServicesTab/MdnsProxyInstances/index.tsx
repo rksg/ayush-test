@@ -16,7 +16,7 @@ import {
   useTableQuery
 }   from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }           from '@acx-ui/user'
+import { filterByAccess }        from '@acx-ui/user'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
@@ -137,13 +137,13 @@ export default function MdnsProxyInstances () {
         <Table<MdnsProxyAp>
           columns={columns}
           dataSource={tableQuery.data?.data}
-          actions={hasAccesses([{
+          actions={filterByAccess([{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction
           }])}
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

@@ -38,8 +38,8 @@ import {
   RadioTypeEnum,
   SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams }   from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { useGetNetwork } from '../services'
 
@@ -443,7 +443,7 @@ export function NetworkVenuesTab () {
       }
       <Table
         rowKey='id'
-        rowActions={hasAccesses(rowActions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}

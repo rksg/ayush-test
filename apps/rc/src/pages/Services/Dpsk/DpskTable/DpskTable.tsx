@@ -24,7 +24,7 @@ import {
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccesses }                                  from '@acx-ui/user'
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function DpskTable () {
   const intl = useIntl()
@@ -150,7 +150,7 @@ export default function DpskTable () {
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
@@ -164,7 +164,7 @@ export default function DpskTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={hasAccesses(rowActions)}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

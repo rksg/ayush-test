@@ -9,7 +9,7 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
@@ -149,8 +149,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         columns={columns}
         dataSource={rules}
         rowKey='id'
-        actions={readonly ? [] : hasAccesses(actions)}
-        rowActions={hasAccesses(rowActions)}
+        actions={readonly ? [] : filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={readonly ? false : { type: 'radio' }}
       />
     </>

@@ -28,7 +28,7 @@ export function hasAccess (id?: string) {
   return accessOk(allowedOperations, id)
 }
 
-export function hasAccesses <Item> (items?: Item[]) {
+export function filterByAccess <Item> (items?: Item[]) {
   return items?.filter(item => hasAccess((item as { key?: string }).key))
 }
 

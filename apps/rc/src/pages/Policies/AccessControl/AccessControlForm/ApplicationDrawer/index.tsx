@@ -25,7 +25,7 @@ import {
   ApplicationRuleType, AvcCategory,
   CommonResult
 } from '@acx-ui/rc/utils'
-import { hasAccesses } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   genRuleObject,
@@ -487,8 +487,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
-      actions={hasAccesses(actions)}
-      rowActions={hasAccesses(rowActions)}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>

@@ -11,8 +11,8 @@ import {
   ServiceOperation,
   ServiceType
 }                                                         from '@acx-ui/rc/utils'
-import { TenantLink }  from '@acx-ui/react-router-dom'
-import { hasAccesses } from '@acx-ui/user'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import PortalInstancesTable from './PortalInstancesTable'
 import PortalOverview       from './PortalOverview'
@@ -32,7 +32,7 @@ export default function PortalServiceDetail () {
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,

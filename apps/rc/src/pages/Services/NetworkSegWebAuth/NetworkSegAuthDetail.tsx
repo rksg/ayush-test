@@ -12,7 +12,7 @@ import {
   ServiceOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasAccesses }           from '@acx-ui/user'
+import { filterByAccess }        from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -81,7 +81,7 @@ export default function NetworkSegAuthDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
-        extra={hasAccesses([
+        extra={filterByAccess([
           <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
