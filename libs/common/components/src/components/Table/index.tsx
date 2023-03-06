@@ -84,7 +84,7 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void,
     groupable?: {
-      selectors: { key: string, label: string }[]
+      selectors: { key: string, label: string, actionEnable?: boolean }[]
       onChange: CallableFunction
       onClear: CallableFunction
       actions?: { key: string, label: React.ReactNode, callback?: CallableFunction }[]
@@ -138,7 +138,8 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
-  const { GroupBySelect, expandable } = useGroupBy<RecordType>(groupable)
+  const { GroupBySelect, expandable, groupColumns } = useGroupBy<RecordType>(
+    groupable, props.columns.length)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -161,7 +162,7 @@ function Table <RecordType extends Record<string, any>> ({
     }
 
     const cols = type === 'tall'
-      ? [...props.columns, settingsColumn] as typeof props.columns
+      ? [...props.columns, ...groupColumns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({

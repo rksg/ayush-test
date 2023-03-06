@@ -34,10 +34,13 @@ function cleanResponse (response: APExtendedGroupedResponse) {
     return {
       ...parent,
       id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
-      children: aps.map(ap => ({ ...ap, deviceGroupName: (ap.deviceGroupName !== '')
-        ? ap.deviceGroupName
-        : 'Uncategorized',
-      id: uniqueId() }))
+      children: aps.map(ap => ({
+        ...ap,
+        deviceGroupName: (ap.deviceGroupName !== '')
+          ? ap.deviceGroupName
+          : 'Uncategorized',
+        id: uniqueId()
+      }))
     }
   })
 }
@@ -521,7 +524,7 @@ export function GroupTable () {
       key: 'ip'
     },
     {
-      title: 'MAC Addresse',
+      title: 'MAC Addresses',
       dataIndex: 'apMac',
       key: 'apMac',
       searchable: true
@@ -572,7 +575,7 @@ export function GroupTable () {
         columnEmptyText='-'
         groupable={{
           selectors: [
-            { key: 'deviceGroupName', label: 'AP Group' },
+            { key: 'deviceGroupName', label: 'AP Group', actionEnable: true },
             { key: 'deviceStatus' , label: 'Status' },
             { key: 'model', label: 'Model' }
           ],
@@ -584,8 +587,7 @@ export function GroupTable () {
           onClear: () => {
             // eslint-disable-next-line no-console
             console.log('clear data, reset to AP Group')
-
-            // reset table t
+            // reset table to default
             setCurrData(groupableCallback('deviceGroupName'))
           }
         }}

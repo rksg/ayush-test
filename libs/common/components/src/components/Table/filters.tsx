@@ -138,12 +138,37 @@ export function renderFilter <RecordType> (
 }
 
 export function useGroupBy<RecordType> (
-  groupables: TableProps<RecordType>['groupable']
+  groupables: TableProps<RecordType>['groupable'],
+  colLength: number
 ) {
-  const [value, setValue] = React.useState<string | undefined>(undefined)
+  const [value, setValue] = React.useState<{ key: string, value: string } | undefined>(undefined)
+  const [enableAction, setEnableAction] = React.useState(false)
 
   if (groupables) {
-    const { selectors, onChange, onClear } = groupables
+    const getChildren = (record: RecordType) =>
+      (record as unknown as { children: RecordType[] | undefined }).children
+
+    const hasValidChildren = (record: RecordType) => {
+      const children = getChildren(record)
+      return Boolean(children && children.length > 0)
+    }
+
+    const isParent = (record: RecordType) => Array.isArray(getChildren(record))
+
+    const handleEnableAction = (option: { key: string, value: string }) => {
+      const actionSelectors = selectors.filter(val => val.actionEnable).map(val => val.key)
+      const enable = Boolean(actionSelectors.find(elem => option && option.key === elem))
+      setEnableAction(enable)
+    }
+
+    const { selectors, onChange, onClear, actions } = groupables
+
+    const actionsList = actions ?? []
+    const groupColumns: TableProps<RecordType>['columns'] = actionsList.map((val) => ({
+      key: val.key,
+      dataIndex: '',
+      render: (_, record) => enableAction && isParent(record) ? val.label : null
+    }))
 
     const GroupBySelect = () => {
       return <UI.FilterSelect
@@ -153,8 +178,10 @@ export function useGroupBy<RecordType> (
         value={value}
         onChange={(val, options) => {
           onChange(val)
-          const typedOption = options as { key: string, children: string }
-          setValue(typedOption.children)
+          const { key, children } = options as { key: string, children: string }
+          const option = { key, value: children }
+          setValue(option)
+          handleEnableAction(option)
         }}
         onClear={() => {
           onClear()
@@ -162,7 +189,7 @@ export function useGroupBy<RecordType> (
         }}
         key='group-by-select'
       >
-        {selectors.map(item => <Select.Option
+        {selectors.map((item) => <Select.Option
           key={item.key}
           value={item.key}
           data-testid={`option-${item.key}`}
@@ -172,22 +199,13 @@ export function useGroupBy<RecordType> (
       </UI.FilterSelect>
     }
 
-    const getChildrenHelper = (record: unknown) =>
-      (record as unknown as { children: RecordType[] | undefined }).children
-
-    const isValidParent = (children: RecordType[] | undefined) =>
-      Boolean(children && children.length > 0)
-
     const expandable: TableProps<RecordType>['expandable'] = {
       expandRowByClick: true,
       defaultExpandAllRows: true,
-      rowExpandable: (record) => {
-        const children = getChildrenHelper(record)
-        return isValidParent(children)
-      },
+      expandIconColumnIndex: colLength + 1,
+      rowExpandable: (record) => hasValidChildren(record),
       expandIcon: (props) => {
-        const children = getChildrenHelper(props.record)
-        if (!isValidParent(children)) return null
+        if (!hasValidChildren(props.record)) return null
         const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
           ? <CollapseInactive />
           : <CollapseActive />
@@ -195,13 +213,16 @@ export function useGroupBy<RecordType> (
       }
     }
 
-
-
-    return { GroupBySelect, expandable }
+    return {
+      GroupBySelect,
+      expandable,
+      groupColumns
+    }
   }
 
   return {
     GroupBySelect: () => null,
-    expandable: undefined
+    expandable: undefined,
+    groupColumns: []
   }
 }
