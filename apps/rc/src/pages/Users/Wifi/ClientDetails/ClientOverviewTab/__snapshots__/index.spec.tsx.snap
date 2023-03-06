@@ -428,6 +428,34 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -894,7 +922,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render corr
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -1460,6 +1488,34 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -2102,7 +2158,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -2671,6 +2727,34 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -3166,7 +3250,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    test4
                                   </span>
                                 </div>
                               </td>
@@ -3189,7 +3273,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    +886933222333
                                   </span>
                                 </div>
                               </td>
@@ -3212,7 +3296,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    a@email.com
                                   </span>
                                 </div>
                               </td>
@@ -3258,7 +3342,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Nov 20 2022 08:57
                                   </span>
                                 </div>
                               </td>
@@ -3281,7 +3365,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Dec 13 2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -3304,7 +3388,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    2
                                   </span>
                                 </div>
                               </td>
@@ -3327,7 +3411,11 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -3356,7 +3444,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -3925,6 +4013,34 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -4391,7 +4507,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -4960,6 +5076,34 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -5414,7 +5558,7 @@ exports[`ClientOverviewTab ClientProperties Historical Client should render hist
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -5980,6 +6124,34 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -6739,7 +6911,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client c
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -7305,6 +7477,34 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -8046,7 +8246,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render client w
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -8612,6 +8812,34 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -9543,7 +9771,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render dpsk cli
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -10109,6 +10337,34 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -10897,7 +11153,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    test4
                                   </span>
                                 </div>
                               </td>
@@ -10920,7 +11176,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    +886933222333
                                   </span>
                                 </div>
                               </td>
@@ -10943,7 +11199,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    a@email.com
                                   </span>
                                 </div>
                               </td>
@@ -10989,7 +11245,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Nov 20 2022 08:57
                                   </span>
                                 </div>
                               </td>
@@ -11012,7 +11268,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    Dec 13 2022 15:20
                                   </span>
                                 </div>
                               </td>
@@ -11035,7 +11291,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    2
                                   </span>
                                 </div>
                               </td>
@@ -11058,7 +11314,11 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                                   <span
                                     class="ant-descriptions-item-content"
                                   >
-                                    --
+                                    <a
+                                      href="/t/tenant-id/users/wifi/clients/AA:AA:AA:AA:AA:AA/details/overview?hostname=host"
+                                    >
+                                      AA:AA:AA:AA:AA:AA
+                                    </a>
                                   </span>
                                 </div>
                               </td>
@@ -11087,7 +11347,7 @@ exports[`ClientOverviewTab ClientProperties Normal Client should render guest cl
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -11653,6 +11913,34 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
             </div>
           </div>
           <div
@@ -12412,7 +12700,7 @@ exports[`ClientOverviewTab OverviewWidget should render client info correctly 1`
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -12981,6 +13269,34 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -13447,7 +13763,7 @@ exports[`ClientOverviewTab OverviewWidget should render correctly when search pa
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
@@ -14016,6 +14332,34 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
             </div>
           </div>
           <div
+            class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+            style="padding: 10px 10px 10px 10px;"
+          >
+            <div
+              class="Grid__Container-sc-5irhjd-1 zzbxI"
+              style="height: 292px;"
+            >
+              <div
+                data-testid="rc-TopApplications"
+                title="TopApplications"
+              />
+            </div>
+          </div>
+          <div
             class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
             style="padding: 10px 10px 10px 10px;"
           >
@@ -14482,7 +14826,7 @@ exports[`ClientOverviewTab OverviewWidget should render historical client info c
                     <h4
                       class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                     >
-                      WiFi Calling Details
+                      Wi-Fi Calling Details
                     </h4>
                     <div
                       class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"

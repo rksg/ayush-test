@@ -6,7 +6,6 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import { useTraceRouteApMutation }                       from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
@@ -21,7 +20,8 @@ export function ApTraceRouteForm () {
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: form.getFieldValue('name')
+        targetHost: form.getFieldValue('name'),
+        action: 'traceRoute'
       }
       const traceRouteApResult =
         await traceRouteAp({ params: { tenantId, serialNumber }, payload }).unwrap()
@@ -56,11 +56,9 @@ export function ApTraceRouteForm () {
           name='name'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
-              placement='bottom'>
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+              placement='bottom' />
           </>}
           rules={[
             { required: true },

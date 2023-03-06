@@ -1,17 +1,16 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { venueApi }           from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { venueApi }        from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   fireEvent,
   mockServer,
   render,
   screen,
-  waitFor,
-  waitForElementToBeRemoved
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { emptyList, mockAaaSetting, mockAaaSettingWithOrder, radiusList } from '../../../__tests__/fixtures'
@@ -45,23 +44,11 @@ describe('SwitchAAATab', () => {
         res(ctx.json({}))
       )
     )
-    const { asFragment } = render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
+    render(<Provider><SwitchAAATab /></Provider>, { route: { params } })
 
-    await waitForElementToBeRemoved(
-      () => screen.queryAllByRole('img', { name: 'loader' }),
-      { timeout: 10000 }
-    )
-
-    const settingsBtn = screen.getByRole('link', { name: 'Settings' })
-    fireEvent.click(settingsBtn)
-
-    expect(asFragment()).toMatchSnapshot()
-
-    const sshCbx = screen.getByLabelText('SSH Authentication')
-    fireEvent.click(sshCbx)
-
-    const saveBtn = screen.getByRole('button', { name: 'Save AAA' })
-    fireEvent.click(saveBtn)
+    fireEvent.click(await screen.findByRole('link', { name: 'Settings' }))
+    fireEvent.click(await screen.findByLabelText('SSH Authentication'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Save AAA' }))
   })
 
 

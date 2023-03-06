@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`specToDto process spec of GraphQL result to dto 1`] = `
+Object {
+  "authenticationMethod": "WPA3_PERSONAL",
+  "clientType": "virtual-wireless-client",
+  "dnsServer": "10.10.10.10",
+  "id": "spec-id",
+  "isDnsServerCustom": true,
+  "name": "Test Name",
+  "networkPaths": Object {
+    "networkNodes": Array [
+      Array [
+        Object {
+          "name": "VENUE",
+          "type": "zone",
+        },
+        Object {
+          "list": Array [
+            "00:00:00:00:00:00",
+          ],
+          "type": "apMac",
+        },
+      ],
+    ],
+  },
+  "pingAddress": "10.10.10.10",
+  "radio": "6",
+  "tracerouteAddress": "10.10.10.10",
+  "type": "on-demand",
+  "wlanName": "WLAN Name",
+  "wlanPassword": "12345",
+  "wlanUsername": "user",
+}
+`;

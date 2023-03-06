@@ -1,7 +1,7 @@
 import { Space }       from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { EnvelopClosedSolid } from '@acx-ui/icons'
+import { CaretDownOutlined, EnvelopClosedSolid } from '@acx-ui/icons'
 
 export const EnvelopClosedSolidIcon = styled(EnvelopClosedSolid)`
   width: 16px;
@@ -62,4 +62,39 @@ export const FieldLabeServiceDate = styled.div<{ width: string }>`
   display: grid;
   grid-template-columns: 150px 150px 150px;
   align-items: baseline;
+`
+export const FieldLabelAccessPeriod = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 110px 90px 100px;
+  align-items: baseline;
+`
+export const CaretDownIcon = styled(CaretDownOutlined)`
+cursor: pointer;
+margin-left: 7px;
+margin-right: 2px;
+path{
+  fill:var(--acx-primary-white);
+}
+`
+export const FieldLabelDomain = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 100px 180px 150px;
+  align-items: baseline;
+`
+export const ImagePreviewDark = styled.div<{ width: string, height: string }>`
+  display: flex;
+  align-items: center;
+  background-color: var(--acx-primary-black);
+  width: ${props => props.width};
+  height: ${props => props.height}
+`
+
+export const ImagePreviewLight = styled.div<{ width: string, height: string }>`
+  display: flex;
+  align-items: center;
+  background-color: var(--acx-neutrals-15);
+  width: ${props => props.width};
+  height: ${props => props.height}
 `

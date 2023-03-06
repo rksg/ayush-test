@@ -1,21 +1,24 @@
-import { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
+import React, { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
+import { Button, Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { getPolicyRoutePath, PolicyOperation, PolicyType, VenueMessages } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
+import { VenueMessages } from '@acx-ui/rc/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import RogueApModal from '../../../../../../../rc/src/pages/Policies/RogueAPDetection/RogueApModal'
+
+import RogueApDrawer from './RogueApDrawer'
 
 export interface SecuritySetting {
   dosProtectionEnabled: boolean,
@@ -54,6 +57,7 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
+  const [rogueDrawerVisible, setRogueDrawerVisible] = useState(false)
 
   const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
     selectFromResult ({ data }) {
@@ -224,12 +228,10 @@ export function SecurityTab () {
             <Form.Item
               label={<>
                 {$t({ defaultMessage: 'Report SNR Threshold:' })}
-                <Tooltip
+                <Tooltip.Question
                   title={$t(VenueMessages.SNR_THRESHOLD_TOOLTIP)}
                   placement='bottom'
-                >
-                  <QuestionMarkCircleOutlined />
-                </Tooltip>
+                />
               </>}
             >
               <Space>
@@ -255,15 +257,22 @@ export function SecurityTab () {
                   })}
                   style={{ width: '200px' }}
                 />
-                <TenantLink
-                  to={getPolicyRoutePath({
-                    type: PolicyType.ROGUE_AP_DETECTION,
-                    oper: PolicyOperation.CREATE
-                  })}
-                >
-                  {$t({ defaultMessage: 'Add Profile' })}
-                </TenantLink>
+                <Button type='link'
+                  disabled={!roguePolicyIdValue}
+                  onClick={() => {
+                    if (roguePolicyIdValue) {
+                      setRogueDrawerVisible(true)
+                    }
+                  }
+                  }>
+                  {$t({ defaultMessage: 'View Details' })}
+                </Button>
+                <RogueApModal />
               </Space>
+              { rogueDrawerVisible && <RogueApDrawer
+                visible={rogueDrawerVisible}
+                setVisible={setRogueDrawerVisible}
+                policyId={roguePolicyIdValue} /> }
             </Form.Item>
           </FieldsetItem>
         </StepsForm.StepForm>

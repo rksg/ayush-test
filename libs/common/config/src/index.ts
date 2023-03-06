@@ -17,6 +17,11 @@ export interface EnvironmentConfig {
   CAPTIVE_PORTAL_DOMAIN_NAME: string
   CHANGE_PASSWORD: string
   MANAGE_LICENSES: string
+  FETCHBOT_JS_URL: string
+  DOCUMENTATION_CENTER: string
+  MY_OPEN_CASES: string
+  PRIVACY: string
+  SUPPORTED_AP_MODELS: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

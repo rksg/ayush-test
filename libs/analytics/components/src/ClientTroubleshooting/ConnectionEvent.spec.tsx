@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DisplayEvent }           from './config'
@@ -30,13 +32,15 @@ const successEvent: DisplayEvent = {
   start: 1668407611646,
   end: 1668407611646,
   category: 'success',
-  ssid: 'cliexp4'
+  ssid: 'cliexp4',
+  key: 'sucessKey'
 }
 
 const slowEvent = {
   ...successEvent,
   category: 'slow',
-  ttc: 1000
+  ttc: 1000,
+  key: 'slowKey'
 }
 
 const disconnectEvent: DisplayEvent = {
@@ -65,7 +69,8 @@ const disconnectEvent: DisplayEvent = {
     }
   ],
   ttc: null,
-  timestamp: '2022-11-14T06:33:31.646Z'
+  timestamp: '2022-11-14T06:33:31.646Z',
+  key: 'disconnectKey'
 }
 
 const failureEvent: DisplayEvent = {
@@ -95,27 +100,38 @@ const failureEvent: DisplayEvent = {
   ],
   ttc: null,
   timestamp: '2022-11-14T06:33:31.646Z',
-  messageIds: ['21', '22']
+  messageIds: ['21', '22'],
+  key: 'failureKey'
 }
 
 const unknownRadio = {
   ...successEvent,
-  radio: ''
+  radio: '',
+  key: 'unknownKey'
 }
 
 const unknownFailure = {
   ...failureEvent,
-  code: null
+  code: null,
+  key: 'unknownFailure'
 }
 
 const nullFailedIdFailure = {
   ...failureEvent,
-  failedMsgId: null
+  failedMsgId: null,
+  key: 'nullFailureMsg'
 }
 
 const emptyMessageIds = {
   ...failureEvent,
-  messageIds: []
+  messageIds: [],
+  key: 'emptyMsgKey'
+}
+
+const nullMsgIds = {
+  ...failureEvent,
+  messageIds: null as unknown as undefined,
+  key: 'nullMsgKey'
 }
 
 describe('ConnectionEvent', () => {
@@ -180,7 +196,7 @@ describe('ConnectionEvent', () => {
   })
 
 
-  it('renders correctly for null empty messageId', () => {
+  it('renders correctly for empty messageId', () => {
     const { asFragment } =
       render(<ConnectionEventPopover event={emptyMessageIds}>test</ConnectionEventPopover>)
     fireEvent.click(screen.getByText(/test/i))
@@ -188,12 +204,37 @@ describe('ConnectionEvent', () => {
     expect(test).toHaveLength(0)
   })
 
-  it('renders correctly on popover close', () => {
+  it('renders correctly for null messageId', () => {
     const { asFragment } =
-      render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
+      render(<ConnectionEventPopover event={nullMsgIds}>test</ConnectionEventPopover>)
+    fireEvent.click(screen.getByText(/test/i))
+    const test = asFragment().querySelectorAll('section')
+    expect(test).toHaveLength(0)
+  })
+
+  it('renders correctly on popover close', () => {
+    const mockVisibleChange = jest.fn((val: boolean) => val)
+    const TestWrapper = () => {
+      const [visible, setVisible] = useState(false)
+      const onVisibleChange = (val: boolean) => {
+        mockVisibleChange(val)
+        setVisible(val)
+      }
+      return <ConnectionEventPopover
+        event={successEvent}
+        onVisibleChange={onVisibleChange}
+        visible={visible}
+      >
+      test
+      </ConnectionEventPopover>
+    }
+
+    const { asFragment } = render(<TestWrapper/>)
     const original = asFragment()
     fireEvent.click(screen.getByText(/test/i))
+    expect(mockVisibleChange).toBeCalledWith(true)
     fireEvent.click(screen.getByTestId(/CloseSymbol/i))
+    expect(mockVisibleChange).toHaveBeenLastCalledWith(false)
     const closed = asFragment()
     expect(original).toMatchObject(closed)
   })

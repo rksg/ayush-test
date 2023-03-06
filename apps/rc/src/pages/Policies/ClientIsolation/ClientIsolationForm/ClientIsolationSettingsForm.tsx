@@ -69,7 +69,7 @@ export default function ClientIsolationSettingsForm () {
         </Col>
       </Row>
       <Row gutter={20}>
-        <Col span={10}>
+        <Col span={8}>
           <Space direction='vertical' size={2}>
             <UI.TableLabel>
               {$t(

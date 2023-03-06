@@ -10,20 +10,45 @@ import {
   TenantDelegationResponse,
   RecoveryPassphrase,
   TenantPreferenceSettings,
+  Administrator,
   onActivityMessageReceived,
-  onSocketActivityChanged, ClientConfig, RadiusClientConfigUrlsInfo, RadiusServerSetting
+  onSocketActivityChanged,
+  Delegation,
+  VARTenantDetail,
+  RegisteredUserSelectOption,
+  ApiInfo,
+  NotificationRecipientUIModel,
+  NotificationRecipientResponse,
+  NotificationEndpointType,
+  NotificationEndpoint,
+  ClientConfig,
+  RadiusClientConfigUrlsInfo,
+  RadiusServerSetting,
+  TenantDetails,
+  GetRoleStr,
+  EntitlementSummary,
+  Entitlement,
+  NewEntitlementSummary
 } from '@acx-ui/rc/utils'
 
 export const baseAdministrationApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'administrationApi',
-  tagTypes: ['Administration', 'RadiusClientConfig'],
+  tagTypes: ['Administration', 'License', 'RadiusClientConfig'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
+    getTenantDetails: build.query<TenantDetails, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTenantDetails, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountDetails, params)
@@ -107,6 +132,50 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         })
       }
     }),
+    getDelegations: build.query<Delegation[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getDelegations, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'DeleteDelegation',
+            'InviteVar'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'DELEGATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getMspEcDelegations: build.query<Delegation[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getMspEcDelegations, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'DeleteDelegation',
+            'InviteVar'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'DELEGATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.enableAccessSupport, params)
@@ -153,6 +222,251 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Administration', id: 'PREFERENCES' }]
     }),
+    getAdminList: build.query<Administrator[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdministrators, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (result: Administrator[]) => {
+        return transformAdministratorList(result)
+      },
+      providesTags: [{ type: 'Administration', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'InviteAdmin',
+            'UpdateAdmin',
+            'DeleteAdmin',
+            'DeleteAdmins'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    updateAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    deleteAdmin: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdmin, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    deleteAdmins: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdmins, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'LIST' }]
+    }),
+    revokeInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.revokeInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          if (msg.useCase === 'DeleteDelegation') {
+            (requestArgs.callback as Function)()
+          }
+        })
+      }
+    }),
+    inviteDelegation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.inviteVAR, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DELEGATION_LIST' }]
+    }),
+    getRegisteredUsersList: build.query<RegisteredUserSelectOption[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getRegisteredUsersList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: unknown[]) => {
+        return response.map((item: unknown) => {
+          const { email, externalId } = item as { email: string, externalId: string }
+
+          return {
+            externalId: externalId,
+            email: email
+          }
+        })
+      }
+    }),
+    findVARDelegation: build.query<VARTenantDetail, RequestPayload>({
+      query: ({ params, payload }) => {
+        const { username } = payload as { username: string }
+        const api:ApiInfo = { ...AdministrationUrlsInfo.findVAR }
+        api.url += `?username=${username}`
+
+        const req = createHttpRequest(api, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getNotificationRecipients: build.query<NotificationRecipientUIModel[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getNotificationRecipients, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: NotificationRecipientResponse[]) => {
+        // flat endpoint into individual fields
+        return response.map((data: NotificationRecipientResponse) => {
+          const result = {
+            id: data.id,
+            description: data.description,
+            endpoints: data.endpoints
+          } as NotificationRecipientUIModel
+
+          data.endpoints.forEach((endpoint: NotificationEndpoint) => {
+            switch (endpoint.type) {
+              case (NotificationEndpointType.email):
+                result.email = endpoint.destination
+                result.emailEnabled = endpoint.active
+                break
+              case (NotificationEndpointType.sms):
+              case (NotificationEndpointType.mobile_push):
+                result.mobile = endpoint.destination
+                result.mobileEnabled = endpoint.active
+                break
+            }
+          })
+
+          return result
+        })
+      },
+      providesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddNotificationRecipient',
+            'UpdateNotificationRecipient',
+            'DeleteNotificationRecipient'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'NOTIFICATION_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    updateRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    deleteNotificationRecipients: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipients, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    deleteNotificationRecipient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationRecipient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'NOTIFICATION_LIST' }]
+    }),
+    getEntitlementSummary: build.query<EntitlementSummary[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementSummary, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      transformResponse: (response) => {
+        return AdministrationUrlsInfo.getEntitlementSummary.newApi ?
+          (response as NewEntitlementSummary).summary : response as EntitlementSummary[]
+      }
+    }),
+    getEntitlementsList: build.query<Entitlement[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementsList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }]
+    }),
+    refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'License', id: 'LIST' }]
+    }),
     // TODO: backend is not support activity message now, and will add if function be completed.
     UpdateRadiusClientConfig: build.mutation<ClientConfig, RequestPayload>({
       query: ({ payload }) => {
@@ -184,7 +498,20 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
   })
 })
 
+const transformAdministratorList = (data: Administrator[]) => {
+  return data.map(item => {
+    item.name = (item.name && item.name !== 'first') ? item.name : ''
+    item.lastName = (item.lastName && item.lastName !== 'last') ? item.lastName : ''
+    item.fullName = item.name + ' ' + item.lastName
+    // FIXME: might be removed because of Tenant.roleDsc is UI used only
+    item.roleDsc = GetRoleStr(item.role)
+
+    return item
+  })
+}
+
 export const {
+  useGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
   useUpdateRecoveryPassphraseMutation,
@@ -194,6 +521,26 @@ export const {
   useDisableAccessSupportMutation,
   useGetPreferencesQuery,
   useUpdatePreferenceMutation,
+  useGetAdminListQuery,
+  useAddAdminMutation,
+  useUpdateAdminMutation,
+  useDeleteAdminMutation,
+  useDeleteAdminsMutation,
+  useGetDelegationsQuery,
+  useGetMspEcDelegationsQuery,
+  useRevokeInvitationMutation,
+  useInviteDelegationMutation,
+  useGetRegisteredUsersListQuery,
+  useFindVARDelegationQuery,
+  useLazyFindVARDelegationQuery,
+  useGetNotificationRecipientsQuery,
+  useAddRecipientMutation,
+  useUpdateRecipientMutation,
+  useDeleteNotificationRecipientsMutation,
+  useDeleteNotificationRecipientMutation,
+  useGetEntitlementSummaryQuery,
+  useGetEntitlementsListQuery,
+  useRefreshEntitlementsMutation,
   useGetRadiusClientConfigQuery,
   useUpdateRadiusClientConfigMutation,
   useGetRadiusServerSettingQuery

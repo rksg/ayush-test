@@ -18,6 +18,7 @@ export * from './components/DonutChart'
 export * from './components/Dropdown'
 export * from './components/Drawer'
 export * from './components/Fieldset'
+export * from './components/FlattenCascader'
 export * from './components/GoogleMap'
 export * from './components/Grid'
 export * from './components/Layout'
@@ -25,6 +26,7 @@ export { LayoutUI } from './components/Layout/styledComponents'
 export * from './components/Loader'
 export { MultiLineTimeSeriesChart } from './components/MultiLineTimeSeriesChart'
 export type { MultiLineTimeSeriesChartProps } from './components/MultiLineTimeSeriesChart'
+export { MultiBarTimeSeriesChart } from './components/MultiBarTimeSeriesChart'
 export * from './components/Select'
 export * from './components/Modal'
 export * from './components/NoData'
@@ -38,6 +40,17 @@ export * from './components/SparklineChart'
 export * from './components/StackedAreaChart'
 export * from './components/StackedBarChart'
 export * from './components/StepsForm'
+export {
+  StepsForm as StepsFormNew,
+  useStepFormContext,
+  createStepsFormContext,
+  useWatch
+} from './components/StepsFormNew'
+export type {
+  FieldSummaryProps,
+  StepsFormProps as StepsFormNewProps,
+  StepFormProps as StepFormNewProps
+} from './components/StepsFormNew'
 export * from './components/Subtitle'
 export * from './components/Table'
 export * from './components/Tabs'

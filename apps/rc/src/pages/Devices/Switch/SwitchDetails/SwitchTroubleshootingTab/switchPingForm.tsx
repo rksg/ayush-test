@@ -7,7 +7,6 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }         from '@acx-ui/icons'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   usePingMutation }                             from '@acx-ui/rc/services'
@@ -73,7 +72,11 @@ export function SwitchPingForm () {
     setIsLoading(true)
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('targetHost')
+        targetHost: pingForm.getFieldValue('targetHost'),
+        troubleshootingPayload: {
+          targetHost: pingForm.getFieldValue('targetHost')
+        },
+        troubleshootingType: 'ping'
       }
       const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
@@ -123,12 +126,10 @@ export function SwitchPingForm () {
           name='targetHost'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>}
           rules={[
             { required: true },

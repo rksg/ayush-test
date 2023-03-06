@@ -39,6 +39,15 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       isEdit
         ? await handleEditPersona(contextData)
         : await handleAddPersona(contextData)
+
+      showToast({
+        type: 'success',
+        content: $t(
+          { defaultMessage: 'Persona {name} was {isEdit, select, true {updated} other {added}}' },
+          { name: contextData.name, isEdit }
+        )
+      })
+
       onClose()
     } catch (error) {
       showToast({
@@ -82,13 +91,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       await form.validateFields()
       await onFinish(form.getFieldsValue())
     } catch (e) {
-      if (e instanceof Error) {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' }),
-          link: { onClick: () => alert(JSON.stringify(e)) }
-        })
-      }
+      return Promise.resolve()
     }
   }
 

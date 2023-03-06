@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
+import { EdgeStatusLight }                                   from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {
   EdgeStatus,
@@ -20,9 +21,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
-
-import { EdgeStatusLight } from '../../EdgeStatusLight'
+import { useDateFilter } from '@acx-ui/utils'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -122,13 +121,12 @@ export const EdgeDetailsPageHeader = () => {
       title={currentEdge?.name || ''}
       titleExtra={<EdgeStatusLight data={status} />}
       breadcrumb={[
-        { text: $t({ defaultMessage: 'Smart Edge' }), link: '/devices/edge/list' }
+        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
       ]}
       extra={[
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}

@@ -16,10 +16,11 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  venuelist,
   apGroupsList,
-  venueDefaultApGroup
-} from '../__tests__/fixtures'
+  getApGroup,
+  venueDefaultApGroup,
+  venuelist
+} from '../../__tests__/fixtures'
 
 import { ApGroupForm } from '.'
 
@@ -39,17 +40,17 @@ describe('AP Group Form - Add', () => {
 
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuelist)))
-    )
-
-    mockServer.use(
-      rest.post(WifiUrlsInfo.getApGroupsList.url,
-        (_, res, ctx) => res(ctx.json(apGroupsList)))
-    )
-
-    mockServer.use(
+        (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getVenueDefaultApGroup.url,
-        (_, res, ctx) => res(ctx.json(venueDefaultApGroup)))
+        (_, res, ctx) => res(ctx.json(venueDefaultApGroup))),
+      rest.post(WifiUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json(apGroupsList))),
+      rest.get(WifiUrlsInfo.getApGroup.url,
+        (_, res, ctx) => res(ctx.json(getApGroup))),
+      rest.put(WifiUrlsInfo.updateApGroup.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))),
+      rest.post(WifiUrlsInfo.addApGroup.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
 
   })
@@ -98,5 +99,16 @@ describe('AP Group Form - Add', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('edit ap group', async () => {
+    const params = { tenantId: 'tenant-id', apGroupId: 'apgroup-id', action: 'edit' }
+    render(<Provider><ApGroupForm /></Provider>, {
+      route: { params, path: '/:tenantId/devices/apgroups/:apGroupId/:action' }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Edit AP Group')).toBeVisible()
+    await waitFor(() => screen.findByText(/for ap group 2/i))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 })

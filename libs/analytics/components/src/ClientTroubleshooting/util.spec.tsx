@@ -1,3 +1,5 @@
+import moment from 'moment-timezone'
+
 import { getIntl } from '@acx-ui/utils'
 
 import {
@@ -41,7 +43,8 @@ import {
   getRoamingChartConfig,
   getRoamingSubtitleConfig,
   getChartData,
-  useLabelFormatter
+  labelFormatter,
+  calculateInterval
 } from './util'
 
 
@@ -594,17 +597,19 @@ describe('util', () => {
     })
   })
   describe('chart utils', () => {
-    const useTooltipParameters = (type: string, obj: object) => {
+    const useTooltipParameters = (name: string, obj: object, type?: 'custom' | 'scatter') => {
       return {
         value: 1668403161155,
         seriesData: [
           {
             data: obj,
-            seriesName: type
+            seriesName: name,
+            seriesType: type
           }
         ]
       }
     }
+    const mockTimeWindow = [1668403161155, 1668404161155] as [number, number]
     it('getChartData should return empty array for no match', async () => {
       expect(getChartData(null as unknown as keyof TimelineData, [], false)).toEqual([])
     })
@@ -631,7 +636,8 @@ describe('util', () => {
           seriesKey: 'all',
           state: 'join',
           timestamp: '2022-11-14T06:33:31.524Z',
-          ttc: null
+          ttc: null,
+          key: 'first_event'
         }
       ])
     })
@@ -675,41 +681,86 @@ describe('util', () => {
     })
 
     it('tooltipFormatter should return correct Html string for events', async () => {
-      expect(useLabelFormatter(useTooltipParameters('events', eventDataObj)))
+      expect(labelFormatter(useTooltipParameters('events', eventDataObj), mockTimeWindow))
         .toMatch(
           'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
         )
 
-      expect(useLabelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper)).toMatch('')
+      expect(labelFormatter([{ seriesName: 'events' }] as unknown as TooltipHelper, mockTimeWindow))
+        .toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for connectionQuality', async () => {
-      expect(useLabelFormatter(useTooltipParameters('quality', qualityDataObj)))
-        .toContain('-74 dBm/ 15 dB/ 3.07 Mbps/ 37.9 Mbps')
+      expect(labelFormatter(useTooltipParameters('quality', qualityDataObj), mockTimeWindow))
+        .toContain('-74 dBm / 15 dB / 3.07 Mbps / 37.9 Mbps')
 
-      expect(useLabelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper)).toMatch('')
+      expect(
+        labelFormatter([{ seriesName: 'quality' }] as unknown as TooltipHelper, mockTimeWindow))
+        .toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for incidents', async () => {
-      expect(useLabelFormatter(useTooltipParameters('incidents', incidentDataObj)))
+      expect(labelFormatter(useTooltipParameters('incidents', incidentDataObj), mockTimeWindow))
         .toContain('AP service is affected due to high number of AP reboots')
 
-      expect(useLabelFormatter([{ seriesName: 'incidents' }] as unknown as TooltipHelper))
+      expect(
+        labelFormatter([{ seriesName: 'incidents' }] as unknown as TooltipHelper, mockTimeWindow))
         .toMatch('')
     })
 
     it('tooltipFormatter should return correct Html string for roaming', async () => {
       expect(
-        useLabelFormatter(useTooltipParameters('roaming', roamingDataObj))
+        labelFormatter(useTooltipParameters('roaming', roamingDataObj, 'custom'), mockTimeWindow)
       ).toContain('-73 dBm / 18:4B:0D:5C:A2:4C / 144 / 11ac / 2 SS / 80 MHz')
 
-      expect(useLabelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper)).toMatch('')
+      expect(
+        labelFormatter(useTooltipParameters('roaming', eventDataObj, 'scatter'), mockTimeWindow))
+        .toMatch(
+          'Nov 14 05:19:21 Client associated (802.11) @ R750-11-112 (94:B3:4F:3D:15:B0) 5 GHz'
+        )
+
+      expect(
+        labelFormatter([{ seriesName: 'roaming' }] as unknown as TooltipHelper, mockTimeWindow))
+        .toMatch('')
     })
 
     it('tooltipFormatter should empty Html string for invalid value', async () => {
-      expect(useLabelFormatter([{}] as unknown as TooltipHelper)).toEqual('')
+      expect(labelFormatter([{}] as unknown as TooltipHelper, mockTimeWindow)).toEqual('')
 
-      expect(useLabelFormatter({} as unknown as TooltipHelper)).toEqual('')
+      expect(labelFormatter({} as unknown as TooltipHelper, mockTimeWindow)).toEqual('')
+    })
+  })
+
+  describe('calculateInterval', () => {
+    it('should return day for greater than week period', () => {
+      const start = moment('01/02/2023').valueOf()
+      const end = moment('01/11/2023').valueOf()
+      const day = (1000 * 60 * 60 * 24)
+      expect(calculateInterval([start, end])).toEqual(day)
+    })
+    it('should return hour for 3 day period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/03/2023 12:00').valueOf()
+      const minute = 1000 * 60 * 60
+      expect(calculateInterval([start, end])).toEqual(minute)
+    })
+    it('should return minute for less than 24 hours period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/02/2023 12:00').valueOf()
+      const minute = 1000 * 60
+      expect(calculateInterval([start, end])).toEqual(minute)
+    })
+    it('should return 10 seconds for more than half hour period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/02/2023 08:45').valueOf()
+      const secs10 = 1000 * 10
+      expect(calculateInterval([start, end])).toEqual(secs10)
+    })
+    it('should return 5 seconds for less then half hour period', () => {
+      const start = moment('01/02/2023 08:00').valueOf()
+      const end = moment('01/02/2023 08:30').valueOf()
+      const secs5 = 1000 * 5
+      expect(calculateInterval([start, end])).toEqual(secs5)
     })
   })
 })

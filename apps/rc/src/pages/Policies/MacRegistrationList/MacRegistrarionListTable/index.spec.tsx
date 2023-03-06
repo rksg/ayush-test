@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { ExpirationType, MacRegListUrlsInfo }                                       from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { ExpirationType, MacRegListUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import MacRegistrationListsTable from './index'
 
@@ -85,10 +85,22 @@ describe('MacRegistrationListsTable', () => {
   })
 
   it('should delete selected row', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        MacRegListUrlsInfo.deleteMacRegistrationPool.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        })
+    )
+
     render(<Provider><MacRegistrationListsTable /></Provider>, {
       route: { params: {
-        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-      }, path: '/:tenantId' }
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+        policyId: '79c439e1e5474f68acc9da38fa08a37b'
+      }, path: '/:tenantId/:policyId' }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -104,9 +116,13 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })
 
-    const deleteListsButton = await screen.findByText('Delete List')
-    expect(deleteListsButton).toBeInTheDocument()
-    fireEvent.click(deleteListsButton)
+    const deleteListButton = screen.getByRole('button', { name: 'Delete List' })
+    await waitFor(() => expect(deleteListButton).toBeEnabled())
+    fireEvent.click(deleteListButton)
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
   })
 
   it('should edit selected row', async () => {

@@ -47,7 +47,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         const clientListMetaInfo = {
           ...createHttpRequest(ClientUrlsInfo.getClientMeta, arg.params),
           body: {
-            fields: ['switchSerialNumber', 'venueName', 'apName', 'switchName'],
+            fields: ['switchId', 'switchSerialNumber', 'venueName', 'apName', 'switchName'],
             filters: {
               id: clientList?.data.map(item => item.clientMac)
             }
@@ -63,6 +63,15 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Client', id: 'LIST' }]
+    }),
+    disconnectClient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -103,19 +112,21 @@ export const clientApi = baseClientApi.injectEndpoints({
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
@@ -274,6 +285,8 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 }
 export const {
   useGetGuestsListQuery,
+  useDisconnectClientMutation,
+  useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
   useGetClientDetailsQuery,

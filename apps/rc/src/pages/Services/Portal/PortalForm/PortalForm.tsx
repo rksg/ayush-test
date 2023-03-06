@@ -28,15 +28,14 @@ const initialPortalData : Portal ={
   content: {
     bgColor: '#FFFFFF',
     bgImage: '',
-    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeText: '',
     welcomeColor: '#333333',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
     photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
     logoRatio: PortalDemoDefaultSize.logoRatio,
-    secondaryText: 'Lorem ipsum dolor sit amet, '+
-    'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
+    secondaryText: '',
     secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: '#EC7100',
@@ -145,20 +144,22 @@ export const PortalForm = (props:{
   }, [data])
   return (
     <>
-      <PageHeader
+      {!networkView && <PageHeader
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/service' }
         ]}
-      />
+      />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => networkView? backToNetwork?.()
             : navigate(linkToServices)}
           onFinish={async (data) => {
-            if(data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId){
+            if((data.content.componentDisplay.wifi4eu && !data.content.wifi4EUNetworkId?.trim())||
+              (data.content.componentDisplay.termsConditions&&!
+              data.content.termsCondition?.trim())){
               return false
             }
             return handleAddPortalService(data)}}

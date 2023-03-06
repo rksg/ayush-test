@@ -1,0 +1,188 @@
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import {
+  dataApi,
+  dataApiURL,
+  networkHealthApi as api,
+  networkHealthApiURL as apiUrl
+} from '@acx-ui/analytics/services'
+import { networkApi }      from '@acx-ui/rc/services'
+import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  mockGraphqlQuery,
+  mockServer,
+  render,
+  screen,
+  within
+} from '@acx-ui/test-utils'
+
+import {
+  fetchServiceGuardSpec,
+  serviceGuardSpecNames,
+  mockNetworkHierarchy
+} from '../__tests__/fixtures'
+
+import { NetworkHealthForm }      from './NetworkHealthForm'
+import { NetworkHealthSpecGuard } from './NetworkHealthSpecGuard'
+
+const { click, type, selectOptions } = userEvent
+
+const mockedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigateToPath: () => mockedNavigate
+}))
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({ children, ...props }: React.PropsWithChildren) => (
+    <select {...props}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>
+  )
+  Select.Option = 'option'
+  return { ...components, Select }
+})
+
+const networkNames = Array(5).fill(null)
+  .map((_, i) => ({ id: `n-${i}`, name: `Network ${i}` }))
+
+const mockNetworksQuery = (data = networkNames) => mockServer.use(
+  rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
+    res(ctx.json({ data, totalCount: data.length }))
+  )
+)
+
+const EditWrapper = (props: React.PropsWithChildren) => {
+  return <Provider>
+    <NetworkHealthSpecGuard {...props} />
+  </Provider>
+}
+
+describe('NetworkHealthForm', () => {
+  beforeEach(() => {
+    mockedNavigate.mockReset()
+    store.dispatch(dataApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
+  })
+
+  it('works correctly for create flow', async () => {
+    mockNetworksQuery()
+    mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+
+    render(<NetworkHealthForm />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+
+    const form = within(await screen.findByTestId('steps-form'))
+    const body = within(form.getByTestId('steps-form-body'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await body.findByRole('heading', { name: 'Settings' })).toBeVisible()
+
+    // Step 1
+    await type(body.getByRole('textbox', { name: 'Test Name' }), 'Test 1')
+    await selectOptions(await body.findByRole('combobox', { name: 'Network' }), 'Network 1')
+    await selectOptions(
+      body.getByRole('combobox', { name: (_, el) => el.id === 'authenticationMethod' }),
+      body.getByRole('option', { name: 'Pre-Shared Key (PSK)' })
+    )
+
+    // Navigate to Step 2
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
+
+    // Step 2
+    await type(await screen.findByRole('combobox'), '2')
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
+
+    // Navigate to Step 3
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(await body.findByRole('heading', { name: 'Summary' })).toBeVisible()
+
+    const expected = { spec: { id: 'spec-id' }, userErrors: null }
+    mockGraphqlMutation(apiUrl, 'CreateServiceGuardSpec', {
+      data: { createServiceGuardSpec: expected }
+    })
+
+    await click(actions.getByRole('button', { name: 'Finish' }))
+
+    expect(await screen.findByText('Network Health test created')).toBeVisible()
+    expect(mockedNavigate).toBeCalled()
+  })
+
+  it('works correctly for edit flow', async () => {
+    mockNetworksQuery()
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
+    mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+
+    render(<NetworkHealthForm />, {
+      wrapper: EditWrapper,
+      route: { params: { tenantId: 't-id', specId: 'spec-id' } }
+    })
+
+    const form = within(await screen.findByTestId('steps-form'))
+    const body = within(form.getByTestId('steps-form-body'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await body.findByRole('heading', { name: 'Settings' })).toBeVisible()
+
+    // Navigate to Step 2
+    await click(screen.getByRole('button', { name: 'APs Selection' }))
+    expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
+
+    const expected = { spec: { id: 'spec-id' }, userErrors: null }
+    mockGraphqlMutation(apiUrl, 'UpdateServiceGuardSpec', {
+      data: { updateServiceGuardSpec: expected }
+    })
+
+    // Submit
+    await click(actions.getByRole('button', { name: 'Finish' }))
+
+    expect(await screen.findByText('Network Health test updated')).toBeVisible()
+    expect(mockedNavigate).toBeCalled()
+  })
+
+  it('show error in toast', async () => {
+    mockNetworksQuery()
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
+    mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+
+    render(<NetworkHealthForm />, {
+      wrapper: EditWrapper,
+      route: { params: { tenantId: 't-id', specId: 'spec-id' } }
+    })
+
+    const form = within(await screen.findByTestId('steps-form'))
+    const body = within(form.getByTestId('steps-form-body'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await body.findByRole('heading', { name: 'Settings' })).toBeVisible()
+
+    // Navigate to Step 2
+    await click(screen.getByRole('button', { name: 'APs Selection' }))
+    expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
+
+    const expected = {
+      spec: null,
+      userErrors: [{ field: 'name', message: 'DUPLICATE_NAME_NOT_ALLOWED' }]
+    }
+    mockGraphqlMutation(apiUrl, 'UpdateServiceGuardSpec', {
+      data: { updateServiceGuardSpec: expected }
+    })
+
+    // Submit
+    await click(actions.getByRole('button', { name: 'Finish' }))
+
+    expect(await screen.findByText('Duplicate test name exist')).toBeVisible()
+    expect(mockedNavigate).not.toBeCalled()
+  })
+})

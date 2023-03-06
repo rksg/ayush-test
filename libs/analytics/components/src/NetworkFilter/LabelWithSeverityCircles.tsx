@@ -7,7 +7,7 @@ type LabelProps = {
   name : string
 }
 
-export const LabelWithSeverityCicle = (props: LabelProps) => {
+export const LabelWithSeverityCircle = (props: LabelProps) => {
   const { name, severityCircles } = props
   return (
     <UI.LabelContainer>

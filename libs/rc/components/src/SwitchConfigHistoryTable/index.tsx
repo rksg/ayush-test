@@ -9,9 +9,9 @@ import {
   useGetVenueConfigHistoryQuery,
   useLazyGetVenueConfigHistoryDetailQuery
 } from '@acx-ui/rc/services'
-import { ConfigurationHistory, DispatchFailedReason, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                 from '@acx-ui/react-router-dom'
-import { getIntl }                                                   from '@acx-ui/utils'
+import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, FILTER, transformConfigType, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                                                              from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../CodeMirrorWidget'
 
@@ -81,7 +81,9 @@ export function SwitchConfigHistoryTable (props: {
     }
   })
 
-  const tableData = tableQuery.data?.data ?? []
+  const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
+    key: ctype, value: transformConfigType(ctype)
+  }))
 
   const getCols = () => {
     const columns: TableProps<ConfigurationHistory>['columns'] = [{
@@ -100,24 +102,26 @@ export function SwitchConfigHistoryTable (props: {
       key: 'configType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'configType',
-      sorter: true
+      filterable: configTypeFilterOptions,
+      filterMultiple: false,
+      sorter: false
     }, {
       key: 'numberOfSwitches',
       title: $t({ defaultMessage: '# of Switches' }),
       dataIndex: 'numberOfSwitches',
-      sorter: true
+      sorter: false
     }, {
       key: 'dispatchStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'dispatchStatus',
-      sorter: true,
+      sorter: false,
       render: (data, row) => isVenueLevel ? getStatusBar(row) : data
     }]
 
     return columns.filter(c => isVenueLevel || !c.key.includes('numberOfSwitches'))
   }
 
-  const onSelectConfingChange = (row: ConfigurationHistory) => {
+  const onSelectConfigChange = (row: ConfigurationHistory) => {
     setSelectedConfigRow(row)
     setDispatchFailedReason(row.dispatchFailedReason as DispatchFailedReason[] || [])
     setCollapseActive(!row?.dispatchFailedReason?.length)
@@ -164,17 +168,25 @@ export function SwitchConfigHistoryTable (props: {
     }
   }, [dispatchFailedReason, codeMirrorEl])
 
-  // TODO: add search string and filter to retrieve data
-  // const retrieveData () => {}
+  const handleFilterChange = (customFilters: FILTER) => {
+    const payload = {
+      ...tableQuery.payload,
+      filterByConfigType: Array.isArray(customFilters?.configType) ? customFilters?.configType[0] : undefined
+    }
+
+    tableQuery.setPayload(payload)
+  }
 
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='transactionId'
+        rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
-        dataSource={tableData}
+        dataSource={tableQuery.data?.data ?? []}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
     { visible &&
@@ -207,7 +219,7 @@ export function SwitchConfigHistoryTable (props: {
             isVenueLevel && configDetails && <SwitchConfigDetailsTable
               configDetails={configDetails}
               filterType={filterType}
-              onSelectConfingChange={onSelectConfingChange}
+              onSelectConfingChange={onSelectConfigChange}
               onFilterConfigDetails={onFilterConfigDetails}
             />
           }

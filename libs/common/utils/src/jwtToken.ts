@@ -24,7 +24,7 @@ export enum AccountType {
   MSP_EC = 'MSP_EC',
   MSP_NON_VAR = 'MSP_NON_VAR',
   MSP_INTEGRATOR = 'MSP_INTEGRATOR',
-  MSP_INSTALLER = ' MSP_INSTALLER'
+  MSP_INSTALLER = 'MSP_INSTALLER'
 }
 
 interface JwtToken {
@@ -63,23 +63,17 @@ interface JwtToken {
 
 const cache = new Map()
 
-const isDev = process.env['NODE_ENV'] === 'development'
-
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
   if (jwt === null) {
     const tenantId = getTenantId()
-    if (isDev) {
-      // eslint-disable-next-line no-console
-      console.warn('No JWT token found! So setting default JWT values')
-    }
     const jwtToken: {
-      acx_account_tier: AccountTier;
-      acx_account_vertical: AccountVertical.DEFAULT;
-      tenantType: AccountType;
-      isBetaFlag: false;
+      acx_account_tier: AccountTier
+      acx_account_vertical: AccountVertical
+      tenantType: AccountType
+      isBetaFlag: false
       tenantId: string | undefined } = {
         acx_account_tier: AccountTier.PLATINUM,
         acx_account_vertical: AccountVertical.DEFAULT,
@@ -106,10 +100,6 @@ export function getJwtToken () {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
   } else {
-    if (isDev) {
-      // eslint-disable-next-line no-console
-      console.warn('JWT TOKEN NOT FOUND!!!!!')
-    }
     return null
   }
 }

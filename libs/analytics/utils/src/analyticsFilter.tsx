@@ -5,6 +5,7 @@ import {
   generateVenueFilter,
   DateFilter,
   pathFilter,
+  ssidFilter,
   NetworkPath,
   NodeType,
   useDateFilter,
@@ -14,7 +15,7 @@ import {
 export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Network' }]
 
 export type AnalyticsFilter = DateFilter & { path: NetworkPath }
-& { filter? : pathFilter } & { mac?: string }
+& { filter? : pathFilter & ssidFilter } & { mac?: string }
 
 type NetworkFilter = { path: NetworkPath, raw: object }
 
@@ -22,6 +23,15 @@ export function useAnalyticsFilter () {
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
   const { dateFilter } = useDateFilter()
+
+  // use dashboard filter as analytics filter when only 1 venue selected
+  const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
+  const venuesFilter = dashboardFilter.read()
+  if (!read() && venuesFilter?.nodes.length === 1) {
+    const [ name ] = venuesFilter.nodes[0]
+    const path = [...defaultNetworkPath, { type: 'zone' as NodeType, name }]
+    write({ path, raw: [JSON.stringify(path)] })
+  }
 
   return useMemo(() => {
     const isHealthPage = pathname.includes('/analytics/health')

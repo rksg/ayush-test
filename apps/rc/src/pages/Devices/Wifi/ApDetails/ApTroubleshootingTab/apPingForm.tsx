@@ -6,7 +6,6 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                    from '@acx-ui/icons'
 import { usePingApMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
@@ -21,7 +20,8 @@ export function ApPingForm () {
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('name')
+        targetHost: pingForm.getFieldValue('name'),
+        action: 'ping'
       }
       const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingApResult) {
@@ -57,12 +57,10 @@ export function ApPingForm () {
           name='name'
           label={<>
             {$t({ defaultMessage: 'Target host or IP address' })}
-            <Tooltip
+            <Tooltip.Question
               title={$t(WifiTroubleshootingMessages.Target_Host_IP_TOOLTIP)}
               placement='bottom'
-            >
-              <QuestionMarkCircleOutlined />
-            </Tooltip>
+            />
           </>}
           rules={[
             { required: true },

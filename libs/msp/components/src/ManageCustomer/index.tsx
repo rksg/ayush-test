@@ -19,6 +19,7 @@ import {
   Button,
   GoogleMap,
   PageHeader,
+  showActionModal,
   showToast,
   StepsForm,
   StepsFormInstance,
@@ -153,6 +154,7 @@ const defaultAddress: Address = {
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -180,6 +182,7 @@ export function ManageCustomer () {
   const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
   const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [formData, setFormData] = useState({} as Partial<EcFormData>)
 
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
@@ -285,21 +288,6 @@ export function ManageCustomer () {
         `${intl.$t({ defaultMessage: 'Invalid number' })} `
       )
     }
-    return Promise.resolve()
-  }
-
-  const accountValidator = async () => {
-    const ecData = formRef.current?.getFieldsValue() as EcFormData
-    const admin = [] as MspAdministrator[]
-    admin.push ({
-      id: '1',
-      lastName: ecData.admin_lastname,
-      name: ecData.admin_firstname,
-      email: ecData.admin_email,
-      role: ecData.admin_role,
-      detailLevel: ''
-    })
-    setMspEcAdmins(admin)
     return Promise.resolve()
   }
 
@@ -409,10 +397,13 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Add Customer Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -462,16 +453,21 @@ export function ManageCustomer () {
         name: ecFormData.name,
         street_address: ecFormData.address.addressLine as string,
         service_effective_date: today,
-        service_expiration_date: expirationDate,
-        licenses: assignLicense
+        service_expiration_date: expirationDate
+      }
+      if (!isTrialMode) {
+        customer.licenses = assignLicense
       }
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
+    } catch(error) {
+      const respData = error as { status: number, data: { [key: string]: string } }
+      showActionModal({
         type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
+        title: intl.$t({ defaultMessage: 'Update Customer Failed' }),
+        // eslint-disable-next-line max-len
+        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
       })
     }
   }
@@ -549,7 +545,8 @@ export function ManageCustomer () {
   }
 
   const getAssignmentId = (deviceType: string) => {
-    const license = assignedLicense.filter(en => en.deviceType === deviceType)
+    const license =
+    assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID')
     return license.length > 0 ? license[0].id : 0
   }
 
@@ -624,7 +621,7 @@ export function ManageCustomer () {
         name='admin_role'
         label={intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
-        rules={[{ required: true }, { validator: () => accountValidator() }]}
+        rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
         children={
           <Select>
@@ -651,7 +648,7 @@ export function ManageCustomer () {
     })
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+        <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
         <Form.Item
           name='wifiLicense'
           label=''
@@ -749,7 +746,7 @@ export function ManageCustomer () {
         >{intl.$t({ defaultMessage: 'Start Subscription' })}
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{assignedWifiLicense}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
@@ -844,13 +841,17 @@ export function ManageCustomer () {
         <Subtitle level={4}>
           { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
-          <label>{intl.$t({ defaultMessage: 'WiFi Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Wi-Fi Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
+        {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
@@ -921,7 +922,7 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Name' })}
         >
-          <Paragraph>{'name'}</Paragraph>
+          <Paragraph>{formData?.name}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Address' })}
@@ -948,18 +949,18 @@ export function ManageCustomer () {
         <Form.Item
           label={intl.$t({ defaultMessage: 'Customer Administrator Name' })}
         >
-          <Paragraph>{mspEcAdmins[0]?.name} {mspEcAdmins[0]?.lastName}</Paragraph>
+          <Paragraph>{formData?.admin_firstname} {formData?.admin_lastname}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Email' })}
         >
-          <Paragraph>{mspEcAdmins[0]?.email}</Paragraph>
+          <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Role' })}
         >
-          {mspEcAdmins[0]?.role &&
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0]?.role])}</Paragraph>}
+          {formData?.admin_role &&
+          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
         </Form.Item>
 
         <Form.Item
@@ -972,6 +973,12 @@ export function ManageCustomer () {
         >
           <Paragraph>{switchAssigned}</Paragraph>
         </Form.Item>
+        {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+        >
+          <Paragraph>25</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
@@ -1070,58 +1077,67 @@ export function ManageCustomer () {
           <EnableSupportForm></EnableSupportForm>
         </StepsForm.StepForm>}
 
-        {!isEditMode && <StepsForm.StepForm name='accountDetail'
-          title={intl.$t({ defaultMessage: 'Account Details' })}>
-          <Subtitle level={3}>
-            { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
-          <Form.Item
-            name='name'
-            label={intl.$t({ defaultMessage: 'Customer Name' })}
-            style={{ width: '300px' }}
-            rules={[{ required: true }]}
-            validateFirst
-            hasFeedback
-            children={<Input />}
-          />
-          <Form.Item
-            label={intl.$t({ defaultMessage: 'Address' })}
-            name={['address', 'addressLine']}
-            style={{ width: '300px' }}
-            rules={[{
-              required: isMapEnabled ? true : false
-            }, {
-              validator: (_, value) => addressValidator(value),
-              validateTrigger: 'onBlur'
-            }
-            ]}
+        {!isEditMode && <>
+          <StepsForm.StepForm
+            name='accountDetail'
+            title={intl.$t({ defaultMessage: 'Account Details' })}
+            onFinish={async (data) => {
+              const accDetail = { ...data }
+              setFormData(accDetail)
+              return true
+            }}
           >
-            <Input
-              allowClear
-              placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-              prefix={<SearchOutlined />}
-              onChange={addressOnChange}
-              data-testid='address-input'
-              disabled={!isMapEnabled}
-              value={address.addressLine}
+            <Subtitle level={3}>
+              { intl.$t({ defaultMessage: 'Account Details' }) }</Subtitle>
+            <Form.Item
+              name='name'
+              label={intl.$t({ defaultMessage: 'Customer Name' })}
+              style={{ width: '300px' }}
+              rules={[{ required: true }]}
+              validateFirst
+              hasFeedback
+              children={<Input />}
             />
-          </Form.Item >
-          <Form.Item hidden>
-            <GoogleMap libraries={['places']} />
-          </Form.Item>
+            <Form.Item
+              label={intl.$t({ defaultMessage: 'Address' })}
+              name={['address', 'addressLine']}
+              style={{ width: '300px' }}
+              rules={[{
+                required: isMapEnabled ? true : false
+              }, {
+                validator: (_, value) => addressValidator(value),
+                validateTrigger: 'onBlur'
+              }
+              ]}
+            >
+              <Input
+                allowClear
+                placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+                prefix={<SearchOutlined />}
+                onChange={addressOnChange}
+                data-testid='address-input'
+                disabled={!isMapEnabled}
+                value={address.addressLine}
+              />
+            </Form.Item >
+            <Form.Item hidden>
+              <GoogleMap libraries={['places']} />
+            </Form.Item>
 
-          <MspAdminsForm></MspAdminsForm>
-          <CustomerAdminsForm></CustomerAdminsForm>
-        </StepsForm.StepForm>}
+            <MspAdminsForm></MspAdminsForm>
+            <CustomerAdminsForm></CustomerAdminsForm>
+          </StepsForm.StepForm>
 
-        {!isEditMode && <StepsForm.StepForm name='subscriptions'
-          title={intl.$t({ defaultMessage: 'Subscriptions' })}>
-          <CustomerSubscription />
-        </StepsForm.StepForm>}
+          <StepsForm.StepForm name='subscriptions'
+            title={intl.$t({ defaultMessage: 'Subscriptions' })}>
+            <CustomerSubscription />
+          </StepsForm.StepForm>
 
-        {!isEditMode && <StepsForm.StepForm name='summary'
-          title={intl.$t({ defaultMessage: 'Summary' })}>
-          <CustomerSummary />
-        </StepsForm.StepForm>}
+          <StepsForm.StepForm name='summary'
+            title={intl.$t({ defaultMessage: 'Summary' })}>
+            <CustomerSummary />
+          </StepsForm.StepForm>
+        </>}
 
       </StepsForm>
 

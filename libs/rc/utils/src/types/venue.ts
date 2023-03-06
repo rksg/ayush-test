@@ -319,6 +319,10 @@ export interface AclRule {
 	sequence: number
 	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
+	specificSrcNetwork?: string
+	specificDestNetwork?: string
+	sourcePort?: string | null
+	destinationPort?: string | null
 }
 
 export interface Acl {
@@ -350,18 +354,19 @@ export interface SwitchModel {
 }
 
 export interface Vlan {
-	arpInspection: boolean,
+	arpInspection?: boolean,
 	id: string,
-	igmpSnooping: 'active' | 'passive' | 'none'
-	ipv4DhcpSnooping: boolean,
-	multicastVersion: number,
-	spanningTreePriority: number,
+	igmpSnooping?: 'active' | 'passive' | 'none'
+	ipv4DhcpSnooping?: boolean,
+	multicastVersion?: number,
+	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
   untaggedPorts?: string,
-  taggedPorts?: string
+  taggedPorts?: string,
+  title?: string
 }
 
 export interface ConfigurationProfile {
@@ -674,3 +679,119 @@ export interface VenueLoadBalancing {
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum
 }
+
+export interface Node {
+    type?: DeviceTypes;
+    name: string;
+    category: number | string;
+    id?: string;
+    mac?: string;
+    serial?: string;
+    serialNumber?: string;
+    states?: DeviceStates,
+    childCount?: number;
+    symbol?: string;
+    symbolOffset?: Array<number>;
+	status?: DeviceStatus;
+	label?: string;
+}
+
+export interface UINode {
+	id: string,
+    label?: string,
+    config: Node,
+    depth?: number,
+    expanded?: boolean,
+	x?: number,
+	y?: number
+}
+export interface Link {
+    source: string;
+    target: string;
+	from: string;
+    to: string;
+    connectionType?: string;
+    connectionStatus?: ConnectionStatus; // this needs to be enum
+    connectionStates?: ConnectionStates; // this needs to be enum
+    poeEnabled?: boolean;
+    linkSpeed?: string;
+    poeUsed?: number;
+    poeTotal?: number;
+    connectedPort?: string;
+	angle?: number;
+}
+export interface GraphData {
+    type: string;
+    categories: Array<Object>;
+    nodes: Array<Node>;
+    edges: Array<Link>;
+}
+
+export interface TopologyData {
+	nodes: Array<Node>;
+    edges: Array<Link>;
+}
+
+export enum ConnectionStatus {
+	Good='Good',
+    Degraded='Degraded',
+    Unknown='Unknown'
+}
+
+export enum DeviceStatus {
+	Operational='Operational',
+	Disconnected='Disconnected',
+	Degraded='Degraded',
+    Unknown='Unknown'
+}
+
+export enum DeviceStates {
+	Regular='Regular',
+	Hover='Hover',
+}
+
+export enum ConnectionStates {
+	Regular='Regular',
+	Hover='Hover',
+}
+
+export enum DeviceTypes {
+	Switch='Switch',
+	SwitchStack='SwitchStack',
+	Ap='Ap',
+	ApWired='ApWired',
+	ApMeshRoot='ApMeshRoot',
+	ApMesh='ApMesh',
+	Unknown='Unknown',
+	Cloud='Cloud'
+}
+
+export interface BonjourFencingWirelessRule {
+  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
+}
+
+export interface BonjourFencingWiredRule {
+  name: string,
+  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
+  closestApMac: string,
+  deviceMacAddresses: string[]
+}
+
+export interface BonjourFencingService {
+  service: string,
+  customServiceName?: string,
+  description: string,
+  wirelessEnabled: boolean,
+  wirelessRule?: BonjourFencingWirelessRule,
+  wiredEnabled: boolean,
+  wiredRules?: BonjourFencingWiredRule[],
+  customMappingEnabled: boolean,
+  customStrings?: string[],
+  rowId?: string
+}
+
+export interface VenueBonjourFencingPolicy {
+  enabled: boolean,
+  services?: BonjourFencingService[]
+}
+

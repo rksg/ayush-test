@@ -6,25 +6,29 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/networkSegmentationGroups/:serviceId'
   },
+  getNetworkSegmentationGroupList: {
+    method: 'get',
+    url: '/networkSegmentationGroups'
+  },
   getWebAuthTemplate: {
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId'
   },
   getWebAuthTemplateList: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/query'
+    url: '/webAuthPageTemplates/query'
   },
   addWebAuthTemplate: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates'
+    url: '/webAuthPageTemplates'
   },
   updateWebAuthTemplate: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId'
   },
   deleteWebAuthTemplate: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/webAuthPageTemplates/:serviceId'
+    url: '/webAuthPageTemplates/:serviceId'
   },
   getAccessSwitches: {
     method: 'post',
@@ -33,5 +37,25 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getDistributionSwitches: {
     method: 'post',
     url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+  },
+  createNetworkSegmentationGroup: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups'
+  },
+  getNetworkSegmentationStatsList: {
+    method: 'post',
+    newApi: true,
+    url: '/networkSegmentationGroups/query'
+  },
+  deleteNetworkSegmentationGroup: {
+    method: 'delete',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
+  },
+  updateNetworkSegmentationGroup: {
+    method: 'put',
+    newApi: true,
+    url: '/networkSegmentationGroups/:serviceId'
   }
 }

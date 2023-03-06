@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useEffect, useState } from 'react'
 
-import { Tooltip }                                  from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Alert }                                              from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                         from '@acx-ui/icons'
+import { Alert, Tooltip }                                     from '@acx-ui/components'
 import { useGetPortalLangMutation }                           from '@acx-ui/rc/services'
 import { Demo, GuestNetworkTypeEnum, Portal, PortalViewEnum } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
-import { captiveTypesDescription } from '../../../Networks/NetworkForm/contentsMap'
+import { captiveTypesDescription } from '../../../Networks/wireless/NetworkForm/contentsMap'
 import { portalViewTypes }         from '../contentsMap'
 import PortalFormContext           from '../PortalForm/PortalFormContext'
 import PortalPreviewModal          from '../PortalPreviewModal'
@@ -96,10 +94,16 @@ export default function PortalDemo ({
     <div style={isPreview? { width: '100%', minWidth: 1100, height: '100%' } : {
       width: '95%', minWidth: 1100 }}>
       <UI.PopoverStyle />
-      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId
+      {demoValue.componentDisplay.wifi4eu && !demoValue.wifi4EUNetworkId?.trim()
         && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
           message={$t(defineMessage({
             defaultMessage: 'WiFi4EU is enabled but not configured!' }))}
+          type='error'
+          showIcon/>}
+      {demoValue.componentDisplay.termsConditions && !demoValue.termsCondition?.trim()
+        && <Alert style={{ width: 400, position: 'absolute', height: 30, left: 37, top: -33 }}
+          message={$t(defineMessage({
+            defaultMessage: 'Terms & conditions is enabled but not configured!' }))}
           type='error'
           showIcon/>}
       <UI.LayoutHeader>
@@ -121,12 +125,11 @@ export default function PortalDemo ({
           </div>
           <div style={{ flex: '0 0 40px' }}>
             {!networkPreview &&<UI.FieldExtraTooltip>
-              <Tooltip
+              <Tooltip.Question
                 placement='bottom'
                 title={<FormattedMessage
                   {...captiveTypesDescription[type]}
                 />}
-                children={<QuestionMarkCircleOutlined/>}
               />
             </UI.FieldExtraTooltip>}
           </div>

@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Subtitle }                                                             from '@acx-ui/components'
+import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists, PersonaGroup, useTableQuery }                            from '@acx-ui/rc/utils'
+
+import MacRegistrationListForm
+  from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
+import DpskForm from '../../../Services/Dpsk/DpskForm/DpskForm'
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -14,6 +18,10 @@ export function PersonaGroupForm (props: {
 }) {
   const { $t } = useIntl()
   const { form, defaultValue } = props
+  const [macModalVisible, setMacModalVisible] = useState(false)
+  const [dpskModalVisible, setDpskModalVisible] = useState(false)
+  const onMacModalClose = () => setMacModalVisible(false)
+  const onDpskModalClose = () => setDpskModalVisible(false)
 
   const dpskPoolList = useGetDpskListQuery({ })
 
@@ -88,8 +96,9 @@ export function PersonaGroupForm (props: {
                     disabled={!!defaultValue?.dpskPoolId}
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     options={
-                      dpskPoolList?.data?.data.map(
-                        pool => ({ value: pool.id, label: pool.name }))
+                      dpskPoolList?.data?.data
+                        .filter(pool => !pool.identityId)
+                        .map(pool => ({ value: pool.id, label: pool.name }))
                     }
                   />
                 }
@@ -103,7 +112,12 @@ export function PersonaGroupForm (props: {
             </Form.Item>
           </Col>
           <Col span={2}>
-            <Button type={'link'}>{$t({ defaultMessage: 'Add' })}</Button>
+            <Button
+              type={'link'}
+              onClick={() => setDpskModalVisible(true)}
+            >
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
           </Col>
           <Col span={21}>
             <Form.Item
@@ -124,10 +138,37 @@ export function PersonaGroupForm (props: {
             />
           </Col>
           <Col span={2}>
-            <Button type={'link'}>{$t({ defaultMessage: 'Add' })}</Button>
+            <Button
+              type={'link'}
+              onClick={() => setMacModalVisible(true)}
+            >
+              {$t({ defaultMessage: 'Add' })}
+            </Button>
           </Col>
         </Row>
       </Space>
+
+      <Modal
+        title={$t({ defaultMessage: 'Add DPSK service' })}
+        visible={dpskModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<DpskForm
+          modalMode
+          modalCallBack={onDpskModalClose}
+        />}
+        onCancel={onDpskModalClose}
+      />
+
+      <Modal
+        title={$t({ defaultMessage: 'Add MAC Registration List' })}
+        visible={macModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<MacRegistrationListForm
+          modalMode
+          modalCallBack={onMacModalClose}
+        />}
+        onCancel={onMacModalClose}
+      />
     </Form>
   )
 }

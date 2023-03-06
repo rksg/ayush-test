@@ -36,7 +36,7 @@ export function VenuesHealthDashboard ({
         return (
           <UI.VenueName>
             <TenantLink
-              to={`/venues/${row.zoneId}/venue-details/overview`}
+              to={`/venues/${row.zoneId}/venue-details/analytics/health/overview`}
               title={text as string}>
               {text as string}
             </TenantLink>

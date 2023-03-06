@@ -10,12 +10,17 @@ import {
 } from 'antd'
 import { TransferItem } from 'antd/lib/transfer'
 import _                from 'lodash'
+import { DndProvider }  from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
 import { Loader, Fieldset }                                        from '@acx-ui/components'
 import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
 import { useTableQuery, AAAServerTypeEnum, AAA_SERVER_TYPE }       from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
+
+import { AAADraggableItem } from './AAADraggableItem'
+
 
 const SERVERS_OBJ = {
   RADIUS: {
@@ -103,7 +108,8 @@ const defaultFormData = {
   acctCommonsLevel: 'READ_ONLY'
 }
 
-export function AAASettings () {
+export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) => void }) => {
+  const { setAAASettingId } = props
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -177,6 +183,9 @@ export function AAASettings () {
 
   useEffect(() => {
     if (aaaSetting) {
+      if (setAAASettingId) {
+        setAAASettingId(aaaSetting.id)
+      }
       let initData = { ...defaultFormData, ...aaaSetting }
 
       initData.selectedLoginServers = []
@@ -224,21 +233,23 @@ export function AAASettings () {
     checked: true
   }
 
-  const defaultTransferProps = {
+  const defaultTransferProps = (fieldName: string) => ({
     titles: [$t({ defaultMessage: 'Available Servers' }), $t({ defaultMessage: 'Selected order' })],
     showSelectAll: false,
     listStyle: {
       width: 300,
       height: 172
     },
-    render: (item: TransferItem) => item.name,
+    render: (item: TransferItem) => {
+      return <AAADraggableItem item={item} form={form} fieldName={fieldName} />
+    },
     onChange: (targetKeys: string[]) => {
       if (targetKeys.indexOf(AAA_SERVER_TYPE.NONE) >= 0) {
         _.pull(targetKeys, AAA_SERVER_TYPE.NONE)
         targetKeys.push(AAA_SERVER_TYPE.NONE) // Move NONE to the end
       }
     }
-  }
+  })
 
   const handleOpenChange = (newOpen: boolean) => {
     const currentAuthnEnabledSsh = form.getFieldValue('authnEnabledSsh')
@@ -292,7 +303,7 @@ export function AAASettings () {
           </Form.Item>
         </Popconfirm>
         { authnEnabledSsh &&
-        <Form.Item
+        <DndProvider backend={HTML5Backend}><Form.Item
           name='selectedLoginServers'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
@@ -302,11 +313,11 @@ export function AAASettings () {
           ]}
         >
           <Transfer
-            {...defaultTransferProps}
+            {...defaultTransferProps('selectedLoginServers')}
             dataSource={availableLoginServers}
             titles={[$t({ defaultMessage: 'Available Servers & Users' }), $t({ defaultMessage: 'Selected order' })]}
           />
-        </Form.Item>
+        </Form.Item></DndProvider>
         }
       </Fieldset>
       <Fieldset {...defaultFieldSetProps} label={$t({ defaultMessage: 'Authorization' })} >
@@ -327,7 +338,7 @@ export function AAASettings () {
               options={serverLevelItem}
             />
           </Form.Item>
-          <Form.Item
+          <DndProvider backend={HTML5Backend}><Form.Item
             name='selectedCommandAuthOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
             valuePropName='targetKeys'
@@ -337,10 +348,10 @@ export function AAASettings () {
             ]}
           >
             <Transfer
-              {...defaultTransferProps}
+              {...defaultTransferProps('selectedCommandAuthOrder')}
               dataSource={availableCommandAuthOrder}
             />
-          </Form.Item>
+          </Form.Item></DndProvider>
         </>
         }
         <Form.Item
@@ -351,7 +362,7 @@ export function AAASettings () {
           <Switch />
         </Form.Item>
         { authzEnabledExec &&
-        <Form.Item
+        <DndProvider backend={HTML5Backend}><Form.Item
           name='selectedExecAuthOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
@@ -361,10 +372,10 @@ export function AAASettings () {
           ]}
         >
           <Transfer
-            {...defaultTransferProps}
+            {...defaultTransferProps('selectedExecAuthOrder')}
             dataSource={availableExecAuthOrder}
           />
-        </Form.Item>
+        </Form.Item></DndProvider>
         }
       </Fieldset>
       <Fieldset {...defaultFieldSetProps} label={$t({ defaultMessage: 'Accounting' })} >
@@ -385,7 +396,7 @@ export function AAASettings () {
               options={serverLevelItem}
             />
           </Form.Item>
-          <Form.Item
+          <DndProvider backend={HTML5Backend}><Form.Item
             name='selectedCommandAcctOrder'
             label={$t({ defaultMessage: 'Set Priority' })}
             valuePropName='targetKeys'
@@ -395,10 +406,10 @@ export function AAASettings () {
             ]}
           >
             <Transfer
-              {...defaultTransferProps}
+              {...defaultTransferProps('selectedCommandAcctOrder')}
               dataSource={availableCommandAcctOrder}
             />
-          </Form.Item>
+          </Form.Item></DndProvider>
         </>
         }
         <Form.Item
@@ -409,7 +420,7 @@ export function AAASettings () {
           <Switch />
         </Form.Item>
         { acctEnabledExec &&
-        <Form.Item
+        <DndProvider backend={HTML5Backend}><Form.Item
           name='selectedExecAcctOrder'
           label={$t({ defaultMessage: 'Set Priority' })}
           valuePropName='targetKeys'
@@ -419,10 +430,10 @@ export function AAASettings () {
           ]}
         >
           <Transfer
-            {...defaultTransferProps}
+            {...defaultTransferProps('selectedExecAcctOrder')}
             dataSource={availableExecAcctOrder}
           />
-        </Form.Item>
+        </Form.Item></DndProvider>
         }
       </Fieldset>
     </Loader>

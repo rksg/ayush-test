@@ -16,7 +16,6 @@ import {
   Tabs,
   Alert
 } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useGetSwitchQuery,
   useVenuesListQuery,
@@ -252,7 +251,7 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { tenantId } , payload }).unwrap()
+      await updateSwitch({ params: { tenantId, switchId } , payload }).unwrap()
 
       dataFetchedRef.current = false
 
@@ -385,18 +384,14 @@ export function SwitchForm () {
                 <Form.Item
                   label={<>
                     {$t({ defaultMessage: 'Add as' })}
-                    {!isSupportStack && <Tooltip
+                    {!isSupportStack && <Tooltip.Question
                       title={$t(SwitchMessages.MEMBER_NOT_SUPPORT_STACKING_TOOLTIP)}
                       placement='bottom'
-                    >
-                      <QuestionMarkCircleOutlined />
-                    </Tooltip>}
-                    {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip
+                    />}
+                    {switchRole === MEMEBER_TYPE.MEMBER && <Tooltip.Question
                       title={$t(SwitchMessages.FIRMWARE_TYPE_TOOLTIP)}
                       placement='bottom'
-                    >
-                      <QuestionMarkCircleOutlined />
-                    </Tooltip>}
+                    />}
                   </>}
                   hidden={editMode}
                   initialValue={MEMEBER_TYPE.STANDALONE}
@@ -473,12 +468,10 @@ export function SwitchForm () {
                     initialValue={FIRMWARE.AUTO}
                     label={<>
                       {$t({ defaultMessage: 'Firmware Type:' })}
-                      <Tooltip
+                      <Tooltip.Question
                         title={$t(SwitchMessages.FIRMWARE_TYPE_TOOLTIP)}
                         placement='bottom'
-                      >
-                        <QuestionMarkCircleOutlined />
-                      </Tooltip>
+                      />
                     </>}
                     hidden={editMode}
                   >
@@ -501,12 +494,10 @@ export function SwitchForm () {
                   initialValue={null}
                   label={<>
                     {$t({ defaultMessage: 'DHCP Client:' })}
-                    <Tooltip
+                    <Tooltip.Question
                       title={$t(SwitchMessages.DHCP_CLIENT_TOOLTIP)}
                       placement='bottom'
-                    >
-                      <QuestionMarkCircleOutlined />
-                    </Tooltip>
+                    />
                   </>}
                   children={
                     <Select

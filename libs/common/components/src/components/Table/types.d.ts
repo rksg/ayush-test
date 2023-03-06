@@ -48,6 +48,18 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   filterable?: boolean | ({ key: string, value: string })[]
   /**
+   * Set the key in filters of payload
+   * It is useful when the dataIndex is different from the filter key
+   * @default undefined
+   */
+  filterKey?: React.Key
+  /**
+   * Set the value in filters to be nullable
+   * It is useful when the value could not be null
+   * @default undefined
+   */
+  filterValueNullable?: boolean
+  /**
    * Taken the original type for antd and add highlightFn for handling highlight
    * @default undefined
    */

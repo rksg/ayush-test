@@ -1,23 +1,43 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
   useDeletePersonaGroupMutation,
-  useLazyGetDpskQuery
+  useLazyGetDpskQuery,
+  useLazyVenuesListQuery,
+  useGetDpskListQuery,
+  useMacRegListsQuery,
+  useGetNetworkSegmentationGroupListQuery,
+  useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 
-import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
-import { PersonaGroupDrawer }                                                               from '../PersonaGroupDrawer'
+import {
+  DpskPoolLink,
+  MacRegistrationPoolLink,
+  NetworkSegmentationLink,
+  PersonaGroupLink,
+  VenueLink
+} from '../LinkHelper'
+import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 
 
 
-function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<string, string>) {
+function useColumns (
+  macRegistrationPools: Map<string, string>,
+  dpskPools: Map<string, string>,
+  venuesMap: Map<string, string>
+) {
   const { $t } = useIntl()
+
+  const { data: dpskPool } = useGetDpskListQuery({})
+  const { data: macList } = useMacRegListsQuery({})
+  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery({})
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -39,11 +59,23 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       sorter: false
     },
     {
+      key: 'propertyId',
+      title: $t({ defaultMessage: 'Venue' }),
+      dataIndex: 'propertyId',
+      render: (_, row) =>
+        <VenueLink
+          // FIXME: After the property id does not present in UUID format, I will remove .replace()
+          name={venuesMap.get(row?.propertyId?.replaceAll('-', '') ?? '')}
+          venueId={row?.propertyId}
+        />
+    },
+    {
       key: 'dpskPoolId',
       title: $t({ defaultMessage: 'DPSK Pool' }),
       dataIndex: 'dpskPoolId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: dpskPool?.data.map(pool => ({ key: pool.id!!, value: pool.name })) ?? [],
       render: (_, row) =>
         <DpskPoolLink
           name={dpskPools.get(row.dpskPoolId ?? '')}
@@ -55,7 +87,8 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       title: $t({ defaultMessage: 'Mac Registration List' }),
       dataIndex: 'macRegistrationPoolId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: macList?.data.map(mac => ({ key: mac.id!!, value: mac.name })) ?? [],
       render: (_, row) =>
         <MacRegistrationPoolLink
           name={macRegistrationPools.get(row.macRegistrationPoolId ?? '')}
@@ -67,7 +100,8 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       title: $t({ defaultMessage: 'Network Segmentation' }),
       dataIndex: 'nsgId',
       sorter: true,
-      filterable: true,
+      filterMultiple: false,
+      filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
           nsgId={row.nsgId}
@@ -80,20 +114,23 @@ function useColumns (macRegistrationPools: Map<string, string>, dpskPools: Map<s
       dataIndex: 'personaCount',
       align: 'center'
     }
-    // {
-    //   key: 'propertyId',
-    //   title: $t({ defaultMessage: 'Property' }),
-    //   dataIndex: 'propertyId',
-    //   sorter: true,
-    //   filterable: true
-    // }
   ]
 
   return columns
 }
 
+const defaultVenueListPayload = {
+  fields: [
+    'id',
+    'name'
+  ],
+  filters: { id: [] }
+}
+
 export function PersonaGroupTable () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
+  const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
@@ -102,8 +139,10 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
 
+  const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,
     { isLoading: isDeletePersonaGroupUpdating }
@@ -112,17 +151,23 @@ export function PersonaGroupTable () {
   const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { }
+    defaultPayload: { keyword: '' }
   })
 
   useEffect(() => {
     if (tableQuery.isLoading) return
 
+    const venueIds: string[] = []
     const macPools = new Map()
     const dpskPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId } = personaGroup
+      const { macRegistrationPoolId, dpskPoolId, propertyId } = personaGroup
+
+      if (propertyId) {
+        // FIXME: After the property id does not present in UUID format, I will remove .replace()
+        venueIds.push(propertyId.replaceAll('-', ''))
+      }
 
       if (macRegistrationPoolId) {
         getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
@@ -143,9 +188,28 @@ export function PersonaGroupTable () {
       }
     })
 
+    if (venueIds.length !== 0) {
+      const payload = { ...defaultVenueListPayload, filters: { id: venueIds } }
+      getVenues({ params: { tenantId }, payload })
+        .then(result => {
+          if (result?.data?.data) {
+            setVenueMap(new Map(result.data.data.map(v => [v.id, v.name])))
+          }
+        })
+    }
+
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
   }, [tableQuery.data])
+
+  const downloadPersonaGroups = () => {
+    downloadCsv({ payload: tableQuery.payload }).unwrap().catch(() => {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Failed to export Persona Groups.' })
+      })
+    })
+  }
 
   const actions: TableProps<PersonaGroup>['actions'] = [
     {
@@ -153,6 +217,10 @@ export function PersonaGroupTable () {
       onClick: () => {
         setDrawerState({ isEdit: false, visible: true, data: undefined })
       }
+    },
+    {
+      label: $t({ defaultMessage: 'Export To File' }),
+      onClick: downloadPersonaGroups
     }
   ]
 
@@ -166,6 +234,10 @@ export function PersonaGroupTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: (([selectedItem]) =>
+        (selectedItem && selectedItem.personaCount)
+          ? selectedItem.personaCount > 0 : false
+      ),
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -177,13 +249,17 @@ export function PersonaGroupTable () {
           onOk: () => {
             deletePersonaGroup({ params: { groupId: id } })
               .unwrap()
-              .then(() => clearSelection())
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t({ defaultMessage: 'Persona Group {name} was deleted' }, { name })
+                })
+                clearSelection()
+              })
               .catch((error) => {
                 showToast({
                   type: 'error',
-                  content: $t({ defaultMessage: 'An error occurred' }),
-                  // FIXME: Correct the error message
-                  link: { onClick: () => alert(JSON.stringify(error)) }
+                  content: error.data.message
                 })
               })
           }
@@ -191,6 +267,20 @@ export function PersonaGroupTable () {
       }
     }
   ]
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = {
+      ...tableQuery.payload,
+      keyword: customSearch?.searchString ?? '',
+      dpskPoolId: Array.isArray(customFilters?.dpskPoolId)
+        ? customFilters?.dpskPoolId[0] : undefined,
+      macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
+        ? customFilters?.macRegistrationPoolId[0] : undefined,
+      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined
+    }
+
+    tableQuery.setPayload(payload)
+  }
 
   return (
     <Loader
@@ -200,10 +290,12 @@ export function PersonaGroupTable () {
       ]}
     >
       <Table
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap)}
+        enableApiFilter
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={handleFilterChange}
         rowKey='id'
         actions={actions}
         rowActions={rowActions}

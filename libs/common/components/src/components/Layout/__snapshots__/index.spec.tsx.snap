@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 gQtpE"
+    class="styledComponents__Wrapper-sc-iwostn-0 eTZYFJ"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -593,7 +593,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header
@@ -622,7 +622,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 gQtpE"
+    class="styledComponents__Wrapper-sc-iwostn-0 eTZYFJ"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -773,7 +773,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header
@@ -802,7 +802,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
 exports[`Layout should show tooltip when disabled 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 gQtpE"
+    class="styledComponents__Wrapper-sc-iwostn-0 eTZYFJ"
   >
     <div
       class="ant-design-pro ant-pro-basicLayout screen-md ant-pro-basicLayout-fix-siderbar ant-pro-basicLayout-side"
@@ -1402,7 +1402,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header

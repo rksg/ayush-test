@@ -830,8 +830,22 @@
   // Data Studio embedded reports iframe
   .acx-report > iframe {
     width: 100%;
-    height: 100vh;
+    height: 85vh;
     border: none;
+  }
+
+  // CodeMirror hints
+  .CodeMirror-hints {
+    font-size: 12px;
+    li {
+      padding: 4px;
+      background: transparent;
+      color: var(--acx-accents-blue-50);
+      &:hover {
+        background: transparent;
+        color: var(--acx-accents-blue-60);
+      }
+    }
   }
 }
 

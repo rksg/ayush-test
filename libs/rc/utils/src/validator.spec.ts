@@ -12,6 +12,13 @@ import {
   gpsRegExp,
   poeBudgetRegExp,
   priorityRegExp,
+  whitespaceOnlyRegExp,
+  agreeRegExp,
+  nameCannotStartWithNumberRegExp,
+  cliVariableNameRegExp,
+  cliIpAddressRegExp,
+  subnetMaskPrefixRegExp,
+  specialCharactersRegExp,
   serialNumberRegExp,
   targetHostRegExp,
   validateRecoveryPassphrasePart
@@ -36,7 +43,7 @@ describe('validator', () => {
     })
     it('Should display error message if domain name values incorrectly', async () => {
       const result = domainNameRegExp('testcom')
-      await expect(result).rejects.toEqual('This field is invalid')
+      await expect(result).rejects.toEqual('Please enter a valid domain')
     })
   })
 
@@ -144,9 +151,16 @@ describe('validator', () => {
       const result = gpsRegExp('51.507558', '-0.126095')
       await expect(result).resolves.toEqual(undefined)
     })
-    it('Should display error message if GPS values incorrectly', async () => {
+    it('Should display error message if the GPS longitude value is incorrect', async () => {
       const result = gpsRegExp('51.507558', '-0.126095xxxx')
-      await expect(result).rejects.toEqual('Please enter valid GPS coordinates')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('A valid longitude value is between -180 and 180, and contains a maximum of 6-digit decimal')
+    })
+
+    it('Should display error message if the GPS latitude value is incorrect', async () => {
+      const result = gpsRegExp('999.507558', '-0.126095')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('A valid latitude value is between -90 and 90, and contains a maximum of 6-digit decimal')
     })
   })
 
@@ -228,6 +242,85 @@ describe('validator', () => {
     it('Should display error message if Priority values incorrectly', async () => {
       const result1 = priorityRegExp('66')
       await expect(result1).rejects.toEqual('Enter a valid number between 0 and 7')
+    })
+  })
+
+  describe('whitespaceOnlyRegExp', () => {
+    it('Should take care of string with only white space correctly', async () => {
+      const result = whitespaceOnlyRegExp(' t e s t')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if value incorrectly', async () => {
+      const result1 = whitespaceOnlyRegExp(' ')
+      await expect(result1).rejects.toEqual('Whitespace chars only are not allowed')
+    })
+  })
+
+  describe('agreeRegExp', () => {
+    it('Should take care of agree value correctly', async () => {
+      const result = agreeRegExp('agree')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if agree value incorrectly', async () => {
+      const result1 = agreeRegExp('test')
+      await expect(result1).rejects.toEqual('Please type “AGREE”')
+    })
+  })
+
+  describe('nameCannotStartWithNumberRegExp', () => {
+    it('Should take care of name value correctly', async () => {
+      const result = nameCannotStartWithNumberRegExp('test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if name value incorrectly', async () => {
+      const result1 = nameCannotStartWithNumberRegExp('87test')
+      await expect(result1).rejects.toEqual('Name cannot start with a number')
+    })
+  })
+
+  describe('cliVariableNameRegExp', () => {
+    it('Should take care of name value correctly', async () => {
+      const result = cliVariableNameRegExp('test')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if name value incorrectly', async () => {
+      const result1 = cliVariableNameRegExp('Q@Q')
+      await expect(result1).rejects.toEqual('Name may include only letters and numbers')
+    })
+  })
+
+  describe('cliIpAddressRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      const result = cliIpAddressRegExp('1.1.1.1')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      const result1 = cliIpAddressRegExp('1.1.1.255')
+      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+    })
+  })
+
+  describe('subnetMaskPrefixRegExp', () => {
+    it('Should take care of subnet mask value correctly', async () => {
+      const result = subnetMaskPrefixRegExp('255.255.255.0')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if subnet mask value incorrectly', async () => {
+      const result1 = subnetMaskPrefixRegExp('254.255.255.0')
+      await expect(result1).rejects.toEqual(
+        'Please enter a valid Netmask based on the 255.255 mask prefix')
+    })
+  })
+
+  describe('specialCharactersRegExp', () => {
+    it('Should take care of string with special characters correctly', async () => {
+      const result = specialCharactersRegExp('test t$t-t._t')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if string value incorrectly', async () => {
+      const result1 = specialCharactersRegExp('test t@$t-t._t')
+      await expect(result1).rejects.toEqual(
+        'Special characters (other than space, $, -, . and _) are not allowed')
     })
   })
 })

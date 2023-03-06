@@ -1,8 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
+  useGetDhcpStatsQuery,
   useGetDpskListQuery,
+  useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
   useServiceListQuery
 } from '@acx-ui/rc/services'
@@ -28,6 +31,9 @@ const defaultPayload = {
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
+  const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
+  const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
     {
@@ -47,9 +53,22 @@ export default function MyServices () {
     {
       type: ServiceType.EDGE_DHCP,
       category: RadioCardCategory.EDGE,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.DHCP] } }
-      })
+      tableQuery: useGetDhcpStatsQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeDhcpEnabled
+      }),
+      disabled: !isEdgeDhcpEnabled
+    },
+    {
+      type: ServiceType.NETWORK_SEGMENTATION,
+      category: RadioCardCategory.EDGE,
+      tableQuery: useGetNetworkSegmentationStatsListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
+      }),
+      disabled: !networkSegmentationEnabled
     },
     {
       type: ServiceType.DPSK,
@@ -84,6 +103,7 @@ export default function MyServices () {
       <GridRow>
         {services.map(service => {
           return (
+            !service.disabled &&
             <GridCol col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
