@@ -71,24 +71,12 @@ export function OverallExp ({
     }
   }
   const healthData = data && data.health.length ? getHealthData(data.health) : null
-  // eslint-disable-next-line no-console
-  console.log({
-    healthData
-  })
 
   return(<Loader states={[queryResults]}>
     <AutoSizer>
       {({ height, width }) => (
         <div style={{ display: 'block', height, width }}>
-          <GridRow>
-            <GridCol col={{ span: 12 }}>
-                Client Experience
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.clientExperience || 0 as number}/>
-            </GridCol>
-          </GridRow>
-          <GridRow>
+          <GridRow style={{ marginBottom: '10px' }}>
             <GridCol col={{ span: 12 }}>
                 Connection Success
             </GridCol>
@@ -96,7 +84,7 @@ export function OverallExp ({
               <ProgressBarV2 percent={healthData?.connectionSuccess || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow>
+          <GridRow style={{ marginBottom: '10px' }}>
             <GridCol col={{ span: 12 }}>
                 Time To Connect
             </GridCol>
@@ -104,7 +92,7 @@ export function OverallExp ({
               <ProgressBarV2 percent={healthData?.timeToConnect || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow>
+          <GridRow style={{ marginBottom: '10px' }}>
             <GridCol col={{ span: 12 }}>
                 Client Throughput
             </GridCol>
@@ -112,7 +100,7 @@ export function OverallExp ({
               <ProgressBarV2 percent={healthData?.clientThroughput || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow>
+          <GridRow style={{ marginBottom: '10px' }}>
             <GridCol col={{ span: 12 }}>
                 Online APs
             </GridCol>
@@ -120,7 +108,7 @@ export function OverallExp ({
               <ProgressBarV2 percent={healthData?.onlineAps || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow>
+          <GridRow style={{ marginBottom: '10px' }}>
             <GridCol col={{ span: 12 }}>
                 AP Capacity
             </GridCol>
