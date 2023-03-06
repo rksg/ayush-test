@@ -85,6 +85,12 @@ const stackMemberList = {
   ]
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('SwitchTable', () => {
   afterEach(() => jest.restoreAllMocks())
 
@@ -127,6 +133,42 @@ describe('SwitchTable', () => {
     await userEvent.click(await within(row1).findByRole('button'))
     expect(await within(tbody).findByText('stack-member')).toBeVisible()
     // expect(await screen.findAllByTestId(/^options-selector/)).toHaveLength(3)
+  })
+
+  it('should clicks add switch correctly', async () => {
+    const params = {
+      tenantId: 'tenant-Id'
+    }
+    render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    expect(await screen.findByText('Add Switch')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Switch' }))
+  })
+
+  it('should clicks Import correctly', async () => {
+    const params = {
+      tenantId: 'tenant-Id'
+    }
+    render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    expect(await screen.findByText('Import from file')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Import from file' }))
+  })
+
+  it('should clicks add stack correctly', async () => {
+    const params = {
+      tenantId: 'tenant-Id'
+    }
+    render(<Provider><SwitchTable showAllColumns={true} enableActions={true} /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    expect(await screen.findByText('Add Stack')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Stack' }))
   })
 
   it('Table action bar Delete', async () => {
