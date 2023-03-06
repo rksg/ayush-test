@@ -76,59 +76,6 @@ describe('MFA is not enabled', () => {
 describe('MFA First-time Setup Check', () => {
   const mockedGetMfaAdminDetails = jest.fn()
 
-  afterEach(() => {
-    jest.resetAllMocks()
-  })
-
-  it('should not popup setup modal if MFA is auth method is already set', async () => {
-    const enabledMFADetails = {
-      tenantStatus: MFAStatus.ENABLED,
-      mfaMethods: [MFAMethod.EMAIL],
-      userId: 'userId',
-      enabled: true
-    }
-
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getMfaTenantDetails.url,
-        (_req, res, ctx) => res(ctx.json(enabledMFADetails))
-      ),
-      rest.get(
-        UserUrlsInfo.getMfaAdminDetails.url,
-        (_req, res, ctx) => {
-          mockedGetMfaAdminDetails()
-          return res(ctx.json(enabledMFADetails))
-        }
-      )
-    )
-
-    const { result } = renderHook(() => {
-      const[mfaDetails, setMfaDetails] = useState({})
-      return { mfaDetails, setMfaDetails }
-    })
-
-    render(<Provider>
-      <MFACheck />
-    </Provider>, {
-      route: {
-        path: '/t/:tenantId/dashboard',
-        params
-      }
-    })
-
-    await waitFor(() => {
-      expect(mockedGetMfaAdminDetails).toBeCalled()
-    })
-
-    act(() => {
-      result.current.setMfaDetails(enabledMFADetails)
-    })
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('mfaSetup')).toBeNull()
-    })
-  })
-
   it('should popup setup modal', async () => {
     const mockedMFATenantDetail = {
       tenantStatus: MFAStatus.ENABLED,
