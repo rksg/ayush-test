@@ -5,13 +5,14 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card }                                                             from '@acx-ui/components'
 import { ContentSwitcher, ContentSwitcherProps }                            from '@acx-ui/components'
 import { NetworkDevice, NetworkDevicePosition, SHOW_TOPOLOGY_FLOORPLAN_ON } from '@acx-ui/rc/utils'
+import { TenantLink }                                                       from '@acx-ui/react-router-dom'
 import { getIntl }                                                          from '@acx-ui/utils'
 
 import { ApFloorplan }     from '../ApFloorplan'
 import { FloorPlan }       from '../FloorPlan'
 import { SwitchFloorplan } from '../SwitchFloorplan'
 import { TopologyGraph }   from '../Topology'
-import { TenantLink } from '@acx-ui/react-router-dom'
+
 
 export function TopologyFloorPlanWidget (props: {
   showTopologyFloorplanOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
