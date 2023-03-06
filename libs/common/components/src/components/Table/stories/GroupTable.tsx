@@ -1,8 +1,8 @@
 import React from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended }     from 'libs/rc/utils/src/types/ap'
-import { omit, uniqueId } from 'lodash'
+import { APExtended } from 'libs/rc/utils/src/types/ap'
+import { uniqueId }   from 'lodash'
 
 import { Table, TableProps } from '..'
 import { Button }            from '../../Button'
@@ -32,11 +32,10 @@ type APExtendedGroupedResponse = {
 */
 function cleanResponse (response: APExtendedGroupedResponse) {
   return response.data.map(apGroup => {
-    const parent = omit(apGroup, ['deviceGroupName', 'clients', 'aps'])
     const { aps } = apGroup
     const validAps = aps ?? []
     return {
-      ...parent,
+      ...apGroup,
       isParent: true,
       id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
       children: validAps.map(ap => ({
@@ -551,14 +550,16 @@ export function GroupTable () {
     {
       title: 'Connected Clients',
       key: 'clients',
-      dataIndex: 'clients'
+      dataIndex: 'clients',
+      render: (dom, record) => record.isParent ? '' : dom
     },
     {
       title: 'AP Group',
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
       filterable: true,
-      searchable: true
+      searchable: true,
+      render: (dom, record) => record.isParent ? '' : dom
     },
     {
       title: 'RF Channels',
@@ -602,7 +603,25 @@ export function GroupTable () {
             console.log('clear data, reset to AP Group')
             // reset table to default
             setCurrData(groupableCallback('deviceGroupName'))
-          }
+          },
+          parentColumns: [
+            {
+              key: 'members',
+              label: (record) => <div>Members: {record.members}</div>
+            },
+            {
+              key: 'incidents',
+              label: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+            },
+            {
+              key: 'clients',
+              label: (record) => <div>Connected Clients: {record.clients}</div>
+            },
+            {
+              key: 'clients',
+              label: (record) => <div>Wireless Networks: {record.networks.count}</div>
+            }
+          ]
         }}
       />
     </>

@@ -164,10 +164,20 @@ export function useGroupBy<RecordType> (
       setEnableAction(enable)
     }
 
-    const { selectors, onChange, onClear, actions } = groupables
-
+    const { selectors, onChange, onClear, actions, parentColumns } = groupables
+    const currentKey = value?.key ?? ' '
+    const finalParentColumns = [
+      {
+        key: currentKey,
+        label: (record: RecordType) =>
+          <UI.Highlighter>
+            {record[currentKey as unknown as keyof typeof record] as unknown as string}
+          </UI.Highlighter>
+      },
+      ...parentColumns
+    ]
     const actionsList = actions ?? []
-    const groupColumns: TableProps<RecordType>['columns'] = actionsList.map((val) => ({
+    const groupActionColumns: TableProps<RecordType>['columns'] = actionsList.map((val) => ({
       key: val.key,
       dataIndex: '',
       render: (_, record) => {
@@ -186,6 +196,7 @@ export function useGroupBy<RecordType> (
         showArrow
         value={value}
         onChange={(val, options) => {
+          if (!val) return
           onChange(val)
           const { key, children } = options as { key: string, children: string }
           const option = { key, value: children }
@@ -196,7 +207,7 @@ export function useGroupBy<RecordType> (
           onClear()
           setValue(undefined)
         }}
-        key='group-by-select'
+        key='select-group-by'
       >
         {selectors.map((item) => <Select.Option
           key={item.key}
@@ -228,13 +239,15 @@ export function useGroupBy<RecordType> (
     return {
       GroupBySelect,
       expandable,
-      groupColumns
+      groupActionColumns,
+      finalParentColumns
     }
   }
 
   return {
     GroupBySelect: () => null,
     expandable: undefined,
-    groupColumns: []
+    groupActionColumns: [],
+    finalParentColumns: []
   }
 }

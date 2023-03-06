@@ -86,12 +86,17 @@ export interface TableProps <RecordType>
     ) => void,
     /**
      * Assumes that dataSource is nested with children key, and that
-     * isParent boolean property is set on each record item in dataSource
+     * isParent boolean property is set on each record item in dataSource.
      */
     groupable?: {
       selectors: { key: string, label: string, actionEnable?: boolean }[]
       onChange: CallableFunction
       onClear: CallableFunction
+      /**
+       * By default, the groupable selectors with be at the first item displayed.
+       * Only the second parent column info is needed to be passed.
+       */
+      parentColumns: { key: string, label: (record: RecordType) => JSX.Element }[]
       actions?: { key: string, label: React.ReactNode, callback?: (record: RecordType) => void }[]
     }
   }
@@ -143,8 +148,12 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
-  const { GroupBySelect, expandable, groupColumns } = useGroupBy<RecordType>(
-    groupable, props.columns.length)
+  const {
+    GroupBySelect,
+    expandable,
+    groupActionColumns,
+    finalParentColumns
+  } = useGroupBy<RecordType>(groupable, props.columns.length)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -166,8 +175,16 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
+    if (groupable) {
+      for (let i = 0; i < finalParentColumns.length; ++i) {
+        props.columns[i].render = (dom, record) => record.isParent
+          ? finalParentColumns[i].label(record)
+          : dom
+      }
+    }
+
     const cols = type === 'tall'
-      ? [...props.columns, ...groupColumns, settingsColumn] as typeof props.columns
+      ? [...props.columns, ...groupActionColumns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({
