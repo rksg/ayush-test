@@ -117,7 +117,8 @@ export function RadiusServerForm () {
 
   return(
     <Loader states={[{
-      isLoading: queryResultDataLoading || queryServerSettingDataLoading
+      isLoading: queryResultDataLoading || queryServerSettingDataLoading,
+      isFetching: updateConfigState.isLoading
     }]}>
       <Row>
         <Col span={10}>

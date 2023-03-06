@@ -26,11 +26,9 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [updateConfig] = useUpdateRadiusClientConfigMutation()
-  const [isChange, setIsChange] = useState(false)
 
   const resetFields = () => {
     setResetField(true)
-    setIsChange(false)
     onClose()
   }
 
@@ -46,8 +44,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
   }
 
   const ipAddressExistCheck = (value: string) =>{
-    // eslint-disable-next-line max-len
-    if (clientConfig.ipAddress && clientConfig.ipAddress.filter(item => isEqual(item, value)).length !== 0) {
+    if (value !== editIpAddress && clientConfig.ipAddress
+      && clientConfig.ipAddress.filter(item => isEqual(item, value)).length !== 0) {
       return Promise.reject($t({ defaultMessage: 'IP Address already exists' }))
     }
     return Promise.resolve()
@@ -64,7 +62,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       ]}
       validateFirst
       hasFeedback
-      children={<Input onChange={() => setIsChange(true)}/>}/>
+      children={<Input/>}/>
   </Form>
 
   return (
@@ -76,7 +74,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       children={content}
       footer={
         <Drawer.FormFooter
-          showSaveButton={isChange}
+          // showSaveButton={isChange}
           showAddAnother={!editMode}
           buttonLabel={({
             save: $t({ defaultMessage: 'Apply' }),
@@ -88,12 +86,14 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               await form.validateFields()
               const ipAddress = form.getFieldValue('singleIpAddress')
               if(editMode) {
-                await updateConfig({
-                  payload: {
-                    // eslint-disable-next-line max-len
-                    ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(ipAddress)
-                  }
-                }).unwrap()
+                if(ipAddress !== editIpAddress) {
+                  await updateConfig({
+                    payload: {
+                      // eslint-disable-next-line max-len
+                      ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(ipAddress)
+                    }
+                  }).unwrap()
+                }
               }else {
                 await updateConfig({ payload: {
                   // eslint-disable-next-line max-len
@@ -103,7 +103,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               if (!addAnotherRuleChecked) {
                 onClose()
               } else {
-                setIsChange(false)
                 form.resetFields()
               }
 
