@@ -384,7 +384,7 @@ export const TableCell = ({
   type === 'pending' ? (
     <span key={id} style={{ opacity: 0.5 }}>{displayText}</span>
   ) : (
-    <Tooltip key={id} title={tooltipContent}>
+    <Tooltip key={id} title={tooltipContent} overlayStyle={{ maxWidth: 'none' }}>
       <UI.Badge type={type}>{displayText}</UI.Badge>
     </Tooltip>
   )
