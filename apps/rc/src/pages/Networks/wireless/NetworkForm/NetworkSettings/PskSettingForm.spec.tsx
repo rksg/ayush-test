@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, MacRegListUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -106,6 +107,8 @@ describe('NetworkForm', () => {
   })
 
   it('should create PSK network with WPA2 and mac auth (for mac registration list)', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url,
         (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
