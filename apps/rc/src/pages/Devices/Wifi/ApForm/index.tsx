@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty }         from 'lodash'
+import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
@@ -216,7 +216,7 @@ export function ApForm () {
   }
 
   const getApGroupOptions = async (venueId: string) => {
-    const result = []
+    let result: { label: string; value: string | null }[] = []
     result.push({
       label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
       value: null
@@ -224,7 +224,12 @@ export function ApForm () {
 
     const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
     if (venueId && list?.length) {
-      list?.filter((item) => !item.isDefault)
+      list?.filter((item) => {
+        if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
+          result[0].value = item.id
+        }
+        return !item.isDefault
+      })
         .sort((a, b) => (a.name > b.name) ? 1 : -1)
         .forEach((item) => (
           result.push({
@@ -698,7 +703,8 @@ function checkFormIsDirty (form: StepsFormInstance, originalData: ApDeep, device
   const oldData = pick(originalData, checkFields)
   const newData = { ...omit(formData, 'deviceGps'), deviceGps: deviceGps }
   //omitBy({ ...omit(formData, 'deviceGps'), deviceGps: deviceGps }, v => !v)
-  return !!Object.values(formData).length && !isEqual(oldData, newData)
+  return !!Object.values(formData).length &&
+    !isEqual(omitBy(oldData, isEmpty), omitBy(newData, isEmpty))
 }
 
 function checkFormIsInvalid (form: StepsFormInstance) {

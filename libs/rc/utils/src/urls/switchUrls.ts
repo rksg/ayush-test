@@ -47,6 +47,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/switch/switchlist'
   },
+  getSwitchModelList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/switch/modellist'
+  },
   getMemberList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/switch/memberlist'
@@ -71,10 +75,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitch: {
     method: 'get',
-    // not working
-    // url: 'switches/:switchId',
-    // newApi: true,
-    url: '/api/switch/tenant/:tenantId/switch/:switchId'
+    url: '/switches/:switchId',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId',
+    newApi: true
   },
   getSwitchPortlist: {
     method: 'post',
@@ -85,6 +88,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/import'
   },
   getPortSetting: {
+    // different method
     // method: 'post',
     // url: '/switches/:switchId/ports',
     // newApi: true,
@@ -110,18 +114,20 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addSwitch: {
-    method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch'
+    // method: 'post',
     // url: '/switches',
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: false
+    // newApi: true
+    method: 'post',
+    url: '/api/switch/tenant/:tenantId/switch'
   },
   updateSwitch: {
-    method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch'
+    // method: 'put',
     // url: '/switches/:switchId',
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: false
+    // newApi: true
+    method: 'put',
+    url: '/api/switch/tenant/:tenantId/switch'
   },
   convertToStack: {
     method: 'post',
@@ -133,7 +139,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchConfigBackupList: {
     method: 'post',
-    url: '/switches/:switchId/configBackups/query'
+    url: '/switches/:switchId/configBackups/query',
+    oldUrl: '/api/switch/tenant/:tenantId/configBackup/switch/:switchId/query',
+    newApi: true
   },
   addBackup: {
     method: 'post',
@@ -183,10 +191,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchVlanUnion: {
     method: 'get',
-    // new api not found
-    // url: '/switches/:switchId/vlanUnion',
-    // newApi: true,
-    url: '/api/switch/tenant/:tenantId/vlanUnion/switch/:switchId'
+    url: '/switches/:switchId/vlanUnions',
+    oldUrl: '/api/switch/tenant/:tenantId/vlanUnion/switch/:switchId',
+    newApi: true
   },
   getSwitchVlans: {
     method: 'get',
@@ -201,6 +208,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTaggedVlansByVenue: {
+    // different method
     // method: 'post',
     // url: '/venues/:venueId/taggedVlans/query',
     // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port',
@@ -209,6 +217,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port'
   },
   getUntaggedVlansByVenue: {
+    // different method
     // method: 'post',
     // url: '/venues/:venueId/untaggedVlans/query',
     // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port',
@@ -230,10 +239,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getFreeVePortVlans: {
     method: 'get',
-    // new api not found
-    // url: '/venues/:venueId/switch/:switchId/vlans',
-    // newApi: true,
-    url: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId'
+    url: '/venues/:venueId/switches/:switchId/vlans',
+    oldUrl: '/api/switch/tenant/:tenantId/vlanVePort/:venueId/switch/:switchId',
+    newApi: true
   },
   getAclUnion: {
     method: 'get',
@@ -265,7 +273,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchAcls: {
     method: 'post',
-    url: '/switches/:switchId/acls/query'
+    url: '/switches/:switchId/acls/query',
+    oldUrl: '/api/switch/tenant/:tenantId/acls/switch/:switchId/query',
+    newApi: true
   },
   getVlanListBySwitchLevel: {
     method: 'post',
@@ -305,13 +315,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   reboot: {
     method: 'post',
-    url: '/switches/:switchId/debugRequests',
+    url: '/switches/:switchId/deviceRequests',
     oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/reboot',
     newApi: true
   },
   syncData: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/sync'
+    url: '/switches/:switchId/deviceRequests',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/sync',
+    newApi: true
   },
   getJwtToken: {
     method: 'get',

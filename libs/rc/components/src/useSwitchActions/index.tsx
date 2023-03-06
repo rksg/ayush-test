@@ -8,6 +8,7 @@ import {
   useSyncDataMutation
 } from '@acx-ui/rc/services'
 import {
+  DeviceRequestAction,
   getSwitchName,
   SwitchRow,
   SwitchStatusEnum,
@@ -80,7 +81,10 @@ export function useSwitchActions () {
           closeAfterAction: true,
           handler: async () => {
             try {
-              await rebootSwitch({ params: { tenantId: tenantId, switchId } }).unwrap()
+              await rebootSwitch({
+                params: { tenantId: tenantId, switchId },
+                payload: { deviceRequestAction: DeviceRequestAction.REBOOT }
+              }).unwrap()
             } catch (error) {
               console.log(error) // eslint-disable-line no-console
             }
@@ -94,7 +98,10 @@ export function useSwitchActions () {
 
   const doSyncData= async (switchId: string, tenantId: string, callBack?: ()=>void ) => {
     try {
-      await syncData({ params: { tenantId: tenantId, switchId }, payload: { isManual: true } }).unwrap()
+      await syncData({
+        params: { tenantId: tenantId, switchId },
+        payload: { deviceRequestAction: DeviceRequestAction.SYNC, isManual: true }
+      }).unwrap()
       setTimeout(() => {
         callBack && callBack()
       }, 3000)
