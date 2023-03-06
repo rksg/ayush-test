@@ -3,9 +3,9 @@ import { useRef } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdateAAASettingMutation }                           from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { useUpdateAAASettingMutation }                from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
 
 
 import { AAAServers }  from './AAAServers'
@@ -79,10 +79,7 @@ export function SwitchAAATab () {
       payload: _.pickBy(payload, v => v !== undefined)
     }).unwrap()
       .catch((error) => {
-        showToast({
-          type: 'error',
-          content: _.map(error.data.errors, 'message').join()
-        })
+        console.log(error) // eslint-disable-line no-console
       })
   }
 

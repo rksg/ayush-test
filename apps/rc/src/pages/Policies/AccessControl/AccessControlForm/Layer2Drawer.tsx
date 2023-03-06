@@ -284,12 +284,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           content: $t({ defaultMessage: 'invalided or existing MAC Address' })
         })
       }
-    } catch (e) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'invalided or existing MAC Address' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
 
     setInputValue('')

@@ -95,12 +95,8 @@ export function useApActions () {
 
         callBack && callBack()
       })
-      .catch(() => {
-        showToast({
-          key: toastKey,
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download AP support log.' })
-        })
+      .catch((error) => {
+        console.log(error) // eslint-disable-line no-console
       })
   }
 

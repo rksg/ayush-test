@@ -178,11 +178,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     downloadCsv({
       params: { groupId: personaGroupId },
       payload: personaListQuery.payload
-    }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export Personas.' })
-      })
+    }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 

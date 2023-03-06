@@ -9,7 +9,6 @@ import {
   Modal,
   ModalType,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -65,11 +64,8 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export passphrases.' })
-      })
+    downloadCsv({ params }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 

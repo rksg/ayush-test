@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { Drawer, showToast }           from '@acx-ui/components'
+import { Drawer }                      from '@acx-ui/components'
 import {
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation
@@ -80,18 +80,12 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
     if(data) {
       updateSwitchStaticRoute({ params, payload }).unwrap()
         .catch((error) => {
-          showToast({
-            type: 'error',
-            content: error.data.errors[0].message
-          })
+          console.log(error) // eslint-disable-line no-console
         })
     } else {
       addSwitchStaticRoute({ params, payload }).unwrap()
         .catch((error) => {
-          showToast({
-            type: 'error',
-            content: error.data.errors[0].message
-          })
+          console.log(error) // eslint-disable-line no-console
         })
     }
     formRef.resetFields()

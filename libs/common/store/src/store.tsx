@@ -48,13 +48,16 @@ type ErrorAction = {
   }
 }
 
-interface errorMessageType {
+interface ErrorMessageType {
   title: { defaultMessage: string },
   content: { defaultMessage: string }
 }
 
 let isModalShown = false
-const ignoreEndpointList = ['addAp', 'updateAp', 'inviteDelegation', 'updateRecipient'] // TODO
+// TODO: workaround for skipping general error dialog
+const ignoreEndpointList = [
+  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient'
+]
 const errorMessage = {
   SERVER_ERROR: {
     title: defineMessage({ defaultMessage: 'Server Error' }),
@@ -101,7 +104,7 @@ const getErrorContent = (action: ErrorAction) => {
   const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
   const isDevModeOn = window.location.hostname === 'localhost'
 
-  let errorMsg = {} as errorMessageType
+  let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
   let errors = action.payload.data
   let needLogout = false

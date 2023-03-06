@@ -6,8 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal,
-  showToast
+  showActionModal
 } from '@acx-ui/components'
 import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
@@ -48,12 +47,8 @@ export default function DpskTable () {
             try {
               await deleteDpsk({ params: { serviceId: id } }).unwrap()
               clearSelection()
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }
         })

@@ -78,10 +78,7 @@ export function MacRegistrationsTab () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
