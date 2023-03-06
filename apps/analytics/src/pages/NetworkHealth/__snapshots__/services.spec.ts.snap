@@ -1,168 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`processDtoToPayload handle zone + apGroup 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-              Object {
-                "name": "VENUE",
-                "type": "apGroup",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "schedule": Object {
-      "day": null,
-      "frequency": null,
-      "hour": null,
-      "timezone": "Asia/Tokyo",
-      "type": "service_guard",
-    },
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`processDtoToPayload handle zone only 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "schedule": Object {
-      "day": null,
-      "frequency": null,
-      "hour": null,
-      "timezone": "Asia/Tokyo",
-      "type": "service_guard",
-    },
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`processDtoToPayload process dto to payload for GraphQL input 1`] = `
-Object {
-  "spec": Object {
-    "clientType": "virtual-wireless-client",
-    "configs": Array [
-      Object {
-        "authenticationMethod": "WPA3_PERSONAL",
-        "dnsServer": "10.10.10.10",
-        "networkPaths": Object {
-          "networkNodes": Array [
-            Array [
-              Object {
-                "name": "VENUE",
-                "type": "zone",
-              },
-              Object {
-                "list": Array [
-                  "00:00:00:00:00:00",
-                ],
-                "type": "apMac",
-              },
-            ],
-          ],
-        },
-        "pingAddress": "10.10.10.10",
-        "radio": "6",
-        "tracerouteAddress": "10.10.10.10",
-        "wlanName": "WLAN Name",
-        "wlanPassword": "12345",
-        "wlanUsername": "user",
-      },
-    ],
-    "id": "spec-id",
-    "name": "Test Name",
-    "schedule": Object {
-      "day": null,
-      "frequency": null,
-      "hour": null,
-      "timezone": "Asia/Tokyo",
-      "type": "service_guard",
-    },
-    "type": "on-demand",
-  },
-}
-`;
-
-exports[`specToDto handles path without AP list 1`] = `
-Object {
-  "clientType": "virtual-wireless-client",
-  "configs": Array [
-    Object {
-      "authenticationMethod": "WPA3_PERSONAL",
-      "dnsServer": "10.10.10.10",
-      "networkPaths": Object {
-        "networkNodes": "VENUE>AP Group",
-      },
-      "pingAddress": "10.10.10.10",
-      "radio": "6",
-      "tracerouteAddress": "10.10.10.10",
-      "wlanName": "WLAN Name",
-      "wlanPassword": "12345",
-      "wlanUsername": "user",
-    },
-  ],
-  "id": "spec-id",
-  "isDnsServerCustom": true,
-  "name": "Test Name",
-  "schedule": Object {
-    "day": null,
-    "frequency": null,
-    "hour": null,
-    "timezone": "Africa/Abidjan",
-    "type": "service_guard",
-  },
-  "type": "on-demand",
-  "typeWithSchedule": "on-demand",
-}
-`;
-
 exports[`specToDto process spec of GraphQL result to dto for on-demand spec 1`] = `
 Object {
   "clientType": "virtual-wireless-client",
@@ -171,7 +8,20 @@ Object {
       "authenticationMethod": "WPA3_PERSONAL",
       "dnsServer": "10.10.10.10",
       "networkPaths": Object {
-        "networkNodes": "VENUE|00:00:00:00:00:00",
+        "networkNodes": Array [
+          Array [
+            Object {
+              "name": "VENUE",
+              "type": "zone",
+            },
+            Object {
+              "list": Array [
+                "00:00:00:00:00:00",
+              ],
+              "type": "apMac",
+            },
+          ],
+        ],
       },
       "pingAddress": "10.10.10.10",
       "radio": "6",

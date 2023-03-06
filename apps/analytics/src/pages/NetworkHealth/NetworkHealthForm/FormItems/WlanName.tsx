@@ -40,7 +40,7 @@ export function WlanName () {
     return Promise.reject($t({ defaultMessage: '"{name}" does not exists' }, { name }))
   }
 
-  return <Loader style={{ height: 'auto' }} states={[networks]}>
+  return <Loader style={{ height: 'auto', minHeight: 71 }} states={[networks]}>
     <Form.Item
       name={name as unknown as NamePath}
       label={$t(label)}
