@@ -17,8 +17,8 @@ import {
   Subtitle,
   Tooltip
 } from '@acx-ui/components'
-// import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid } from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -173,7 +173,9 @@ function SettingsForm () {
     })
   }
 
-  // const disableAAA = !useIsSplitOn(Features.POLICIES)
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+
   return (
     <>
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -291,10 +293,10 @@ function SettingsForm () {
             >
               <Radio.Group>
                 <Space direction='vertical'>
-                  <Radio value={true}>
+                  <Radio value={true} disabled={!macRegistrationEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
-                  <Radio value={false}>
+                  <Radio value={false} disabled={disableAAA}>
                     { intl.$t({ defaultMessage: 'External MAC Auth' }) }
                   </Radio>
                 </Space>

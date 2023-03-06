@@ -85,6 +85,8 @@ function SettingsForm () {
   }
 
   const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
@@ -112,7 +114,7 @@ function SettingsForm () {
           >
             <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
-                <Radio value={true}>
+                <Radio value={true} disabled={!macRegistrationEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
                 </Radio>
                 <Radio value={false}>
