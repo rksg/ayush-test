@@ -9,7 +9,6 @@ import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen
 
 import * as fixtures          from './__tests__/fixtures'
 import {
-  processDtoToPayload,
   specToDto,
   useNetworkHealthSpec,
   useNetworkHealthTestResults,
@@ -33,6 +32,11 @@ import {
 } from './types'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+
+const networkNodes = [[
+  { type: 'zone', name: 'VENUE' },
+  { type: 'apMac', list: ['00:00:00:00:00:00'] }
+]] as NetworkPaths
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -139,9 +143,7 @@ describe('useNetworkHealthSpecMutation', () => {
       wlanUsername: 'user',
       type: TestType.OnDemand,
       name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      networkPaths: { networkNodes }
     }
     const { result } = renderHook(
       useNetworkHealthSpecMutation,
@@ -176,9 +178,7 @@ describe('useNetworkHealthSpecMutation', () => {
       wlanUsername: 'user',
       type: TestType.OnDemand,
       name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      networkPaths: { networkNodes }
     }
 
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpec })
@@ -224,56 +224,6 @@ it('useRunNetworkHealthTestMutation', async () => {
   expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
 })
 
-describe('processDtoToPayload', () => {
-  const dto = {
-    id: 'spec-id',
-    isDnsServerCustom: true,
-    dnsServer: '10.10.10.10',
-    tracerouteAddress: '10.10.10.10',
-    pingAddress: '10.10.10.10',
-    wlanName: 'WLAN Name',
-    clientType: ClientType.VirtualWirelessClient,
-    radio: Band.Band6,
-    authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-    wlanPassword: '12345',
-    wlanUsername: 'user',
-    type: TestType.OnDemand,
-    name: 'Test Name'
-  }
-  it('process dto to payload for GraphQL input', () => {
-    const payload = processDtoToPayload({
-      ...dto,
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-
-  it('handle zone only', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      networkPaths: { networkNodes: 'VENUE' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-
-  it('handle zone + apGroup', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      networkPaths: { networkNodes: 'VENUE>AP Group' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-})
-
 describe('specToDto', () => {
   const spec = {
     id: 'spec-id',
@@ -289,34 +239,11 @@ describe('specToDto', () => {
       wlanName: 'WLAN Name',
       wlanPassword: '12345',
       wlanUsername: 'user',
-      networkPaths: {
-        networkNodes: [[
-          { type: 'zone', name: 'VENUE' },
-          { type: 'apMac', list: ['00:00:00:00:00:00'] }
-        ]] as NetworkPaths
-      }
+      networkPaths: { networkNodes }
     }]
   }
   it('process spec of GraphQL result to dto', () => {
     const dto = specToDto(spec)
-    expect(dto).toMatchSnapshot()
-  })
-
-  it('handles path without AP list', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const dto = specToDto({
-      ...spec,
-      configs: [{
-        ...spec.configs[0],
-        networkPaths: {
-          networkNodes: [[
-            { type: 'zone', name: 'VENUE' },
-            { type: 'apGroup', name: 'AP Group' }
-          ]] as NetworkPaths
-        }
-      }]
-    })
     expect(dto).toMatchSnapshot()
   })
 

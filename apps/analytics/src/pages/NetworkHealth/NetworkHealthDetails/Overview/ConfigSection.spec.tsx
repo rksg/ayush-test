@@ -9,7 +9,7 @@ describe('Overview component', () => {
   it('should render correctly', () => {
     render(<ConfigSection
       details={fetchServiceGuardTest.serviceGuardTest as unknown as NetworkHealthTest}/>)
-    expect(screen.queryByText('WLAN')).toBeVisible()
+    expect(screen.queryByText('Network')).toBeVisible()
     expect(screen.queryByText('Radio Band')).toBeVisible()
     expect(screen.queryByText('Authentication Method')).toBeVisible()
     expect(screen.queryByText('DNS Server')).toBeVisible()
@@ -31,7 +31,7 @@ describe('Overview component', () => {
         ...fetchServiceGuardTest.serviceGuardTest as unknown as NetworkHealthTest,
         config: {} as NetworkHealthConfig
       }}/>)
-    expect(screen.queryByText('WLAN')).toBeVisible()
+    expect(screen.queryByText('Network')).toBeVisible()
     expect(screen.queryByText('Radio Band')).toBeVisible()
     expect(screen.queryByText('Authentication Method')).toBeVisible()
     expect(screen.queryByText('DNS Server')).toBeVisible()

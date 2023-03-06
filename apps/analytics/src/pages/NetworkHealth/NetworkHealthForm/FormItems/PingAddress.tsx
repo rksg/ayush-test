@@ -3,6 +3,8 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew } from '@acx-ui/components'
 
+import { notSetMessage } from '../../NetworkHealthDetails/Overview/ConfigSection'
+
 import { IPDomainField } from './IPDomainField'
 
 const name = 'pingAddress' as const
@@ -22,6 +24,8 @@ PingAddress.FieldSummary = function PingAddressFieldSummary () {
   return <Form.Item
     name={name}
     label={$t(label)}
-    children={<StepsFormNew.FieldSummary />}
+    children={<StepsFormNew.FieldSummary<string>
+      convert={(value) => value || $t(notSetMessage)}
+    />}
   />
 }

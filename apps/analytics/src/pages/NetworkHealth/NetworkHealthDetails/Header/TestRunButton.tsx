@@ -27,7 +27,7 @@ const TestRunTable = (
         </TenantLink>
     },
     {
-      title: $t({ defaultMessage: 'APs Under test' }),
+      title: $t({ defaultMessage: 'APs Under Test' }),
       dataIndex: 'apsTestedCount',
       key: 'apsTestedCount'
     },

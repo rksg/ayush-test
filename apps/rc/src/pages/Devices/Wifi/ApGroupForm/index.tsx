@@ -16,7 +16,9 @@ import {
   useVenuesListQuery,
   useLazyVenueDefaultApGroupQuery,
   useAddApGroupMutation,
-  useLazyApGroupsListQuery
+  useLazyApGroupsListQuery,
+  useGetApGroupQuery,
+  useUpdateApGroupMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -39,18 +41,23 @@ const defaultPayload = {
 
 export function ApGroupForm () {
   const { $t } = useIntl()
-  const { tenantId, action } = useParams()
+  const { tenantId, action, apGroupId } = useParams()
   const navigate = useNavigate()
   const params = useParams()
-  const formRef = useRef<StepsFormInstance<ApDeep>>()
+  const formRef = useRef<StepsFormInstance<AddApGroup>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
+  const isEditMode = action === 'edit'
 
   const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
   const [apGroupsList] = useLazyApGroupsListQuery()
   const [addApGroup] = useAddApGroupMutation()
+  const [updateApGroup] = useUpdateApGroupMutation()
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
+
+  const { data: apGroupData, isLoading: isApGroupDataLoading } =
+  useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: action === 'add' })
 
   const apGroupsListPayload = {
     searchString: '',
@@ -68,15 +75,41 @@ export function ApGroupForm () {
     }
   }, [venuesList])
 
-  const handleVenueChange = async (value: string) => {
+  useEffect(() => {
+    if (isEditMode && !isApGroupDataLoading && apGroupData) {
+      let extraMemberList: { name: string; key: string }[] | undefined = []
+      if (Array.isArray(apGroupData.aps)) {
+        extraMemberList = apGroupData.aps.map((item: ApDeep) => ({
+          name: item.name.toString(), key: item.serialNumber
+        }))
+      }
+
+      handleVenueChange(apGroupData.venueId, extraMemberList)
+      formRef?.current?.setFieldsValue({
+        name: apGroupData.name,
+        venueId: apGroupData.venueId,
+        apSerialNumbers: Array.isArray(apGroupData.aps) ?
+          apGroupData.aps.map(i => i.serialNumber) : []
+      })
+    }
+
+  }, [isEditMode, apGroupData, isApGroupDataLoading])
+
+
+  const handleVenueChange = async (value: string,
+    extraMemberList?: { name: string; key: string; }[]) => {
     const defaultApGroupOption = value ?
       (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
         ?.aps?.map((item: ApDeep) => ({
           name: item.name.toString(), key: item.serialNumber
         })) : []
 
-    formRef.current?.validateFields(['name'])
-    setApsOption(defaultApGroupOption as TransferItem[])
+    if (extraMemberList && defaultApGroupOption) {
+      setApsOption(defaultApGroupOption.concat(extraMemberList) as TransferItem[])
+    } else {
+      formRef.current?.validateFields(['name'])
+      setApsOption(defaultApGroupOption as TransferItem[])
+    }
   }
 
   const handleAddApGroup = async (values: AddApGroup) => {
@@ -87,7 +120,12 @@ export function ApGroupForm () {
       const payload = {
         ...values
       }
-      await addApGroup({ params: { tenantId: tenantId }, payload }).unwrap()
+      if (isEditMode) {
+        await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
+      } else {
+        await addApGroup({ params: { tenantId }, payload }).unwrap()
+      }
+
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch {
       showToast({
@@ -108,7 +146,9 @@ export function ApGroupForm () {
         searchString: value, filters: { venueId: [venueId] }
       }
       const list = (await apGroupsList({ params, payload }, true)
-        .unwrap()).data.map(n => ({ name: n.name }))
+        .unwrap()).data
+        .filter(n => n.id !== params.apGroupId)
+        .map(n => ({ name: n.name }))
       return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'Group' }))
     } else {
       return false
@@ -116,12 +156,13 @@ export function ApGroupForm () {
   }
 
   return <>
-    {action === 'add' && <PageHeader
-      title={$t({ defaultMessage: 'Add AP Group' })}
+    <PageHeader
+      title={action === 'add' ? $t({ defaultMessage: 'Add AP Group' }) :
+        $t({ defaultMessage: 'Edit AP Group' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-    />}
+    />
     <StepsForm
       formRef={formRef}
       onFinish={handleAddApGroup}
@@ -130,7 +171,7 @@ export function ApGroupForm () {
         pathname: `${basePath.pathname}/wifi`
       })}
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Add' })
+        submit: action === 'add' ? $t({ defaultMessage: 'Add' }) : $t({ defaultMessage: 'Apply' })
       }}
     >
       <StepsForm.StepForm>
@@ -165,6 +206,7 @@ export function ApGroupForm () {
                   message: $t({ defaultMessage: 'Please select venue' })
                 }]}
                 children={<Select
+                  disabled={isEditMode}
                   options={[
                     { label: $t({ defaultMessage: 'Select venue...' }), value: null },
                     ...venueOption
