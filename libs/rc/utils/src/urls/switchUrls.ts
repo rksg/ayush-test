@@ -204,16 +204,22 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTaggedVlansByVenue: {
-    method: 'post',
-    url: '/venues/:venueId/taggedVlans/query',
-    oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port',
-    newApi: true
+    // different method
+    // method: 'post',
+    // url: '/venues/:venueId/taggedVlans/query',
+    // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port',
+    // newApi: true
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port'
   },
   getUntaggedVlansByVenue: {
-    method: 'post',
-    url: '/venues/:venueId/untaggedVlans/query',
-    oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port',
-    newApi: true
+    // different method
+    // method: 'post',
+    // url: '/venues/:venueId/untaggedVlans/query',
+    // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port',
+    // newApi: true
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port'
   },
   getSwitchConfigurationProfileByVenue: {
     method: 'get',
