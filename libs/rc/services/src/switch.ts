@@ -629,6 +629,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
+    getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
@@ -1206,5 +1215,6 @@ export const {
   useAddAclMutation,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchModelListQuery
 } = switchApi
