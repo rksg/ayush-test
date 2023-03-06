@@ -1,0 +1,128 @@
+
+import { useEffect, useRef, useState } from 'react'
+
+import { DndProvider }     from 'react-dnd'
+import { HTML5Backend }    from 'react-dnd-html5-backend'
+import { Link, useParams } from 'react-router-dom'
+
+import { useGetFloorPlanQuery, useSwitchListQuery }                                                         from '@acx-ui/rc/services'
+import { FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDevicePosition, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
+
+import { NetworkDeviceMarker } from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
+
+
+export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
+    venueId: string,
+    switchPosition: NetworkDevicePosition }) {
+
+  const { activeDevice, venueId, switchPosition } = props
+
+  const params = useParams()
+  const imageRef = useRef<HTMLImageElement>(null)
+  const imageContainerRef = useRef<HTMLDivElement>(null)
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false)
+  const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
+  const [containerWidth, setContainerWidth] = useState<number>(1)
+
+  const { data: extendedApList } = useSwitchListQuery({ params, payload: {
+    filters: {
+      floorplanId: [switchPosition?.floorplanId]
+    }
+  } })
+
+  useEffect(() => {
+    if (extendedApList) {
+      const _apDeviceList: NetworkDevice[] = []
+
+      extendedApList?.data.map(apDevice => {
+        const _apDevice: NetworkDevice = {
+          id: apDevice.serialNumber,
+          name: apDevice.name,
+          serialNumber: apDevice.serialNumber,
+          networkDeviceType: NetworkDeviceType.switch,
+          deviceStatus: apDevice.deviceStatus,
+          position: {
+            floorplanId: switchPosition.floorplanId,
+            xPercent: apDevice?.xPercent || 0,
+            yPercent: apDevice?.yPercent || 0
+          },
+          // highlighting only current AP device
+          // other AP devices will be blured with low opacity
+          isActive: apDevice.serialNumber === activeDevice?.serialNumber
+        } as NetworkDevice
+
+        _apDeviceList.push(_apDevice)
+      })
+
+      setApList(_apDeviceList)
+
+    }
+  }, [extendedApList])
+
+  const { data: floorplan } =
+   useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
+     floorPlanId: switchPosition?.floorplanId } })
+
+  function onImageLoad () {
+    activeDevice.position = switchPosition
+    const containerCoordsX = imageContainerRef?.current?.parentElement?.offsetWidth || 0
+    const containerCoordsY = imageContainerRef?.current?.parentElement?.offsetHeight || 0
+
+    const imageCoordsX = imageRef?.current?.offsetWidth || 0
+    const imageCoordsY = imageRef?.current?.offsetHeight || 0
+    const differencePercentage = getImageFitPercentage(containerCoordsX,
+      containerCoordsY, imageCoordsX, imageCoordsY)
+
+    if (differencePercentage) {
+      const _zoom = Math.floor(differencePercentage) / 100
+      setContainerWidth(_zoom)
+    }
+    setTimeout(() => setImageLoaded(true), 400)
+  }
+
+  return <div style={{
+    width: '100%',
+    position: 'relative',
+    maxHeight: '300px',
+    paddingRight: '35px',
+    marginBottom: '35px'
+  }}>
+    <Link style={{ marginLeft: 10,
+      lineHeight: '24px',
+      fontSize: '14px' }}
+    to={useTenantLink(`/venues/${venueId}/venue-details/overview`)}
+    state={{
+      param: { floorplan: floorplan }
+    }}>
+      {floorplan?.name}
+    </Link>
+    <div
+      ref={imageContainerRef}
+      style={{
+        position: 'relative',
+        margin: '0 auto',
+        width: `calc(${100 * containerWidth}%)`
+      }}>
+      { imageLoaded && <DndProvider backend={HTML5Backend}>
+        { apList && apList.map( (device: NetworkDevice) =>
+          <NetworkDeviceMarker
+            key={device?.serialNumber}
+            galleryMode={false}
+            contextAlbum={false}
+            context={FloorplanContext['switch']}
+            device={device}
+            forbidDrag={true}/>)}
+      </DndProvider> }
+      <img
+        data-testid='floorPlanImage'
+        onLoad={onImageLoad}
+        style={{ maxHeight: '100%',
+          width: '100%',
+          border: 'none' }}
+        ref={imageRef}
+        alt={floorplan?.name}
+        src={floorplan?.imageUrl} />
+    </div>
+  </div>
+}

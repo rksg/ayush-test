@@ -1,8 +1,10 @@
-import { SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }      from '@acx-ui/analytics/components'
-import { AnalyticsFilter }         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }        from '@acx-ui/components'
-import { StackMember }             from '@acx-ui/rc/utils'
+
+import { SwitchesTrafficByVolume }                                                                        from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                                                                             from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                                                                from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                                                                               from '@acx-ui/components'
+import { TopologyFloorPlanWidget }                                                                        from '@acx-ui/rc/components'
+import { NetworkDevice, NetworkDevicePosition, SHOW_TOPOLOGY_FLOORPLAN_ON, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
@@ -10,16 +12,28 @@ import { TopPorts }            from './TopPorts'
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
+  switchDetail: SwitchViewModel,
+  currentSwitchDevice: NetworkDevice,
   stackMember: StackMember[]
 }) {
-  const { filters, stackMember } = props
-
-  return <GridRow>
+  const { filters, switchDetail, currentSwitchDevice, stackMember } = props
+  return <><GridRow>
+    <GridCol col={{ span: 24 }} style={{ height: '380px' }}>
+      { switchDetail && <TopologyFloorPlanWidget
+        showTopologyFloorplanOn={SHOW_TOPOLOGY_FLOORPLAN_ON.SWITCH_OVERVIEW}
+        currentDevice={currentSwitchDevice}
+        venueId={switchDetail?.venueId}
+        devicePosition={switchDetail?.position as NetworkDevicePosition}/>
+      }
+    </GridCol>
+  </GridRow>
+  <GridRow>
     <GridCol col={{ span: 24 }}>
       <SwitchFrontRearView stackMember={stackMember} />
     </GridCol>
     { filters && <SwitchWidgets filters={{ ...filters }}/> }
   </GridRow>
+  </>
 }
 
 function SwitchWidgets (props: { filters: AnalyticsFilter }) {

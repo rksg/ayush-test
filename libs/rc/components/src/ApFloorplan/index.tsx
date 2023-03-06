@@ -1,24 +1,23 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { DndProvider }  from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { Link }         from 'react-router-dom'
+import { DndProvider }     from 'react-dnd'
+import { HTML5Backend }    from 'react-dnd-html5-backend'
+import { Link, useParams } from 'react-router-dom'
 
-import { NetworkDeviceMarker }                                                                   from '@acx-ui/rc/components'
 import { useApListQuery, useGetFloorPlanQuery }                                                  from '@acx-ui/rc/services'
 import { ApPosition, FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
-import { useApContext } from '../../ApContext'
+import { NetworkDeviceMarker } from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
 
-export default function ApFloorplan (props: { activeDevice: NetworkDevice,
+export function ApFloorplan (props: { activeDevice: NetworkDevice,
     venueId: string,
     apPosition: ApPosition }) {
 
   const { activeDevice, venueId, apPosition } = props
 
-  const params = useApContext()
+  const params = useParams()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)
@@ -27,7 +26,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
 
   const { data: extendedApList } = useApListQuery({ params, payload: {
     filters: {
-      floorplanId: [apPosition.floorplanId]
+      floorplanId: [apPosition?.floorplanId]
     }
   } })
 
@@ -42,7 +41,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
           networkDeviceType: NetworkDeviceType.ap,
           deviceStatus: apDevice.deviceStatus,
           position: {
-            floorplanId: apPosition.floorplanId,
+            floorplanId: apPosition?.floorplanId,
             xPercent: apDevice?.xPercent || 0,
             yPercent: apDevice?.yPercent || 0
           },
@@ -61,7 +60,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
 
   const { data: floorplan } =
    useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
-     floorPlanId: apPosition.floorplanId } })
+     floorPlanId: apPosition?.floorplanId } })
 
   function onImageLoad () {
     activeDevice.position = apPosition
@@ -83,7 +82,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
   return <div style={{
     width: '100%',
     position: 'relative',
-    maxHeight: '500px',
+    maxHeight: '300px',
     paddingRight: '35px',
     marginBottom: '35px'
   }}>

@@ -1,13 +1,12 @@
-import { Badge, Button, Table } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Badge, Button, Divider } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import { Card, Descriptions, Loader }                                                                   from '@acx-ui/components'
-import { ApDeviceStatusEnum, APExtended, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { formatter }                                                                                    from '@acx-ui/utils'
+import { Card, Descriptions, Loader, Subtitle }                                                                                   from '@acx-ui/components'
+import { ApDeviceStatusEnum, APExtended, APMeshRole, ApRadioBands, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { formatter }                                                                                                              from '@acx-ui/utils'
 
-import * as UI                                     from './styledComponents'
-import { getDeviceColor, getWirelessRadioColumns } from './utils'
-
+import * as UI                         from './styledComponents'
+import { getDeviceColor, getMeshRole } from './utils'
 
 
 export function APDetailsCard (props: {
@@ -19,6 +18,15 @@ export function APDetailsCard (props: {
 
   const wirelessRadioDetails: RadioProperties[] =
     apDetail?.apStatusData?.APRadio as RadioProperties[]
+
+  function getApRadio (band: ApRadioBands) {
+    switch (band) {
+      case ApRadioBands.band24: return $t({ defaultMessage: '2.4 GHz' })
+      case ApRadioBands.band50: return $t({ defaultMessage: '5 GHz' })
+      case ApRadioBands.band60: return $t({ defaultMessage: '6 GHz' })
+    }
+
+  }
 
   return <Card
     type='no-border'
@@ -77,19 +85,35 @@ export function APDetailsCard (props: {
           label={$t({ defaultMessage: 'Wireless Radio' })}
           children={''} />
         <Descriptions.Item
-          labelStyle={{
-            width: 0
-          }}
-          label={''}
-          children={
-            <UI.WirelessRadioTableContainer>
-              <Table
-                columns={getWirelessRadioColumns()}
-                dataSource={wirelessRadioDetails}
-                size='small'
-                pagination={false} />
+          children={<Descriptions.NoLabel>
+            <UI.WirelessRadioTableContainer><UI.TextHeader>
+              <label></label>
+              <label>
+                <span>{$t({ defaultMessage: 'RF' })}</span>
+                <span>{$t({ defaultMessage: 'Channel' })}</span>
+              </label>
+              <label>
+                <span>{$t({ defaultMessage: 'RF' })}</span>
+                <span>{$t({ defaultMessage: 'Bandwidth' })}</span>
+              </label>
+              <label>
+                <span>{$t({ defaultMessage: 'TX Power' })}</span>
+              </label>
+            </UI.TextHeader>
+            {
+              wirelessRadioDetails && wirelessRadioDetails?.map(radioDetail => (
+                <UI.TextNumber>
+                  <label><Subtitle level={5}>{ getApRadio(radioDetail?.band as ApRadioBands) }
+                  </Subtitle></label>
+                  <span>{radioDetail?.channel || '--'}</span>
+                  <span>{radioDetail?.operativeChannelBandwidth || '--'}</span>
+                  <span>{radioDetail?.txPower || '--'}</span>
+                </UI.TextNumber>
+              ))
+            }
             </UI.WirelessRadioTableContainer>
-          } />
+          </Descriptions.NoLabel>}
+        />
 
         {/* Clients count  */}
         <Descriptions.Item
@@ -102,6 +126,16 @@ export function APDetailsCard (props: {
           label={$t({ defaultMessage: 'Last Seen' })}
           children={formatter('dateTimeFormat')(apDetail?.lastSeenTime)} />
         }
+
+      </Descriptions>
+      <Divider />
+      <Descriptions labelWidthPercent={40}>
+        <Descriptions.Item
+          label={$t({ defaultMessage: 'Mesh Role' })}
+          children={
+            getMeshRole(apDetail?.meshRole as APMeshRole || '--')
+          }
+        />
       </Descriptions>
 
     </Loader>

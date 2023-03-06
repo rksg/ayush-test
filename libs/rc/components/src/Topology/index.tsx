@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef, useEffect, useState } from 'react'
 
-import { Button, Empty }  from 'antd'
-import * as d3            from 'd3'
-import { select }         from 'd3-selection'
-import * as dagreD3       from 'dagre-d3'
-import { debounce }       from 'lodash'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
-import { useParams }      from 'react-router-dom'
+import { AutoComplete, Button, Col, Empty, Input, Row, Typography } from 'antd'
+import * as d3                                                      from 'd3'
+import { select }                                                   from 'd3-selection'
+import * as dagreD3                                                 from 'dagre-d3'
+import { debounce }                                                 from 'lodash'
+import { renderToString }                                           from 'react-dom/server'
+import { useIntl }                                                  from 'react-intl'
+import { useParams }                                                from 'react-router-dom'
 
-import { Loader }                                                                                                                                                                                                     from '@acx-ui/components'
-import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort } from '@acx-ui/icons'
-import { useGetTopologyQuery }                                                                                                                                                                                        from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, UINode }                                                                                                 from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
+import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort, SearchOutlined } from '@acx-ui/icons'
+import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
+import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, SHOW_TOPOLOGY_FLOORPLAN_ON, UINode }                                                                                     from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 
 import LinkTooltip      from './LinkTooltip'
 import NodeTooltip      from './NodeTooltip'
@@ -21,10 +22,20 @@ import * as UI          from './styledComponents'
 import { getPathColor } from './utils'
 
 
+type OptionType = {
+  value: string;
+  label: string | JSX.Element;
+  key: string;
+  children: string;
+  item: Node;
+}
 
-export function TopologyGraph () {
+export function TopologyGraph (props:{ venueId?: string,
+  showTopologyOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
+  deviceMac?: string }) {
 
   const { $t } = useIntl()
+  const { venueId, showTopologyOn, deviceMac } = props
 
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
@@ -32,8 +43,11 @@ export function TopologyGraph () {
   const graph = new dagreD3.graphlib.Graph()
     .setGraph({}) as any
 
+  const _venueId = params.venueId || venueId
+
   const { data: topologyData,
-    isLoading: isTopologyLoading } = useGetTopologyQuery({ params })
+    isLoading: isTopologyLoading } = useGetTopologyQuery({ params: { ...params,
+    venueId: _venueId } })
 
   const [topologyGraphData, setTopologyGraphData] = useState<GraphData>()
   const [showLinkTooltip, setShowLinkTooltip] = useState<boolean>(false)
@@ -42,11 +56,12 @@ export function TopologyGraph () {
   const [tooltipNode, setTooltipNode] = useState<Node>()
   const [tooltipSourceNode, setTooltipSourceNode] = useState<Node>()
   const [tooltipTargetNode, setTooltipTargetNode] = useState<Node>()
+  const [filterNodes, setFilterNodes] = useState<OptionType[]>()
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
 
   useEffect(() => {
-    if(topologyData){
-      const nodes: Node[] = topologyData?.nodes.map((_node) => {
+    if(topologyData) {
+      const nodes: Node[] = topologyData?.nodes.map((_node: any) => {
         return { ..._node } as Node
       })
 
@@ -81,6 +96,19 @@ export function TopologyGraph () {
           expanded: false
         } as UINode })
 
+
+      // creating filter datasource
+
+      const _formattedNodes = nodes.map(node => ({
+        value: (node.name as string).toString(),
+        key: (node.id as string).toString(),
+        label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
+          {node.name as string}</Typography.Title>
+        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text></div>,
+        children: node.label,
+        item: node
+      })) as OptionType[]
+      setFilterNodes(_formattedNodes)
 
       // adding default cloud node
       const cloudNode: UINode = {
@@ -183,7 +211,7 @@ export function TopologyGraph () {
 
       // default Center the graph and fit to container
 
-      defaultScreenFit(nodes.length, graph, svg, zoom)
+      defaultScreenFit(zoom)
 
       d3.select('#graph-zoom-in').on('click', function () {
         zoom.scaleBy(svg.transition().duration(750), 1.2)
@@ -194,12 +222,18 @@ export function TopologyGraph () {
       })
 
       d3.select('#graph-zoom-fit').on('click', function () {
-        defaultScreenFit(nodes.length, graph, svg, zoom)
+        defaultScreenFit(zoom)
       })
 
-      highlightPath(svg)
+      const selectedNode = getSelectedNode(deviceMac as string)
 
-      hoverNode(svg)
+      highlightPath(selectedNode)
+
+      hoverNode(selectedNode)
+
+      if (showTopologyOn !== SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW) {
+        searchNodeByid(svg, zoom, selectedNode)
+      }
 
       // setting circle marker
       d3.selectAll('g.edgePath defs').remove()
@@ -233,11 +267,11 @@ export function TopologyGraph () {
 
 
   // fit graph to screen
-  function fitToScreen (graph: any,
-    svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  function fitToScreen (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
     zoom: any) {
-    const graphWidth = graph.graph().width
-    const graphHeight = graph.graph().height
+    const _graph = (d3.select('g.output').node() as SVGGElement)
+    const graphWidth = _graph.getBBox().width
+    const graphHeight = _graph.getBBox().height
     const width = parseInt(svg.style('width').replace(/px/, ''), 10)
     const height = parseInt(svg.style('height').replace(/px/, ''), 10)
     const zoomScale = Math.min(width / graphWidth, height / graphHeight) > 1 ? 1.2
@@ -251,50 +285,57 @@ export function TopologyGraph () {
 
   // original graph scale in case of large scale it will persist device icons
   // and label size so that user can see. in this case user need to drag / zoom out to fit entire hierarchy.
-  function originalGraphScale (graph: any,
-    svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+  function originalGraphScale (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
     zoom: any) {
-    const graphWidth = graph.graph().width
-    const graphHeight = graph.graph().height
+    const _graph = (d3.select('g.output').node() as SVGGElement)
+    const graphWidth = _graph.getBBox().width
+    const graphHeight = _graph.getBBox().height
     const width = parseInt(svg.style('width').replace(/px/, ''), 10)
     const height = parseInt(svg.style('height').replace(/px/, ''), 10)
     const translate = [(width - graphWidth) / 2, (height - graphHeight) / 2]
     zoom.transform(svg, d3.zoomIdentity.translate(translate[0], translate[1]))
   }
 
-  function defaultScreenFit (nodeCount: number, graph: any,
-    svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
-    zoom: any) {
-    nodeCount < 20
-      ? fitToScreen(graph, svg, zoom)
-      : originalGraphScale(graph, svg, zoom)
+  function defaultScreenFit (zoom: any) {
+    const svg = d3.select(graphRef.current)
+    const _graph = (d3.select('g.output').node() as SVGGElement)
+    if (_graph) {
+      const graphWidth = _graph.getBBox().width
+      const graphHeight = _graph.getBBox().height
+      const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+      const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+      graphWidth > width || graphHeight > height
+        ? fitToScreen(svg, zoom)
+        : originalGraphScale(svg, zoom)
+    }
   }
 
   // Highlight path and show tooltip for connection on link mouseover
-  function highlightPath (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>) {
-    const edgelabels = svg.selectAll('.edgeLabel')
+  function highlightPath (selectedNode: any) {
+    const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
     const onmousepath = d3.selectAll('g.edgePath')
 
     const allpathes = onmousepath.select('.path')
 
     allpathes
-      .on('mouseout',function (){
-		 edgelabels.style('opacity', 1)
-	      allpathes.style('opacity', 1)/* set all edges to opacity 1 */
-        allnodes.style('opacity', 1)/* set all nodes visibillity */
+      .on('mouseout', function (){
+        if (selectedNode) {
+          lowVisibleAll();
+          (selectedNode as SVGGElement).style.opacity = '1'
+        } else {
+          highlightAll()
+        }
         setShowLinkTooltip(false)
 		 })
 
-      .on('mouseover',function (d: MouseEvent, edge: any): void{
+      .on('mouseover',function (d: MouseEvent, edge: any): void {
         if (edge.from === 'cloud_id')
           return
         setShowLinkTooltip(true)
         setTooltipEdge(edge)
         setTooltipPosition({ x: d.offsetX, y: d.offsetY })
-	      edgelabels.style('opacity', 0.2)
-        allpathes.style('opacity', 0.2)      // set all edges opacity 0.2
-		 allnodes.style('opacity', 0.2)
+	      lowVisibleAll()
 	     d3.select(this).style('opacity', 1)    // just set the actual edge to opacity 1
 		 allnodes.each(function (d: any){
           if(edge.from === d.id) {
@@ -311,27 +352,29 @@ export function TopologyGraph () {
 
   // Highlight Node on mouseover
 
-  function hoverNode (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>) {
-    const edgelabels = svg.selectAll('.edgeLabel')
+  function hoverNode (selectedNode: any) {
+    const svg = d3.select(graphRef.current)
     const allnodes = svg.selectAll('g.node')
-    const onmousepath = d3.selectAll('g.edgePath')
-    const allpathes = onmousepath.select('.path')
 
     const debouncedHandleMouseEnter = debounce(function (node, d, self){
       setShowDeviceTooltip(true)
       setTooltipNode(node.config)
       setTooltipPosition({ x: d?.layerX
         , y: d?.layerY - 50 })
-      edgelabels.style('opacity', 0.2)
-      allnodes.style('opacity', 0.2)
-      allpathes.style('opacity', 0.2)
+      lowVisibleAll()
+      if (selectedNode) {
+        (selectedNode as SVGGElement).style.opacity = '1'
+      }
       d3.select(self).style('opacity', 1)    /*  just set the actual node to opacity 1 */
     }, 500)
 
     const handleOnMouseLeave = () => {
-      edgelabels.style('opacity', 1)
-      allnodes.style('opacity', 1) /* set all edges to opacity 1 */
-      allpathes.style('opacity', 1)
+      if (selectedNode) {
+        lowVisibleAll();
+        (selectedNode as SVGGElement).style.opacity = '1'
+      } else {
+        highlightAll()
+      }
       setShowDeviceTooltip(false)
       debouncedHandleMouseEnter.cancel()
     }
@@ -349,6 +392,86 @@ export function TopologyGraph () {
       })
   }
 
+  function searchNodeByid (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
+    zoom: any,
+    selectedNode: any) {
+    const onmousepath = d3.selectAll('g.edgePath')
+
+    const allpathes = onmousepath.select('.path')
+    lowVisibleAll()
+
+    const _graph = (d3.select('g.output').node() as SVGGElement)
+
+    if (selectedNode && selectedNode.__data__) {
+      const nodeId = selectedNode.__data__.id;
+      (selectedNode as SVGGElement).style.opacity = '1' as string;
+
+      // make default zoom before navigate to selectedNode
+      (d3.select('#graph-zoom-fit').node() as HTMLButtonElement).click()
+
+      allpathes.each(function (d: any){
+        if(d.v === nodeId) {
+          d3.select(this).style('opacity',1)
+        }
+        if(d.w === nodeId) {
+          d3.select(this).style('opacity',1)
+        }
+      })
+      const targetX = (selectedNode as SVGGElement).getBoundingClientRect().x
+
+      const graphWidth = _graph.getBBox().width
+      const graphHeight = _graph.getBBox().height
+      const width = parseInt(svg.style('width').replace(/px/, ''), 10)
+      const height = parseInt(svg.style('height').replace(/px/, ''), 10)
+
+      const coordX = ((width-graphWidth) / 2) + (width / 2) - targetX
+
+      if (graphWidth > width) {
+        const translate = [coordX + 100, (height - graphHeight) / 2]
+        zoom.transform(svg.transition().duration(750),
+          d3.zoomIdentity.translate(translate[0], translate[1]))
+      } else {
+        originalGraphScale(svg, zoom)
+      }
+
+    }
+  }
+
+  function getSelectedNode (deviceMac: string) {
+    const svg = d3.select(graphRef.current)
+    const allnodes = svg.selectAll('g.node')
+    // this is selected / searched node
+    const selectedNode = allnodes.nodes().filter((node: any) =>{
+      return (node.__data__.config.mac === deviceMac) && node.__data__.id !== 'cloud_id'
+    })
+
+    return selectedNode && selectedNode[0]
+  }
+
+  function highlightAll () {
+    const svg = d3.select(graphRef.current)
+    const edgelabels = svg.selectAll('.edgeLabel')
+    const allnodes = svg.selectAll('g.node')
+    const onmousepath = d3.selectAll('g.edgePath')
+
+    const allpathes = onmousepath.select('.path')
+    edgelabels.style('opacity', 1)
+    allpathes.style('opacity', 1)/* set all edges to opacity 1 */
+    allnodes.style('opacity', 1)/* set all nodes visibillity */
+  }
+
+  function lowVisibleAll () {
+    const svg = d3.select(graphRef.current)
+    const edgelabels = svg.selectAll('.edgeLabel')
+    const allnodes = svg.selectAll('g.node')
+    const onmousepath = d3.selectAll('g.edgePath')
+
+    const allpathes = onmousepath.select('.path')
+    edgelabels.style('opacity', 0.2)
+    allpathes.style('opacity', 0.2)
+    allnodes.style('opacity', 0.2)
+  }
+
   return <Loader states={
     [
       { isLoading: false, isFetching: isTopologyLoading }
@@ -358,14 +481,70 @@ export function TopologyGraph () {
       width: '100%',
       height: 'calc(100% - 80px)'
     }}>{ topologyData?.nodes.length ?
-        <UI.Graph ref={graphRef} width='100%' height='100%' />
+        <>
+          {
+            (showTopologyOn === SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW)
+            && !!filterNodes?.length
+            && <AutoComplete
+              id='searchNodes'
+              data-testid='searchNodes'
+              options={filterNodes}
+              filterOption={(inputValue, option) =>{
+                return !!((option as OptionType).item.id as string).toLowerCase()
+                  .includes(inputValue.toLowerCase()) ||
+                  !!((option as OptionType).item.name as string).toLowerCase()
+                    .includes(inputValue.toLowerCase()) ||
+                  !!((option as OptionType).item.mac as string).toLowerCase()
+                    .includes(inputValue.toLowerCase())
+              }
+              }
+              style={{ width: 280 }}
+              onSelect={(value: any, option: OptionType) => {
+                searchNodeByid(d3.select(graphRef.current), d3.zoom(),
+                  getSelectedNode(option.item.mac as string))
+                highlightPath(getSelectedNode(option.item.mac as string))
+                hoverNode(getSelectedNode(option.item.mac as string))
+              }}
+              allowClear={true}
+              onClear={() => {
+                highlightPath(undefined)
+                hoverNode(undefined)
+                highlightAll()
+              }}
+            >
+              <Input
+                prefix={<SearchOutlined />}
+                placeholder={$t({ defaultMessage: 'Search by device name or MAC address' })}/>
+            </AutoComplete>
+          }
+          <UI.Graph ref={graphRef} width='100%' height='100%' />
+        </>
         : <div style={{
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
           width: '100%',
           height: '100%'
-        }}><Empty /></div>
+        }}>
+          {
+            (showTopologyOn === SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW)
+              ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
+                <Row>
+                  <Col span={12}>
+                    <TenantLink to='devices/wifi/add'>
+                      {$t({ defaultMessage: 'Add Access Point' })}
+                    </TenantLink>
+                  </Col>
+                  <Col span={8} offset={4}>
+                    <TenantLink to='devices/switch/add'>
+                      {$t({ defaultMessage: 'Add Switch' })}
+                    </TenantLink>
+                  </Col>
+                </Row>
+              </Empty>
+              : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
+          }
+        </div>
       }
       {
         showLinkTooltip && <LinkTooltip
