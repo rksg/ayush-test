@@ -19,7 +19,7 @@ jest.mock('@acx-ui/msp/components', () => ({
       <button onClick={props.onFinish}>Login</button>
     </div>
   }
-}), { virtual: true })
+}))
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
