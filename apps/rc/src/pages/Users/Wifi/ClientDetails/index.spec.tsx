@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, ClientUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -77,7 +78,9 @@ describe('ClientDetails', () => {
       rest.post(CommonUrlsInfo.getEventListMeta.url,
         (_, res, ctx) => res(ctx.json(eventMetaList))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apCaps)))
+        (_, res, ctx) => res(ctx.json(apCaps))),
+      rest.post(ClientUrlsInfo.disconnectClient.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
@@ -192,7 +195,9 @@ describe('ClientDetails', () => {
       activeTab: 'overview'
     }
     render(<Provider><ClientDetailPageHeader /></Provider>, {
-      route: { params, path: '/:tenantId/users/wifi/clients' }
+      route: { params, path: '/:tenantId/users/wifi/clients/:clientId/details/overview' }
     })
+    await userEvent.click(await screen.findByText('Actions'))
+    await userEvent.click(await screen.findByText('Disconnect Client'))
   })
 })
