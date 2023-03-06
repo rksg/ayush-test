@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { CSSProperties, useContext, useEffect, useState } from 'react'
 
 import { Form, Input }                              from 'antd'
 import _                                            from 'lodash'
@@ -8,6 +8,7 @@ import { Button, Modal, showActionModal, Table, TableProps } from '@acx-ui/compo
 import { DeleteOutlinedIcon }                                from '@acx-ui/icons'
 
 
+import { BonjourFencingServiceContext }     from '../../BonjourFencingServiceTable'
 import { FieldsetItem, ProtocolRadioGroup } from '../../utils'
 
 interface CustomMappingTableEntry {
@@ -202,14 +203,17 @@ export const CustomMappingFieldset = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
+  const { currentService } = useContext(BonjourFencingServiceContext)
+
   const [ tableData, setTableData ] = useState<CustomMappingTableEntry[]>([])
 
   useEffect(() => {
-    const customStrings = form.getFieldValue('customStrings') || []
+    const customStrings = currentService?.customStrings || []
     const initData = getTableDataFromCustomMapping(customStrings)
-
+    //console.log('===== set CustomMappingFieldset data =====')
+    //console.log(customStrings)
     setTableData(initData)
-  }, [ form ] )
+  }, [currentService])
 
   const getTableDataFromCustomMapping = (customMappingData: string[]) => {
     return customMappingData.map((data: string) => {
