@@ -56,6 +56,11 @@ export enum TroubleshootingType {
   DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
 }
 
+export enum DeviceRequestAction {
+  SYNC = 'sync',
+  REBOOT = 'reboot'
+}
+
 export enum TroubleshootingMacAddressOptionsEnum {
   PORT = 'connected_port',
   NONE = 'none',
