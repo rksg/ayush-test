@@ -12,8 +12,7 @@ import {
   UserProfile,
   UserUrlsInfo,
   CloudVersion,
-  CommonResult,
-  GlobalValues
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 
@@ -198,19 +197,7 @@ export const userApi = baseUserApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
-    }),
-    getGlobalValues: build.query<GlobalValues, RequestPayload>({
-      query: ({ params }) => {
-        const values = createHttpRequest(
-          CommonUrlsInfo.getGlobalValues,
-          params
-        )
-        return {
-          ...values
-        }
-      }
     })
-
   })
 })
 export const {
@@ -229,6 +216,5 @@ export const {
   useMfaRegisterAdminMutation,
   useMfaRegisterPhoneQuery,
   useMfaResendOTPMutation,
-  useDisableMFAMethodMutation,
-  useGetGlobalValuesQuery
+  useDisableMFAMethodMutation
 } = userApi
