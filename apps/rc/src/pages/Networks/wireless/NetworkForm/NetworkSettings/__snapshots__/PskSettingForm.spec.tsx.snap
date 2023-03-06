@@ -241,7 +241,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Network Details
                     </h3>
@@ -602,7 +602,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Open Settings
                     </h3>
@@ -716,7 +716,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Venues
                 </h3>
@@ -793,7 +793,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Summary
                 </h3>

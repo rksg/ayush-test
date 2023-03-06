@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { store }      from '@acx-ui/store'
 import { mockServer } from '@acx-ui/test-utils'
 
-import {  ReportUrlsInfo, reportsApi } from '.'
+import {  ReportUrlsInfo, reportsApi, UrlInfo } from '.'
 
 import type { GuestToken, DashboardMetadata } from '.'
 
@@ -23,6 +23,10 @@ const getEmbeddedReponse = {
   }
 } as DashboardMetadata
 
+const AuthenticateResponse = {
+  redirect_url: '/api/a4rc/explorer/'
+} as UrlInfo
+
 describe('reportsApi', () => {
   beforeEach(() => {
     mockServer.use(
@@ -33,6 +37,10 @@ describe('reportsApi', () => {
       rest.post(
         ReportUrlsInfo.getEmbeddedReportToken.url,
         (req, res, ctx) => res(ctx.json(guestTokenReponse))
+      ),
+      rest.post(
+        ReportUrlsInfo.authenticate.url,
+        (req, res, ctx) => res(ctx.json(AuthenticateResponse))
       )
     )
   })
@@ -57,5 +65,9 @@ describe('reportsApi', () => {
       }
     })).unwrap()
     expect(response).toEqual(guestTokenReponse.token)
+  })
+  it('should return redirect url', async () => {
+    const response = await store.dispatch(reportsApi.endpoints.authenticate.initiate({})).unwrap()
+    expect(response).toEqual(AuthenticateResponse.redirect_url)
   })
 })
