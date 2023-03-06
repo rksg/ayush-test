@@ -1,4 +1,5 @@
-import moment from 'moment-timezone'
+import moment        from 'moment-timezone'
+import { IntlShape } from 'react-intl'
 
 import {
   firmwareTypeTrans,
@@ -112,7 +113,7 @@ const getLastSkippedSwitchVersion = (venue: FirmwareSwitchVenue) : string => {
   return version && version.length > 0 ? version[0].version : ''
 }
 
-export const getNextScheduleTpl = (venue: FirmwareSwitchVenue) => {
+export const getNextScheduleTpl = (intl: IntlShape, venue: FirmwareSwitchVenue) => {
   const schedule = venue.nextSchedule
   if (schedule?.timeSlot?.startDateTime) {
     let endTime = moment(schedule.timeSlot.startDateTime).add(2, 'hours')
@@ -121,7 +122,8 @@ export const getNextScheduleTpl = (venue: FirmwareSwitchVenue) => {
   } else {
     // eslint-disable-next-line max-len
     const isVersionSkipped: boolean | string = getLastSkippedSwitchVersion(venue) && venue.availableVersions.some(version => version.version === getLastSkippedSwitchVersion(venue))
-    return isVersionSkipped ? 'Not scheduled (Skipped)' : 'Not scheduled'
+    // eslint-disable-next-line max-len
+    return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
   }
 }
 
@@ -142,7 +144,7 @@ const getApAvailableVersions = (venue: FirmwareVenue) : FirmwareVenueVersion[] =
   return venue.availableVersions && venue.availableVersions.filter(typeIsApFunc)
 }
 
-export const getApNextScheduleTpl = (venue: FirmwareVenue) => {
+export const getApNextScheduleTpl = (intl: IntlShape, venue: FirmwareVenue) => {
   const schedule = getApSchedule(venue)
   if (schedule) {
     let endTime = moment(schedule.startDateTime).add(2, 'hours')
@@ -151,7 +153,8 @@ export const getApNextScheduleTpl = (venue: FirmwareVenue) => {
   } else {
     // eslint-disable-next-line max-len
     const isVersionSkipped: boolean | string | undefined = getLastSkippedApVersion(venue) && getApAvailableVersions(venue).some(version => version.version === getLastSkippedApVersion(venue))
-    return isVersionSkipped ? 'Not scheduled (Skipped)' : 'Not scheduled'
+    // eslint-disable-next-line max-len
+    return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
   }
 }
 

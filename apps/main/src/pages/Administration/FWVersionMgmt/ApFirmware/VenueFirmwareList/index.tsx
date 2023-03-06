@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import {
   showActionModal,
-  showToast,
   ColumnType,
   Table,
   TableProps,
@@ -55,12 +54,12 @@ function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -72,7 +71,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Current AP Firmware' }),
+      title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'versions[0].version',
       dataIndex: 'versions[0].version',
       sorter: true,
@@ -83,7 +82,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Firmware Type' }),
+      title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
       sorter: true,
@@ -98,7 +97,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Last Update' }),
+      title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: true,
@@ -109,13 +108,13 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return getApNextScheduleTpl(row)
+        return getApNextScheduleTpl(intl, row)
       }
     }
   ]
@@ -172,11 +171,8 @@ export const VenueFirmwareTable = (
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -190,11 +186,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -207,11 +200,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -225,11 +215,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -453,7 +440,7 @@ export const VenueFirmwareTable = (
         onOk () {
           skipVenueUpgradeSchedules({
             params: { ...params },
-            payload: selectedRows.map((row) => row.id)
+            payload: { venueIds: selectedRows.map((row) => row.id) }
           }).then(clearSelection)
         },
         onCancel () {}

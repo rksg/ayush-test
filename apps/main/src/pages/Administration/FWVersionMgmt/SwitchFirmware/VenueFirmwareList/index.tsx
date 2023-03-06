@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import {
   showActionModal,
-  showToast,
   ColumnType,
   Table,
   TableProps,
@@ -47,11 +46,11 @@ function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
-  const { $t } = useIntl()
+  const intl = useIntl()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -63,7 +62,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Current Firmware' }),
+      title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'switchFirmwareVersion.id',
       dataIndex: 'switchFirmwareVersion.id',
       sorter: true,
@@ -74,7 +73,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Firmware Type' }),
+      title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'switchFirmwareVersion.category',
       dataIndex: 'switchFirmwareVersion.category',
       sorter: true,
@@ -85,7 +84,7 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Last Update' }),
+      title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: true,
@@ -95,13 +94,13 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return getNextScheduleTpl(row)
+        return getNextScheduleTpl(intl, row)
       }
     }
   ]
@@ -176,11 +175,8 @@ export const VenueFirmwareTable = (
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -194,11 +190,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -211,11 +204,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

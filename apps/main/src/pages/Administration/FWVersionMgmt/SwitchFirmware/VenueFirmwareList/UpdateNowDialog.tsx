@@ -90,8 +90,9 @@ export function UpdateNowDialog (props: UpdateNowDialogProps) {
           <UI.Section>
             <UI.Ul>
               { // eslint-disable-next-line max-len
-                <UI.Li>Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.</UI.Li>}
-              <UI.Li>You will be notified once the update process has finished.</UI.Li>
+                <UI.Li>{$t({ defaultMessage: 'Please note, during firmware update your network device(s) will reboot, and service may be interrupted for up to 15 minutes.' })}</UI.Li>}
+              { // eslint-disable-next-line max-len
+                <UI.Li>{$t({ defaultMessage: 'You will be notified once the update process has finished.' })}</UI.Li>}
             </UI.Ul>
           </UI.Section>
         </Form.Item>

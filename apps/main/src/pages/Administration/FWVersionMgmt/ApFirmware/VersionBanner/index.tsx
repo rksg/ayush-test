@@ -1,4 +1,3 @@
-import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -11,6 +10,7 @@ import {
   FirmwareVenueVersion,
   FirmwareCategory
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
 const transform = firmwareTypeTrans()
 
@@ -20,7 +20,6 @@ export const VersionBanner = () => {
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions[0]
-  const d = new Date(firmware?.createdDate ?? '' as string)
 
   return (
     <div>
@@ -34,7 +33,7 @@ export const VersionBanner = () => {
         <span>{transform(firmware?.category, 'type')}</span>
         <span>({transform(firmware?.category, 'subType')})</span>
         <span>-</span>
-        <span>{moment(d).format('MMMM DD, YYYY')}</span>
+        <span>{formatter('dateFormat')(firmware?.createdDate)}</span>
       </div>
     </div>
   )
