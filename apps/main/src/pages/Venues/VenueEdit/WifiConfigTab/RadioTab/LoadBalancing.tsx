@@ -2,7 +2,7 @@
 import { useContext, useEffect } from 'react'
 
 import { Col, Form, Radio, Row, Slider, Space, Switch } from 'antd'
-import { defineMessage, useIntl }                       from 'react-intl'
+import { defineMessage, FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                                    from 'react-router-dom'
 
 import { cssStr, Loader, showToast, Tooltip }                                 from '@acx-ui/components'
@@ -16,6 +16,7 @@ import { FieldLabel, RadioDescription } from '../styledComponents'
 const { useWatch } = Form
 
 export function LoadBalancing () {
+  const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
   const form = Form.useFormInstance()
@@ -38,9 +39,9 @@ export function LoadBalancing () {
 
 
   const infoMessage = defineMessage({
-    defaultMessage: `Make sure background scan is selected for channel selection
+    defaultMessage: `Make sure <b>background scan</b> is selected for channel selection
     method on radios you would like to run load balancing. Also,
-    enable load balancing on network configuration.`
+    enable <b>load balancing</b> on network configuration.`
   })
 
   const loadBalancingMethods = [
@@ -159,7 +160,7 @@ export function LoadBalancing () {
     isFetching: isUpdatingVenueLoadBalancing
   }]}>
     <Row gutter={0}>
-      <Col span={10}>
+      <Col span={colSpan}>
         <FieldLabel width='200px'>
           {$t({ defaultMessage: 'Use Load Balancing' })}
           <Form.Item
@@ -175,24 +176,30 @@ export function LoadBalancing () {
     </Row>
 
     <Row>
-      <Col span={10}
+      <Col span={colSpan}
         style={{
           backgroundColor: cssStr('--acx-accents-orange-10'),
           marginBottom: '10px',
           fontSize: cssStr('--acx-body-4-font-size'),
-          padding: '10px 20px 10px 10px'
+          padding: '10px 50px 10px 10px'
         }}>
         <Space align='start'>
           <InformationSolid />
-          <span>-</span>
-          <div>{ $t(infoMessage) }</div>
+          <div>
+            <FormattedMessage
+              {...infoMessage}
+              values={{
+                b: (text: string) => <strong>{text}</strong>
+              }}
+            />
+          </div>
         </Space>
       </Col>
     </Row>
 
     {enabled &&
     <Row>
-      <Col span={10}>
+      <Col span={colSpan}>
         <Form.Item
           name='loadBalancingMethod'
           label={$t({ defaultMessage: 'Load Balancing Method' })}
@@ -218,7 +225,7 @@ export function LoadBalancing () {
 
     {(!enabled || loadBalancingMethod === LoadBalancingMethodEnum.CLIENT_COUNT) &&
     <Row gutter={0}>
-      <Col span={10}>
+      <Col span={colSpan}>
         <FieldLabel width='200px'>
           {$t({ defaultMessage: 'Band Balancing' })}
           <Form.Item
@@ -236,7 +243,7 @@ export function LoadBalancing () {
 
     {bandBalancingEnabled &&
     <Row>
-      <Col span={10}>
+      <Col span={colSpan}>
         <Form.Item
           label={$t({ defaultMessage: '2.4 GHz Client load (%)' })}
           name='bandBalancingClientPercent24G'
@@ -255,7 +262,7 @@ export function LoadBalancing () {
     }
 
     <Row>
-      <Col span={10}>
+      <Col span={colSpan}>
         <Form.Item
           name='steeringMode'
           label={$t({ defaultMessage: 'Steering Mode' })}

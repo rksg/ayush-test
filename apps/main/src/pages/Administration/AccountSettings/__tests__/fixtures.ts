@@ -51,7 +51,8 @@ export const fakeMFATenantDetail = {
   tenantStatus: MFAStatus.DISABLED,
   recoveryCodes: ['678490','287605','230202','791760','169187'],
   mfaMethods: [],
-  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
+  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7',
+  enabled: false
 }
 
 export const fakeMspEcProfile = {

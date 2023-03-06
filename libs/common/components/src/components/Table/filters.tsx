@@ -14,6 +14,8 @@ import type { TableColumn, RecordWithChildren } from './types'
 
 export interface Filter extends Record<string, FilterValue|null> {}
 
+export const MIN_SEARCH_LENGTH = 2
+
 function hasChildrenColumn <RecordType> (
   column: RecordType | RecordWithChildren<RecordType>
 ): column is RecordWithChildren<RecordType> {
@@ -35,7 +37,7 @@ export function getFilteredData <RecordType> (
         return false
       }
     }
-    if (searchValue) {
+    if (searchValue && searchValue.length >= MIN_SEARCH_LENGTH) {
       return searchables.some(column => {
         const target = row[column.dataIndex as keyof RecordType]
         return typeof target === 'string' && target

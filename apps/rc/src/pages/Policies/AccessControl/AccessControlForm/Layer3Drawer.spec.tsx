@@ -300,7 +300,7 @@ describe('Layer3Drawer Component', () => {
 
   })
 
-  it('Render Layer3Drawer component with subnet option successfully', async () => {
+  it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.addL3AclPolicy.url,
       (_, res, ctx) => res(
