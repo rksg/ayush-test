@@ -1,4 +1,6 @@
 export { ResendInviteModal } from './ResendInviteModal'
+export { MultiFactor } from './MultiFactor'
+export { MFASetupModal } from './MultiFactor/MFASetupModal'
 export { MspEcDropdownList } from './MspEcDropdownList'
 export { ManageAdminsDrawer } from './ManageAdminsDrawer'
 export { SelectIntegratorDrawer } from './SelectIntegratorDrawer'

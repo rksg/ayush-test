@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { switchApi }       from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -20,14 +22,20 @@ describe('Switch Overview ACLs', () => {
     serialNumber: 'switch-serialNumber'
   }
 
-  beforeEach(()=>{
+  const mockServerQuery = () => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
-      rest.get(SwitchUrlsInfo.getSwitchAcls.url,
+      rest.post(SwitchUrlsInfo.getSwitchAcls.url,
         (_, res, ctx) => res(ctx.json(aclList)))
     )
+  }
+
+  afterEach(()=>{
+    Modal.destroyAll()
   })
 
   it('should click extended ACL table correctly', async () => {
+    mockServerQuery()
     render(<Provider><SwitchOverviewACLs /></Provider>, {
       route: {
         params,
@@ -44,6 +52,7 @@ describe('Switch Overview ACLs', () => {
   })
 
   it('should click standard ACL correctly', async () => {
+    mockServerQuery()
     render(<Provider><SwitchOverviewACLs /></Provider>, {
       route: {
         params,
