@@ -156,6 +156,23 @@ describe('MspCustomers', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should edit select row', async () => {
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(await within(row).findByRole('radio'))
+
+    const editButton = await screen.findByRole('button', { name: /Edit/i })
+    fireEvent.click(editButton)
+
+  })
+
   it.skip('should delete selected row', async () => {
     render(
       <Provider>
