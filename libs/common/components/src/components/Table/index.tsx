@@ -179,7 +179,9 @@ function Table <RecordType extends Record<string, any>> ({
       for (let i = 0; i < finalParentColumns.length; ++i) {
         props.columns[i].render = (dom, record) => record.isParent
           ? finalParentColumns[i].label(record)
-          : dom
+          : props.columns[i].searchable
+            ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
+            : dom
       }
     }
 
@@ -198,7 +200,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type])
+  }, [props.columns, type, searchValue])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -341,19 +343,7 @@ function Table <RecordType extends Record<string, any>> ({
     ...col,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
-        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
-          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
-            ? formatFn
-              ? textToHighlight.replace(
-                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
-              : <Highlighter
-                highlightStyle={{
-                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
-                searchWords={[searchValue]}
-                textToHighlight={textToHighlight}
-                autoEscape
-              />
-            : textToHighlight
+        const highlightFn: TableHighlightFnArgs = getHighlightFn(searchValue)
         return col.render
           ? col.render(dom, entity, index, highlightFn, action, schema)
           : highlightFn(_.get(entity, col.dataIndex))
@@ -473,6 +463,7 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
+      rowClassName={(record) => record.isParent ? 'parent-row-data' : ''}
       tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
@@ -539,3 +530,19 @@ Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
 
 export { Table }
+function getHighlightFn (searchValue: string): TableHighlightFnArgs {
+  return (textToHighlight, formatFn) =>
+    (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+      ? formatFn
+        ? textToHighlight.replace(
+          new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+        : <Highlighter
+          highlightStyle={{
+            fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
+          }}
+          searchWords={[searchValue]}
+          textToHighlight={textToHighlight}
+          autoEscape />
+      : textToHighlight
+}
+
