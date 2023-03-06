@@ -20,7 +20,8 @@ export function ApPingForm () {
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('name')
+        targetHost: pingForm.getFieldValue('name'),
+        action: 'ping'
       }
       const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingApResult) {

@@ -14,6 +14,9 @@ export const reportsBaseApi = createApi({
 export interface GuestToken {
   token: string
 }
+export interface UrlInfo {
+  redirect_url: string
+}
 
 export interface DashboardMetadata {
   result: {
@@ -35,6 +38,10 @@ export const ReportUrlsInfo: { [key: string]: ApiInfo } = {
     url: `${BASE_RELATIVE_URL}/api/v1/dashboard/embedded`
     // Comment above and enable this proxy for superset local dev (docker-compose) setup
     // url: '/api/v1/dashboard/embedded'
+  },
+  authenticate: {
+    method: 'post',
+    url: `${BASE_RELATIVE_URL}/authenticate/`
   }
 }
 
@@ -63,8 +70,20 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
       transformResponse: (response : DashboardMetadata) => {
         return response.result.uuid
       }
+    }),
+    authenticate: build.mutation<string, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ReportUrlsInfo.authenticate, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse: (response : UrlInfo) => {
+        return response.redirect_url
+      }
     })
   })
 })
 
-export const { useGuestTokenMutation, useEmbeddedIdMutation } = reportsApi
+export const { useGuestTokenMutation, useEmbeddedIdMutation, useAuthenticateMutation } = reportsApi
