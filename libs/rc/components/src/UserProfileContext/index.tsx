@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'react'
 
+// import { useLocation } from 'react-router-dom'
+
 import { useGetUserProfileQuery } from '@acx-ui/rc/services'
 import { UserProfile, RolesEnum } from '@acx-ui/rc/utils'
-import { getJwtTokenPayload }     from '@acx-ui/utils'
+import { useTenantId }            from '@acx-ui/utils'
 
 export interface UserProfileContextProps {
   data: UserProfile | undefined;
@@ -18,7 +20,7 @@ export function useUserProfileContext () {
 }
 
 export function UserProfileProvider (props: React.PropsWithChildren) {
-  const { tenantId } = getJwtTokenPayload()
+  const tenantId = useTenantId()
   const { data } = useGetUserProfileQuery({ params: { tenantId } })
 
   const hasRole = (userRole: string): boolean => {

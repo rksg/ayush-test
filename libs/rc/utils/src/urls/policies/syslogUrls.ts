@@ -13,7 +13,7 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/syslogServerProfiles'
   },
-  getSyslogPolicy: {
+  getSyslogPolicy: { // detail
     method: 'get',
     url: '/api/syslogServerProfiles/:policyId'
   },
@@ -21,13 +21,17 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/syslogServerProfiles/:policyId'
   },
-  getSyslogPolicyList: {
+  getSyslogPolicyList: { // scop form
     method: 'get',
     url: '/api/syslogServerProfiles'
   },
-  getVenueSyslogPolicy: {
+  getVenueSyslogAp: { //instances
+    method: 'get',
+    url: '/api/venues/:venueId/syslogServerProfileSettings'
+  },
+  updateVenueSyslogAp: { //instances
     method: 'post',
-    url: '/api/venues/:tenantId/syslogServerProfileSettings'
+    url: '/api/venues/:venueId/syslogServerProfileSettings'
   },
   getVenueSyslogList: {
     method: 'post',

@@ -4,19 +4,15 @@ import { gql }     from 'graphql-request'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { networkHealthApi }     from '@acx-ui/analytics/services'
-import { showToast }            from '@acx-ui/components'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { networkHealthApi } from '@acx-ui/analytics/services'
+import { showToast }        from '@acx-ui/components'
+import { useParams }        from '@acx-ui/react-router-dom'
 
 import { messageMapping, stages } from './contents'
 
 import type {
-  APListNodes,
   NetworkHealthFormDto,
   NetworkHealthSpec,
-  NetworkNodes,
-  NetworkPaths,
   MutationResult,
   NetworkHealthConfig,
   MutationUserError,
@@ -225,52 +221,6 @@ export function useNetworkHealthRelatedTests () {
     { skip: !Boolean(params.testId) })
 }
 
-function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
-  const last = path[path.length - 1]
-  return _.has(last, 'list')
-}
-
-// TODO:
-// Remove when APsSelection input available
-function networkNodesToString (nodes: NetworkPaths) {
-  return nodes
-    .map((path: APListNodes | NetworkNodes) => {
-      let aps: APListNode | undefined = undefined
-      if (isAPListNodes(path)) {
-        aps = path[path.length - 1] as APListNode
-      }
-      const newPath = ((aps
-        ? path.slice(0, path.length - 1)
-        : path) as PathNode[])
-        .map(node => node.name)
-        .join('>')
-
-      return [newPath, aps?.list.join(',')]
-        .filter(Boolean)
-        .join('|')
-    })
-    .join('\n')
-}
-
-// TODO:
-// Remove when APsSelection input available
-function stringToNetworkNodes (value: string): NetworkPaths {
-  const convert = (line: string): APListNodes | NetworkNodes => {
-    const [paths, aps] = line.trim().split('|')
-    const [venue, apGroup] = paths.split('>')
-    const list = aps?.split(',').filter(Boolean).map(v => v.trim())
-    const path: NetworkNodes = [{ type: 'zone', name: venue }]
-
-    if (apGroup) path.push({ type: 'apGroup', name: venue })
-    if (list) {
-      return (path as APListNodes).concat({ type: 'apMac', list }) as APListNodes
-    } else {
-      return path
-    }
-  }
-  return value.split('\n').map(convert)
-}
-
 const configKeys: Array<keyof NetworkHealthFormDto> = [
   'authenticationMethod',
   'dnsServer',
@@ -280,18 +230,14 @@ const configKeys: Array<keyof NetworkHealthFormDto> = [
   'tracerouteAddress',
   'wlanName',
   'wlanPassword',
-  'wlanUsername'
+  'wlanUsername',
+  'networkPaths'
 ]
 
 export function processDtoToPayload (dto: NetworkHealthFormDto) {
   const spec = {
-    // TODO:
-    // Add `networkPaths` into `configKeys` when APsSelection input available
-    ..._.omit(dto, configKeys.concat(['isDnsServerCustom', 'networkPaths'])),
-    configs: [{
-      ..._.pick(dto, configKeys),
-      networkPaths: { networkNodes: stringToNetworkNodes(dto.networkPaths.networkNodes) }
-    }]
+    ..._.omit(dto, configKeys.concat(['isDnsServerCustom'])),
+    configs: [_.pick(dto, configKeys)]
   }
   return { spec }
 }
@@ -305,14 +251,8 @@ export function specToDto (spec?: Pick<NetworkHealthSpec, 'id' | 'clientType' | 
   >[]
 }): NetworkHealthFormDto | undefined {
   if (!spec) return undefined
-  const networkPaths = {
-    networkNodes: networkNodesToString(spec.configs[0].networkPaths.networkNodes)
-  }
   return {
     isDnsServerCustom: Boolean(spec.configs[0].dnsServer),
-    // TODO:
-    // Take `networkPaths` from `spec.configs[0]` when APsSelection input available
-    networkPaths,
     ..._.pick(spec, ['id', 'name', 'type', 'clientType']),
     ..._.pick(spec.configs[0], [
       'radio',
@@ -323,7 +263,8 @@ export function specToDto (spec?: Pick<NetworkHealthSpec, 'id' | 'clientType' | 
       'speedTestEnabled',
       'dnsServer',
       'pingAddress',
-      'tracerouteAddress'
+      'tracerouteAddress',
+      'networkPaths'
     ])
   }
 }
