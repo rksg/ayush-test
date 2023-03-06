@@ -15,9 +15,9 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { hasAccesses }               from '@acx-ui/rbac'
-import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { hasAccesses, GuestErrorRes } from '@acx-ui/rbac'
+import { CsvSize, ImportFileDrawer }  from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
   useNetworkListQuery,
@@ -32,8 +32,7 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
-  GuestErrorRes
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                           from '@acx-ui/utils'

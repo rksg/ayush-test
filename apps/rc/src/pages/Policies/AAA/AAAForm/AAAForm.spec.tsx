@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
+import { Urls }                                  from '@acx-ui/rbac'
+import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -38,7 +39,7 @@ const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: '
 describe('AAAForm', () => {
   beforeEach(()=>{
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(

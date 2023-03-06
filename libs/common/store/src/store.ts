@@ -1,4 +1,5 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
+import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit/query/react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
@@ -10,7 +11,6 @@ import {
   baseTimelineApi as timelineApi,
   baseServiceApi as serviceApi,
   apApi,
-  baseUserApi as userApi,
   baseDhcpApi as dhcpApi,
   baseMspApi as mspApi,
   baseLicenseApi as licenseApi,
@@ -43,6 +43,14 @@ type ErrorAction = {
     }
   }
 }
+
+export const userApi = createApi({
+  baseQuery: fetchBaseQuery(),
+  reducerPath: 'userApi',
+  tagTypes: ['UserProfile'],
+  refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})
 
 const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   if (isRejectedWithValue(action)) {

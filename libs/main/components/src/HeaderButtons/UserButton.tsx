@@ -2,7 +2,7 @@ import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { get }                     from '@acx-ui/config'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
+import { useUserProfileContext }   from '@acx-ui/rbac'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
 
 import { UserNameButton, LogOut } from './styledComponents'

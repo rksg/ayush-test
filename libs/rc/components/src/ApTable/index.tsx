@@ -341,6 +341,12 @@ export function ApTable (props: ApTableProps) {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
+  // ACX-25402: Waiting for integration with group by table
+  //   label: $t({ defaultMessage: 'Delete AP Group' }),
+  //   onClick: async (rows, clearSelection) => {
+  //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
+  //   }
+  // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {

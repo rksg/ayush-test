@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
+import { Urls }                                                             from '@acx-ui/rbac'
 import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
@@ -43,7 +44,7 @@ describe('SummaryForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

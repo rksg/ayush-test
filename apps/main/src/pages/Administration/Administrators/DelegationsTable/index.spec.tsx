@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { UserProfile } from '@acx-ui/rc/utils'
+import { UserProfile } from '@acx-ui/rbac'
 import { Provider }    from '@acx-ui/store'
 import {
   render,

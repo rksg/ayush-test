@@ -56,25 +56,19 @@ interface JwtToken {
   region?: string
   acx_account_regions?: AccountRegion[]
   acx_account_tier?: AccountTier
-  acx_account_vertical?: AccountVertical.DEFAULT
+  acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
 }
 
-const cache = new Map()
-
-const isDev = process.env['NODE_ENV'] === 'development'
+const cache = new Map<string, JwtToken>()
 
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
   const jwt = getJwtToken()
 
   if (jwt === null) {
-    const tenantId = getTenantId() // when JWT FF is disabled
-    if (isDev) {
-      // eslint-disable-next-line no-console
-      console.warn('No JWT token found! So setting default JWT values')
-    }
+    const tenantId = getTenantId()
     const jwtToken: {
       acx_account_tier: AccountTier
       acx_account_vertical: AccountVertical
@@ -87,10 +81,10 @@ export function getJwtTokenPayload () {
         isBetaFlag: false,
         tenantId: tenantId
       }
-    return jwtToken
+    return jwtToken as JwtToken
   }
 
-  if (cache.has(jwt)) return cache.get(jwt)
+  if (cache.has(jwt)) return cache.get(jwt)!
 
   try {
     const token = JSON.parse(window.atob(jwt.split('.')[1])) as JwtToken
@@ -105,11 +99,6 @@ export function getJwtTokenPayload () {
 export function getJwtToken () {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
-  } else {
-    if (isDev) {
-      // eslint-disable-next-line no-console
-      console.warn('JWT TOKEN NOT FOUND!')
-    }
-    return null
   }
+  return null
 }

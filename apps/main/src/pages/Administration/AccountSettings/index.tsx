@@ -3,7 +3,7 @@ import { useParams }     from 'react-router-dom'
 import styled            from 'styled-components/macro'
 
 import { Loader }                from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
+import { useUserProfileContext } from '@acx-ui/rbac'
 import {
   useGetRecoveryPassphraseQuery,
   useGetMfaTenantDetailsQuery,

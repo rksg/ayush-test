@@ -2,11 +2,14 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { DetailLevel }                                 from '@acx-ui/rc/utils'
-import { MspUrlsInfo }                                 from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import {
+  DetailLevel,
+  UserProfileContext,
+  UserProfileContextProps
+} from '@acx-ui/rbac'
+import { MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }    from '@acx-ui/store'
 import {
   mockServer,
   render,

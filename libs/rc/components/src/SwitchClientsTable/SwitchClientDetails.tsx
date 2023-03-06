@@ -144,7 +144,7 @@ export function SwitchClientDetails () {
           { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
         ]}
         extra={hasAccesses([
-          <Button type='link' onClick={exportClientToCSV}>
+          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
             {$t({ defaultMessage: 'Download Information' })}</Button>
         ])}
       />

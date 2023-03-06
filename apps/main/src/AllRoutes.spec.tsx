@@ -16,7 +16,9 @@ jest.mock('@acx-ui/main/components', () => ({
   FetchBot: () => <div data-testid='fetch-bot' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+}))
+jest.mock('@acx-ui/rbac', () => ({
   useUserProfileContext: () => ({
     data: { companyName: 'Mock company' }
   })

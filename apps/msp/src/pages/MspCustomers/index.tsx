@@ -19,8 +19,7 @@ import {
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
-import { hasAccesses } from '@acx-ui/rbac'
+import { hasAccesses, useUserProfileContext } from '@acx-ui/rbac'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,

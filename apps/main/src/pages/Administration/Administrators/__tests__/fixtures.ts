@@ -1,4 +1,4 @@
-import { DetailLevel } from '@acx-ui/rc/utils'
+import { DetailLevel } from '@acx-ui/rbac'
 export const fakeUserProfile = {
   region: '[NA]',
   allowedRegions: [

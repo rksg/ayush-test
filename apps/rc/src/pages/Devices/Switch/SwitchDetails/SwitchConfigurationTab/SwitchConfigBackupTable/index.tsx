@@ -182,12 +182,14 @@ export function SwitchConfigBackupTable () {
   }
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
+    key: 'ViewConfig',
     label: $t({ defaultMessage: 'View' }),
     disabled: () => !enabledRowButton.find(item => item === 'View'),
     onClick: (rows, clearSelection) => {
       showViewModal(rows, clearSelection)
     }
   }, {
+    key: 'CompareConfig',
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: (rows) => {
@@ -200,6 +202,7 @@ export function SwitchConfigBackupTable () {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
+    key: 'DownloadConfig',
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {

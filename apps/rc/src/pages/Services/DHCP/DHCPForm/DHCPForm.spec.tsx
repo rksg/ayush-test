@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { DHCPUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                 from '@acx-ui/store'
+import { Urls }     from '@acx-ui/rbac'
+import { DHCPUrls } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -48,7 +49,7 @@ describe('DHCPForm', () => {
   it('should create DHCP successfully', async () => {
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
@@ -99,7 +100,7 @@ describe('DHCPForm', () => {
   it('should cancel DHCP form successfully', async () => {
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>

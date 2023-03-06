@@ -27,6 +27,7 @@ import {
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
+import { useGetUserProfileQuery } from '@acx-ui/rbac'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -37,8 +38,7 @@ import {
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery,
-  useGetUserProfileQuery
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -50,7 +50,6 @@ import {
   MspEc,
   MspEcData,
   roleDisplayText,
-  RolesEnum,
   EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
@@ -62,6 +61,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
 import {
   AccountType
 } from '@acx-ui/utils'

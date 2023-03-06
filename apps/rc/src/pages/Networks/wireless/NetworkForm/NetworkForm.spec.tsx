@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { Urls }                                                  from '@acx-ui/rbac'
 import { AaaUrls, CommonUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import {
@@ -43,7 +44,7 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

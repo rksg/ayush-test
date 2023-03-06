@@ -1,4 +1,4 @@
-import { UserProfile } from '@acx-ui/rc/utils'
+import { UserProfile } from '@acx-ui/rbac'
 
 import { AdministrationDelegationsTable } from './AdministrationDelegationsTable'
 import { MSPAdministratorsTable }         from './MSPAdministratorsTable'

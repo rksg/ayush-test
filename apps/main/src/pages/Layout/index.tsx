@@ -21,10 +21,11 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
-import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { useUserProfileContext }             from '@acx-ui/rbac'
+import { CloudMessageBanner }                from '@acx-ui/rc/components'
+import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet }         from '@acx-ui/react-router-dom'
+import { useParams }                         from '@acx-ui/react-router-dom'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'

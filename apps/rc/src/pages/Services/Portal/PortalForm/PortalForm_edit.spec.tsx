@@ -2,7 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, defaultComDisplay, Portal, PortalUrlsInfo }        from '@acx-ui/rc/utils'
+import { Urls }                                                             from '@acx-ui/rbac'
+import { defaultComDisplay, Portal, PortalUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -70,7 +71,7 @@ describe('PortalForm', () => {
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {
@@ -107,7 +108,7 @@ describe('PortalForm', () => {
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {
