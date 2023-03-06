@@ -5,5 +5,6 @@ export {
   hasAccess,
   hasAccesses,
   hasRoles,
+  getUserProfile,
   setUserProfile
 } from './userProfile'
