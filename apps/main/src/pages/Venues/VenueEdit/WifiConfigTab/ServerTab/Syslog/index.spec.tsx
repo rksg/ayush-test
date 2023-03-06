@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SyslogUrls }                                                from '@acx-ui/rc/utils'
+import { SyslogUrls }                                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -35,10 +35,10 @@ describe('SyslogForm', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueSyslogAp.url,
+        SyslogUrls.getVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json(venueSyslog))),
       rest.post(
-        CommonUrlsInfo.updateVenueSyslogAp.url,
+        SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
