@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Select, Space } from 'antd'
 import { useIntl }       from 'react-intl'
@@ -28,10 +28,19 @@ const { Option } = Select
 export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
   const { $t } = useIntl()
   const { visible, onSubmit, onCancel, days, times } = props
-  const [valueDays, setValueDays] = useState<string[]>([...days])
+  const [valueDays, setValueDays] = useState<string[]>([])
   const [disabledDays, setDisabledDays] = useState(false)
-  const [valueTimes, setValueTimes] = useState<string[]>([...times])
+  const [valueTimes, setValueTimes] = useState<string[]>([])
   const [disabledTimes, setDisabledTimes] = useState(false)
+
+  useEffect(() => {
+    if (days) {
+      setValueDays([...days])
+    }
+    if (times) {
+      setValueTimes([...times])
+    }
+  }, [])
 
   // eslint-disable-next-line max-len
   const dayOptions = AVAILABLE_DAYS.map(item => <Option key={item.value} value={item.value} disabled={disabledDays && !valueDays.includes(item.value)}>{item.label}</Option>) ?? []
@@ -50,7 +59,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       setValueDays(newValue)
     },
     placeholder: 'Select Item...',
-    maxTagCount: 1
+    maxTagCount: 0
   }
 
   // eslint-disable-next-line max-len
@@ -70,7 +79,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       setValueTimes(newValue)
     },
     placeholder: 'Select Item...',
-    maxTagCount: 1
+    maxTagCount: 0
   }
 
   const triggerSubmit = () => {
@@ -78,7 +87,7 @@ export function ChangeSlotDialog (props: ChangeSlotDialogProps) {
       valueDays: valueDays,
       valueTimes: valueTimes
     })
-    onModalCancel()
+    onCancel()
   }
 
   const onModalCancel = () => {

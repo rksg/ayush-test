@@ -11,14 +11,15 @@ import {
   render,
   screen,
   fireEvent,
+  within,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 
 import {
-  venue,
+  switchVenue,
   preference,
-  availableVersions
+  switchRelease
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareList } from '.'
@@ -28,13 +29,13 @@ describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        FirmwareUrlsInfo.getVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(venue))
+      rest.post(
+        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenue))
       ),
       rest.get(
-        FirmwareUrlsInfo.getAvailableFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(availableVersions))
+        FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchRelease))
       ),
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
@@ -59,7 +60,7 @@ describe('Firmware Venues Table', () => {
     expect(asFragment().querySelector('div[class="ant-space-item"]')).not.toBeNull()
   })
 
-  it('should preferences', async () => {
+  it('should update selected row', async () => {
     render(
       <Provider>
         <VenueFirmwareList />
@@ -69,11 +70,16 @@ describe('Firmware Venues Table', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const updateButton = screen.getByRole('button', { name: /Preferences/i })
+    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    fireEvent.click(within(row).getByRole('checkbox'))
+
+    const row2 = await screen.findByRole('row', { name: /v2/i })
+    fireEvent.click(within(row2).getByRole('checkbox'))
+
+    const updateButton = screen.getByRole('button', { name: /Update Now/i })
     fireEvent.click(updateButton)
 
-    await screen.findByText('Choose update schedule method:')
-    const updateVenueButton = await screen.findByText('Save Preferences')
+    const updateVenueButton = await screen.findByText('Run Update')
     fireEvent.click(updateVenueButton)
   })
 
