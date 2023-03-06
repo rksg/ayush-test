@@ -7,13 +7,20 @@ import {
   GridRow,
   GridCol,
   Button,
-  PageHeader
+  PageHeader,
+  DisabledButton
 } from '@acx-ui/components'
 import { ClockOutlined }                 from '@acx-ui/icons'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
-import { WifiCallingDetailContextType }  from '@acx-ui/rc/utils'
-import { TenantLink }                    from '@acx-ui/react-router-dom'
-import { hasAccesses }                   from '@acx-ui/user'
+import {
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType,
+  WifiCallingDetailContextType
+}  from '@acx-ui/rc/utils'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import WifiCallingDetailContent  from './WifiCallingDetailContent'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
@@ -41,13 +48,23 @@ const WifiCallingDetailView = () => {
       <PageHeader
         title={data?.serviceName}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            // eslint-disable-next-line max-len
+            link: getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })
+          }
         ]}
         extra={hasAccesses([
-          <Button key={'last24'} icon={<ClockOutlined />}>
+          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
-          </Button>,
-          <TenantLink to={`/services/wifiCalling/${params.serviceId}/edit`}>
+          </DisabledButton>,
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.WIFI_CALLING,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId!
+            })}
+          >
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>

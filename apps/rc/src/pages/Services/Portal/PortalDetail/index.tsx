@@ -4,9 +4,15 @@ import { useParams } from 'react-router-dom'
 import { PageHeader, Button, DisabledButton, GridRow, Loader, GridCol } from '@acx-ui/components'
 import { ClockOutlined }                                                from '@acx-ui/icons'
 import { useGetPortalProfileDetailQuery }                               from '@acx-ui/rc/services'
-import { Demo }                                                         from '@acx-ui/rc/utils'
-import { TenantLink }                                                   from '@acx-ui/react-router-dom'
-import { hasAccesses }                                                  from '@acx-ui/user'
+import {
+  Demo,
+  getServiceDetailsLink,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType
+}                                                         from '@acx-ui/rc/utils'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import PortalInstancesTable from './PortalInstancesTable'
 import PortalOverview       from './PortalOverview'
@@ -21,13 +27,22 @@ export default function PortalServiceDetail () {
       <PageHeader
         title={queryResults.data?.serviceName||''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
+          }
         ]}
         extra={hasAccesses([
           <DisabledButton key={'last24'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink to={`/services/portal/${queryResults.data?.id}/edit`}>
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.PORTAL,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId!
+            })}
+          >
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
