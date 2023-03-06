@@ -7,10 +7,10 @@ import {
   GridRow,
   GridCol,
   Button,
-  PageHeader
+  PageHeader,
+  DisabledButton
 } from '@acx-ui/components'
 import { ClockOutlined }                 from '@acx-ui/icons'
-import { hasAccesses }                   from '@acx-ui/user'
 import { useGetWifiCallingServiceQuery } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -19,7 +19,8 @@ import {
   ServiceType,
   WifiCallingDetailContextType
 }  from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import WifiCallingDetailContent  from './WifiCallingDetailContent'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
@@ -54,9 +55,9 @@ const WifiCallingDetailView = () => {
           }
         ]}
         extra={hasAccesses([
-          <Button key={'last24'} icon={<ClockOutlined />}>
+          <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
-          </Button>,
+          </DisabledButton>,
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.WIFI_CALLING,

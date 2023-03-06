@@ -25,7 +25,7 @@ export function ServiceCard (props: ServiceCardProps) {
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.LIST }))
   const navigate = useNavigate()
-  const isReadOnly = hasRoles([RolesEnum.READ_ONLY, RolesEnum.GUEST_MANAGER])
+  const isReadOnly = !hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[serviceType])
