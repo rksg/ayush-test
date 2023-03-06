@@ -14,7 +14,7 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { useUserProfileContext } from '@acx-ui/rbac'
+import { useUserProfileContext } from '@acx-ui/user'
 import { CloudMessageBanner }    from '@acx-ui/rc/components'
 import {
   useGetTenantDetailQuery

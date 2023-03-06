@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
-import { hasAccesses }                                            from '@acx-ui/rbac'
+import { hasAccesses }                                            from '@acx-ui/user'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'

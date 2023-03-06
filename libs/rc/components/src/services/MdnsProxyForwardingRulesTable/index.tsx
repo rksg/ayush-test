@@ -4,7 +4,7 @@ import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
 import { showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                        from '@acx-ui/rbac'
+import { hasAccesses }                        from '@acx-ui/user'
 import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,

@@ -11,7 +11,7 @@ import {
   WorldSolid,
   ArrowExpand
 } from '@acx-ui/icons'
-import { RegionValue, useUserProfileContext } from '@acx-ui/rbac'
+import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'

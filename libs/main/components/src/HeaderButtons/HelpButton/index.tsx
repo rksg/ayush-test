@@ -7,7 +7,7 @@ import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { useGetGlobalValuesQuery } from '@acx-ui/rbac'
+import { useGetGlobalValuesQuery } from '@acx-ui/user'
 import { useParams  }              from '@acx-ui/react-router-dom'
 import { notAvailableMsg }         from '@acx-ui/utils'
 

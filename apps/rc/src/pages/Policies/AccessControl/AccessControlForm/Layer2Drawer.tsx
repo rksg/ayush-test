@@ -15,7 +15,7 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
-import { hasAccesses }                                                                from '@acx-ui/rbac'
+import { hasAccesses }                                                                from '@acx-ui/user'
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'

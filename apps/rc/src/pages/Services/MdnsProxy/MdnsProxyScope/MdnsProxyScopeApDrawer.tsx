@@ -5,7 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, Button, Drawer, Table, TableProps }    from '@acx-ui/components'
-import { hasAccesses }                                  from '@acx-ui/rbac'
+import { hasAccesses }                                  from '@acx-ui/user'
 import { APStatus, seriesMappingAP }                    from '@acx-ui/rc/components'
 import { useApListQuery }                               from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'

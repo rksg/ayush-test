@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import { noDataSymbol }                                                             from '@acx-ui/analytics/utils'
 import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { hasAccesses }                                                              from '@acx-ui/rbac'
+import { hasAccesses }                                                              from '@acx-ui/user'
 import { OSIconContainer }                                                          from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,

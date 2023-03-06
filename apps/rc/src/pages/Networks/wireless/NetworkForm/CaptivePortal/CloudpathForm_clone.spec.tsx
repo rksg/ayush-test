@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { StepsForm }                    from '@acx-ui/components'
-import { Urls }                         from '@acx-ui/rbac'
+import { Urls }                         from '@acx-ui/user'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockServer, render }           from '@acx-ui/test-utils'

@@ -1,4 +1,4 @@
-import { DetailLevel } from '@acx-ui/rbac'
+import { DetailLevel } from '@acx-ui/user'
 import { MFAStatus }   from '@acx-ui/rc/utils'
 
 export const fakeUserProfile = {

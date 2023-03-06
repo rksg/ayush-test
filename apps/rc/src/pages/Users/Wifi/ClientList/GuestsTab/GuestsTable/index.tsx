@@ -16,7 +16,7 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { hasAccesses, GuestErrorRes } from '@acx-ui/rbac'
+import { hasAccesses, GuestErrorRes } from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer }  from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,

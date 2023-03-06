@@ -12,7 +12,7 @@ jest.mock('@acx-ui/components', () => ({
     data-testid='config-provider'
   />
 }))
-jest.mock('@acx-ui/rbac', () => ({
+jest.mock('@acx-ui/user', () => ({
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'

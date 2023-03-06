@@ -1,6 +1,6 @@
 
 import {  Alert }                      from '@acx-ui/components'
-import { useGetPlmMessageBannerQuery } from '@acx-ui/rbac'
+import { useGetPlmMessageBannerQuery } from '@acx-ui/user'
 import { useParams  }                  from '@acx-ui/react-router-dom'
 
 export function CloudMessageBanner () {

@@ -4,7 +4,7 @@ import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Button, Card, PageHeader, Subtitle, Table } from '@acx-ui/components'
-import { hasAccesses }                               from '@acx-ui/rbac'
+import { hasAccesses }                               from '@acx-ui/user'
 import { useGetWebAuthTemplateQuery }                from '@acx-ui/rc/services'
 import {
   ServiceType,

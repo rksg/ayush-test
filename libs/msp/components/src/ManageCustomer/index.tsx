@@ -27,7 +27,7 @@ import {
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
-import { useGetUserProfileQuery } from '@acx-ui/rbac'
+import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,

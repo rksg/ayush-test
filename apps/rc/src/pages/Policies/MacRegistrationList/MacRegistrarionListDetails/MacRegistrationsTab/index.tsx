@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/rbac'
+import { hasAccesses }                                           from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer }                             from '@acx-ui/rc/components'
 import {
   useDeleteMacRegistrationMutation,

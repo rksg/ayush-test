@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 
 import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
-import { UserProfileProvider, Urls }           from '@acx-ui/rbac'
+import { UserProfileProvider, Urls }           from '@acx-ui/user'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
 import { getTenantId, createHttpRequest }      from '@acx-ui/utils'

@@ -31,7 +31,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { VenueFilter }    from '@acx-ui/main/components'
-import { hasAccesses }    from '@acx-ui/rbac'
+import { hasAccesses }    from '@acx-ui/user'
 import {
   AlarmWidget,
   ClientsWidget,

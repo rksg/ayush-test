@@ -9,7 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/rbac'
+import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 import {
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'

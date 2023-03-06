@@ -2,7 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { hasAccesses }                                  from '@acx-ui/rbac'
+import { hasAccesses }                                  from '@acx-ui/user'
 import { useGetVLANPoolPolicyDetailQuery }              from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,

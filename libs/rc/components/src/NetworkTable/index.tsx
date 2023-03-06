@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, Loader, TableProps, Tooltip, Table  }              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { hasAccesses }                                                       from '@acx-ui/rbac'
+import { hasAccesses }                                                       from '@acx-ui/user'
 import { useDeleteNetworkMutation }                                          from '@acx-ui/rc/services'
 import { NetworkTypeEnum, Network, NetworkType, TableQuery, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                         from '@acx-ui/react-router-dom'

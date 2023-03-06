@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rbac'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 import { AdministrationUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import {

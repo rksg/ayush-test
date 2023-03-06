@@ -7,7 +7,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }                                                            from '@acx-ui/rbac'
+import { hasAccesses }                                                            from '@acx-ui/user'
 import { useDeleteEdgeMutation, useGetEdgeListQuery, useSendOtpMutation }         from '@acx-ui/rc/services'
 import { EdgeStatusEnum, EdgeStatus, useTableQuery, TABLE_QUERY, RequestPayload } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'

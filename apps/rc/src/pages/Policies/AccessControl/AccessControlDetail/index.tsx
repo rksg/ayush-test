@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
-import { hasAccesses }                          from '@acx-ui/rbac'
+import { hasAccesses }                          from '@acx-ui/user'
 import { useGetAccessControlProfileQuery }      from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,

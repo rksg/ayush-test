@@ -3,7 +3,7 @@ import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
   UserProfileContextProps
-}         from '@acx-ui/rbac'
+}         from '@acx-ui/user'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 import { RolesEnum }      from '@acx-ui/types'

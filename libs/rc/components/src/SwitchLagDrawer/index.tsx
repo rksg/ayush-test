@@ -18,7 +18,7 @@ import {
   DeleteOutlinedIcon,
   EditOutlinedIcon
 } from '@acx-ui/icons'
-import { hasAccesses }         from '@acx-ui/rbac'
+import { hasAccesses }         from '@acx-ui/user'
 import {
   useDeleteLagMutation,
   useGetLagListQuery,

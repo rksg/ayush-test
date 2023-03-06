@@ -7,7 +7,7 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { hasAccesses }             from '@acx-ui/rbac'
+import { hasAccesses }             from '@acx-ui/user'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation

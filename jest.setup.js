@@ -91,8 +91,8 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   Features: {}
 }), { virtual: true })
 
-jest.mock('@acx-ui/rbac', () => ({
-  ...jest.requireActual('@acx-ui/rbac'),
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
   hasAccess: jest.fn().mockReturnValue(true),
   hasRoles: jest.fn().mockReturnValue(true),
   hasAccesses: jest.fn().mockImplementation((items) => items)

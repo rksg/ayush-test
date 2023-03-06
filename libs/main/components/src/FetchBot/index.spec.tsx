@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { Urls }           from '@acx-ui/rbac'
+import { Urls }           from '@acx-ui/user'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {

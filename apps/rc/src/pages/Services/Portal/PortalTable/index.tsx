@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { hasAccesses }                                                    from '@acx-ui/rbac'
+import { hasAccesses }                                                    from '@acx-ui/user'
 import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
 import {

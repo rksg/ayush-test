@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                                     from '@acx-ui/icons'
-import { hasAccesses }                                     from '@acx-ui/rbac'
+import { hasAccesses }                                     from '@acx-ui/user'
 import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
 import { useDateFilter }                                   from '@acx-ui/utils'
 

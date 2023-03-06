@@ -19,7 +19,7 @@ import {
   AssignEcDrawer,
   ResendInviteModal
 } from '@acx-ui/msp/components'
-import { hasAccesses }      from '@acx-ui/rbac'
+import { hasAccesses }      from '@acx-ui/user'
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery

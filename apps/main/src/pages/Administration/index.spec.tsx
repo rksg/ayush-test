@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rbac'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 import { Provider  }                                   from '@acx-ui/store'
 import {
   render,

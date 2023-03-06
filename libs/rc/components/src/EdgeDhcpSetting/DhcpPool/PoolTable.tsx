@@ -4,7 +4,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }  from '@acx-ui/rbac'
+import { hasAccesses }  from '@acx-ui/user'
 import { EdgeDhcpPool } from '@acx-ui/rc/utils'
 
 export function PoolTable (props:{

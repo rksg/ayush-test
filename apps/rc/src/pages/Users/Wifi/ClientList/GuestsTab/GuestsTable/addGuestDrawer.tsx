@@ -23,7 +23,7 @@ import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import {
   GuestErrorRes,
   useLazyGetUserProfileQuery
-} from '@acx-ui/rbac'
+} from '@acx-ui/user'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,

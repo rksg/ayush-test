@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { hasAccesses }                                                    from '@acx-ui/rbac'
+import { hasAccesses }                                                    from '@acx-ui/user'
 import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
 import {
   ServiceType,

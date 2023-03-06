@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {  Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }        from '@acx-ui/rbac'
+import { hasAccesses }        from '@acx-ui/user'
 import { PersonaDevice }      from '@acx-ui/rc/utils'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'

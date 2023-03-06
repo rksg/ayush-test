@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }               from '@acx-ui/components'
-import { hasAccesses }                            from '@acx-ui/rbac'
+import { hasAccesses }                            from '@acx-ui/user'
 import { useGetEdgeQuery }                        from '@acx-ui/rc/services'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { getIntl }                                from '@acx-ui/utils'

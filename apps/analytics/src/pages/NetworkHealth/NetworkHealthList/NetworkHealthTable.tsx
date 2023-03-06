@@ -10,7 +10,7 @@ import {
   dateSort
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast } from '@acx-ui/components'
-import { useUserProfileContext }                                 from '@acx-ui/rbac'
+import { useUserProfileContext }                                 from '@acx-ui/user'
 import { TenantLink, useTenantLink }                             from '@acx-ui/react-router-dom'
 import { formatter }                                             from '@acx-ui/utils'
 

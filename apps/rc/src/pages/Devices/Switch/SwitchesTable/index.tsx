@@ -5,7 +5,7 @@ import { Menu, MenuProps }     from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Button, Dropdown, PageHeader }                  from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/rbac'
+import { hasAccesses }                                   from '@acx-ui/user'
 import { ImportFileDrawer, CsvSize, SwitchTable }        from '@acx-ui/rc/components'
 import { useImportSwitchesMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { TenantLink, useParams }                         from '@acx-ui/react-router-dom'
