@@ -40,11 +40,10 @@ const createNsgPath = '/:tenantId/services/networkSegmentation/create'
 
 describe('Create NetworkSegmentation', () => {
   // eslint-disable-next-line @typescript-eslint/semi
-  let params: { tenantId: string, venueId: string };
+  let params: { tenantId: string };
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      venueId: 'venue-id'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
     mockServer.use(

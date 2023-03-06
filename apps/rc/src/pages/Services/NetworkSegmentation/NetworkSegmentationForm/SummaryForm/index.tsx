@@ -31,8 +31,8 @@ export const SummaryForm = () => {
     setSmartEdgeData([
       {
         edgeName: edgeName,
-        segments: String(segments),
-        devices: String(devices),
+        segments: segments.toString(),
+        devices: devices.toString(),
         dhcpServiceName: dhcpName,
         dhcpPoolName: poolName
       }

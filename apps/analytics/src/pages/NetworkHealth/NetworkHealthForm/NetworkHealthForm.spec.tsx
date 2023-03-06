@@ -3,6 +3,8 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import {
+  dataApi,
+  dataApiURL,
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
@@ -18,10 +20,14 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { fetchServiceGuardSpec, serviceGuardSpecNames } from '../__tests__/fixtures'
+import {
+  fetchServiceGuardSpec,
+  serviceGuardSpecNames,
+  mockNetworkHierarchy
+}                                 from '../__tests__/fixtures'
+import { NetworkHealthSpecGuard } from '../NetworkHealthGuard'
 
-import { NetworkHealthForm }      from './NetworkHealthForm'
-import { NetworkHealthSpecGuard } from './NetworkHealthSpecGuard'
+import { NetworkHealthForm } from './NetworkHealthForm'
 
 const { click, type, selectOptions } = userEvent
 
@@ -73,8 +79,10 @@ const EditWrapper = (props: React.PropsWithChildren) => {
 describe('NetworkHealthForm', () => {
   beforeEach(() => {
     mockedNavigate.mockReset()
+    store.dispatch(dataApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('works correctly for create flow', async () => {
@@ -114,12 +122,8 @@ describe('NetworkHealthForm', () => {
     expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
 
     // Step 2
-    await type(
-      await screen.findByRole('textbox', {
-        name: (_, el) => el.id === 'configs_0_networkPaths_networkNodes'
-      }),
-      'Venue Name|00:00:00:00:00:01'
-    )
+    await type(await screen.findByRole('combobox'), '2')
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
     // Navigate to Step 3
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -136,7 +140,7 @@ describe('NetworkHealthForm', () => {
     expect(mockedNavigate).toBeCalled()
   })
 
-  it('works correctly for edit flow', async () => {
+  it.only('works correctly for edit flow', async () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })

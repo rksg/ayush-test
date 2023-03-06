@@ -110,12 +110,10 @@ export function LicenseBanner (props: BannerProps) {
 
   const getMainTipsContent = (expireInfo:ExpireInfo)=>{
     return isMSPUser ?
-      MSPLicenseBannerRemindMapping(expireInfo)[expireInfo.expireType]
+      MSPLicenseBannerRemindMapping(expireInfo, $t)[expireInfo.expireType]
       :
-      LicenseBannerRemindMapping(expireInfo)[expireInfo.expireType]
+      LicenseBannerRemindMapping(expireInfo, $t)[expireInfo.expireType]
   }
-
-
 
   const getIsExpired = (expireInfo:ExpireInfo)=>
     expireInfo.expireType===LicenseBannerTypeEnum.expired ||

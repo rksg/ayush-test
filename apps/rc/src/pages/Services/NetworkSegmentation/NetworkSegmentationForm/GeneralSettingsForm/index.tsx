@@ -111,7 +111,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
             }]}
             children={
               <Select
-                loading={Boolean(isVenueOptionsLoading)}
+                loading={isVenueOptionsLoading}
                 onChange={onVenueChange}
                 options={[
                   { label: $t({ defaultMessage: 'Select...' }), value: null },

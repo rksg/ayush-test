@@ -1,16 +1,23 @@
+import _ from 'lodash'
+
 import {
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
-import { Provider, store }                                                 from '@acx-ui/store'
-import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
-import * as fixtures             from './__tests__/fixtures'
+import * as fixtures          from './__tests__/fixtures'
 import {
-  processDtoToPayload,
   specToDto,
   useNetworkHealthSpec,
-  useNetworkHealthSpecMutation
+  useNetworkHealthTest,
+  useNetworkHealthRelatedTests,
+  useAllNetworkHealthSpecsQuery,
+  useNetworkHealthSpecMutation,
+  useDeleteNetworkHealthTestMutation,
+  useRunNetworkHealthTestMutation,
+  useMutationResponseEffect
 } from './services'
 import {
   AuthenticationMethod,
@@ -21,8 +28,16 @@ import {
   Schedule,
   ScheduleFrequency,
   NetworkHealthFormDto,
-  NetworkHealthSpec
+  NetworkHealthConfig,
+  NetworkHealthSpec,
+  MutationResponse,
+  MutationUserError
 } from './types'
+
+const networkNodes = [[
+  { type: 'zone', name: 'VENUE' },
+  { type: 'apMac', list: ['00:00:00:00:00:00'] }
+]] as NetworkPaths
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -46,6 +61,74 @@ describe('useNetworkHealthSpec', () => {
   })
 })
 
+describe('useNetworkHealthTest', () => {
+  it('load test data if testId in URL', async () => {
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardTest', { data: fixtures.fetchServiceGuardTest })
+    const { result } = renderHook(useNetworkHealthTest, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual(fixtures.fetchServiceGuardTest.serviceGuardTest)
+  })
+  it('does not load test data if testId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthTest, { wrapper: Provider })
+    expect(result.current.isUninitialized).toBe(true)
+  })
+})
+
+describe('useNetworkHealthRelatedTests', () => {
+  it('load test data if testId in URL', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchServiceGuardRelatedTests', { data: fixtures.fetchServiceGuardRelatedTests })
+    const { result } = renderHook(useNetworkHealthRelatedTests, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual(
+      fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.tests.items
+        .map(({ summary, ...rest }) => ({
+          ...summary,
+          ...rest,
+          specId: fixtures.fetchServiceGuardRelatedTests.serviceGuardTest.spec.id
+        })))
+  })
+  it('handle null result', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchServiceGuardRelatedTests', { data: { serviceGuardTest: null } })
+    const { result } = renderHook(useNetworkHealthRelatedTests, {
+      wrapper: Provider,
+      route: { params: { testId: 'test-id' } }
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([])
+  })
+  it('does not load test data if testId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthRelatedTests, { wrapper: Provider })
+    expect(result.current.isUninitialized).toBe(true)
+  })
+})
+
+describe('useAllNetworkHealthSpecsQuery', () => {
+  it('should return empty data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([])
+  })
+  it('should return correct data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: fixtures.fetchAllServiceGuardSpecs })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data)
+      .toEqual(fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs
+        .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') })))
+  })
+})
+
 describe('useNetworkHealthSpecMutation', () => {
   it('handles create mutation', async () => {
     const dto: NetworkHealthFormDto = {
@@ -59,9 +142,7 @@ describe('useNetworkHealthSpecMutation', () => {
         authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
         wlanPassword: '12345',
         wlanUsername: 'user',
-        // TODO:
-        // Update to correct format when APsSelection input done
-        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+        networkPaths: { networkNodes }
       }],
       schedule: {
         type: 'service_guard',
@@ -106,9 +187,7 @@ describe('useNetworkHealthSpecMutation', () => {
         authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
         wlanPassword: '12345',
         wlanUsername: 'user',
-        // TODO:
-        // Update to correct format when APsSelection input done
-        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+        networkPaths: { networkNodes }
       }],
       schedule: {
         type: 'service_guard',
@@ -146,88 +225,35 @@ describe('useNetworkHealthSpecMutation', () => {
   })
 })
 
-describe('processDtoToPayload', () => {
-  const dto: NetworkHealthFormDto = {
-    id: 'spec-id',
-    isDnsServerCustom: true,
-    configs: [{
-      dnsServer: '10.10.10.10',
-      tracerouteAddress: '10.10.10.10',
-      pingAddress: '10.10.10.10',
-      wlanName: 'WLAN Name',
-      radio: Band.Band6,
-      authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-      wlanPassword: '12345',
-      wlanUsername: 'user'
-    }],
-    schedule: {
-      type: 'service_guard',
-      timezone: 'Asia/Tokyo',
-      frequency: null,
-      day: null,
-      hour: null
-    },
-    typeWithSchedule: TestType.OnDemand,
-    type: TestType.OnDemand,
-    clientType: ClientType.VirtualWirelessClient,
-    name: 'Test Name'
-  }
-  it('process dto to payload for GraphQL input', () => {
-    const payload = processDtoToPayload({
-      ...dto,
-      configs: [{
-        ...dto.configs[0],
-        // TODO:
-        // Update to correct format when APsSelection input done
-        networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
-      }]
-    })
-
-    expect(payload).toMatchSnapshot()
+it('useDeleteNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
+  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
   })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
+})
 
-  it('handle zone only', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      configs: [{
-        ...dto.configs[0],
-        // TODO:
-        // Update to correct format when APsSelection input done
-        networkPaths: { networkNodes: 'VENUE' }
-      }]
-    })
-
-    expect(payload).toMatchSnapshot()
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
   })
-
-  it('handle zone + apGroup', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      configs: [{
-        ...dto.configs[0],
-        // TODO:
-        // Update to correct format when APsSelection input done
-        networkPaths: { networkNodes: 'VENUE>AP Group' }
-      }]
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
 })
 
 describe('specToDto', () => {
-  const spec: NetworkHealthSpec = {
+  const spec = {
     id: 'spec-id',
     clientType: ClientType.VirtualWirelessClient,
     schedule: null,
     type: TestType.OnDemand,
     name: 'Test Name',
     configs: [{
-      authenticationMethod: 'WPA3_PERSONAL',
+      authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
       dnsServer: '10.10.10.10',
       pingAddress: '10.10.10.10',
       radio: Band.Band6,
@@ -235,12 +261,7 @@ describe('specToDto', () => {
       wlanName: 'WLAN Name',
       wlanPassword: '12345',
       wlanUsername: 'user',
-      networkPaths: {
-        networkNodes: [[
-          { type: 'zone', name: 'VENUE' },
-          { type: 'apMac', list: ['00:00:00:00:00:00'] }
-        ]] as NetworkPaths
-      }
+      networkPaths: { networkNodes }
     }]
   }
 
@@ -272,7 +293,11 @@ describe('specToDto', () => {
       hour: 20,
       timezone: 'Asia/Singapore'
     }
-    let specToDtoFn: (spec: NetworkHealthSpec) => NetworkHealthFormDto
+    let specToDtoFn: (
+      spec?: Omit<NetworkHealthSpec, 'apsCount' | 'userId' | 'tests' | 'configs'> & {
+        configs: Omit<NetworkHealthConfig, 'id' | 'specId' | 'updatedAt' | 'createdAt'>[]
+      }
+    ) => NetworkHealthFormDto | undefined
 
     afterEach(() => {
       jest.useRealTimers()
@@ -300,7 +325,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
         const expectedResult = { ...dailySchedule, hour: 0.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC+9', () => {
@@ -312,7 +337,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 6, hour: 23.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC-7', () => {
@@ -324,7 +349,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 0, hour: 8.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC-4', () => {
@@ -336,7 +361,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 6, hour: 12.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC-4', () => {
@@ -348,7 +373,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 1, hour: 8.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC-7', () => {
@@ -360,7 +385,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 2, hour: 3.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC+8', () => {
@@ -372,7 +397,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 31, hour: 22.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
     })
 
@@ -398,7 +423,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: dailySchedule })
         const expectedResult = { ...dailySchedule, hour: 23.25 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC+5.5', () => {
@@ -410,7 +435,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 0, hour: 16.5 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC-7', () => {
@@ -422,7 +447,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 0, hour: 2 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for weekly schedule from UTC+1', () => {
@@ -434,7 +459,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
         const expectedResult = { ...weeklySchedule, day: 6, hour: 20 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC-7', () => {
@@ -446,7 +471,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 1, hour: 2 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC+8 (AM)', () => {
@@ -458,7 +483,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 31, hour: 22 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
 
       it('should fetch day and time correctly for monthly schedule from UTC+8 (PM)', () => {
@@ -470,7 +495,7 @@ describe('specToDto', () => {
         }
         const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
         const expectedResult = { ...monthlySchedule, day: 15, hour: 8 }
-        expect(dto.schedule).toEqual(expectedResult)
+        expect(dto!.schedule).toEqual(expectedResult)
       })
     })
 
@@ -498,7 +523,7 @@ describe('specToDto', () => {
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
           const expectedResult = { ...weeklySchedule, day: 5, hour: 22 }
-          expect(dto.schedule).toEqual(expectedResult)
+          expect(dto!.schedule).toEqual(expectedResult)
         })
 
         it('should fetch day and time correctly for monthly schedule', () => {
@@ -511,7 +536,7 @@ describe('specToDto', () => {
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
           const expectedResult = { ...monthlySchedule, day: 30, hour: 23 }
-          expect(dto.schedule).toEqual(expectedResult)
+          expect(dto!.schedule).toEqual(expectedResult)
         })
       })
 
@@ -538,7 +563,7 @@ describe('specToDto', () => {
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: weeklySchedule })
           const expectedResult = { ...weeklySchedule, day: 2, hour: 1 }
-          expect(dto.schedule).toEqual(expectedResult)
+          expect(dto!.schedule).toEqual(expectedResult)
         })
 
         it('should fetch day and time correctly for monthly schedule', () => {
@@ -551,31 +576,35 @@ describe('specToDto', () => {
           }
           const dto = specToDtoFn({ ...scheduledSpec, schedule: monthlySchedule })
           const expectedResult = { ...monthlySchedule, day: 2, hour: 1 }
-          expect(dto.schedule).toEqual(expectedResult)
+          expect(dto!.schedule).toEqual(expectedResult)
         })
       })
     })
   })
 
-  it('handles path without AP list', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const dto = specToDto({
-      ...spec,
-      configs: [{
-        ...spec.configs[0],
-        networkPaths: {
-          networkNodes: [[
-            { type: 'zone', name: 'VENUE' },
-            { type: 'apGroup', name: 'AP Group' }
-          ]] as NetworkPaths
-        }
-      }]
-    })
-    expect(dto).toMatchSnapshot()
-  })
-
   it('handle spec = undefined', () => {
     expect(specToDto()).toBe(undefined)
+  })
+})
+
+describe('useMutationResponseEffect', () => {
+  it('should return when no data', async () => {
+    const response = {} as MutationResponse<{ userErrors?: MutationUserError[] }>
+    const { result } = renderHook(() =>
+      useMutationResponseEffect(response), { wrapper: Provider })
+    expect(result.current).toEqual(undefined)
+  })
+  it('should return when no error', async () => {
+    const onOk = jest.fn()
+    const response = { data: {} } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response, onOk), { wrapper: Provider })
+    expect(onOk).toBeCalled()
+  })
+  it('should show error', async () => {
+    const response = {
+      data: { userErrors: [{ field: 'spec', message: 'RUN_TEST_NO_APS' }] }
+    } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response), { wrapper: Provider })
+    expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
   })
 })

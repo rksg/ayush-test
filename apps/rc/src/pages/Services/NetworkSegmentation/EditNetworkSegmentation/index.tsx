@@ -98,9 +98,9 @@ const EditNetworkSegmentation = () => {
         {
           steps.map((item, index) =>
             <StepsFormNew.StepForm
-              name={String(index)}
+              key={`step-${index}`}
+              name={index.toString()}
               title={item.title}
-              onFinish={async () => true}
             >
               {item.content}
             </StepsFormNew.StepForm>)
