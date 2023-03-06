@@ -11,6 +11,7 @@ import { ApFloorplan }     from '../ApFloorplan'
 import { FloorPlan }       from '../FloorPlan'
 import { SwitchFloorplan } from '../SwitchFloorplan'
 import { TopologyGraph }   from '../Topology'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export function TopologyFloorPlanWidget (props: {
   showTopologyFloorplanOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
@@ -79,7 +80,11 @@ export function getFloorplanComponent (showTopologyFloorplanOn: SHOW_TOPOLOGY_FL
           alignItems: 'center',
           display: 'inline-flex'
         }}><Empty description={$t({
-            defaultMessage: 'This Switch is not placed on any floor plan' })}/>
+            defaultMessage: 'This Switch is not placed on any floor plan' })}>
+            <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
+              {$t({ defaultMessage: 'Go to floor plans to place the Switch' })}
+            </TenantLink>
+          </Empty>
         </div>
     case SHOW_TOPOLOGY_FLOORPLAN_ON.AP_OVERVIEW:
       return (devicePosition && devicePosition.floorplanId) ? <ApFloorplan
@@ -94,7 +99,11 @@ export function getFloorplanComponent (showTopologyFloorplanOn: SHOW_TOPOLOGY_FL
           alignItems: 'center',
           display: 'inline-flex'
         }}>
-          <Empty description={$t({ defaultMessage: 'This AP is not placed on any floor plan' })}/>
+          <Empty description={$t({ defaultMessage: 'This AP is not placed on any floor plan' })}>
+            <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
+              {$t({ defaultMessage: 'Go to floor plans to place the Access Point' })}
+            </TenantLink>
+          </Empty>
         </div>
   }
 
