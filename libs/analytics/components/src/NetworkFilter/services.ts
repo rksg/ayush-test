@@ -8,7 +8,7 @@ type NetworkData = PathNode & { id:string, path: NetworkPath }
 type NetworkHierarchyFilter = AnalyticsFilter & { shouldQuerySwitch? : Boolean }
 
 export type ApOrSwitch = {
-  path: NetworkPath
+  path?: NetworkPath
   name: string
   mac: string
 }
