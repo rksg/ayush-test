@@ -22,11 +22,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/api/tenant/:tenantId/wifi/radius'
   },
   getAAANetworkInstances: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/aaa-policy-profile/instances/:policyId'
+    method: 'post',
+    url: '/api/radius/:policyId/networks'
   },
   getAAAProfileDetail: {
     method: 'get',
-    url: '/api/tenant/:tenantId/aaa-policy-profile/:policyId'
+    url: '/api/tenant/:tenantId/wifi/radius/:policyId'
   }
 }

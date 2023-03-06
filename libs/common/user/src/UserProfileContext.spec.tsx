@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { Urls }         from './services'
+import { UserUrlsInfo } from './services'
 import {
   useUserProfileContext,
   UserProfileProvider
@@ -42,13 +42,16 @@ describe('UserProfileContext', () => {
   beforeEach(async () => {
     store.dispatch(userApi.util.resetApiState())
     mockServer.use(
-      rest.get(Urls.getUserProfile.url, (req, res, ctx) => res(ctx.json(mockedUserProfile))),
-      rest.get(Urls.wifiAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(Urls.switchAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(Urls.tenantAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(Urls.venueAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(Urls.guestAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
-      rest.get(Urls.upgradeAllowedOperations.url, (req, res, ctx) => res(ctx.json([])))
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (req, res, ctx) => res(ctx.json(mockedUserProfile))
+      ),
+      rest.get(UserUrlsInfo.wifiAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.switchAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.tenantAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.venueAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.guestAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.upgradeAllowedOperations.url, (req, res, ctx) => res(ctx.json([])))
     )
   })
 

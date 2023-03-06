@@ -6,7 +6,7 @@ import { rest }  from 'msw'
 import { AaaUrls }                               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
-import { Urls }                                  from '@acx-ui/user'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import AAAForm from './AAAForm'
 
@@ -39,7 +39,7 @@ const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: '
 describe('AAAForm', () => {
   beforeEach(()=>{
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(

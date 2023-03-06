@@ -14,7 +14,8 @@ import {
 import {
   DateFormatEnum,
   EntitlementUtil,
-  Entitlement
+  Entitlement,
+  EntitlementDeviceType
 } from '@acx-ui/rc/utils'
 import { useParams }   from '@acx-ui/react-router-dom'
 import { hasAccesses } from '@acx-ui/user'
@@ -43,7 +44,10 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        return row?.deviceSubType ? EntitlementUtil.deviceSubTypeToText(row?.deviceSubType) : ''
+        if (row.deviceType === EntitlementDeviceType.SWITCH)
+          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+        else
+          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
       }
     },
     {

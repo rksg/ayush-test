@@ -7,6 +7,17 @@ export enum DetailLevel {
   DEBUGGING = 'debug'
 }
 
+export enum MFAStatus {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED',
+}
+
+export enum MFAMethod {
+  MOBILEAPP = 'MOBILEAPP',
+  EMAIL = 'EMAIL',
+  SMS = 'SMS',
+}
+
 export interface UserSettings {
   [key: string]: string
 }
@@ -100,33 +111,26 @@ interface VersionInfo {
   features: string[]
 }
 
-// remove once Sean addressed getting value from rc-ui
-export interface GlobalValues {
-  DOCUMENTATION?: string
-  HOW_TO_VIDEOS?: string
-  CONTACT_SUPPORT?: string
-  OPEN_CASE?: string
-  MY_OPEN_CASES?: string
-  PRIVACY?: string
-  CHANGE_PASSWORD?: string
-  MANAGE_LICENSES?: string
-  MLISA_UI_URL?: string
-  CAPTIVE_PORTAL_DOMAIN_NAME?: string
-  GOOGLE_MAPS_KEY?: string
-  SUPPORTED_AP_MODELS?: string
-  ANALYTICS_FREE_TRIAL?: string
-  SZ_IP_LIST?: string
-  PENDO_API_KEY?: string
-  GA_TRACKING_ID?: string
-  DISABLE_GA?: string
-  API_DOCS?: string
-  DISABLE_PENDO?: string
-  AG_GRID_KEY?: string
-  DOCUMENTATION_CENTER?: string
-  AUTO_UPDATE_TABLE_INTERVALS?: string
-  AUTO_UPDATE_DASHBOARD_INTERVALS?: string
-  AUTO_UPDATE_ALARMS_TABLE_INTERVALS?: string
-  AUTO_UPDATE_EVENTS_TABLE_INTERVALS?: string
-  CHATBOT_JS_URL?: string
-  SPLITIO_FF_KEY?: string
+export interface MfaDetailStatus {
+  contactId?: string
+  tenantStatus: MFAStatus
+  mfaMethods: MFAMethod[]
+  recoveryCodes: string[]
+  userId: string
+  enabled: boolean
+}
+
+export interface MfaOtpMethod {
+  contactId: string
+  method: string
+}
+
+export interface MfaAuthApp {
+  key: string
+  url: string
+}
+
+export interface CommonResult {
+  requestId: string
+  response?:{}
 }

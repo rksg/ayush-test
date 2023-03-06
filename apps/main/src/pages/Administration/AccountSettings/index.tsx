@@ -5,11 +5,13 @@ import styled            from 'styled-components/macro'
 import { Loader }           from '@acx-ui/components'
 import {
   useGetRecoveryPassphraseQuery,
-  useGetMfaTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
-import { MSPUtils }              from '@acx-ui/rc/utils'
-import { useUserProfileContext } from '@acx-ui/user'
+import { MSPUtils, isDelegationMode } from '@acx-ui/rc/utils'
+import {
+  useUserProfileContext,
+  useGetMfaTenantDetailsQuery
+} from '@acx-ui/user'
 
 import { AccessSupportFormItem }         from './AccessSupportFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
@@ -34,7 +36,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
 
-  const canMSPDelegation = userProfileData?.tenantId === userProfileData?.varTenantId
+  const canMSPDelegation = isDelegationMode() === false
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   if (userProfileData?.varTenantId && canMSPDelegation === false) {
     isMspEc = false

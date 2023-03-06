@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 import { CommonUrlsInfo, GuestNetworkTypeEnum, PortalUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { Urls }                                                                      from '@acx-ui/user'
+import { UserUrlsInfo }                                                              from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -38,7 +38,7 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       guestPortal: { redirectUrl: 'dbaidu.com', guestNetworkType: GuestNetworkTypeEnum.ClickThrough
       } }
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

@@ -4,21 +4,16 @@ import { createHttpRequest } from '@acx-ui/utils'
 
 import {
   CloudVersion,
+  CommonResult,
+  MfaAuthApp,
+  MfaDetailStatus,
+  MfaOtpMethod,
   PlmMessageBanner,
   UserSettings,
-  UserProfile,
-  // TODO
-  // remove once Sean addressed this
-  GlobalValues
+  UserProfile
 } from './types'
 
-export const Urls = {
-  // TODO
-  // remove once Sean addressed this
-  getGlobalValues: {
-    method: 'get',
-    url: '/api/ui/globalValues'
-  },
+export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/banner'
@@ -66,24 +61,67 @@ export const Urls = {
   upgradeAllowedOperations: {
     method: 'get',
     url: '/api/upgrade/tenant/:tenantId/allowed-operations'
+  },
+  getMfaTenantDetails: {
+    method: 'get',
+    url: '/mfa/tenant/:tenantId'
+  },
+  getMfaAdminDetails: {
+    method: 'get',
+    url: '/mfa/admin/:userId'
+  },
+  mfaRegisterAdmin: {
+    method: 'post',
+    url: '/mfa/registerAdmin/:userId'
+  },
+  mfaRegisterPhone: {
+    method: 'post',
+    url: '/mfa/registerPhone/:userId'
+  },
+  setupMFAAccount: {
+    method: 'post',
+    url: '/mfa/setupAdmin/admin/:userId'
+  },
+  mfaResendOTP: {
+    method: 'post',
+    url: '/mfa/resendOTP/admin/:userId'
+  },
+  toggleMFA: {
+    method: 'put',
+    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
+  },
+  getMfaMasterCode: {
+    method: 'get',
+    url: '/mfa/mastercode'
+  },
+  disableMFAMethod: {
+    method: 'put',
+    url: '/mfa/auth-method/:mfaMethod/disable'
   }
 }
 
 export const {
-  // TODO
-  // remove once Sean addressed this
-  useGetGlobalValuesQuery,
   useAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
-  useGetPlmMessageBannerQuery
+  useGetPlmMessageBannerQuery,
+  useSetupMFAAccountMutation,
+  useToggleMFAMutation,
+  useGetMfaAdminDetailsQuery,
+  useLazyGetMfaAdminDetailsQuery,
+  useGetMfaTenantDetailsQuery,
+  useLazyGetMfaTenantDetailsQuery,
+  useMfaRegisterAdminMutation,
+  useMfaRegisterPhoneQuery,
+  useMfaResendOTPMutation,
+  useDisableMFAMethodMutation
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettings, RequestPayload>({
-      query: ({ params }) => createHttpRequest(Urls.getAllUserSettings, params),
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:{ [key: string]: string } = {}
         Object.keys(userSettings).forEach((key: string) => {
@@ -93,10 +131,10 @@ export const {
       }
     }),
     getCloudVersion: build.query<CloudVersion, RequestPayload>({
-      query: ({ params }) => createHttpRequest(Urls.getCloudVersion, params)
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudVersion, params)
     }),
     getUserProfile: build.query<UserProfile, RequestPayload>({
-      query: ({ params }) => createHttpRequest(Urls.getUserProfile, params),
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getUserProfile, params),
       transformResponse (userProfile: UserProfile) {
         userProfile.initials =
           userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
@@ -107,33 +145,86 @@ export const {
     }),
     updateUserProfile: build.mutation<Partial<UserProfile>, RequestPayload>({
       query: ({ params, payload }) => ({
-        ...createHttpRequest(Urls.updateUserProfile, params),
+        ...createHttpRequest(UserUrlsInfo.updateUserProfile, params),
         body: payload
       }),
       invalidatesTags: ['UserProfile']
     }),
     getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
-      query: ({ params }) => createHttpRequest(Urls.getCloudMessageBanner, params)
-    }),
-    // TODO
-    // remove once Sean addressed this
-    getGlobalValues: build.query<GlobalValues, RequestPayload>({
-      query: ({ params }) => createHttpRequest(Urls.getGlobalValues, params)
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
     }),
     allowedOperations: build.query<string[], string>({
       async queryFn (tenantId, _api, _extraOptions, query) {
         const params = { tenantId }
         const responses = await Promise.all([
-          createHttpRequest(Urls.wifiAllowedOperations, params),
-          createHttpRequest(Urls.switchAllowedOperations, params),
-          createHttpRequest(Urls.tenantAllowedOperations, params),
-          createHttpRequest(Urls.venueAllowedOperations, params),
-          createHttpRequest(Urls.guestAllowedOperations, params),
-          createHttpRequest(Urls.upgradeAllowedOperations, params)
+          createHttpRequest(UserUrlsInfo.wifiAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.switchAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.tenantAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params)
         ].map(query))
 
         return { data: responses.flatMap(response => (response.data as string[])) }
       }
+    }),
+    getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaTenantDetails, params ),
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    getMfaAdminDetails: build.query<MfaDetailStatus, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaAdminDetails, params),
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    toggleMFA: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleMFA, params),
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
+    //   query: ({ params }) => createHttpRequest(Urls.getMfaMasterCode, params),
+    //   transformResponse (userProfile: UserProfile) {
+    //     userProfile.initials =
+    //       userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+    //     userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+    //     return userProfile
+    //   }
+    // }),
+    mfaRegisterAdmin: build.mutation<MfaOtpMethod, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.mfaRegisterAdmin, params),
+        body: payload
+      })
+    }),
+    mfaRegisterPhone: build.query<MfaAuthApp, RequestPayload>({
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
+    }),
+    setupMFAAccount: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.setupMFAAccount, params),
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    mfaResendOTP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.mfaResendOTP, params),
+        body: payload
+      })
+    }),
+    disableMFAMethod: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserUrlsInfo.disableMFAMethod, params),
+        body: payload
+      }),
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     })
   })
 })

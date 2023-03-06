@@ -18,7 +18,6 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
-  baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
   baseFirmwareApi as firmwareApi,
   baseEdgeDhcpApi as edgeDhcpApi,
@@ -47,7 +46,7 @@ type ErrorAction = {
 export const userApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
-  tagTypes: ['UserProfile'],
+  tagTypes: ['UserProfile', 'Mfa'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -89,7 +88,6 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
-    [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [firmwareApi.reducerPath]: firmwareApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
@@ -121,7 +119,6 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
-      mfaApi.middleware,
       administrationApi.middleware,
       firmwareApi.middleware,
       edgeDhcpApi.middleware,

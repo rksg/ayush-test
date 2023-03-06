@@ -6,7 +6,7 @@ import { ConfigProvider, ConfigProviderProps } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
 import { BrowserRouter }                       from '@acx-ui/react-router-dom'
 import { Provider }                            from '@acx-ui/store'
-import { UserProfileProvider, Urls }           from '@acx-ui/user'
+import { UserProfileProvider, UserUrlsInfo }   from '@acx-ui/user'
 import { getTenantId, createHttpRequest }      from '@acx-ui/utils'
 
 import AllRoutes from './AllRoutes'
@@ -60,7 +60,7 @@ export function renderPendoAnalyticsTag () {
 
 export async function pendoInitalization (): Promise<void> {
   const tenantId = getTenantId()
-  const userProfileRequest = createHttpRequest(Urls.getUserProfile, { tenantId })
+  const userProfileRequest = createHttpRequest(UserUrlsInfo.getUserProfile, { tenantId })
   const url = userProfileRequest.url
 
   try {

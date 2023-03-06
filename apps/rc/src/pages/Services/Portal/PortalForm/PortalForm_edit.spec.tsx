@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 import { defaultComDisplay, Portal, PortalUrlsInfo }                        from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { Urls }                                                             from '@acx-ui/user'
+import { UserUrlsInfo }                                                     from '@acx-ui/user'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -71,7 +71,7 @@ describe('PortalForm', () => {
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
 
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => {

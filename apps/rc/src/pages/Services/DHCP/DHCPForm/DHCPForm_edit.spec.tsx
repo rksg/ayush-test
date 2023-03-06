@@ -10,7 +10,7 @@ import {
   fireEvent,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { Urls } from '@acx-ui/user'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import DHCPForm from './DHCPForm'
 
@@ -56,7 +56,7 @@ describe('DHCPForm', () => {
       tenantId: 'tenant-id', action: 'edit' }
 
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(DHCPUrls.getDHCProfileDetail.url,
         (_, res, ctx) => {

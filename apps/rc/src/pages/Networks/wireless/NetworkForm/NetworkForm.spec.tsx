@@ -14,7 +14,7 @@ import {
   waitForElementToBeRemoved,
   waitFor
 } from '@acx-ui/test-utils'
-import { Urls } from '@acx-ui/user'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -44,7 +44,7 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

@@ -22,7 +22,7 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { Urls } from '@acx-ui/user'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   network,
@@ -71,7 +71,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.get(
-        Urls.getAllUserSettings.url,
+        UserUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
       ),
       rest.get(

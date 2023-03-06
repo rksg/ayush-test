@@ -5,7 +5,7 @@ import { StepsForm }                    from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import { mockServer, render }           from '@acx-ui/test-utils'
-import { Urls }                         from '@acx-ui/user'
+import { UserUrlsInfo }                 from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -27,7 +27,7 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       guestPortal: cloudPathDataNone.guestPortal,
       wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan } }
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

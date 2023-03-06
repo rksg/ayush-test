@@ -10,7 +10,7 @@ import {
   screen,
   waitForElementToBeRemoved,
   fireEvent } from '@acx-ui/test-utils'
-import { Urls } from '@acx-ui/user'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import DHCPForm from './DHCPForm'
 
@@ -49,7 +49,7 @@ describe('DHCPForm', () => {
   it('should create DHCP successfully', async () => {
 
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>

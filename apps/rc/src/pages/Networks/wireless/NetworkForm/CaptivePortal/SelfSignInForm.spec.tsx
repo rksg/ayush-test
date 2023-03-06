@@ -6,7 +6,7 @@ import { StepsForm }                             from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { Urls }                                  from '@acx-ui/user'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -24,7 +24,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: selfsignData.guestPortal }
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
