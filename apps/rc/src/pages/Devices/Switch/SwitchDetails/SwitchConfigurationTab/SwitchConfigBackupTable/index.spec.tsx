@@ -118,7 +118,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     await userEvent.click(await screen.findByText(/Backup Now/i))
     const backupDialog = await screen.findByRole('dialog')
@@ -180,7 +180,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -230,7 +230,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -281,7 +281,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -331,7 +331,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(list.length)
+    expect(rows).toHaveLength(list.totalCount)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(row1)
@@ -345,7 +345,7 @@ describe('SwitchConfigBackupTable', () => {
 
   it('should render inRestoreProgress correctly', async () => {
     const inRestoreProgressList = JSON.parse(JSON.stringify(list))
-    inRestoreProgressList.push({
+    inRestoreProgressList.data.push({
       id: 'f89fee4468d2405cbfc7fb012d0632c8',
       createdDate: '2023-01-10T05:00:00.408+00:00',
       name: 'testBackup',
@@ -356,7 +356,7 @@ describe('SwitchConfigBackupTable', () => {
       config: 'ver 09.0.10eT213\n!\nstack unit 2',
       switchId: 'c0:c5:20:aa:32:79'
     })
-    inRestoreProgressList[0].restoreStatus = 'STARTED'
+    inRestoreProgressList.data[0].restoreStatus = 'STARTED'
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchConfigBackupList.url,
@@ -391,7 +391,7 @@ describe('SwitchConfigBackupTable', () => {
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(inRestoreProgressList.length)
+    expect(rows).toHaveLength(inRestoreProgressList.data.length)
 
     const row1 = await screen.findByRole('row', { name: /Manual_20230111181247/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
