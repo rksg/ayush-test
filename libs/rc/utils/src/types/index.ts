@@ -40,7 +40,6 @@ export * from './timeline'
 export * from './persona'
 export * from './radiusClientConfig'
 export * from './msgTemplate'
-export * from './globalValues'
 
 export interface CommonResult {
   requestId: string
