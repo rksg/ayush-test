@@ -1,25 +1,29 @@
+import _ from 'lodash'
+
 import {
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
-import { Provider, store }                                                 from '@acx-ui/store'
-import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 
-import * as fixtures             from './__tests__/fixtures'
+import * as fixtures          from './__tests__/fixtures'
 import {
-  processDtoToPayload,
   specToDto,
   useNetworkHealthSpec,
-  useNetworkHealthSpecMutation
-} from './services'
-import {
-  AuthenticationMethod,
-  Band,
-  ClientType,
-  TestType,
-  NetworkPaths
-} from './types'
+  useNetworkHealthSpecMutation,
+  useAllNetworkHealthSpecsQuery,
+  useRunNetworkHealthTestMutation,
+  useDeleteNetworkHealthTestMutation,
+  useMutationResponseEffect
+}                                                                         from './services'
+import { AuthenticationMethod, Band, ClientType, TestType, NetworkPaths, MutationResponse, MutationUserError } from './types'
 
+
+const networkNodes = [[
+  { type: 'zone', name: 'VENUE' },
+  { type: 'apMac', list: ['00:00:00:00:00:00'] }
+]] as NetworkPaths
 
 beforeEach(() => store.dispatch(api.util.resetApiState()))
 
@@ -43,6 +47,45 @@ describe('useNetworkHealthSpec', () => {
   })
 })
 
+describe('useAllNetworkHealthSpecsQuery', () => {
+  it('should return empty data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: { allServiceGuardSpecs: [] } })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([])
+  })
+  it('should return correct data', async () => {
+    mockGraphqlQuery(
+      apiUrl, 'FetchAllServiceGuardSpecs', { data: fixtures.fetchAllServiceGuardSpecs })
+    const { result } = renderHook(() => useAllNetworkHealthSpecsQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data)
+      .toEqual(fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs
+        .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') })))
+  })
+})
+
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
+})
+
+it('useDeleteNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
+  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
+})
+
 describe('useNetworkHealthSpecMutation', () => {
   it('handles create mutation', async () => {
     const dto = {
@@ -58,9 +101,7 @@ describe('useNetworkHealthSpecMutation', () => {
       wlanUsername: 'user',
       type: TestType.OnDemand,
       name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      networkPaths: { networkNodes }
     }
     const { result } = renderHook(
       useNetworkHealthSpecMutation,
@@ -95,9 +136,7 @@ describe('useNetworkHealthSpecMutation', () => {
       wlanUsername: 'user',
       type: TestType.OnDemand,
       name: 'Test Name',
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
+      networkPaths: { networkNodes }
     }
 
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fixtures.fetchServiceGuardSpec })
@@ -123,56 +162,6 @@ describe('useNetworkHealthSpecMutation', () => {
   })
 })
 
-describe('processDtoToPayload', () => {
-  const dto = {
-    id: 'spec-id',
-    isDnsServerCustom: true,
-    dnsServer: '10.10.10.10',
-    tracerouteAddress: '10.10.10.10',
-    pingAddress: '10.10.10.10',
-    wlanName: 'WLAN Name',
-    clientType: ClientType.VirtualWirelessClient,
-    radio: Band.Band6,
-    authenticationMethod: AuthenticationMethod.WPA3_PERSONAL,
-    wlanPassword: '12345',
-    wlanUsername: 'user',
-    type: TestType.OnDemand,
-    name: 'Test Name'
-  }
-  it('process dto to payload for GraphQL input', () => {
-    const payload = processDtoToPayload({
-      ...dto,
-      // TODO:
-      // Update to correct format when APsSelection input done
-      networkPaths: { networkNodes: 'VENUE|00:00:00:00:00:00' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-
-  it('handle zone only', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      networkPaths: { networkNodes: 'VENUE' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-
-  it('handle zone + apGroup', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const payload = processDtoToPayload({
-      ...dto,
-      networkPaths: { networkNodes: 'VENUE>AP Group' }
-    })
-
-    expect(payload).toMatchSnapshot()
-  })
-})
-
 describe('specToDto', () => {
   const spec = {
     id: 'spec-id',
@@ -188,12 +177,7 @@ describe('specToDto', () => {
       wlanName: 'WLAN Name',
       wlanPassword: '12345',
       wlanUsername: 'user',
-      networkPaths: {
-        networkNodes: [[
-          { type: 'zone', name: 'VENUE' },
-          { type: 'apMac', list: ['00:00:00:00:00:00'] }
-        ]] as NetworkPaths
-      }
+      networkPaths: { networkNodes }
     }]
   }
   it('process spec of GraphQL result to dto', () => {
@@ -201,25 +185,29 @@ describe('specToDto', () => {
     expect(dto).toMatchSnapshot()
   })
 
-  it('handles path without AP list', () => {
-    // TODO:
-    // Remove when APsSelection input done
-    const dto = specToDto({
-      ...spec,
-      configs: [{
-        ...spec.configs[0],
-        networkPaths: {
-          networkNodes: [[
-            { type: 'zone', name: 'VENUE' },
-            { type: 'apGroup', name: 'AP Group' }
-          ]] as NetworkPaths
-        }
-      }]
-    })
-    expect(dto).toMatchSnapshot()
-  })
-
   it('handle spec = undefined', () => {
     expect(specToDto()).toBe(undefined)
+  })
+})
+
+describe('useMutationResponseEffect', () => {
+  it('should return when no data', async () => {
+    const response = {} as MutationResponse<{ userErrors?: MutationUserError[] }>
+    const { result } = renderHook(() =>
+      useMutationResponseEffect(response), { wrapper: Provider })
+    expect(result.current).toEqual(undefined)
+  })
+  it('should return when no error', async () => {
+    const onOk = jest.fn()
+    const response = { data: {} } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response, onOk), { wrapper: Provider })
+    expect(onOk).toBeCalled()
+  })
+  it('should show error', async () => {
+    const response = {
+      data: { userErrors: [{ field: 'spec', message: 'RUN_TEST_NO_APS' }] }
+    } as MutationResponse<{ userErrors?: MutationUserError[] }>
+    renderHook(() => useMutationResponseEffect(response), { wrapper: Provider })
+    expect(await screen.findByText('There are no APs to run the test')).toBeVisible()
   })
 })

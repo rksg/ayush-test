@@ -108,7 +108,8 @@ const defaultFormData = {
   acctCommonsLevel: 'READ_ONLY'
 }
 
-export function AAASettings () {
+export const AAASettings = (props: { setAAASettingId?: (aaaSettingId: string) => void }) => {
+  const { setAAASettingId } = props
   const { tenantId, venueId } = useParams()
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -182,6 +183,9 @@ export function AAASettings () {
 
   useEffect(() => {
     if (aaaSetting) {
+      if (setAAASettingId) {
+        setAAASettingId(aaaSetting.id)
+      }
       let initData = { ...defaultFormData, ...aaaSetting }
 
       initData.selectedLoginServers = []

@@ -593,7 +593,7 @@ exports[`Layout should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header
@@ -773,7 +773,7 @@ exports[`Layout should render with custom tenant type correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header
@@ -1402,7 +1402,7 @@ exports[`Layout should show tooltip when disabled 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 ldBnOU"
+                class="styledComponents__RightHeaderContentWrapper-sc-iwostn-4 RNNyT"
               >
                 <div>
                   Right header

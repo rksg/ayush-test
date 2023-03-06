@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
-import { Badge }   from 'antd'
-import { useIntl } from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { Badge }               from 'antd'
+import { useIntl }             from 'react-intl'
 
 import {
   Loader,
@@ -11,9 +12,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
-  useApListQuery
+  useApListQuery, useImportApMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -32,8 +33,9 @@ import {
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { seriesMappingAP } from '../DevicesWidget/helper'
-import { useApActions }    from '../useApActions'
+import { seriesMappingAP }           from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
+import { useApActions }              from '../useApActions'
 
 
 
@@ -340,6 +342,12 @@ export function ApTable (props: ApTableProps) {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
+  // ACX-25402: Waiting for integration with group by table
+  //   label: $t({ defaultMessage: 'Delete AP Group' }),
+  //   onClick: async (rows, clearSelection) => {
+  //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
+  //   }
+  // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {
@@ -352,6 +360,18 @@ export function ApTable (props: ApTableProps) {
       apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
     }
   }]
+  const [ importVisible, setImportVisible ] = useState(false)
+  const [ importCsv, importResult ] = useImportApMutation()
+  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
+  const importTemplateLink = apGpsFlag ?
+    'assets/templates/aps_import_template_with_gps.csv' :
+    'assets/templates/aps_import_template.csv'
+
+  useEffect(()=>{
+    if (importResult.isSuccess) {
+      setImportVisible(false)
+    }
+  },[importResult])
 
   const basePath = useTenantLink('/devices')
   return (
@@ -382,9 +402,27 @@ export function ApTable (props: ApTableProps) {
               pathname: `${basePath.pathname}/apgroups/add`
             })
           }
+        }, {
+          label: $t({ defaultMessage: 'Import from file' }),
+          onClick: () => {
+            setImportVisible(true)
+          }
         }
         ] : []}
       />
+      <ImportFileDrawer type='AP'
+        title={$t({ defaultMessage: 'Import from file' })}
+        maxSize={CsvSize['5MB']}
+        maxEntries={512}
+        acceptType={['csv']}
+        templateLink={importTemplateLink}
+        visible={importVisible}
+        isLoading={importResult.isLoading}
+        importError={importResult.error as FetchBaseQueryError}
+        importRequest={(formData) => {
+          importCsv({ params, payload: formData })
+        }}
+        onClose={() => setImportVisible(false)}/>
     </Loader>
   )
 }
