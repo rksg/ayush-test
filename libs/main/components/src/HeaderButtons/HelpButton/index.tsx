@@ -5,10 +5,9 @@ import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { useGetGlobalValuesQuery } from '@acx-ui/rc/services'
-import { useParams  }              from '@acx-ui/react-router-dom'
 import { notAvailableMsg }         from '@acx-ui/utils'
 
 import { DisabledButton } from '../styledComponents'
@@ -17,12 +16,6 @@ import { DisabledButton } from '../styledComponents'
 import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
 import { ButtonWrapper } from './styledComponents'
-
-// eslint-disable-next-line max-len
-const DOCUMENTATION_CENTER = 'https://docs.cloud.ruckuswireless.com/alto/master--1-220111/index.html'
-const MY_OPEN_CASES = 'https://support-qa.ruckuswireless.com/cases/cloud'
-const PRIVACY = 'https://www.commscope.com/about-us/privacy-statement'
-const SUPPORTED_AP_MODELS = 'https://www.commscope.com/cloud-supported-network-devices'
 
 export interface HelpButtonProps{
   supportStatus?: string
@@ -36,8 +29,6 @@ const HelpButton = (props:HelpButtonProps) => {
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
 
-  const params = useParams()
-  const { data } = useGetGlobalValuesQuery({ params })
   useEffect(()=>{
     switch (supportStatus) {
       case 'ready':
@@ -51,6 +42,11 @@ const HelpButton = (props:HelpButtonProps) => {
         break
     }
   },[supportStatus])
+
+  const documentationCenter = get('DOCUMENTATION_CENTER')
+  const myOpenCases = get('MY_OPEN_CASES')
+  const privacy = get('PRIVACY')
+  const supportedAPModels = get('SUPPORTED_AP_MODELS')
 
   const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
@@ -66,16 +62,16 @@ const HelpButton = (props:HelpButtonProps) => {
             setFirewallModalOpen(true)
             break
           case 'models':
-            window.open(data?.SUPPORTED_AP_MODELS||SUPPORTED_AP_MODELS, '_blank')
+            window.open(supportedAPModels, '_blank')
             break
           case 'privacy':
-            window.open(data?.PRIVACY || PRIVACY, '_blank')
+            window.open(privacy, '_blank')
             break
           case 'openCases':
-            window.open(data?.MY_OPEN_CASES || MY_OPEN_CASES, '_blank')
+            window.open(myOpenCases, '_blank')
             break
           case 'documentation':
-            window.open(DOCUMENTATION_CENTER, '_blank')
+            window.open(documentationCenter, '_blank')
             break
         }
       }}
