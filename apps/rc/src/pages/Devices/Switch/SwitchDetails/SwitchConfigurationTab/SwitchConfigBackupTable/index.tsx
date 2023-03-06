@@ -71,7 +71,11 @@ export function SwitchConfigBackupTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
   })
 
   const tableData = tableQuery.data?.data ?? []
@@ -105,8 +109,8 @@ export function SwitchConfigBackupTable () {
     key: 'name',
     title: $t({ defaultMessage: 'Name' }),
     dataIndex: 'name',
-    sorter: true,
-    disable: true
+    disable: true,
+    sorter: true
   }, {
     key: 'createdDate',
     title: $t({ defaultMessage: 'Date' }),

@@ -112,19 +112,21 @@ export const clientApi = baseClientApi.injectEndpoints({
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
