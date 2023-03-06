@@ -204,7 +204,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }
 
   return (
-    <>
+    <div data-testid='addVlanDrawer'>
       <Form
         layout='vertical'
         form={form}
@@ -361,6 +361,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         onSave={onSaveVlan}
         vlanList={vlansList}
       />
-    </>
+    </div>
   )
 }

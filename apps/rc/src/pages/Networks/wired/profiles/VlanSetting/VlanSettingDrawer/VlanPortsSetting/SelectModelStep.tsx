@@ -349,7 +349,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -373,7 +373,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}

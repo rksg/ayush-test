@@ -266,10 +266,10 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           initialValue={'standard'}
           children={
             <Radio.Group onChange={onAclTypeChange}>
-              <Radio value={'standard'}>
+              <Radio value={'standard'} data-testid='aclStandard'>
                 {$t({ defaultMessage: 'Standard' })}
               </Radio>
-              <Radio value={'extended'}>
+              <Radio value={'extended'} data-testid='aclExtended'>
                 {$t({ defaultMessage: 'Extended' })}
               </Radio>
             </Radio.Group>
