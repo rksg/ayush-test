@@ -12,7 +12,8 @@ import {
   waitFor,
   waitForElementToBeRemoved,
   within,
-  findTBody
+  findTBody,
+  fireEvent
 } from '@acx-ui/test-utils'
 
 import { SwitchTable } from '.'
@@ -106,7 +107,7 @@ describe('SwitchTable', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    render(<Provider><SwitchTable showAllColumns={true} /></Provider>, {
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId' }
     })
 
@@ -125,6 +126,7 @@ describe('SwitchTable', () => {
     const row1 = await screen.findByRole('row', { name: /FEK4224R19X/i })
     await userEvent.click(await within(row1).findByRole('button'))
     expect(await within(tbody).findByText('stack-member')).toBeVisible()
+    // expect(await screen.findAllByTestId(/^options-selector/)).toHaveLength(3)
   })
 
   it('Table action bar Delete', async () => {
@@ -173,4 +175,22 @@ describe('SwitchTable', () => {
     expect(deleteSpy).toHaveBeenCalled()
 
   }, 60000)
+
+  it('should search correctly', async () => {
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+
+    render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const input =
+      await screen.findByPlaceholderText('Search Switch, Model, MAC Address, IP Address')
+
+    input.focus()
+    fireEvent.change(input, { target: { value: 'ICX7150-C08P' } })
+
+    expect(await screen.findByText('ICX7150-C08P')).toBeVisible()
+  })
 })
