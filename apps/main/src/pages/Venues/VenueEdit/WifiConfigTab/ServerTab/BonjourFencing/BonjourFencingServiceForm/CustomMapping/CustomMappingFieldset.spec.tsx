@@ -53,13 +53,13 @@ describe('CustomMappingFieldset Component', () => {
     expect(addButtons.length).toBe(1)
     await userEvent.click(addButtons[0])
     await userEvent.type(await screen.findByRole('textbox', { name: 'Custom string' }), 'test1')
-    await userEvent.click(await screen.findByRole('radio', { name: 'UTP' }))
+    await userEvent.click(await screen.findByRole('radio', { name: 'UDP' }))
     addButtons = await screen.findAllByRole('button', { name: 'Add' })
     await userEvent.click(addButtons[1])
 
     await screen.findByText('Custom String List ( 2/3 )')
     await screen.findByRole('cell', { name: 'test1' })
-    await screen.findByRole('cell', { name: 'utp' })
+    await screen.findByRole('cell', { name: 'udp' })
 
     addButtons = await screen.findAllByRole('button', { name: 'Add' })
     expect(addButtons.length).toBe(1)

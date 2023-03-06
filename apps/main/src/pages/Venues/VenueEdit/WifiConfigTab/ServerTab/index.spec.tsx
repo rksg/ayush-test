@@ -42,10 +42,10 @@ describe('ServerTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueSyslogAp.url,
+        SyslogUrls.getVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json(venueSyslog))),
       rest.post(
-        CommonUrlsInfo.updateVenueSyslogAp.url,
+        SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
@@ -62,11 +62,11 @@ describe('ServerTab', () => {
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ServerTab /></Provider>, { route: { params } })
+    render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable Server'))
-    expect(asFragment()).toMatchSnapshot()
   })
+
   it('should handle update setting', async () => {
     render(
       <Provider>

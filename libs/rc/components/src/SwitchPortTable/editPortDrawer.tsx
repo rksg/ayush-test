@@ -249,7 +249,7 @@ export function EditPortDrawer ({
   const getEachSwitchVlans = async () => {
     const switchVlans = switches?.map(async (switchId) => {
       return await getSwitchVlans({
-        params: { tenantId, serialNumber: switchId }
+        params: { tenantId, switchId }
       }, true).unwrap()
     })
     return Promise.all(switchVlans)
@@ -328,6 +328,8 @@ export function EditPortDrawer ({
       tenantId, venueId: vid,
       model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
     }
+    // const taggedVlansByVenue = await getTaggedVlansByVenue({ params, payload: params }, true).unwrap()
+    // const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params, payload: params }, true).unwrap()
     const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
