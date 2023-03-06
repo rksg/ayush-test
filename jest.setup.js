@@ -39,6 +39,38 @@ beforeEach(async () => {
   const env = require('./apps/main/src/env.json')
   mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
   await config.initialize()
+
+  require('@acx-ui/user').setUserProfile({
+    allowedOperations: [],
+    profile: {
+      region: '[NA]',
+      allowedRegions: [
+        {
+          name: 'US',
+          description: 'United States of America',
+          link: 'https://devalto.ruckuswireless.com',
+          current: true
+        }
+      ],
+      externalId: '001234567890Abcdef',
+      pver: 'acx-hybrid',
+      companyName: 'Dog Company 1234',
+      firstName: 'FisrtName 1234',
+      lastName: 'LastName 1234',
+      username: 'dog1234@email.com',
+      role: 'PRIME_ADMIN',
+      roles: ['PRIME_ADMIN'],
+      detailLevel: 'debug',
+      dateFormat: 'mm/dd/yyyy',
+      email: 'dog1551@email.com',
+      var: false,
+      tenantId: '1234567890abcdefghijklmnopqrstuv',
+      varTenantId: '1234567890abcdefghijklmnopqrstuv',
+      adminId: 'abcdefghijklmnopqrstuv1234567890',
+      support: false,
+      dogfood: false
+    }
+  })
 })
 afterEach(() => {
   mockServer.resetHandlers()
@@ -89,13 +121,6 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
   Features: {}
-}), { virtual: true })
-
-jest.mock('@acx-ui/user', () => ({
-  ...jest.requireActual('@acx-ui/user'),
-  hasAccess: jest.fn().mockReturnValue(true),
-  hasRoles: jest.fn().mockReturnValue(true),
-  hasAccesses: jest.fn().mockImplementation((items) => items)
 }), { virtual: true })
 
 jest.mock('@acx-ui/icons', ()=> {

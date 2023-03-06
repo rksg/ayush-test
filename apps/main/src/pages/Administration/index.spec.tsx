@@ -6,7 +6,7 @@ import {
   screen,
   fireEvent
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile } from './AccountSettings/__tests__/fixtures'
 
@@ -71,6 +71,10 @@ describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+  beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+  })
 
   it('should render correctly', async () => {
     render(

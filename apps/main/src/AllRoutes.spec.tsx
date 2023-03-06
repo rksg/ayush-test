@@ -19,9 +19,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
 }))
 jest.mock('@acx-ui/user', () => ({
-  useUserProfileContext: () => ({
-    data: { companyName: 'Mock company' }
-  })
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { companyName: 'Mock company' } })
 }))
 jest.mock('./pages/Dashboard', () => () => {
   return <div data-testid='dashboard' />

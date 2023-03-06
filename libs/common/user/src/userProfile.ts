@@ -14,6 +14,7 @@ const userProfile: Profile = {
 
 export const getUserProfile = () => userProfile
 export const setUserProfile = (profile: Profile) => {
+  // Do not call this manually except in test env
   userProfile.profile = profile.profile
   userProfile.allowedOperations = profile.allowedOperations
 }

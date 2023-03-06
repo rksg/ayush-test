@@ -4,5 +4,6 @@ export * from './UserProfileContext'
 export {
   hasAccess,
   hasAccesses,
-  hasRoles
+  hasRoles,
+  setUserProfile
 } from './userProfile'

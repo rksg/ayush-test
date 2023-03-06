@@ -13,6 +13,7 @@ jest.mock('@acx-ui/components', () => ({
   />
 }))
 jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'

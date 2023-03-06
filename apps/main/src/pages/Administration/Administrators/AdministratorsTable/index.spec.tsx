@@ -11,7 +11,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakedAdminLsit, fakeNonPrimeAdminUserProfile } from '../__tests__/fixtures'
 
@@ -23,11 +23,12 @@ const userProfileContextValues = {
   isPrimeAdmin
 } as UserProfileContextProps
 
-
 describe('Administrators table without prime-admin itself', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }

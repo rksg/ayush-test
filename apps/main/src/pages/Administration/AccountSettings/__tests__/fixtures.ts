@@ -1,5 +1,5 @@
-import { MFAStatus }   from '@acx-ui/rc/utils'
-import { DetailLevel } from '@acx-ui/user'
+import { MFAStatus }                from '@acx-ui/rc/utils'
+import { DetailLevel, UserProfile } from '@acx-ui/user'
 
 export const fakeUserProfile = {
   region: '[NA]',
@@ -28,7 +28,7 @@ export const fakeUserProfile = {
   adminId: '4159559db15c4027903d9c3d4bdb8a7e',
   support: false,
   dogfood: false
-}
+} as UserProfile
 
 export const fakeTenantDelegation = [
   {

@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
-import { Provider }         from '@acx-ui/store'
-import { render, screen }   from '@acx-ui/test-utils'
-import { RolesEnum }        from '@acx-ui/types'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }      from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
-  UserProfileContextProps
+  UserProfileContextProps,
+  setUserProfile
 }         from '@acx-ui/user'
 
 import { UserProfile } from './index'
@@ -28,6 +29,8 @@ jest.mock('react-router-dom', () => ({
 
 describe('UserProfile', () => {
   it('should render correctly', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
+
     render(<Provider>
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}

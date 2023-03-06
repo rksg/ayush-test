@@ -11,7 +11,7 @@ import {
   screen,
   mockServer
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import {
   fakeRecoveryPassphrase,
@@ -20,11 +20,9 @@ import {
   fakeUserProfile
 } from './__tests__/fixtures'
 
-
 import AccountSettings from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
 
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
@@ -50,6 +48,8 @@ const userProfileContextValues = {
 
 describe('Account Settings', () => {
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     act(() => {
       store.dispatch(administrationApi.util.resetApiState())
       store.dispatch(mspApi.util.resetApiState())

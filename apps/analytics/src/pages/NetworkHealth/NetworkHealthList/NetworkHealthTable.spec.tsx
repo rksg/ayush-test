@@ -27,6 +27,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate
 }))
 jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { externalId: 'user-id' } })
 }))
 

@@ -8,7 +8,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakeMspEcProfile, fakeTenantDetails } from './__tests__/fixtures'
 
@@ -38,6 +38,8 @@ describe('Administrators', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
