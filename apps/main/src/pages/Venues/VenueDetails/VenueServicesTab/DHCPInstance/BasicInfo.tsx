@@ -160,14 +160,6 @@ export default function BasicInfo () {
               {$t({ defaultMessage: 'Manage Local Service' })}
             </Button>
           }
-          {/* <Button style={{ paddingLeft: 0 }}
-            onClick={()=>{
-              setVisible(true)
-            }}
-            type='link'
-            block>
-            {$t({ defaultMessage: 'Manage Local Service' })}
-          </Button> */}
         </GridCol>
       </GridRow>
     </Card>
