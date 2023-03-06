@@ -30,29 +30,34 @@ jest.mock('@acx-ui/rc/components', () => ({
   CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
 }))
 
-const list = [
-  {
-    id: '93999bfb05d34a438ff5ff40b8648967',
-    createdDate: '2023-01-11T10:12:48.880+00:00',
-    name: 'Manual_20230111181247',
-    backupType: 'MANUAL',
-    backupName: 'c0:c5:20:aa:32:79-1673431968878',
-    status: 'SUCCESS',
-    config: 'ver 09.0.10eT213\n!\nstack unit 1',
-    switchId: 'c0:c5:20:aa:32:79'
-  },
-  {
-    id: 'f89fee4468d2405cbfc7fb012d0632c8',
-    createdDate: '2023-01-10T05:00:00.408+00:00',
-    name: 'SCHEDULED_1',
-    backupType: 'SCHEDULED',
-    backupName: 'c0:c5:20:aa:32:79-1673326800403',
-    status: 'SUCCESS',
-    restoreStatus: 'SUCCESS',
-    config: 'ver 09.0.10eT213\n!\nstack unit 2',
-    switchId: 'c0:c5:20:aa:32:79'
-  }
-]
+const list = {
+  data: [
+    {
+      id: '93999bfb05d34a438ff5ff40b8648967',
+      createdDate: '2023-01-11T10:12:48.880+00:00',
+      name: 'Manual_20230111181247',
+      backupType: 'MANUAL',
+      backupName: 'c0:c5:20:aa:32:79-1673431968878',
+      status: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 1',
+      switchId: 'c0:c5:20:aa:32:79'
+    },
+    {
+      id: 'f89fee4468d2405cbfc7fb012d0632c8',
+      createdDate: '2023-01-10T05:00:00.408+00:00',
+      name: 'SCHEDULED_1',
+      backupType: 'SCHEDULED',
+      backupName: 'c0:c5:20:aa:32:79-1673326800403',
+      status: 'SUCCESS',
+      restoreStatus: 'SUCCESS',
+      config: 'ver 09.0.10eT213\n!\nstack unit 2',
+      switchId: 'c0:c5:20:aa:32:79'
+    }
+  ],
+  page: 1,
+  totalCount: 2,
+  totalPages: 1
+}
 
 describe('SwitchConfigBackupTable', () => {
   afterEach(() => jest.restoreAllMocks())

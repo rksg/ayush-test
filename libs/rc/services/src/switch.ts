@@ -424,7 +424,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...res,
           data: res.data
-            .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
             .map(item => ({
               ...item,
               createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),

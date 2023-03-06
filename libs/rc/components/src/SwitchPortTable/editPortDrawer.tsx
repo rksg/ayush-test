@@ -334,8 +334,6 @@ export function EditPortDrawer ({
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({
       params, payload: params
     }, true).unwrap()
-    // const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
-    // const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
     const tagged = taggedVlansByVenue.map(taggedVlans => taggedVlans.vlanId).toString()
     const untagged = untaggedVlansByVenue.map(untaggedVlan => untaggedVlan.vlanId).toString()
