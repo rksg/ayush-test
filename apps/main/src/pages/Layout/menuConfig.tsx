@@ -47,6 +47,7 @@ export function useMenuConfig () {
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -252,5 +253,8 @@ export function useMenuConfig () {
       disabled: !isAdministrationEnabled
     }
   ]
+  if (isGuestManager) {
+    return []
+  }
   return config
 }
