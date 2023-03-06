@@ -103,6 +103,7 @@ export function PoolTable (props:{
   ]
   let actions = [{
     label: $t({ defaultMessage: 'Add DHCP Pool' }),
+    disabled: data.length>=4,
     onClick: () => props.onAdd?.()
   }]
   return (
