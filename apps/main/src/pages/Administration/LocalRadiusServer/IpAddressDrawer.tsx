@@ -74,7 +74,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       children={content}
       footer={
         <Drawer.FormFooter
-          // showSaveButton={isChange}
           showAddAnother={!editMode}
           buttonLabel={({
             save: $t({ defaultMessage: 'Apply' }),
