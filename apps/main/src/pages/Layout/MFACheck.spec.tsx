@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { act }   from 'react-dom/test-utils'
 
-import { UserUrlsInfo, MFAStatus, MFAMethod, MfaDetailStatus } from '@acx-ui/rc/utils'
-import { Provider }                                            from '@acx-ui/store'
-import { render, renderHook, screen, mockServer, waitFor }     from '@acx-ui/test-utils'
+import { UserUrlsInfo, MFAStatus, MfaDetailStatus }        from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
+import { render, renderHook, screen, mockServer, waitFor } from '@acx-ui/test-utils'
 
 import { MFACheck } from './MFACheck'
 
