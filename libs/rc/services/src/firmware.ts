@@ -2,11 +2,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonResult,
+  CurrentVersions,
   TableResult,
   UpgradePreferences,
   FirmwareUrlsInfo,
   FirmwareVersion,
   FirmwareVenue,
+  FirmwareSwitchVenue,
   createHttpRequest,
   RequestPayload
 } from '@acx-ui/rc/utils'
@@ -14,7 +16,7 @@ import {
 export const baseFirmwareApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'firmwareApi',
-  tagTypes: ['Firmware'],
+  tagTypes: ['Firmware', 'SwitchFirmware'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -120,6 +122,84 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    skipSwitchUpgradeSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.skipSwitchUpgradeSchedules, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    updateSwitchVenueSchedules: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.updateSwitchVenueSchedules, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchLatestFirmwareList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchFirmwareVersionIdList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareVersionIdList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchVenueVersionList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venueListReq = createHttpRequest(FirmwareUrlsInfo.getSwitchVenueVersionList, params)
+        return {
+          ...venueListReq,
+          body: payload
+        }
+      },
+      // transformResponse (result: NewTableResult<FirmwareSwitchVenue>) {
+      transformResponse (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) {
+        return {
+          data: result.upgradeVenueViewList,
+          page: 1,
+          totalCount: result.upgradeVenueViewList.length
+        } as TableResult<FirmwareSwitchVenue>
+      },
+      // transformResponse: (result: { upgradeVenueViewList: FirmwareSwitchVenue[] }) => {
+      //   return result.upgradeVenueViewList
+      // },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchAvailableFirmwareList, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchCurrentVersions, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     })
   })
 })
@@ -133,5 +213,12 @@ export const {
   useGetFirmwareVersionIdListQuery,
   useSkipVenueUpgradeSchedulesMutation,
   useUpdateVenueSchedulesMutation,
-  useUpdateNowMutation
+  useUpdateNowMutation,
+  useSkipSwitchUpgradeSchedulesMutation,
+  useUpdateSwitchVenueSchedulesMutation,
+  useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchFirmwareVersionIdListQuery,
+  useGetSwitchVenueVersionListQuery,
+  useGetSwitchAvailableFirmwareListQuery,
+  useGetSwitchCurrentVersionsQuery
 } = firmwareApi
