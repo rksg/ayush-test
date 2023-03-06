@@ -15,10 +15,10 @@ import { Button, DisabledButton } from '../Button'
 import { Dropdown }               from '../Dropdown'
 import { Tooltip }                from '../Tooltip'
 
-import { Filter, getFilteredData, renderFilter, renderGroupBy, renderSearch } from './filters'
-import { ResizableColumn }                                                    from './ResizableColumn'
-import * as UI                                                                from './styledComponents'
-import { settingsKey, useColumnsState }                                       from './useColumnsState'
+import { Filter, getFilteredData, renderFilter, useGroupBy, renderSearch } from './filters'
+import { ResizableColumn }                                                 from './ResizableColumn'
+import * as UI                                                             from './styledComponents'
+import { settingsKey, useColumnsState }                                    from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -78,9 +78,9 @@ export interface TableProps <RecordType>
     ) => void,
     groupable?: {
       selectors: { key: string, label: string }[]
-      onChange: CallableFunction,
+      onChange: CallableFunction
       onClear: CallableFunction
-      actions?: { key: string, label: string, callback: CallableFunction }[]
+      actions?: { key: string, label: React.ReactNode, callback?: CallableFunction }[]
     }
   }
 
@@ -133,7 +133,7 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
-  const { GroupBySelect } = renderGroupBy(groupable)
+  const { GroupBySelect, expandable } = useGroupBy<RecordType>(groupable)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -431,6 +431,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
+      expandable={expandable}
       tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>

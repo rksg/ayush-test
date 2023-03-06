@@ -4,6 +4,8 @@ import { Select }      from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
 import { IntlShape }   from 'react-intl'
 
+import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
+
 import * as UI from './styledComponents'
 
 import { TableProps } from '.'
@@ -133,13 +135,15 @@ export function renderFilter <RecordType> (
   </UI.FilterSelect>
 }
 
-export function renderGroupBy<RecordType> (
+export function useGroupBy<RecordType> (
   groupables: TableProps<RecordType>['groupable']
 ) {
+  const [value, setValue] = React.useState<string | undefined>(undefined)
+
   if (groupables) {
     const { selectors, onChange, onClear } = groupables
+
     const GroupBySelect = () => {
-      const [value, setValue] = React.useState<string | undefined>(undefined)
       return <UI.FilterSelect
         placeholder='Group By...'
         allowClear
@@ -166,10 +170,36 @@ export function renderGroupBy<RecordType> (
       </UI.FilterSelect>
     }
 
-    return { GroupBySelect }
+    const getChildrenHelper = (record: unknown) =>
+      (record as unknown as { children: RecordType[] | undefined }).children
+
+    const isValidParent = (children: RecordType[] | undefined) =>
+      Boolean(children && children.length > 0)
+
+    const expandable: TableProps<RecordType>['expandable'] = {
+      expandRowByClick: true,
+      defaultExpandAllRows: true,
+      rowExpandable: (record) => {
+        const children = getChildrenHelper(record)
+        return isValidParent(children)
+      },
+      expandIcon: (props) => {
+        const children = getChildrenHelper(props.record)
+        if (!isValidParent(children)) return null
+        const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
+          ? <CollapseInactive />
+          : <CollapseActive />
+        return <ExpandIcon isActive={props.expanded}/>
+      }
+    }
+
+
+
+    return { GroupBySelect, expandable }
   }
 
   return {
-    GroupBySelect: () => null
+    GroupBySelect: () => null,
+    expandable: undefined
   }
 }

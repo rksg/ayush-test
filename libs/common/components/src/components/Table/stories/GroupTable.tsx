@@ -5,6 +5,7 @@ import { APExtended }     from 'libs/rc/utils/src/types/ap'
 import { omit, uniqueId } from 'lodash'
 
 import { Table, TableProps } from '..'
+import { Button }            from '../../Button'
 
 
 type APExtendedGroupedResponse = {
@@ -29,15 +30,10 @@ type APExtendedGroupedResponse = {
 function cleanResponse (response: APExtendedGroupedResponse) {
   return response.data.map(apGroup => {
     const parent = omit(apGroup, ['deviceGroupName', 'clients', 'aps'])
-    const { deviceGroupName, members, incidents, clients, networks, aps } = apGroup
+    const { aps } = apGroup
     return {
       ...parent,
       id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
-      name: `${deviceGroupName !== ' ' ? deviceGroupName : 'Uncategorized'} 
-      Members: ${members} 
-      Incidents: ${incidents} 
-      Connected Clients: ${clients} 
-      Wireless Networks: ${networks.count}`,
       children: aps.map(ap => ({ ...ap, deviceGroupName: (ap.deviceGroupName !== '')
         ? ap.deviceGroupName
         : 'Uncategorized',
@@ -501,7 +497,7 @@ export function GroupTable () {
   }
 
   // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<typeof cleanedData>['columns'] = [
+  const columns: TableProps<typeof cleanedData[0]>['columns'] = [
     {
       title: 'AP Name',
       dataIndex: 'name',
@@ -568,9 +564,9 @@ export function GroupTable () {
   return (
     <>
     with groupby:
-      <Table<typeof cleanedData>
+      <Table<typeof cleanedData[0]>
         columns={columns}
-        dataSource={currData as unknown as TableProps<typeof cleanedData>['dataSource']}
+        dataSource={currData as unknown as TableProps<typeof cleanedData[0]>['dataSource']}
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
@@ -581,7 +577,17 @@ export function GroupTable () {
             { key: 'model', label: 'Model' }
           ],
           onChange: groupableCallback,
-          onClear: () => setCurrData([])
+          actions: [{
+            key: 'edit',
+            label: <Button>Edit</Button>
+          }],
+          onClear: () => {
+            // eslint-disable-next-line no-console
+            console.log('clear data, reset to AP Group')
+
+            // reset table t
+            setCurrData(groupableCallback('deviceGroupName'))
+          }
         }}
       />
     </>
