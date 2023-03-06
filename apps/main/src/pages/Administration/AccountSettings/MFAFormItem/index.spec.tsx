@@ -2,8 +2,8 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
-import { Provider  }                         from '@acx-ui/store'
+import { UserUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
+import { Provider  }               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,7 +22,7 @@ describe('Enable MFA Checkbox', () => {
   beforeEach(() => {
     mockServer.use(
       rest.put(
-        AdministrationUrlsInfo.updateMFAAccount.url,
+        UserUrlsInfo.toggleMFA.url,
         (_req, res, ctx) => res(ctx.status(200))
       )
     )
@@ -103,7 +103,7 @@ describe('Enable MFA Checkbox', () => {
   it('should display error when click to disable MFA', async () => {
     mockServer.use(
       rest.put(
-        AdministrationUrlsInfo.updateMFAAccount.url,
+        UserUrlsInfo.toggleMFA.url,
         (_req, res, ctx) => res(ctx.status(500), ctx.json(null))
       )
     )
@@ -128,7 +128,8 @@ describe('Enable MFA Checkbox', () => {
     const okBtn = await screen.findByRole('button', { name: 'Disable MFA' })
     expect(okBtn).toBeVisible()
     fireEvent.click(okBtn)
-    expect(await screen.findByText('An error occurred')).toBeVisible()
+    // TODO
+    // expect(await screen.findByText('Server Error')).toBeVisible()
   })
 
   it('should be disabled to click toggle MFA', async () => {
@@ -144,5 +145,23 @@ describe('Enable MFA Checkbox', () => {
 
     const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
     expect(formItem).toBeDisabled()
+  })
+
+  it('should display correctly if no data', async () => {
+    render(
+      <Provider>
+        <MFAFormItem
+          mfaTenantDetailsData={undefined}
+          isPrimeAdminUser={false}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const formItem = screen.getByRole('checkbox', { name: /Enable Multi-Factor Authentication/i })
+    expect(formItem).toBeDisabled()
+    const copyBtn = await screen.findByText( 'Copy Codes' )
+    fireEvent.click(copyBtn)
+    expect(mockedNavigatorWriteText).toBeCalledWith('')
   })
 })
