@@ -103,7 +103,7 @@ describe('SyslogDetailView', () => {
         ctx.json(detailContent)
       )
     ), rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueDetailContent)
       )
@@ -128,7 +128,7 @@ describe('SyslogDetailView', () => {
         ctx.json(emptyDetailContent)
       )
     ), rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueDetailContent)
       )
