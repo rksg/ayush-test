@@ -5,6 +5,7 @@ import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
 import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { Urls }                                                                  from '@acx-ui/rbac'
 import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -112,7 +113,7 @@ describe('NetworkForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
@@ -190,7 +191,7 @@ describe('Server Configuration Conflict', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

@@ -4,6 +4,7 @@ import { Modal }   from 'antd'
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
+import { Urls }                                  from '@acx-ui/rbac'
 import { CommonUrlsInfo, AaaUrls }               from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
@@ -103,7 +104,7 @@ const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: '
 describe.skip('AAAForm', () => {
   beforeEach(()=>{
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(CommonUrlsInfo.validateRadius.url, (_, res, ctx) =>

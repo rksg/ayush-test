@@ -1,4 +1,4 @@
-import { useUserProfileContext } from '@acx-ui/rc/components'
+import { useUserProfileContext } from '@acx-ui/rbac'
 import {
   useGetTenantDetailsQuery,
   useGetMspEcProfileQuery

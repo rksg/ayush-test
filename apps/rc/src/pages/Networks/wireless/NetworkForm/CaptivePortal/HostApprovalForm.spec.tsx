@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                             from '@acx-ui/components'
+import { Urls }                                  from '@acx-ui/rbac'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
@@ -26,7 +27,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     const hostDataRes= { ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: hostapprovalData.guestPortal }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

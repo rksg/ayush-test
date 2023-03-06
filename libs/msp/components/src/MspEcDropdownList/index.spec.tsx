@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { Urls }                       from '@acx-ui/rbac'
+import { MspUrlsInfo }                from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { MspEcDropdownList } from '.'
 
@@ -90,7 +91,7 @@ describe('MspEcDropdownList', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        Urls.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(fakeUserProfile))
       ),
       rest.get(

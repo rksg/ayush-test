@@ -59,10 +59,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group'
   },
-  getAllUserSettings: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
-  },
   getL2AclPolicyList: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/l2-acl-policy/query'
@@ -308,21 +304,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/policyProfiles'
   },
-  getUserProfile: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/user-profile'
-  },
-  updateUserProfile: {
-    method: 'put',
-    url: '/api/tenant/:tenantId/user-profile'
-  },
   getApDetailHeader: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
-  },
-  getCloudVersion: {
-    method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
   },
   getClientSessionHistory: {
     method: 'post',
@@ -352,14 +336,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/network/external-providers'
   },
-  getGlobalValues: {
-    method: 'get',
-    url: '/api/ui/globalValues'
-  },
-  getCloudMessageBanner: {
-    method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
-  },
   fetchBotAuth: {
     method: 'post',
     url: '/api/tenant/:tenantId/chatbot/idtoken'
@@ -367,30 +343,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getTopology: {
     method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
-  },
-  wifiAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/allowed-operations'
-  },
-  switchAllowedOperations: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/allowed-operations'
-  },
-  tenantAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/allowed-operations'
-  },
-  venueAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/venue/allowed-operations'
-  },
-  guestAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
-  },
-  upgradeAllowedOperations: {
-    method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',

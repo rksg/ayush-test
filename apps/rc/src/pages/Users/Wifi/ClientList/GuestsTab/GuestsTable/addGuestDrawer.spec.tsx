@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Urls }                                                       from '@acx-ui/rbac'
 import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
 import { Provider }                                                   from '@acx-ui/store'
 import {
@@ -45,7 +46,7 @@ describe('Add Guest Drawer', () => {
         res(ctx.json(GuestClient))
       ),
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        Urls.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
@@ -57,7 +58,7 @@ describe('Add Guest Drawer', () => {
       rest.get(WifiUrlsInfo.getNetwork.url, (req, res, ctx) =>
         res(ctx.json(wifiNetworkDetail))
       ),
-      rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) =>
+      rest.get(Urls.getUserProfile.url, (req, res, ctx) =>
         res(ctx.json(UserProfile))
       )
     )

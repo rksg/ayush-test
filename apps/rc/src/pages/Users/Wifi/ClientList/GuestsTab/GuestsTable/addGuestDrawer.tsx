@@ -21,10 +21,13 @@ import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
 import {
+  GuestErrorRes,
+  useLazyGetUserProfileQuery
+} from '@acx-ui/rbac'
+import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
-  useLazyGetNetworkQuery,
-  useLazyGetUserProfileQuery
+  useLazyGetNetworkQuery
 } from '@acx-ui/rc/services'
 import {
   excludeExclamationRegExp,
@@ -37,8 +40,7 @@ import {
   base64Images,
   PdfGeneratorService,
   Guest,
-  LangCode,
-  GuestErrorRes
+  LangCode
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 

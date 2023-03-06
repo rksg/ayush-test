@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
 import { CaretDownSolid }                              from '@acx-ui/icons'
-import { useUserProfileContext }                       from '@acx-ui/rc/components'
+import { useUserProfileContext }                       from '@acx-ui/rbac'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,

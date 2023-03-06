@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Urls }                           from '@acx-ui/rbac'
 import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
@@ -16,7 +17,7 @@ export const successResponse = { requestId: 'request-id' }
 describe('PortalForm', () => {
   it('should create Portal with file successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(
@@ -60,7 +61,7 @@ describe('PortalForm', () => {
   })
   it('should create Portal successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(

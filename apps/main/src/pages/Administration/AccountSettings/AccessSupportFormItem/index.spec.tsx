@@ -2,7 +2,7 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rbac'
 import { AdministrationUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider  }                                   from '@acx-ui/store'
 import {

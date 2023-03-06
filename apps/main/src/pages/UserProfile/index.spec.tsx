@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
 import {
   UserProfile as UserProfileInterface,
-  RolesEnum
-} from '@acx-ui/rc/utils'
+  UserProfileContext,
+  UserProfileContextProps
+}         from '@acx-ui/rbac'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }      from '@acx-ui/types'
 
 import { UserProfile } from './index'
 

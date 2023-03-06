@@ -10,6 +10,7 @@ import { useIntl }               from 'react-intl'
 
 import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
+import { Urls }                              from '@acx-ui/rbac'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 
@@ -84,8 +85,8 @@ export function FetchBot (props:FetchBotProps) {
   }, [])
   useEffect(()=>{
     window.generateToken = async function (callback){
-      const userProfileReq = createHttpRequest (
-        CommonUrlsInfo.getUserProfile,
+      const userProfileReq = createHttpRequest(
+        Urls.getUserProfile,
         { ...params }
       )
       try {

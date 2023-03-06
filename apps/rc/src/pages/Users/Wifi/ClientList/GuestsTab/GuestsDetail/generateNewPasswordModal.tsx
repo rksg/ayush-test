@@ -5,11 +5,9 @@ import moment                                  from 'moment'
 import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal, showToast }         from '@acx-ui/components'
+import { useLazyGetUserProfileQuery }       from '@acx-ui/rbac'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
-import {
-  useLazyGetNetworkQuery,
-  useLazyGetUserProfileQuery
-} from '@acx-ui/rc/services'
+import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
   Guest,

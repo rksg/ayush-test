@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Urls }         from '@acx-ui/rbac'
+import { Provider }     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -226,7 +226,7 @@ describe('HelpPage menus Button', () => {
           })
         )
       ),
-      rest.get(CommonUrlsInfo.getGlobalValues.url,
+      rest.get(Urls.getGlobalValues.url,
         (req, res, ctx) => res(ctx.json(GLOBAL_VALUES))
       ))
     const mockOpenFn = jest.fn()
@@ -277,7 +277,7 @@ describe('HelpPage menus Button should be disabled', () => {
           })
         )
       ),
-      rest.get(CommonUrlsInfo.getGlobalValues.url,
+      rest.get(Urls.getGlobalValues.url,
         (req, res, ctx) => res(ctx.json(GLOBAL_VALUES))
       ))
     render(<Provider>

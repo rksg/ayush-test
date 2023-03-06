@@ -5,6 +5,7 @@ import { rest } from 'msw'
 
 import * as config      from '@acx-ui/config'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Urls }         from '@acx-ui/rbac'
 import { networkApi }   from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -70,7 +71,7 @@ describe('NetworkVenuesTab', () => {
         (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.get(
-        CommonUrlsInfo.getAllUserSettings.url,
+        Urls.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
       ),
       rest.get(

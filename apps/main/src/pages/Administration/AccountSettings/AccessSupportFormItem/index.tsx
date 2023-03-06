@@ -5,8 +5,9 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { showToast }                           from '@acx-ui/components'
-import { SpaceWrapper, useUserProfileContext } from '@acx-ui/rc/components'
+import { showToast }             from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rbac'
+import { SpaceWrapper }          from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,

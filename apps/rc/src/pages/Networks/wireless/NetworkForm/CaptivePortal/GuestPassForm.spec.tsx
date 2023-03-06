@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Urls }  from '@acx-ui/rbac'
 import {
   CommonUrlsInfo,
   GuestNetworkTypeEnum,
@@ -48,7 +49,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
       redirectUrl: 'dbaidu.com', guestNetworkType: GuestNetworkTypeEnum.GuestPass
     } }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(Urls.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

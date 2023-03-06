@@ -1,11 +1,15 @@
 import { defineMessage } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { getIntl }   from '@acx-ui/utils'
 
 import { EntitlementUtil } from '../msp.utils'
 
-import { RolesEnum, roleDisplayText }                      from './msp'
-import { EntitlementDeviceType, EntitlementDeviceSubType } from './msp'
+import {
+  EntitlementDeviceType,
+  EntitlementDeviceSubType,
+  roleDisplayText
+} from './msp'
 
 export enum TenantDelegationStatus {
   INVITED = 'INVITED',
