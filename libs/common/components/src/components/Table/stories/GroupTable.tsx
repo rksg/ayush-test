@@ -27,15 +27,21 @@ type APExtendedGroupedResponse = {
   })[]
 }
 
+/**
+ * Sample function cleaning
+*/
 function cleanResponse (response: APExtendedGroupedResponse) {
   return response.data.map(apGroup => {
     const parent = omit(apGroup, ['deviceGroupName', 'clients', 'aps'])
     const { aps } = apGroup
+    const validAps = aps ?? []
     return {
       ...parent,
+      isParent: true,
       id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
-      children: aps.map(ap => ({
+      children: validAps.map(ap => ({
         ...ap,
+        isParent: false,
         deviceGroupName: (ap.deviceGroupName !== '')
           ? ap.deviceGroupName
           : 'Uncategorized',
@@ -164,7 +170,7 @@ const apGroupResponse: APExtendedGroupedResponse = {
       members: 1,
       incidents: 0,
       clients: 2,
-      aps: [ {
+      aps: [{
         serialNumber: '302002015799',
         name: 'ap3',
         model: 'R550',
@@ -290,7 +296,6 @@ const deviceStatusResponse: APExtendedGroupedResponse = {
         }
       ]
     }, {
-
       deviceGroupId: '',
       deviceGroupName: '',
       deviceStatus: '3_RequiresAttention',
@@ -477,8 +482,8 @@ const cleanedData = cleanResponse(apGroupResponse)
 export function GroupTable () {
   const [ currData, setCurrData ] = React.useState<typeof cleanedData>(() => cleanedData)
 
-  const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName') => {
-    let response: APExtendedGroupedResponse
+  const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName' | undefined) => {
+    let response: APExtendedGroupedResponse | null
     switch (key) {
       case 'deviceGroupName': {
         response = apGroupResponse
@@ -490,6 +495,10 @@ export function GroupTable () {
       }
       case 'model' : {
         response = modelResponse
+        break
+      }
+      default: {
+        response = null
         break
       }
     }
@@ -532,8 +541,7 @@ export function GroupTable () {
     {
       title: 'Venue',
       key: 'venueName',
-      dataIndex: 'venueId',
-      filterable: true
+      dataIndex: 'venueId'
     },
     {
       title: 'Switch',
@@ -549,7 +557,8 @@ export function GroupTable () {
       title: 'AP Group',
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
-      filterable: true
+      filterable: true,
+      searchable: true
     },
     {
       title: 'RF Channels',

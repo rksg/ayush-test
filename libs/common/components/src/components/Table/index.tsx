@@ -83,6 +83,10 @@ export interface TableProps <RecordType>
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void,
+    /**
+     * Assumes that dataSource is nested with children key, and that
+     * isParent boolean property is set on each record item in dataSource
+     */
     groupable?: {
       selectors: { key: string, label: string, actionEnable?: boolean }[]
       onChange: CallableFunction

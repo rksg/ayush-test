@@ -153,7 +153,10 @@ export function useGroupBy<RecordType> (
       return Boolean(children && children.length > 0)
     }
 
-    const isParent = (record: RecordType) => Array.isArray(getChildren(record))
+    const checkParent = (record: RecordType) => {
+      const { isParent } = (record as unknown as { isParent: boolean })
+      return isParent
+    }
 
     const handleEnableAction = (option: { key: string, value: string }) => {
       const actionSelectors = selectors.filter(val => val.actionEnable).map(val => val.key)
@@ -167,11 +170,13 @@ export function useGroupBy<RecordType> (
     const groupColumns: TableProps<RecordType>['columns'] = actionsList.map((val) => ({
       key: val.key,
       dataIndex: '',
-      render: (_, record) => enableAction && isParent(record)
-        ? <div onClick={() => val.callback && val.callback(record)}>
-          {val.label}
-        </div>
-        : null
+      render: (_, record) => {
+        return enableAction && checkParent(record)
+          ? <div onClick={() => val.callback && val.callback(record)}>
+            {val.label}
+          </div>
+          : null
+      }
     }))
 
     const GroupBySelect = () => {
