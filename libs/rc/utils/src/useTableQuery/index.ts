@@ -18,6 +18,8 @@ import { ApiInfo, createHttpRequest } from '../apiService'
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
+export { RequestPayload }
+
 export interface RequestFormData <FormData = unknown> {
   params?: Params<string>
   payload?: FormData
