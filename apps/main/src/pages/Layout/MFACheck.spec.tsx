@@ -75,30 +75,33 @@ describe('MFA is not enabled', () => {
 
 describe('MFA First-time Setup Check', () => {
   const mockedGetMfaAdminDetails = jest.fn()
-  const mockedMFATenantDetail = {
-    tenantStatus: MFAStatus.ENABLED,
-    mfaMethods: [],
-    userId: 'userId',
-    enabled: true
-  }
 
-  beforeEach(() => {
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
+  it('should not popup setup modal if MFA is auth method is already set', async () => {
+    const enabledMFADetails = {
+      tenantStatus: MFAStatus.ENABLED,
+      mfaMethods: [MFAMethod.EMAIL],
+      userId: 'userId',
+      enabled: true
+    }
+
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
-        (_req, res, ctx) => res(ctx.json(mockedMFATenantDetail))
+        (_req, res, ctx) => res(ctx.json(enabledMFADetails))
       ),
       rest.get(
         UserUrlsInfo.getMfaAdminDetails.url,
         (_req, res, ctx) => {
           mockedGetMfaAdminDetails()
-          return res(ctx.json(mockedMFATenantDetail))
+          return res(ctx.json(enabledMFADetails))
         }
       )
     )
-  })
 
-  it('should not popup setup modal if MFA is auth method is already set', async () => {
     const { result } = renderHook(() => {
       const[mfaDetails, setMfaDetails] = useState({})
       return { mfaDetails, setMfaDetails }
@@ -118,12 +121,7 @@ describe('MFA First-time Setup Check', () => {
     })
 
     act(() => {
-      result.current.setMfaDetails({
-        tenantStatus: MFAStatus.ENABLED,
-        mfaMethods: [MFAMethod.EMAIL],
-        userId: 'userId',
-        enabled: true
-      })
+      result.current.setMfaDetails(enabledMFADetails)
     })
 
     await waitFor(() => {
@@ -132,6 +130,27 @@ describe('MFA First-time Setup Check', () => {
   })
 
   it('should popup setup modal', async () => {
+    const mockedMFATenantDetail = {
+      tenantStatus: MFAStatus.ENABLED,
+      mfaMethods: [],
+      userId: 'userId',
+      enabled: true
+    }
+
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json(mockedMFATenantDetail))
+      ),
+      rest.get(
+        UserUrlsInfo.getMfaAdminDetails.url,
+        (_req, res, ctx) => {
+          mockedGetMfaAdminDetails()
+          return res(ctx.json(mockedMFATenantDetail))
+        }
+      )
+    )
+
     const { result } = renderHook(() => {
       const[mfaDetails, setMfaDetails] = useState({})
       const[mfaSetupFinish, setMfaSetupFinish] = useState(false)
@@ -155,15 +174,15 @@ describe('MFA First-time Setup Check', () => {
       result.current.setMfaDetails(mockedMFATenantDetail)
     })
 
-    await screen.findByTestId('mfaSetup')
+    await waitFor(async () => {
+      expect(await screen.findByTestId('mfaSetup')).toBeInTheDocument()
+    })
+
     await userEvent.click(await screen.findByRole('button'))
     act(() => {
       result.current.setMfaSetupFinish(true)
     })
     expect(screen.queryByTestId('mfaSetup')).toBeNull()
   })
-
-
-
 })
 
