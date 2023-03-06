@@ -31,7 +31,9 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
 
   const handleCancel = () => {
     // redirect to login page
-    window.location.href = '/logout'
+    const token = sessionStorage.getItem('jwt')?? null
+    sessionStorage.removeItem('jwt')
+    window.location.href = token? `/logout?token=${token}` : '/logout'
   }
 
   useEffect(() => {

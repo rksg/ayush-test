@@ -86,4 +86,33 @@ describe('UserButton', () => {
       value: location
     })
   })
+
+  it('should handle logout with JWT', async () => {
+    sessionStorage.setItem('jwt', 'testToken1122')
+    const token = sessionStorage.getItem('jwt')
+    const { location } = window
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { href: '' }
+    })
+
+    const isRwbigdogUserProfile = { ...userProfile, email: 'test@rwbigdog.com' }
+    render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: isRwbigdogUserProfile } as UserProfileContextProps}
+      >
+        <UserButton />
+      </UserProfileContext.Provider>
+    </Provider>, { route: { params } })
+    await userEvent.click(screen.getByRole('button'))
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Log out' }))
+    expect(window.location.href).toEqual(`/logout?token=${token}`)
+
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: location
+    })
+  })
 })

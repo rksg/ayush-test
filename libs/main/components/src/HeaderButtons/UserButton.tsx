@@ -27,8 +27,9 @@ const UserButton = () => {
             window.open(changePasswordUrl, '_blank')
             break
           case 'logout':
+            const token = sessionStorage.getItem('jwt')?? null
             sessionStorage.removeItem('jwt')
-            window.location.href = '/logout'
+            window.location.href = token? `/logout?token=${token}` : '/logout'
             break
         }
       }}

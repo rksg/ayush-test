@@ -51,8 +51,9 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       (status === 400 && error === 'API-KEY not present') ||
       status === 401 || status === 403
     ) {
+      const token = sessionStorage.getItem('jwt')?? null
       sessionStorage.removeItem('jwt')
-      window.location.href = '/logout'
+      window.location.href = token? `/logout?token=${token}` : '/logout'
     }
   }
   return next(action)
