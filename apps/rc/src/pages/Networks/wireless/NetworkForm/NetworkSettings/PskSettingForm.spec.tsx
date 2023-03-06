@@ -110,8 +110,9 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
-      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url,
-        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
+        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
     )
 
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
