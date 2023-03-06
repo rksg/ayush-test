@@ -250,9 +250,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getUploadURL: {
     method: 'post',
-    url: '/files/uploadurl',
-    oldUrl: '/api/file/tenant/:tenantId/upload-url',
-    newApi: true
+    // reverting new API support since it is not working for upload
+    // url: '/files/uploadurl',
+    // oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    // newApi: true
+    url: '/api/file/tenant/:tenantId/upload-url'
   },
   getAllDevices: {
     method: 'post',

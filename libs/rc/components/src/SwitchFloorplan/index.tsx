@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useGetFloorPlanQuery, useSwitchListQuery }                                                         from '@acx-ui/rc/services'
 import { FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDevicePosition, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                                                                 from '@acx-ui/utils'
 
 import { NetworkDeviceMarker } from '../FloorPlan/NetworkDevices/NetworkDeviceMarker'
 
@@ -24,6 +25,7 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)
   const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
+  const [imageUrl, setImageUrl] = useState('')
 
   const { data: extendedApList } = useSwitchListQuery({ params, payload: {
     filters: {
@@ -63,6 +65,15 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const { data: floorplan } =
    useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
      floorPlanId: switchPosition?.floorplanId } })
+
+  useEffect(() => {
+    if (floorplan?.imageId) {
+      const response = loadImageWithJWT(floorplan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [floorplan?.imageId])
 
   function onImageLoad () {
     activeDevice.position = switchPosition
@@ -122,7 +133,7 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
           border: 'none' }}
         ref={imageRef}
         alt={floorplan?.name}
-        src={floorplan?.imageUrl} />
+        src={imageUrl} />
     </div>
   </div>
 }

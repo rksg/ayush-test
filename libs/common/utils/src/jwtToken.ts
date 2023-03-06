@@ -103,3 +103,21 @@ export function getJwtToken () {
     return null
   }
 }
+
+export async function loadImageWithJWT (imageId: string) {
+  let gImgUrl = ''
+  const headers = {
+    mode: 'no-cors',
+    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+  }
+  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
+  const result = await fetch(url, { headers }).then(function (response) {
+    return response.json()
+  })
+  if (result) {
+    gImgUrl = result.signedUrl
+  } else {
+    throw new Error(`Error! status: ${result.status}`)
+  }
+  return gImgUrl
+}
