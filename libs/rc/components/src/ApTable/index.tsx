@@ -97,6 +97,7 @@ interface ApTableProps
   extends Omit<TableProps<APExtended>, 'columns'> {
   tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
   searchable?: boolean
+  enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
@@ -339,6 +340,12 @@ export function ApTable (props: ApTableProps) {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
   }, {
+  // ACX-25402: Waiting for integration with group by table
+  //   label: $t({ defaultMessage: 'Delete AP Group' }),
+  //   onClick: async (rows, clearSelection) => {
+  //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
+  //   }
+  // }, {
     label: $t({ defaultMessage: 'Reboot' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
     onClick: (rows, clearSelection) => {
@@ -352,6 +359,7 @@ export function ApTable (props: ApTableProps) {
     }
   }]
 
+  const basePath = useTenantLink('/devices')
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended>
@@ -364,6 +372,24 @@ export function ApTable (props: ApTableProps) {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowActions={rowActions}
+        actions={props.enableActions ? [{
+          label: $t({ defaultMessage: 'Add AP' }),
+          onClick: () => {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/wifi/add`
+            })
+          }
+        }, {
+          label: $t({ defaultMessage: 'Add AP Group' }),
+          onClick: () => {
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/apgroups/add`
+            })
+          }
+        }
+        ] : []}
       />
     </Loader>
   )

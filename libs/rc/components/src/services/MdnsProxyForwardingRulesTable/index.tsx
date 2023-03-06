@@ -70,7 +70,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'service',
       key: 'service',
-      sorter: true,
       render: (data, row) => {
         return getRuleTypeLabel(row)
       }
@@ -78,14 +77,12 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     {
       title: $t({ defaultMessage: 'From VLAN' }),
       dataIndex: 'fromVlan',
-      key: 'fromVlan',
-      sorter: true
+      key: 'fromVlan'
     },
     {
       title: $t({ defaultMessage: 'To VLAN' }),
       dataIndex: 'toVlan',
-      key: 'toVlan',
-      sorter: true
+      key: 'toVlan'
     }
   ]
 

@@ -319,6 +319,10 @@ export interface AclRule {
 	sequence: number
 	action: 'permit' | 'deny',
 	protocol: 'ip' | 'tcp' | 'udp'
+	specificSrcNetwork?: string
+	specificDestNetwork?: string
+	sourcePort?: string | null
+	destinationPort?: string | null
 }
 
 export interface Acl {
@@ -350,18 +354,19 @@ export interface SwitchModel {
 }
 
 export interface Vlan {
-	arpInspection: boolean,
+	arpInspection?: boolean,
 	id: string,
-	igmpSnooping: 'active' | 'passive' | 'none'
-	ipv4DhcpSnooping: boolean,
-	multicastVersion: number,
-	spanningTreePriority: number,
+	igmpSnooping?: 'active' | 'passive' | 'none'
+	ipv4DhcpSnooping?: boolean,
+	multicastVersion?: number,
+	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
   untaggedPorts?: string,
-  taggedPorts?: string
+  taggedPorts?: string,
+  title?: string
 }
 
 export interface ConfigurationProfile {
@@ -760,3 +765,33 @@ export enum DeviceTypes {
 	Unknown='Unknown',
 	Cloud='Cloud'
 }
+
+export interface BonjourFencingWirelessRule {
+  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
+}
+
+export interface BonjourFencingWiredRule {
+  name: string,
+  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
+  closestApMac: string,
+  deviceMacAddresses: string[]
+}
+
+export interface BonjourFencingService {
+  service: string,
+  customServiceName?: string,
+  description: string,
+  wirelessEnabled: boolean,
+  wirelessRule?: BonjourFencingWirelessRule,
+  wiredEnabled: boolean,
+  wiredRules?: BonjourFencingWiredRule[],
+  customMappingEnabled: boolean,
+  customStrings?: string[],
+  rowId?: string
+}
+
+export interface VenueBonjourFencingPolicy {
+  enabled: boolean,
+  services?: BonjourFencingService[]
+}
+

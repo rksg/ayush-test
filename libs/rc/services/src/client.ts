@@ -64,6 +64,15 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       providesTags: [{ type: 'Client', id: 'LIST' }]
     }),
+    disconnectClient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -274,6 +283,7 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 }
 export const {
   useGetGuestsListQuery,
+  useDisconnectClientMutation,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
