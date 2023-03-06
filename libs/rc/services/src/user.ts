@@ -3,19 +3,23 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
   CommonUrlsInfo,
   createHttpRequest,
+  MfaAuthApp,
+  MfaDetailStatus,
+  MfaOtpMethod,
   PlmMessageBanner,
   RequestPayload,
   UserSettings,
   UserProfile,
+  UserUrlsInfo,
   CloudVersion,
-  GlobalValues
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 
 export const baseUserApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'userApi',
-  tagTypes: ['UserProfile'],
+  tagTypes: ['UserProfile', 'Mfa'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -90,18 +94,110 @@ export const userApi = baseUserApi.injectEndpoints({
         }
       }
     }),
-    getGlobalValues: build.query<GlobalValues, RequestPayload>({
+    getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => {
-        const values = createHttpRequest(
-          CommonUrlsInfo.getGlobalValues,
+        const req = createHttpRequest(
+          UserUrlsInfo.getMfaTenantDetails,
           params
         )
         return {
-          ...values
+          ...req
+        }
+      },
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    getMfaAdminDetails: build.query<MfaDetailStatus, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          UserUrlsInfo.getMfaAdminDetails,
+          params
+        )
+        return {
+          ...req
+        }
+      },
+      transformResponse (mfaDetail: MfaDetailStatus) {
+        mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
+        return mfaDetail
+      },
+      providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    toggleMFA: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserUrlsInfo.toggleMFA, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
+    //   query: ({ params }) => {
+    //     const req = createHttpRequest(
+    //       UserUrlsInfo.getMfaMasterCode,
+    //       params
+    //     )
+    //     return {
+    //       ...req
+    //     }
+    //   },
+    //   transformResponse (userProfile: UserProfile) {
+    //     userProfile.initials =
+    //       userProfile.firstName[0].toUpperCase() + userProfile.lastName[0].toUpperCase()
+    //     userProfile.fullName = `${userProfile.firstName} ${userProfile.lastName}`
+    //     return userProfile
+    //   }
+    // }),
+    mfaRegisterAdmin: build.mutation<MfaOtpMethod, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.mfaRegisterAdmin, params)
+        return {
+          ...req,
+          body: payload
         }
       }
+    }),
+    mfaRegisterPhone: build.query<MfaAuthApp, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    setupMFAAccount: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.setupMFAAccount, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
+    }),
+    mfaResendOTP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.mfaResendOTP, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    disableMFAMethod: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.disableMFAMethod, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     })
-
   })
 })
 export const {
@@ -111,5 +207,14 @@ export const {
   useLazyGetUserProfileQuery,
   useUpdateUserProfileMutation,
   useGetPlmMessageBannerQuery,
-  useGetGlobalValuesQuery
+  useSetupMFAAccountMutation,
+  useToggleMFAMutation,
+  useGetMfaAdminDetailsQuery,
+  useLazyGetMfaAdminDetailsQuery,
+  useGetMfaTenantDetailsQuery,
+  useLazyGetMfaTenantDetailsQuery,
+  useMfaRegisterAdminMutation,
+  useMfaRegisterPhoneQuery,
+  useMfaResendOTPMutation,
+  useDisableMFAMethodMutation
 } = userApi
