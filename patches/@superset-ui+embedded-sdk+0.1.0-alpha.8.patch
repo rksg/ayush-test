@@ -18,7 +18,7 @@ index b8bf5ad..0ad406e 100644
 -export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 +export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 diff --git a/node_modules/@superset-ui/embedded-sdk/lib/index.js b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-index 5c8591d..660d38c 100644
+index 5c8591d..e968106 100644
 --- a/node_modules/@superset-ui/embedded-sdk/lib/index.js
 +++ b/node_modules/@superset-ui/embedded-sdk/lib/index.js
 @@ -41,7 +41,8 @@ async function embedDashboard(_ref) {
@@ -31,25 +31,28 @@ index 5c8591d..660d38c 100644
    } = _ref;
  
    function log() {
-@@ -83,6 +84,8 @@ async function embedDashboard(_ref) {
+@@ -83,6 +84,11 @@ async function embedDashboard(_ref) {
        const filterConfig = dashboardUiConfig?.filters || {};
        const filterConfigKeys = Object.keys(filterConfig);
        const filterConfigUrlParams = filterConfigKeys.length > 0 ? "&" + filterConfigKeys.map(key => _const.DASHBOARD_UI_FILTER_CONFIG_URL_PARAM_KEY[key] + '=' + filterConfig[key]).join('&') : ""; // set up the iframe's sandbox configuration
 +      const jwtTokenPayload = authToken ? JSON.parse(window.atob(authToken.split('.')[1])) : {}
 +      const userNameParam = jwtTokenPayload.swuId ? `&username=${jwtTokenPayload.swuId}` : ''
++      const isReadOnlyParam = jwtTokenPayload.roleName ? `&isReadOnly=${
++        !(jwtTokenPayload.roleName.includes('PRIME_ADMIN') || jwtTokenPayload.roleName.includes('ADMIN'))
++      }` : ''
  
        iframe.sandbox.add("allow-same-origin"); // needed for postMessage to work
  
-@@ -120,7 +123,7 @@ async function embedDashboard(_ref) {
+@@ -120,7 +126,7 @@ async function embedDashboard(_ref) {
            debug
          }));
        });
 -      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}`;
-+      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}${userNameParam}`;
++      iframe.src = `${supersetDomain}/embedded/${id}${dashboardConfig}${filterConfigUrlParams}${userNameParam}${isReadOnlyParam}`;
        mountPoint.replaceChildren(iframe);
        log('placed the iframe');
      });
-@@ -128,14 +131,16 @@ async function embedDashboard(_ref) {
+@@ -128,14 +134,16 @@ async function embedDashboard(_ref) {
  
    const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
    ourPort.emit('guestToken', {
