@@ -1,3 +1,5 @@
+import { MFAStatus, MFAMethod } from '../models/MFAEnum'
+
 import { RolesEnum } from './msp'
 
 export interface UserSettings {
@@ -46,6 +48,25 @@ export enum DetailLevel {
   IT_PROFESSIONAL = 'it',
   SUPER_USER = 'su',
   DEBUGGING = 'debug'
+}
+
+export interface MfaDetailStatus {
+  contactId?: string;
+  tenantStatus: MFAStatus
+  mfaMethods: MFAMethod[]
+  recoveryCodes: string[];
+  userId: string;
+  enabled: boolean;
+}
+
+export interface MfaOtpMethod {
+  contactId: string;
+  method: string;
+}
+
+export interface MfaAuthApp {
+  key: string;
+  url: string;
 }
 
 export type GuestErrorRes = {

@@ -6,6 +6,7 @@ import { render, screen, cleanup } from '@acx-ui/test-utils'
 
 import AllRoutes from './AllRoutes'
 
+
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   LicenseBanner: () => <div data-testid='license-banner' />,
@@ -48,6 +49,10 @@ jest.mock('./pages/Venues/VenuesTable', () => ({
 jest.mock('msp/Routes', () => () => {
   return <div data-testid='msp' />
 }, { virtual: true })
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
+}))
 
 describe('AllRoutes', () => {
   afterEach(cleanup)
