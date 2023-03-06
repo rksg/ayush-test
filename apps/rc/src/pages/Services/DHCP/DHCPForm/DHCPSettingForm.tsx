@@ -26,8 +26,8 @@ async function poolValidator (
   pools: DHCPPool[]
 ) {
   const { $t } = getIntl()
+  const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
   if(type === DHCPConfigTypeEnum.HIERARCHICAL){
-    const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
     if(hasVlan1===-1){
       return Promise.reject($t({
         defaultMessage:
@@ -35,6 +35,13 @@ async function poolValidator (
           'At least one DHCP pool with VLAN ID equals "1" must be configured for "Hierarchical" type of DHCP.'
       }))
     }
+  }
+  if(hasVlan1 >=0 && type === DHCPConfigTypeEnum.MULTIPLE){
+    return Promise.reject($t({
+      defaultMessage:
+        // eslint-disable-next-line max-len
+        'The pool has VLAN ID 1 which is not allowed in Multiple AP DHCP mode.'
+    }))
   }
   return
 }
