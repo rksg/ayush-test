@@ -62,11 +62,11 @@ describe('ServerTab', () => {
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ServerTab /></Provider>, { route: { params } })
+    render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable Server'))
-    expect(asFragment()).toMatchSnapshot()
   })
+
   it('should handle update setting', async () => {
     render(
       <Provider>

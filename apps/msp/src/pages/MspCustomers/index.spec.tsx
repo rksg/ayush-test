@@ -128,10 +128,9 @@ describe('MspCustomers', () => {
   })
   it('should render page header and grid layout', async () => {
     render(<Provider><MspCustomers /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(await screen.findByText('MSP Customers')).toBeVisible()
+    expect(await screen.findByText('Manage own account')).toBeVisible()
+    expect(await screen.findByText('Add Customer')).toBeVisible()
   })
   it('should render table', async () => {
     const { asFragment } = render(
@@ -157,6 +156,23 @@ describe('MspCustomers', () => {
 
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should edit select row', async () => {
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(await within(row).findByRole('radio'))
+
+    const editButton = await screen.findByRole('button', { name: /Edit/i })
+    fireEvent.click(editButton)
+
+  })
+
   it.skip('should delete selected row', async () => {
     render(
       <Provider>
@@ -165,12 +181,10 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('radio'))
+    fireEvent.click(await within(row).findByRole('radio'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = await screen.findByRole('button', { name: /delete/i })
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "ec 111"?')
@@ -185,12 +199,11 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/dashboard/mspCustomers' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /ec 111/i })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const resendInviteButton = screen.getByRole('button', { name: /Resend Invitation Email/i })
+    // eslint-disable-next-line max-len
+    const resendInviteButton = await screen.findByRole('button', { name: /Resend Invitation Email/i })
     fireEvent.click(resendInviteButton)
   })
 })

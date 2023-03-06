@@ -11,3 +11,7 @@ data:
   change.password: "https://supportqa.ruckuswireless.com/edit_my_profile"
   manage.licenses: "https://supportqa.ruckuswireless.com/cloud_subscriptions"
   fetchbot.js.url: "https://storage.googleapis.com/tdi-static/chat/tdi-uat-latest.min.js"
+  documentation.center: "https://docs.cloud.ruckuswireless.com/alto/master--1-220111/index.html"
+  my.open.cases: "https://support-qa.ruckuswireless.com/cases/cloud"
+  privacy: "https://www.commscope.com/about-us/privacy-statement"
+  supported.ap.models: "https://www.commscope.com/cloud-supported-network-devices"
