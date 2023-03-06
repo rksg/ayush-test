@@ -35,7 +35,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
-import { getIntl }                                           from '@acx-ui/utils'
+import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -66,17 +66,40 @@ const defaultGuestNetworkPayload = {
 export default function GuestsTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
-      filters: { includeExpired: ['true'] }
+      filters: {
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
+      }
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
+
+  useEffect(()=>{
+    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+    let customPayload = {
+      ...tableQuery.payload,
+      filters: {
+        ..._.omit(payload.filters, ['fromTime', 'toTime']),
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
+      }
+    }
+    tableQuery.setPayload(customPayload)
+  }, [startDate, endDate])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
