@@ -418,18 +418,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (res: ConfigurationBackup[]) => {
+      transformResponse: (res: TableResult<ConfigurationBackup>) => {
         return {
-          data: res
+          ...res,
+          data: res.data
             .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
             .map(item => ({
               ...item,
               createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-            })),
-          totalCount: res.length,
-          page: 1
+            }))
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
