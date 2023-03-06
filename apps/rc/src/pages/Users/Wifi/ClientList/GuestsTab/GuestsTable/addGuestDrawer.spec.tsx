@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Urls }                                                       from '@acx-ui/user'
 import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
 import { Provider }                                                   from '@acx-ui/store'
 import {
@@ -10,6 +9,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { Urls } from '@acx-ui/user'
 
 import {
   GuestClient,

@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Urls }     from '@acx-ui/user'
 import { DHCPUrls } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -11,6 +10,7 @@ import {
   screen,
   waitForElementToBeRemoved,
   fireEvent } from '@acx-ui/test-utils'
+import { Urls } from '@acx-ui/user'
 
 import DHCPForm from './DHCPForm'
 

@@ -10,7 +10,6 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { hasAccesses } from '@acx-ui/user'
 import {
   useGetCliFamilyModelsQuery,
   useVenuesListQuery } from '@acx-ui/rc/services'
@@ -18,7 +17,8 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 

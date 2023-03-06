@@ -11,7 +11,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }  from '@acx-ui/user'
 import {
   NetworkApGroupDialog,
   NetworkVenueScheduleDialog,
@@ -30,7 +29,8 @@ import {
   generateDefaultNetworkVenue,
   SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import NetworkFormContext from '../NetworkFormContext'
 

@@ -1,14 +1,14 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
-import { hasAccesses }        from '@acx-ui/user'
 import {
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }  from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import AccessControlTabs from './AccessControlTabs'
 

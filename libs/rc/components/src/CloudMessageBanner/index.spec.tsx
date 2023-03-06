@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { Urls }                       from '@acx-ui/user'
 import { Provider }                   from '@acx-ui/store'
 import { render, screen, mockServer } from '@acx-ui/test-utils'
+import { Urls }                       from '@acx-ui/user'
 
 import { CloudMessageBanner } from '.'
 

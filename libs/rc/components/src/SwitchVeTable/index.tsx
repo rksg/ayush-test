@@ -10,14 +10,14 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { hasAccesses }                                                                       from '@acx-ui/user'
 import { useDeleteVePortsMutation, useGetSwitchRoutedListQuery, useGetVenueRoutedListQuery } from '@acx-ui/rc/services'
 import {
   isOperationalSwitch,
   useTableQuery,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
 

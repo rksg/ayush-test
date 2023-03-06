@@ -7,7 +7,6 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { hasAccesses }             from '@acx-ui/user'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation
@@ -17,7 +16,8 @@ import {
   EntitlementUtil,
   Entitlement
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'

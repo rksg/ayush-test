@@ -11,7 +11,6 @@ import {
   Loader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/user'
 import {
   useGetUpgradePreferencesQuery,
   useUpdateUpgradePreferencesMutation,
@@ -34,7 +33,8 @@ import {
   RequestPayload,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import {
   compareVersions,

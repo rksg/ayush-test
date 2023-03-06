@@ -7,7 +7,6 @@ import {  useParams }                         from 'react-router-dom'
 import { noDataSymbol }                                                          from '@acx-ui/analytics/utils'
 import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
 import { CopyOutlined }                                                          from '@acx-ui/icons'
-import { hasAccesses }                                                           from '@acx-ui/user'
 import {
   useLazyGetDpskQuery,
   useGetPersonaByIdQuery,
@@ -15,6 +14,7 @@ import {
   useLazyGetPersonaGroupByIdQuery, useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
+import { hasAccesses }  from '@acx-ui/user'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                                                                    from '../PersonaDrawer'

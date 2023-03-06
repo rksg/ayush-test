@@ -9,7 +9,6 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { hasAccesses }                                     from '@acx-ui/user'
 import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -22,6 +21,7 @@ import {
   CatchErrorResponse
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                             from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',

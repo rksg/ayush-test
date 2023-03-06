@@ -10,7 +10,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
-import { hasAccesses }                                       from '@acx-ui/user'
 import { EdgeStatusLight }                                   from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {
@@ -22,6 +21,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { hasAccesses }   from '@acx-ui/user'
 import { useDateFilter } from '@acx-ui/utils'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'

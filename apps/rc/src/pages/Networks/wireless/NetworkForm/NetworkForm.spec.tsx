@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { Urls }                                                  from '@acx-ui/user'
 import { AaaUrls, CommonUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import {
@@ -15,6 +14,7 @@ import {
   waitForElementToBeRemoved,
   waitFor
 } from '@acx-ui/test-utils'
+import { Urls } from '@acx-ui/user'
 
 import {
   venuesResponse,

@@ -15,7 +15,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }               from '@acx-ui/user'
 import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
@@ -27,6 +26,7 @@ import {
   MspEntitlement
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 export function Subscriptions () {
   const { $t } = useIntl()

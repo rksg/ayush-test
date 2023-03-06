@@ -12,7 +12,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/user'
 import {
   NetworkApGroupDialog,
   transformVLAN,
@@ -39,7 +38,8 @@ import {
   RadioTypeEnum,
   SchedulingModalState
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import { useGetNetwork } from '../services'
 

@@ -31,7 +31,6 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { VenueFilter }    from '@acx-ui/main/components'
-import { hasAccesses }    from '@acx-ui/user'
 import {
   AlarmWidget,
   ClientsWidget,
@@ -40,6 +39,7 @@ import {
   VenuesDashboardWidget
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
+import { hasAccesses }                       from '@acx-ui/user'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

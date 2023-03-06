@@ -7,18 +7,18 @@ import {
   Tabs,
   Tooltip
 } from '@acx-ui/components'
+import {
+  useLocation,
+  useNavigate,
+  useParams
+} from '@acx-ui/react-router-dom'
+import { RolesEnum }             from '@acx-ui/types'
 import { useUserProfileContext } from '@acx-ui/user'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
-import {
-  useLocation,
-  useNavigate,
-  useParams
-} from '@acx-ui/react-router-dom'
-import { RolesEnum }       from '@acx-ui/types'
 import { notAvailableMsg } from '@acx-ui/utils'
 
 import {

@@ -11,12 +11,12 @@ import {
   WorldSolid,
   ArrowExpand
 } from '@acx-ui/icons'
-import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 import {
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
-import { MSPUtils }  from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { MSPUtils }                           from '@acx-ui/rc/utils'
+import { useParams }                          from '@acx-ui/react-router-dom'
+import { RegionValue, useUserProfileContext } from '@acx-ui/user'
 
 
 import * as UI from '../styledComponents'

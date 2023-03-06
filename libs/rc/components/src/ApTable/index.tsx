@@ -12,7 +12,6 @@ import {
   ColumnType
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { hasAccesses }            from '@acx-ui/user'
 import {
   useApListQuery
 } from '@acx-ui/rc/services'
@@ -32,6 +31,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                       from '@acx-ui/user'
 
 import { seriesMappingAP } from '../DevicesWidget/helper'
 import { useApActions }    from '../useApActions'

@@ -7,8 +7,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }         from '@acx-ui/user'
 import { DHCPPool, LeaseUnit } from '@acx-ui/rc/utils'
+import { hasAccesses }         from '@acx-ui/user'
 
 export function PoolTable (props:{
   data: DHCPPool[]

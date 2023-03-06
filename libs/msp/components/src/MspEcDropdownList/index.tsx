@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, LayoutUI, Loader, Table, TableProps } from '@acx-ui/components'
 import { CaretDownSolid }                              from '@acx-ui/icons'
-import { useUserProfileContext }                       from '@acx-ui/user'
 import {
   useMspCustomerListDropdownQuery,
   useVarCustomerListDropdownQuery,
@@ -13,6 +12,7 @@ import {
 }  from '@acx-ui/rc/services'
 import { MspEc, TenantIdFromJwt, useTableQuery, VarCustomer } from '@acx-ui/rc/utils'
 import { getBasePath, Link, useParams  }                      from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                              from '@acx-ui/user'
 import { AccountType }                                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

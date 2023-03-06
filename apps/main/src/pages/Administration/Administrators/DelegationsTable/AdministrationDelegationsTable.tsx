@@ -12,7 +12,6 @@ import {
   Subtitle,
   Loader
 } from '@acx-ui/components'
-import { hasAccesses }          from '@acx-ui/user'
 import {
   useGetDelegationsQuery,
   useRevokeInvitationMutation
@@ -22,6 +21,7 @@ import {
   Delegation,
   getDelegetionStatusIntlString
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 

@@ -9,7 +9,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 import {
   useVarCustomerListQuery
 } from '@acx-ui/rc/services'
@@ -21,7 +20,8 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink }      from '@acx-ui/react-router-dom'
+import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 
 
 const transformApUtilization = (row: VarCustomer) => {

@@ -9,10 +9,10 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
-import { hasAccesses }                                                             from '@acx-ui/user'
 import { getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
 import { getPolicyDetailsLink, PolicyOperation }                                   from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+import { hasAccesses }                                                             from '@acx-ui/user'
 
 
 import SyslogDetailContent from './SyslogDetailContent'

@@ -19,7 +19,6 @@ import {
   AssignEcDrawer,
   ResendInviteModal
 } from '@acx-ui/msp/components'
-import { hasAccesses }      from '@acx-ui/user'
 import {
   useDeleteMspEcMutation,
   useMspCustomerListQuery
@@ -29,6 +28,7 @@ import {
   MspEc
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                                              from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'

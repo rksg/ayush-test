@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { hasAccesses }                                         from '@acx-ui/user'
 import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
+import { hasAccesses }                                         from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()

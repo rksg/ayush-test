@@ -27,7 +27,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Drag }                                                                       from '@acx-ui/icons'
-import { hasAccesses }                                                                from '@acx-ui/user'
 import { useAddL3AclPolicyMutation, useGetL3AclPolicyQuery, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
 import {
   AccessStatus,
@@ -37,6 +36,7 @@ import {
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 

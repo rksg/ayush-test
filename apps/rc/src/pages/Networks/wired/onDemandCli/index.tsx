@@ -1,11 +1,11 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
-import { hasAccesses }                                            from '@acx-ui/user'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
+import { hasAccesses }                                            from '@acx-ui/user'
 
 export function OnDemandCliTab () {
   const { $t } = useIntl()

@@ -4,7 +4,6 @@ import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                 from '@acx-ui/user'
 import { useLazyGetDhcpServerQuery }                   from '@acx-ui/rc/services'
 import {
   getDhcpOptionList,
@@ -14,7 +13,8 @@ import {
   SwitchDhcp,
   SwitchDhcpOption
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
 
 import { DhcpOptionModal } from './DhcpOptionModal'
 

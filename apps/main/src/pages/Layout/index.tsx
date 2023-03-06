@@ -21,11 +21,11 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useUserProfileContext }             from '@acx-ui/user'
 import { CloudMessageBanner }                from '@acx-ui/rc/components'
 import { isDelegationMode, TenantIdFromJwt } from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet }         from '@acx-ui/react-router-dom'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { useUserProfileContext }             from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'

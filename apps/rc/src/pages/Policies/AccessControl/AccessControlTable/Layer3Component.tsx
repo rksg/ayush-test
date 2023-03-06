@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/user'
 import {
   useDelL3AclPolicyMutation,
   useGetAccessControlProfileListQuery,
@@ -16,6 +15,7 @@ import {
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
 

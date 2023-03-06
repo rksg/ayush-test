@@ -15,7 +15,6 @@ import {
   Modal
 } from '@acx-ui/components'
 import { DeleteOutlined } from '@acx-ui/icons'
-import { hasAccesses }    from '@acx-ui/user'
 import {
   networkWifiIpRegExp,
   domainNameRegExp,
@@ -23,6 +22,7 @@ import {
   checkItemNotIncluded,
   DnsProxyRule
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import { DnsProxyContext } from './ServicesForm'
 

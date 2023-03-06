@@ -13,7 +13,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }               from '@acx-ui/user'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -22,6 +21,7 @@ import {
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 
 import * as UI            from './styledComponents'

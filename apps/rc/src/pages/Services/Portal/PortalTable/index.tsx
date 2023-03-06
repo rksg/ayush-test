@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { hasAccesses }                                                    from '@acx-ui/user'
 import { useDeletePortalMutation, useGetPortalProfileListQuery }          from '@acx-ui/rc/services'
 import { useGetPortalLangMutation }                                       from '@acx-ui/rc/services'
 import {
@@ -17,6 +16,7 @@ import {
   PortalLanguageEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                             from '@acx-ui/user'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'

@@ -5,7 +5,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                                        from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer, PersonaGroupSelect }                      from '@acx-ui/rc/components'
 import {
   useSearchPersonaListQuery,
@@ -15,6 +14,7 @@ import {
   useDeletePersonasMutation
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { hasAccesses }                                          from '@acx-ui/user'
 
 import { PersonaDetailsLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                        from '../PersonaDrawer'

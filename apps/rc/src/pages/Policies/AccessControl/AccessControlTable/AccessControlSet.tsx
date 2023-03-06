@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                from '@acx-ui/user'
 import {
   useApplicationPolicyListQuery, useDeleteAccessControlProfileMutation,
   useDevicePolicyListQuery, useGetAccessControlProfileListQuery,
@@ -19,6 +18,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                             from '@acx-ui/user'
 
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
 import DeviceOSDrawer    from '../AccessControlForm/DeviceOSDrawer'

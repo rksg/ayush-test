@@ -4,7 +4,6 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                  from '@acx-ui/user'
 import { useGetVenueSyslogListQuery }   from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
@@ -12,6 +11,7 @@ import {
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
+import { hasAccesses } from '@acx-ui/user'
 
 import SyslogContext from '../SyslogContext'
 

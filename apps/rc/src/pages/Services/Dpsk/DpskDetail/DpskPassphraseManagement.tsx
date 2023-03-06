@@ -14,7 +14,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { CopyOutlined }              from '@acx-ui/icons'
-import { hasAccesses }               from '@acx-ui/user'
 import { CsvSize, ImportFileDrawer } from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseListMutation,
@@ -29,8 +28,9 @@ import {
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { formatter } from '@acx-ui/utils'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
+import { formatter }   from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 

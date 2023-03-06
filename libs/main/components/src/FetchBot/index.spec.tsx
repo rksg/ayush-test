@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 
-import { Urls }           from '@acx-ui/user'
 import { CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }       from '@acx-ui/store'
 import {
@@ -11,6 +10,7 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { Urls } from '@acx-ui/user'
 
 import { FetchBot } from './index'
 

@@ -31,7 +31,6 @@ import {
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
-import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   useAddCustomerMutation,
   useMspCustomerListQuery,
@@ -62,8 +61,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }   from '@acx-ui/types'
-import { AccountType } from '@acx-ui/utils'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
+import { AccountType }            from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'

@@ -1,5 +1,5 @@
-import { DetailLevel } from '@acx-ui/user'
 import { MFAStatus }   from '@acx-ui/rc/utils'
+import { DetailLevel } from '@acx-ui/user'
 
 export const fakeUserProfile = {
   region: '[NA]',

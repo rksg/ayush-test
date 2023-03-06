@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { hasAccesses }                                             from '@acx-ui/user'
 import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
@@ -15,6 +14,7 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasAccesses }           from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 

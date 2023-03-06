@@ -19,7 +19,6 @@ import {
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
-import { hasAccesses, useUserProfileContext } from '@acx-ui/user'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
@@ -35,6 +34,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses, useUserProfileContext }                                       from '@acx-ui/user'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'

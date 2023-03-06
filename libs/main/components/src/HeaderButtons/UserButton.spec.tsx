@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
+import { Provider }         from '@acx-ui/store'
+import { render, screen }   from '@acx-ui/test-utils'
 import {
   UserProfile,
   UserProfileContext,
   UserProfileContextProps
 } from '@acx-ui/user'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
 
 import UserButton from './UserButton'
 

@@ -5,7 +5,6 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader }            from '@acx-ui/components'
-import { hasAccesses }                                   from '@acx-ui/user'
 import { useGetSwitchVlanQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -13,8 +12,9 @@ import {
   SwitchPortViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { hasAccesses } from '@acx-ui/user'
+import { getIntl }     from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 

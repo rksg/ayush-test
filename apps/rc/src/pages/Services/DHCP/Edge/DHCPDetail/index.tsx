@@ -3,10 +3,10 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps }                                         from '@acx-ui/components'
-import { hasAccesses }                                                                                                   from '@acx-ui/user'
 import { useGetDhcpStatsQuery }                                                                                          from '@acx-ui/rc/services'
 import { DhcpStats, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                         from '@acx-ui/react-router-dom'
+import { hasAccesses }                                                                                                   from '@acx-ui/user'
 
 import { EdgeDhcpServiceStatusLight } from '../EdgeDhcpStatusLight'
 

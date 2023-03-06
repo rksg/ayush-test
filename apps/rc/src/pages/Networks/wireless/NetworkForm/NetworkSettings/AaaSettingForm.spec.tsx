@@ -5,10 +5,10 @@ import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
 import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { Urls }                                                                  from '@acx-ui/user'
 import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider }                                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Urls }                                                                  from '@acx-ui/user'
 
 import {
   venuesResponse,

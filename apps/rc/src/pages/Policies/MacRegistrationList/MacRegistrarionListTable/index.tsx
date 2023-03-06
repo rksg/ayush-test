@@ -8,7 +8,6 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
-import { hasAccesses }                                      from '@acx-ui/user'
 import { useDeleteMacRegListMutation, useMacRegListsQuery } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
@@ -21,6 +20,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                  from '@acx-ui/user'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 

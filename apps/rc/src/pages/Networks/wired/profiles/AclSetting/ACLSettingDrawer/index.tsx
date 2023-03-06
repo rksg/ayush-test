@@ -13,8 +13,8 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
-import { hasAccesses }                                                                   from '@acx-ui/user'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
+import { hasAccesses }                                                                   from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 

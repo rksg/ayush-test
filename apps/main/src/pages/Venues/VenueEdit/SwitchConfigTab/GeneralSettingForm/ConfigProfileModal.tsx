@@ -8,10 +8,10 @@ import { Button,
   cssStr, Modal,
   Table, TableProps,
   Tabs, Tooltip } from '@acx-ui/components'
-import { hasAccesses }                      from '@acx-ui/user'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { hasAccesses } from '@acx-ui/user'
+import { getIntl }     from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 

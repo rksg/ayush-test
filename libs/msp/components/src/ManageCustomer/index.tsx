@@ -27,7 +27,6 @@ import {
 } from '@acx-ui/components'
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
-import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -61,7 +60,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'

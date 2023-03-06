@@ -11,7 +11,6 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { hasAccesses }                                 from '@acx-ui/user'
 import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
@@ -28,6 +27,7 @@ import {
   isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasAccesses }                                       from '@acx-ui/user'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { SwitchCliSession }          from '../SwitchCliSession'

@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
-import { hasAccesses }                                           from '@acx-ui/user'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
@@ -17,6 +16,7 @@ import {
   useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { hasAccesses }                                 from '@acx-ui/user'
 
 import {
   DpskPoolLink,

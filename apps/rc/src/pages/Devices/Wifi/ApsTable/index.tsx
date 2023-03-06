@@ -10,10 +10,10 @@ import {
   PageHeader
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { hasAccesses }                                                   from '@acx-ui/user'
 import { ApTable, CsvSize, ImportFileDrawer }                            from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
+import { hasAccesses }                                                   from '@acx-ui/user'
 
 export default function ApsTable () {
   const { $t } = useIntl()

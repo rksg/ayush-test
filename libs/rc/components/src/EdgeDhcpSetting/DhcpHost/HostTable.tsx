@@ -4,8 +4,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { hasAccesses }  from '@acx-ui/user'
 import { EdgeDhcpHost } from '@acx-ui/rc/utils'
+import { hasAccesses }  from '@acx-ui/user'
 
 export function HostTable (props:{
   data: EdgeDhcpHost[]
