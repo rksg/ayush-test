@@ -31,5 +31,5 @@ export enum Features {
   BONJOUR_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
-  MAC_REGISTRATION = 'acx-ui-mac-registration-toggle'
+  MAC_REGISTRATION = 'mac-registration-service-enabled'
 }
