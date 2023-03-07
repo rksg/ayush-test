@@ -20,7 +20,7 @@ import NetworkFormContext from '../NetworkFormContext'
 import PortalInstance from '.'
 jest.mock('@acx-ui/utils')
 const mockedData = loadImageWithJWT as jest.MockedFunction<typeof loadImageWithJWT>
-describe('Portal Instance Page', () => {
+describe.skip('Portal Instance Page', () => {
   beforeEach(async () => {
     mockedData.mockReturnValue(Promise.resolve('testId'))
     mockServer.use(

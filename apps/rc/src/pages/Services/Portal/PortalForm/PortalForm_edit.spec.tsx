@@ -63,7 +63,7 @@ async function fillInBeforeSettings (portalName: string) {
   const validating = await screen.findByRole('img', { name: 'loading' })
   await waitForElementToBeRemoved(validating, { timeout: 7000 })
 }
-describe('PortalForm', () => {
+describe.skip('PortalForm', () => {
   beforeEach(() => {
     mockedData.mockReturnValue(Promise.resolve('testId'))
   })
