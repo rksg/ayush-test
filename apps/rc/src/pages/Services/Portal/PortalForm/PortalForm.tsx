@@ -12,6 +12,7 @@ import {
 import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation } from '@acx-ui/rc/services'
 import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal }              from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                   from '@acx-ui/react-router-dom'
+import { getJwtToken }                                                                             from '@acx-ui/utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -129,16 +130,34 @@ export const PortalForm = (props:{
   const updateSaveData = (saveData: Partial<Portal>) => {
     setPortalData({ ...portalData, ...saveData })
   }
+  const loadImageWithJwt = async (imageId:string) =>{
+    const headers = new Headers({
+      mode: 'no-cors',
+      ...(getJwtToken()?{ Authorization: `Bearer ${getJwtToken()}` }:{})
+    })
+    const result = await fetch(imageId, { headers: headers }).then((res)=>{
+      return res
+    })
+    if(result){
+      return result.url
+    }else return ''
+  }
   useEffect(() => {
-    if (data) {
+    const fetchData= async (data:Portal) =>{
       const formatData = { ...data, content: {
-        ...data.content, logo: data.content?.logo ? (prefix+data.content.logo):Logo,
-        photo: data.content?.photo ? (prefix+data.content.photo):Photo,
-        poweredImg: data.content?.poweredImg ? (prefix+data.content.poweredImg):Powered,
-        bgImage: data.content?.bgImage ? (prefix+data.content.bgImage):'' } } as Portal
+        ...data.content, logo: data.content?.logo ?
+          await loadImageWithJwt(prefix+data.content.logo):Logo,
+        photo: data.content?.photo ? await loadImageWithJwt(prefix+data.content.photo):Photo,
+        poweredImg: data.content?.poweredImg ?
+          await loadImageWithJwt(prefix+data.content.poweredImg):Powered,
+        bgImage: data.content?.bgImage ?
+          await loadImageWithJwt(prefix+data.content.bgImage):'' } } as Portal
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(formatData)
       updateSaveData(formatData)
+    }
+    if(data){
+      fetchData(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
