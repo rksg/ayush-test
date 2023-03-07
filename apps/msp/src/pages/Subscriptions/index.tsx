@@ -29,6 +29,7 @@ import {
   MspEntitlement
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -240,7 +241,7 @@ export function Subscriptions () {
       <Loader states={[queryResults]}>
         <Table
           columns={columns}
-          actions={actions}
+          actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           rowKey='id'
         />
@@ -256,11 +257,11 @@ export function Subscriptions () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={filterByAccess([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <SubscriptionUtilization />
       <SubscriptionTable />

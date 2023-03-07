@@ -21,7 +21,6 @@
       ],
       "@acx-ui/analytics/services": ["libs/analytics/services/src/index.ts"],
       "@acx-ui/analytics/utils": ["libs/analytics/utils/src/index.ts"],
-      "@acx-ui/rbac": ["libs/common/rbac/src/index.ts"],
       "@acx-ui/components": ["libs/common/components/src/index.ts"],
       "@acx-ui/config": ["libs/common/config/src/index.ts"],
       "@acx-ui/feature-toggle": ["libs/common/feature-toggle/src/index.ts"],
@@ -39,6 +38,7 @@
       "@acx-ui/test-utils": ["libs/common/test-utils/src/index.ts"],
       "@acx-ui/theme": ["libs/common/components/src/theme/index.less"],
       "@acx-ui/types": ["libs/common/types/src/index.ts"],
+      "@acx-ui/user": ["libs/common/user/src/index.ts"],
       "@acx-ui/utils": ["libs/common/utils/src/index.ts"]
     }
   },
