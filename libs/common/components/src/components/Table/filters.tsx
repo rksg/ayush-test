@@ -236,11 +236,21 @@ export function useGroupBy<RecordType> (
       }
     }
 
+    const clearGroupByFn = () => {
+      onClear()
+      setEnableAction(false)
+      setValue(undefined)
+    }
+
+    const isGroupByActive = Boolean(value)
+
     return {
       GroupBySelect,
       expandable,
       groupActionColumns,
-      finalParentColumns
+      finalParentColumns,
+      clearGroupByFn,
+      isGroupByActive
     }
   }
 
@@ -248,6 +258,8 @@ export function useGroupBy<RecordType> (
     GroupBySelect: () => null,
     expandable: undefined,
     groupActionColumns: [],
-    finalParentColumns: []
+    finalParentColumns: [],
+    clearGroupByFn: () => {},
+    isGroupByActive: false
   }
 }

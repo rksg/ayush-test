@@ -132,6 +132,22 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+function getHighlightFn (searchValue: string): TableHighlightFnArgs {
+  return (textToHighlight, formatFn) =>
+    (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+      ? formatFn
+        ? textToHighlight.replace(
+          new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+        : <Highlighter
+          highlightStyle={{
+            fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
+          }}
+          searchWords={[searchValue]}
+          textToHighlight={textToHighlight}
+          autoEscape />
+      : textToHighlight
+}
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -152,7 +168,9 @@ function Table <RecordType extends Record<string, any>> ({
     GroupBySelect,
     expandable,
     groupActionColumns,
-    finalParentColumns
+    finalParentColumns,
+    clearGroupByFn,
+    isGroupByActive
   } = useGroupBy<RecordType>(groupable, props.columns.length)
 
   useEffect(() => {
@@ -410,12 +428,14 @@ function Table <RecordType extends Record<string, any>> ({
             <GroupBySelect />
             <UI.HeaderRight>
               {(Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH))
+            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
+            isGroupByActive)
             && <Button
               style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
               onClick={() => {
                 setFilterValues({} as Filter)
                 setSearchValue('')
+                clearGroupByFn()
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
@@ -520,19 +540,3 @@ Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
 
 export { Table }
-function getHighlightFn (searchValue: string): TableHighlightFnArgs {
-  return (textToHighlight, formatFn) =>
-    (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
-      ? formatFn
-        ? textToHighlight.replace(
-          new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
-        : <Highlighter
-          highlightStyle={{
-            fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
-          }}
-          searchWords={[searchValue]}
-          textToHighlight={textToHighlight}
-          autoEscape />
-      : textToHighlight
-}
-
