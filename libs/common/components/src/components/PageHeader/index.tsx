@@ -37,6 +37,7 @@ function PageHeader (props: PageHeaderProps) {
   let extra = props.extra
   if (Array.isArray(extra)) {
     extra = (props.extra as JSX.Element[])
+      .filter(Boolean)
       .map((node, index) => React.cloneElement(node, { key: `extra-${index}` }))
   }
   if (props.breadcrumb) {
