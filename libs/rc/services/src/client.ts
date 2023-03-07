@@ -23,7 +23,7 @@ import {
   WifiUrlsInfo,
   RequestFormData
 } from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter } from '@acx-ui/utils'
+import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
 
 export const baseClientApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -64,6 +64,15 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       providesTags: [{ type: 'Client', id: 'LIST' }]
     }),
+    disconnectClient: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -103,19 +112,21 @@ export const clientApi = baseClientApi.injectEndpoints({
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
@@ -123,7 +134,6 @@ export const clientApi = baseClientApi.injectEndpoints({
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
-
         return {
           ...req,
           responseHandler: async (response) => {
@@ -135,7 +145,8 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: payload,
           headers: {
             'Content-Type': 'application/json',
-            'accept': 'application/json,text/plain,*/*'
+            'accept': 'application/json,text/plain,*/*',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
       }
@@ -274,6 +285,7 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
 }
 export const {
   useGetGuestsListQuery,
+  useDisconnectClientMutation,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,

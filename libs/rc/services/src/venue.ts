@@ -53,6 +53,7 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing,
   TopologyData,
+  VenueBonjourFencingPolicy,
   PropertyConfigs,
   PropertyUrlsInfo,
   PropertyUnit,
@@ -60,7 +61,7 @@ import {
   NewTableResult,
   transferToTableResult
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, getJwtToken } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -293,7 +294,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           headers: {
             'accept': 'application/json, text/plain, */*',
             'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8'
+            'content-type': 'application/json; charset=UTF-8',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           },
           body: payload
         }
@@ -583,10 +585,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
@@ -921,6 +924,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result?.data[0] as TopologyData
       }
     }),
+    getVenueBonjourFencing: build.query<VenueBonjourFencingPolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueBonjourFencingPolicy, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueBonjourFencing'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'BONJOUR_FENCING' }]))
+          })
+        })
+      }
+    }),
+    updateVenueBonjourFencing: build.mutation<VenueBonjourFencingPolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueBonjourFencingPolicy, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }]
+    }),
     getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, params)
@@ -1071,8 +1103,6 @@ export const {
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
-  useGetVenueSyslogApQuery,
-  useUpdateVenueSyslogApMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
@@ -1105,6 +1135,8 @@ export const {
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
   useGetTopologyQuery,
+  useGetVenueBonjourFencingQuery,
+  useUpdateVenueBonjourFencingMutation,
   useGetPropertyConfigsQuery,
   useUpdatePropertyConfigsMutation,
   usePatchPropertyConfigsMutation,

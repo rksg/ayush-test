@@ -2,15 +2,13 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Tabs }                                   from '@acx-ui/components'
 import {
   useNavigate,
   useParams,
   useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -77,12 +75,7 @@ function VenueEditTabs () {
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
       <Tabs.TabPane
         key='switch'
-        disabled={!useIsSplitOn(Features.UNRELEASED)}
-        tab={
-          <Tooltip title={useIsSplitOn(Features.UNRELEASED) ? '' :
-            intl.$t(notAvailableMsg)}>
-            {intl.$t({ defaultMessage: 'Switch Configuration' })}
-          </Tooltip>}
+        tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
       />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Property Management' })} key='property' />
     </Tabs>

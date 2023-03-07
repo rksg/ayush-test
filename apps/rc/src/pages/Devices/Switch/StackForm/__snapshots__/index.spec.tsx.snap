@@ -495,7 +495,7 @@ exports[`Switch Stack Form - Add should render correctly 1`] = `
                           </div>
                         </div>
                         <h3
-                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 styledComponents__StepFormTitle-sc-wgbcob-3 dConwg ezBzXN"
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 styledComponents__StepFormTitle-sc-wgbcob-3 kSRaqD ezBzXN"
                         >
                           Stack Member
                           <span

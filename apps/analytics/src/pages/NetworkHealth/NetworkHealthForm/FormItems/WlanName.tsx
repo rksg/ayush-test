@@ -1,11 +1,12 @@
 import { Form, Select }           from 'antd'
+import { NamePath }               from 'antd/es/form/interface'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, StepsFormNew } from '@acx-ui/components'
 import { useNetworkListQuery }  from '@acx-ui/rc/services'
 
-const name = 'wlanName' as const
+const name = ['configs', 0, 'wlanName'] as const
 const label = defineMessage({ defaultMessage: 'Network' })
 
 const payload = {
@@ -36,12 +37,12 @@ export function WlanName () {
     const ok = Promise.resolve()
     if (!name) return ok
     if (networks.names?.includes(name)) return ok
-    return Promise.reject($t({ defaultMessage: '"{name}" not exists' }, { name }))
+    return Promise.reject($t({ defaultMessage: '"{name}" does not exists' }, { name }))
   }
 
-  return <Loader style={{ height: 'auto' }} states={[networks]}>
+  return <Loader style={{ height: 'auto', minHeight: 71 }} states={[networks]}>
     <Form.Item
-      name={name}
+      name={name as unknown as NamePath}
       label={$t(label)}
       rules={[
         { required: true },
@@ -50,8 +51,8 @@ export function WlanName () {
       children={<Select
         status={networks.noData ? 'error' : undefined}
         placeholder={networks.noData
-          ? $t({ defaultMessage: 'No Networks found' })
-          : $t({ defaultMessage: 'Select a Network' })}
+          ? $t({ defaultMessage: 'No networks found' })
+          : $t({ defaultMessage: 'Select a network' })}
         children={networks.options}
       />}
     />
@@ -64,7 +65,7 @@ WlanName.label = label
 WlanName.FieldSummary = function WlanNameFieldSummary () {
   const { $t } = useIntl()
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary />}
   />

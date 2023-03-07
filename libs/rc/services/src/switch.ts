@@ -316,6 +316,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
+        if (!req.url.includes('defaultVlan')) {
+          payload = { isDefault: true, switchIds: payload }
+        }
         return {
           ...req,
           body: payload
@@ -408,24 +411,23 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
-      transformResponse: (res: ConfigurationBackup[]) => {
+      transformResponse: (res: TableResult<ConfigurationBackup>) => {
         return {
-          data: res
-            .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+          ...res,
+          data: res.data
             .map(item => ({
               ...item,
               createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-            })),
-          totalCount: res.length,
-          page: 1
+            }))
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -536,11 +538,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    getSwitchAcls: build.query<Acl[], RequestPayload>({
-      query: ({ params }) => {
+    getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -626,6 +629,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
+    getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
@@ -648,6 +660,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
+        if (req.url.includes('staticRoutes')) {
+          payload = [payload]
+        }
         return {
           ...req,
           body: payload
@@ -756,10 +771,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -1199,5 +1215,6 @@ export const {
   useAddAclMutation,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchModelListQuery
 } = switchApi

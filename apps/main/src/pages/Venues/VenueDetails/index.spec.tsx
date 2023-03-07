@@ -42,6 +42,25 @@ jest.mock('@acx-ui/rc/components', () => {
   return Object.fromEntries(sets)
 })
 
+jest.mock('./VenueAnalyticsTab', () => ({
+  VenueAnalyticsTab: () => <div data-testid={'rc-VenueAnalyticsTab'} title='VenueAnalyticsTab' />
+}))
+jest.mock('./VenueClientsTab', () => ({
+  VenueClientsTab: () => <div data-testid={'rc-VenueClientsTab'} title='VenueClientsTab' />
+}))
+jest.mock('./VenueDevicesTab', () => ({
+  VenueDevicesTab: () => <div data-testid={'rc-VenueDevicesTab'} title='VenueDevicesTab' />
+}))
+jest.mock('./VenueNetworksTab', () => ({
+  VenueNetworksTab: () => <div data-testid={'rc-VenueNetworksTab'} title='VenueNetworksTab' />
+}))
+// jest.mock('./VenueServicesTab', () => ({
+//   VenueServicesTab: () => <div data-testid={'rc-VenueServicesTab'} title='VenueServicesTab' />
+// })) TODO: Separate Services tab tests
+jest.mock('./VenueTimelineTab', () => ({
+  VenueTimelineTab: () => <div data-testid={'rc-VenueTimelineTab'} title='VenueTimelineTab' />
+}))
+
 describe('VenueDetails', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -103,8 +122,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('AI Analytics')
+    expect(await screen.findByTestId('rc-VenueAnalyticsTab')).toBeVisible()
   })
 
   it('should navigate to client tab correctly', async () => {
@@ -116,8 +134,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Clients (0)')
+    expect(await screen.findByTestId('rc-VenueClientsTab')).toBeVisible()
   })
 
   it('should navigate to device tab correctly', async () => {
@@ -129,8 +146,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Devices (0)')
+    expect(await screen.findByTestId('rc-VenueDevicesTab')).toBeVisible()
   })
 
   it('should navigate to network tab correctly', async () => {
@@ -142,8 +158,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Networks (0)')
+    expect(await screen.findByTestId('rc-VenueNetworksTab')).toBeVisible()
   })
 
   it('should navigate to service tab correctly', async () => {
@@ -168,9 +183,7 @@ describe('VenueDetails', () => {
     render(<Provider><VenueDetails /></Provider>, {
       route: { params, path: '/:tenantId/:venueId/venue-details/:activeTab' }
     })
-    expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Timeline')
-    await screen.findByTestId('rc-EventTable')
+    expect(await screen.findByTestId('rc-VenueTimelineTab')).toBeVisible()
   })
 
   it('should not navigate to non-existent tab', async () => {

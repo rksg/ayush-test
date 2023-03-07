@@ -18,6 +18,7 @@ export * from './components/DonutChart'
 export * from './components/Dropdown'
 export * from './components/Drawer'
 export * from './components/Fieldset'
+export * from './components/FlattenCascader'
 export * from './components/GoogleMap'
 export * from './components/Grid'
 export * from './components/Layout'
@@ -42,8 +43,7 @@ export * from './components/StepsForm'
 export {
   StepsForm as StepsFormNew,
   useStepFormContext,
-  createStepsFormContext,
-  useWatch
+  createStepsFormContext
 } from './components/StepsFormNew'
 export type {
   FieldSummaryProps,

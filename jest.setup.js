@@ -37,7 +37,18 @@ beforeAll(() => {
 beforeEach(async () => {
   mockDOMSize(1280, 800)
   const env = require('./apps/main/src/env.json')
-  mockServer.use(rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))))
+  mockServer.use(
+    rest.get(`${document.baseURI}env.json`, (_, res, ctx) => res(ctx.json(env))),
+    rest.get('/mfa/tenant/:tenantId', (_req, res, ctx) =>
+      res(
+        ctx.json({
+          tenantStatus: 'DISABLED',
+          mfaMethods: [],
+          userId: 'userId',
+        })
+      )
+    )
+  )
   await config.initialize()
 })
 afterEach(() => {
@@ -89,6 +100,12 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
   Features: {}
+}), { virtual: true })
+
+jest.mock('@acx-ui/rbac', () => ({
+  hasAccess: jest.fn().mockReturnValue(true),
+  hasRoles: jest.fn().mockReturnValue(true),
+  hasAccesses: jest.fn().mockImplementation((items) => items)
 }), { virtual: true })
 
 jest.mock('@acx-ui/icons', ()=> {
