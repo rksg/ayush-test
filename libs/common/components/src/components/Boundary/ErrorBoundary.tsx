@@ -27,7 +27,10 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
     } else {
       error = JSON.stringify(this.state.error)
     }
-    return <p>{error}</p>
+    return <>
+      <p>Something went wrong.</p>
+      <p>{error}</p>
+    </>
   }
 
   override render () {
