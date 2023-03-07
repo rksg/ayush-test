@@ -1,0 +1,2037 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NsgDetail Should render EdgeDhcpDetail successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/list"
+              >
+                Services
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/networkSegmentation/list"
+              >
+                Network Segmentation
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              nsg1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/networkSegmentation/testServiceId/edit"
+              >
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                  type="button"
+                >
+                  <span>
+                    Configure
+                  </span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-space ant-space-vertical"
+    >
+      <div
+        class="ant-space-item"
+        style="margin-bottom: 30px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+          type="solid-bg"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__InfoMargin-sc-17w391s-0 bSOmeI"
+              >
+                <div
+                  class="ant-row Grid__GridRow-sc-5irhjd-2"
+                  style="margin: -10px -10px -10px -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Service Status
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Service Health
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Venue
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/mock_venue_1/venue-details/overview"
+                            >
+                              Mock Venue 1
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Persona Group
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            SmartEdge
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/0000000001/edge-details/overview"
+                            >
+                              Smart Edge 1
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Number of Segments
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            10
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Number of devices per segment
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            10
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            DHCP Service (Pool)
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/edgeDhcp/1/detail"
+                            >
+                              TestDhcp-1(undefined)
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Tunnel
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Networks
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            2
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            APs
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Dist. Switches
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Access Switches
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-space-item"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__InstancesMargin-sc-17w391s-1 xRAjc"
+              >
+                <h2
+                  class="ant-typography"
+                >
+                  Instances
+                </h2>
+                <div
+                  class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 gYbduO"
+                >
+                  <div
+                    class="ant-tabs-nav"
+                    role="tablist"
+                  >
+                    <div
+                      class="ant-tabs-nav-wrap"
+                    >
+                      <div
+                        class="ant-tabs-nav-list"
+                        style="transform: translate(0px, 0px);"
+                      >
+                        <div
+                          class="ant-tabs-tab ant-tabs-tab-active"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-aps"
+                            aria-selected="true"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-aps"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            APs (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-distSwitches"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-distSwitches"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Dist. Switches (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-accessSwitches"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-accessSwitches"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Access Switches (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-assignedSegments"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-assignedSegments"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Assigned Segments (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                          style="left: 0px; width: 1280px;"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+                    >
+                      <button
+                        aria-controls="rc-tabs-test-more-popup"
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-hidden="true"
+                        class="ant-tabs-nav-more"
+                        id="rc-tabs-test-more"
+                        style="visibility: hidden; order: 1;"
+                        tabindex="-1"
+                        type="button"
+                      >
+                        <span
+                          aria-label="ellipsis"
+                          class="anticon anticon-ellipsis"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="ellipsis"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-tabs-content-holder"
+                  >
+                    <div
+                      class="ant-tabs-content ant-tabs-content-top"
+                    >
+                      <div
+                        aria-hidden="false"
+                        aria-labelledby="rc-tabs-test-tab-aps"
+                        class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                        id="rc-tabs-test-panel-aps"
+                        role="tabpanel"
+                        tabindex="0"
+                      >
+                        <div
+                          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                        >
+                          <div
+                            class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+                          >
+                            <div
+                              class="ant-pro-table"
+                            >
+                              <div
+                                class="ant-pro-card"
+                              >
+                                <div
+                                  class="ant-pro-card-body"
+                                  style="padding-top: 0px;"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar"
+                                  >
+                                    <div
+                                      class="ant-pro-table-list-toolbar-container"
+                                    >
+                                      <div
+                                        class="ant-pro-table-list-toolbar-left"
+                                      />
+                                      <div
+                                        class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                                      >
+                                        <div
+                                          class="ant-space-item"
+                                        >
+                                          <div
+                                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                          >
+                                            <div
+                                              class="ant-space-item"
+                                            >
+                                              <div
+                                                class="ant-pro-table-list-toolbar-setting-item"
+                                              >
+                                                <svg
+                                                  data-testid="SettingsOutlined"
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-table-wrapper"
+                                  >
+                                    <div
+                                      class="ant-spin-nested-loading"
+                                    >
+                                      <div
+                                        class="ant-spin-container"
+                                      >
+                                        <div
+                                          class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                        >
+                                          <div
+                                            class="ant-table-container"
+                                          >
+                                            <div
+                                              class="ant-table-content"
+                                              style="overflow-x: auto; overflow-y: hidden;"
+                                            >
+                                              <table
+                                                style="min-width: 100%; table-layout: auto;"
+                                              >
+                                                <colgroup>
+                                                  <col />
+                                                  <col />
+                                                  <col />
+                                                  <col />
+                                                  <col
+                                                    style="width: 32px;"
+                                                  />
+                                                </colgroup>
+                                                <thead
+                                                  class="ant-table-thead"
+                                                >
+                                                  <tr>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      AP Name
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      Model
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      MAC Address
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      Available Ports
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                                      style="position: sticky; right: 0px;"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody
+                                                  class="ant-table-tbody"
+                                                >
+                                                  <tr
+                                                    aria-hidden="true"
+                                                    class="ant-table-measure-row"
+                                                    style="height: 0px; font-size: 0px;"
+                                                  >
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                  <tr
+                                                    class="ant-table-placeholder"
+                                                  >
+                                                    <td
+                                                      class="ant-table-cell"
+                                                      colspan="5"
+                                                    >
+                                                      <div
+                                                        class="ant-table-expanded-row-fixed"
+                                                        style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                                      />
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-distSwitches"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-distSwitches"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-accessSwitches"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-accessSwitches"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-assignedSegments"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-assignedSegments"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NsgDetail Should render detail page successfully 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 gRMUNV"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/list"
+              >
+                Services
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/networkSegmentation/list"
+              >
+                Network Segmentation
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              nsg1
+            </h1>
+          </span>
+        </div>
+        <span
+          class="ant-page-header-heading-extra"
+        >
+          <div
+            class="ant-space ant-space-horizontal ant-space-align-center"
+          >
+            <div
+              class="ant-space-item"
+            >
+              <a
+                href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/networkSegmentation/testServiceId/edit"
+              >
+                <button
+                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                  type="button"
+                >
+                  <span>
+                    Configure
+                  </span>
+                </button>
+              </a>
+            </div>
+          </div>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="ant-space ant-space-vertical"
+    >
+      <div
+        class="ant-space-item"
+        style="margin-bottom: 30px;"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 dnleil"
+          type="solid-bg"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__InfoMargin-sc-17w391s-0 bSOmeI"
+              >
+                <div
+                  class="ant-row Grid__GridRow-sc-5irhjd-2"
+                  style="margin: -10px -10px -10px -10px;"
+                >
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Service Status
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Service Health
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Venue
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/venues/mock_venue_1/venue-details/overview"
+                            >
+                              Mock Venue 1
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Persona Group
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            SmartEdge
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/devices/edge/0000000001/edge-details/overview"
+                            >
+                              Smart Edge 1
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Number of Segments
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            10
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Number of devices per segment
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            10
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            DHCP Service (Pool)
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            <a
+                              href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/edgeDhcp/1/detail"
+                            >
+                              TestDhcp-1(undefined)
+                            </a>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Tunnel
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Networks
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            2
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            APs
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Dist. Switches
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-col ant-col-3 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                    style="padding: 10px 10px 10px 10px;"
+                  >
+                    <div
+                      class="Grid__Container-sc-5irhjd-1 zzbxI"
+                    >
+                      <div
+                        class="ant-space ant-space-vertical"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-bottom: 10px;"
+                        >
+                          <span
+                            class="ant-typography"
+                          >
+                            Access Switches
+                          </span>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <span
+                            class="ant-typography"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-space-item"
+      >
+        <div
+          class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+          type="default"
+        >
+          <div
+            class="ant-card"
+          >
+            <div
+              class="ant-card-head"
+            >
+              <div
+                class="ant-card-head-wrapper"
+              >
+                <div
+                  class="ant-card-head-title"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  >
+                    <div
+                      class="ant-space-item"
+                    >
+                      <div
+                        class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-extra"
+                >
+                  <div
+                    class="ant-space ant-space-horizontal ant-space-align-center"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-card-body"
+            >
+              <div
+                class="styledComponents__InstancesMargin-sc-17w391s-1 xRAjc"
+              >
+                <h2
+                  class="ant-typography"
+                >
+                  Instances
+                </h2>
+                <div
+                  class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 gYbduO"
+                >
+                  <div
+                    class="ant-tabs-nav"
+                    role="tablist"
+                  >
+                    <div
+                      class="ant-tabs-nav-wrap"
+                    >
+                      <div
+                        class="ant-tabs-nav-list"
+                        style="transform: translate(0px, 0px);"
+                      >
+                        <div
+                          class="ant-tabs-tab ant-tabs-tab-active"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-aps"
+                            aria-selected="true"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-aps"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            APs (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-distSwitches"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-distSwitches"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Dist. Switches (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-accessSwitches"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-accessSwitches"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Access Switches (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-tab"
+                        >
+                          <div
+                            aria-controls="rc-tabs-test-panel-assignedSegments"
+                            aria-selected="false"
+                            class="ant-tabs-tab-btn"
+                            id="rc-tabs-test-tab-assignedSegments"
+                            role="tab"
+                            tabindex="0"
+                          >
+                            Assigned Segments (0)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-tabs-ink-bar ant-tabs-ink-bar-animated"
+                          style="left: 0px; width: 1280px;"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-tabs-nav-operations ant-tabs-nav-operations-hidden"
+                    >
+                      <button
+                        aria-controls="rc-tabs-test-more-popup"
+                        aria-expanded="false"
+                        aria-haspopup="listbox"
+                        aria-hidden="true"
+                        class="ant-tabs-nav-more"
+                        id="rc-tabs-test-more"
+                        style="visibility: hidden; order: 1;"
+                        tabindex="-1"
+                        type="button"
+                      >
+                        <span
+                          aria-label="ellipsis"
+                          class="anticon anticon-ellipsis"
+                          role="img"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            data-icon="ellipsis"
+                            fill="currentColor"
+                            focusable="false"
+                            height="1em"
+                            viewBox="64 64 896 896"
+                            width="1em"
+                          >
+                            <path
+                              d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-tabs-content-holder"
+                  >
+                    <div
+                      class="ant-tabs-content ant-tabs-content-top"
+                    >
+                      <div
+                        aria-hidden="false"
+                        aria-labelledby="rc-tabs-test-tab-aps"
+                        class="ant-tabs-tabpane ant-tabs-tabpane-active"
+                        id="rc-tabs-test-panel-aps"
+                        role="tabpanel"
+                        tabindex="0"
+                      >
+                        <div
+                          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+                        >
+                          <div
+                            class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+                          >
+                            <div
+                              class="ant-pro-table"
+                            >
+                              <div
+                                class="ant-pro-card"
+                              >
+                                <div
+                                  class="ant-pro-card-body"
+                                  style="padding-top: 0px;"
+                                >
+                                  <div
+                                    class="ant-pro-table-list-toolbar"
+                                  >
+                                    <div
+                                      class="ant-pro-table-list-toolbar-container"
+                                    >
+                                      <div
+                                        class="ant-pro-table-list-toolbar-left"
+                                      />
+                                      <div
+                                        class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                                      >
+                                        <div
+                                          class="ant-space-item"
+                                        >
+                                          <div
+                                            class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                                          >
+                                            <div
+                                              class="ant-space-item"
+                                            >
+                                              <div
+                                                class="ant-pro-table-list-toolbar-setting-item"
+                                              >
+                                                <svg
+                                                  data-testid="SettingsOutlined"
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="ant-table-wrapper"
+                                  >
+                                    <div
+                                      class="ant-spin-nested-loading"
+                                    >
+                                      <div
+                                        class="ant-spin-container"
+                                      >
+                                        <div
+                                          class="ant-table ant-table-middle ant-table-empty ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                                        >
+                                          <div
+                                            class="ant-table-container"
+                                          >
+                                            <div
+                                              class="ant-table-content"
+                                              style="overflow-x: auto; overflow-y: hidden;"
+                                            >
+                                              <table
+                                                style="min-width: 100%; table-layout: auto;"
+                                              >
+                                                <colgroup>
+                                                  <col />
+                                                  <col />
+                                                  <col />
+                                                  <col />
+                                                  <col
+                                                    style="width: 32px;"
+                                                  />
+                                                </colgroup>
+                                                <thead
+                                                  class="ant-table-thead"
+                                                >
+                                                  <tr>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      AP Name
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      Model
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      MAC Address
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell react-resizable"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      Available Ports
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                    <th
+                                                      class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                                      style="position: sticky; right: 0px;"
+                                                    >
+                                                      <div
+                                                        class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                                      />
+                                                      <div
+                                                        class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                                      />
+                                                    </th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody
+                                                  class="ant-table-tbody"
+                                                >
+                                                  <tr
+                                                    aria-hidden="true"
+                                                    class="ant-table-measure-row"
+                                                    style="height: 0px; font-size: 0px;"
+                                                  >
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                    <td
+                                                      style="padding: 0px; border: 0px; height: 0px;"
+                                                    >
+                                                      <div
+                                                        style="height: 0px; overflow: hidden;"
+                                                      >
+                                                         
+                                                      </div>
+                                                    </td>
+                                                  </tr>
+                                                  <tr
+                                                    class="ant-table-placeholder"
+                                                  >
+                                                    <td
+                                                      class="ant-table-cell"
+                                                      colspan="5"
+                                                    >
+                                                      <div
+                                                        class="ant-table-expanded-row-fixed"
+                                                        style="width: 0px; position: sticky; left: 0px; overflow: hidden;"
+                                                      />
+                                                    </td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-distSwitches"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-distSwitches"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-accessSwitches"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-accessSwitches"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                      <div
+                        aria-hidden="true"
+                        aria-labelledby="rc-tabs-test-tab-assignedSegments"
+                        class="ant-tabs-tabpane"
+                        id="rc-tabs-test-panel-assignedSegments"
+                        role="tabpanel"
+                        style="display: none;"
+                        tabindex="-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
