@@ -31,11 +31,11 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
-  GuestErrorRes
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
+import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
+import { getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -66,18 +66,18 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { startDate, endDate, range } = useDateFilter()
+  // const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
       filters: {
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
+        includeExpired: ['true']//,
+        // ...(range === DateRange.allTime ? {} : {
+        //   fromTime: [moment(startDate).utc().format()],
+        //   toTime: [moment(endDate).utc().format()]
+        // })
       }
     },
     search: {
@@ -85,21 +85,21 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
     }
   })
 
-  useEffect(()=>{
-    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-    let customPayload = {
-      ...tableQuery.payload,
-      filters: {
-        ..._.omit(payload.filters, ['fromTime', 'toTime']),
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
-      }
-    }
-    tableQuery.setPayload(customPayload)
-  }, [startDate, endDate])
+  // useEffect(()=>{
+  //   const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+  //   let customPayload = {
+  //     ...tableQuery.payload,
+  //     filters: {
+  //       ..._.omit(payload.filters, ['fromTime', 'toTime']),
+  //       includeExpired: ['true']//,
+  //       // ...(range === DateRange.allTime ? {} : {
+  //       //   fromTime: [moment(startDate).utc().format()],
+  //       //   toTime: [moment(endDate).utc().format()]
+  //       // })
+  //     }
+  //   }
+  //   tableQuery.setPayload(customPayload)
+  // }, [startDate, endDate])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -363,11 +363,11 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -380,13 +380,12 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }
-        ].filter(((item, index)=> {
+        }].filter(((item, index)=> {
           if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
             return false
           }
           return true
-        }))}
+        })))}
       />
 
       <Drawer

@@ -10,9 +10,9 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Button, StepsForm }            from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useGetDpskListQuery }          from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useGetDpskListQuery }                 from '@acx-ui/rc/services'
 import {
   WlanSecurityEnum,
   DpskSaveData,
@@ -21,6 +21,7 @@ import {
   transformAdvancedDpskExpirationText
 } from '@acx-ui/rc/utils'
 
+import DpskForm           from '../../../../Services/Dpsk/DpskForm/DpskForm'
 import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
 import NetworkFormContext from '../NetworkFormContext'
 
@@ -119,14 +120,20 @@ function SettingsForm () {
 
 function DpskServiceSelector () {
   const intl = useIntl()
+  const form = Form.useFormInstance()
   const $t = intl.$t
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
+  const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const { data: dpskList } = useGetDpskListQuery({})
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 
   const findService = (serviceId: string) => {
     return dpskList?.data.find((dpsk: DpskSaveData) => dpsk.id === serviceId)
+  }
+
+  const onDpskModalClose = () => {
+    setDpskModalVisible(false)
   }
 
   useEffect(() => {
@@ -164,7 +171,11 @@ function DpskServiceSelector () {
         >
         </Select>
       </Form.Item>
-      <Button type='link' style={{ marginBottom: '16px' }}>
+      <Button
+        type='link'
+        style={{ marginBottom: '16px' }}
+        onClick={() => setDpskModalVisible(true)}
+      >
         { $t({ defaultMessage: 'Add DPSK Service' }) }
       </Button>
       { selectedDpsk &&
@@ -192,6 +203,23 @@ function DpskServiceSelector () {
           </Form.Item>
         </>
       }
+      <Modal
+        title={$t({ defaultMessage: 'Add DPSK service' })}
+        visible={dpskModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<DpskForm
+          modalMode={true}
+          modalCallBack={(result) => {
+            if (result) {
+              form.setFieldValue('dpskServiceProfileId', result.id)
+            }
+            onDpskModalClose()
+          }}
+        />}
+        onCancel={onDpskModalClose}
+        width={1200}
+        destroyOnClose={true}
+      />
     </>
   )
 }

@@ -11,14 +11,12 @@ import {
   GridCol,
   GridRow,
   Loader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
-import { CatchErrorResponse }                                        from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
@@ -134,13 +132,7 @@ export function MdnsProxyTab () {
         }).unwrap().then(resetForm)
       }
     } catch (error) {
-      const errorResponse = error as CatchErrorResponse
-      const errorMsg = errorResponse.data?.errors?.map(err => err.message).join('<br />')
-
-      showToast({
-        type: 'error',
-        content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

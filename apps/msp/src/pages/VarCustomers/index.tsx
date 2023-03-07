@@ -13,7 +13,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useUserProfileContext }      from '@acx-ui/rc/components'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
@@ -28,6 +27,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }    from '@acx-ui/user'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -313,11 +313,11 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={[
+        extra={filterByAccess([
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
 
       {!userProfile?.support && <InvitationList />}

@@ -10,6 +10,7 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import { FetchBot } from './index'
 
@@ -68,7 +69,7 @@ describe('FetchBot',()=>{
   it('should return proper auth-token while calling generateToken method', async ()=>{
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (_, res, ctx) => res(ctx.json({ externalId: 'external-user-id' }))
       ),
       rest.post(
@@ -103,7 +104,7 @@ describe('FetchBot',()=>{
   it('should throw error while calling user profile api', async ()=>{
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (_, res) => res.networkError('Failed to connect')
       )
     )
@@ -131,7 +132,7 @@ describe('FetchBot',()=>{
   it('should throw error while calling generateToken method', async ()=>{
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (_, res, ctx) => res(ctx.json({ externalId: 'external-user-id' }))
       ),
       rest.post(

@@ -11,14 +11,15 @@ import {
   TableProps,
   Subtitle
 } from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
   useGetMspProfileQuery,
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, RolesEnum, MSPUtils } from '@acx-ui/rc/utils'
+import { Administrator, MSPUtils }               from '@acx-ui/rc/utils'
+import { RolesEnum }                             from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -199,7 +200,9 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         columns={columns}
         dataSource={adminList}
         rowKey='id'
-        rowActions={isPrimeAdminUser ? rowActions : undefined}
+        rowActions={isPrimeAdminUser
+          ? filterByAccess(rowActions)
+          : undefined}
         rowSelection={{
           type: isPrimeAdminUser ? 'checkbox' : 'radio',
           getCheckboxProps: (record: Administrator) => ({
@@ -209,7 +212,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
 
           })
         }}
-        actions={tableActions}
+        actions={filterByAccess(tableActions)}
       />
 
       { editMode ?

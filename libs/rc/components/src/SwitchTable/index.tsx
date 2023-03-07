@@ -12,7 +12,6 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { hasAccesses } from '@acx-ui/rbac'
 import { useImportSwitchesMutation,
   useLazyGetJwtTokenQuery,
   useSwitchListQuery } from '@acx-ui/rc/services'
@@ -31,6 +30,7 @@ import {
   isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -240,6 +240,7 @@ export function SwitchTable (props : {
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
+    key: 'EnableCliSessionButton',
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -297,7 +298,7 @@ export function SwitchTable (props : {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -306,7 +307,7 @@ export function SwitchTable (props : {
             : null
         }
       }}
-      actions={hasAccesses(props.enableActions ? [{
+      actions={filterByAccess(props.enableActions ? [{
         label: $t({ defaultMessage: 'Add Switch' }),
         onClick: () => {
           navigate(`${linkToEditSwitch.pathname}/add`)
