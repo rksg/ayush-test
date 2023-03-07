@@ -29,7 +29,7 @@ interface StaticRoutesDrawerProps {
 const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const params = useParams()
+  const { tenantId, switchId } = useParams()
   const { visible, setVisible, data } = props
   const [formRef] = Form.useForm()
   const [addSwitchStaticRoute] = useAddSwitchStaticRouteMutation()
@@ -77,6 +77,7 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = (formData: StaticRoute) => {
     const payload = formData
+    const params = { tenantId, switchId, staticRouteId: formData.id }
     if(data) {
       updateSwitchStaticRoute({ params, payload }).unwrap()
         .catch((error) => {
