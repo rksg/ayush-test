@@ -51,6 +51,487 @@ exports[`VarCustomers should render correctly 1`] = `
       </div>
     </div>
   </div>
+  <h3
+    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+  >
+    Pending Invitations (4)
+  </h3>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+    >
+      <div
+        class="ant-pro-table"
+      >
+        <div
+          class="ant-pro-card"
+        >
+          <div
+            class="ant-pro-card-body"
+            style="padding-top: 0px;"
+          >
+            <div
+              class="ant-pro-table-list-toolbar"
+            >
+              <div
+                class="ant-pro-table-list-toolbar-container"
+              >
+                <div
+                  class="ant-pro-table-list-toolbar-left"
+                />
+                <div
+                  class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-right"
+                >
+                  <div
+                    class="ant-space-item"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center ant-pro-table-list-toolbar-setting-items"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="ant-pro-table-list-toolbar-setting-item"
+                        >
+                          <svg
+                            data-testid="SettingsOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-table-wrapper"
+            >
+              <div
+                class="ant-spin-nested-loading"
+              >
+                <div
+                  class="ant-spin-container"
+                >
+                  <div
+                    class="ant-table ant-table-middle ant-table-fixed-column ant-table-scroll-horizontal ant-table-has-fix-right"
+                  >
+                    <div
+                      class="ant-table-container"
+                    >
+                      <div
+                        class="ant-table-content"
+                        style="overflow-x: auto; overflow-y: hidden;"
+                      >
+                        <table
+                          style="min-width: 100%; table-layout: auto;"
+                        >
+                          <colgroup>
+                            <col />
+                            <col />
+                            <col
+                              style="width: 220px;"
+                            />
+                            <col
+                              style="width: 32px;"
+                            />
+                          </colgroup>
+                          <thead
+                            class="ant-table-thead"
+                          >
+                            <tr>
+                              <th
+                                aria-sort="ascending"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                tabindex="0"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="ant-table-column-sorters"
+                                >
+                                  <span
+                                    class="ant-table-column-title"
+                                  >
+                                    Account Name
+                                  </span>
+                                  <span
+                                    class="ant-table-column-sorter ant-table-column-sorter-full"
+                                  >
+                                    <span
+                                      class="ant-table-column-sorter-inner"
+                                    >
+                                      <span
+                                        aria-label="caret-up"
+                                        class="anticon anticon-caret-up ant-table-column-sorter-up active"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="caret-up"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="0 0 1024 1024"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                          />
+                                        </svg>
+                                      </span>
+                                      <span
+                                        aria-label="caret-down"
+                                        class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="caret-down"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="0 0 1024 1024"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </span>
+                                </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                tabindex="0"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="ant-table-column-sorters"
+                                >
+                                  <span
+                                    class="ant-table-column-title"
+                                  >
+                                    Account Email
+                                  </span>
+                                  <span
+                                    class="ant-table-column-sorter ant-table-column-sorter-full"
+                                  >
+                                    <span
+                                      class="ant-table-column-sorter-inner"
+                                    >
+                                      <span
+                                        aria-label="caret-up"
+                                        class="anticon anticon-caret-up ant-table-column-sorter-up"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="caret-up"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="0 0 1024 1024"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M858.9 689L530.5 308.2c-9.4-10.9-27.5-10.9-37 0L165.1 689c-12.2 14.2-1.2 35 18.5 35h656.8c19.7 0 30.7-20.8 18.5-35z"
+                                          />
+                                        </svg>
+                                      </span>
+                                      <span
+                                        aria-label="caret-down"
+                                        class="anticon anticon-caret-down ant-table-column-sorter-down"
+                                        role="img"
+                                      >
+                                        <svg
+                                          aria-hidden="true"
+                                          data-icon="caret-down"
+                                          fill="currentColor"
+                                          focusable="false"
+                                          height="1em"
+                                          viewBox="0 0 1024 1024"
+                                          width="1em"
+                                        >
+                                          <path
+                                            d="M840.4 300H183.6c-19.7 0-30.7 20.8-18.5 35l328.4 380.8c9.4 10.9 27.5 10.9 37 0L858.9 335c12.2-14.2 1.2-35-18.5-35z"
+                                          />
+                                        </svg>
+                                      </span>
+                                    </span>
+                                  </span>
+                                </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell react-resizable"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                              <th
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                style="position: sticky; right: 0px;"
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody
+                            class="ant-table-tbody"
+                          >
+                            <tr
+                              aria-hidden="true"
+                              class="ant-table-measure-row"
+                              style="height: 0px; font-size: 0px;"
+                            >
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                              <td
+                                style="padding: 0px; border: 0px; height: 0px;"
+                              >
+                                <div
+                                  style="height: 0px; overflow: hidden;"
+                                >
+                                   
+                                </div>
+                              </td>
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83a"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog151@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                  type="button"
+                                >
+                                  <span>
+                                    Reject
+                                  </span>
+                                </button>
+                                <button
+                                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                                  style="margin-left: 10px;"
+                                  type="button"
+                                >
+                                  <span>
+                                    Accept
+                                  </span>
+                                </button>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83b"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog152@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                  type="button"
+                                >
+                                  <span>
+                                    Reject
+                                  </span>
+                                </button>
+                                <button
+                                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                                  style="margin-left: 10px;"
+                                  type="button"
+                                >
+                                  <span>
+                                    Accept
+                                  </span>
+                                </button>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83c"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog151@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                  type="button"
+                                >
+                                  <span>
+                                    Reject
+                                  </span>
+                                </button>
+                                <button
+                                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                                  style="margin-left: 10px;"
+                                  type="button"
+                                >
+                                  <span>
+                                    Accept
+                                  </span>
+                                </button>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                            <tr
+                              class="ant-table-row ant-table-row-level-0"
+                              data-row-key="2ea8eaabc07840caa5fed7a80913a83d"
+                            >
+                              <td
+                                class="ant-table-cell ant-table-column-sort"
+                              >
+                                <a
+                                  href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac"
+                                >
+                                  Dog Company 151
+                                </a>
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                dog155@email.com
+                              </td>
+                              <td
+                                class="ant-table-cell"
+                              >
+                                <button
+                                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+                                  type="button"
+                                >
+                                  <span>
+                                    Reject
+                                  </span>
+                                </button>
+                                <button
+                                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 glXBEv"
+                                  style="margin-left: 10px;"
+                                  type="button"
+                                >
+                                  <span>
+                                    Accept
+                                  </span>
+                                </button>
+                              </td>
+                              <td
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                style="position: sticky; right: 0px;"
+                              />
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
@@ -218,9 +699,12 @@ exports[`VarCustomers should render correctly 1`] = `
                             <tr>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -276,11 +760,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -336,11 +826,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -396,11 +892,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -456,11 +958,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -516,11 +1024,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -576,11 +1090,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -636,11 +1156,17 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters"
+                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
                               >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -696,11 +1222,21 @@ exports[`VarCustomers should render correctly 1`] = `
                                     </span>
                                   </span>
                                 </div>
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
                                 style="position: sticky; right: 0px;"
-                              />
+                              >
+                                <div
+                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                />
+                                <div
+                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                />
+                              </th>
                             </tr>
                           </thead>
                           <tbody
