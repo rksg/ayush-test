@@ -6,11 +6,12 @@ import { useGetMdnsProxyQuery }                                 from '@acx-ui/rc
 import {
   ServiceType,
   getServiceDetailsLink,
-  getServiceListRoutePath,
   ServiceOperation,
-  MdnsProxyScopeData
+  MdnsProxyScopeData,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'
@@ -35,23 +36,23 @@ export default function MdnsProxyDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Services' }),
+            link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
+          }
         ]}
-        extra={[
+        extra={filterByAccess([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.MDNS_PROXY,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId as string
-            })}
-            key='edit'
-          >
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.MDNS_PROXY,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
