@@ -45,7 +45,8 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork,
+  EnhancedAccessControlInfoType
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -276,9 +277,60 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params)
         return {
           ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedAccessControlProfileList: build.query<TableResult<EnhancedAccessControlInfoType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedAccessControlProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getEnhancedL2AclProfileList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedL2AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getEnhancedL3AclProfileList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedL3AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getEnhancedDeviceProfileList: build.query<TableResult<DevicePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedDevicePolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    getEnhancedApplicationProfileList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedApplicationPolicies, params)
+        return {
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
@@ -441,7 +493,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          console.log(msg)
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
             onActivityMessageReceived(msg, [
@@ -935,6 +986,11 @@ export const {
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useGetAccessControlProfileListQuery,
+  useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedL2AclProfileListQuery,
+  useGetEnhancedL3AclProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,

@@ -1,17 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { defaultNetworkPayload }                      from '@acx-ui/rc/components'
 import {
   useDelDevicePolicyMutation,
-  useDevicePolicyListQuery,
-  useGetAccessControlProfileListQuery
+  useGetAccessControlProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
+  AclOptionType,
   DevicePolicy,
-  PolicyType,
+  Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
 
@@ -19,24 +22,34 @@ import DeviceOSDrawer from '../AccessControlForm/DeviceOSDrawer'
 
 
 const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.DEVICE_POLICY]
-  },
   fields: [
     'id',
     'name',
     'description',
-    'rulesCount',
-    'networksCount'
-  ]
+    'rules',
+    'networkIds'
+  ],
+  page: 1,
+  pageSize: 25
 }
-
 const DevicePolicyComponent = () => {
   const { $t } = useIntl()
   const params = useParams()
 
   const [ delDevicePolicy ] = useDelDevicePolicyMutation()
+
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
+
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
 
   const { data: accessControlList } = useGetAccessControlProfileListQuery({
     params: params
@@ -54,15 +67,45 @@ const DevicePolicyComponent = () => {
   })
 
   const tableQuery = useTableQuery({
-    useQuery: useDevicePolicyListQuery,
+    useQuery: useGetEnhancedDeviceProfileListQuery,
     defaultPayload
   })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(policy => {
+        if (policy.networkIds) {
+          unionNetworkIds.push(...policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data && networkIds.length) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data, networkIds])
 
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networksCount }], clearSelection) => {
-        if (networksCount !== 0 || accessControlList?.includes(id)) {
+      onClick: ([{ name, id, networkIds }], clearSelection) => {
+        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -96,10 +139,12 @@ const DevicePolicyComponent = () => {
 
   return <Loader states={[tableQuery]}>
     <Table<DevicePolicy>
-      columns={useColumns(editMode, setEditMode)}
+      columns={useColumns(networkFilterOptions, editMode, setEditMode)}
+      enableApiFilter={true}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
@@ -107,9 +152,11 @@ const DevicePolicyComponent = () => {
   </Loader>
 }
 
-function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (editMode: {
-  id: string, isEdit: boolean
-}) => void) {
+function useColumns (
+  networkFilterOptions: AclOptionType[],
+  editMode: { id: string, isEdit: boolean },
+  setEditMode: (editMode: { id: string, isEdit: boolean }
+  ) => void) {
   const { $t } = useIntl()
 
   const columns: TableProps<DevicePolicy>['columns'] = [
@@ -117,7 +164,6 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
-      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
@@ -134,22 +180,23 @@ function useColumns (editMode: { id: string, isEdit: boolean }, setEditMode: (ed
       key: 'description',
       title: $t({ defaultMessage: 'Description' }),
       dataIndex: 'description',
-      align: 'left',
       sorter: true
     },
     {
-      key: 'rulesCount',
+      key: 'rules',
       title: $t({ defaultMessage: 'Rules' }),
-      dataIndex: 'rulesCount',
+      dataIndex: 'rules',
       align: 'center',
       sorter: true
     },
     {
-      key: 'networksCount',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networksCount',
+      dataIndex: 'networkIds',
       align: 'center',
-      sorter: true
+      filterable: networkFilterOptions,
+      sorter: true,
+      render: (data, row) => row.networkIds?.length
     }
   ]
 

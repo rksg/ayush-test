@@ -26,6 +26,9 @@ export interface L2AclPolicy {
 export interface L3AclPolicy {
   networksCount?: number,
   rulesCount?: number,
+  description?: string,
+  rules?: number,
+  networkIds?: string[],
   name: string,
   id: string
 }
@@ -33,6 +36,8 @@ export interface L3AclPolicy {
 export interface DevicePolicy {
   defaultAcces?: AccessEnum,
   description?: string,
+  rules?: number,
+  networkIds?: string[],
   id: string,
   name: string,
   networksCount: number,
@@ -42,6 +47,9 @@ export interface DevicePolicy {
 export interface ApplicationPolicy {
   networksCount?: number,
   rulesCount?: number,
+  description?: string,
+  rules?: number,
+  networkIds?: string[],
   name: string,
   id: string
 }

@@ -1,18 +1,17 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps }                from '@acx-ui/components'
+import { defaultNetworkPayload }                                     from '@acx-ui/rc/components'
 import {
-  useApplicationPolicyListQuery, useDeleteAccessControlProfileMutation,
-  useDevicePolicyListQuery, useGetAccessControlProfileListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
-  usePolicyListQuery
+  useDeleteAccessControlProfileMutation,
+  useGetEnhancedAccessControlProfileListQuery, useNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlInfoType,
-  ApplicationPolicy, DevicePolicy,
-  getPolicyDetailsLink, L2AclPolicy, L3AclPolicy,
-  Policy,
+  AclOptionType,
+  EnhancedAccessControlInfoType,
+  getPolicyDetailsLink, Network,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -27,21 +26,23 @@ import Layer3Drawer      from '../AccessControlForm/Layer3Drawer'
 
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [PolicyType.ACCESS_CONTROL]
-  },
   fields: [
     'id',
     'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
-
-const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
-  sortOrder: 'ASC', page: 1, pageSize: 10000
+    'l2AclPolicyName',
+    'l2AclPolicyId',
+    'l3AclPolicyName',
+    'l3AclPolicyId',
+    'devicePolicyName',
+    'devicePolicyId',
+    'applicationPolicyName',
+    'applicationPolicyId',
+    'clientRateUpLinkLimit',
+    'clientRateDownLinkLimit',
+    'networkIds'
+  ],
+  page: 1,
+  pageSize: 25
 }
 
 const AccessControlSet = () => {
@@ -50,66 +51,61 @@ const AccessControlSet = () => {
   const navigate = useNavigate()
   const params = useParams()
 
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
+
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload
   })
 
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(policy => {
+        if (policy.networkIds) {
+          unionNetworkIds.push(...policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data && networkIds.length) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data, networkIds])
+
   const [ delAccessControl ] = useDeleteAccessControlProfileMutation()
 
-  const { data: accessControlList } = useGetAccessControlProfileListQuery({
-    params: params
-  })
-
-  const { selectedLayer2 } = useL2AclPolicyListQuery({
-    params: params,
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedLayer2: data?.data ?? []
-      }
-    }
-  })
-
-  const { selectedLayer3 } = useL3AclPolicyListQuery({
-    params: params,
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedLayer3: data?.data ?? []
-      }
-    }
-  })
-
-  const { selectedDevicePolicy } = useDevicePolicyListQuery({
-    params: params,
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedDevicePolicy: data?.data ?? []
-      }
-    }
-  })
-
-  const { selectedApplicationPolicy } = useApplicationPolicyListQuery({
-    params: params,
-    payload: listPayload
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        selectedApplicationPolicy: data?.data ?? []
-      }
-    }
-  })
-
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, scope }], clearSelection) => {
-        if (scope !== 0) {
+      onClick: ([{ name, id, networkIds }], clearSelection) => {
+        if (networkIds.length !== 0) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -147,14 +143,9 @@ const AccessControlSet = () => {
   ]
 
   return <Loader states={[tableQuery]}>
-    <Table<Policy>
-      columns={useColumns(
-        accessControlList ?? [],
-        selectedLayer2,
-        selectedLayer3,
-        selectedDevicePolicy,
-        selectedApplicationPolicy
-      )}
+    <Table<EnhancedAccessControlInfoType>
+      enableApiFilter={true}
+      columns={useColumns(networkFilterOptions)}
       dataSource={tableQuery?.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
@@ -166,21 +157,14 @@ const AccessControlSet = () => {
   </Loader>
 }
 
-function useColumns (
-  accessControlList: AccessControlInfoType[],
-  selectedLayer2: L2AclPolicy[],
-  selectedLayer3: L3AclPolicy[],
-  selectedDevicePolicy: DevicePolicy[],
-  selectedApplicationPolicy: ApplicationPolicy[]) {
+function useColumns (networkFilterOptions: AclOptionType[]) {
   const { $t } = useIntl()
 
-
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<EnhancedAccessControlInfoType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
-      align: 'left',
       sorter: true,
       searchable: true,
       defaultSortOrder: 'ascend',
@@ -198,77 +182,59 @@ function useColumns (
       }
     },
     {
-      key: 'l2AclPolicy',
+      key: 'l2AclPolicyName',
       title: $t({ defaultMessage: 'Layer 2' }),
-      dataIndex: 'l2AclPolicy',
-      align: 'left',
+      dataIndex: 'l2AclPolicyName',
       sorter: true,
       render: function (data, row) {
-        let aclPolicy = accessControlList.find(acl => acl.id === row.id)
-        let l2AclPolicyName = selectedLayer2?.find(layer2 =>
-          layer2.id === aclPolicy?.l2AclPolicy?.id)?.name
-        return l2AclPolicyName
+        return row.l2AclPolicyId
           ? <Layer2Drawer
             isOnlyViewMode={true}
-            onlyViewMode={{ id: aclPolicy?.l2AclPolicy?.id ?? '', viewText: l2AclPolicyName }}
+            onlyViewMode={{ id: row.l2AclPolicyId, viewText: row.l2AclPolicyName }}
           />
           : '-'
       }
     },
     {
-      key: 'l3AclPolicy',
+      key: 'l3AclPolicyName',
       title: $t({ defaultMessage: 'Layer 3' }),
-      dataIndex: 'l3AclPolicy',
-      align: 'left',
+      dataIndex: 'l3AclPolicyName',
       sorter: true,
       render: function (data, row) {
-        let aclPolicy = accessControlList.find(acl => acl.id === row.id)
-        let l3AclPolicyName = selectedLayer3?.find(layer3 =>
-          layer3.id === aclPolicy?.l3AclPolicy?.id)?.name
-        return l3AclPolicyName
+        return row.l3AclPolicyId
           ? <Layer3Drawer
             isOnlyViewMode={true}
-            onlyViewMode={{ id: aclPolicy?.l3AclPolicy?.id ?? '', viewText: l3AclPolicyName }}
+            onlyViewMode={{ id: row.l3AclPolicyId, viewText: row.l3AclPolicyName }}
           />
           : '-'
       }
     },
     {
-      key: 'devicePolicy',
+      key: 'devicePolicyName',
       title: $t({ defaultMessage: 'Device & OS' }),
-      dataIndex: 'devicePolicy',
-      align: 'left',
+      dataIndex: 'devicePolicyName',
       sorter: true,
       render: function (data, row) {
-        let aclPolicy = accessControlList.find(acl => acl.id === row.id)
-        let devicePolicyName = selectedDevicePolicy?.find(device =>
-          device.id === aclPolicy?.devicePolicy?.id
-        )?.name
-        return devicePolicyName
+        return row.devicePolicyId
           ? <DeviceOSDrawer
             isOnlyViewMode={true}
-            onlyViewMode={{ id: aclPolicy?.devicePolicy?.id ?? '', viewText: devicePolicyName }}
+            onlyViewMode={{ id: row.devicePolicyId, viewText: row.devicePolicyName }}
           />
           : '-'
       }
     },
     {
-      key: 'applicationPolicy',
+      key: 'applicationPolicyName',
       title: $t({ defaultMessage: 'Applications' }),
-      dataIndex: 'applicationPolicy',
-      align: 'left',
+      dataIndex: 'applicationPolicyName',
       sorter: true,
       render: function (data, row) {
-        let aclPolicy = accessControlList.find(acl => acl.id === row.id)
-        let applicationPolicyName = selectedApplicationPolicy?.find(application =>
-          application.id === aclPolicy?.applicationPolicy?.id
-        )?.name
-        return applicationPolicyName
+        return row.applicationPolicyId
           ? <ApplicationDrawer
             isOnlyViewMode={true}
             onlyViewMode={{
-              id: aclPolicy?.applicationPolicy?.id ?? '',
-              viewText: applicationPolicyName
+              id: row.applicationPolicyId,
+              viewText: row.applicationPolicyName
             }}
           />
           : '-'
@@ -278,40 +244,43 @@ function useColumns (
       key: 'clientRateLimit',
       title: $t({ defaultMessage: 'Client Rate Limit' }),
       dataIndex: 'clientRateLimit',
-      align: 'left',
       sorter: true,
       render: function (data, row) {
-        let aclPolicy = accessControlList.find(acl => acl.id === row.id)
-        return <ClientRateLimitComponent aclPolicy={aclPolicy}/>
+        return <ClientRateLimitComponent
+          clientRateUpLinkLimit={row.clientRateUpLinkLimit}
+          clientRateDownLinkLimit={row.clientRateDownLinkLimit}
+        />
       }
     },
     {
-      key: 'scope',
+      key: 'networkIds',
       title: $t({ defaultMessage: 'Networks' }),
-      dataIndex: 'scope',
+      dataIndex: 'networkIds',
       align: 'center',
-      sorter: true
+      filterable: networkFilterOptions,
+      sorter: true,
+      render: (data, row) => row.networkIds.length
     }
   ]
 
   return columns
 }
 
-const ClientRateLimitComponent = (props: { aclPolicy: AccessControlInfoType | undefined }) => {
+const ClientRateLimitComponent = (
+  props: { clientRateUpLinkLimit: number, clientRateDownLinkLimit: number }
+) => {
   const { $t } = useIntl()
-  const { aclPolicy } = props
+  const { clientRateUpLinkLimit, clientRateDownLinkLimit } = props
   const UNLIMITED = $t({ defaultMessage: 'Unlimited' })
 
-  const clientRateLimit = aclPolicy?.rateLimiting
-  const uplink = clientRateLimit?.hasOwnProperty('uplinkLimit') && clientRateLimit.uplinkLimit > 0
+  const uplink = clientRateUpLinkLimit
     ? $t({ defaultMessage: '{count} Mbps' }, {
-      count: clientRateLimit?.uplinkLimit
+      count: clientRateUpLinkLimit
     })
     : UNLIMITED
-  // eslint-disable-next-line max-len
-  const downlink = clientRateLimit?.hasOwnProperty('downlinkLimit') && clientRateLimit.downlinkLimit > 0
+  const downlink = clientRateDownLinkLimit
     ? $t({ defaultMessage: '{count} Mbps' }, {
-      count: clientRateLimit?.downlinkLimit
+      count: clientRateDownLinkLimit
     })
     : UNLIMITED
 

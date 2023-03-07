@@ -8,14 +8,16 @@ import { defaultNetworkPayload }                      from '@acx-ui/rc/component
 import {
   useDelL2AclPolicyMutation,
   useGetAccessControlProfileListQuery,
-  useL2AclPolicyListQuery, useNetworkListQuery
+  useGetEnhancedL2AclProfileListQuery,
+  useNetworkListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
+import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
 
 const defaultPayload = {
+  searchString: '',
   fields: [
     'id',
     'name',
@@ -30,12 +32,11 @@ const defaultPayload = {
 const Layer2Component = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const [networkIds, setNetworkIds] = useState(['none'] as string[])
-  const [networkFilterOptions, setNetworkFilterOptions] = useState(
-    [] as { key: string, value: string }[]
-  )
 
   const [ delL2AclPolicy ] = useDelL2AclPolicyMutation()
+
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
 
   const networkTableQuery = useTableQuery<Network>({
     useQuery: useNetworkListQuery,
@@ -62,7 +63,7 @@ const Layer2Component = () => {
   })
 
   const tableQuery = useTableQuery({
-    useQuery: useL2AclPolicyListQuery,
+    useQuery: useGetEnhancedL2AclProfileListQuery,
     defaultPayload
   })
 
@@ -86,7 +87,7 @@ const Layer2Component = () => {
   }, [tableQuery.data])
 
   useEffect(() => {
-    if (networkTableQuery.data) {
+    if (networkTableQuery.data && networkIds.length) {
       setNetworkFilterOptions(
         [...networkTableQuery.data.data.map(
           (network) => {
@@ -94,25 +95,13 @@ const Layer2Component = () => {
           })]
       )
     }
-  }, [networkTableQuery.data])
-
-
-  const handleFilterChange = (customFilters: FILTER) => {
-    const payload = {
-      ...tableQuery.payload,
-      filters: {
-        ...customFilters
-      }
-    }
-
-    tableQuery.setPayload(payload)
-  }
+  }, [networkTableQuery.data, networkIds])
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name, id, networksCount }], clearSelection) => {
-        if (networksCount !== 0 || accessControlList?.includes(id)) {
+      onClick: ([{ name, id, networkIds }], clearSelection) => {
+        if (networkIds?.length !== 0 || accessControlList?.includes(id)) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -151,7 +140,7 @@ const Layer2Component = () => {
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
-      onFilterChange={handleFilterChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={rowActions}
       rowSelection={{ type: 'radio' }}
@@ -160,7 +149,7 @@ const Layer2Component = () => {
 }
 
 function useColumns (
-  networkFilterOptions: { key: string, value: string }[],
+  networkFilterOptions: AclOptionType[],
   editMode: { id: string, isEdit: boolean },
   setEditMode: (editMode: { id: string, isEdit: boolean }
   ) => void) {
