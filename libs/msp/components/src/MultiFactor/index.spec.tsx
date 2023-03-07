@@ -2,8 +2,8 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { isDelegationMode } from '@acx-ui/rc/utils'
-import { Provider }         from '@acx-ui/store'
+import { isDelegationMode }         from '@acx-ui/rc/utils'
+import { Provider, userApi, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -30,6 +30,7 @@ const mockedDisableMFAMethodFn = jest.fn()
 describe('Multi-Factor Authentication Form', () => {
 
   beforeEach(() => {
+    store.dispatch(userApi.util.resetApiState())
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
