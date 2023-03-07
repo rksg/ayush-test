@@ -52,6 +52,7 @@ function VenuePageHeader () {
       extra={filterByAccess([
         <DatePicker key='date-filter' />,
         <Button
+          type='primary'
           onClick={() =>
             navigate({
               ...basePath,
