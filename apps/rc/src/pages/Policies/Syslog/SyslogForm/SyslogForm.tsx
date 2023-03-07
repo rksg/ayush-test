@@ -72,6 +72,21 @@ const SyslogForm = (props: SyslogFormProps) => {
   const [ updateSyslog ] = useUpdateSyslogPolicyMutation()
 
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
+    if (!(state.secondaryServer && state.secondaryPort)) {
+      return {
+        id: edit ? params.policyId : '',
+        name: state.policyName,
+        primary: {
+          server: state.server,
+          port: state.port,
+          protocol: state.protocol
+        },
+        facility: state.facility,
+        flowLevel: state.flowLevel,
+        venues: state.venues
+      }
+    }
+
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
@@ -86,7 +101,8 @@ const SyslogForm = (props: SyslogFormProps) => {
         protocol: state.secondaryProtocol
       },
       facility: state.facility,
-      flowLevel: state.flowLevel
+      flowLevel: state.flowLevel,
+      venues: state.venues
     }
   }
 

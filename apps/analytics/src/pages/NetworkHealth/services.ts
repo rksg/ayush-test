@@ -2,26 +2,25 @@ import { useEffect } from 'react'
 
 import { gql }     from 'graphql-request'
 import _           from 'lodash'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { networkHealthApi }     from '@acx-ui/analytics/services'
-import { showToast }            from '@acx-ui/components'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { APListNode, PathNode } from '@acx-ui/utils'
+import { networkHealthApi } from '@acx-ui/analytics/services'
+import { showToast }        from '@acx-ui/components'
+import { useParams }        from '@acx-ui/react-router-dom'
 
-import { messageMapping } from './contents'
+import { messageMapping, stages }      from './contents'
+import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'
+import { TestType, ScheduleFrequency } from './types'
 
 import type {
-  APListNodes,
   NetworkHealthFormDto,
   NetworkHealthSpec,
-  NetworkNodes,
-  NetworkPaths,
-  MutationResult,
   NetworkHealthConfig,
+  NetworkHealthTest,
+  MutationResult,
   MutationUserError,
-  MutationResponse,
-  NetworkHealthTest
+  MutationResponse
 } from './types'
 
 export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
@@ -58,6 +57,84 @@ const fetchServiceGuardSpec = gql`
   }
 `
 
+const compareFields = `
+  apsSuccessCount
+  apsTestedCount
+  avgPingTime
+  avgUpload
+  avgDownload
+`
+
+const compareFieldsFn = (stage: string) => `
+  ${stage}Success :apsSuccessCount(stage: ${stage})
+  ${stage}Failure :apsFailureCount(stage: ${stage})
+  ${stage}Error :apsErrorCount(stage: ${stage})
+  ${stage}NA :apsNACount(stage: ${stage})
+  ${stage}Pending :apsPendingCount(stage: ${stage})
+`
+
+const fetchServiceGuardTest = gql`
+  query FetchServiceGuardTest($testId: Float!) {
+    serviceGuardTest(id: $testId) {
+      id
+      createdAt
+      spec {
+        id
+        name
+        type
+        apsCount
+        clientType
+      }
+      config {
+        wlanName
+        wlanUsername
+        dnsServer
+        pingAddress
+        tracerouteAddress
+        speedTestEnabled
+        radio
+        authenticationMethod
+      }
+      summary {
+        apsFailureCount
+        apsErrorCount
+        apsPendingCount
+        ${compareFields}
+        ${Object.keys(stages).map(stage => compareFieldsFn(stage)).join('\n')}}
+      previousTest {
+        summary {
+          ${compareFields}
+        }
+      }
+      wlanAuthSettings {
+        wpaVersion
+      }
+    }
+  }
+`
+
+const fetchServiceGuardRelatedTests = gql`
+  query FetchServiceGuardRelatedTests($testId: Float!) {
+    serviceGuardTest(id: $testId) {
+      spec {
+        id
+        tests {
+          items {
+            createdAt
+            id
+            summary {
+              apsTestedCount
+              apsSuccessCount
+              apsFailureCount
+              apsErrorCount
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
 const fetchAllServiceGuardSpecs = gql`
   query FetchAllServiceGuardSpecs {
     allServiceGuardSpecs {
@@ -85,7 +162,9 @@ export type NetworkHealthTableRow = Omit<NetworkHealthSpec, 'configs' | 'tests'>
 
 export const {
   useAllNetworkHealthSpecsQuery,
-  useNetworkHealthDetailsQuery
+  useNetworkHealthDetailsQuery,
+  useNetworkHealthTestQuery,
+  useNetworkHealthRelatedTestsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     allNetworkHealthSpecs: build.query<NetworkHealthTableRow[], void>({
@@ -104,6 +183,21 @@ export const {
       }),
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
+    }),
+    networkHealthTest: build.query<NetworkHealthTest, { testId: NetworkHealthTest['id'] }>({
+      query: (variables) => ({ variables, document: fetchServiceGuardTest }),
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) =>
+        result.serviceGuardTest
+    }),
+    networkHealthRelatedTests: build.query<
+      Record<string, number|string>[], { testId: NetworkHealthTest['id'] }
+    >({
+      query: (variables) => ({ variables, document: fetchServiceGuardRelatedTests }),
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) => {
+        if(!result.serviceGuardTest) return []
+        const { id: specId, tests: { items } } = result.serviceGuardTest.spec
+        return items.map(({ id, createdAt, summary }) => ({ specId, id, createdAt, ...summary }))
+      }
     })
   })
 })
@@ -116,106 +210,63 @@ export function useNetworkHealthSpec () {
   )
 }
 
-function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
-  const last = path[path.length - 1]
-  return _.has(last, 'list')
+export function useNetworkHealthTest () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthTestQuery(
+    { testId: parseInt(params.testId!, 10) },
+    { skip: !Boolean(params.testId) })
 }
 
-// TODO:
-// Remove when APsSelection input available
-function networkNodesToString (nodes: NetworkPaths) {
-  return nodes
-    .map((path: APListNodes | NetworkNodes) => {
-      let aps: APListNode | undefined = undefined
-      if (isAPListNodes(path)) {
-        aps = path[path.length - 1] as APListNode
-      }
-      const newPath = ((aps
-        ? path.slice(0, path.length - 1)
-        : path) as PathNode[])
-        .map(node => node.name)
-        .join('>')
-
-      return [newPath, aps?.list.join(',')]
-        .filter(Boolean)
-        .join('|')
-    })
-    .join('\n')
+export function useNetworkHealthRelatedTests () {
+  const params = useParams<{ testId: string }>()
+  return useNetworkHealthRelatedTestsQuery(
+    { testId: parseInt(params.testId!, 10) },
+    { skip: !Boolean(params.testId) })
 }
-
-// TODO:
-// Remove when APsSelection input available
-function stringToNetworkNodes (value: string): NetworkPaths {
-  const convert = (line: string): APListNodes | NetworkNodes => {
-    const [paths, aps] = line.trim().split('|')
-    const [venue, apGroup] = paths.split('>')
-    const list = aps?.split(',').filter(Boolean).map(v => v.trim())
-    const path: NetworkNodes = [{ type: 'zone', name: venue }]
-
-    if (apGroup) path.push({ type: 'apGroup', name: venue })
-    if (list) {
-      return (path as APListNodes).concat({ type: 'apMac', list }) as APListNodes
-    } else {
-      return path
-    }
-  }
-  return value.split('\n').map(convert)
-}
-
-const configKeys: Array<keyof NetworkHealthFormDto> = [
-  'authenticationMethod',
-  'dnsServer',
-  'pingAddress',
-  'radio',
-  'speedTestEnabled',
-  'tracerouteAddress',
-  'wlanName',
-  'wlanPassword',
-  'wlanUsername'
-]
 
 export function processDtoToPayload (dto: NetworkHealthFormDto) {
   const spec = {
-    // TODO:
-    // Add `networkPaths` into `configKeys` when APsSelection input available
-    ..._.omit(dto, configKeys.concat(['isDnsServerCustom', 'networkPaths'])),
-    configs: [{
-      ..._.pick(dto, configKeys),
-      networkPaths: { networkNodes: stringToNetworkNodes(dto.networkPaths.networkNodes) }
-    }]
+    ..._.omit(dto, ['typeWithSchedule', 'isDnsServerCustom']),
+    configs: [{ ..._.omit(dto.configs[0], ['updatedAt']) }]
   }
   return { spec }
 }
 
-export function specToDto (spec?: Pick<NetworkHealthSpec, 'id' | 'clientType' | 'name' | 'type'> & {
-  configs: Pick<
-    NetworkHealthConfig,
-    'authenticationMethod' | 'dnsServer' | 'pingAddress' | 'radio' | 'speedTestEnabled' |
-    'tracerouteAddress' | 'wlanName' | 'wlanPassword' | 'wlanUsername' |
-    'networkPaths'
-  >[]
-}): NetworkHealthFormDto | undefined {
-  if (!spec) return undefined
-  const networkPaths = {
-    networkNodes: networkNodesToString(spec.configs[0].networkPaths.networkNodes)
+const mod = (a: number, b: number) => ((a % b) + b) % b
+
+export function specToDto (
+  spec?: Omit<NetworkHealthSpec, 'apsCount' | 'userId' | 'tests' | 'configs'> & {
+    configs: Omit<NetworkHealthConfig, 'id' | 'specId' | 'updatedAt' | 'createdAt'>[]
   }
+): NetworkHealthFormDto | undefined {
+  if (!spec) return undefined
+
+  const localTimezone = moment.tz.guess()
+  const schedule = { ...(spec.schedule! || initialValues.schedule) }
+  const { frequency, day, hour, timezone } = schedule
+  const typeWithSchedule = spec.type === TestType.OnDemand ? TestType.OnDemand : frequency!
+
+  if (frequency) {
+    const db = moment().tz(timezone!).format('YYYY-MM-DDTHH:mm')
+    const local = moment().tz(localTimezone).format('YYYY-MM-DDTHH:mm')
+    const differenceInHours = moment(local).diff(moment(db), 'hour', true)
+    const totalHours = hour! + differenceInHours
+    const rolloverHours = totalHours > 0 ? totalHours - 24 : Math.abs(totalHours)
+    const differenceInDays = Math.ceil(rolloverHours / 24) * Math.sign(totalHours)
+    schedule.hour = mod(totalHours, 24)
+    if (frequency === ScheduleFrequency.Weekly) {
+      schedule.day = mod(day! + differenceInDays, 7)
+    }
+    if (frequency === ScheduleFrequency.Monthly) {
+      schedule.day = mod(day! - 1 + differenceInDays, 31) + 1
+    }
+  }
+
   return {
+    typeWithSchedule,
     isDnsServerCustom: Boolean(spec.configs[0].dnsServer),
-    // TODO:
-    // Take `networkPaths` from `spec.configs[0]` when APsSelection input available
-    networkPaths,
-    ..._.pick(spec, ['id', 'name', 'type', 'clientType']),
-    ..._.pick(spec.configs[0], [
-      'radio',
-      'wlanName',
-      'authenticationMethod',
-      'wlanPassword',
-      'wlanUsername',
-      'speedTestEnabled',
-      'dnsServer',
-      'pingAddress',
-      'tracerouteAddress'
-    ])
+    ..._.omit(spec, ['schedule']),
+    schedule
   }
 }
 

@@ -221,6 +221,13 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   line-height: var(--acx-steps-form-form-title-line-height);
   font-weight: var(--acx-steps-form-form-title-font-weight);
   margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `
 
 export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`

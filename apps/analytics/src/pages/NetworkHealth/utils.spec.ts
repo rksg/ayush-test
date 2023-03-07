@@ -1,5 +1,14 @@
-import { NetworkHealthTest }                                      from './types'
-import { statsFromSummary, formatApsUnderTest, formatLastResult } from './utils'
+import userEvent from '@testing-library/user-event'
+
+import { render, screen } from '@acx-ui/test-utils'
+
+import { NetworkHealthTest, TestType, Schedule, ScheduleFrequency } from './types'
+import {
+  statsFromSummary,
+  formatApsUnderTest,
+  formatLastResult,
+  formatTestType
+} from './utils'
 
 describe('statsFromSummary', () => {
   it('should return correct data', () => {
@@ -93,5 +102,30 @@ describe('formatLastResult', () => {
   it('should return correct value - no data test', ()=>{
     const result = formatLastResult(undefined)
     expect(result).toEqual('-')
+  })
+})
+
+describe('formatTestType', () => {
+  it('should format for on-demand', () => {
+    expect(formatTestType(TestType.OnDemand, null)).toEqual('On-Demand')
+  })
+
+  it('should format for scheduled', async () => {
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2023-03-01')))
+    const schedule = {
+      type: 'service_guard' as Schedule['type'],
+      frequency: ScheduleFrequency.Daily,
+      day: null,
+      hour: 4.25,
+      timezone: 'Europe/London',
+      nextExecutionTime: '2023-03-06T00:00:00.000Z'
+    }
+    render(formatTestType(TestType.Scheduled, schedule) as React.ReactElement)
+    const node = screen.getByText('Scheduled (in 5 days)')
+    expect(node).toBeVisible()
+    userEvent.hover(node)
+    expect(await screen.findByText('Mar 06 2023 00:00')).toBeInTheDocument()
+    jest.useRealTimers()
   })
 })

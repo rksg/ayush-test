@@ -6,7 +6,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
     >
       Summary
     </h3>
@@ -396,7 +396,7 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
     >
       Summary
     </h3>

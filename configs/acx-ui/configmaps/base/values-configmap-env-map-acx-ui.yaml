@@ -30,3 +30,15 @@ data:
       - configmap: configmap-acx-ui
         key: fetchbot.js.url
         name: FETCHBOT_JS_URL
+      - configmap: configmap-acx-ui
+        key: documentation.center
+        name: DOCUMENTATION_CENTER
+      - configmap: configmap-acx-ui
+        key: my.open.cases
+        name: MY_OPEN_CASES
+      - configmap: configmap-acx-ui
+        key: privacy
+        name: PRIVACY
+      - configmap: configmap-acx-ui
+        key: supported.ap.models
+        name: SUPPORTED_AP_MODELS
