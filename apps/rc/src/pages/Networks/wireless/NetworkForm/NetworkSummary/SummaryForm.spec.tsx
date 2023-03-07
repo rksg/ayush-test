@@ -6,6 +6,7 @@ import { CommonUrlsInfo, WifiUrlsInfo }                                     from
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render }                                               from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                     from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -43,7 +44,7 @@ describe('SummaryForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
