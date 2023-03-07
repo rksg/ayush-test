@@ -65,7 +65,7 @@ const Activities = () => {
       filters: {
         fromTime,
         toTime,
-        entityType: 'VENUES',
+        entityType: 'VENUE',
         entityId: venueId
       },
       detailLevel: currentUserDetailLevel
