@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { Checkbox, Form, Tooltip, Typography } from 'antd'
-import moment                                  from 'moment'
+import moment, { LocaleSpecifier }             from 'moment'
 import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal }                    from '@acx-ui/components'
@@ -97,12 +97,12 @@ export function GenerateNewPasswordModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareGuestToPrint = async (guest: any) =>{
-    const currentMoment = moment()
     const userProfile = await getUserProfile({ params })
+    const currentMoment = moment()
     const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
     const langCode = guest.langCode || guest.locale
     const momentLocale = getMomentLocale(langCode)
-    moment.locale(momentLocale)
+    currentMoment.locale(momentLocale as LocaleSpecifier)
 
     const name = guest.name
     const wifiNetwork = guest.ssid

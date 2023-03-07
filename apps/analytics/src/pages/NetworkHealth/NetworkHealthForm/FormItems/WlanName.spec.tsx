@@ -45,7 +45,7 @@ describe('WlanName', () => {
 
     const dropdown = await screen.findByRole('combobox')
 
-    expect(dropdown).toHaveAttribute('placeholder', 'Select a Network')
+    expect(dropdown).toHaveAttribute('placeholder', 'Select a network')
     expect(screen.getAllByRole('option', {
       name: (_, el) => Boolean((el as HTMLInputElement).value)
     })).toHaveLength(items.length)
@@ -61,7 +61,7 @@ describe('WlanName', () => {
 
     renderForm(<WlanName />, { params })
 
-    expect(await screen.findByRole('combobox')).toHaveAttribute('placeholder', 'No Networks found')
+    expect(await screen.findByRole('combobox')).toHaveAttribute('placeholder', 'No networks found')
   })
 
   it('invalidate field if left empty', async () => {
@@ -83,7 +83,9 @@ describe('WlanName', () => {
 
     renderForm(<WlanName />, {
       params,
-      initialValues: { wlanName: 'Name XYZ' }
+      initialValues: {
+        configs: [{ wlanName: 'Name XYZ' }]
+      }
     })
 
     const submit = screen.getByRole('button', { name: 'Submit' })
@@ -92,6 +94,6 @@ describe('WlanName', () => {
 
     await click(submit)
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('not exists')
+    expect(await screen.findByRole('alert')).toHaveTextContent('does not exists')
   })
 })

@@ -1,35 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`specToDto process spec of GraphQL result to dto 1`] = `
+exports[`specToDto process spec of GraphQL result to dto for on-demand spec 1`] = `
 Object {
-  "authenticationMethod": "WPA3_PERSONAL",
   "clientType": "virtual-wireless-client",
-  "dnsServer": "10.10.10.10",
+  "configs": Array [
+    Object {
+      "authenticationMethod": "WPA3_PERSONAL",
+      "dnsServer": "10.10.10.10",
+      "networkPaths": Object {
+        "networkNodes": Array [
+          Array [
+            Object {
+              "name": "VENUE",
+              "type": "zone",
+            },
+            Object {
+              "list": Array [
+                "00:00:00:00:00:00",
+              ],
+              "type": "apMac",
+            },
+          ],
+        ],
+      },
+      "pingAddress": "10.10.10.10",
+      "radio": "6",
+      "tracerouteAddress": "10.10.10.10",
+      "wlanName": "WLAN Name",
+      "wlanPassword": "12345",
+      "wlanUsername": "user",
+    },
+  ],
   "id": "spec-id",
   "isDnsServerCustom": true,
   "name": "Test Name",
-  "networkPaths": Object {
-    "networkNodes": Array [
-      Array [
-        Object {
-          "name": "VENUE",
-          "type": "zone",
-        },
-        Object {
-          "list": Array [
-            "00:00:00:00:00:00",
-          ],
-          "type": "apMac",
-        },
-      ],
-    ],
+  "schedule": Object {
+    "day": null,
+    "frequency": null,
+    "hour": null,
+    "timezone": "Africa/Abidjan",
+    "type": "service_guard",
   },
-  "pingAddress": "10.10.10.10",
-  "radio": "6",
-  "tracerouteAddress": "10.10.10.10",
   "type": "on-demand",
-  "wlanName": "WLAN Name",
-  "wlanPassword": "12345",
-  "wlanUsername": "user",
+  "typeWithSchedule": "on-demand",
 }
 `;
