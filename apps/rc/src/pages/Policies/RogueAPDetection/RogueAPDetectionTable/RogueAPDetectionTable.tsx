@@ -1,30 +1,33 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelRoguePolicyMutation, usePolicyListQuery }                  from '@acx-ui/rc/services'
+import {
+  useDelRoguePolicyMutation,
+  useEnhancedRoguePoliciesQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, EnhancedRoguePolicyType, Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { useDefaultVenuePayload } from '../../../../../../main/src/pages/Venues/VenuesTable'
+
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [PolicyType.ROGUE_AP_DETECTION]
-  },
   fields: [
     'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+    'name'
+  ],
+  pageSize: 25
 }
 
 export default function RogueAPDetectionTable () {
@@ -36,15 +39,57 @@ export default function RogueAPDetectionTable () {
   const [ deleteFn ] = useDelRoguePolicyMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+    useQuery: useEnhancedRoguePoliciesQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const [venueFilterOptions, setVenueFilterOptions] = useState(
+    [] as { key: string, value: string }[]
+  )
+  const [venueIds, setVenueIds] = useState([] as string[])
+
+  const venueTableQuery = useTableQuery<Venue>({
+    useQuery: useVenuesListQuery,
+    defaultPayload: {
+      ...useDefaultVenuePayload()
+    }
+  })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionVenueIds = [] as string[]
+      tableQuery.data.data.map(rogueAp => {
+        if (rogueAp.venueIds) {
+          unionVenueIds.push(...rogueAp.venueIds)
+        }
+      })
+      setVenueIds([...new Set(unionVenueIds)])
+
+      venueTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...venueIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (venueTableQuery.data) {
+      setVenueFilterOptions(
+        [...venueTableQuery.data.data.map(
+          (venue) => {
+            return { key: venue.id, value: venue.name }
+          })]
+      )
+    }
+  }, [venueTableQuery.data])
+
+  const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name, scope }], clearSelection) => {
-        if (Number(scope) !== 0 || name === DEFAULT_PROFILE) {
+      onClick: ([{ id, name, venueIds }], clearSelection) => {
+        if (Number(venueIds.length) !== 0 || name === DEFAULT_PROFILE) {
           showActionModal({
             type: 'error',
             content: $t({
@@ -105,12 +150,13 @@ export default function RogueAPDetectionTable () {
         ]}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
-          columns={useColumns()}
+        <Table<EnhancedRoguePolicyType>
+          columns={useColumns(venueFilterOptions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
@@ -120,10 +166,10 @@ export default function RogueAPDetectionTable () {
   )
 }
 
-function useColumns () {
+function useColumns (venueFilterOptions: { key: string, value: string }[]) {
   const { $t } = useIntl()
 
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<EnhancedRoguePolicyType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -145,11 +191,18 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
+      key: 'numOfRules',
+      title: $t({ defaultMessage: 'Classification Rules' }),
+      dataIndex: 'numOfRules',
       align: 'center'
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      filterable: venueFilterOptions,
+      align: 'center',
+      render: (data, row) => row.venueIds.length
     }
   ]
 

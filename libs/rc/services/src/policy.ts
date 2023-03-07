@@ -45,8 +45,8 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
-} from '@acx-ui/rc/utils'
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork, EnhancedRoguePolicyType
+} from '@acx-ui/rc/utils';
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -361,6 +361,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RogueApUrls.getEnhancedRoguePolicyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     policyList: build.query<TableResult<Policy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -981,6 +991,7 @@ export const {
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
+  useEnhancedRoguePoliciesQuery,
   useLazyMacRegListsQuery,
   useLazyMacRegistrationsQuery,
   useAddAAAPolicyMutation,
