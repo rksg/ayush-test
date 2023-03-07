@@ -88,12 +88,14 @@ describe('APsSelection.FieldSummary', () => {
 
     renderForm(<APsSelection.FieldSummary />, {
       initialValues: {
-        networkPaths: {
-          networkNodes: [
-            [{ type: 'zone', name: 'Venue 2' }],
-            [{ type: 'zone', name: 'Venue 1' }, { type: 'apMac', list: ['00:00:00:00:00:01'] }]
-          ]
-        }
+        configs: [{
+          networkPaths: {
+            networkNodes: [
+              [{ type: 'zone', name: 'Venue 2' }],
+              [{ type: 'zone', name: 'Venue 1' }, { type: 'apMac', list: ['00:00:00:00:00:01'] }]
+            ]
+          }
+        }]
       }
     })
 

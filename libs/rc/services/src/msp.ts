@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import moment                        from 'moment-timezone'
 
 import {
   AssignedEc,
@@ -24,8 +25,10 @@ import {
   MspProfile,
   EntitlementBanner,
   MspEcProfile,
-  MspPortal
+  MspPortal,
+  downloadFile
 } from '@acx-ui/rc/utils'
+import { getJwtToken } from '@acx-ui/utils'
 
 export const baseMspApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -75,7 +78,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -85,7 +98,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -429,6 +452,68 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
+          ...params
+        })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
+            downloadFile(response, fileName)
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+          }
+        }
+      }
+    }),
+    acceptRejectInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.acceptRejectInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getGenerateLicenseUsageRpt: build.query<{ status: number }, RequestPayload>({
+      query: ({ params, payload, selectedFormat }) => {
+        const contentType: string = selectedFormat === 'csv'
+          ? 'text/csv'
+          : selectedFormat === 'json'
+            ? 'text/json'
+            : selectedFormat === 'pdf'
+              ? 'application/pdf'
+              : ''
+
+        const licenseUsageRptReq =
+          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
+            { ...params })
+        licenseUsageRptReq.url += '/' + payload
+        return {
+          ...licenseUsageRptReq,
+          responseHandler: async (response) => {
+            const fileName =
+            `License Usage Report ${moment().format('YYYYMMDDHHmmss')}.${selectedFormat}`
+            downloadFile(response, fileName)
+            return { status: response.status }
+          },
+          headers: {
+            'Content-Type': contentType,
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+          }
+        }
+      }
     })
   })
 })
@@ -471,5 +556,8 @@ export const {
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
   useAddMspLabelMutation,
-  useUpdateMspLabelMutation
+  useUpdateMspLabelMutation,
+  useExportDeviceInventoryMutation,
+  useAcceptRejectInvitationMutation,
+  useGetGenerateLicenseUsageRptQuery
 } = mspApi

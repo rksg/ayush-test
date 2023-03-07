@@ -1,35 +1,45 @@
-import { useEffect } from 'react'
-
-import { Form, Select }                             from 'antd'
+import { Form, FormInstance, Select }               from 'antd'
+import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import {
   StepsFormNew,
   Tooltip,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
 import {
   authMethodsByClientType,
   authMethodsByCode
 } from '../../authMethods'
-import * as contents     from '../../contents'
+import * as contents             from '../../contents'
 import {
   AuthenticationMethod as AuthenticationMethodEnum,
-  NetworkHealthFormDto
+  NetworkHealthFormDto,
+  ClientType as ClientTypeEnum
 } from '../../types'
 
-const name = 'authenticationMethod' as const
+import { ClientType } from './ClientType'
+import { Password }   from './Password'
+import { Username }   from './Username'
+
+const name = ['configs', 0, 'authenticationMethod'] as const
 const label = defineMessage({ defaultMessage: 'Authentication Method' })
+
+function reset (form: FormInstance, clientType: ClientTypeEnum) {
+  const methods = authMethodsByClientType[clientType]
+  const fieldName = name as unknown as NamePath
+  const code = form.getFieldValue(fieldName)
+
+  if (!methods.some(method => method.code === code))
+    form.setFieldValue(fieldName, undefined)
+}
 
 export function AuthenticationMethod () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const [code, clientType] = [
-    useWatch(name, form),
-    useWatch('clientType', form)
-  ]
+  const fieldName = name as unknown as NamePath
+  const clientType = Form.useWatch(ClientType.fieldName, form)
   const methods = authMethodsByClientType[clientType]
 
   // TODO:
@@ -39,12 +49,6 @@ export function AuthenticationMethod () {
     value={method.code}
     children={$t(method.title)}
   />)
-
-  useEffect(() => {
-    if (!code) return
-    if (methods?.some(method => method.code === code)) return
-    form.setFieldValue(name, undefined)
-  }, [form, methods, code, clientType])
 
   const mainLabel = <>
     {$t(label)}
@@ -59,12 +63,16 @@ export function AuthenticationMethod () {
   return <Form.Item required label={mainLabel}>
     <Form.Item
       noStyle
-      name={name}
+      name={fieldName}
       label={$t(label)}
       rules={[{ required: true }]}
       children={<Select
         placeholder={$t({ defaultMessage: 'Select an authentication method' })}
         children={options}
+        onChange={(code: AuthenticationMethodEnum) => {
+          Username.reset(form, code)
+          Password.reset(form, code)
+        }}
       />}
     />
   </Form.Item>
@@ -72,12 +80,13 @@ export function AuthenticationMethod () {
 
 AuthenticationMethod.fieldName = name
 AuthenticationMethod.label = label
+AuthenticationMethod.reset = reset
 
 AuthenticationMethod.FieldSummary = function AuthenticationMethodFieldSummary () {
   const { $t } = useIntl()
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary<AuthenticationMethodEnum>
       convert={(code) => $t(authMethodsByCode[code!].title)}
