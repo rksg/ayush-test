@@ -23,44 +23,44 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)
-  const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
+  const [switchList, setSwitchList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
   const [imageUrl, setImageUrl] = useState('')
 
-  const { data: extendedApList } = useSwitchListQuery({ params, payload: {
+  const { data: extendedSwitchList } = useSwitchListQuery({ params, payload: {
     filters: {
       floorplanId: [switchPosition?.floorplanId]
     }
   } })
 
   useEffect(() => {
-    if (extendedApList) {
-      const _apDeviceList: NetworkDevice[] = []
+    if (extendedSwitchList) {
+      const _switchDeviceList: NetworkDevice[] = []
 
-      extendedApList?.data.map(apDevice => {
-        const _apDevice: NetworkDevice = {
-          id: apDevice.serialNumber,
-          name: apDevice.name,
-          serialNumber: apDevice.serialNumber,
+      extendedSwitchList?.data.map(switchDevice => {
+        const _switchDevice: NetworkDevice = {
+          id: switchDevice.serialNumber,
+          name: switchDevice.name,
+          serialNumber: switchDevice.serialNumber,
           networkDeviceType: NetworkDeviceType.switch,
-          deviceStatus: apDevice.deviceStatus,
+          deviceStatus: switchDevice.deviceStatus,
           position: {
             floorplanId: switchPosition.floorplanId,
-            xPercent: apDevice?.xPercent || 0,
-            yPercent: apDevice?.yPercent || 0
+            xPercent: switchDevice?.xPercent || 0,
+            yPercent: switchDevice?.yPercent || 0
           },
-          // highlighting only current AP device
-          // other AP devices will be blured with low opacity
-          isActive: apDevice.serialNumber === activeDevice?.serialNumber
+          // highlighting only current Switch device
+          // other Switch devices will be blured with low opacity
+          isActive: switchDevice.serialNumber === activeDevice?.serialNumber
         } as NetworkDevice
 
-        _apDeviceList.push(_apDevice)
+        _switchDeviceList.push(_switchDevice)
       })
 
-      setApList(_apDeviceList)
+      setSwitchList(_switchDeviceList)
 
     }
-  }, [extendedApList])
+  }, [extendedSwitchList])
 
   const { data: floorplan } =
    useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
@@ -116,7 +116,7 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
         width: `calc(${100 * containerWidth}%)`
       }}>
       { imageLoaded && <DndProvider backend={HTML5Backend}>
-        { apList && apList.map( (device: NetworkDevice) =>
+        { switchList && switchList.map( (device: NetworkDevice) =>
           <NetworkDeviceMarker
             key={device?.serialNumber}
             galleryMode={false}

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AP floorplan should render correctly 1`] = `
+exports[`Switch floorplan should render correctly 1`] = `
 <DocumentFragment>
   <div
     style="width: 100%; position: relative; max-height: 300px; padding-right: 35px; margin-bottom: 35px;"

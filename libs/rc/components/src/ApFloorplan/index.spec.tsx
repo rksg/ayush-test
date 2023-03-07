@@ -1,6 +1,6 @@
 import { ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                                                from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                                                                     from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 
@@ -86,6 +86,38 @@ const params = {
   floorplanId: '94bed28abef24175ab58a3800d01e24a'
 }
 
+const apListData = {
+  fields: [
+    'clients','serialNumber','IP','apMac','apStatusData.APRadio.channel','deviceStatus','tags',
+    'venueName','meshRole','apStatusData.APRadio.band','apStatusData.APRadio.radioId','switchName',
+    'deviceGroupId','venueId','name','deviceGroupName','model','fwVersion'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [{
+    floorplanId: '94bed28abef24175ab58a3800d01e24a',
+    serialNumber: '932173000117',
+    name: '350-11-69',
+    model: 'R350',
+    fwVersion: '6.2.0.103.513',
+    venueId: '7231da344778480d88f37f0cca1c534f',
+    venueName: '123roam',
+    deviceStatus: '2_00_Operational',
+    IP: '192.168.11.69',
+    apMac: '58:FB:96:01:9A:30',
+    apStatusData: {
+      APRadio: [
+        { txPower: null,channel: 9,band: '2.4G',Rssi: null,radioId: 0 },
+        { txPower: null,channel: 40,band: '5G',Rssi: null,radioId: 1 }
+      ]
+    },
+    meshRole: 'DISABLED',
+    deviceGroupId: '48392c8c2eda43be90213e8dd09468fe',
+    tags: '',
+    deviceGroupName: ''
+  }]
+}
+
 describe('AP floorplan', () => {
 
   beforeEach(() => {
@@ -104,6 +136,10 @@ describe('AP floorplan', () => {
       rest.get(
         WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetails))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(apListData))
       )
     )
   })
@@ -125,6 +161,7 @@ describe('AP floorplan', () => {
         imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl)
     })
     expect(screen.getByRole('img')).toBeVisible()
+    fireEvent.load(screen.getByRole('img'))
     expect(asFragment()).toMatchSnapshot()
   })
 

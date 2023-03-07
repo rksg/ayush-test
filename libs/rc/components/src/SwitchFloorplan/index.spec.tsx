@@ -1,6 +1,6 @@
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDevicePosition, NetworkDeviceType, SwitchStatusEnum, SwitchUrlsInfo, SwitchViewModel, SWITCH_TYPE, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                                                                                from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                                                                                                     from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 
@@ -104,6 +104,42 @@ const params = {
   floorplanId: '94bed28abef24175ab58a3800d01e24a'
 }
 
+export const switchListData = {
+  fields: [
+    'suspendingDeployTime', 'serialNumber', 'syncedSwitchConfig', 'ipAddress',
+    'check-all', 'configReady', 'cliApplied', 'isStack', 'syncDataStartTime',
+    'deviceStatus', 'uptime', 'venueName', 'switchMac', 'formStacking', 'switchName',
+    'operationalWarning', 'venueId', 'syncDataId', 'name', 'model', 'activeSerial',
+    'cog', 'id', 'clientCount'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'c0:c5:20:98:b9:67',
+      model: 'ICX7150-C12P',
+      uptime: '20 days, 22 hours',
+      switchName: 'ICX7150-C12 Router',
+      serialNumber: 'FEK3224R08H',
+      activeSerial: 'FEK3224R08H',
+      ipAddress: '10.206.10.40',
+      deviceStatus: 'ONLINE',
+      switchMac: 'c0:c5:20:98:b9:67',
+      isStack: false,
+      name: 'ICX7150-C12 Router',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      venueName: 'My-Venue',
+      clientCount: 1,
+      configReady: true,
+      syncedSwitchConfig: true,
+      syncDataEndTime: '',
+      cliApplied: false,
+      formStacking: false,
+      suspendingDeployTime: ''
+    }
+  ]
+}
+
 describe('Switch floorplan', () => {
 
   beforeEach(() => {
@@ -122,6 +158,10 @@ describe('Switch floorplan', () => {
       rest.get(
         SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetail))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json(switchListData))
       )
     )
   })
@@ -130,7 +170,7 @@ describe('Switch floorplan', () => {
     const { asFragment } = await render(
       <Provider>
         <SwitchFloorplan
-          activeDevice={networkDevices['94bed28abef24175ab58a3800d01e24a'].ap[0]}
+          activeDevice={networkDevices['94bed28abef24175ab58a3800d01e24a'].switches[0]}
           venueId={params.venueId}
           switchPosition={{
             xPercent: switchDetail.xPercent,
@@ -147,6 +187,7 @@ describe('Switch floorplan', () => {
         imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl)
     })
     expect(screen.getByRole('img')).toBeVisible()
+    fireEvent.load(screen.getByRole('img'))
     expect(asFragment()).toMatchSnapshot()
   })
 
