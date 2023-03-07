@@ -487,6 +487,8 @@ const modelResponse: APExtendedGroupedResponse = {
   ]
 }
 
+
+
 const flatData: APExtended[] = [
   {
     serialNumber: '302002015735',
@@ -594,6 +596,169 @@ const flatData: APExtended[] = [
 
 export const groupTBData = cleanResponse(apGroupResponse)
 
+// can do mocked table query here with pagination and delay + loader
+export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[0]>['columns'] = [
+  {
+    title: 'AP Name',
+    dataIndex: 'name',
+    key: 'name',
+    searchable: true,
+    sorter: true
+  },
+  {
+    title: 'Status',
+    dataIndex: 'deviceStatus',
+    key: 'deviceStatus',
+    filterable: true,
+    sorter: true,
+    groupable: {
+      key: 'deviceStatus',
+      label: 'Status',
+      parentColumns: [
+        {
+          key: 'deviceStatus',
+          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceStatus}</div>
+        },
+        {
+          key: 'members',
+          renderer: (record) => <div>Members: {record.members}</div>
+        },
+        {
+          key: 'incidents',
+          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+        },
+        {
+          key: 'clients',
+          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+        },
+        {
+          key: 'networks',
+          renderer: (record) => <div>
+              Wireless Networks: {record.networks ? record.networks.count : 0}
+          </div>
+        }
+      ]
+    }
+  },
+  {
+    title: 'Model',
+    dataIndex: 'model',
+    key: 'model',
+    sorter: true,
+    groupable: {
+      key: 'model',
+      label: 'Model',
+      parentColumns: [
+        {
+          key: 'model',
+          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+        },
+        {
+          key: 'members',
+          renderer: (record) => <div>Members: {record.members}</div>
+        },
+        {
+          key: 'incidents',
+          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+        },
+        {
+          key: 'clients',
+          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+        },
+        {
+          key: 'networks',
+          renderer: (record) => <div>
+              Wireless Networks: {record.networks ? record.networks.count : 0}
+          </div>
+        }
+      ]
+    }
+  },
+  {
+    title: 'IP Address',
+    dataIndex: 'IP',
+    key: 'ip',
+    sorter: true
+  },
+  {
+    title: 'MAC Addresses',
+    dataIndex: 'apMac',
+    key: 'apMac',
+    searchable: true
+  },
+  {
+    title: 'Venue',
+    key: 'venueName',
+    dataIndex: 'venueId',
+    sorter: true
+  },
+  {
+    title: 'Switch',
+    key: 'switchName',
+    dataIndex: 'switchName'
+  },
+  {
+    title: 'Connected Clients',
+    key: 'clients',
+    dataIndex: 'clients',
+    sorter: true
+  },
+  {
+    title: 'AP Group',
+    key: 'deviceGroupName',
+    dataIndex: 'deviceGroupName',
+    filterable: true,
+    searchable: true,
+    groupable: {
+      key: 'deviceGroupName',
+      label: 'AP Group',
+      actions: [{
+        key: 'edit',
+        label: <Button>Edit</Button>,
+        callback: (record) => {
+          // eslint-disable-next-line no-console
+          console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
+        }
+      }],
+      parentColumns: [
+        {
+          key: 'AP Group',
+          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+        },
+        {
+          key: 'members',
+          renderer: (record) => <div>Members: {record.members}</div>
+        },
+        {
+          key: 'incidents',
+          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+        },
+        {
+          key: 'clients',
+          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+        },
+        {
+          key: 'networks',
+          renderer: (record) => <div>
+              Wireless Networks: {record.networks ? record.networks.count : 0}
+          </div>
+        }
+      ]
+    }
+  },
+  {
+    title: 'RF Channels',
+    key: 'rf-channels',
+    dataIndex: 'rf-channels'
+  },
+  {
+    title: 'Tags',
+    key: 'tags',
+    dataIndex: 'tags',
+    filterable: true
+  }
+]
+
 export function GroupTable () {
   const [ currData, setCurrData ] =
     React.useState<typeof groupTBData | typeof flatData>(() => cleanResponse(flatData))
@@ -622,159 +787,23 @@ export function GroupTable () {
     setCurrData(() => data)
   }
 
-  // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<typeof groupTBData[0] | typeof flatData[0]>['columns'] = [
-    {
-      title: 'AP Name',
-      dataIndex: 'name',
-      key: 'name',
-      searchable: true,
-      sorter: true
-    },
-    {
-      title: 'Status',
-      dataIndex: 'deviceStatus',
-      key: 'deviceStatus',
-      filterable: true,
-      sorter: true
-    },
-    {
-      title: 'Model',
-      dataIndex: 'model',
-      key: 'model',
-      sorter: true
-    },
-    {
-      title: 'IP Address',
-      dataIndex: 'IP',
-      key: 'ip',
-      sorter: true
-    },
-    {
-      title: 'MAC Addresses',
-      dataIndex: 'apMac',
-      key: 'apMac',
-      searchable: true
-    },
-    {
-      title: 'Venue',
-      key: 'venueName',
-      dataIndex: 'venueId',
-      sorter: true
-    },
-    {
-      title: 'Switch',
-      key: 'switchName',
-      dataIndex: 'switchName'
-    },
-    {
-      title: 'Connected Clients',
-      key: 'clients',
-      dataIndex: 'clients',
-      sorter: true
-    },
-    {
-      title: 'AP Group',
-      key: 'deviceGroupName',
-      dataIndex: 'deviceGroupName',
-      filterable: true,
-      searchable: true,
-      groupable: {
-        key: 'deviceGroupName',
-        label: 'AP Group',
-        actions: [{
-          key: 'edit',
-          label: <Button>Edit</Button>,
-          callback: (record) => {
-            // eslint-disable-next-line no-console
-            console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
-          }
-        }],
-        parentColumns: [
-          {
-            key: 'members',
-            renderer: (record) => <div>Members: {record.members}</div>
-          },
-          {
-            key: 'incidents',
-            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
-          },
-          {
-            key: 'clients',
-            renderer: (record) => <div>Connected Clients: {record.clients}</div>
-          },
-          {
-            key: 'networks',
-            renderer: (record) => <div>
-              Wireless Networks: {record.networks ? record.networks.count : 0}
-            </div>
-          }
-        ]
-      }
-    },
-    {
-      title: 'RF Channels',
-      key: 'rf-channels',
-      dataIndex: 'rf-channels'
-    },
-    {
-      title: 'Tags',
-      key: 'tags',
-      dataIndex: 'tags',
-      filterable: true
-    }
-  ]
-
   return (
     <>
     with groupby:
       <Table<typeof groupTBData[0] | typeof flatData[0]>
-        columns={columns}
+        columns={groupByColumns}
         dataSource={currData as unknown as TableProps<typeof groupTBData[0]>['dataSource']}
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
-        groupable={{
-          selectors: [
-            { key: 'deviceGroupName', label: 'AP Group', actionEnable: true },
-            { key: 'deviceStatus' , label: 'Status' },
-            { key: 'model', label: 'Model' }
-          ],
+        groupByTableActions={{
           onChange: groupableCallback,
-          actions: [{
-            key: 'edit',
-            label: <Button>Edit</Button>,
-            callback: (record) => {
-              // eslint-disable-next-line no-console
-              console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
-            }
-          }],
           onClear: () => {
             // eslint-disable-next-line no-console
             console.log('clear data, reset to AP Group')
             // reset table to default flat data
             setCurrData(() => cleanResponse(flatData))
-          },
-          parentColumns: [
-            {
-              key: 'members',
-              label: (record) => <div>Members: {record.members}</div>
-            },
-            {
-              key: 'incidents',
-              label: (record) => <div>Incidents (24 hours): {record.incidents}</div>
-            },
-            {
-              key: 'clients',
-              label: (record) => <div>Connected Clients: {record.clients}</div>
-            },
-            {
-              key: 'networks',
-              label: (record) => <div>
-                Wireless Networks: {record.networks ? record.networks.count : 0}
-              </div>
-            }
-          ]
+          }
         }}
       />
     </>
