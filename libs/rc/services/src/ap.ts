@@ -393,10 +393,12 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     addApPhoto: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const url = generatePath(`${WifiUrlsInfo.addApPhoto.url}`, params)
-        return{
-          url: `${window.location.origin}${url}`,
-          method: 'POST',
+        const req = createHttpRequest(WifiUrlsInfo.addApPhoto, params, {
+          'Content-Type': undefined,
+          'Accept': '*/*'
+        })
+        return {
+          ...req,
           body: payload
         }
       },
