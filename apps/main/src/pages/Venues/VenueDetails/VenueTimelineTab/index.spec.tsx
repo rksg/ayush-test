@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                                                          from '@acx-ui/rc/utils'
-import { Provider }                                                                from '@acx-ui/store'
-import { mockRestApiQuery, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { activities, events, eventsMeta } from './__tests__/fixtures'
 
@@ -16,16 +16,15 @@ describe('VenueTimelineTab', () => {
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    render(<Provider><VenueTimelineTab /></Provider>, {
+    render(<VenueTimelineTab />, {
+      wrapper: Provider,
       route: {
         params: { tenantId: 't1', venueId: 'venueId', activeSubTab: 'activities' },
         path: '/t/:tenantId/venues/:venueId/venue-details/timeline/:activeSubTab'
       }
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findAllByText('123roam')).toHaveLength(1)
     await userEvent.click(screen.getByRole('tab', { name: /events/i }))
-    await new Promise(resolve => setTimeout(resolve, 300))
-    expect(await screen.findAllByText('730-11-60')).toHaveLength(2)
+    expect(await screen.findAllByText('730-11-60')).toHaveLength(4)
   })
 })

@@ -105,7 +105,7 @@ const tabs : {
   },
   {
     key: 'events',
-    title: defineMessage({ defaultMessage: 'Events Switch' }),
+    title: defineMessage({ defaultMessage: 'Events' }),
     component: Events
   }
 ]
