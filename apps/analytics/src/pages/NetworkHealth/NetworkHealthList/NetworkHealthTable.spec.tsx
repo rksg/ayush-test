@@ -13,11 +13,8 @@ import {
   findTBody
 }                              from '@acx-ui/test-utils'
 
-import {
-  deleteNetworkHealth,
-  fetchAllServiceGuardSpecs,
-  runServiceGuardTest
-} from '../__tests__/fixtures'
+import * as fixtures             from '../__tests__/fixtures'
+import { NetworkHealthTableRow } from '../services'
 
 import { NetworkHealthTable, lastResultSort } from './NetworkHealthTable'
 
@@ -33,8 +30,8 @@ jest.mock('@acx-ui/user', () => ({
 
 describe('Network Health Table', () => {
   it('should render table with valid input', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const tbody = await findTBody()
     expect(tbody).toBeVisible()
@@ -44,9 +41,10 @@ describe('Network Health Table', () => {
   })
 
   it('should click run now', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
-    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', { data: runServiceGuardTest })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest',
+      { data: fixtures.runServiceGuardTest })
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
@@ -58,7 +56,7 @@ describe('Network Health Table', () => {
     mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs', {
       data: {
         allServiceGuardSpecs: [{
-          ...fetchAllServiceGuardSpecs.allServiceGuardSpecs[0],
+          ...fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs[0],
           tests: { items: [{
             id: 1,
             createdAt: '2023-02-24T07:34:33.336Z',
@@ -75,9 +73,10 @@ describe('Network Health Table', () => {
   })
 
   it('should not allow run when apsCount is 0', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
-    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', { data: runServiceGuardTest })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest',
+      { data: fixtures.runServiceGuardTest })
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
@@ -86,9 +85,10 @@ describe('Network Health Table', () => {
   })
 
   it('should not allow run when test is in progress', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
-    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', { data: runServiceGuardTest })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest',
+      { data: fixtures.runServiceGuardTest })
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[2])
@@ -97,8 +97,8 @@ describe('Network Health Table', () => {
   })
 
   it('should handle error', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
     mockGraphqlMutation(networkHealthApiURL, 'RunNetworkHealthTest', { data: {
       runServiceGuardTest: {
         userErrors: [{ field: 'spec', message: 'RUN_TEST_NO_APS' }]
@@ -111,8 +111,8 @@ describe('Network Health Table', () => {
   })
 
   it('should only allow edit for same user', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
     render(<NetworkHealthTable/>, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
@@ -129,10 +129,10 @@ describe('Network Health Table', () => {
   })
 
   it('should delete test properly', async () => {
-    mockGraphqlQuery(
-      networkHealthApiURL, 'FetchAllServiceGuardSpecs', { data: fetchAllServiceGuardSpecs })
-    mockGraphqlMutation(
-      networkHealthApiURL, 'DeleteServiceGuardSpec', { data: deleteNetworkHealth })
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    mockGraphqlMutation(networkHealthApiURL, 'DeleteServiceGuardSpec',
+      { data: fixtures.deleteNetworkHealth })
     render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[0])
@@ -141,22 +141,40 @@ describe('Network Health Table', () => {
     expect(await screen.findByText('Network Health test deleted')).toBeVisible()
   })
 
+  it('should clone test properly',async () => {
+    mockGraphqlQuery(networkHealthApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    mockGraphqlMutation(networkHealthApiURL, 'CloneServiceGuardSpec',
+      { data: fixtures.cloneNetworkHealth })
+    mockGraphqlQuery(networkHealthApiURL, 'ServiceGuardSpecNames',
+      { data: fixtures.serviceGuardSpecNames })
+
+    render(<NetworkHealthTable/>, { wrapper: Provider, route: {} })
+    const radio = await screen.findAllByRole('radio')
+    await userEvent.click(radio[0])
+    await userEvent.click(await screen.findByRole('button', { name: 'Clone' }))
+    expect(await screen.findByText('Clone test')).toBeVisible()
+    await userEvent.type(await screen.findByRole('textbox'), 'test-name')
+    await userEvent.click(await screen.findByText('Save'))
+    expect(await screen.findByText('Network Health test cloned')).toBeVisible()
+  })
+
   describe('lastResultSort', () => {
-    const row = fetchAllServiceGuardSpecs.allServiceGuardSpecs[0]
+    const row = fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs[0]
     const row1 = { ...row, latestTest: {
       summary: {
         apsTestedCount: 2,
         apsPendingCount: 0,
         apsSuccessCount: 2
       }
-    } }
+    } } as NetworkHealthTableRow
     const row2 = { ...row, latestTest: {
       summary: {
         apsTestedCount: 2,
         apsPendingCount: 0,
         apsSuccessCount: 1
       }
-    } }
+    } } as NetworkHealthTableRow
     const row3 = { ...row, latestTest: undefined }
     it('should return 1', () => {
       expect(lastResultSort(row1, row2)).toEqual(1)

@@ -184,4 +184,22 @@ describe('DpskForm', () => {
 
     expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
   })
+
+  it('should render the form for Modal mode', async () => {
+    const mockedModalCallBack = jest.fn()
+
+    render(
+      <Provider>
+        <DpskForm editMode={false} modalMode={true} modalCallBack={mockedModalCallBack} />
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
+          path: editPath
+        }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockedModalCallBack).toHaveBeenCalled()
+  })
 })
