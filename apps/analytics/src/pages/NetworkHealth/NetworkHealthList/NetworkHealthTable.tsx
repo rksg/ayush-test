@@ -69,7 +69,7 @@ export function NetworkHealthTable () {
   useMutationResponseEffect(cloneResponse, useCallback(() => {
     showToast({
       type: 'success',
-      content: $t(contents.messageMapping.TEST_CLONEED)
+      content: $t(contents.messageMapping.TEST_CLONED)
     })
   }, [$t]))
 
