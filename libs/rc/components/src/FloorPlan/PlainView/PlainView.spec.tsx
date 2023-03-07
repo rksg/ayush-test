@@ -6,13 +6,14 @@ import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                            from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor }                                                                                                  from '@acx-ui/test-utils'
+import { render, screen, fireEvent, waitFor, mockServer }                                                                                                  from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
+import { rest } from 'msw'
 
 
 
@@ -82,6 +83,17 @@ const networkDevices: {
 
 const networkDeviceType: NetworkDeviceType[] = []
 
+const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
+},
+'7231da344778480d88f37f0cca1c534f-001.png': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+}
+}
+
+
 for (let deviceType in NetworkDeviceType) {
   if (deviceType === NetworkDeviceType.rogue_ap) {
     continue // rogue ap is not controlled(placed) by user
@@ -99,6 +111,16 @@ describe('Floor Plan Plain View', () => {
     Object.defineProperty(HTMLImageElement.prototype, 'offsetHeight', { value: 400 })
     Object.defineProperty(HTMLDivElement.prototype, 'offsetWidth', { value: 1150 })
     Object.defineProperty(HTMLDivElement.prototype, 'offsetHeight', { value: 450 })
+
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
   })
 
   it('should render correctly Plain View', async () => {
