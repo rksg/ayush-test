@@ -18,10 +18,10 @@ import {
 import {
   MspAdministrator,
   MspEcDelegatedAdmins,
-  roleDisplayText,
-  RolesEnum
+  roleDisplayText
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
 
 interface ManageAdminsDrawerProps {
   visible: boolean

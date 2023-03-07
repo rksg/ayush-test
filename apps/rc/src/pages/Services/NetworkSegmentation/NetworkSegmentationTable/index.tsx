@@ -19,6 +19,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 const getNetworkSegmentationPayload = {
   fields: [
@@ -210,12 +211,12 @@ const NetworkSegmentationTable = () => {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Network Segmenation' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         tableQuery,
@@ -227,7 +228,7 @@ const NetworkSegmentationTable = () => {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'checkbox' }}
         />
       </Loader>

@@ -5,13 +5,12 @@ import { PhoneNumberUtil }                       from 'google-libphonenumber'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import { cssNumber, Drawer }           from '@acx-ui/components'
-import { useMfaRegisterAdminMutation } from '@acx-ui/rc/services'
+import { cssNumber, Drawer } from '@acx-ui/components'
 import {
   phoneRegExp,
-  emailRegExp,
-  MFAMethod
+  emailRegExp
 } from '@acx-ui/rc/utils'
+import { MFAMethod, useMfaRegisterAdminMutation } from '@acx-ui/user'
 
 import { VerifyCodeModal } from '../VerifyCodeModal'
 

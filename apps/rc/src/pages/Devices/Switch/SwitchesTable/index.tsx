@@ -12,6 +12,7 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 
 export default function SwitchesTable () {
@@ -80,11 +81,11 @@ export default function SwitchesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Switch' })}
-        extra={[
-          <Dropdown overlay={addMenu} key='addMenu'>{() =>
+        extra={filterByAccess([
+          <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
-        ]}
+        ])}
       />
       <ImportFileDrawer type='Switch'
         title={$t({ defaultMessage: 'Import from file' })}
