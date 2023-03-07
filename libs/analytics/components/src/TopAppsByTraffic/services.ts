@@ -4,14 +4,10 @@ import { dataApi }         from '@acx-ui/analytics/services'
 import { AnalyticsFilter } from '@acx-ui/analytics/utils'
 
 export type HierarchyNodeData = {
-  topNAppByTotalTraffic: TopApplicationByTrafficData[]
+  topNAppByTotalTraffic: TopAppsByTrafficData[]
 }
 
-export type TrafficTimeseriesData = {
-    applicationTraffic: number[]
-}
-
-export type TopApplicationByTrafficData = {
+export type TopAppsByTrafficData = {
     name: string
     applicationTraffic: number
 }
