@@ -18,6 +18,7 @@ import { DeleteSolid, DownloadOutlined }                                        
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                             from '@acx-ui/user'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -458,7 +459,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           columns={basicColumns}
           dataSource={macAddressList}
           rowKey='macAddress'
-          actions={actions}
+          actions={filterByAccess(actions)}
           columnState={{ hidden: true }}
         />
       </Form.Item>

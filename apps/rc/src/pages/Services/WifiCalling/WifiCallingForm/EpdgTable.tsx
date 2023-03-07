@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { showActionModal, Table, TableProps }                     from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery }                          from '@acx-ui/rc/services'
 import { EPDG, WifiCallingActionPayload, WifiCallingActionTypes } from '@acx-ui/rc/utils'
+import { filterByAccess }                                         from '@acx-ui/user'
 
 import WifiCallingFormContext from '../WifiCallingFormContext'
 
@@ -121,8 +122,8 @@ const EpdgTable = (props: { edit?: boolean }) => {
         columns={basicColumns}
         dataSource={tableData}
         rowKey='domain'
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
     </>

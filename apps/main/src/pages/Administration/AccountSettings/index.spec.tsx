@@ -3,15 +3,15 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { administrationApi, mspApi }                   from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider, store  }                            from '@acx-ui/store'
+import { administrationApi, mspApi }                             from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { Provider, store  }                                      from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps, UserUrlsInfo, setUserProfile } from '@acx-ui/user'
 
 import {
   fakeRecoveryPassphrase,
@@ -20,11 +20,9 @@ import {
   fakeUserProfile
 } from './__tests__/fixtures'
 
-
 import AccountSettings from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
 
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
@@ -41,6 +39,10 @@ jest.mock('./MFAFormItem', () => ({
 jest.mock('./RecoveryPassphraseFormItem', () => ({
   RecoveryPassphraseFormItem: () => <div data-testid={'rc-RecoveryPassphraseFormItem'} title='RecoveryPassphraseFormItem' />
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  isDelegationMode: jest.fn().mockReturnValue(false)
+}))
 
 const isPrimeAdmin: () => boolean = jest.fn().mockReturnValue(true)
 const userProfileContextValues = {
@@ -50,6 +52,8 @@ const userProfileContextValues = {
 
 describe('Account Settings', () => {
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     act(() => {
       store.dispatch(administrationApi.util.resetApiState())
       store.dispatch(mspApi.util.resetApiState())
@@ -61,7 +65,7 @@ describe('Account Settings', () => {
         (_req, res, ctx) => res(ctx.json(fakeRecoveryPassphrase))
       ),
       rest.get(
-        AdministrationUrlsInfo.getMfaTenantDetails.url,
+        UserUrlsInfo.getMfaTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeMFATenantDetail))
       ),
       rest.get(
@@ -136,6 +140,7 @@ describe('Account Settings', () => {
   it('should not display enable MFA checkbox', async () => {
     const fakeUser = _.cloneDeep(fakeUserProfile)
     fakeUser.varTenantId = 'test_tenant'
+    jest.mocked(isDelegationMode).mockReturnValue(true)
 
     render(
       <Provider>

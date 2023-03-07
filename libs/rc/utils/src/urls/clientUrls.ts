@@ -25,26 +25,27 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   guestsAction: {
     method: 'patch',
-    url: '/guestUsers/:guestUserId',
-    newApi: true
+    url: '/guestUsers/:guestUserId'
+    // newApi: true
   },
   enableGuests: {
     method: 'post',
-    url: '/guestUsers/:guestUserId',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
-    newApi: true
+    // url: '/guestUsers/:guestUserId',
+    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
+    // newApi: true
   },
   disableGuests: {
     method: 'post',
-    url: '/guestUsers/:guestUserId',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
-    newApi: true
+    // url: '/guestUsers/:guestUserId',
+    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
+    // newApi: true
   },
   getGuests: {
     method: 'post',
-    url: '/guestUsers/query/csvFiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
-    newApi: true
+    // API not found
+    // url: '/guestUsers/query/csvFiles'
+    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    // newApi: true
   },
   generateGuestPassword: {
     method: 'post',
