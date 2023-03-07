@@ -12,6 +12,7 @@ import {
   useActivateDHCPPoolMutation,
   useDeactivateDHCPPoolMutation } from '@acx-ui/rc/services'
 import { VenueDHCPPoolInst } from '@acx-ui/rc/utils'
+import { hasAccess }         from '@acx-ui/user'
 import { formatter }         from '@acx-ui/utils'
 
 import { ReadonlySwitch } from './styledComponents'
@@ -108,6 +109,10 @@ export default function VenuePoolTable (){
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (id, row) => {
+        if (!hasAccess()) {
+          return row.active ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
+        }
+
         let hasOtherActive = true
         if(row.active===true){
           hasOtherActive = _.some(tableData, o => o.active && o.id !== id)

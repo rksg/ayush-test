@@ -3,15 +3,15 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { UserProfileContext, UserProfileContextProps }                         from '@acx-ui/rc/components'
-import { administrationApi, mspApi }                                           from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo, UserUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
-import { Provider, store  }                                                    from '@acx-ui/store'
+import { administrationApi, mspApi }                             from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { Provider, store  }                                      from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps, UserUrlsInfo, setUserProfile } from '@acx-ui/user'
 
 import {
   fakeRecoveryPassphrase,
@@ -20,11 +20,9 @@ import {
   fakeUserProfile
 } from './__tests__/fixtures'
 
-
 import AccountSettings from './'
 
 const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
-
 
 jest.mock('./AccessSupportFormItem', () => ({
   AccessSupportFormItem: () => <div data-testid={'rc-AccessSupportFormItem'} title='AccessSupportFormItem' />
@@ -54,6 +52,8 @@ const userProfileContextValues = {
 
 describe('Account Settings', () => {
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     act(() => {
       store.dispatch(administrationApi.util.resetApiState())
       store.dispatch(mspApi.util.resetApiState())

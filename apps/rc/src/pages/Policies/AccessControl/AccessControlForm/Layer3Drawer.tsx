@@ -22,7 +22,6 @@ import {
   GridCol,
   GridRow,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -36,6 +35,7 @@ import {
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
@@ -452,12 +452,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         setRequestId(l3AclRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -633,8 +629,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       columns={basicColumns}
       dataSource={layer3RuleList as Layer3Rule[]}
       rowKey='priority'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
       columnState={{ hidden: true }}
       components={{

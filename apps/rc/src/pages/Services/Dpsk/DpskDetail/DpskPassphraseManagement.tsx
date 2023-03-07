@@ -9,7 +9,6 @@ import {
   Modal,
   ModalType,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -28,8 +27,9 @@ import {
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { formatter } from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { formatter }      from '@acx-ui/utils'
 
 import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
@@ -65,11 +65,8 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export passphrases.' })
-      })
+    downloadCsv({ params }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -221,14 +218,8 @@ export default function DpskPassphraseManagement () {
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          if (error.data?.message) {
-            showToast({
-              type: 'error',
-              content: error.data.message
-            })
-          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }}
       onClose={() => setUploadCsvDrawerVisible(false)} >
@@ -251,8 +242,8 @@ export default function DpskPassphraseManagement () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
       />
