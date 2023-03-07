@@ -49,32 +49,37 @@ export function AuthenticationMethod () {
   ]
   const methods = authMethodsByClientType[clientType]
 
-  let options: ReactNode = methods?.map(method => <Select.Option
-    key={method.code}
-    value={method.code}
-    children={$t(method.title)}
-  />)
-
+  let options: ReactNode
   if (map.data?.[wlanName]?.length) {
+    const suggestedCodes = map.data?.[wlanName]
+    const suggestedMethods = suggestedCodes?.map(code => authMethodsByCode[code])
+    const othersMethods = methods.filter(method => !suggestedCodes?.includes(method.code))
     options = <>
       <Select.OptGroup
         key='suggested'
         label={$t({ defaultMessage: 'Suggested' })}
-        children={map.data?.[wlanName]
-          ?.map(code => authMethodsByCode[code])
-          .map(method => <Select.Option
-            key={`suggested-${method.code}`}
-            value={method.code}
-            children={$t(method.title)}
-          />)
-        }
+        children={suggestedMethods?.map(method => <Select.Option
+          key={method.code}
+          value={method.code}
+          children={$t(method.title)}
+        />)}
       />
       <Select.OptGroup
         key='others'
         label={$t({ defaultMessage: 'Others' })}
-        children={options}
+        children={othersMethods.map(method => <Select.Option
+          key={method.code}
+          value={method.code}
+          children={$t(method.title)}
+        />)}
       />
     </>
+  } else {
+    options = methods?.map(method => <Select.Option
+      key={method.code}
+      value={method.code}
+      children={$t(method.title)}
+    />)
   }
 
   const mainLabel = <>
