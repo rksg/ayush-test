@@ -268,10 +268,6 @@ describe('formatter', () => {
       expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
         .toBe(moment(1456885800000).format(`${defaultDateFormat} HH:mm:ss`))
     })
-    it('Should format a timestamp to default format with hh:mm A', () => {
-      expect(formatter(DateFormatEnum.DateTime12hourFormat)(1456885800000))
-        .toBe(moment(1456885800000).format(`${defaultDateFormat} hh:mm A`))
-    })
     it('Should format based on user profile setting', () => {
       const userProfile = getUserProfile()
       setUserProfile({ ...userProfile, profile: {

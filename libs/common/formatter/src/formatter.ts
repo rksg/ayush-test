@@ -122,16 +122,14 @@ export enum DateFormatEnum {
   DateFormat = 'dateFormat',
   DateTimeFormat = 'dateTimeFormat',
   DateTimeFormatWithTimezone = 'dateTimeFormatWithTimezone',
-  DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds',
-  DateTime12hourFormat = 'dateTime12hourFormat'
+  DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds'
 }
 
 const dateTimeFormats = {
   dateFormat: '',
   dateTimeFormat: 'HH:mm',
   dateTimeFormatWithTimezone: '- HH:mm z',
-  dateTimeFormatWithSeconds: 'HH:mm:ss',
-  dateTime12hourFormat: 'hh:mm A'
+  dateTimeFormatWithSeconds: 'HH:mm:ss'
 }
 
 function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
