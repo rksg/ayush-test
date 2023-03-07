@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo, AdministrationUrlsInfo, Administrator, DetailLevel } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
+import { MspUrlsInfo, AdministrationUrlsInfo, Administrator } from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -11,6 +11,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { DetailLevel } from '@acx-ui/user'
 
 import { fakedAdminLsit, fakeMSPECAdminList, fakeMSPECAdmin } from '../../__tests__/fixtures'
 

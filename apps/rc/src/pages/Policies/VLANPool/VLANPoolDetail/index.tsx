@@ -10,7 +10,8 @@ import {
   PolicyOperation,
   getPolicyRoutePath
 }   from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import VLANPoolInstancesTable from './VLANPoolInstancesTable'
 import VLANPoolOverview       from './VLANPoolOverview'
@@ -28,17 +29,16 @@ export default function VLANPoolDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'VLAN Pools' }), link: tablePath }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.VLAN_POOL,
             oper: PolicyOperation.EDIT,
             policyId: queryResults.data?.id||''
           })}>
-
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
