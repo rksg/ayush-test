@@ -9,12 +9,14 @@ import {
 import { Provider, store }                           from '@acx-ui/store'
 import { render, mockGraphqlQuery, screen, waitFor } from '@acx-ui/test-utils'
 
-import * as fixtures from '../__tests__/fixtures'
+import * as fixtures      from '../__tests__/fixtures'
+import { messageMapping } from '../contents'
 
 import {
   NetworkHealthSpecGuard,
+  NetworkHealthTestGuard,
   showAlertAndNavigateAway
-} from './NetworkHealthSpecGuard'
+} from '.'
 
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -22,12 +24,12 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigateToPath: () => mockedNavigate
 }))
 
-describe('NetworkHealthSpecGuard', () => {
-  beforeEach(() => {
-    store.dispatch(api.util.resetApiState())
-    mockedNavigate.mockReset()
-  })
+beforeEach(() => {
+  store.dispatch(api.util.resetApiState())
+  mockedNavigate.mockClear()
+})
 
+describe('NetworkHealthSpecGuard', () => {
   it('renders empty if param not having specId', async () => {
     const { container } = render(<NetworkHealthSpecGuard
       children={<div data-testid='contents' />}
@@ -67,7 +69,50 @@ describe('NetworkHealthSpecGuard', () => {
       name: (_, el) => el.classList.contains('ant-message')
     })).toBeVisible()
 
-    expect(mockedNavigate).toBeCalled()
+    await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
+  })
+})
+
+describe('NetworkHealthTestGuard', () => {
+  it('renders empty if param not having testId', async () => {
+    const { container } = render(<NetworkHealthTestGuard
+      children={<div data-testid='contents' />}
+    />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id' } }
+    })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(container.firstChild).toBeEmptyDOMElement()
+  })
+
+  it('renders children if testId exists and record exists', async () => {
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardTest', { data: fixtures.fetchServiceGuardTest })
+
+    render(<NetworkHealthTestGuard
+      children={<div data-testid='contents' />}
+    />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', testId: 'test-id' } }
+    })
+
+    expect(await screen.findByTestId('contents')).toBeVisible()
+  })
+
+  it('navigate to listing & show error toast if record not exists', async () => {
+    mockGraphqlQuery(apiUrl, 'FetchServiceGuardTest', { data: { serviceGuardTest: null } })
+    render(<NetworkHealthTestGuard
+      children={<div data-testid='contents' />}
+    />, {
+      wrapper: Provider,
+      route: { params: { tenantId: 't-id', testId: 'test-id' } }
+    })
+
+    expect(await screen.findByRole('generic', {
+      name: (_, el) => el.classList.contains('ant-message')
+    })).toBeVisible()
+
+    await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
   })
 })
 
@@ -80,7 +125,7 @@ describe('showAlertAndNavigateAway', () => {
       const [done, setDone] = useState(false)
 
       useEffect(() => {
-        showAlertAndNavigateAway(mock, showed)
+        showAlertAndNavigateAway(mock, showed, messageMapping.SPEC_NOT_FOUND)
         if (showed.current && flag) setDone(true)
       }, [flag])
 
