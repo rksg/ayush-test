@@ -1,7 +1,11 @@
-import { noDataSymbol }         from '@acx-ui/analytics/utils'
-import { intlFormats, getIntl } from '@acx-ui/utils'
+import moment from 'moment-timezone'
 
-import { NetworkHealthTest } from './types'
+import { noDataSymbol }                    from '@acx-ui/analytics/utils'
+import { Tooltip }                         from '@acx-ui/components'
+import { intlFormats, getIntl, formatter } from '@acx-ui/utils'
+
+import { testTypes }                                      from './contents'
+import { NetworkHealthSpec, NetworkHealthTest, TestType } from './types'
 
 export interface StatsFromSummary {
   isOngoing: boolean
@@ -45,4 +49,17 @@ export const formatLastResult = (summary: NetworkHealthTest['summary'] | undefin
     { lastResultPercent: $t(intlFormats.percentFormat, { value: stats.lastResult }) }
   )
   return noDataSymbol
+}
+
+export const formatTestType = (value: TestType, schedule: NetworkHealthSpec['schedule']) => {
+  const { $t } = getIntl()
+  const testType = $t(testTypes[value])
+  if (value === TestType.OnDemand) return testType
+  return <Tooltip title={formatter('dateTimeFormat')(schedule?.nextExecutionTime)}>{$t(
+    {
+      defaultMessage: '{testType} ({scheduledIn})',
+      description: 'Test Type: "Scheduled" or "On-Demand", in brackets: when it is next scheduled'
+    },
+    { testType, scheduledIn: moment(schedule?.nextExecutionTime).fromNow() }
+  )}</Tooltip>
 }

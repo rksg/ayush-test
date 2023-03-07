@@ -8,12 +8,12 @@ import { useIsTierAllowed }                  from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
 
-import IncidentDetailsPage        from './pages/IncidentDetails'
-import NetworkHealthDetails       from './pages/NetworkHealth/NetworkHealthDetails'
-import NetworkHealthForm          from './pages/NetworkHealth/NetworkHealthForm'
-import { NetworkHealthSpecGuard } from './pages/NetworkHealth/NetworkHealthForm/NetworkHealthSpecGuard'
-import NetworkHealthList          from './pages/NetworkHealth/NetworkHealthList'
-import VideoCallQoePage           from './pages/VideoCallQoe'
+import IncidentDetailsPage                                from './pages/IncidentDetails'
+import NetworkHealthDetails                               from './pages/NetworkHealth/NetworkHealthDetails'
+import NetworkHealthForm                                  from './pages/NetworkHealth/NetworkHealthForm'
+import { NetworkHealthSpecGuard, NetworkHealthTestGuard } from './pages/NetworkHealth/NetworkHealthGuard'
+import NetworkHealthList                                  from './pages/NetworkHealth/NetworkHealthList'
+import VideoCallQoePage                                   from './pages/VideoCallQoe'
 
 export default function AnalyticsRoutes () {
   const { $t } = useIntl()
@@ -43,8 +43,14 @@ export default function AnalyticsRoutes () {
             element={<NetworkHealthSpecGuard children={<NetworkHealthForm />} />}
           />
           <Route path='tests/:testId'>
-            <Route path='' element={<NetworkHealthDetails />} />
-            <Route path='tab/:activeTab' element={<NetworkHealthDetails />} />
+            <Route
+              path=''
+              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+            />
+            <Route
+              path='tab/:activeTab'
+              element={<NetworkHealthTestGuard children={<NetworkHealthDetails />} />}
+            />
           </Route>
         </Route>
         <Route path='videoCallQoe' element={<VideoCallQoePage />} />
