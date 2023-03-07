@@ -140,7 +140,7 @@ describe('NetworkHealthForm', () => {
     expect(mockedNavigate).toBeCalled()
   })
 
-  it.only('works correctly for edit flow', async () => {
+  it('works correctly for edit flow', async () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })

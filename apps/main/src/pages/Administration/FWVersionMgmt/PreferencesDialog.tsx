@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                          from 'antd/lib/form/Form'
@@ -27,9 +27,22 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data } = props
   const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
-  const [valueDays, setValueDays] = useState<string[]>([...data.days as string[]])
-  const [valueTimes, setValueTimes] = useState<string[]>([...data.times as string[]])
+  const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
+  const [valueTimes, setValueTimes] = useState<string[]>(['00:00-02:00'])
   const [modelVisible, setModelVisible] = useState(false)
+
+  useEffect(() => {
+    if (data) {
+      // eslint-disable-next-line max-len
+      data.autoSchedule ? setScheduleMode(ScheduleMode.Automatically) : setScheduleMode(ScheduleMode.Manually)
+    }
+    if (data && data.days) {
+      setValueDays([...data.days])
+    }
+    if (data && data.times) {
+      setValueTimes([...data.times])
+    }
+  }, [])
 
   const showSlotModal = () => {
     setModelVisible(true)
@@ -55,7 +68,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const triggerSubmit = () => {
     onSubmit(createRequest())
-    onModalCancel()
+    onCancel()
   }
 
   const onScheduleModeChange = (e: RadioChangeEvent) => {
@@ -64,7 +77,8 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const onModalCancel = () => {
     form.resetFields()
-    setScheduleMode(ScheduleMode.Automatically)
+    // eslint-disable-next-line max-len
+    data.autoSchedule ? setScheduleMode(ScheduleMode.Automatically) : setScheduleMode(ScheduleMode.Manually)
     setValueDays([...data.days as string[]])
     setValueTimes([...data.times as string[]])
     onCancel()
