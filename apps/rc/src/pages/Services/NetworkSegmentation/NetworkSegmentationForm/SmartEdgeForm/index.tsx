@@ -4,7 +4,7 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, StepsForm, useStepFormContext }                                 from '@acx-ui/components'
+import { Button, StepsForm, Tooltip, useStepFormContext }                        from '@acx-ui/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
@@ -12,6 +12,7 @@ import { NetworkSegmentationGroupForm } from '..'
 import { useWatch }                     from '../../useWatch'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
+import { DhcpServiceModal }     from './DhcpServiceModal'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
 
@@ -122,67 +123,99 @@ export const SmartEdgeForm = () => {
   }
 
   return (
-    <Row gutter={20}>
-      <Col span={8}>
-        <SelectDhcpPoolDrawer
-          visible={drawerVisible}
-          setVisible={setDrawerVisible}
-          selectPool={selectPool}
-          pools={poolMap && poolMap[dhcpId]}
-          data={poolId}
-        />
-        <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
-        <Form.Item
-          name='edgeId'
-          label={$t({ defaultMessage: 'SmartEdge' })}
-          rules={[{ required: true }]}
-          children={
-            <Select
-              loading={isEdgeOptionsLoading}
-              onChange={onEdgeChange}
-              options={[
-                { label: $t({ defaultMessage: 'Select...' }), value: null },
-                ...(edgeOptions || [])
-              ]}
-            />
-          }
-        />
-        <Form.Item
-          name='segments'
-          label={$t({ defaultMessage: 'Number of Segments' })}
-          rules={[
-            { required: true },
-            { type: 'number' }
-          ]}
-          children={<InputNumber />}
-        />
-        <Form.Item
-          name='devices'
-          label={$t({ defaultMessage: 'Number of devices per Segment' })}
-          rules={[
-            { required: true },
-            { type: 'number' }
-          ]}
-          children={<InputNumber />}
-        />
-        <Form.Item
-          name='dhcpId'
-          label={$t({ defaultMessage: 'DHCP Service ' })}
-          rules={[{ required: true }]}
-          children={
-            <Select
-              loading={isDhcpOptionsLoading}
-              onChange={onDhcpChange}
-              options={[
-                { label: $t({ defaultMessage: 'Select...' }), value: null },
-                ...(dhcpOptions || [])
-              ]}
-              disabled={shouldDhcpDisabled}
-            />
-          }
-        />
+    <>
+      <SelectDhcpPoolDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        selectPool={selectPool}
+        dhcpId={dhcpId}
+        pools={poolMap && poolMap[dhcpId]}
+        data={poolId}
+      />
+      <Row gutter={20}>
+        <Col span={8}>
+          <StepsForm.Title>{$t({ defaultMessage: 'SmartEdge Settings' })}</StepsForm.Title>
+          <Form.Item
+            name='edgeId'
+            label={
+              <>
+                {$t({ defaultMessage: 'SmartEdge' })}
+                <Tooltip.Question
+                  title={$t({ defaultMessage: `To enable the property management for a venue,
+                  please go to the Venue configuration/property management page to enable it.` })}
+                  placement='bottom'
+                />
+              </>
+            }
+            rules={[{ required: true }]}
+            children={
+              <Select
+                loading={isEdgeOptionsLoading}
+                onChange={onEdgeChange}
+                options={[
+                  { label: $t({ defaultMessage: 'Select...' }), value: null },
+                  ...(edgeOptions || [])
+                ]}
+              />
+            }
+          />
+        </Col>
+      </Row>
+      <Row gutter={20}>
+        <Col span={8}>
+          <Form.Item
+            name='segments'
+            label={$t({ defaultMessage: 'Number of Segments' })}
+            rules={[
+              { required: true },
+              { type: 'number' }
+            ]}
+            children={<InputNumber />}
+          />
+        </Col>
+      </Row>
+      <Row gutter={20}>
+        <Col span={8}>
+          <Form.Item
+            name='devices'
+            label={$t({ defaultMessage: 'Number of devices per Segment' })}
+            rules={[
+              { required: true },
+              { type: 'number' }
+            ]}
+            children={<InputNumber />}
+          />
+        </Col>
+      </Row>
+      <Row gutter={20} align='middle'>
+        <Col span={8}>
+          <Form.Item
+            name='dhcpId'
+            label={$t({ defaultMessage: 'DHCP Service ' })}
+            rules={[{ required: true }]}
+            children={
+              <Select
+                loading={isDhcpOptionsLoading}
+                onChange={onDhcpChange}
+                options={[
+                  { label: $t({ defaultMessage: 'Select...' }), value: null },
+                  ...(dhcpOptions || [])
+                ]}
+                disabled={shouldDhcpDisabled}
+              />
+            }
+          />
+        </Col>
         {
-          dhcpId &&
+          !shouldDhcpDisabled && (
+            <Col ><DhcpServiceModal /></Col>
+          )
+        }
+      </Row>
+      <Row gutter={20}>
+        <Col span={8}>
+          {
+            dhcpId &&
             <Form.Item
               name='poolId'
               label={$t({ defaultMessage: 'DHCP Pool ' })}
@@ -213,8 +246,9 @@ export const SmartEdgeForm = () => {
                 />
               }
             </Form.Item>
-        }
-      </Col>
-    </Row>
+          }
+        </Col>
+      </Row>
+    </>
   )
 }
