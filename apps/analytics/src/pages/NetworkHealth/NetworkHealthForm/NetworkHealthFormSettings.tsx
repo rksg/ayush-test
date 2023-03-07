@@ -17,6 +17,7 @@ export function NetworkHealthFormSettings () {
         <FormItems.TestName />
         <FormItems.ClientType />
         <FormItems.TestType />
+        <FormItems.Schedule />
         <FormItems.WlanName />
         <FormItems.AuthenticationMethod />
         <FormItems.Username />

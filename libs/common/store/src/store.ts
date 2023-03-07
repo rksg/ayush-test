@@ -1,4 +1,5 @@
 import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
+import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit/query/react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
@@ -10,7 +11,6 @@ import {
   baseTimelineApi as timelineApi,
   baseServiceApi as serviceApi,
   apApi,
-  baseUserApi as userApi,
   baseDhcpApi as dhcpApi,
   baseMspApi as mspApi,
   baseLicenseApi as licenseApi,
@@ -18,7 +18,6 @@ import {
   basePolicyApi as policyApi,
   baseClientApi as clientApi,
   baseSwitchApi as switchApi,
-  baseMfaApi as mfaApi,
   baseAdministrationApi as administrationApi,
   baseFirmwareApi as firmwareApi,
   baseEdgeDhcpApi as edgeDhcpApi,
@@ -43,6 +42,14 @@ type ErrorAction = {
     }
   }
 }
+
+export const userApi = createApi({
+  baseQuery: fetchBaseQuery(),
+  reducerPath: 'userApi',
+  tagTypes: ['UserProfile', 'Mfa'],
+  refetchOnMountOrArgChange: true,
+  endpoints: () => ({ })
+})
 
 const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   if (isRejectedWithValue(action)) {
@@ -81,7 +88,6 @@ export const store = configureStore({
     [policyApi.reducerPath]: policyApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [switchApi.reducerPath]: switchApi.reducer,
-    [mfaApi.reducerPath]: mfaApi.reducer,
     [administrationApi.reducerPath]: administrationApi.reducer,
     [firmwareApi.reducerPath]: firmwareApi.reducer,
     [edgeDhcpApi.reducerPath]: edgeDhcpApi.reducer,
@@ -113,7 +119,6 @@ export const store = configureStore({
       policyApi.middleware,
       clientApi.middleware,
       switchApi.middleware,
-      mfaApi.middleware,
       administrationApi.middleware,
       firmwareApi.middleware,
       edgeDhcpApi.middleware,

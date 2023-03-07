@@ -17,6 +17,7 @@ jest.mock('antd/lib/config-provider', () => jest.fn().mockImplementation((props:
 />))
 
 jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
   ConfigProvider: jest.fn().mockImplementation((props: Props) => <div
     {...props}
     data-testid='ant-config-provider'

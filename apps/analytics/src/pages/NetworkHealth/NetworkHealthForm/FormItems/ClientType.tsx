@@ -1,10 +1,16 @@
 import { Form, Radio }                              from 'antd'
+import { NamePath }                                 from 'antd/es/form/interface'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { StepsFormNew, Tooltip, useStepFormContext } from '@acx-ui/components'
 
 import * as contents                    from '../../contents'
 import { ClientType as ClientTypeEnum } from '../../types'
+
+import { AuthenticationMethod } from './AuthenticationMethod'
+import { Password }             from './Password'
+import { RadioBand }            from './RadioBand'
+import { Username }             from './Username'
 
 const name = 'clientType' as const
 const label = defineMessage({ defaultMessage: 'Client Type' })
@@ -16,21 +22,31 @@ const tooltip = <FormattedMessage
 
 export function ClientType () {
   const { $t } = useIntl()
-  const { editMode } = useStepFormContext()
+  const { editMode, form } = useStepFormContext()
   const types = [
     ClientTypeEnum.VirtualClient,
     ClientTypeEnum.VirtualWirelessClient
   ]
 
-  const children = editMode ? <StepsFormNew.FieldSummary
-    convert={(value) => $t(contents.clientTypes[value as ClientTypeEnum])}
-  /> : <Radio.Group>
-    {types.map(type => <Radio
-      key={type}
-      value={type}
-      children={$t(contents.clientTypes[type])}
-    />)}
-  </Radio.Group>
+  const children = editMode
+    ? <StepsFormNew.FieldSummary
+      convert={(value) => $t(contents.clientTypes[value as ClientTypeEnum])}
+    />
+    : <Radio.Group
+      onChange={(e) => {
+        RadioBand.reset(form, e.target.value as ClientTypeEnum)
+        AuthenticationMethod.reset(form, e.target.value as ClientTypeEnum)
+        const code = form.getFieldValue(AuthenticationMethod.fieldName as unknown as NamePath)
+        Username.reset(form, code)
+        Password.reset(form, code)
+      }}
+    >
+      {types.map(type => <Radio
+        key={type}
+        value={type}
+        children={$t(contents.clientTypes[type])}
+      />)}
+    </Radio.Group>
 
   return <Form.Item
     label={<>
@@ -51,7 +67,7 @@ export function ClientType () {
 ClientType.fieldName = name
 ClientType.label = label
 
-ClientType.FieldSummary = function DnsServerFieldSummary () {
+ClientType.FieldSummary = function ClientTypeFieldSummary () {
   const { $t } = useIntl()
 
   return <Form.Item
