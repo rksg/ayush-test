@@ -6,7 +6,6 @@ import { ConnectionEventPopover }      from '@acx-ui/analytics/components'
 import { mapCodeToReason }             from '@acx-ui/analytics/utils'
 import { TableProps, cssStr, Tooltip } from '@acx-ui/components'
 import type { TableColumn }            from '@acx-ui/components'
-import { EyeOpenSolid }                from '@acx-ui/icons'
 import { TenantLink }                  from '@acx-ui/react-router-dom'
 import { getIntl, formatter }          from '@acx-ui/utils'
 import { NetworkPath }                 from '@acx-ui/utils'
@@ -347,7 +346,7 @@ export const getTableColumns = ({
             type={traceroute as TrendType}
             displayText={
               tracerouteLog ? (
-                <EyeOpenSolid
+                <UI.Eye
                   stroke={cssStr('--acx-primary-white')}
                   height={8}
                   width={12}

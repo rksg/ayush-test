@@ -1,7 +1,21 @@
 import styled, { css } from 'styled-components/macro'
 
+import { EyeOpenSolid } from '@acx-ui/icons'
+
 export type TrendType = 'success' | 'fail' | 'n/a' | 'error'
 
+export const Eye = styled(EyeOpenSolid)`
+  transform: scale(1.75);
+  path:nth-child(1){
+    stroke: currentColor;
+  }
+  path:nth-child(2){
+    fill: currentColor;
+  }
+  path:nth-child(3){
+    stroke: currentColor;
+  }
+`
 
 const badgeColor = ({ type }: { type: TrendType }) => {
   switch (type) {
