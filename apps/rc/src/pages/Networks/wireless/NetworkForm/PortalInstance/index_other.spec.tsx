@@ -10,6 +10,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { loadImageWithJWT } from '@acx-ui/utils'
 
 import {
   portalListWithPhoto
@@ -17,9 +18,11 @@ import {
 import NetworkFormContext from '../NetworkFormContext'
 
 import PortalInstance from '.'
-
+jest.mock('@acx-ui/utils')
+const mockedData = loadImageWithJWT as jest.MockedFunction<typeof loadImageWithJWT>
 describe('Portal Instance Page', () => {
   beforeEach(async () => {
+    mockedData.mockReturnValue(Promise.resolve('testId'))
     mockServer.use(
       rest.get(
         PortalUrlsInfo.getPortalProfileList.url,
