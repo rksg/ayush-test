@@ -4,8 +4,8 @@ import { useIntl }            from 'react-intl'
 import { ClientHealth }                                                 from '@acx-ui/analytics/components'
 import { AnalyticsFilter }                                              from '@acx-ui/analytics/utils'
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
+import { formatter, convertEpochToRelativeTime }                        from '@acx-ui/formatter'
 import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter }                        from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 

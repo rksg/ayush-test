@@ -19,8 +19,9 @@ import {
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
 import type { TimeStampRange, TimeStamp } from '@acx-ui/types'
-import { formatter, getIntl }             from '@acx-ui/utils'
+import { getIntl }                        from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import { ResetButton }       from '../Chart'
@@ -93,7 +94,7 @@ export function defaultLabelFormatter (
           : $t({ defaultMessage: 'Disconnected' })
   })
   return (
-    formatter('dateTimeFormat')(params.value) +
+    formatter(DateFormatEnum.DateTimeFormat)(params.value) +
     '\n' +
     $t({ defaultMessage: 'Status' }) +
     ': ' +

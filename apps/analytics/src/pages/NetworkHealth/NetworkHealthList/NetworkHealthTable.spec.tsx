@@ -2,8 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { networkHealthApiURL } from '@acx-ui/analytics/services'
-import { Provider }            from '@acx-ui/store'
+import { networkHealthApiURL, Provider } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
@@ -18,6 +17,7 @@ import {
   fetchAllServiceGuardSpecs,
   runServiceGuardTest
 } from '../__tests__/fixtures'
+import { NetworkHealthTableRow } from '../services'
 
 import { NetworkHealthTable, lastResultSort } from './NetworkHealthTable'
 
@@ -149,14 +149,14 @@ describe('Network Health Table', () => {
         apsPendingCount: 0,
         apsSuccessCount: 2
       }
-    } }
+    } } as NetworkHealthTableRow
     const row2 = { ...row, latestTest: {
       summary: {
         apsTestedCount: 2,
         apsPendingCount: 0,
         apsSuccessCount: 1
       }
-    } }
+    } } as NetworkHealthTableRow
     const row3 = { ...row, latestTest: undefined }
     it('should return 1', () => {
       expect(lastResultSort(row1, row2)).toEqual(1)

@@ -2,8 +2,8 @@ import { Badge, Button } from 'antd'
 import { useIntl }       from 'react-intl'
 
 import { Card, Descriptions, Loader }        from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
-import { formatter }                         from '@acx-ui/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
 
@@ -72,7 +72,7 @@ export function SwitchDetailsCard (props: {
           switchDetail?.lastSeenTime &&
         <Descriptions.Item
           label={$t({ defaultMessage: 'Last Seen' })}
-          children={formatter('dateTimeFormat')(switchDetail?.lastSeenTime)} />
+          children={formatter(DateFormatEnum.DateTimeFormat)(switchDetail?.lastSeenTime)} />
         }
       </Descriptions>
     </Loader>

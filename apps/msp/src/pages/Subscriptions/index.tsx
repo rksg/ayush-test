@@ -2,7 +2,6 @@
 import { useState } from 'react'
 
 import { Row }     from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -15,6 +14,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -24,7 +24,6 @@ import {
   useRefreshMspEntitlementMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   MspEntitlement
 } from '@acx-ui/rc/utils'
@@ -75,7 +74,7 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -83,7 +82,7 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {

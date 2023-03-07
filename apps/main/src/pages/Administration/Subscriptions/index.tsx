@@ -1,4 +1,4 @@
-import moment      from 'moment-timezone'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
@@ -7,12 +7,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation
 } from '@acx-ui/rc/services'
 import {
-  DateFormatEnum,
   EntitlementUtil,
   Entitlement,
   EntitlementDeviceType
@@ -22,7 +22,6 @@ import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
-
 
 const SubscriptionTable = () => {
   const { $t } = useIntl()
@@ -63,7 +62,7 @@ const SubscriptionTable = () => {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.effectiveDate)
       }
     },
     {
@@ -71,7 +70,7 @@ const SubscriptionTable = () => {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        return formatter(DateFormatEnum.DateFormat)(row.expirationDate)
       }
     },
     {

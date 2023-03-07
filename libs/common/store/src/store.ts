@@ -2,28 +2,27 @@ import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit
 import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit/query/react'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi, networkHealthApi } from '@acx-ui/analytics/services'
-import {
-  baseCommonApi as commonApi,
-  baseNetworkApi as networkApi,
-  baseVenueApi as venueApi,
-  baseEventAlarmApi as eventAlarmApi,
-  baseTimelineApi as timelineApi,
-  baseServiceApi as serviceApi,
-  apApi,
-  baseDhcpApi as dhcpApi,
-  baseMspApi as mspApi,
-  baseLicenseApi as licenseApi,
-  baseEdgeApi as edgeApi,
-  basePolicyApi as policyApi,
-  baseClientApi as clientApi,
-  baseSwitchApi as switchApi,
-  baseAdministrationApi as administrationApi,
-  baseFirmwareApi as firmwareApi,
-  baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi,
-  baseNsgApi as nsgApi
-} from '@acx-ui/rc/services'
+import { baseAdministrationApi as administrationApi } from './baseApi/baseAdministrationApi'
+import { baseApApi as apApi }                         from './baseApi/baseApApi'
+import { baseClientApi as clientApi }                 from './baseApi/baseClientApi'
+import { baseCommonApi as commonApi }                 from './baseApi/baseCommonApi'
+import { baseDhcpApi as dhcpApi }                     from './baseApi/baseDhcpApi'
+import { baseEdgeApi as edgeApi  }                    from './baseApi/baseEdgeApi'
+import { baseEdgeDhcpApi as edgeDhcpApi }             from './baseApi/baseEdgeDhcpApi'
+import { baseEventAlarmApi as eventAlarmApi }         from './baseApi/baseEventAlarmApi'
+import { baseFirmwareApi as firmwareApi }             from './baseApi/baseFirmwareApi'
+import { baseLicenseApi as licenseApi }               from './baseApi/baseLicenseApi'
+import { baseMspApi as mspApi }                       from './baseApi/baseMspApi'
+import { baseNetworkApi as networkApi }               from './baseApi/baseNetworkApi'
+import { baseNsgApi as nsgApi }                       from './baseApi/baseNsgApi'
+import { basePersonaApi as personaApi }               from './baseApi/basePersonaApi'
+import { basePolicyApi as policyApi }                 from './baseApi/basePolicyApi'
+import { baseServiceApi as serviceApi }               from './baseApi/baseServiceApi'
+import { baseSwitchApi as switchApi }                 from './baseApi/baseSwitchApi'
+import { baseTimelineApi as timelineApi }             from './baseApi/baseTimelineApi'
+import { baseVenueApi as venueApi }                   from './baseApi/baseVenueApi'
+import { dataApi }                                    from './baseApi/dataApi'
+import { networkHealthApi }                           from './baseApi/networkHealthApi'
 
 import type { Middleware } from '@reduxjs/toolkit'
 
@@ -79,7 +78,6 @@ export const store = configureStore({
     [dataApi.reducerPath]: dataApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
     [serviceApi.reducerPath]: serviceApi.reducer,
     [mspApi.reducerPath]: mspApi.reducer,
@@ -110,7 +108,6 @@ export const store = configureStore({
       dataApi.middleware,
       apApi.middleware,
       userApi.middleware,
-      dataApi.middleware,
       dhcpApi.middleware,
       serviceApi.middleware,
       mspApi.middleware,

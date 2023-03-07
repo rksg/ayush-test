@@ -1,5 +1,5 @@
-import { QueryReturnValue }                                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { createApi, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
   CommonUrlsInfo,
@@ -20,18 +20,11 @@ import {
   WifiUrlsInfo,
   ExternalProviders
 } from '@acx-ui/rc/utils'
+import { baseNetworkApi } from '@acx-ui/store'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseNetworkApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'networkApi',
-  tagTypes: ['Network', 'Venue'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
@@ -397,3 +390,5 @@ export const {
   useLazyValidateRadiusQuery,
   useExternalProvidersQuery
 } = networkApi
+
+export { baseNetworkApi }

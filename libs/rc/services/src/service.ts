@@ -1,7 +1,5 @@
 import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import {
-  createApi,
-  fetchBaseQuery,
   FetchBaseQueryError,
   FetchBaseQueryMeta
 } from '@reduxjs/toolkit/query/react'
@@ -56,7 +54,8 @@ import {
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
-import { getJwtToken } from '@acx-ui/utils'
+import { baseServiceApi } from '@acx-ui/store'
+import { getJwtToken }    from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -68,15 +67,6 @@ const defaultNewTablePaginationParams: TableChangePayload = {
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseServiceApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'serviceApi',
-  // eslint-disable-next-line max-len
-  tagTypes: ['Service', 'Dpsk', 'DpskPassphrase', 'MdnsProxy', 'MdnsProxyAp', 'WifiCalling', 'DHCP', 'Portal'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({

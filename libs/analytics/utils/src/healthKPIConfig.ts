@@ -3,7 +3,7 @@ import { identity }      from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
-import { formatter } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
 
 const pillSuffix = {
   success: defineMessage({ defaultMessage: 'success' }),

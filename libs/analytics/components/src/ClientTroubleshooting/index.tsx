@@ -3,11 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Row, Col }                          from 'antd'
 import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
-import moment                                from 'moment-timezone'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Select, Button, Loader }                              from '@acx-ui/components'
-import { useEncodedParameter, useDateFilter, dateTimeFormats } from '@acx-ui/utils'
+import { Select, Button, Loader }             from '@acx-ui/components'
+import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
 import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
 import { ConnectionEventPopover }                                     from './ConnectionEvent'
@@ -99,8 +99,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>
       <span>{maxEventsMsg(
-        moment(startDate).format(dateTimeFormats.dateTimeFormat),
-        moment(endDate).format(dateTimeFormats.dateTimeFormat),
+        formatter(DateFormatEnum.DateTimeFormat)(startDate),
+        formatter(DateFormatEnum.DateTimeFormat)(endDate),
         intl
       )}</span>
     </UI.ErrorPanel>

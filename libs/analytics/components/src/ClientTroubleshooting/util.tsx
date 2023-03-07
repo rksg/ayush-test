@@ -14,8 +14,9 @@ import {
   categoryCodeMap,
   IncidentCode
 } from '@acx-ui/analytics/utils'
-import { TimeStampRange }              from '@acx-ui/types'
-import { formatter, getIntl, formats } from '@acx-ui/utils'
+import { formatter, formats, DateFormatEnum } from '@acx-ui/formatter'
+import { TimeStampRange }                     from '@acx-ui/types'
+import { getIntl }                            from '@acx-ui/utils'
 
 import {
   rssGroups,
@@ -462,7 +463,7 @@ export const transformIncidents = (
       id: incident.id,
       start: +new Date(incident.startTime),
       end: +new Date(incident.endTime),
-      date: formatter('dateTimeFormatWithSeconds')(incident.startTime),
+      date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(incident.startTime),
       description: `${intl.$t(category)} (${intl.$t(subCategory)})`,
       title,
       icon: <UI.IncidentEvent color={color}>{severity}</UI.IncidentEvent>,

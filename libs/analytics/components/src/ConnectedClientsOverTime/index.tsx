@@ -5,7 +5,7 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter, getSeriesData }                           from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                                from '@acx-ui/utils'
+import { formatter }                                                from '@acx-ui/formatter'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 

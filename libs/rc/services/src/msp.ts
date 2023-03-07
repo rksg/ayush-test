@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import moment                        from 'moment-timezone'
+import moment from 'moment-timezone'
 
 import {
   AssignedEc,
@@ -28,15 +27,8 @@ import {
   MspPortal,
   downloadFile
 } from '@acx-ui/rc/utils'
+import { baseMspApi }  from '@acx-ui/store'
 import { getJwtToken } from '@acx-ui/utils'
-
-export const baseMspApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'mspApi',
-  tagTypes: ['Msp'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const mspApi = baseMspApi.injectEndpoints({
   endpoints: (build) => ({

@@ -8,6 +8,7 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Loader, showToast } from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
@@ -19,9 +20,6 @@ import {
   TroubleshootingMacAddressOptionsEnum,
   TroubleshootingType
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-
 
 export function SwitchMacAddressForm () {
   const { $t } = useIntl()
@@ -344,7 +342,7 @@ export function SwitchMacAddressForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

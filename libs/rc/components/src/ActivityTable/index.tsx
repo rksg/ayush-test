@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import {
   Activity,
   RequestPayload,
@@ -12,7 +13,6 @@ import {
   severityMapping,
   statusMapping
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -40,7 +40,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
             setVisible(true)
             setCurrent(row.requestId)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.startDatetime)}</Button>
       }
     },
     {
@@ -84,11 +84,11 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
   const getDrawerData = (data: Activity) => [
     {
       title: defineMessage({ defaultMessage: 'Start Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.startDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.startDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'End Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.endDatetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.endDatetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

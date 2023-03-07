@@ -17,14 +17,10 @@ import {
   defineMessage
 }                                                   from 'react-intl'
 
-import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { TimeStamp }           from '@acx-ui/types'
-import {
-  formatter,
-  dateTimeFormats,
-  intlFormats,
-  getIntl
-}                              from '@acx-ui/utils'
+import { TimeSeriesChartData }                    from '@acx-ui/analytics/utils'
+import { formatter, DateFormatEnum, intlFormats } from '@acx-ui/formatter'
+import { TimeStamp }                              from '@acx-ui/types'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
@@ -188,10 +184,10 @@ const convertDateTimeFormat = (format: string) => format
   .join('')
 export const dateAxisFormatter = () => {
   return {
-    year: convertDateTimeFormat(dateTimeFormats.yearFormat),
-    month: convertDateTimeFormat(dateTimeFormats.monthFormat),
-    day: convertDateTimeFormat(dateTimeFormats.monthDateFormat),
-    hour: convertDateTimeFormat(dateTimeFormats.timeFormat)
+    year: convertDateTimeFormat('YYYY'),
+    month: convertDateTimeFormat('MMM'),
+    day: convertDateTimeFormat('MMM DD'),
+    hour: convertDateTimeFormat('HH:mm')
   }
 }
 
@@ -226,7 +222,7 @@ export const timeSeriesTooltipFormatter = (
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
         <time dateTime={new Date(time).toJSON()}>
-          {formatter('dateTimeFormat')(time) as string}
+          {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
         </time>
         <ul>{
           series.map((data: TimeSeriesChartData)=> {

@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
+import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
@@ -23,15 +24,8 @@ import {
   WifiUrlsInfo,
   RequestFormData
 } from '@acx-ui/rc/utils'
-import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
-
-export const baseClientApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'clientApi',
-  refetchOnMountOrArgChange: true,
-  tagTypes: ['Client', 'Guest', 'HistoricalClient'],
-  endpoints: () => ({ })
-})
+import { baseClientApi } from '@acx-ui/store'
+import { getJwtToken }   from '@acx-ui/utils'
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({

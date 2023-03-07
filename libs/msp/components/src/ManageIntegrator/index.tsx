@@ -29,8 +29,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { SearchOutlined }         from '@acx-ui/icons'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { SearchOutlined }            from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspCustomerListQuery,
@@ -43,7 +44,6 @@ import {
 import {
   Address,
   dateDisplayText,
-  DateFormatEnum,
   DateSelectionEnum,
   emailRegExp,
   MspAdministrator,
@@ -63,7 +63,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum }              from '@acx-ui/types'
 import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType }            from '@acx-ui/utils'
+import { AccountType  }           from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
@@ -158,7 +158,6 @@ export function ManageIntegrator () {
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
-  const dateFormat = DateFormatEnum.UserDateFormat
   const { action, type, tenantId, mspEcTenantId } = useParams()
 
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
@@ -168,8 +167,8 @@ export function ManageIntegrator () {
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
-  const [subscriptionStartDate, setSubscriptionStartDate] = useState('')
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState('')
+  const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
+  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
@@ -222,8 +221,8 @@ export function ManageIntegrator () {
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
-      setSubscriptionStartDate(moment(data?.service_effective_date).format(dateFormat))
-      setSubscriptionEndDate(moment(data?.service_expiration_date).format(dateFormat))
+      setSubscriptionStartDate(moment(data?.service_effective_date))
+      setSubscriptionEndDate(moment(data?.service_expiration_date))
     }
 
     if (!isEditMode) { // Add mode
@@ -241,8 +240,8 @@ export function ManageIntegrator () {
         })
         setAdministrator(administrator)
       }
-      setSubscriptionStartDate(moment().format(dateFormat))
-      setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+      setSubscriptionStartDate(moment())
+      setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
@@ -576,7 +575,7 @@ export function ManageIntegrator () {
   }
 
   function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(expirationDate)
+    setSubscriptionEndDate(moment(expirationDate))
   }
 
   const onSelectChange = (value: string) => {
@@ -585,17 +584,17 @@ export function ManageIntegrator () {
       setCustomeDate(true)
     } else {
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(30,'days'))
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(60,'days'))
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days').format(dateFormat))
+        setSubscriptionEndDate(moment().add(90,'days'))
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(1,'years'))
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(3,'years'))
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years').format(dateFormat))
+        setSubscriptionEndDate(moment().add(5,'years'))
       }
       setCustomeDate(false)
     }
@@ -739,7 +738,7 @@ export function ManageIntegrator () {
       <SwitchSubscription />
       <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
         <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
-        <label>{subscriptionStartDate}</label>
+        <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
       </UI.FieldLabel2>
 
       <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
@@ -764,9 +763,9 @@ export function ManageIntegrator () {
           label=''
           children={
             <DatePicker
-              format={dateFormat}
+              format={formatter(DateFormatEnum.DateFormat)}
               disabled={!customDate}
-              defaultValue={moment(subscriptionEndDate, dateFormat)}
+              defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
               onChange={expirationDateOnChange}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
@@ -886,7 +885,7 @@ export function ManageIntegrator () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{subscriptionEndDate}</Paragraph>
+          <Paragraph>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</Paragraph>
         </Form.Item></>
     )
   }

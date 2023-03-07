@@ -5,19 +5,18 @@ import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useEntitlementBannersQuery,
   useGetMspEntitlementBannersQuery
-} from '@acx-ui/rc/services'
+}                                    from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
   EntitlementDeviceType,
   EntitlementUtil
-} from '@acx-ui/rc/utils'
+}                                    from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
-import { formatter } from '@acx-ui/utils'
-
 
 import { HeaderContext } from '../HeaderContext'
 
@@ -145,7 +144,7 @@ export function LicenseBanner (props: BannerProps) {
                   {chunks}
                 </UI.ActiveBtn>,
               expireDeviceType: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType),
-              graceDate: formatter('dateFormat')(expireInfo.effectDate)
+              graceDate: formatter(DateFormatEnum.DateFormat)(expireInfo.effectDate)
             }}
           />
         </UI.SubTips>

@@ -2,8 +2,8 @@ import { Badge, Button, Table } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Card, Descriptions, Loader }                                                                   from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                    from '@acx-ui/formatter'
 import { ApDeviceStatusEnum, APExtended, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { formatter }                                                                                    from '@acx-ui/utils'
 
 import * as UI                                     from './styledComponents'
 import { getDeviceColor, getWirelessRadioColumns } from './utils'
@@ -100,7 +100,7 @@ export function APDetailsCard (props: {
           apDetail?.lastSeenTime &&
         <Descriptions.Item
           label={$t({ defaultMessage: 'Last Seen' })}
-          children={formatter('dateTimeFormat')(apDetail?.lastSeenTime)} />
+          children={formatter(DateFormatEnum.DateTimeFormat)(apDetail?.lastSeenTime)} />
         }
       </Descriptions>
 

@@ -3,7 +3,7 @@ import { storiesOf }              from '@storybook/react'
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { intlFormats } from '@acx-ui/utils'
+import { intlFormats } from '@acx-ui/formatter'
 
 import { cssStr }      from '../../theme/helper'
 import { Card }        from '../Card'

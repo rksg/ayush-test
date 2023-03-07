@@ -6,9 +6,10 @@ import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip }                 from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
 import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
-import { formatter, useDateFilter }                                                         from '@acx-ui/utils'
+import { useDateFilter }                                                                    from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -208,7 +209,7 @@ export const EventTable = ({
             setVisible(true)
             setCurrent(row)
           }}
-        >{formatter('dateTimeFormatWithSeconds')(row.event_datetime)}</Button>
+        >{formatter(DateFormatEnum.DateTimeFormatWithSeconds)(row.event_datetime)}</Button>
       }
     },
     {
@@ -276,7 +277,7 @@ export const EventTable = ({
   const getDrawerData = (data: Event) => [
     {
       title: defineMessage({ defaultMessage: 'Time' }),
-      value: formatter('dateTimeFormatWithSeconds')(data.event_datetime)
+      value: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(data.event_datetime)
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),

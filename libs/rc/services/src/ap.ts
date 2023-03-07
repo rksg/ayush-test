@@ -1,7 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import _                             from 'lodash'
-import { generatePath }              from 'react-router-dom'
+import _                from 'lodash'
+import { generatePath } from 'react-router-dom'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApExtraParams,
   AP,
@@ -38,15 +38,7 @@ import {
   ApDirectedMulticast,
   APNetworkSettings
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-export const baseApApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'apApi',
-  tagTypes: ['Ap'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
+import { baseApApi } from '@acx-ui/store'
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
@@ -689,7 +681,9 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
 
 const transformApViewModel = (result: ApViewModel) => {
   const ap = JSON.parse(JSON.stringify(result))
-  ap.lastSeenTime = ap.lastSeenTime ? formatter('dateTimeFormatWithSeconds')(ap.lastSeenTime) : '--'
+  ap.lastSeenTime = ap.lastSeenTime
+    ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(ap.lastSeenTime)
+    : '--'
 
   const { APSystem, APRadio } = ap.apStatusData || {}
   // get uptime field.

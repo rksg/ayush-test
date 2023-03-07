@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react'
 import { Popover, PopoverProps } from 'antd'
 
 import { clientEventDescription, mapCodeToFailureText, mapDisconnectCodeToReason } from '@acx-ui/analytics/utils'
-import { formatter, getIntl }                                                      from '@acx-ui/utils'
+import { formatter }                                                               from '@acx-ui/formatter'
+import { getIntl }                                                                 from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
 import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'

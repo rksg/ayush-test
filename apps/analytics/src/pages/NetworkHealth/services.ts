@@ -5,9 +5,9 @@ import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { networkHealthApi } from '@acx-ui/analytics/services'
 import { showToast }        from '@acx-ui/components'
 import { useParams }        from '@acx-ui/react-router-dom'
+import { networkHealthApi } from '@acx-ui/store'
 
 import { messageMapping, stages }      from './contents'
 import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'

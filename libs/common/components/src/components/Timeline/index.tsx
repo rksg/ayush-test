@@ -3,12 +3,9 @@ import React, { useState } from 'react'
 import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
 
-import {
-  PlusSquareSolid,
-  MinusSquareSolid
-}                         from '@acx-ui/icons'
-import { TimelineStatus } from '@acx-ui/types'
-import { formatter }      from '@acx-ui/utils'
+import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { PlusSquareSolid, MinusSquareSolid } from '@acx-ui/icons'
+import { TimelineStatus }                    from '@acx-ui/types'
 
 import {
   ItemWrapper,
@@ -82,14 +79,18 @@ const Timeline = (props: TimelineProps) => {
         <AntTimeline.Item
           key={`timeline-start-${index}`}
           dot={<Step $state={item.startDatetime ? 'previous' : 'future'} />}>
-          {item.startDatetime ? formatter('dateTimeFormatWithSeconds')(item.startDatetime) : '--'}
+          {item.startDatetime
+            ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startDatetime)
+            : '--'}
         </AntTimeline.Item>,
         <Dash/>,
         <AntTimeline.Item
           key={`timeline-end-${index}`}
           dot={<Step $state={item.endDatetime ? 'previous' : 'future'} />}>
           <ItemWrapper>
-            {item.endDatetime ? formatter('dateTimeFormatWithSeconds')(item.endDatetime) : '--'}
+            {item.endDatetime
+              ? formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.endDatetime)
+              : '--'}
             <ContentWrapper>
               <WithExpanderWrapper>
                 <div>

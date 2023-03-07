@@ -6,7 +6,8 @@ import {
   IntlShape
 } from 'react-intl'
 
-import { getIntl } from './intlUtil'
+import { getUserProfile } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 const bytes = [' B', ' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 const watts = [' mW', ' W', ' kW', ' MW', ' GW', ' TW', ' PW']
@@ -115,13 +116,37 @@ function numberFormat (base: number, units: string[], value: number) {
   return shorten(value / Math.pow(base, units.length - 1)) + units[units.length - 1]
 }
 
+export const defaultDateFormat = 'MM/DD/YYYY'
+
+export enum DateFormatEnum {
+  DateFormat = 'dateFormat',
+  DateTimeFormat = 'dateTimeFormat',
+  DateTimeFormatWithTimezone = 'dateTimeFormatWithTimezone',
+  DateTimeFormatWithSeconds = 'dateTimeFormatWithSeconds',
+  DateTime12hourFormat = 'dateTime12hourFormat'
+}
+
+const dateTimeFormats = {
+  dateFormat: '',
+  dateTimeFormat: 'HH:mm',
+  dateTimeFormatWithTimezone: '- HH:mm z',
+  dateTimeFormatWithSeconds: 'HH:mm:ss',
+  dateTime12hourFormat: 'hh:mm A'
+}
+
 function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
+  const dateFormat = getUserProfile().profile.dateFormat as string
+  console.log(dateFormat)
+  const customFormat = [
+    dateFormat?.toUpperCase() || defaultDateFormat,
+    format
+  ].filter(Boolean).join(' ')
   return tz
     ? moment(number as moment.MomentInput)
       .tz(tz)
-      .format(format + ' Z')
+      .format(customFormat + ' Z')
       .replace('+00:00', 'UTC')
-    : moment(number as moment.MomentInput).format(format)
+    : moment(number as moment.MomentInput).format(customFormat)
 }
 
 function calendarFormat (number: number) {
@@ -165,23 +190,6 @@ export const formats = {
     number?.toLocaleString('en-US', { maximumFractionDigits: 0 })
 } as const
 
-export const dateTimeFormats = {
-  yearFormat: 'YYYY',
-  monthFormat: 'MMM',
-  dateFormat: 'MMM DD YYYY',
-  yearMonthFormat: 'MMMM YYYY',
-  monthDateFormat: 'MMM DD',
-  shortDateTimeFormat: 'MMM DD HH:mm',
-  dateTimeFormat: 'MMM DD YYYY HH:mm',
-  dateTimeFormatWithTimezone: 'MM/DD/YYYY - HH:mm z',
-  dateTimeFormatWithSeconds: 'MMM DD YYYY HH:mm:ss',
-  hourFormat: 'HH',
-  timeFormat: 'HH:mm',
-  secondFormat: 'HH:mm:ss',
-  dateTime12hourFormat: 'DD/MM/YYYY hh:mm A',
-  sqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss'
-} as const
-
 const enabledFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, select, true {Enabled} other {Disabled}}'
 })
@@ -208,7 +216,7 @@ export const intlFormats = {
 } as const
 
 export function formatter (
-  name: keyof typeof formats | keyof typeof dateTimeFormats | keyof typeof intlFormats
+  name: keyof typeof formats | DateFormatEnum | keyof typeof intlFormats
 ) {
   return function formatter (value: unknown, tz?: string): string {
     const intl = getIntl()
@@ -234,7 +242,7 @@ export function convertEpochToRelativeTime (timestamp: number) {
 }
 
 export function convertDateTimeToSqlFormat (dateTime: string): string {
-  return moment.utc(dateTime).format(dateTimeFormats.sqlDateTimeFormat)
+  return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
 }
 
 function isIntlFormat (name: string): name is keyof typeof intlFormats {

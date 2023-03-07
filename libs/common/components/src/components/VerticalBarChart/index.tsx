@@ -5,7 +5,7 @@ import { GridOption }     from 'echarts/types/dist/shared'
 import { renderToString } from 'react-dom/server'
 
 import type { BarChartData } from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/utils'
+import { formatter }         from '@acx-ui/formatter'
 
 import { cssStr }    from '../../theme/helper'
 import {

@@ -4,6 +4,7 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Card, Loader, Subtitle, Tooltip, Descriptions }                       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                           from '@acx-ui/formatter'
 import { WifiSignal }                                                          from '@acx-ui/rc/components'
 import {
   useLazyGetApQuery,
@@ -27,7 +28,6 @@ import {
   Guest
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { formatter }             from '@acx-ui/utils'
 import { getIntl }               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -467,7 +467,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
   const { $t } = getIntl()
   const durationFormatter = formatter('durationFormat')
   const getTimeFormat = (data: number) =>
-    formatter('dateTime12hourFormat')(data * 1000)
+    formatter(DateFormatEnum.DateTime12hourFormat)(data * 1000)
 
   return <>
     <Subtitle level={4}>
@@ -564,11 +564,11 @@ function GuestDetails ({ guestDetail, clientMac }: {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={formatter('dateTimeFormat')(guestDetail?.creationDate) || '--'}
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.creationDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Expires' })}
-        children={formatter('dateTimeFormat')(guestDetail?.expiryDate) || '--'}
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail?.expiryDate) || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Max no. of clients' })}

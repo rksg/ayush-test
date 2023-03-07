@@ -1,10 +1,15 @@
 import moment from 'moment-timezone'
 
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+
 import {
   formatter,
   formats,
   convertEpochToRelativeTime,
-  convertDateTimeToSqlFormat } from './formatter'
+  convertDateTimeToSqlFormat,
+  DateFormatEnum,
+  defaultDateFormat
+} from './formatter'
 
 function testFormat (
   format: keyof typeof formats,
@@ -247,42 +252,44 @@ describe('formatter', () => {
     })
   })
   describe('dateTimeFormats', () => {
-    it('Should format a timestamp to MMM DD YYYY', () => {
-      expect(formatter('dateFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY'))
+    it('Should format a timestamp to default format', () => {
+      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
+        .toBe(moment(1456885800000).format(defaultDateFormat))
     })
-    it('Should format a timestamp to HH:mm', () => {
-      expect(formatter('timeFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH:mm'))
+    it('Should format a timestamp to default format with HH:mm', () => {
+      expect(formatter(DateFormatEnum.DateTimeFormat)(1456885800000))
+        .toBe(moment(1456885800000).format(`${defaultDateFormat} HH:mm`))
     })
-    it('Should format a timestamp to HH:mm:ss', () => {
-      expect(formatter('secondFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH:mm:ss'))
+    it('Should format a timestamp to default format with - HH:mm z', () => {
+      expect(formatter(DateFormatEnum.DateTimeFormatWithTimezone)(1456885800000))
+        .toBe(moment(1456885800000).format(`${defaultDateFormat} - HH:mm z`))
     })
-    it('Should format a timestamp to MMM DD YYYY HH:mm', () => {
-      expect(formatter('dateTimeFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm'))
+    it('Should format a timestamp to default format with HH:mm:ss', () => {
+      expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
+        .toBe(moment(1456885800000).format(`${defaultDateFormat} HH:mm:ss`))
     })
-    it('Should format a timestamp to MMM DD YYYY HH:mm:ss', () => {
-      expect(formatter('dateTimeFormatWithSeconds')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD YYYY HH:mm:ss'))
+    it('Should format a timestamp to default format with hh:mm A', () => {
+      expect(formatter(DateFormatEnum.DateTime12hourFormat)(1456885800000))
+        .toBe(moment(1456885800000).format(`${defaultDateFormat} hh:mm A`))
     })
-    it('Should format a timestamp to MMM DD', () => {
-      expect(formatter('monthDateFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('MMM DD'))
+    it('Should format based on user profile setting', () => {
+      const userProfile = getUserProfile()
+      setUserProfile({ ...userProfile, profile: {
+        ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
+      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
+        .toBe(moment(1456885800000).format('DD/MM/YYYY'))
     })
-    it('Should format a timestamp to HH', () => {
-      expect(formatter('hourFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('HH'))
-    })
-    it('Should format a timestamp to DD/MM/YYYY hh:mm A', () => {
-      expect(formatter('dateTime12hourFormat')(1456885800000))
-        .toBe(moment(1456885800000).format('DD/MM/YYYY hh:mm A'))
+    it('Should use default format if dateFormat is not available', () => {
+      const userProfile = getUserProfile()
+      setUserProfile({ ...userProfile, profile: { ...userProfile.profile, dateFormat: '' } })
+      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
+        .toBe(moment(1456885800000).format(defaultDateFormat))
     })
     it('With tz', () => {
-      expect(formatter('dateTimeFormatWithSeconds')(1456885800000, 'America/Los_Angeles'))
+      expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(
+        1456885800000, 'America/Los_Angeles'))
         .toBe(moment(1456885800000).tz('America/Los_Angeles')
-          .format('MMM DD YYYY HH:mm:ss Z').replace('+00:00', 'UTC'))
+          .format(`${defaultDateFormat} HH:mm:ss Z`).replace('+00:00', 'UTC'))
     })
   })
   describe('intlFormats', () => {

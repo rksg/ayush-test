@@ -1,8 +1,9 @@
 import moment from 'moment-timezone'
 
-import { noDataSymbol }                    from '@acx-ui/analytics/utils'
-import { Tooltip }                         from '@acx-ui/components'
-import { intlFormats, getIntl, formatter } from '@acx-ui/utils'
+import { noDataSymbol }                           from '@acx-ui/analytics/utils'
+import { Tooltip }                                from '@acx-ui/components'
+import { intlFormats, formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { testTypes }                                      from './contents'
 import { NetworkHealthSpec, NetworkHealthTest, TestType } from './types'
@@ -55,7 +56,7 @@ export const formatTestType = (value: TestType, schedule: NetworkHealthSpec['sch
   const { $t } = getIntl()
   const testType = $t(testTypes[value])
   if (value === TestType.OnDemand) return testType
-  return <Tooltip title={formatter('dateTimeFormat')(schedule?.nextExecutionTime)}>{$t(
+  return <Tooltip title={formatter(DateFormatEnum.DateTimeFormat)(schedule?.nextExecutionTime)}>{$t(
     {
       defaultMessage: '{testType} ({scheduledIn})',
       description: 'Test Type: "Scheduled" or "On-Demand", in brackets: when it is next scheduled'

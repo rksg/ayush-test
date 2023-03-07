@@ -4,7 +4,7 @@ import { useIntl, IntlShape } from 'react-intl'
 import { healthApi }                                           from '@acx-ui/analytics/services'
 import { AnalyticsFilter, kpiConfig, getSparklineGranularity } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, SparklineChart, Loader, Tooltip }   from '@acx-ui/components'
-import { intlFormats, formatter }                              from '@acx-ui/utils'
+import { intlFormats, formatter }                              from '@acx-ui/formatter'
 
 import { tranformHistResponse, transformTSResponse } from '../Health/Kpi/Pill'
 

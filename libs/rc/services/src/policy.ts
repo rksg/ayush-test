@@ -1,7 +1,3 @@
-import {
-  createApi,
-  fetchBaseQuery
-} from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
 import {
@@ -47,20 +43,11 @@ import {
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
 } from '@acx-ui/rc/utils'
+import { basePolicyApi } from '@acx-ui/store'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-
-
-export const basePolicyApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'policyApi',
-  tagTypes: ['Venue', 'Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
 
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({

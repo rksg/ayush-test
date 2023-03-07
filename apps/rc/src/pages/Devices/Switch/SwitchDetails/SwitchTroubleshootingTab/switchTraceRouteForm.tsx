@@ -7,6 +7,7 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -17,7 +18,6 @@ import {
   TroubleshootingType,
   WifiTroubleshootingMessages
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
 
 export function SwitchTraceRouteForm () {
   const { $t } = useIntl()
@@ -174,7 +174,7 @@ export function SwitchTraceRouteForm () {
           <Form.Item
             label={$t({ defaultMessage: 'Last synced at' })}
             children={
-              formatter('dateTimeFormatWithSeconds')(lasySyncTime)}
+              formatter(DateFormatEnum.DateTimeFormatWithSeconds)(lasySyncTime)}
           />}
 
         <Form.Item wrapperCol={{ offset: 0, span: 16 }}

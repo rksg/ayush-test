@@ -1,5 +1,3 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import {
   CommonResult,
   CurrentVersions,
@@ -12,14 +10,7 @@ import {
   createHttpRequest,
   RequestPayload
 } from '@acx-ui/rc/utils'
-
-export const baseFirmwareApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'firmwareApi',
-  tagTypes: ['Firmware', 'SwitchFirmware'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
+import { baseFirmwareApi } from '@acx-ui/store'
 
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
   endpoints: (build) => ({

@@ -1,6 +1,7 @@
-import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import _                                                  from 'lodash'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                       from 'lodash'
 
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   createHttpRequest,
   RequestFormData,
@@ -53,20 +54,7 @@ import {
   SwitchRearView,
   Lag
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
-
-export const baseSwitchApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'switchApi',
-  tagTypes: ['Switch',
-    'SwitchBackup',
-    'SwitchClient',
-    'SwitchPort',
-    'SwitchProfiles',
-    'SwitchOnDemandCli'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
+import { baseSwitchApi } from '@acx-ui/store'
 
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
@@ -424,7 +412,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           data: res.data
             .map(item => ({
               ...item,
-              createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
+              createdDate: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
             }))
@@ -482,7 +470,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           data: res.response.list ? res.response.list.map(item => ({
             ...item,
-            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],

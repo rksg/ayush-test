@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -55,19 +54,12 @@ import {
   TopologyData,
   VenueBonjourFencingPolicy
 } from '@acx-ui/rc/utils'
-import { formatter, getJwtToken } from '@acx-ui/utils'
+import { baseVenueApi } from '@acx-ui/store'
+import { getJwtToken }  from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
-
-export const baseVenueApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'venueApi',
-  tagTypes: ['Venue', 'Device', 'VenueFloorPlan', 'AAA', 'ExternalAntenna', 'VenueRadio'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({})
-})
 
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
@@ -857,7 +849,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           data: res.response.list ? res.response.list.map(item => ({
             ...item,
-            startTime: formatter('dateTimeFormatWithSeconds')(item.startTime),
+            startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: (item.configType as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)

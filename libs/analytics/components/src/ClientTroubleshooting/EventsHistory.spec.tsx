@@ -89,7 +89,7 @@ describe('EventsHistory', () => {
       }
     )
     expect(await screen.findByText('History')).toBeVisible()
-    expect(screen.getByText('Nov 14 2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
   })
   it('should render with data and filters', async () => {
@@ -127,7 +127,7 @@ describe('EventsHistory', () => {
       }
     )
     expect(await screen.findByText('History')).toBeVisible()
-    expect(screen.getByText('Nov 14 2022 06:33:31')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.queryByText('Connection (Time To Connect)')).toBeNull()
     cleanup()
 

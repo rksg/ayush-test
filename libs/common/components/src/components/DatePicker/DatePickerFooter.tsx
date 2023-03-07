@@ -2,8 +2,9 @@ import React, { useCallback } from 'react'
 
 import { range as timepickerRange } from 'lodash'
 
-import { CaretDownSolid }             from '@acx-ui/icons'
-import { dateTimeFormats, DateRange } from '@acx-ui/utils'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { CaretDownSolid }            from '@acx-ui/icons'
+import { DateRange }                 from '@acx-ui/utils'
 
 import { Button } from '../Button'
 
@@ -26,7 +27,6 @@ type DisabledTimes = {
   disabledMinutes?: (hour: number) => number[],
   disabledSeconds?: (hour: number, minute: number) => number[]
 }
-const { dateFormat, dateTimeFormat } = dateTimeFormats
 
 const timePickerConfig = [
   { id: 1, range: 'startDate', value: 'hour', format: 'HH', offset: 6, hasColon: true },
@@ -36,7 +36,7 @@ const timePickerConfig = [
 ]
 
 const getCustomisedDate = (date: Moment | null, showTimePicker?: boolean) =>
-  showTimePicker ? date?.format(dateTimeFormat) : date?.format(dateFormat)
+  formatter(showTimePicker?DateFormatEnum.DateTimeFormat: DateFormatEnum.DateFormat)(date)
 
 const defaultselectionForDisabledDates = {
   disabledHours: () => [],

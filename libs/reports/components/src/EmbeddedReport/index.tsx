@@ -7,10 +7,11 @@ import {
   RadioBand,
   Loader
 } from '@acx-ui/components'
+import { convertDateTimeToSqlFormat }                                      from '@acx-ui/formatter'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 import { useGuestTokenMutation, useEmbeddedIdMutation, BASE_RELATIVE_URL } from '@acx-ui/reports/services'
 import { useReportsFilter }                                                from '@acx-ui/reports/utils'
-import { useDateFilter, convertDateTimeToSqlFormat, getJwtToken }          from '@acx-ui/utils'
+import { useDateFilter, getJwtToken }                                      from '@acx-ui/utils'
 
 interface ReportProps {
   embedDashboardName: string
