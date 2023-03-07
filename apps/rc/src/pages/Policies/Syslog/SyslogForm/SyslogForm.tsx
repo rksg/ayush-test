@@ -42,10 +42,10 @@ const SyslogForm = (props: SyslogFormProps) => {
 
   const policyName = ''
   const server = ''
-  const port = '514'
+  const port = 514
   const protocol = ProtocolEnum.UDP
   const secondaryServer = ''
-  const secondaryPort = '514'
+  const secondaryPort = 514
   const secondaryProtocol = ProtocolEnum.TCP
   const facility = FacilityEnum.KEEP_ORIGINAL
   const priority = PriorityEnum.INFO
