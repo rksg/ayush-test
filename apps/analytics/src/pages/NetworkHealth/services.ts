@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import { Form }    from 'antd'
-import { gql }     from 'graphql-request'
-import _           from 'lodash'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { Form }          from 'antd'
+import { gql }           from 'graphql-request'
+import _                 from 'lodash'
+import moment            from 'moment-timezone'
+import { ValidatorRule } from 'rc-field-form/lib/interface'
+import { useIntl }       from 'react-intl'
 
 import { networkHealthApi }                          from '@acx-ui/analytics/services'
 import { showToast, TableProps, useStepFormContext } from '@acx-ui/components'
@@ -30,18 +31,6 @@ import type {
   ClientType,
   AuthenticationMethod
 } from './types'
-
-export const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
-  endpoints: (build) => ({
-    networkHealthSpecNames: build.query<string[], undefined>({
-      query: () => ({
-        document: gql`query ServiceGuardSpecNames { allServiceGuardSpecs { name } }`
-      }),
-      transformResponse: (result: { allServiceGuardSpecs: Array<{ name: string }> }) =>
-        result.allServiceGuardSpecs.map(value => value.name)
-    })
-  })
-})
 
 const fetchServiceGuardSpec = gql`
   query FetchServiceGuardSpec ($id: String!) {
@@ -399,7 +388,7 @@ export function specToDto (
   }
 }
 
-type CreateUpdateMutationResult = MutationResult<{
+type CreateUpdateCloneMutationResult = MutationResult<{
   spec: Pick<NetworkHealthSpec, 'id'>
 }>
 
@@ -415,10 +404,11 @@ const {
   useCreateNetworkHealthSpecMutation,
   useUpdateNetworkHealthSpecMutation,
   useDeleteNetworkHealthMutation,
-  useRunNetworkHealthMutation
+  useRunNetworkHealthMutation,
+  useCloneNetworkHealthMutation
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
-    createNetworkHealthSpec: build.mutation<CreateUpdateMutationResult, NetworkHealthFormDto>({
+    createNetworkHealthSpec: build.mutation<CreateUpdateCloneMutationResult, NetworkHealthFormDto>({
       query: (variables) => ({
         variables: processDtoToPayload(variables),
         document: gql`mutation CreateServiceGuardSpec ($spec: CreateServiceGuardSpecInput!){
@@ -429,10 +419,10 @@ const {
         }`
       }),
       invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
-      transformResponse: (response: { createServiceGuardSpec: CreateUpdateMutationResult }) =>
+      transformResponse: (response: { createServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
         response.createServiceGuardSpec
     }),
-    updateNetworkHealthSpec: build.mutation<CreateUpdateMutationResult, NetworkHealthFormDto>({
+    updateNetworkHealthSpec: build.mutation<CreateUpdateCloneMutationResult, NetworkHealthFormDto>({
       query: (variables) => ({
         variables: processDtoToPayload(variables),
         document: gql`mutation UpdateServiceGuardSpec ($spec: UpdateServiceGuardSpecInput!){
@@ -443,11 +433,11 @@ const {
         }`
       }),
       invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
-      transformResponse: (response: { updateServiceGuardSpec: CreateUpdateMutationResult }) =>
+      transformResponse: (response: { updateServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
         response.updateServiceGuardSpec
     }),
     deleteNetworkHealth: build.mutation<
-      DeleteNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }
+      DeleteNetworkHealthTestResult, Pick<NetworkHealthSpec,'id'>
     >({
       query: (variables) => ({
         variables,
@@ -464,7 +454,9 @@ const {
       transformResponse: (response: { deleteServiceGuardSpec: DeleteNetworkHealthTestResult }) =>
         response.deleteServiceGuardSpec
     }),
-    runNetworkHealth: build.mutation<RunNetworkHealthTestResult, { id: NetworkHealthSpec['id'] }>({
+    runNetworkHealth: build.mutation<
+      RunNetworkHealthTestResult, Pick<NetworkHealthSpec,'id'>
+    >({
       query: (variables) => ({
         variables,
         document: gql`mutation RunNetworkHealthTest ($id: String!){
@@ -480,6 +472,22 @@ const {
       invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
       transformResponse: (response: { runServiceGuardTest: RunNetworkHealthTestResult }) =>
         response.runServiceGuardTest
+    }),
+    cloneNetworkHealth: build.mutation<
+      CreateUpdateCloneMutationResult, Pick<NetworkHealthSpec, 'id'|'name'>
+    >({
+      query: (variables) => ({
+        variables,
+        document: gql`mutation CloneServiceGuardSpec ($name: String!, $id: String!){
+          cloneServiceGuardSpec (name: $name, id: $id) {
+            spec { id }
+            userErrors { field message }
+          }
+        }`
+      }),
+      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      transformResponse: (response: { cloneServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
+        response.cloneServiceGuardSpec
     })
   })
 })
@@ -504,6 +512,11 @@ export function useDeleteNetworkHealthTestMutation () {
   return { deleteTest, response }
 }
 
+export function useCloneNetworkHealthTestMutation () {
+  const [cloneTest, response] = useCloneNetworkHealthMutation()
+  return { cloneTest, response }
+}
+
 export function useMutationResponseEffect <
   Result extends { userErrors?: MutationUserError[] }
 > (
@@ -523,4 +536,30 @@ export function useMutationResponseEffect <
       showToast({ type: 'error', content: errorMessage })
     }
   }, [$t, response, onOk])
+}
+
+const { useLazyNetworkHealthSpecNamesQuery } = networkHealthApi.injectEndpoints({
+  endpoints: (build) => ({
+    networkHealthSpecNames: build.query<string[], void>({
+      query: () => ({
+        document: gql`query ServiceGuardSpecNames { allServiceGuardSpecs { name } }`
+      }),
+      transformResponse: (result: { allServiceGuardSpecs: Array<{ name: string }> }) =>
+        result.allServiceGuardSpecs.map(value => value.name)
+    })
+  })
+})
+export function useDuplicateNameValidator (editMode = false, initialName?: string) {
+  const { $t } = useIntl()
+  const [getNames] = useLazyNetworkHealthSpecNamesQuery()
+  const validator: ValidatorRule['validator'] = useCallback(async (rule, value: string) => {
+    if (editMode && initialName === value) return
+
+    const names = await getNames().unwrap()
+    if (!names.includes(value)) return
+
+    throw new Error($t(messageMapping.DUPLICATE_NAME_NOT_ALLOWED))
+  }, [$t, getNames, editMode, initialName])
+
+  return validator
 }

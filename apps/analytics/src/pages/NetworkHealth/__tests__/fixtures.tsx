@@ -214,6 +214,13 @@ export const deleteNetworkHealth = {
   }
 }
 
+export const cloneNetworkHealth = {
+  cloneServiceGuardSpec: {
+    spec: { id: 'spec-id' },
+    userErrors: null
+  }
+}
+
 const Context = createStepsFormContext()
 
 export const withinField = () => within(screen.getByTestId('field'))

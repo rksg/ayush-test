@@ -18,6 +18,7 @@ import {
   useNetworkHealthSpecMutation,
   useDeleteNetworkHealthTestMutation,
   useRunNetworkHealthTestMutation,
+  useCloneNetworkHealthTestMutation,
   useMutationResponseEffect
 } from './services'
 import {
@@ -131,6 +132,39 @@ describe('useAllNetworkHealthSpecsQuery', () => {
       .toEqual(fixtures.fetchAllServiceGuardSpecs.allServiceGuardSpecs
         .map(row => ({ ...row, latestTest: _.get(row, 'tests.items[0]') })))
   })
+})
+
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
+})
+
+it('useDeleteNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
+  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
+})
+
+it('useCloneNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'CloneServiceGuardSpec', { data: fixtures.cloneNetworkHealth })
+  const { result } = renderHook(() => useCloneNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.cloneTest({
+      id: fixtures.cloneNetworkHealth.cloneServiceGuardSpec.spec.id,
+      name: 'test-name'
+    })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.cloneNetworkHealth.cloneServiceGuardSpec)
 })
 
 describe('useNetworkHealthSpecMutation', () => {

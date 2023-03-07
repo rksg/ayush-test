@@ -115,6 +115,7 @@ export const messageMapping = {
   TEST_CREATED: defineMessage({ defaultMessage: 'Network Health test created' }),
   TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' }),
   TEST_DELETED: defineMessage({ defaultMessage: 'Network Health test deleted' }),
+  TEST_CLONED: defineMessage({ defaultMessage: 'Network Health test cloned' }),
   RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Network Health test running' })
 }
 
