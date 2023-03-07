@@ -239,7 +239,7 @@ export interface EntitlementSummary {
   errorCode?: unknown;
   internalMessage?: unknown;
   remainingDays?: number;
-  deviceCount?: number;
+  deviceCount: number;
 }
 
 export interface NewEntitlementSummary {
