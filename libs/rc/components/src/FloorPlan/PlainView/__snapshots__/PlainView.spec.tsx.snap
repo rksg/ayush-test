@@ -88,7 +88,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -296,7 +296,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -327,7 +327,7 @@ exports[`Floor Plan Plain View Should click delete button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -433,7 +433,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -641,7 +641,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -672,7 +672,7 @@ exports[`Floor Plan Plain View Should click edit button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -815,7 +815,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -984,7 +984,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1015,7 +1015,7 @@ exports[`Floor Plan Plain View Should load image 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1158,7 +1158,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -1327,7 +1327,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1358,7 +1358,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1464,7 +1464,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -1673,7 +1673,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1704,7 +1704,7 @@ exports[`Floor Plan Plain View should open gallery view 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -1847,7 +1847,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -2016,7 +2016,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2047,7 +2047,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2153,7 +2153,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
       <img
         alt="dscx"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -2361,7 +2361,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2392,7 +2392,7 @@ exports[`Floor Plan Plain View should trigger onFloorPlanSelectionHandler 1`] = 
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2457,7 +2457,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -2682,7 +2682,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -2890,7 +2890,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2921,7 +2921,7 @@ exports[`Floor Plan Plain View test zoom fit button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3027,7 +3027,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -3235,7 +3235,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3266,7 +3266,7 @@ exports[`Floor Plan Plain View test zoom original button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3372,7 +3372,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -3580,7 +3580,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3611,7 +3611,7 @@ exports[`Floor Plan Plain View test zoom-in button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3717,7 +3717,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -3925,7 +3925,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -3956,7 +3956,7 @@ exports[`Floor Plan Plain View test zoom-out button 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="/api/file/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>

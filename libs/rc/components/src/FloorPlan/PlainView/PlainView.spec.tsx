@@ -4,15 +4,16 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                            from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor }                                                                                                  from '@acx-ui/test-utils'
+import { render, screen, fireEvent, waitFor, mockServer }                                                                                                  from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
+import { rest } from 'msw'
 
 
 
@@ -91,10 +92,28 @@ for (let deviceType in NetworkDeviceType) {
   networkDeviceType.push(networkDevicetype)
 }
 
+const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
+},
+'7231da344778480d88f37f0cca1c534f-001.png': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+}
+}
 
 describe('Floor Plan Plain View', () => {
 
   beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
     Object.defineProperty(HTMLImageElement.prototype, 'offsetWidth', { value: 300 })
     Object.defineProperty(HTMLImageElement.prototype, 'offsetHeight', { value: 400 })
     Object.defineProperty(HTMLDivElement.prototype, 'offsetWidth', { value: 1150 })
