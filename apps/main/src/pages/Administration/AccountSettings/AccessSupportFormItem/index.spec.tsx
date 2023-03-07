@@ -2,9 +2,8 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { AdministrationUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider  }                                   from '@acx-ui/store'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -12,6 +11,7 @@ import {
   fireEvent,
   waitFor
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakeTenantDelegation } from '../__tests__/fixtures'
 
@@ -29,6 +29,8 @@ const userProfileContextValues = {
 
 describe('Access Support Form Item', () => {
   beforeEach(async () => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDelegation.url.split('?')[0],

@@ -1,5 +1,5 @@
 {
-  "sourceRoot": "libs/common/rbac/src",
+  "sourceRoot": "libs/common/user/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -7,14 +7,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/common/rbac/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/common/user/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/common/rbac"],
+      "outputs": ["coverage/libs/common/user"],
       "options": {
-        "jestConfig": "libs/common/rbac/jest.config.ts",
+        "jestConfig": "libs/common/user/jest.config.ts",
         "passWithNoTests": true
       }
     }
