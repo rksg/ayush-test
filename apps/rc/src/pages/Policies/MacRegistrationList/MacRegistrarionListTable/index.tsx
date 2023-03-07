@@ -131,10 +131,7 @@ export default function MacRegistrationListsTable () {
                 })
                 clearSelection()
               }).catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })

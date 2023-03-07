@@ -204,11 +204,8 @@ export function PersonaGroupTable () {
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
-    downloadCsv({ payload: tableQuery.payload }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export Persona Groups.' })
-      })
+    downloadCsv({ payload: tableQuery.payload }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -258,10 +255,7 @@ export function PersonaGroupTable () {
                 clearSelection()
               })
               .catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })

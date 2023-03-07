@@ -1,13 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { gql }     from 'graphql-request'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { networkHealthApi } from '@acx-ui/analytics/services'
-import { showToast }        from '@acx-ui/components'
-import { useParams }        from '@acx-ui/react-router-dom'
+import { networkHealthApi }        from '@acx-ui/analytics/services'
+import { showToast, TableProps }   from '@acx-ui/components'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { messageMapping, stages }      from './contents'
 import { initialValues }               from './NetworkHealthForm/NetworkHealthForm'
@@ -17,6 +18,9 @@ import type {
   NetworkHealthFormDto,
   NetworkHealthSpec,
   NetworkHealthConfig,
+  NetworkHealthTestResults,
+  Pagination,
+  TestResultByAP,
   NetworkHealthTest,
   MutationResult,
   MutationUserError,
@@ -134,6 +138,52 @@ const fetchServiceGuardRelatedTests = gql`
     }
   }
 `
+const fetchServiceGuardTestResults = gql`
+  query ServiceGuardResults($testId: Float!, $offset: Int, $limit: Int) {
+    serviceGuardTest(id: $testId) {
+      config { authenticationMethod pingAddress tracerouteAddress speedTestEnabled }
+      spec {
+        specId: id
+        name
+        type
+        apsCount
+        clientType
+      }
+      wlanAuthSettings {
+        wpaVersion
+      }
+      aps (offset: $offset, limit: $limit) {
+        total
+        size
+        items {
+          apName
+          apMac
+          ${Object.keys(stages).join('\n')}
+          pingReceive
+          pingTotal
+          avgPingTime
+          error
+          speedTestFailure
+          speedTestServer
+          download
+          upload
+          tracerouteLog
+          state
+          clients {
+            failure {
+              failedMsgId messageIds ssid radio reason failureType
+            }
+          }
+          stationAp {
+            name
+            mac
+            snr
+          }
+        }
+      }
+    }
+  }
+`
 
 const fetchAllServiceGuardSpecs = gql`
   query FetchAllServiceGuardSpecs {
@@ -164,7 +214,8 @@ export const {
   useAllNetworkHealthSpecsQuery,
   useNetworkHealthDetailsQuery,
   useNetworkHealthTestQuery,
-  useNetworkHealthRelatedTestsQuery
+  useNetworkHealthRelatedTestsQuery,
+  useNetworkHealthTestResultsQuery
 } = networkHealthApi.injectEndpoints({
   endpoints: (build) => ({
     allNetworkHealthSpecs: build.query<NetworkHealthTableRow[], void>({
@@ -190,14 +241,26 @@ export const {
         result.serviceGuardTest
     }),
     networkHealthRelatedTests: build.query<
-      Record<string, number|string>[], { testId: NetworkHealthTest['id'] }
+      Record<string, number | string>[],
+      { testId: NetworkHealthTest['id'] }
     >({
       query: (variables) => ({ variables, document: fetchServiceGuardRelatedTests }),
       transformResponse: (result: { serviceGuardTest: NetworkHealthTest }) => {
-        if(!result.serviceGuardTest) return []
-        const { id: specId, tests: { items } } = result.serviceGuardTest.spec
+        if (!result.serviceGuardTest) return []
+        const {
+          id: specId,
+          tests: { items }
+        } = result.serviceGuardTest.spec
         return items.map(({ id, createdAt, summary }) => ({ specId, id, createdAt, ...summary }))
       }
+    }),
+    networkHealthTestResults: build.query<
+    NetworkHealthTestResults,
+      { testId: NetworkHealthTest['id']; offset: number; limit: number }
+    >({
+      query: (variables) => ({ variables, document: fetchServiceGuardTestResults }),
+      transformResponse: (result: { serviceGuardTest: NetworkHealthTestResults }) =>
+        result.serviceGuardTest
     })
   })
 })
@@ -222,6 +285,39 @@ export function useNetworkHealthRelatedTests () {
   return useNetworkHealthRelatedTestsQuery(
     { testId: parseInt(params.testId!, 10) },
     { skip: !Boolean(params.testId) })
+}
+
+export function useNetworkHealthTestResults () {
+  const params = useParams<{ testId: string }>()
+  const DEFAULT_PAGINATION = {
+    page: 1,
+    pageSize: TABLE_DEFAULT_PAGE_SIZE,
+    defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+    total: 0
+  }
+  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
+  const handleTableChange: TableProps<TestResultByAP>['onChange'] = (
+    customPagination
+  ) => {
+    const paginationDetail = {
+      page: customPagination.current,
+      pageSize: customPagination.pageSize
+    } as Pagination
+
+    setPagination({ ...pagination, ...paginationDetail })
+  }
+  return {
+    tableQuery: useNetworkHealthTestResultsQuery(
+      {
+        testId: parseInt(params.testId!, 10),
+        offset: (pagination.page - 1) * pagination.pageSize,
+        limit: pagination.pageSize
+      },
+      { skip: !Boolean(params.testId) }
+    ),
+    onPageChange: handleTableChange,
+    pagination
+  }
 }
 
 export function processDtoToPayload (dto: NetworkHealthFormDto) {
