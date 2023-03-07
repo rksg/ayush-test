@@ -3,15 +3,15 @@ import _        from 'lodash'
 import { rest } from 'msw'
 import { act }  from 'react-dom/test-utils'
 
-import { administrationApi, mspApi }                                           from '@acx-ui/rc/services'
-import { MspUrlsInfo, AdministrationUrlsInfo, UserUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
-import { Provider, store  }                                                    from '@acx-ui/store'
+import { administrationApi, mspApi }                             from '@acx-ui/rc/services'
+import { MspUrlsInfo, AdministrationUrlsInfo, isDelegationMode } from '@acx-ui/rc/utils'
+import { Provider, store  }                                      from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
+import { UserProfileContext, UserProfileContextProps, UserUrlsInfo, setUserProfile } from '@acx-ui/user'
 
 import {
   fakeRecoveryPassphrase,
