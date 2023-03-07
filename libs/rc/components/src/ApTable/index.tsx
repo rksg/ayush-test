@@ -99,6 +99,8 @@ interface ApTableProps
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  groupable?: Omit<TableProps<APExtended>, 'columns'> | any
 }
 
 export function ApTable (props: ApTableProps) {
