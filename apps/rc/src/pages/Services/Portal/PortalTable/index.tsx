@@ -16,6 +16,7 @@ import {
   PortalLanguageEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 import Photo              from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered            from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -147,15 +148,15 @@ export default function PortalTable () {
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= PORTAL_LIMIT_NUMBER
                 : false} >{intl.$t({ defaultMessage: 'Add Guest Portal' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<Portal>
@@ -164,7 +165,7 @@ export default function PortalTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

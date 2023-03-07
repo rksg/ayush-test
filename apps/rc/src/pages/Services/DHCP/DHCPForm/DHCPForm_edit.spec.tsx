@@ -2,14 +2,15 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData } from '@acx-ui/rc/utils'
-import { Provider }                                                   from '@acx-ui/store'
+import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData } from '@acx-ui/rc/utils'
+import { Provider }                                   from '@acx-ui/store'
 import {
   mockServer,
   render, screen,
   fireEvent,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import DHCPForm from './DHCPForm'
 
@@ -55,7 +56,7 @@ describe('DHCPForm', () => {
       tenantId: 'tenant-id', action: 'edit' }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.get(DHCPUrls.getDHCProfileDetail.url,
         (_, res, ctx) => {
