@@ -72,7 +72,7 @@ describe('VLANPoolForm', () => {
 
   it('should edit vlan successfully', async () => {
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
@@ -113,7 +113,7 @@ describe('VLANPoolForm', () => {
 
   it('should cancel vlan Form successfully', async () => {
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
