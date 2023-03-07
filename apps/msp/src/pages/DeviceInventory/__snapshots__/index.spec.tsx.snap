@@ -380,6 +380,7 @@ exports[`Device Inventory Table should render table 1`] = `
             </div>
             <div
               class="ant-space-item"
+              style="margin-right: 12px;"
             >
               <div
                 class="ant-select styledComponents__FilterSelect-sc-1abm7iv-4 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -457,6 +458,17 @@ exports[`Device Inventory Table should render table 1`] = `
                   </span>
                 </span>
               </div>
+            </div>
+            <div
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            />
+            <div
+              class="ant-space-item"
+            >
+              <div
+                class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
+              />
             </div>
           </div>
         </div>

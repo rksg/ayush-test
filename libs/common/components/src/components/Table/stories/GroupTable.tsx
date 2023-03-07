@@ -583,6 +583,7 @@ export function GroupTable () {
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
+        rowClassName={(record) => record.isParent ? 'parent-row-data' : ''}
         groupable={{
           selectors: [
             { key: 'deviceGroupName', label: 'AP Group', actionEnable: true },

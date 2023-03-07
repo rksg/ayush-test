@@ -102,6 +102,7 @@ exports[`MspCustomers should render table 1`] = `
           >
             <div
               class="ant-space-item"
+              style="margin-right: 12px;"
             >
               <span
                 class="ant-input-affix-wrapper styledComponents__SearchInput-sc-1abm7iv-3"
@@ -150,6 +151,17 @@ exports[`MspCustomers should render table 1`] = `
                   </span>
                 </span>
               </span>
+            </div>
+            <div
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            />
+            <div
+              class="ant-space-item"
+            >
+              <div
+                class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
+              />
             </div>
           </div>
         </div>
