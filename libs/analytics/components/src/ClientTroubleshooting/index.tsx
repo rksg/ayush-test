@@ -1,17 +1,21 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Row, Col }                          from 'antd'
+import { connect, EChartsType }              from 'echarts'
+import ReactECharts                          from 'echarts-for-react'
 import moment                                from 'moment-timezone'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
 import { Select, Button, Loader }                              from '@acx-ui/components'
 import { useEncodedParameter, useDateFilter, dateTimeFormats } from '@acx-ui/utils'
 
-import { ClientTroubleShootingConfig } from './config'
-import { History }                     from './EventsHistory'
-import { TimeLine }                    from './EventsTimeline'
-import { useClientInfoQuery }          from './services'
-import * as UI                         from './styledComponents'
+import { ClientTroubleShootingConfig, DisplayEvent, IncidentDetails } from './config'
+import { ConnectionEventPopover }                                     from './ConnectionEvent'
+import { FormattedEvent, History }                                    from './EventsHistory'
+import { TimeLine }                                                   from './EventsTimeline'
+import { useClientInfoQuery }                                         from './services'
+import * as UI                                                        from './styledComponents'
+
 
 export type Filters = {
   category?: [];
@@ -27,6 +31,35 @@ Please select a shorter period.`
 type SingleValueType = (string | number)[]
 type selectionType = SingleValueType | SingleValueType[] | undefined
 
+const isChartActive = (chart: EChartsType) => {
+  return chart && chart.isDisposed && !chart.isDisposed()
+}
+
+export function getSelectedCallback (
+  popoverVisible: boolean,
+  panelVisible: boolean,
+  eventState: DisplayEvent,
+  item: FormattedEvent | IncidentDetails) {
+  return () => (popoverVisible || panelVisible)
+    && eventState
+    && item
+    && (item as FormattedEvent).event
+    && (eventState.key === (item as FormattedEvent).event.key)
+}
+
+export function getPanelCallback (
+  item: IncidentDetails | FormattedEvent,
+  setEventState: CallableFunction,
+  setVisible: CallableFunction
+) {
+  return (val: boolean) => {
+    if (item && (item as FormattedEvent).event) {
+      setEventState({ ...(item as FormattedEvent).event })
+      setVisible(val)
+    }
+  }
+}
+
 export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const [historyContentToggle, setHistoryContentToggle] = useState(true)
   const intl = useIntl()
@@ -35,6 +68,32 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { startDate, endDate, range } = useDateFilter()
   const results = useClientInfoQuery({ startDate, endDate, range, clientMac })
   const filters = read()
+  const [eventState, setEventState] = useState({} as DisplayEvent)
+  const [popoverVisible, setPopoverVisible] = useState(false)
+  const [panelVisible, setPanelVisible] = useState(false)
+  const sharedChartName = 'eventTimeSeriesGroup'
+  const popoverRef = useRef<HTMLDivElement>(null)
+  const chartsRef = useRef<EChartsType[]>([])
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = sharedChartName
+      connect(sharedChartName)
+    }
+  }
+  const onChartReady = useCallback((chart: EChartsType) => { chartsRef.current.push(chart) }, [])
+  const onPanelCallback = useCallback((item: IncidentDetails | FormattedEvent) => ({
+    onClick: getPanelCallback(item, setEventState, setPanelVisible),
+    selected: getSelectedCallback(popoverVisible, panelVisible, eventState, item)
+  }), [eventState, popoverVisible, panelVisible])
+
+  useEffect(() => {
+    const charts = chartsRef.current
+    const active = charts.filter(isChartActive)
+    connect(active)
+    chartsRef.current = active
+  })
+
   const isMaxEventError = results.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
 
   return isMaxEventError
@@ -97,7 +156,32 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               <Loader states={[results]}>
                 <TimeLine
                   data={results.data}
-                  filters={filters}/>
+                  filters={filters}
+                  setEventState={setEventState}
+                  setVisible={setPopoverVisible}
+                  sharedChartName={sharedChartName}
+                  connectChart={connectChart}
+                  popoverRef={popoverRef}
+                  onChartReady={onChartReady}
+                />
+                <ConnectionEventPopover
+                  key={Number(popoverVisible)}
+                  arrowPointAtCenter
+                  autoAdjustOverflow={false}
+                  event={eventState}
+                  visible={popoverVisible}
+                  onVisibleChange={setPopoverVisible}
+                  trigger='click'
+                  placement='bottom'
+                  align={{
+                    targetOffset: [
+                      (eventState as unknown as { x: number }).x,
+                      (eventState as unknown as { y: number }).y
+                    ]
+                  }}
+                >
+                  <div key='popover-child' data-testid='popover-child' ref={popoverRef}/>
+                </ConnectionEventPopover>
               </Loader>
             </UI.TimelineLoaderWrapper>
           </Col>
@@ -111,6 +195,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
               historyContentToggle
               data={results.data}
               filters={filters}
+              onPanelCallback={onPanelCallback}
             />
           </Loader>
         </Col>

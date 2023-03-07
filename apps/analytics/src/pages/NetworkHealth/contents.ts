@@ -6,7 +6,8 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 import {
   ClientType,
   TestStage,
-  TestType
+  TestType,
+  ScheduleFrequency
 } from './types'
 
 import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
@@ -28,9 +29,16 @@ export const clientTypes = {
   [ClientType.VirtualWirelessClient]: defineMessage({ defaultMessage: 'Virtual Wireless Client' })
 }
 
-export const testTypes = {
+export const testTypes: Record<string, MessageDescriptor> = {
   [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
   [TestType.Scheduled]: defineMessage({ defaultMessage: 'Scheduled' })
+}
+
+export const testTypesWithSchedule: Record<string, MessageDescriptor> = {
+  [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
+  [ScheduleFrequency.Daily]: defineMessage({ defaultMessage: 'Daily' }),
+  [ScheduleFrequency.Weekly]: defineMessage({ defaultMessage: 'Weekly' }),
+  [ScheduleFrequency.Monthly]: defineMessage({ defaultMessage: 'Monthly' })
 }
 
 export const unsupportedAuthMethods = {
@@ -81,6 +89,13 @@ export const clientTypeTooltip = defineMessage({
   `
 })
 
+export const scheduleMonthlyTooltip = defineMessage({
+  defaultMessage: `
+    Schedule will fall on last day of the month if 29th, 30th or 31st is selected
+    and the month does not have these days.
+  `
+})
+
 export const apsSelectionTooltip = defineMessage({
   defaultMessage: `<p>
     802.11ac wave 1 APs and older are not supported.
@@ -92,12 +107,15 @@ export const apsSelectionTooltip = defineMessage({
 export const messageMapping = {
   RUN_TEST_NO_APS: defineMessage({ defaultMessage: 'There are no APs to run the test' }),
   SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
+  TEST_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
   INTERNAL_SERVER_ERROR: defineMessage({ defaultMessage: 'Internal Server Error' }),
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
   DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
   TEST_CREATED: defineMessage({ defaultMessage: 'Network Health test created' }),
-  TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' })
+  TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' }),
+  TEST_DELETED: defineMessage({ defaultMessage: 'Network Health test deleted' }),
+  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Network Health test running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

@@ -1,3 +1,4 @@
+import { Col, Row }                  from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, Tooltip } from '@acx-ui/components'
@@ -16,9 +17,13 @@ export function NetworkHealthFormAPsSelection () {
   return <>
     <StepsForm.Title>
       {$t(contents.steps.apsSelection)}
-      <Tooltip.Question title={tooltip} />
+      <Tooltip.Question title={tooltip} placement='right' />
     </StepsForm.Title>
-    <FormItems.APsSelection />
+    <Row gutter={20}>
+      <Col span={18}>
+        <FormItems.APsSelection />
+      </Col>
+    </Row>
   </>
 }
 

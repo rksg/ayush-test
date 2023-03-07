@@ -445,14 +445,14 @@ describe('StepsForm.FieldSummary', () => {
     </Form>
   }
 
-  it('renders empty by default', async () => {
+  it('renders no data symbol by default', async () => {
     render(<Component
       name='field'
     />)
 
-    expect(await screen.findByRole('generic', {
+    expect((await screen.findByRole('generic', {
       name: (_, el) => el.nodeName === 'SPAN'
-    })).toBeEmptyDOMElement()
+    })).textContent).toEqual('-')
   })
 
   it('renders given value', () => {

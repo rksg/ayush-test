@@ -7,10 +7,11 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
 
-import { StepsForm, useStepFormContext, useWatch } from '@acx-ui/components'
-import { useVenueNetworkListQuery }                from '@acx-ui/rc/services'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
+import { useVenueNetworkListQuery }      from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 
 import * as UI from './styledComponents'
 
@@ -33,6 +34,7 @@ export const WirelessNetworkForm = () => {
     params: { ...params, venueId: venueId },
     payload: venueNetworkDefaultPayload
   }, {
+    skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
         networkOptions: data?.data.map(item => ({ label: item.name, value: item.id })),
@@ -67,7 +69,6 @@ export const WirelessNetworkForm = () => {
                 options={[
                   { label: $t({ defaultMessage: 'Default' }), value: null }
                 ]}
-                defaultValue={null}
               />
             }
           />
@@ -79,7 +80,7 @@ export const WirelessNetworkForm = () => {
           <Space direction='vertical'>
             {
               $t({
-                defaultMessage: `Apply the tunnel profile to the following 
+                defaultMessage: `Apply the tunnel profile to the following
                 networks that you want to enable network segmentation:`
               })
             }
@@ -88,7 +89,7 @@ export const WirelessNetworkForm = () => {
               <UI.Description>
                 {
                   $t({
-                    defaultMessage: `The client isolation service will be disabled 
+                    defaultMessage: `The client isolation service will be disabled
                       and VLAN ID will be set to 1 for the checked networks.`
                   })
                 }
