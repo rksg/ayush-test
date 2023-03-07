@@ -1,27 +1,45 @@
-import { ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                           from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                                                from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDevicePosition, NetworkDeviceType, SwitchStatusEnum, SwitchUrlsInfo, SwitchViewModel, SWITCH_TYPE, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                                                                                                from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
 
 // eslint-disable-next-line import/order
-import { rest }        from 'msw'
-import { ApFloorplan } from '.'
+import { rest } from 'msw'
 
-const apDetails: ApDetails ={
-  serialNumber: '422039000034',
-  apGroupId: 'be41e3513eb7446bbdebf461dec67ed3',
+import { SwitchFloorplan } from '.'
+
+const switchDetail: SwitchViewModel = {
+  type: 'device',
+  isStack: true,
+  rearModule: 'none',
+  switchMac: 'c0:c5:20:98:b9:67',
+  switchName: 'ICX7150-C12 Router',
+  model: 'ICX7150-C12P',
+  id: 'c0:c5:20:98:b9:67',
+  syncDataEndTime: '2023-01-16T06:07:09Z',
+  firmwareVersion: 'SPR09010e',
+  clientCount: 1,
+  serialNumber: 'FEK3216Q05B',
+  ipAddress: '10.206.33.13',
+  cliApplied: false,
+  subnetMask: '255.255.254.0',
+  venueName: 'My-Venue',
+  name: 'ICX7150-C12 Router',
+  suspendingDeployTime: '',
+  switchType: SWITCH_TYPE.ROUTER,
+  configReady: true,
+  deviceStatus: SwitchStatusEnum.OPERATIONAL,
   venueId: '7231da344778480d88f37f0cca1c534f',
-  name: 'AP1',
-  description: 'Ap',
-  softDeleted: false,
-  model: 'R650',
-  updatedDate: '2022-11-15T08:37:42.987+0000',
-  position: {
-    positionX: 65.20548,
-    positionY: 9.839357,
-    floorplanId: '94bed28abef24175ab58a3800d01e24a'
-  } as ApPosition
+  syncedSwitchConfig: true,
+  defaultGateway: '10.206.33.254',
+  stackMembers: [
+    { model: 'ICX7150-C12P', id: 'FEK3216Q02P' },
+    { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
+  ],
+  uptime: '7 days, 7:36:21.00',
+  formStacking: false,
+  floorplanId: '94bed28abef24175ab58a3800d01e24a'
 }
 
 
@@ -56,8 +74,8 @@ const networkDevices: {
     switches: [{
       deviceStatus: SwitchStatusEnum.NEVER_CONTACTED_CLOUD,
       floorplanId: '94bed28abef24175ab58a3800d01e24a',
-      id: 'FEK3224R72N',
-      name: 'FEK3224R232N',
+      id: 'c0:c5:20:98:b9:67',
+      name: 'ICX7150-C12 Router',
       serialNumber: 'FEK3224R72N',
       xPercent: 52.739727,
       yPercent: 7.056452,
@@ -86,7 +104,7 @@ const params = {
   floorplanId: '94bed28abef24175ab58a3800d01e24a'
 }
 
-describe('AP floorplan', () => {
+describe('Switch floorplan', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -102,8 +120,8 @@ describe('AP floorplan', () => {
         (_, res, ctx) => res(ctx.json(floorPlan))
       ),
       rest.get(
-        WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetails))
+        SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(switchDetail))
       )
     )
   })
@@ -111,10 +129,14 @@ describe('AP floorplan', () => {
   it('should render correctly', async () => {
     const { asFragment } = await render(
       <Provider>
-        <ApFloorplan
+        <SwitchFloorplan
           activeDevice={networkDevices['94bed28abef24175ab58a3800d01e24a'].ap[0]}
           venueId={params.venueId}
-          apPosition={apDetails.position as ApPosition}/></Provider>, {
+          switchPosition={{
+            xPercent: switchDetail.xPercent,
+            yPercent: switchDetail.yPercent,
+            floorplanId: switchDetail.floorplanId
+          } as NetworkDevicePosition}/></Provider>, {
         route: {
           params, path: '/:tenantId/venue/:venueId/floor-plan',
           wrapRoutes: false
