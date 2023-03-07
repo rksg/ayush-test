@@ -24,7 +24,6 @@ export const defaultSorter = {
 }
 
 export const columnState = {
-  hidden: false,
   defaultValue: {
     startDateTime: true,
     product: false,
@@ -56,16 +55,10 @@ export const defaultPayload = {
   ]
 }
 
-type ColumnState = { [columnKey: string]: boolean }
-
 interface ActivityTableProps {
   tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
   filterables?: boolean | string[]
-  columnState?: {
-    hidden?: boolean,
-    defaultValue?: ColumnState,
-    onChange?: (state: ColumnState) => void
-  }
+  columnState?: TableProps<Activity>['columnState']
 }
 
 const ActivityTable = ({
@@ -144,10 +137,7 @@ const ActivityTable = ({
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
-      value: (() => {
-        const msg = severityMapping[data.severity as keyof typeof severityMapping]
-        return $t(msg)
-      })()
+      value: $t(severityMapping[data.severity as keyof typeof severityMapping])
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
@@ -167,7 +157,7 @@ const ActivityTable = ({
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getActivityDescription(data.descriptionTemplate, data.descriptionData))()
+      value: getActivityDescription(data.descriptionTemplate, data.descriptionData)
     }
   ]
 
