@@ -17,8 +17,11 @@ import {
 } from '@acx-ui/components'
 import {
   useAddAppPolicyMutation,
-  useAppPolicyListQuery, useAvcAppListQuery, useAvcCategoryListQuery,
-  useGetAppPolicyQuery
+  useAppPolicyListQuery,
+  useAvcAppListQuery,
+  useAvcCategoryListQuery,
+  useGetAppPolicyQuery,
+  useUpdateAppPolicyMutation
 } from '@acx-ui/rc/services'
 import {
   ApplicationAclType,
@@ -172,6 +175,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   ]
 
   const [ createAppPolicy ] = useAddAppPolicyMutation()
+
+  const [ updateAppPolicy ] = useUpdateAppPolicyMutation()
 
   const { appSelectOptions, appList } = useAppPolicyListQuery({
     params: { ...params, requestId: requestId },
@@ -417,6 +422,17 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(appRes.requestId)
         setQueryPolicyName(policyName)
+      } else {
+        await updateAppPolicy({
+          params: { ...params, applicationPolicyId: queryPolicyId },
+          payload: {
+            id: queryPolicyId,
+            name: policyName,
+            rules: [...transformToRulesForPayload(applicationsRuleList, categoryAppMappingObject)],
+            description: null,
+            tenantId: params.tenantId
+          }
+        }).unwrap()
       }
     } catch(error) {
       showToast({
@@ -468,7 +484,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       rules={[
         { required: true },
         { validator: (_, value) => {
-          if (appList && appList.find(app => app === value)) {
+          if (appList && appList
+            .filter(app => editMode ? (appPolicyInfo?.name !== app) : true)
+            .findIndex(app => app === value) !== -1) {
             return Promise.reject($t({
               defaultMessage: 'A policy with that name already exists'
             }))
@@ -562,7 +580,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleAppPolicy(false)
+                  await handleAppPolicy(editMode.isEdit)
                 }
                 handleApplicationsDrawerClose()
               } catch (error) {

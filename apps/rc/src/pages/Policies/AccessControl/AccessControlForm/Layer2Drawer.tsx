@@ -14,10 +14,15 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { DeleteSolid, DownloadOutlined }                                              from '@acx-ui/icons'
-import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
-import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
-import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
+import {
+  useAddL2AclPolicyMutation,
+  useGetL2AclPolicyQuery,
+  useL2AclPolicyListQuery,
+  useUpdateL2AclPolicyMutation
+} from '@acx-ui/rc/services'
+import { AccessStatus, CommonResult, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
+import { useParams }                                          from '@acx-ui/react-router-dom'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -95,6 +100,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   ]
 
   const [ createL2AclPolicy ] = useAddL2AclPolicyMutation()
+
+  const [ updateL2AclPolicy ] = useUpdateL2AclPolicyMutation()
 
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId },
@@ -323,19 +330,32 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     onClick: handleClearAction
   }] : []
 
+  const convertToPayload = (policyId?: string) => {
+    let id = {}
+    if (policyId) {
+      id = { id: policyId }
+    }
+    let payload = {
+      name: policyName,
+      access: accessStatus,
+      macAddresses: macAddressList.map((item: { macAddress: string }) =>
+        item.macAddress
+      ),
+      description: null
+    }
+
+    return {
+      ...id,
+      ...payload
+    }
+  }
+
   const handleL2AclPolicy = async (edit: boolean) => {
     try {
       if (!edit) {
         const l2AclRes: CommonResult = await createL2AclPolicy({
           params: params,
-          payload: {
-            name: policyName,
-            access: accessStatus,
-            macAddresses: macAddressList.map((item: { macAddress: string }) =>
-              item.macAddress
-            ),
-            description: null
-          }
+          payload: convertToPayload()
         }).unwrap()
         // let responseData = l2AclRes.response as {
         //   [key: string]: string
@@ -344,6 +364,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(l2AclRes.requestId)
         setQueryPolicyName(policyName)
+      } else {
+        await updateL2AclPolicy({
+          params: { ...params, l2AclPolicyId: queryPolicyId },
+          payload: convertToPayload(queryPolicyId)
+        }).unwrap()
       }
     } catch(error) {
       const responseData = error as { status: number, data: { [key: string]: string } }
@@ -364,14 +389,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
           { required: true },
-          { required: true,
-            validator: (_, value) => {
-              if (layer2List && layer2List.find(layer2 => layer2 === value)) {
-                return Promise.reject($t({
-                  defaultMessage: 'A policy with that name already exists'
-                }))
-              }
-              return Promise.resolve()}
+          { validator: (_, value) => {
+            if (layer2List && layer2List
+              .filter(layer2 => editMode ? (layer2PolicyInfo?.name !== layer2) : true)
+              .findIndex(layer2 => layer2 === value) !== -1) {
+              return Promise.reject($t({
+                defaultMessage: 'A policy with that name already exists'
+              }))
+            }
+            return Promise.resolve()}
           }
         ]}
         children={<Input disabled={isViewMode()}/>}
@@ -565,7 +591,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL2AclPolicy(false)
+                  await handleL2AclPolicy(editMode.isEdit)
                 }
                 handleLayer2DrawerClose()
               } catch (error) {
