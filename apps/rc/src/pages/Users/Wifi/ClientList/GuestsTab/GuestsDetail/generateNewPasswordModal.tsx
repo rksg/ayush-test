@@ -4,7 +4,7 @@ import { Checkbox, Form, Tooltip, Typography } from 'antd'
 import moment, { LocaleSpecifier }             from 'moment'
 import { useParams }                           from 'react-router-dom'
 
-import { cssStr, Modal, showToast }         from '@acx-ui/components'
+import { cssStr, Modal }                    from '@acx-ui/components'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
 import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
@@ -61,11 +61,8 @@ export function GenerateNewPasswordModal (props: {
           handleGuestPassResponse(data.response)
           closeModal()
         })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   })
 

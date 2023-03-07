@@ -6,8 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal,
-  showToast
+  showActionModal
 } from '@acx-ui/components'
 import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
@@ -17,8 +16,7 @@ import {
   ServiceOperation,
   Service,
   getServiceListRoutePath,
-  getServiceRoutePath,
-  CatchErrorResponse
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -64,14 +62,7 @@ export default function MdnsProxyTable () {
             deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
               .then(clearSelection)
               .catch(error => {
-                const errorResponse = error as CatchErrorResponse
-                // eslint-disable-next-line max-len
-                const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
-
-                showToast({
-                  type: 'error',
-                  content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })

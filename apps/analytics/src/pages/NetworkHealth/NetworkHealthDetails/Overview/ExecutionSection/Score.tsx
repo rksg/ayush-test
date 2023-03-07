@@ -47,7 +47,7 @@ export const scoreColumns: Record<string, ScoreColumn> = {
   }
 }
 
-export const Score = ( { details }: ReturnType<typeof getExecutionSectionData>) => {
+export const Score = ({ details }: { details: ReturnType<typeof getExecutionSectionData> }) => {
   const { $t } = useIntl()
   const colors = {
     [ScoreBadgeStatusEnum.NA]: 'transparent',
