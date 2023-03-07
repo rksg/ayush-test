@@ -8,6 +8,6 @@ export default function ClientList () {
 
   return <>
     <PageHeader title={$t({ defaultMessage: 'Switch' })} />
-    <SwitchClientsTable />
+    <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />
   </>
 }

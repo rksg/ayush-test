@@ -1,8 +1,13 @@
-import { useIntl } from 'react-intl'
+import { VenueFirmwareList } from './VenueFirmwareList'
+import VersionBanner         from './VersionBanner'
 
 const SwitchFirmware = () => {
-  const { $t } = useIntl()
-  return <>{$t({ defaultMessage: 'Switch Firmware Version Management' })}</>
+  return (
+    <>
+      <VersionBanner />
+      <VenueFirmwareList />
+    </>
+  )
 }
 
 export default SwitchFirmware
