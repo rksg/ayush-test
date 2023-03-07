@@ -79,16 +79,14 @@ export const fetchServiceGuardTest = {
       apsPendingCount: 0,
       apsSuccessCount: 0,
       apsTestedCount: 0,
-      ...Object.keys(stages).reduce((acc, stage) => {
-        return {
-          ...acc,
-          [`${stage}Error`]: 0,
-          [`${stage}Failure`]: 0,
-          [`${stage}NA`]: 0,
-          [`${stage}Pending`]: 0,
-          [`${stage}Success`]: 0
-        }
-      },{})
+      ...Object.keys(stages).reduce((acc, stage) => ({
+        ...acc,
+        [`${stage}Error`]: 0,
+        [`${stage}Failure`]: 0,
+        [`${stage}NA`]: 0,
+        [`${stage}Pending`]: 0,
+        [`${stage}Success`]: 2
+      }), {})
     },
     wlanAuthSettings: {
       wpaVersion: 'WPA2'
