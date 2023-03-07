@@ -3,10 +3,10 @@ import { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { EdgeSettingForm }                         from '@acx-ui/rc/components'
-import { useGetEdgeQuery, useUpdateEdgeMutation }  from '@acx-ui/rc/services'
-import { EdgeGeneralSetting }                      from '@acx-ui/rc/utils'
+import { StepsForm, StepsFormInstance }           from '@acx-ui/components'
+import { EdgeSettingForm }                        from '@acx-ui/rc/components'
+import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
+import { EdgeGeneralSetting }                     from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -57,12 +57,8 @@ const GeneralSettings = () => {
       await upadteEdge({ params: params, payload: payload }).unwrap()
       navigate(linkToEdgeList)
 
-    } catch {
-      // TODO error message not be defined
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

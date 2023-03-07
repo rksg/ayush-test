@@ -4,7 +4,7 @@ import { Col, Form, Input, Radio, Row, Space, Typography } from 'antd'
 import { defineMessage, useIntl }                          from 'react-intl'
 import { useNavigate, useParams }                          from 'react-router-dom'
 
-import { Loader, showToast, StepsForm, StepsFormInstance }                                       from '@acx-ui/components'
+import { Loader, StepsForm, StepsFormInstance }                                                  from '@acx-ui/components'
 import { useApViewModelQuery, useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }                            from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
@@ -117,11 +117,8 @@ export function IpSettings () {
         payload
       }).unwrap()
 
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

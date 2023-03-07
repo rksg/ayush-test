@@ -6,8 +6,7 @@ import { useIntl }               from 'react-intl'
 import {
   StepsForm,
   StepsFormInstance,
-  Loader,
-  showToast
+  Loader
 } from '@acx-ui/components'
 import { useGetDnsServersQuery, useUpdateDnsServersMutation } from '@acx-ui/rc/services'
 import { EdgeDnsServers, serverIpAddressRegExp }              from '@acx-ui/rc/utils'
@@ -48,12 +47,8 @@ const DnsServer = () => {
   const handleApplyDns = async (data: EdgeDnsServers) => {
     try {
       await updateDnsServers({ params: params, payload: data }).unwrap()
-    } catch {
-      // TODO error message not be defined
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
