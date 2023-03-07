@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 
-import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -14,6 +13,7 @@ import {
   Event,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
+import { useUserProfileContext } from '@acx-ui/user'
 
 const Events = () => {
   const { fromTime, toTime } = useEventTableFilter()

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
-import { useUserProfileContext }                   from '@acx-ui/rc/components'
 import { ActivityTable, useActivityTableFilter }   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                      from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
+import { useUserProfileContext }                   from '@acx-ui/user'
 
 const Activities = () => {
   const { fromTime, toTime } = useActivityTableFilter()

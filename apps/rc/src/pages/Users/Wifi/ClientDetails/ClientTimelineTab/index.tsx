@@ -4,13 +4,12 @@ import { useEffect } from 'react'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }           from '@acx-ui/components'
+import { Tabs }         from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
   eventDefaultSorter,
-  useEventTableFilter,
-  useUserProfileContext
+  useEventTableFilter
 } from '@acx-ui/rc/components'
 import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
@@ -19,7 +18,8 @@ import {
   RequestPayload,
   TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { useTenantLink }         from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { SessionTable } from './SessionTable'
 
