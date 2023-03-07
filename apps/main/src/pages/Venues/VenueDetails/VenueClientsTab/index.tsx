@@ -56,7 +56,7 @@ export function VenueClientsTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        <SwitchClientsTable />
+        <SwitchClientsTable filterBySwitch={true}/>
       </Tabs.TabPane>
     </Tabs>
   )
