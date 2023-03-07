@@ -13,7 +13,7 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps, Modal, showToast }                 from '@acx-ui/components'
+import { Table, TableProps, Modal }                            from '@acx-ui/components'
 import { useAddAclMutation }                                   from '@acx-ui/rc/services'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
@@ -245,13 +245,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       }).unwrap()
       setAclsOptions([...aclsOptions, { label: payload.name, value: payload.name }])
       setVisible(false)
-    } catch(err) {
-
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

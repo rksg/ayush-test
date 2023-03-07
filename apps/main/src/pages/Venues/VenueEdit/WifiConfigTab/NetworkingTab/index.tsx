@@ -3,13 +3,12 @@ import { useContext } from 'react'
 import { Button, Space } from 'antd'
 import { useIntl }       from 'react-intl'
 
-
-import { AnchorLayout, showToast, StepsForm, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                  from '@acx-ui/icons'
-import { VenueApModelCellular }                        from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                       from '@acx-ui/utils'
+import { AnchorLayout, StepsForm, Tooltip }      from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }            from '@acx-ui/icons'
+import { VenueApModelCellular }                  from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                 from '@acx-ui/utils'
 
 import { VenueEditContext } from '../../index'
 
@@ -107,11 +106,8 @@ export function NetworkingTab () {
         unsavedTabKey: 'networking',
         isDirty: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
