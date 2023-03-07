@@ -1847,7 +1847,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       <img
         alt="TEST_2"
         data-testid="floorPlanImage"
-        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        src=""
         style="max-height: 100%; width: 100%;"
       />
     </div>
@@ -2016,7 +2016,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for TEST_2"
-                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>
@@ -2047,7 +2047,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                 </div>
                 <img
                   alt="Thumbnail for dscx"
-                  src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                  src=""
                   style="width: 100%; height: 100%;"
                 />
               </div>

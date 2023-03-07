@@ -138,7 +138,7 @@ describe('Floor Plans', () => {
       venueId: '7231da344778480d88f37f0cca1c534f'
     }
   })
-  it.skip('Floor Plans should render correctly', async () => {
+  it('Floor Plans should render correctly', async () => {
 
     const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
     </DndProvider></Provider>, {
@@ -178,7 +178,7 @@ describe('Floor Plans', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it.skip('Floor Plans should render gallery correctly', async () => {
+  it('Floor Plans should render gallery correctly', async () => {
 
     const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}><FloorPlan />
     </DndProvider></Provider>, {
