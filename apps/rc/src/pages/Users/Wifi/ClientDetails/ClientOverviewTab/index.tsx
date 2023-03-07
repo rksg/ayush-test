@@ -1,13 +1,11 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
 import {
   useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, showToast }         from '@acx-ui/components'
+import { GridCol, GridRow }                    from '@acx-ui/components'
 import {
   useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
@@ -53,7 +51,6 @@ const historicalPayload = {
 }
 
 export function ClientOverviewTab () {
-  const { $t } = useIntl()
   const { filters } = useAnalyticsFilter()
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
@@ -131,11 +128,8 @@ export function ClientOverviewTab () {
           }
         }, true)?.unwrap()
         setClientStatistics(clientStatistics as ClientStatistic)
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
 

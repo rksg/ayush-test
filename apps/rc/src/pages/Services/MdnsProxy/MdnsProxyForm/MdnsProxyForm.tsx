@@ -4,7 +4,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsForm } from '@acx-ui/components'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 import {
   useAddMdnsProxyMutation,
   useGetMdnsProxyQuery,
@@ -14,8 +14,7 @@ import {
   MdnsProxyFormData,
   getServiceRoutePath,
   ServiceType,
-  ServiceOperation,
-  CatchErrorResponse
+  ServiceOperation
 } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -67,13 +66,7 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
 
       navigate(serviceTablePath, { replace: true })
     } catch (error) {
-      const errorResponse = error as CatchErrorResponse
-      const errorMsg = errorResponse.data?.errors?.map(error => error.message).join('<br />')
-
-      showToast({
-        type: 'error',
-        content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
