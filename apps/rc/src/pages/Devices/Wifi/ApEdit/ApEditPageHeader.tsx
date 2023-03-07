@@ -7,6 +7,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import ApEditTabs from './ApEditTabs'
 
@@ -24,9 +25,8 @@ function ApEditPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <Button
-          key='back'
           type='primary'
           onClick={() =>
             navigate({
@@ -34,7 +34,7 @@ function ApEditPageHeader () {
               pathname: `${basePath.pathname}/details/overview`
             })
           }>{ $t({ defaultMessage: 'Back to device details' }) }</Button>
-      ]}
+      ])}
       footer={<ApEditTabs />}
     />
   )

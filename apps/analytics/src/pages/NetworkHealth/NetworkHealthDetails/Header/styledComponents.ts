@@ -7,6 +7,9 @@ export const Menu = styled(AntMenu)`
   }
   height: 220px;
   overflow-y: scroll;
+  table {
+    cursor: default;
+  }
 `
 export const ButtonTitleWrapper = styled.span`
   color: var(--acx-neutrals-60);

@@ -1,12 +1,12 @@
-
 import { useState } from 'react'
 
 import { Form, Input } from 'antd'
+import flat            from 'flat'
 
-import { createStepsFormContext } from '@acx-ui/components'
-import { Provider }               from '@acx-ui/store'
-import { render, screen, within } from '@acx-ui/test-utils'
-import { defaultNetworkPath }     from '@acx-ui/utils'
+import { createStepsFormContext }             from '@acx-ui/components'
+import { Provider }                           from '@acx-ui/store'
+import { render, screen, within, renderHook } from '@acx-ui/test-utils'
+import { defaultNetworkPath }                 from '@acx-ui/utils'
 
 import { stages }        from '../contents'
 import {
@@ -221,9 +221,13 @@ export const withinField = () => within(screen.getByTestId('field'))
 export const renderForm = (
   field: JSX.Element,
   options: {
-    initialValues?: Partial<NetworkHealthFormDto>,
+    initialValues?: Partial<Omit<NetworkHealthFormDto, 'configs'>> & {
+      configs?: Partial<NetworkHealthFormDto['configs'][0]>[]
+    },
     editMode?: boolean,
-    valuesToUpdate?: Partial<NetworkHealthFormDto>,
+    valuesToUpdate?: Partial<Omit<NetworkHealthFormDto, 'configs'>> & {
+      configs?: Partial<NetworkHealthFormDto['configs'][0]>[]
+    },
     params?: Record<string, string>
   } = {}
 ) => {
@@ -252,9 +256,9 @@ export const renderForm = (
       {ok ? <div data-testid='form-values'>{JSON.stringify(form.getFieldsValue(true))}</div> : null}
       {/* TODO: might be a source of bug for the StepsFormNew when previous page rely on useWatch to update another value */}
       {/* It is required to have fields render in order for useWatch to trigger */}
-      {Object.keys(valuesToUpdate).map(key => <Form.Item
+      {Object.keys(flat({ ...initialValues, ...valuesToUpdate })).map(key => <Form.Item
         key={key}
-        name={key}
+        name={key.split('.')}
         children={<Input />}
       />)}
       <button type='button' onClick={onSetValue}>Update</button>
@@ -269,4 +273,12 @@ export const renderForm = (
 
   const route = options.params ? { params: options.params } : undefined
   return render(field, { wrapper: Wrapper, route })
+}
+
+export const renderFormHook = () => {
+  const { result: { current: form } } = renderHook(() => {
+    const [form] = Form.useForm()
+    return form
+  })
+  return { form, formRender: render(<Form form={form} data-testid='form' />) }
 }

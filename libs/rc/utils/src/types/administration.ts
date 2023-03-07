@@ -1,11 +1,15 @@
 import { defineMessage } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { getIntl }   from '@acx-ui/utils'
 
 import { EntitlementUtil } from '../msp.utils'
 
-import { RolesEnum, roleDisplayText }                      from './msp'
-import { EntitlementDeviceType, EntitlementDeviceSubType } from './msp'
+import {
+  EntitlementDeviceType,
+  EntitlementDeviceSubType,
+  roleDisplayText
+} from './msp'
 
 export enum TenantDelegationStatus {
   INVITED = 'INVITED',
@@ -53,6 +57,7 @@ export interface RecoveryPassphrase {
 }
 
 export interface TenantPreferenceSettingValue {
+  // FIXME:
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
@@ -234,7 +239,7 @@ export interface EntitlementSummary {
   errorCode?: unknown;
   internalMessage?: unknown;
   remainingDays?: number;
-  deviceCount?: number;
+  deviceCount: number;
 }
 
 export interface NewEntitlementSummary {
