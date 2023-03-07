@@ -159,14 +159,13 @@ exports[`Device Inventory Table should render table 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                          aria-activedescendant="undefined_list_0"
                           aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-controls="undefined_list"
                           aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          aria-owns="undefined_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
                           readonly=""
                           role="combobox"
                           style="opacity: 0;"
@@ -241,14 +240,13 @@ exports[`Device Inventory Table should render table 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                          aria-activedescendant="undefined_list_0"
                           aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-controls="undefined_list"
                           aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          aria-owns="undefined_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
                           readonly=""
                           role="combobox"
                           style="opacity: 0;"
@@ -323,14 +321,13 @@ exports[`Device Inventory Table should render table 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                          aria-activedescendant="undefined_list_0"
                           aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-controls="undefined_list"
                           aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          aria-owns="undefined_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
                           readonly=""
                           role="combobox"
                           style="opacity: 0;"
@@ -383,6 +380,7 @@ exports[`Device Inventory Table should render table 1`] = `
             </div>
             <div
               class="ant-space-item"
+              style="margin-right: 12px;"
             >
               <div
                 class="ant-select styledComponents__FilterSelect-sc-1abm7iv-4 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
@@ -404,14 +402,13 @@ exports[`Device Inventory Table should render table 1`] = `
                         style="width: 0px;"
                       >
                         <input
-                          aria-activedescendant="rc_select_TEST_OR_SSR_list_0"
+                          aria-activedescendant="undefined_list_0"
                           aria-autocomplete="list"
-                          aria-controls="rc_select_TEST_OR_SSR_list"
+                          aria-controls="undefined_list"
                           aria-haspopup="listbox"
-                          aria-owns="rc_select_TEST_OR_SSR_list"
+                          aria-owns="undefined_list"
                           autocomplete="off"
                           class="ant-select-selection-search-input"
-                          id="rc_select_TEST_OR_SSR"
                           readonly=""
                           role="combobox"
                           style="opacity: 0;"
@@ -461,6 +458,17 @@ exports[`Device Inventory Table should render table 1`] = `
                   </span>
                 </span>
               </div>
+            </div>
+            <div
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            />
+            <div
+              class="ant-space-item"
+            >
+              <div
+                class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
+              />
             </div>
           </div>
         </div>
@@ -555,12 +563,9 @@ exports[`Device Inventory Table should render table 1`] = `
                             <tr>
                               <th
                                 aria-sort="ascending"
-                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-sort ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -616,17 +621,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -682,17 +681,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -748,17 +741,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -814,17 +801,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -880,17 +861,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -946,17 +921,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1012,17 +981,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1078,17 +1041,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1144,17 +1101,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-column-has-sorters react-resizable"
+                                class="ant-table-cell ant-table-column-has-sorters"
                                 tabindex="0"
                               >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
                                 <div
                                   class="ant-table-column-sorters"
                                 >
@@ -1210,21 +1161,11 @@ exports[`Device Inventory Table should render table 1`] = `
                                     </span>
                                   </span>
                                 </div>
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
-                                />
-                                <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody

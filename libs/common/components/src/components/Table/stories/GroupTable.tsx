@@ -1,10 +1,11 @@
 import React from 'react'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended }     from 'libs/rc/utils/src/types/ap'
-import { omit, uniqueId } from 'lodash'
+import { APExtended } from 'libs/rc/utils/src/types/ap'
+import { uniqueId }   from 'lodash'
 
 import { Table, TableProps } from '..'
+import { Button }            from '../../Button'
 
 
 type APExtendedGroupedResponse = {
@@ -26,22 +27,25 @@ type APExtendedGroupedResponse = {
   })[]
 }
 
+/**
+ * Sample function cleaning
+*/
 function cleanResponse (response: APExtendedGroupedResponse) {
   return response.data.map(apGroup => {
-    const parent = omit(apGroup, ['deviceGroupName', 'clients', 'aps'])
-    const { deviceGroupName, members, incidents, clients, networks, aps } = apGroup
+    const { aps } = apGroup
+    const validAps = aps ?? []
     return {
-      ...parent,
+      ...apGroup,
+      isParent: true,
       id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
-      name: `${deviceGroupName !== ' ' ? deviceGroupName : 'Uncategorized'} 
-      Members: ${members} 
-      Incidents: ${incidents} 
-      Connected Clients: ${clients} 
-      Wireless Networks: ${networks.count}`,
-      children: aps.map(ap => ({ ...ap, deviceGroupName: (ap.deviceGroupName !== '')
-        ? ap.deviceGroupName
-        : 'Uncategorized',
-      id: uniqueId() }))
+      children: validAps.map(ap => ({
+        ...ap,
+        isParent: false,
+        deviceGroupName: (ap.deviceGroupName !== '')
+          ? ap.deviceGroupName
+          : 'Uncategorized',
+        id: uniqueId()
+      }))
     }
   })
 }
@@ -165,7 +169,7 @@ const apGroupResponse: APExtendedGroupedResponse = {
       members: 1,
       incidents: 0,
       clients: 2,
-      aps: [ {
+      aps: [{
         serialNumber: '302002015799',
         name: 'ap3',
         model: 'R550',
@@ -291,7 +295,6 @@ const deviceStatusResponse: APExtendedGroupedResponse = {
         }
       ]
     }, {
-
       deviceGroupId: '',
       deviceGroupName: '',
       deviceStatus: '3_RequiresAttention',
@@ -478,8 +481,8 @@ const cleanedData = cleanResponse(apGroupResponse)
 export function GroupTable () {
   const [ currData, setCurrData ] = React.useState<typeof cleanedData>(() => cleanedData)
 
-  const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName') => {
-    let response: APExtendedGroupedResponse
+  const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName' | undefined) => {
+    let response: APExtendedGroupedResponse | null
     switch (key) {
       case 'deviceGroupName': {
         response = apGroupResponse
@@ -493,6 +496,10 @@ export function GroupTable () {
         response = modelResponse
         break
       }
+      default: {
+        response = null
+        break
+      }
     }
     if (!response) return []
     const data = cleanResponse(response)
@@ -501,7 +508,7 @@ export function GroupTable () {
   }
 
   // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<typeof cleanedData>['columns'] = [
+  const columns: TableProps<typeof cleanedData[0]>['columns'] = [
     {
       title: 'AP Name',
       dataIndex: 'name',
@@ -525,7 +532,7 @@ export function GroupTable () {
       key: 'ip'
     },
     {
-      title: 'MAC Addresse',
+      title: 'MAC Addresses',
       dataIndex: 'apMac',
       key: 'apMac',
       searchable: true
@@ -533,8 +540,7 @@ export function GroupTable () {
     {
       title: 'Venue',
       key: 'venueName',
-      dataIndex: 'venueId',
-      filterable: true
+      dataIndex: 'venueId'
     },
     {
       title: 'Switch',
@@ -544,13 +550,16 @@ export function GroupTable () {
     {
       title: 'Connected Clients',
       key: 'clients',
-      dataIndex: 'clients'
+      dataIndex: 'clients',
+      render: (dom, record) => record.isParent ? '' : dom
     },
     {
       title: 'AP Group',
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
-      filterable: true
+      filterable: true,
+      searchable: true,
+      render: (dom, record) => record.isParent ? '' : dom
     },
     {
       title: 'RF Channels',
@@ -568,20 +577,52 @@ export function GroupTable () {
   return (
     <>
     with groupby:
-      <Table<typeof cleanedData>
+      <Table<typeof cleanedData[0]>
         columns={columns}
-        dataSource={currData as unknown as TableProps<typeof cleanedData>['dataSource']}
+        dataSource={currData as unknown as TableProps<typeof cleanedData[0]>['dataSource']}
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
+        rowClassName={(record) => record.isParent ? 'parent-row-data' : ''}
         groupable={{
           selectors: [
-            { key: 'deviceGroupName', label: 'AP Group' },
+            { key: 'deviceGroupName', label: 'AP Group', actionEnable: true },
             { key: 'deviceStatus' , label: 'Status' },
             { key: 'model', label: 'Model' }
           ],
           onChange: groupableCallback,
-          onClear: () => setCurrData([])
+          actions: [{
+            key: 'edit',
+            label: <Button>Edit</Button>,
+            callback: (record) => {
+              // eslint-disable-next-line no-console
+              console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
+            }
+          }],
+          onClear: () => {
+            // eslint-disable-next-line no-console
+            console.log('clear data, reset to AP Group')
+            // reset table to default
+            setCurrData(groupableCallback('deviceGroupName'))
+          },
+          parentColumns: [
+            {
+              key: 'members',
+              label: (record) => <div>Members: {record.members}</div>
+            },
+            {
+              key: 'incidents',
+              label: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+            },
+            {
+              key: 'clients',
+              label: (record) => <div>Connected Clients: {record.clients}</div>
+            },
+            {
+              key: 'clients',
+              label: (record) => <div>Wireless Networks: {record.networks.count}</div>
+            }
+          ]
         }}
       />
     </>

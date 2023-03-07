@@ -11,14 +11,21 @@ import AutoSizer                                                      from 'reac
 import { SettingsOutlined }        from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { Button, DisabledButton } from '../Button'
-import { Dropdown }               from '../Dropdown'
-import { Tooltip }                from '../Tooltip'
+import { Button, DisabledButton, ButtonProps } from '../Button'
+import { Dropdown }                            from '../Dropdown'
+import { Tooltip }                             from '../Tooltip'
 
-import { Filter, getFilteredData, renderFilter, renderGroupBy, renderSearch } from './filters'
-import { ResizableColumn }                                                    from './ResizableColumn'
-import * as UI                                                                from './styledComponents'
-import { settingsKey, useColumnsState }                                       from './useColumnsState'
+import {
+  Filter,
+  getFilteredData,
+  renderFilter,
+  renderSearch,
+  MIN_SEARCH_LENGTH,
+  useGroupBy
+} from './filters'
+import { ResizableColumn }              from './ResizableColumn'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -59,7 +66,7 @@ export interface TableProps <RecordType>
     rowActions?: Array<{
       label: string,
       disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
-      tooltip?: string,
+      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined),
       visible?: boolean | ((selectedItems: RecordType[]) => boolean),
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
@@ -71,16 +78,26 @@ export interface TableProps <RecordType>
     })
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean
+    enableApiFilter?: boolean,
+    floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void,
+    /**
+     * Assumes that dataSource is nested with children key, and that
+     * isParent boolean property is set on each record item in dataSource.
+     */
     groupable?: {
-      selectors: { key: string, label: string }[]
-      onChange: CallableFunction,
+      selectors: { key: string, label: string, actionEnable?: boolean }[]
+      onChange: CallableFunction
       onClear: CallableFunction
-      actions?: { key: string, label: string, callback: CallableFunction }[]
+      /**
+       * By default, the groupable selectors with be at the first item displayed.
+       * Only the second parent column info is needed to be passed.
+       */
+      parentColumns: { key: string, label: (record: RecordType) => JSX.Element }[]
+      actions?: { key: string, label: React.ReactNode, callback?: (record: RecordType) => void }[]
     }
   }
 
@@ -115,8 +132,6 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
-const MIN_SEARCH_LENGTH = 2
-
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -133,7 +148,12 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
-  const { GroupBySelect } = renderGroupBy(groupable)
+  const {
+    GroupBySelect,
+    expandable,
+    groupActionColumns,
+    finalParentColumns
+  } = useGroupBy<RecordType>(groupable, props.columns.length)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -155,8 +175,18 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
+    if (groupable) {
+      for (let i = 0; i < finalParentColumns.length; ++i) {
+        props.columns[i].render = (dom, record) => record.isParent
+          ? finalParentColumns[i].label(record)
+          : props.columns[i].searchable
+            ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
+            : dom
+      }
+    }
+
     const cols = type === 'tall'
-      ? [...props.columns, settingsColumn] as typeof props.columns
+      ? [...props.columns, ...groupActionColumns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({
@@ -170,7 +200,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type])
+  }, [props.columns, type, searchValue])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -313,19 +343,7 @@ function Table <RecordType extends Record<string, any>> ({
     ...col,
     ...( col.searchable && {
       render: ((dom, entity, index, action, schema) => {
-        const highlightFn: TableHighlightFnArgs = (textToHighlight, formatFn) =>
-          (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
-            ? formatFn
-              ? textToHighlight.replace(
-                new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
-              : <Highlighter
-                highlightStyle={{
-                  fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit' }}
-                searchWords={[searchValue]}
-                textToHighlight={textToHighlight}
-                autoEscape
-              />
-            : textToHighlight
+        const highlightFn: TableHighlightFnArgs = getHighlightFn(searchValue)
         return col.render
           ? col.render(dom, entity, index, highlightFn, action, schema)
           : highlightFn(_.get(entity, col.dataIndex))
@@ -379,7 +397,7 @@ function Table <RecordType extends Record<string, any>> ({
       })}
     </Space>}
     {hasHeader && (
-      <UI.Header>
+      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
@@ -393,15 +411,19 @@ function Table <RecordType extends Record<string, any>> ({
             <UI.HeaderRight>
               {(Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH))
-            && <Button onClick={() => {
-              setFilterValues({} as Filter)
-              setSearchValue('')
-            }}>
+            && <Button
+              style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+              onClick={() => {
+                setFilterValues({} as Filter)
+                setSearchValue('')
+              }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
             </UI.HeaderRight>
           </Space>
         </div>
+        <UI.HeaderRight>
+        </UI.HeaderRight>
       </UI.Header>
     )}
     <ProTable<RecordType>
@@ -431,6 +453,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
+      expandable={expandable}
       tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
@@ -446,24 +469,37 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
-              const label = option.tooltip
-                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
-                : option.label
-              let visible = typeof option.visible === 'function'
+
+              const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
                 : option.visible ?? true
-
               if (!visible) return null
+
+              const tooltip = typeof option.tooltip === 'function'
+                ? option.tooltip(rows)
+                : option.tooltip
+              const label = tooltip
+                ? <Tooltip placement='top' title={tooltip}>{option.label}</Tooltip>
+                : option.label
+              const disabled = typeof option.disabled === 'function'
+                ? option.disabled(rows)
+                : option.disabled
+              const buttonProps: ButtonProps & { key: React.Key } = {
+                type: 'link',
+                size: 'small',
+                key: option.label
+              }
+
+              if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>
+                {option.label}
+              </DisabledButton>
+
               return <Button
-                type='link'
-                size='small'
-                key={option.label}
-                disabled={typeof option.disabled === 'function'
-                  ? option.disabled(rows)
-                  : option.disabled
-                }
+                {...buttonProps}
+                disabled={disabled}
                 onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })
+                }
               >
                 {label}
               </Button>
@@ -484,3 +520,19 @@ Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
 
 export { Table }
+function getHighlightFn (searchValue: string): TableHighlightFnArgs {
+  return (textToHighlight, formatFn) =>
+    (searchValue && searchValue.length >= MIN_SEARCH_LENGTH && textToHighlight)
+      ? formatFn
+        ? textToHighlight.replace(
+          new RegExp(escapeStringRegexp(searchValue), 'ig'), formatFn('$&') as string)
+        : <Highlighter
+          highlightStyle={{
+            fontWeight: 'bold', background: 'none', padding: 0, color: 'inherit'
+          }}
+          searchWords={[searchValue]}
+          textToHighlight={textToHighlight}
+          autoEscape />
+      : textToHighlight
+}
+
