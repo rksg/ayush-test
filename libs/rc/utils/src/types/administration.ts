@@ -53,6 +53,7 @@ export interface RecoveryPassphrase {
 }
 
 export interface TenantPreferenceSettingValue {
+  // FIXME:
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
@@ -234,7 +235,7 @@ export interface EntitlementSummary {
   errorCode?: unknown;
   internalMessage?: unknown;
   remainingDays?: number;
-  deviceCount?: number;
+  deviceCount: number;
 }
 
 export interface NewEntitlementSummary {

@@ -16,6 +16,7 @@ import { PskSummaryForm }    from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
+  pageSize: 10000,
   fields: [
     'name',
     'id'
