@@ -18,6 +18,7 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
         </div>
         <img
           alt="Thumbnail for TEST_2"
+          data-testid="thumbnailBgImage"
           src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
           style="width: 100%; height: 100%;"
         />

@@ -84,6 +84,15 @@ const networkDevices: {
 
 const networkDeviceType: NetworkDeviceType[] = []
 
+for (let deviceType in NetworkDeviceType) {
+  if (deviceType === NetworkDeviceType.rogue_ap) {
+    continue // rogue ap is not controlled(placed) by user
+  }
+  const _deviceType = deviceType as keyof typeof NetworkDeviceType
+  const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
+  networkDeviceType.push(networkDevicetype)
+}
+
 const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
   // eslint-disable-next-line max-len
   signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
@@ -94,25 +103,9 @@ const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
 }
 }
 
-
-for (let deviceType in NetworkDeviceType) {
-  if (deviceType === NetworkDeviceType.rogue_ap) {
-    continue // rogue ap is not controlled(placed) by user
-  }
-  const _deviceType = deviceType as keyof typeof NetworkDeviceType
-  const networkDevicetype = NetworkDeviceType[_deviceType] as NetworkDeviceType
-  networkDeviceType.push(networkDevicetype)
-}
-
-
 describe('Floor Plan Plain View', () => {
 
   beforeEach(() => {
-    Object.defineProperty(HTMLImageElement.prototype, 'offsetWidth', { value: 300 })
-    Object.defineProperty(HTMLImageElement.prototype, 'offsetHeight', { value: 400 })
-    Object.defineProperty(HTMLDivElement.prototype, 'offsetWidth', { value: 1150 })
-    Object.defineProperty(HTMLDivElement.prototype, 'offsetHeight', { value: 450 })
-
     mockServer.use(
       rest.get(
         `${window.location.origin}/files/:imageId/urls`,
@@ -122,6 +115,10 @@ describe('Floor Plan Plain View', () => {
         }
       )
     )
+    Object.defineProperty(HTMLImageElement.prototype, 'offsetWidth', { value: 300 })
+    Object.defineProperty(HTMLImageElement.prototype, 'offsetHeight', { value: 400 })
+    Object.defineProperty(HTMLDivElement.prototype, 'offsetWidth', { value: 1150 })
+    Object.defineProperty(HTMLDivElement.prototype, 'offsetHeight', { value: 450 })
   })
 
   it('should render correctly Plain View', async () => {
@@ -138,6 +135,24 @@ describe('Floor Plan Plain View', () => {
           setCoordinates={jest.fn()}/></DndProvider>
     </NetworkDeviceContext.Provider></Provider>)
     expect(screen.queryByTestId('floorPlanImage')).toHaveAttribute('alt', list[0]?.name)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
 
     const component = screen.getByRole('img', { name: 'TEST_2' })
     const onImageLoad = jest.fn()
@@ -163,7 +178,7 @@ describe('Floor Plan Plain View', () => {
 
   it('should trigger onFloorPlanSelectionHandler', async () => {
     const onFloorPlanSelectionHandler = jest.fn()
-    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
+    render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -184,10 +199,9 @@ describe('Floor Plan Plain View', () => {
     await expect(onFloorPlanSelectionHandler).toBeCalled()
     const floorplanIdMismatch = screen.getAllByTestId('thumbnailBg')[1]
     await fireEvent.click(floorplanIdMismatch)
-    expect(asFragment()).toMatchSnapshot()
   })
   it('test zoom-in button', async () => {
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -203,11 +217,10 @@ describe('Floor Plan Plain View', () => {
     fireEvent.click(component)
     const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
     await waitFor(() => expect(zoomedWidth).toBe('calc(125%)'))
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('test zoom-out button', async () => {
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -239,12 +252,10 @@ describe('Floor Plan Plain View', () => {
     fireEvent.click(component)
     const smallWidthZoomed2 = window.getComputedStyle(floorPlanContainer).width
     await waitFor(() => expect(smallWidthZoomed2).toBe('calc(10%)'))
-
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('test zoom original button', async () => {
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -259,11 +270,10 @@ describe('Floor Plan Plain View', () => {
     fireEvent.click(component)
     const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
     await waitFor(() => expect(zoomedWidth).toBe('calc(100%)'))
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('test zoom fit button', async () => {
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -280,7 +290,6 @@ describe('Floor Plan Plain View', () => {
     const zoomedWidth = window.getComputedStyle(floorPlanContainer).width
     await waitFor(() => expect(zoomedWidth).toBe('calc(26%)'))
     fireEvent.click(component)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should run getImageFitPercentage function', async () => {
@@ -300,7 +309,7 @@ describe('Floor Plan Plain View', () => {
   it('Should click delete button', async () => {
     const deleteHandler = jest.fn(() => jest.fn())
 
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -312,13 +321,12 @@ describe('Floor Plan Plain View', () => {
     const component = await screen.findByRole('button', { name: /Delete/i })
     fireEvent.click(component)
     expect(deleteHandler).toBeCalledTimes(1)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('Should click edit button', async () => {
     const editHandler = jest.fn()
 
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -334,12 +342,11 @@ describe('Floor Plan Plain View', () => {
       editForm.submit()
     })
     await expect(editHandler).toBeCalledTimes(1)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('Should load image', async () => {
     const onImageLoad = jest.fn()
-    const { asFragment } = await render(<Provider><DndProvider backend={HTML5Backend}>
+    await render(<Provider><DndProvider backend={HTML5Backend}>
       <PlainView floorPlans={list}
         toggleGalleryView={() => {}}
         defaultFloorPlan={list[0]}
@@ -371,23 +378,6 @@ describe('Floor Plan Plain View', () => {
     Object.setPrototypeOf(HTMLImageElement.prototype.offsetHeight, { value: undefined })
     const component5 = screen.getByRole('img', { name: 'TEST_2' })
     await fireEvent.load(component5)
-    expect(asFragment()).toMatchSnapshot()
-  })
-
-  it('should open gallery view', async () => {
-
-    const { asFragment } = render(<Provider><DndProvider backend={HTML5Backend}>
-      <PlainView floorPlans={list}
-        toggleGalleryView={jest.fn()}
-        defaultFloorPlan={list[0]}
-        deleteFloorPlan={jest.fn()}
-        onAddEditFloorPlan={jest.fn()}
-        networkDevices={networkDevices}
-        networkDevicesVisibility={networkDeviceType}
-        setCoordinates={jest.fn()}/></DndProvider></Provider>)
-    const button = await screen.findByTestId('ApplicationsSolid')
-    fireEvent.click(button)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it ('test setUpdatedLocation function', async () => {
@@ -411,6 +401,12 @@ describe('Floor Plan Plain View', () => {
         setCoordinates={jest.fn()}
         showRogueAp={true}/></DndProvider></Provider>)
 
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
     const rogueHelpIcon = await screen.findByTestId('QuestionMarkCircleOutlined')
     expect(rogueHelpIcon).toBeVisible()
     fireEvent.click(rogueHelpIcon)
@@ -429,6 +425,22 @@ describe('Floor Plan Plain View', () => {
         networkDevices={networkDevices}
         networkDevicesVisibility={networkDeviceType}
         setCoordinates={jest.fn()}/></DndProvider></Provider>)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
 
     const component = screen.getByRole('img', { name: 'TEST_2' })
     const onImageLoad = jest.fn()

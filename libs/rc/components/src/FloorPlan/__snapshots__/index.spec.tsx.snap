@@ -6,279 +6,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__FallbackWrapper-sc-1352uh8-1 cUVMCE"
-    >
-      <span
-        aria-label="loader"
-        role="img"
-      >
-        <div
-          aria-busy="true"
-          aria-live="polite"
-          class="ant-spin ant-spin-lg ant-spin-spinning"
-        >
-          <span
-            class="ant-spin-dot ant-spin-dot-spin"
-          >
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-          </span>
-        </div>
-      </span>
-    </div>
-    <div
-      class="sc-kgflAQ LhKtk"
-    >
-      <div
-        class="ant-row"
-        style="margin: -10px -8px -10px -8px;"
-      >
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 10px 8px 10px 8px;"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
-            type="default"
-          >
-            <div
-              class="ant-card"
-            >
-              <div
-                class="ant-card-head"
-              >
-                <div
-                  class="ant-card-head-wrapper"
-                >
-                  <div
-                    class="ant-card-head-title"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        >
-                          TEST_2
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-card-extra"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-body"
-              >
-                <div
-                  class="sc-papXJ iBkRgT"
-                >
-                  <div
-                    data-testid="dropContainer"
-                    style="position: absolute; width: 100%; height: 100%;"
-                  />
-                  <div>
-                     
-                    <div>
-                      <div
-                        class="sc-jSMfEi dSrpFV device-container gallery"
-                        draggable="true"
-                        style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
-                      >
-                        <div
-                          class="marker ap-status-severity-attention"
-                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                        >
-                          <svg
-                            data-testid="SignalUp"
-                          />
-                           
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        class="sc-jSMfEi dSrpFV device-container gallery"
-                        draggable="true"
-                        style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
-                      >
-                        <div
-                          class="marker switch-status-never-contacted-cloud"
-                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                        >
-                          <svg
-                            data-testid="DeviceOutlined"
-                          />
-                           
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <img
-                    alt="img"
-                    data-testid="fpImage"
-                    src=""
-                    style="width: auto; height: 100%;"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 10px 8px 10px 8px;"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
-            type="default"
-          >
-            <div
-              class="ant-card"
-            >
-              <div
-                class="ant-card-head"
-              >
-                <div
-                  class="ant-card-head-wrapper"
-                >
-                  <div
-                    class="ant-card-head-title"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        >
-                          dscx
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-card-extra"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-body"
-              >
-                <div
-                  class="sc-papXJ iBkRgT"
-                >
-                  <div
-                    data-testid="dropContainer"
-                    style="position: absolute; width: 100%; height: 100%;"
-                  />
-                  <div>
-                     
-                  </div>
-                  <img
-                    alt="img"
-                    data-testid="fpImage"
-                    src=""
-                    style="width: auto; height: 100%;"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-dIouRR gPFCCk"
-      >
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-dmRaPn sc-bBrHrO blmqKR bGulZy"
-            type="button"
-          >
-            <svg
-              data-testid="EyeSlashOutlined"
-            />
-            <span>
-              Hide Rogue APs
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-            data-testid="AddEditLinks"
-            type="button"
-          >
-            <span>
-              + Add Floor Plan
-            </span>
-          </button>
-          <div
-            class="ant-modal-root"
-          >
-            <div
-              class="ant-modal-wrap"
-              style="display: none;"
-              tabindex="-1"
-            />
-          </div>
-        </div>
-        <div
-          class="ant-space-item"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger"
-            disabled=""
-            type="button"
-          >
-            <span>
-              Unplaced Devices (1)
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-  >
-    <div
       class="sc-kgflAQ LhKtk"
     >
       <div
@@ -367,7 +94,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           <img
             alt="TEST_2"
             data-testid="floorPlanImage"
-            src=""
+            src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
             style="max-height: 100%; width: 100%;"
           />
         </div>
@@ -575,7 +302,8 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                     </div>
                     <img
                       alt="Thumbnail for TEST_2"
-                      src=""
+                      data-testid="thumbnailBgImage"
+                      src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
                       style="width: 100%; height: 100%;"
                     />
                   </div>
@@ -606,7 +334,8 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                     </div>
                     <img
                       alt="Thumbnail for dscx"
-                      src=""
+                      data-testid="thumbnailBgImage"
+                      src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
                       style="width: 100%; height: 100%;"
                     />
                   </div>
@@ -668,6 +397,248 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
         >
           <button
             class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger"
+            type="button"
+          >
+            <span>
+              Unplaced Devices (1)
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  >
+    <div
+      class="sc-kgflAQ LhKtk"
+    >
+      <div
+        class="ant-row"
+        style="margin: -10px -8px -10px -8px;"
+      >
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 10px 8px 10px 8px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            type="default"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                        >
+                          TEST_2
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <div
+                  class="sc-papXJ iBkRgT"
+                >
+                  <div
+                    data-testid="dropContainer"
+                    style="position: absolute; width: 100%; height: 100%;"
+                  />
+                  <div>
+                     
+                    <div>
+                      <div
+                        class="sc-jSMfEi dSrpFV device-container gallery"
+                        draggable="true"
+                        style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
+                      >
+                        <div
+                          class="marker ap-status-severity-attention"
+                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        >
+                          <svg
+                            data-testid="SignalUp"
+                          />
+                           
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        class="sc-jSMfEi dSrpFV device-container gallery"
+                        draggable="true"
+                        style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
+                      >
+                        <div
+                          class="marker switch-status-never-contacted-cloud"
+                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                        >
+                          <svg
+                            data-testid="DeviceOutlined"
+                          />
+                           
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <img
+                    alt="img"
+                    data-testid="fpImage"
+                    src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                    style="width: auto; height: 100%;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12"
+          style="padding: 10px 8px 10px 8px;"
+        >
+          <div
+            class="styledComponents__Wrapper-sc-13w5wfx-4 lfySov"
+            type="default"
+          >
+            <div
+              class="ant-card"
+            >
+              <div
+                class="ant-card-head"
+              >
+                <div
+                  class="ant-card-head-wrapper"
+                >
+                  <div
+                    class="ant-card-head-title"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    >
+                      <div
+                        class="ant-space-item"
+                      >
+                        <div
+                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                        >
+                          dscx
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-extra"
+                  >
+                    <div
+                      class="ant-space ant-space-horizontal ant-space-align-center"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-card-body"
+              >
+                <div
+                  class="sc-papXJ iBkRgT"
+                >
+                  <div
+                    data-testid="dropContainer"
+                    style="position: absolute; width: 100%; height: 100%;"
+                  />
+                  <div>
+                     
+                  </div>
+                  <img
+                    alt="img"
+                    data-testid="fpImage"
+                    src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                    style="width: auto; height: 100%;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-space ant-space-horizontal ant-space-align-center sc-dIouRR gPFCCk"
+      >
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY sc-dmRaPn sc-bBrHrO blmqKR bGulZy"
+            type="button"
+          >
+            <svg
+              data-testid="EyeOpenOutlined"
+            />
+            <span>
+              View Rogue APs
+            </span>
+          </button>
+        </div>
+        <div
+          class="ant-space-item"
+          style="margin-right: 24px;"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY"
+            data-testid="AddEditLinks"
+            type="button"
+          >
+            <span>
+              + Add Floor Plan
+            </span>
+          </button>
+          <div
+            class="ant-modal-root"
+          >
+            <div
+              class="ant-modal-wrap"
+              style="display: none;"
+              tabindex="-1"
+            />
+          </div>
+        </div>
+        <div
+          class="ant-space-item"
+        >
+          <button
+            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 ibsWZY ant-dropdown-trigger"
+            disabled=""
             type="button"
           >
             <span>

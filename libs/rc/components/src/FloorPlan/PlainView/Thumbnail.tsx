@@ -56,6 +56,7 @@ export default function Thumbnail (props: {
           contextAlbum={true}
           galleryMode={false}/>
         <img
+          data-testid='thumbnailBgImage'
           style={{ width: '100%', height: '100%' }}
           src={imageUrl}
           alt={$t(altMessage,
