@@ -232,7 +232,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, finalParentColumns])
+  }, [props.columns, type, searchValue, isGroupByActive])
 
   const columnsState = useColumnsState({ columns, columnState })
 

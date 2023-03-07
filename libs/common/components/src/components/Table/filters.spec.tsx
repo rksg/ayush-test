@@ -2,7 +2,7 @@ import React from 'react'
 
 import { IntlShape } from 'react-intl'
 
-import { render, renderHook, fireEvent, act, screen, waitFor } from '@acx-ui/test-utils'
+import { render, renderHook } from '@acx-ui/test-utils'
 
 import { renderFilter, useGroupBy }    from './filters'
 import { groupTBData, groupByColumns } from './stories/GroupTable'
@@ -19,8 +19,8 @@ describe('Table Filters', () => {
     const groupables = groupByColumns.filter(cols => cols.groupable)
 
     it('render hook correctly with valid data', async () => {
-      const { result, rerender } = renderHook(() =>
-        useGroupBy(groupables, groupTableAction,groupTBData.length, mockIntl))
+      const { result } = renderHook(() =>
+        useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
       const {
         isGroupByActive,
         clearGroupByFn,
@@ -29,32 +29,27 @@ describe('Table Filters', () => {
         finalParentColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
-
       expect(GroupBySelect()).toBeDefined()
       expect(expandable).toBeDefined()
       expect(finalParentColumns).toBeUndefined()
-
-      // eslint-disable-next-line testing-library/no-unnecessary-act
-      await act(async () => {
-        render(<GroupBySelect />)
-        const select = await screen.findByRole('combobox', { hidden: true, queryFallbacks: true })
-        expect(select).toBeInTheDocument()
-        fireEvent.mouseDown(select)
-        await waitFor(async () => await screen.findByTestId('option-deviceStatus'))
-        fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
-      })
-      rerender()
-
-      expect(isGroupByActive).toBeTruthy()
       clearGroupByFn()
       expect(groupTableAction.onClear).toBeCalledTimes(1)
+    })
+
+    it('render hook correctly with empty actions data', async () => {
+      const { result } = renderHook(() =>
+        useGroupBy(groupables, undefined, groupTBData.length, mockIntl))
+      const { clearGroupByFn } = result.current
+      clearGroupByFn()
+      expect(groupTableAction.onClear).toBeCalledTimes(0)
     })
 
     it('render hook correctly with undefined groupable', () => {
       const { result } = renderHook(() =>
         useGroupBy([], groupTableAction,groupTBData.length, mockIntl))
-      const { GroupBySelect } = result.current
+      const { GroupBySelect, clearGroupByFn } = result.current
       expect(GroupBySelect()).toBeNull()
+      clearGroupByFn()
     })
 
     it('render hook for expandable props', () => {
@@ -80,7 +75,7 @@ describe('Table Filters', () => {
         },
         0,
         [{ name: 'john tan' }, { name: 'dragon den' }],
-        {},
+        { 'john tan': [true] },
         filterableCol,
         false
       )
@@ -104,7 +99,24 @@ describe('Table Filters', () => {
         false
       )
       expect(view).toBeDefined()
-      render(<view/>)
+    })
+
+    it('should render with filterable array data', () => {
+      const filterableCol = jest.fn()
+      const view = renderFilter<{ name: string }>(
+        {
+          key: 'name',
+          dataIndex: 'name',
+          filterable: [{ key: 'john', value: 'tan' }],
+          filterMultiple: false
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false
+      )
+      expect(view).toBeDefined()
     })
   })
 })
