@@ -1,22 +1,24 @@
 import { useEffect } from 'react'
 
-import moment from 'moment-timezone'
-
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   EventTable,
   eventDefaultPayload,
   eventDefaultSearch,
-  eventDefaultSorter } from '@acx-ui/rc/components'
+  eventDefaultSorter,
+  useEventTableFilter
+} from '@acx-ui/rc/components'
 import { useEventsQuery } from '@acx-ui/rc/services'
 import {
   TABLE_QUERY_LONG_POLLING_INTERVAL,
   Event,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useDateFilter } from '@acx-ui/utils'
 
 const Events = () => {
-  const { startDate, endDate } = useDateFilter()
+  const { fromTime, toTime } = useEventTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
 
   const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
@@ -32,11 +34,12 @@ const Events = () => {
       ...tableQuery.payload,
       filters: {
         ...payload.filters,
-        fromTime: moment(startDate).utc().format(),
-        toTime: moment(endDate).utc().format()
-      }
+        fromTime,
+        toTime
+      },
+      detailLevel: currentUserDetailLevel
     })
-  }, [startDate, endDate])
+  }, [fromTime, toTime])
 
   return <EventTable tableQuery={tableQuery}/>
 }

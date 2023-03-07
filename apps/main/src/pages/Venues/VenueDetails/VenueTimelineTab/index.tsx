@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react'
 
+
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }            from '@acx-ui/components'
+import { Tabs }                  from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -28,10 +30,14 @@ import { useTenantLink } from '@acx-ui/react-router-dom'
 const Events = () => {
   const { venueId } = useParams()
   const { fromTime, toTime } = useEventTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime }
+      filters: { ...eventDefaultPayload.filters, venueId: [ venueId ], fromTime, toTime },
+      detailLevel: currentUserDetailLevel
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTime, toTime, venueId])
@@ -51,6 +57,9 @@ const Events = () => {
 const Activities = () => {
   const { venueId } = useParams()
   const { fromTime, toTime } = useActivityTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
@@ -59,7 +68,8 @@ const Activities = () => {
         toTime,
         entityType: 'VENUES',
         entityId: venueId
-      }
+      },
+      detailLevel: currentUserDetailLevel
     })
   }, [fromTime, toTime])
   const tableQuery = usePollingTableQuery<Activity>({

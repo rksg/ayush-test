@@ -18,7 +18,6 @@ import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-
 export const defaultSorter = {
   sortField: 'startDatetime',
   sortOrder: 'DESC'

@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 
-import { ActivityTable }                           from '@acx-ui/rc/components'
+import { useUserProfileContext }                   from '@acx-ui/rc/components'
+import { ActivityTable, useActivityTableFilter }   from '@acx-ui/rc/components'
 import { useActivitiesQuery }                      from '@acx-ui/rc/services'
 import { Activity, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
-import { useDateFilter }                           from '@acx-ui/utils'
 
 const Activities = () => {
-  const { startDate, endDate } = useDateFilter()
+  const { fromTime, toTime } = useActivityTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -33,11 +35,12 @@ const Activities = () => {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        fromTime: startDate,
-        toTime: endDate
-      }
+        fromTime,
+        toTime
+      },
+      detailLevel: currentUserDetailLevel
     })
-  }, [startDate, endDate])
+  }, [fromTime, toTime])
 
   return <ActivityTable tableQuery={tableQuery}/>
 }

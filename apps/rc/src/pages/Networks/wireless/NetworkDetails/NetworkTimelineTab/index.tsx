@@ -1,14 +1,17 @@
 import { useEffect } from 'react'
 
+
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }            from '@acx-ui/components'
+import { Tabs }                  from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   EventTable,
   eventDefaultPayload,
   eventDefaultSearch,
   eventDefaultSorter,
+  useEventTableFilter,
   ActivityTable,
   activityDefaultSorter,
   activityDefaultPayload,
@@ -25,8 +28,21 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
-  // TODO: add fromTime/toTime to filter when DatePicker is ready
   const { networkId } = useParams()
+  const { fromTime, toTime } = useEventTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: {
+        fromTime,
+        toTime
+      },
+      detailLevel: currentUserDetailLevel
+    })
+  }, [fromTime, toTime])
   const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
@@ -35,7 +51,8 @@ const Events = () => {
     },
     sorter: eventDefaultSorter,
     search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL },
+    detailLevel: currentUserDetailLevel
   })
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
@@ -43,6 +60,9 @@ const Events = () => {
 const Activities = () => {
   const { networkId } = useParams()
   const { fromTime, toTime } = useActivityTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   const columnState = {
     hidden: false,
     defaultValue: {
@@ -61,7 +81,8 @@ const Activities = () => {
         toTime,
         entityType: 'NETWORK',
         entityId: networkId
-      }
+      },
+      detailLevel: currentUserDetailLevel
     })
   }, [fromTime, toTime])
   const tableQuery = usePollingTableQuery<Activity>({

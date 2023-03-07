@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 
+
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
 import { Tabs }                                                                     from '@acx-ui/components'
+import { useUserProfileContext }                                                    from '@acx-ui/rc/components'
 import { EventTable, eventDefaultPayload, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
 import { useEventsQuery }                                                           from '@acx-ui/rc/services'
 import {
@@ -19,10 +21,14 @@ import { SessionTable } from './SessionTable'
 const Events = () => {
   const { clientId } = useParams()
   const { fromTime, toTime } = useEventTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: { entity_type: ['CLIENT'], fromTime, toTime }
+      filters: { entity_type: ['CLIENT'], fromTime, toTime },
+      detailLevel: currentUserDetailLevel
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTime, toTime])

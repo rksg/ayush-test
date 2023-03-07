@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 
+
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate }                               from 'react-router-dom'
 
-import { Tabs }            from '@acx-ui/components'
+import { Tabs }                  from '@acx-ui/components'
+import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -30,10 +32,14 @@ import { useApContext } from '../ApContext'
 const Events = () => {
   const { serialNumber } = useApContext()
   const { fromTime, toTime } = useEventTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   useEffect(()=>{
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: { ...eventDefaultPayload.filters, serialNumber: [ serialNumber ], fromTime, toTime }
+      filters: { ...eventDefaultPayload.filters, serialNumber: [ serialNumber ], fromTime, toTime },
+      detailLevel: currentUserDetailLevel
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromTime, toTime, serialNumber])
@@ -53,6 +59,9 @@ const Events = () => {
 const Activities = () => {
   const { serialNumber } = useApContext()
   const { fromTime, toTime } = useActivityTableFilter()
+  const { data: userProfileData } = useUserProfileContext()
+  const currentUserDetailLevel = userProfileData?.detailLevel
+
   const columnState = {
     hidden: false,
     defaultValue: {
@@ -77,7 +86,8 @@ const Activities = () => {
         toTime,
         entityType: 'AP',
         entityId: serialNumber
-      }
+      },
+      detailLevel: currentUserDetailLevel
     })
   }, [fromTime, toTime])
   return <ActivityTable
