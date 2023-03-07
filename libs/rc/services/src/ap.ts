@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import _                             from 'lodash'
-import { generatePath }              from 'react-router-dom'
 
 import {
   ApExtraParams,
