@@ -102,7 +102,6 @@ const errorMessage = {
 const getErrorContent = (action: ErrorAction) => {
   const { $t } = getIntl()
   const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
-  const isDevModeOn = window.location.hostname === 'localhost'
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
@@ -119,11 +118,9 @@ const getErrorContent = (action: ErrorAction) => {
       break
     case 401:
     case 403:
-      if (!isDevModeOn) {
-        errorMsg = errorMessage.SESSION_EXPIRED
-        type = 'info'
-        needLogout = true
-      }
+      errorMsg = errorMessage.SESSION_EXPIRED
+      type = 'info'
+      needLogout = true
       break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
@@ -194,13 +191,14 @@ export const showErrorModal = (details: {
 }
 
 const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
+  const isDevModeOn = window.location.hostname === 'localhost'
   const endpoint = action?.meta?.arg?.endpointName || ''
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
     if (!ignoreEndpointList.includes(endpoint)) {
       showErrorModal(details)
     }
-    if (needLogout) {
+    if (needLogout && !isDevModeOn) {
       sessionStorage.removeItem('jwt')
       window.location.href = '/logout'
     }
