@@ -191,7 +191,7 @@ describe('Server Configuration Conflict', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

@@ -100,7 +100,7 @@ describe('DHCPForm', () => {
   it('should cancel DHCP form successfully', async () => {
 
     mockServer.use(
-      rest.get(Urls.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(DHCPUrls.getDHCPProfiles.url, (_, res, ctx) =>
