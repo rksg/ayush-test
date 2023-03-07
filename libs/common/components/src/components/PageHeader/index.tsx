@@ -34,6 +34,11 @@ function PageHeader (props: PageHeaderProps) {
       {props.titleExtra}
     </>
   }
+  let extra = props.extra
+  if (Array.isArray(extra)) {
+    extra = (props.extra as JSX.Element[])
+      .map((node, index) => React.cloneElement(node, { key: `extra-${index}` }))
+  }
   if (props.breadcrumb) {
     pageHeaderProps.breadcrumb = <Breadcrumb>
       {props.breadcrumb.map((breadcrumb, index) => {
@@ -46,7 +51,7 @@ function PageHeader (props: PageHeaderProps) {
     </Breadcrumb>
   }
   return <>
-    <UI.Wrapper><AntPageHeader {...pageHeaderProps}>
+    <UI.Wrapper><AntPageHeader {...pageHeaderProps} extra={extra}>
       {props.subTitle && <Typography.Text ellipsis>{props.subTitle}</Typography.Text>}
     </AntPageHeader></UI.Wrapper>
     {props.footer && props.footerSpacer && <UI.Spacer />}

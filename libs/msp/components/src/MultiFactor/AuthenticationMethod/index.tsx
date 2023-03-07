@@ -11,9 +11,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle }                    from '@acx-ui/components'
-import { useDisableMFAMethodMutation } from '@acx-ui/rc/services'
-import { MFAMethod }                   from '@acx-ui/rc/utils'
+import { Subtitle }                               from '@acx-ui/components'
+import { MFAMethod, useDisableMFAMethodMutation } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 

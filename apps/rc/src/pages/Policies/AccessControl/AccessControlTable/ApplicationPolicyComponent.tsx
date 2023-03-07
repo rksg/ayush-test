@@ -12,6 +12,7 @@ import {
   PolicyType,
   useTableQuery, ApplicationPolicy
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
 
@@ -99,7 +100,7 @@ const ApplicationPolicyComponent = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>
