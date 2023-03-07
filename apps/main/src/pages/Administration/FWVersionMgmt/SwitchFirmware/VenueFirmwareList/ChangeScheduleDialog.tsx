@@ -1,94 +1,51 @@
 import { useEffect, useState } from 'react'
 
-import { DatePicker, Select, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
-import { useForm }                                                              from 'antd/lib/form/Form'
-import { useIntl }                                                              from 'react-intl'
+import { DatePicker, Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
+import { useForm }                                                      from 'antd/lib/form/Form'
+import { useIntl }                                                      from 'react-intl'
 
 import {
   AVAILABLE_SLOTS,
-  FirmwareType,
-  FirmwareVenue,
+  FirmwareSwitchVenue,
   FirmwareVersion,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
 import {
-  getVersionLabel
+  getSwitchVersionLabel
 } from '../../FirmwareUtils'
 
 import * as UI from './styledComponents'
 
 import type { DatePickerProps  } from 'antd'
 
-enum VersionsSelectMode {
-  Radio,
-  Dropdown
-}
-
 export interface ChangeScheduleDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: UpdateScheduleRequest) => void,
-  data?: FirmwareVenue[],
+  data: FirmwareSwitchVenue[]
   availableVersions?: FirmwareVersion[]
 }
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
-  // eslint-disable-next-line max-len
   const { visible, onSubmit, onCancel, data, availableVersions } = props
-  const [selectMode, setSelectMode] = useState(VersionsSelectMode.Radio)
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [disableSave, setDisableSave] = useState(false)
 
   useEffect(() => {
-    if (availableVersions && availableVersions[0]) {
-      let firstIndex = availableVersions.findIndex(isRecommanded)
-      setSelectedVersion(availableVersions[firstIndex].name)
-    }
-  }, [availableVersions])
-
-  useEffect(() => {
-    if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
+    if (!selectedVersion) {
       setDisableSave(true)
     } else {
       setDisableSave(false)
     }
-  }, [selectMode, selectedVersion])
+  }, [selectedVersion])
 
-  let versionOptions: FirmwareVersion[] = []
-  let otherVersions: FirmwareVersion[] = []
-
-  const isRecommanded = (e: FirmwareVersion) => {
-    return e.category === 'RECOMMENDED'
-  }
-
-  let copyAvailableVersions = availableVersions ? [...availableVersions] : []
-  let firstIndex = copyAvailableVersions.findIndex(isRecommanded)
-  if (firstIndex > 0) {
-    let removed = copyAvailableVersions.splice(firstIndex, 1)
-    versionOptions = [...removed, ...copyAvailableVersions]
-  } else {
-    versionOptions = [...copyAvailableVersions]
-  }
-  otherVersions = copyAvailableVersions.slice(1)
-
-  const onSelectModeChange = (e: RadioChangeEvent) => {
-    setSelectMode(e.target.value)
-  }
-
-  const otherOptions = otherVersions.map((version) => {
-    return {
-      label: getVersionLabel(version),
-      value: version.name
-    }
-  })
-
-  const handleChange = (value: string) => {
-    setSelectedVersion(value)
+  const handleChange = (value: RadioChangeEvent) => {
+    setSelectedVersion(value.target.value)
   }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
@@ -99,20 +56,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
     setSelectedTime(e.target.value)
   }
 
-  const createVenuePayload = (venue: FirmwareVenue) => {
-    return {
-      id: venue.id,
-      version: selectedVersion,
-      type: FirmwareType.AP_FIRMWARE_UPGRADE
-    }
-  }
-
   const createRequest = (): UpdateScheduleRequest => {
     return {
       date: selectedDate,
       time: selectedTime,
-      // eslint-disable-next-line max-len
-      venues: (data as FirmwareVenue[]).map((row) => createVenuePayload(row))
+      preDownload: false,
+      venueIds: data ? (data as FirmwareSwitchVenue[]).map((d: FirmwareSwitchVenue) => d.id) : null,
+      switchVersion: selectedVersion
     }
   }
 
@@ -126,7 +76,6 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
   const onModalCancel = () => {
     form.resetFields()
-    setSelectMode(VersionsSelectMode.Radio)
     onCancel()
   }
 
@@ -144,9 +93,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         form={form}
         name={'changeScheduleModalForm'}
       >
-        <Form.Item
-          initialValue={VersionsSelectMode.Radio}
-        >
+        <Form.Item>
           <div>
             <Typography>
               { // eslint-disable-next-line max-len
@@ -154,23 +101,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
             </Typography>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={onSelectModeChange}
-              value={selectMode}>
+              // eslint-disable-next-line max-len
+              defaultValue={availableVersions && availableVersions[0] ? availableVersions[0] : ''}
+              onChange={handleChange}
+              value={selectedVersion}>
               <Space direction={'vertical'}>
-                <Radio value={VersionsSelectMode.Radio}>
-                  {getVersionLabel(versionOptions[0])}
-                </Radio>
-                { otherVersions.length > 0 ?
-                  <Radio value={VersionsSelectMode.Dropdown}>
-                    <Select
-                      style={{ width: '100%', fontSize: '12px' }}
-                      placeholder='Select other version...'
-                      onChange={handleChange}
-                      options={otherOptions}
-                    />
-                  </Radio>
-                  : null
-                }
+                { availableVersions?.map(v =>
+                  <Radio value={v.id} key={v.id}>{getSwitchVersionLabel(v)}</Radio>)}
               </Space>
             </Radio.Group>
           </div>

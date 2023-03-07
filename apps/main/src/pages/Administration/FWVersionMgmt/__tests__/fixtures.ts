@@ -133,3 +133,82 @@ export const availableVersions = [{
   id: '6.2.1.103.1579'
 }]
 
+export const switchVenue = {
+  upgradeVenueViewList: [
+    {
+      id: '011bf74d090b45dfb94fe9b0991e3c32',
+      name: 'v2',
+      switchFirmwareVersion: {
+        id: '09010e_b392',
+        name: '09010e_b392',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010f_b401',
+          name: '09010f_b401',
+          category: 'RECOMMENDED'
+        }
+      ],
+      preDownload: false,
+      upgradeVenueViewList: null
+    },
+    {
+      id: '923f6df894c340498894a6b7c68feaae',
+      name: 'My-Venue',
+      switchFirmwareVersion: {
+        id: '09010e_b392',
+        name: '09010e_b392',
+        category: 'RECOMMENDED'
+      },
+      availableVersions: [
+        {
+          id: '09010f_b401',
+          name: '09010f_b401',
+          category: 'RECOMMENDED'
+        }
+      ],
+      preDownload: false,
+      upgradeVenueViewList: null
+    }
+  ]
+}
+
+export const switchLatest = [
+  {
+    id: '09010f_b401',
+    name: '09010f_b401',
+    category: 'RECOMMENDED',
+    createdDate: '2023-02-14T20:24:24.604+00:00'
+  }
+]
+
+export const switchRelease = [
+  {
+    id: '09010f_b401',
+    name: '09010f_b401',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '09010e_b399',
+    name: '09010e_b399',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '09010e_b397',
+    name: '09010e_b397',
+    category: 'RECOMMENDED'
+  },
+  {
+    id: '09010f_b403',
+    name: '09010f_b403',
+    category: 'RECOMMENDED'
+  }
+]
+
+export const switchCurrentVersions = {
+  currentVersions: [
+    '09010e_b392',
+    '09010e_b399'
+  ]
+}
