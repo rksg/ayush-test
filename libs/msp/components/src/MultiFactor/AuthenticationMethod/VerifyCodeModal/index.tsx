@@ -5,10 +5,10 @@ import { FieldData }                  from 'rc-field-form/lib/interface'
 import { useIntl }                    from 'react-intl'
 
 import {
+  MFAMethod,
   useMfaResendOTPMutation,
   useSetupMFAAccountMutation
-} from '@acx-ui/rc/services'
-import { MFAMethod } from '@acx-ui/rc/utils'
+} from '@acx-ui/user'
 
 import { OTPMethodProps } from '../OneTimePassword'
 

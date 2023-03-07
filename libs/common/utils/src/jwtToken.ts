@@ -56,12 +56,12 @@ interface JwtToken {
   region?: string
   acx_account_regions?: AccountRegion[]
   acx_account_tier?: AccountTier
-  acx_account_vertical?: AccountVertical.DEFAULT
+  acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
 }
 
-const cache = new Map()
+const cache = new Map<string, JwtToken>()
 
 // Fetch JWT token payload data
 export function getJwtTokenPayload () {
@@ -81,10 +81,10 @@ export function getJwtTokenPayload () {
         isBetaFlag: false,
         tenantId: tenantId
       }
-    return jwtToken
+    return jwtToken as JwtToken
   }
 
-  if (cache.has(jwt)) return cache.get(jwt)
+  if (cache.has(jwt)) return cache.get(jwt)!
 
   try {
     const token = JSON.parse(window.atob(jwt.split('.')[1])) as JwtToken
@@ -99,7 +99,6 @@ export function getJwtTokenPayload () {
 export function getJwtToken () {
   if (sessionStorage.getItem('jwt')) {
     return sessionStorage.getItem('jwt')
-  } else {
-    return null
   }
+  return null
 }

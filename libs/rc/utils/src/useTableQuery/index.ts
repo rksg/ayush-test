@@ -4,20 +4,22 @@ import { TableProps }  from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
 import _               from 'lodash'
 
-import { useParams, Params }                         from '@acx-ui/react-router-dom'
-import { UseQuery, UseQueryResult, UseQueryOptions } from '@acx-ui/types'
-import { TABLE_DEFAULT_PAGE_SIZE }                   from '@acx-ui/utils'
+import { useParams, Params } from '@acx-ui/react-router-dom'
+import {
+  RequestPayload,
+  UseQuery,
+  UseQueryResult,
+  UseQueryOptions
+} from '@acx-ui/types'
+import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { ApiInfo, createHttpRequest } from '../apiService'
-
 
 export const TABLE_QUERY_POLLING_INTERVAL = 30_000
 export const TABLE_QUERY_LONG_POLLING_INTERVAL = 300_000
 
-export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
-  params?: Params<string>
-  payload?: Payload
-}
+export { RequestPayload }
+
 export interface RequestFormData <FormData = unknown> {
   params?: Params<string>
   payload?: FormData
