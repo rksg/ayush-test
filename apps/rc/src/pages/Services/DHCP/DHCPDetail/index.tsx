@@ -37,14 +37,11 @@ export default function DHCPServiceDetail () {
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.DHCP,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId!
-            })}
-            key='edit'
-          >
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.DHCP,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId!
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ]}
