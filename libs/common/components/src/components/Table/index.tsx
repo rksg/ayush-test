@@ -171,7 +171,7 @@ function Table <RecordType extends Record<string, any>> ({
     finalParentColumns,
     clearGroupByFn,
     isGroupByActive
-  } = useGroupBy<RecordType>(groupable, props.columns.length)
+  } = useGroupBy<RecordType>(groupable, props.columns.length, intl)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {

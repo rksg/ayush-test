@@ -476,10 +476,10 @@ const modelResponse: APExtendedGroupedResponse = {
   ]
 }
 
-const cleanedData = cleanResponse(apGroupResponse)
+export const groupTBData = cleanResponse(apGroupResponse)
 
 export function GroupTable () {
-  const [ currData, setCurrData ] = React.useState<typeof cleanedData>(() => cleanedData)
+  const [ currData, setCurrData ] = React.useState<typeof groupTBData>(() => groupTBData)
 
   const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName' | undefined) => {
     let response: APExtendedGroupedResponse | null
@@ -508,7 +508,7 @@ export function GroupTable () {
   }
 
   // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<typeof cleanedData[0]>['columns'] = [
+  const columns: TableProps<typeof groupTBData[0]>['columns'] = [
     {
       title: 'AP Name',
       dataIndex: 'name',
@@ -577,9 +577,9 @@ export function GroupTable () {
   return (
     <>
     with groupby:
-      <Table<typeof cleanedData[0]>
+      <Table<typeof groupTBData[0]>
         columns={columns}
-        dataSource={currData as unknown as TableProps<typeof cleanedData[0]>['dataSource']}
+        dataSource={currData as unknown as TableProps<typeof groupTBData[0]>['dataSource']}
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'

@@ -3,9 +3,10 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
+import { GroupTable }                                       from './stories/GroupTable'
 
 import { Table, TableProps } from '.'
 
@@ -31,6 +32,8 @@ type TestRow = {
 }
 
 describe('Table component', () => {
+  afterEach(() => cleanup())
+
   const testColumns: TableProps<TestRow>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Age', dataIndex: 'age', key: 'age', tooltip: 'tooltip' },
@@ -897,6 +900,47 @@ describe('Table component', () => {
       })
 
       expect(listToolBarItem).toBeTruthy()
+    })
+  })
+
+  describe('groupBy table', () => {
+    it('should render groupBy correctly', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const clearBtn = await screen.findByRole('button', { name: 'Clear Filters' })
+      fireEvent.click(clearBtn)
+    })
+
+    it('should expand and close table row', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      fireEvent.click(await screen.findByRole('img', { name: 'down' }))
+    })
+
+    it('should add and remove selction from groupby filter', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+      fireEvent.click(await screen.findByTestId('CollapseActive'))
+      fireEvent.click(await screen.findByTestId('CollapseInactive'))
     })
   })
 })
