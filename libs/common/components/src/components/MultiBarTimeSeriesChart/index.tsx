@@ -68,7 +68,7 @@ export interface MultiBarTimeSeriesChart extends Omit<EChartsReactProps, 'option
   dataFormatter?: ChartFormatterFn;
   tooltipFormatter?: TooltipFormatterCallback<TopLevelFormatterParams>;
   seriesFormatters?: Record<string, ChartFormatterFn>;
-  LabelFormatter?: LabelFormatterCallback<unknown>;
+  labelFormatter?: LabelFormatterCallback<unknown>;
   showToolTip?: boolean;
 }
 export const mapping = [{ key: 'SwitchStatus', series: 'Switch', color: 'green' }] as {
@@ -187,7 +187,7 @@ export function MultiBarTimeSeriesChart ({
   hasXaxisLabel,
   zoomEnabled = false,
   seriesFormatters,
-  LabelFormatter,
+  labelFormatter,
   showToolTip,
   ...props
 }: MultiBarTimeSeriesChart) {
@@ -251,8 +251,8 @@ export function MultiBarTimeSeriesChart ({
           ...(tooltipOptions() as Object),
           height: 40,
           show: true,
-          formatter: LabelFormatter
-            ? LabelFormatter
+          formatter: labelFormatter
+            ? labelFormatter
             : function (params) {
               return defaultLabelFormatter(data, params as unknown as CallbackDataParams)
             }
