@@ -1,8 +1,11 @@
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, mockServer, render, screen, waitFor }                                                                     from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
+
+// eslint-disable-next-line import/order
 import { rest } from 'msw'
+
 import Thumbnail from './Thumbnail'
 
 const floorPlan: FloorPlanDto = {

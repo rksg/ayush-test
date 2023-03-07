@@ -1,15 +1,16 @@
 import '@testing-library/jest-dom'
 
+import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, mockServer, render, screen }                                                                     from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen }                                                         from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 
 import GalleryView from './GalleryView'
-import { rest } from 'msw'
+
 
 
 const list: FloorPlanDto[] = [

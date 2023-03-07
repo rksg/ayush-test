@@ -1,19 +1,20 @@
 import '@testing-library/jest-dom'
 
+import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { ApDeviceStatusEnum, FloorPlanDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                            from '@acx-ui/store'
-import { render, screen, fireEvent, waitFor, mockServer }                                                                                                  from '@acx-ui/test-utils'
+import { render, screen, fireEvent, waitFor, mockServer }                                                                                      from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 import UnplacedDevice           from '../UnplacedDevices/UnplacedDevice'
 
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
-import { rest } from 'msw'
+
 
 
 
