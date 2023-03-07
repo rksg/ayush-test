@@ -194,7 +194,9 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         formData.append(key, value as string)
       }
     })
-    importCsv({ params, payload: formData })
+    importCsv({
+      params: { tenantId: params.tenantId, networkId: values.networkId }, payload: formData
+    })
   }
 
   const columns: TableProps<Guest>['columns'] = [

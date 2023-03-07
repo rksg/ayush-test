@@ -4,24 +4,28 @@ export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
-    method: 'post',
-    // Path varivable is not match
+    // Path variable not match
+    // method: 'post',
     // url: '/networks/query',
-    url: '/api/viewmodel/tenant/:tenantId/network'
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     // newApi: true
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/network'
   },
   getNetworksDetailHeader: {
-    method: 'get',
-    // new api not found
+    // 404 Not Found
+    // method: 'get',
     // url: '/networks/:networkId/headerDetails',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
+    // newApi: true
+    method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
   },
   getNetworksVenuesList: {
     method: 'post',
-    // url: '/networks/:networkId/venues',
-    // newApi: true,
-    url: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues'
+    url: '/networks/:networkId/venues',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
+    newApi: true
   },
   getCloudpathList: {
     method: 'get',
@@ -157,30 +161,27 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addVenue: {
     method: 'post',
-    newApi: false,
     url: '/venues',
-    oldUrl: '/api/tenant/:tenantId/venue'
+    oldUrl: '/api/tenant/:tenantId/venue',
+    newApi: true
   },
   updateVenue: {
     method: 'put',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // newApi: false,
-    // url: '/venues/:venueId',
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   getVenue: {
     method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // newApi: false,
-    // url: '/venues/:venueId',
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   deleteVenue: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // url: '/venues/:venueId',
-    // newApi: false,
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   deleteVenues: {
     method: 'delete',
@@ -188,10 +189,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueDetailsHeader: {
     method: 'get',
-    // 500 internal server error for new api
-    // url: '/venues/:venueId/detailHeaders',
-    // newApi: true,
-    url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+    url: '/venues/:venueId/detailHeaders',
+    oldUrl: '/api/viewmodel/:tenantId/venue/:venueId/detailheader',
+    newApi: true
   },
   getVenueCityList: {
     method: 'post',
@@ -250,11 +250,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getUploadURL: {
-    method: 'post',
-    // method is not match
+    // method not match
+    // method: 'post',
     // url: '/files/uploadurl',
-    url: '/api/file/tenant/:tenantId/upload-url'
+    // oldUrl: '/api/file/tenant/:tenantId/upload-url',
     // newApi: true
+    method: 'post',
+    url: '/api/file/tenant/:tenantId/upload-url'
   },
   getAllDevices: {
     method: 'post',
@@ -313,11 +315,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueNetworkList: {
-    method: 'post',
-    // Path variable is not match
+    // Path variable not match
+    // method: 'post',
     // url: '/venues/:venueId/networks/query',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
     // newApi: true
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
   },
   venueNetworkApGroup: {
     method: 'post',
@@ -387,9 +391,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueSwitchSetting: {
     method: 'get',
-    // url: '/venues/:venueId/switchSettings',
-    // newApi: true,
-    url: '/api/switch/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId/switchSettings',
+    oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   updateVenueSwitchSetting: {
     method: 'put',
@@ -433,10 +437,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApDetailHeader: {
-    method: 'get',
-    // new api not found
+    // 404 Not Found
+    // method: 'get',
     // url: '/aps/:serialNumber/headerDetails',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
+    // newApi: true
+    method: 'get',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
   getCloudVersion: {
@@ -462,10 +468,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getGuestsList: {
-    method: 'post',
-    // new api not found
+    // 404 Not Found
+    // method: 'post',
     // url: '/guestUsers/query',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
+    // newApi: true
+    method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   addGuestPass: {
@@ -475,9 +483,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApNetworkList: {
-    method: 'post',
+    // 500 Internal Server Error
+    // method: 'post',
     // url: '/aps/:serialNumber/networks/query',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    // newApi: true
+    method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
   },
   getExternalProviders: {
