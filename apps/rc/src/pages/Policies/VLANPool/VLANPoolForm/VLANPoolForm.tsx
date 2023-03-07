@@ -3,7 +3,7 @@ import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -61,12 +61,8 @@ const VLANPoolForm = (props: VLANPoolFormProps) => {
       }
       props.networkView ? props.backToNetwork?.(formData)
         : navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
   return (

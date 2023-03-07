@@ -4,10 +4,10 @@ import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { noDataSymbol }                                                             from '@acx-ui/analytics/utils'
-import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer }                                                          from '@acx-ui/rc/components'
+import { noDataSymbol }                                                  from '@acx-ui/analytics/utils'
+import { Loader, showActionModal, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                  from '@acx-ui/icons'
+import { OSIconContainer }                                               from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
@@ -86,12 +86,7 @@ export function PersonaDevicesTable (props: {
       }).unwrap()
         .then()
         .catch(error => {
-          showToast({
-            type: 'error',
-            content: $t({ defaultMessage: 'An error occurred' }),
-            // FIXME: Correct the error message
-            link: { onClick: () => alert(JSON.stringify(error)) }
-          })
+          console.log(error) // eslint-disable-line no-console
         })
     })
   }
@@ -187,12 +182,7 @@ export function PersonaDevicesTable (props: {
     }).unwrap()
       .then()
       .catch(error => {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' }),
-          // FIXME: Correct the error message
-          link: { onClick: () => alert(JSON.stringify(error)) }
-        })
+        console.log(error) // eslint-disable-line no-console
       })
   }
 
