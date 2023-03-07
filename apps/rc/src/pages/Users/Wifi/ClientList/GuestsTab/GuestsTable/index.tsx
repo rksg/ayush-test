@@ -63,7 +63,7 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export default function GuestsTable () {
+export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
   const { startDate, endDate, range } = useDateFilter()
@@ -379,7 +379,12 @@ export default function GuestsTable () {
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }
-        ]}
+        ].filter(((item, index)=> {
+          if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
+            return false
+          }
+          return true
+        }))}
       />
 
       <Drawer
