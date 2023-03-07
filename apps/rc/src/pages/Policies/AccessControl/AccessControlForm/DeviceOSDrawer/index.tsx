@@ -100,7 +100,6 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
-  const form = Form.useFormInstance()
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
@@ -115,7 +114,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     policyName,
     devicePolicyId
   ] = [
-    useWatch<string>('access', contentForm),
+    useWatch<string>('deviceDefaultAccess', contentForm),
     useWatch<string>('policyName', contentForm),
     useWatch<string>([...inputName, 'devicePolicyId'])
   ]
