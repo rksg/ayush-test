@@ -2,7 +2,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer, showToast }                from '@acx-ui/components'
+import { Drawer }                           from '@acx-ui/components'
 import { useCreateDpskPassphrasesMutation } from '@acx-ui/rc/services'
 import {
   CreateDpskPassphrasesFormFields,
@@ -40,14 +40,8 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
       await onManualSettingFormSave()
 
       onClose()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      if (error.data?.message) {
-        showToast({
-          type: 'error',
-          content: error.data.message
-        })
-      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

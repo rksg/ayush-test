@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {
   Loader,
-  PageHeader, showToast, StepsForm,
+  PageHeader, StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import {
@@ -27,11 +27,8 @@ const AddDhcp = () => {
       const payload = { ...data }
       await addEdgeDhcp({ payload: payload }).unwrap()
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

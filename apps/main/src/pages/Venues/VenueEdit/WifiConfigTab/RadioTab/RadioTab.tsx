@@ -2,8 +2,7 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-
-import { AnchorLayout, showToast, StepsForm }    from '@acx-ui/components'
+import { AnchorLayout, StepsForm }               from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -101,11 +100,8 @@ export function RadioTab () {
           pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
         })
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

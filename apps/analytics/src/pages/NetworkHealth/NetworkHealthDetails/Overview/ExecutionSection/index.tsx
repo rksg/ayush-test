@@ -1,10 +1,14 @@
 import React from 'react'
 
-import _ from 'lodash'
+import { get, zip }          from 'lodash'
+import { MessageDescriptor } from 'react-intl'
+import AutoSizer             from 'react-virtualized-auto-sizer'
 
-import { GridRow } from '@acx-ui/components'
+import { GridCol, GridRow, VerticalStackedBarChart, VerticalStackedBarChartData, cssStr } from '@acx-ui/components'
+import { formatter, getIntl }                                                             from '@acx-ui/utils'
 
-import { NetworkHealthTest } from '../../../types'
+import { NetworkHealthTest, TestStage } from '../../../types'
+import { stagesFromConfig }             from '../../../utils'
 
 import { Score }  from './Score'
 import { Status } from './Status'
@@ -15,14 +19,43 @@ export enum ConfigStatusEnum {
   NA = 'na'
 }
 
+const stageFields = (stage: TestStage) => [
+  `${stage}NA`,
+  `${stage}Error`,
+  `${stage}Failure`,
+  `${stage}Success`,
+  `${stage}Pending`
+]
+
+export const getChatData = (data: NetworkHealthTest) => {
+  const { $t } = getIntl()
+  const stages = stagesFromConfig(data.config).map(s => [s.key, s.title])
+  const [categories, nas, errors, failures, successes, pendings] = zip(...stages
+    .map(([stage, label]) => [
+      $t(label as MessageDescriptor), ...stageFields(stage as TestStage).map(f => data.summary[f])
+    ]))
+  return {
+    categories: categories as string[],
+    data: [
+      { name: 'Pass', data: successes, color: cssStr('--acx-semantics-green-50') },
+      { name: 'Fail', data: failures, color: cssStr('--acx-semantics-red-50') },
+      { name: 'Error', data: errors, color: cssStr('--acx-semantics-yellow-40') },
+      { name: 'N/A', data: nas, color: cssStr('--acx-neutrals-50') }
+    ].concat(pendings.every(v => v === 0)
+      ? []
+      : [{ name: 'Pending', data: pendings, color: cssStr('--acx-primary-white') }]
+    ) as VerticalStackedBarChartData[]
+  }
+}
+
 export const getExecutionSectionData = (data: NetworkHealthTest) => {
-  const isEmptyTest = _.get(data, ['summary', 'apsTestedCount']) === 0
+  const isEmptyTest = get(data, ['summary', 'apsTestedCount']) === 0
   const {
     config: { pingAddress, speedTestEnabled }, summary, previousTest
   } = data || { config: {}, summary: {} }
   const previousSummary = (previousTest && previousTest.summary) || {}
 
-  const details = {
+  return {
     configured: {
       passedApsPercent: isEmptyTest ? ConfigStatusEnum.NoData : ConfigStatusEnum.Configured,
       avgPingTime: isEmptyTest
@@ -49,19 +82,27 @@ export const getExecutionSectionData = (data: NetworkHealthTest) => {
     testedAps: summary.apsTestedCount,
     successAps: summary.apsSuccessCount,
     failureAps: summary.apsFailureCount,
-    errorAps: summary.apsErrorCount,
-    chart: summary.chart
+    errorAps: summary.apsErrorCount
   }
-  return { details }
 }
 
 export const ExecutionSection: React.FC<{ details: NetworkHealthTest }> = props => {
-  const { details } = getExecutionSectionData(props.details)
-  return <div>
-    <GridRow>
-      <Status details={details} />
-      <Score details={details} />
-      <div style={{ border: 'gray 1px solid', width: '100%', height: '400px' }}>Chart</div>
-    </GridRow>
-  </div>
+  const details = getExecutionSectionData(props.details)
+  const chart = getChatData(props.details)
+  return <GridRow>
+    <Status details={details} />
+    <Score details={details} />
+    <GridCol col={{ span: 24 }} style={{ height: '390px' }}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <VerticalStackedBarChart
+            style={{ width, height }}
+            data={chart.data}
+            categories={chart.categories}
+            dataFormatter={(value)=>
+              formatter('percentFormatRound')(value/props.details.summary.apsTestedCount)}/>
+        )}
+      </AutoSizer>
+    </GridCol>
+  </GridRow>
 }
