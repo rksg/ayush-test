@@ -6,7 +6,7 @@ import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, waitFor }                      from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
 

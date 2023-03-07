@@ -1,5 +1,5 @@
 import { TenantIdFromJwt } from './apiService'
-import { getTenantId } from './getTenantId'
+import { getTenantId }     from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
