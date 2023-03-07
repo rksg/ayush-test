@@ -3,15 +3,15 @@ import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Alert, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { CheckMarkCircleSolid }                 from '@acx-ui/icons'
-import { useVenuesListQuery }                   from '@acx-ui/rc/services'
+import { Alert, StepsForm, useStepFormContext }    from '@acx-ui/components'
+import { CheckMarkCircleSolid }                    from '@acx-ui/icons'
+import { useGetPropertyQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 
 import { NetworkSegmentationGroupForm } from '..'
 import { useWatch }                     from '../../useWatch'
 import * as UI                          from '../styledComponents'
 
-import { VenueTable } from './VenueTable'
+import { PersonaGroupTable } from './PersonaGroupTable'
 
 interface GeneralSettingsFormProps {
   editMode?: boolean
@@ -39,6 +39,17 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
         }
       }
     })
+  const { personaGroupId } = useGetPropertyQuery(
+    { params: { venueId: venue } },
+    {
+      skip: !!!venue,
+      selectFromResult: ({ data }) => {
+        return {
+          personaGroupId: data?.personaGroupId
+        }
+      }
+    }
+  )
 
   const onVenueChange = (value: string) => {
     const venueItem = venueOptions?.find(item => item.value === value)
@@ -123,11 +134,13 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
           />
         </Col>
       </Row>
-      {venue && <Row gutter={20}>
-        <Col span={10}>
-          <VenueTable />
-        </Col>
-      </Row>}
+      {
+        personaGroupId && <Row gutter={20}>
+          <Col span={10}>
+            <PersonaGroupTable personaGroupId={personaGroupId} />
+          </Col>
+        </Row>
+      }
     </>
   )
 }
