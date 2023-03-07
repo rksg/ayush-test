@@ -7,7 +7,7 @@ import {
   incidentCodes,
   categoryCodeMap
 } from '@acx-ui/analytics/utils'
-import { dataApi }  from '@acx-ui/store'
+import { dataApi } from '@acx-ui/store'
 
 export type IncidentsBySeverityDataKey = keyof typeof incidentSeverities
 

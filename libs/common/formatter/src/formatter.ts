@@ -136,7 +136,6 @@ const dateTimeFormats = {
 
 function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
   const dateFormat = getUserProfile().profile.dateFormat as string
-  console.log(dateFormat)
   const customFormat = [
     dateFormat?.toUpperCase() || defaultDateFormat,
     format
