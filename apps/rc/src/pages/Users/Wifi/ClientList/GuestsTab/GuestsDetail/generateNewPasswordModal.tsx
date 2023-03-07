@@ -53,7 +53,6 @@ export function GenerateNewPasswordModal (props: {
   const saveModal = (async () => {
     try {
       const payload = form.getFieldValue('outputInterface')
-      payload.action = 'regenerate'
       const params = {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id
