@@ -9,7 +9,6 @@ import {
   Modal,
   ModalType,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -66,11 +65,8 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export passphrases.' })
-      })
+    downloadCsv({ params }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -222,14 +218,8 @@ export default function DpskPassphraseManagement () {
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          if (error.data?.message) {
-            showToast({
-              type: 'error',
-              content: error.data.message
-            })
-          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }}
       onClose={() => setUploadCsvDrawerVisible(false)} >

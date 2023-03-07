@@ -79,10 +79,7 @@ export function MacRegistrationsTab () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
@@ -166,14 +163,14 @@ export function MacRegistrationsTab () {
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const toastDetailErrorMessage = (error: any) => {
-    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-    showToast({
-      type: 'error',
-      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-    })
-  }
+  // const toastDetailErrorMessage = (error: any) => {
+  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+  //   showToast({
+  //     type: 'error',
+  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+  //   })
+  // }
 
   return (
     <Loader states={[
@@ -199,8 +196,8 @@ export function MacRegistrationsTab () {
             await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (error: any) {
-            toastDetailErrorMessage(error)
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
           }
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />
