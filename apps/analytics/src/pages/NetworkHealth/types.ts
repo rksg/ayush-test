@@ -110,7 +110,7 @@ export type NetworkHealthFormDto = Pick<NetworkHealthSpec, 'clientType' | 'sched
   isDnsServerCustom: boolean
 }
 
-type WlanAuthSettings = {
+export type WlanAuthSettings = {
   authType?: string
   authentication?: string
   wpaEncryption?: string
@@ -132,6 +132,10 @@ export type NetworkHealthTest = {
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
+export type UserErrors = {
+  field: string
+  message: string
+}
 
 export type MutationUserError = {
   field: string
@@ -142,6 +146,53 @@ export type MutationResult <Result> = {
   userErrors: MutationUserError[]
 } & Result
 
+export type TestResultByAP = {
+    apName:string
+    apMac:string
+    auth: string
+    assoc: string
+    eap: string
+    radius: string
+    dhcp: string
+    userAuth: string
+    dns: string
+    ping: string
+    traceroute: string
+    speedTest: string
+    pingReceive: string | null
+    pingTotal: string | null
+    avgPingTime: string | null
+    error: string
+    speedTestFailure: string
+    speedTestServer: string | null
+    download: string | null
+    upload: string | null
+    tracerouteLog: string | null
+    state: string
+    stationAp: { name : string, mac : string, snr : number }
+    clients : { failure : ClientFailure } []
+}
+
+export type ClientFailure = {
+    failedMsgId: string | null
+    messageIds: string | null
+    ssid: string | null
+    radio: string | null
+    reason: string | null
+    failureType: string | null
+}
+export type NetworkHealthTestResults = {
+  spec: NetworkHealthSpec
+  config: NetworkHealthConfig
+  wlanAuthSettings: WlanAuthSettings
+  aps: { items : TestResultByAP[], total : number }
+}
+export type Pagination = {
+  page: number,
+  pageSize: number,
+  defaultPageSize: number,
+  total: number
+}
 export type MutationResponse <
   Result extends { userErrors?: MutationUserError[] } = { userErrors?: MutationUserError[] }
 > = TypedUseMutationResult<Result, { id?: string }, NetworkHealthBaseQuery>

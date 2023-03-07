@@ -5,7 +5,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   Loader,
-  PageHeader, showToast, StepsForm,
+  PageHeader,
+  StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import {
@@ -47,11 +48,8 @@ const EditDhcp = () => {
       const pathVar = { id: params.serviceId }
       await updateEdgeDhcp({ payload, params: pathVar }).unwrap()
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

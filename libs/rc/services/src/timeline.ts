@@ -106,8 +106,11 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return {
           data: {
             ...baseList,
-            data: baseListData.map((base) =>
-              ({ ...base, ...(metaListData.find(meta=>meta.id === base.id)) })) as AdminLog[]
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...(metaListData.find(meta=>meta.id === base.id))
+            })) as AdminLog[]
           }
         }
       }

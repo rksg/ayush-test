@@ -6,8 +6,8 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { Button, Loader, Tooltip }   from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -95,12 +95,9 @@ export function SwitchTraceRouteForm () {
       if (result) {
         refetchResult()
       }
-    } catch {
+    } catch (error) {
       setIsValid(false)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

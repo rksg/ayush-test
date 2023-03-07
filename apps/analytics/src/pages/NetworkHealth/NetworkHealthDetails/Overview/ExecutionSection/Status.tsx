@@ -90,7 +90,7 @@ export const StatusBlock = ({ field, values, configured }: StatusBlockProps) => 
   </GridCol>
 }
 
-export const Status = ( { details }: ReturnType<typeof getExecutionSectionData>) => <>{
+export const Status = ({ details } : { details: ReturnType<typeof getExecutionSectionData> }) => <>{
   Object.keys(statusColumns).map(field =>
     <StatusBlock
       key={field}

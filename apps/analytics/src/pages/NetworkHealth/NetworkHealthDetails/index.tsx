@@ -3,7 +3,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Details }                                     from './Details'
+import { Details }                                     from './DetailsTable'
 import { Title, SubTitle, ReRunButton, TestRunButton } from './Header'
 import { Overview }                                    from './Overview'
 

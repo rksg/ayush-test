@@ -38,7 +38,6 @@ import {
   MultipleEditPortMessages,
   poeBudgetRegExp,
   PORT_SPEED,
-  showGeneralError,
   SwitchPortViewModel,
   SwitchVlanUnion,
   PortSettingModel,
@@ -559,7 +558,7 @@ export function EditPortDrawer ({
       setDrawerVisible(false)
 
     } catch (err) {
-      showGeneralError(err)
+      console.log(err) // eslint-disable-line no-console
     }
   }
 

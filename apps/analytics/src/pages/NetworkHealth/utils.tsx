@@ -5,14 +5,30 @@ import { Tooltip }                                from '@acx-ui/components'
 import { intlFormats, formatter, DateFormatEnum } from '@acx-ui/formatter'
 import { getIntl }                                from '@acx-ui/utils'
 
-import { testTypes }                                      from './contents'
-import { NetworkHealthSpec, NetworkHealthTest, TestType } from './types'
+import { authMethodsByCode } from './authMethods'
+import { testTypes }         from './contents'
+import { stage }             from './stages'
+import {
+  NetworkHealthSpec,
+  NetworkHealthConfig,
+  NetworkHealthTest,
+  TestType
+} from './types'
 
 export interface StatsFromSummary {
   isOngoing: boolean
   apsUnderTest?: number
   apsFinishedTest?: number
   lastResult?: number
+}
+
+export const stagesFromConfig = (config: NetworkHealthConfig) => {
+  if (!config.authenticationMethod) { return [] }
+  const stages = [...authMethodsByCode[config.authenticationMethod].stages, stage('dns')]
+  if (config.pingAddress) { stages.push(stage('ping')) }
+  if (config.tracerouteAddress) { stages.push(stage('traceroute')) }
+  if (config.speedTestEnabled) { stages.push(stage('speedTest')) }
+  return stages.map((item) => ({ ...item }))
 }
 
 export const statsFromSummary = (summary: NetworkHealthTest['summary'] | undefined) => {
