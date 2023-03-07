@@ -7,7 +7,6 @@ import { mockServer, render, screen }                                           
 
 import { mockEdgeData, mockEdgeDhcpDataList, mockNsgStatsList, mockVenueData } from '../__tests__/fixtures'
 
-import EdgeDHCPDetail            from '.'
 import NetworkSegmentationDetail from '.'
 
 
