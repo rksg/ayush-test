@@ -1,53 +1,56 @@
-import { useState } from 'react'
+import { useSwitchListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { useParams }                              from '@acx-ui/react-router-dom'
 
-import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
+import { ClientsTable } from './ClientsTable'
 
-import { Tooltip } from '@acx-ui/components'
+function GetFilterable (filterByVenue: boolean, filterBySwitch: boolean) {
+  const { tenantId, venueId } = useParams()
+  const filterable: { [k: string]: boolean | { key: string; value: string }[] } = {}
 
-import { ClientsTable }                  from './ClientsTable'
-import { ClientSearchBar, SearchBarDiv } from './styledComponents'
+  const venueQueryTable = useVenuesListQuery({
+    params: { tenantId }, payload: {
+      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, { skip: !filterByVenue })
 
-export function SwitchClientsTable () {
-  const { $t } = useIntl()
-
-  const [searchValue, setSearchValue] = useState('')
-
-  const getSearchToolTipText = () => {
-    return defineMessage({ defaultMessage: `
-        <div>You can search for clients by the following properties *:
-          <ul><li>MAC Address</li>
-          <li>Description</li>
-          <li>Device Type</li>
-          <li>Venue</li>
-          <li>Switch</li>
-          <li>VLAN</li></ul>
-        <div>* Search ignores columns that you chose to hide</div></div>` })
+  if (filterByVenue) {
+    filterable.venueId = venueQueryTable?.data?.data.map(v => (
+      { key: v.id, value: v.name })
+    ) || true
   }
+
+  const switchQueryTable = useSwitchListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: venueId ? { venueId: [venueId] } : {}
+  } }, { skip: !filterBySwitch })
+
+  if (filterBySwitch) {
+    filterable.switchId = switchQueryTable?.data?.data.map(v => (
+      { key: v.id, value: v.name })
+    ) || true
+  }
+
+  return filterable
+}
+
+export function SwitchClientsTable (props : {
+  filterByVenue?: boolean
+  filterBySwitch?: boolean
+}) {
+  const { filterByVenue, filterBySwitch } = props
 
   return (
     <div>
-      <SearchBarDiv>
-        <ClientSearchBar
-          placeHolder={
-            $t({ defaultMessage: 'Search for clients' })}
-          onChange={async (value)=>{
-            if(value.length === 0 || value.length >= 2){
-              setSearchValue(value)
-            }
-          }}
-        />
-        <Tooltip.Question
-          title={<FormattedMessage {...getSearchToolTipText()}
-            values={{
-              div: (contents) => <div>{contents}</div>,
-              ul: (contents) => <ul>{contents}</ul>,
-              li: (contents) => <li>{contents}</li>
-            }}/>}
-          placement='bottom'
-          style={{ gap: '10px' }}
-        />
-      </SearchBarDiv>
-      <ClientsTable searchString={searchValue} />
+      <ClientsTable
+        searchable={true}
+        filterableKeys={GetFilterable(!!filterByVenue, !!filterBySwitch)}
+      />
     </div>
   )
 }

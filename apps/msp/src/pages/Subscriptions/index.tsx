@@ -16,6 +16,9 @@ import {
   TableProps
 } from '@acx-ui/components'
 import {
+  SubscriptionUsageReportDialog
+} from '@acx-ui/msp/components'
+import {
   useMspEntitlementListQuery,
   useMspAssignmentSummaryQuery,
   useRefreshMspEntitlementMutation
@@ -26,6 +29,7 @@ import {
   MspEntitlement
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 export function Subscriptions () {
   const { $t } = useIntl()
@@ -33,6 +37,7 @@ export function Subscriptions () {
   const [usedWifiCount, setUsedWifiCount] = useState(0)
   const [totalSwitchCount, setTotalSwitchCount] = useState(0)
   const [usedSwitchCount, setUsedSwitchCount] = useState(0)
+  const [showDialog, setShowDialog] = useState(false)
 
   const { tenantId } = useParams()
 
@@ -103,10 +108,11 @@ export function Subscriptions () {
       label: $t({ defaultMessage: 'Generate Usage Report' }),
       onClick: () => {
         // TODO
+        setShowDialog(true)
       }
     },
     {
-      label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      label: $t({ defaultMessage: 'Manage Subscriptions' }),
       onClick: () => {
         window.open('https://support.ruckuswireless.com/cloud_subscriptions', '_blank')
       }
@@ -162,7 +168,7 @@ export function Subscriptions () {
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Subscription Utilization' })}</Subtitle>
         <Row>
-          <label>Wi-Fi</label>
+          <label>{$t({ defaultMessage: 'Wi-Fi' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
@@ -182,7 +188,7 @@ export function Subscriptions () {
           />
           <label style={{ marginLeft: 8 }}>{usedWifiCount} / {totalWifiCount}</label>
 
-          <label style={{ marginLeft: 40 }}>Switch</label>
+          <label style={{ marginLeft: 40 }}>{$t({ defaultMessage: 'Switch' })}</label>
           <StackedBarChart
             style={{ marginLeft: 8, height: 16, width: 135 }}
             showLabels={false}
@@ -235,9 +241,13 @@ export function Subscriptions () {
       <Loader states={[queryResults]}>
         <Table
           columns={columns}
-          actions={actions}
+          actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           rowKey='id'
+        />
+        <SubscriptionUsageReportDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
         />
       </Loader>
     )
@@ -247,11 +257,11 @@ export function Subscriptions () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Subscriptions' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={filterByAccess([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <SubscriptionUtilization />
       <SubscriptionTable />

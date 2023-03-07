@@ -14,7 +14,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Modal, showActionModal/*, showToast */ } from '@acx-ui/components'
+import { Modal, showActionModal }  from '@acx-ui/components'
 import {
   useAddAdminMutation,
   useGetRegisteredUsersListQuery

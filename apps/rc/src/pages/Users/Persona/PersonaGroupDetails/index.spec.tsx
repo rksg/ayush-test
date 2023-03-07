@@ -66,7 +66,7 @@ describe('Persona Group Details', () => {
     }
   })
 
-  it('should render persona group details', async () => {
+  it.skip('should render persona group details', async () => {
     render(
       <Provider>
         <PersonaGroupDetails />

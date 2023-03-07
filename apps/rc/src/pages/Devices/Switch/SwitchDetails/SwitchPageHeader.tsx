@@ -16,6 +16,7 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
+import { filterByAccess }           from '@acx-ui/user'
 import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import SwitchTabs from './SwitchTabs'
@@ -160,7 +161,7 @@ function SwitchPageHeader () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
         ]}
-        extra={[
+        extra={filterByAccess([
           <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -168,7 +169,7 @@ function SwitchPageHeader () {
             showTimePicker
             selectionType={range}
           />,
-          <Dropdown overlay={menu} key='actionMenu'>
+          <Dropdown overlay={menu}>
             <Button>
               <Space>
                 {$t({ defaultMessage: 'More Actions' })}
@@ -177,7 +178,6 @@ function SwitchPageHeader () {
             </Button>
           </Dropdown>,
           <Button
-            key='configure'
             type='primary'
             onClick={() =>
               navigate({
@@ -186,7 +186,7 @@ function SwitchPageHeader () {
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>
-        ]}
+        ])}
         footer={<SwitchTabs switchDetail={switchDetailHeader as SwitchViewModel} />}
       />
       <SwitchCliSession

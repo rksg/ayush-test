@@ -18,10 +18,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -89,10 +89,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -113,10 +113,22 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "PSK",
+              "value": "EAP",
             },
           ],
-          "id": "HJp6oV",
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
         },
       },
       Object {
@@ -153,10 +165,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -215,10 +227,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -284,10 +296,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -353,10 +365,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -424,10 +436,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -448,10 +460,22 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "PSK",
+              "value": "EAP",
             },
           ],
-          "id": "HJp6oV",
+          "id": "QBomBf",
+        },
+      },
+      Object {
+        "key": "radius",
+        "title": Object {
+          "defaultMessage": Array [
+            Object {
+              "type": 0,
+              "value": "RADIUS",
+            },
+          ],
+          "id": "pS5Lez",
         },
       },
       Object {
@@ -488,10 +512,10 @@ Array [
           "defaultMessage": Array [
             Object {
               "type": 0,
-              "value": "802.11 Authentication",
+              "value": "802.11 Auth",
             },
           ],
-          "id": "tgg9V9",
+          "id": "khUcMo",
         },
       },
       Object {
@@ -552,10 +576,10 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "802.11 Authentication",
+            "value": "802.11 Auth",
           },
         ],
-        "id": "tgg9V9",
+        "id": "khUcMo",
       },
     },
     Object {
@@ -626,10 +650,10 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "802.11 Authentication",
+            "value": "802.11 Auth",
           },
         ],
-        "id": "tgg9V9",
+        "id": "khUcMo",
       },
     },
     Object {
@@ -700,10 +724,10 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "802.11 Authentication",
+            "value": "802.11 Auth",
           },
         ],
-        "id": "tgg9V9",
+        "id": "khUcMo",
       },
     },
     Object {
@@ -777,10 +801,10 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "802.11 Authentication",
+            "value": "802.11 Auth",
           },
         ],
-        "id": "tgg9V9",
+        "id": "khUcMo",
       },
     },
     Object {
@@ -801,10 +825,22 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "PSK",
+            "value": "EAP",
           },
         ],
-        "id": "HJp6oV",
+        "id": "QBomBf",
+      },
+    },
+    Object {
+      "key": "radius",
+      "title": Object {
+        "defaultMessage": Array [
+          Object {
+            "type": 0,
+            "value": "RADIUS",
+          },
+        ],
+        "id": "pS5Lez",
       },
     },
     Object {
@@ -847,10 +883,10 @@ Object {
         "defaultMessage": Array [
           Object {
             "type": 0,
-            "value": "802.11 Authentication",
+            "value": "802.11 Auth",
           },
         ],
-        "id": "tgg9V9",
+        "id": "khUcMo",
       },
     },
     Object {

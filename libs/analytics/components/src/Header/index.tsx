@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 
+import { omit }                   from 'lodash'
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
@@ -7,7 +8,8 @@ import { nodeTypes, useAnalyticsFilter }                                      fr
 import { PageHeader, PageHeaderProps, Loader, RangePicker, SuspenseBoundary } from '@acx-ui/components'
 import { useDateFilter, NodeType }                                            from '@acx-ui/utils'
 
-import { NetworkFilter } from '../NetworkFilter'
+import { NetworkFilter }                from '../NetworkFilter'
+import { useNetworkFilterQuery, Child } from '../NetworkFilter/services'
 
 import { useNetworkNodeInfoQuery } from './services'
 import { Divider }                 from './styledComponents'
@@ -59,11 +61,19 @@ export const useSubTitle = (subTitles: SubTitle[], type: NodeType): ReactElement
   </span>
 }
 
+// there is an issue in api for venue name, it returns from path instead of getting it from druid and it is the id
+function getVenueName (name: string, data: Child[] | undefined): string {
+  const venue = data?.find(({ id }) => id === name)
+  return venue?.name || name
+}
+
 export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderProps) => {
   const { filters, getNetworkFilter } = useAnalyticsFilter()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const results = useNetworkNodeInfoQuery(filters)
-  const state = { ...results, isLoading: false } // isLoading to false to prevent blank header on load
+  const networkFilter = omit({ ...filters, shouldQuerySwitch }, 'path', 'filter')
+  const filterResult = useNetworkFilterQuery(networkFilter)
+  const state = { ...results, ...filterResult, isLoading: false } // isLoading to false to prevent blank header on load
   const filter = filters?.filter?.networkNodes?.[0] // venue level uses filters
   const { networkFilter: { path } } = getNetworkFilter()
   const { name, type } = (filter || path).slice(-1)[0]
@@ -74,7 +84,7 @@ export const Header = ({ shouldQuerySwitch, withIncidents, ...props }: HeaderPro
     </Loader>}
     title={<Loader states={[state]} fallback={<Spinner size='default' />}>
       {filter || path.length > 1 ?
-        results.data?.name || name as string // ap/switch name from data || venue name from filter
+        results.data?.name || getVenueName(name, filterResult?.data)
         : props.title}
     </Loader>}
     extra={[

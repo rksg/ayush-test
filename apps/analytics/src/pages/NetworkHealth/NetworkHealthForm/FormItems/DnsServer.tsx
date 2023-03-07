@@ -1,37 +1,29 @@
-import { useEffect } from 'react'
-
 import { Form, Input, Radio, Space } from 'antd'
+import { NamePath }                  from 'antd/es/form/interface'
 import { defineMessage, useIntl }    from 'react-intl'
 
 import {
   StepsFormNew,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 import { networkWifiIpRegExp } from '@acx-ui/rc/utils'
 
 import { NetworkHealthFormDto } from '../../types'
 
-const name = 'dnsServer' as const
+const name = ['configs', 0, 'dnsServer'] as const
 const label = defineMessage({ defaultMessage: 'DNS Server' })
 
-const useField = () => {
+const useIsCustom = () => {
   const { form } = useStepFormContext<NetworkHealthFormDto>()
-  const [isCustom, value] = [
-    useWatch('isDnsServerCustom', form),
-    useWatch(name, form)
-  ]
+  const isCustom = Form.useWatch('isDnsServerCustom', form)
 
-  return { form, isCustom, value }
+  return { form, isCustom }
 }
 
 export function DnsServer () {
   const { $t } = useIntl()
-  const { form, isCustom, value } = useField()
-
-  useEffect(() => {
-    if (!isCustom && value) form.setFieldValue(name, undefined)
-  }, [form, isCustom, value])
+  const { form, isCustom } = useIsCustom()
+  const fieldName = name as unknown as NamePath
 
   return (
     <Form.Item required={isCustom} label={$t(label)}>
@@ -40,14 +32,16 @@ export function DnsServer () {
           noStyle
           name='isDnsServerCustom'
         >
-          <Radio.Group>
+          <Radio.Group
+            onChange={(e) => !e.target.value && form.setFieldValue(fieldName, undefined)}
+          >
             <Radio value={false}>{$t({ defaultMessage: 'Default' })}</Radio>
             <Radio value={true}>{$t({ defaultMessage: 'Custom' })}</Radio>
           </Radio.Group>
         </Form.Item>
         {isCustom ? <Form.Item
           noStyle
-          name={name}
+          name={fieldName}
           label={$t(label)}
           rules={[
             { required: true },
@@ -67,10 +61,10 @@ DnsServer.label = label
 
 DnsServer.FieldSummary = function DnsServerFieldSummary () {
   const { $t } = useIntl()
-  const { isCustom } = useField()
+  const { isCustom } = useIsCustom()
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(label)}
     children={<StepsFormNew.FieldSummary<string>
       convert={(value) => isCustom ? String(value) : $t({ defaultMessage: 'Default' })}

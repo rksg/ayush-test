@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { Provider  }                                   from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider  }              from '@acx-ui/store'
 import {
   render,
   screen,
   fireEvent
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile } from './AccountSettings/__tests__/fixtures'
 
@@ -71,6 +71,10 @@ describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+  beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+  })
 
   it('should render correctly', async () => {
     render(

@@ -36,8 +36,7 @@ import {
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery,
-  useGetUserProfileQuery
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -49,7 +48,6 @@ import {
   MspEc,
   MspEcData,
   roleDisplayText,
-  RolesEnum,
   EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
@@ -61,6 +59,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -153,6 +153,7 @@ const defaultAddress: Address = {
 export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -395,11 +396,8 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -456,11 +454,8 @@ export function ManageCustomer () {
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -840,6 +835,10 @@ export function ManageCustomer () {
           <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
           <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
         </UI.FieldLabel2>
+        {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
+        </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
           <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
@@ -961,6 +960,12 @@ export function ManageCustomer () {
         >
           <Paragraph>{switchAssigned}</Paragraph>
         </Form.Item>
+        {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+        >
+          <Paragraph>25</Paragraph>
+        </Form.Item>}
+
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >

@@ -3,8 +3,9 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { Details }  from './Details'
-import { Overview } from './Overview'
+import { Details }                                     from './DetailsTable'
+import { Title, SubTitle, ReRunButton, TestRunButton } from './Header'
+import { Overview }                                    from './Overview'
 
 type NetworkHealthTabs = 'overview' | 'details' | 'progress'
 
@@ -38,21 +39,27 @@ function NetworkHealthDetails () {
     pathname: `${basePath.pathname}/${tab}`
   })
   const Tab = tabs.find(tab => tab.key === activeTab)?.component
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Test' })}
+        title={<Title />}
+        subTitle={<SubTitle />}
         breadcrumb={[{
           text: $t({ defaultMessage: 'Network Health' }),
           link: '/serviceValidation/networkHealth'
         }]}
+        extra={[
+          <ReRunButton key='re-run' />,
+          <TestRunButton key='past-tests' />
+        ]}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }
       />
-      {Tab && <Tab/>}
+      {Tab && <Tab />}
     </>
   )
 }

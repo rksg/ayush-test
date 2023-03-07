@@ -4,11 +4,12 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, StepsForm, Tooltip, useStepFormContext, useWatch }              from '@acx-ui/components'
+import { Button, StepsForm, Tooltip, useStepFormContext }                        from '@acx-ui/components'
 import { useGetDhcpByEdgeIdQuery, useGetEdgeDhcpListQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import { EdgeDhcpPool }                                                          from '@acx-ui/rc/utils'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { DhcpServiceModal }     from './DhcpServiceModal'

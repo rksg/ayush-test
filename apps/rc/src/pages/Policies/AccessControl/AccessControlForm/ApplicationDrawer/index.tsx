@@ -11,7 +11,6 @@ import {
   GridCol,
   GridRow,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -25,6 +24,7 @@ import {
   ApplicationRuleType, AvcCategory,
   CommonResult
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   genRuleObject,
@@ -418,12 +418,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         setRequestId(appRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -466,14 +462,14 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
-        { required: true,
-          validator: (_, value) => {
-            if (appList && appList.find(app => app === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { required: true },
+        { validator: (_, value) => {
+          if (appList && appList.find(app => app === value)) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -486,8 +482,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>
@@ -508,6 +504,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           <Form.Item
             name={[...inputName, 'applicationPolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Application profile' })
             }]}
             children={
@@ -554,6 +552,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleApplicationsDrawerClose}
             onSave={async () => {
               try {
@@ -588,7 +587,6 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
-            showSaveButton={!isOnlyViewMode}
             onCancel={handleRuleDrawerClose}
             onSave={async () => {
               try {
