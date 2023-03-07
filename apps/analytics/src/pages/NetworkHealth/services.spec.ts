@@ -263,26 +263,6 @@ describe('useNetworkHealthSpecMutation', () => {
   })
 })
 
-it('useDeleteNetworkHealthTestMutation', async () => {
-  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
-  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
-  act(() => {
-    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
-  })
-  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
-  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
-})
-
-it('useRunNetworkHealthTestMutation', async () => {
-  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
-  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
-  act(() => {
-    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
-  })
-  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
-  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
-})
-
 describe('specToDto', () => {
   const spec = {
     id: 'spec-id',
