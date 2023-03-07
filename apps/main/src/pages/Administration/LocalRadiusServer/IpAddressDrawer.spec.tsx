@@ -101,7 +101,6 @@ describe('IpAddressDrawer', () => {
     await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
     await userEvent.click(await screen.findByText('Apply'))
 
-    await new Promise((r)=>{setTimeout(r, 1000)})
     await screen.findByText('IP Address is already used by another tenant')
   })
 
