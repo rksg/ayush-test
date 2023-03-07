@@ -63,7 +63,7 @@ const Events = () => {
 }
 
 const Activities = () => {
-  const { switchId } = useParams()
+  const { serialNumber } = useParams()
   const { fromTime, toTime } = useActivityTableFilter()
   const { data: userProfileData } = useUserProfileContext()
   const currentUserDetailLevel = userProfileData?.detailLevel
@@ -75,7 +75,7 @@ const Activities = () => {
         fromTime,
         toTime,
         entityType: 'SWITCH',
-        entityId: switchId
+        entityId: serialNumber
       },
       detailLevel: currentUserDetailLevel
     })
