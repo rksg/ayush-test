@@ -17,11 +17,16 @@ interface TrendPillProps {
   trend: TrendType
   value: string
 }
-export function TrendPill ({ trend, value }: TrendPillProps) {
+
+
+export const TrendPill = React.forwardRef((
+  { trend, value, ...rest }: TrendPillProps,
+  ref: React.ForwardedRef<HTMLSpanElement>
+) => {
   return (
-    <UI.Pill type={trend}>{value}</UI.Pill>
+    <UI.Pill type={trend} {...rest} ref={ref}>{value}</UI.Pill>
   )
-}
+})
 
 interface SeverityPillProps {
   severity: IncidentSeverities

@@ -31,10 +31,10 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
-  GuestErrorRes
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
 import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
@@ -63,7 +63,7 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export default function GuestsTable () {
+export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
   const { startDate, endDate, range } = useDateFilter()
@@ -361,11 +361,11 @@ export default function GuestsTable () {
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -378,8 +378,12 @@ export default function GuestsTable () {
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }
-        ]}
+        }].filter(((item, index)=> {
+          if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
+            return false
+          }
+          return true
+        })))}
       />
 
       <Drawer
