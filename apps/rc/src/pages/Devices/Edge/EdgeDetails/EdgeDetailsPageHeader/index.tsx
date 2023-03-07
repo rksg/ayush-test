@@ -53,7 +53,7 @@ export const EdgeDetailsPageHeader = () => {
       'ports',
       'ip',
       'model',
-      'fwVersion',
+      'firmwareVersion',
       'deviceStatus',
       'deviceSeverity',
       'venueId',

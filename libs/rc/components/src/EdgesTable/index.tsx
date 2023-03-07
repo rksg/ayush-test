@@ -35,7 +35,8 @@ export const defaultEdgeTablePayload = {
     'venueId',
     'venueName',
     'edgeGroupId',
-    'tags'
+    'tags',
+    'firmwareVersion'
   ],
   filters: {},
   sortField: 'name',
@@ -134,6 +135,13 @@ export const EdgesTable = (props: EdgesTableProps) => {
       render: (data) => {
         return `${data}`
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
