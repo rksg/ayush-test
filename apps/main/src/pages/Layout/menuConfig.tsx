@@ -31,14 +31,14 @@ import {
   ServiceValidationSolid,
   ServiceValidationOutlined
 } from '@acx-ui/icons'
-import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { getServiceCatalogRoutePath, getServiceListRoutePath, RolesEnum } from '@acx-ui/rc/utils'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
 const ServicesSolid = styled(ServicesSolidBase)`${LayoutUI.iconSolidOverride}`
 const PoliciesSolid = styled(PoliciesSolidBase)`${LayoutUI.iconSolidOverride}`
 
-export function useMenuConfig () {
+export function useMenuConfig (userRole: RolesEnum) {
   const { $t } = useIntl()
   const showSV = useIsSplitOn(Features.SERVICE_VALIDATION)
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
@@ -138,8 +138,7 @@ export function useMenuConfig () {
         },
         {
           path: '/networks/wired/profiles',
-          name: $t({ defaultMessage: 'Wired Networks' }),
-          disabled: !useIsSplitOn(Features.UNRELEASED)
+          name: $t({ defaultMessage: 'Wired Networks' })
         }
       ]
     },
@@ -250,5 +249,8 @@ export function useMenuConfig () {
       disabled: !isAdministrationEnabled
     }
   ]
+  if (userRole === RolesEnum.GUEST_MANAGER) {
+    return []
+  }
   return config
 }

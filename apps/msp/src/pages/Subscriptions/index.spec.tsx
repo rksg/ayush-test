@@ -88,7 +88,7 @@ describe('Subscriptions', () => {
     const GenerateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
     fireEvent.click(GenerateUsageButton)
     const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subsciptions' })
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
     fireEvent.click(licenseManagementButton)
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     fireEvent.click(refreshButton)

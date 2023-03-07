@@ -5,9 +5,10 @@ export const websocketServerUrl = '/api/websocket/socket.io'
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
     method: 'post',
-    url: '/networks/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/network',
-    newApi: true
+    // Path varivable is not match
+    // url: '/networks/query',
+    url: '/api/viewmodel/tenant/:tenantId/network'
+    // newApi: true
   },
   getNetworksDetailHeader: {
     method: 'get',
@@ -250,9 +251,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getUploadURL: {
     method: 'post',
-    url: '/files/uploadurl',
-    oldUrl: '/api/file/tenant/:tenantId/upload-url',
-    newApi: true
+    // method is not match
+    // url: '/files/uploadurl',
+    url: '/api/file/tenant/:tenantId/upload-url'
+    // newApi: true
   },
   getAllDevices: {
     method: 'post',
@@ -312,9 +314,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueNetworkList: {
     method: 'post',
-    url: '/venues/:venueId/networks/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
-    newApi: true
+    // Path variable is not match
+    // url: '/venues/:venueId/networks/query',
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
+    // newApi: true
   },
   venueNetworkApGroup: {
     method: 'post',

@@ -40,7 +40,10 @@ export const SCHEDULE_END_TIME_FORMAT = 'hh A'
 export interface UpdateScheduleRequest {
   date?: string;
   time?: string;
-  venues: Array<{ id: string, version: string, type: FirmwareType }>;
+  venues?: Array<{ id: string, version: string, type: FirmwareType }>;
+  preDownload?: boolean;
+  venueIds?: string[] | null
+  switchVersion?: string
 }
 
 export interface UpdateNowRequest {
@@ -99,7 +102,7 @@ export interface FirmwareVenue {
   updatedAdvice: VenueUpdateAdvice;
   availableVersions: FirmwareVenueVersion[];
   nextSchedules: Schedule[];
-  lastSkippedVersions: SkippedVersion[];
+  lastSkippedVersions: FirmwareVenueVersion[];
   versionHistory: VersionHistory[];
   lastScheduleUpdate: string;
   eolApFirmwares?: EolApFirmware[];
@@ -107,7 +110,7 @@ export interface FirmwareVenue {
 
 export interface FirmwareVenueVersion {
   version: string;
-  category: FirmwareCategory;
+  category?: FirmwareCategory;
   type: FirmwareType;
 }
 
@@ -118,7 +121,7 @@ export interface Schedule {
 
 export interface ScheduleVersionInfo {
   version: string;
-  category: FirmwareCategory;
+  category?: FirmwareCategory;
   type: FirmwareType;
 }
 
@@ -131,6 +134,37 @@ export interface VersionHistory {
   version: string;
   type: FirmwareType;
   deployedDateTime: string;
+}
+
+export interface switchVersion {
+  id: string;
+  name: string;
+  version: string;
+  category: FirmwareCategory;
+}
+
+export interface switchSchedule {
+  timeSlot: {
+    startDateTime: string;
+    versionInfo: ScheduleVersionInfo;
+  }
+}
+
+export interface FirmwareSwitchVenue {
+  id: string;
+  name: string;
+  preDownload: boolean;
+  switchFirmwareVersion: switchVersion;
+  updatedAdvice: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  nextSchedule: switchSchedule;
+  lastSkippedVersions: SkippedVersion[];
+  versionHistory: VersionHistory[];
+  lastScheduleUpdateTime: string;
+}
+
+export interface CurrentVersions {
+  currentVersions: string[]
 }
 
 export const firmwareTypeTrans = () => {
