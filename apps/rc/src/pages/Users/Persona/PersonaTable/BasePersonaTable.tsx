@@ -153,14 +153,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const toastDetailErrorMessage = (error: any) => {
-    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-    showToast({
-      type: 'error',
-      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-    })
-  }
+  // const toastDetailErrorMessage = (error: any) => {
+  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+  //   showToast({
+  //     type: 'error',
+  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+  //   })
+  // }
 
   const importPersonas = async (formData: FormData, values: object) => {
     const { groupId } = values as { groupId: string }
@@ -170,9 +170,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         payload: formData
       }).unwrap()
       setUploadCsvDrawerVisible(false)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toastDetailErrorMessage(error)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -180,11 +179,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     downloadCsv({
       params: { groupId: personaGroupId },
       payload: personaListQuery.payload
-    }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export Personas.' })
-      })
+    }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -255,13 +251,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
                 clearSelection()
               })
               .catch((e) => {
-                showToast({
-                  type: 'error',
-                  content: $t(
-                    { defaultMessage: 'An error occurred {detail}' },
-                    { detail: e?.data?.message ?? undefined }
-                  )
-                })
+                console.log(e) // eslint-disable-line no-console
               })
           }
         })
