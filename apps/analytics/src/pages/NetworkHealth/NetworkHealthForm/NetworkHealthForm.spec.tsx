@@ -90,9 +90,10 @@ describe('NetworkHealthForm', () => {
 
     // Step 1
     await type(body.getByRole('textbox', { name: 'Test Name' }), 'Test 1')
+    await selectOptions(await body.findByRole('combobox', { name: 'Test Type' }), 'On-Demand')
     await selectOptions(await body.findByRole('combobox', { name: 'Network' }), 'Network 1')
     await selectOptions(
-      body.getByRole('combobox', { name: (_, el) => el.id === 'authenticationMethod' }),
+      body.getByRole('combobox', { name: (_, el) => el.id === 'configs_0_authenticationMethod' }),
       body.getByRole('option', { name: 'Pre-Shared Key (PSK)' })
     )
 

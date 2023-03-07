@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Alert, StepsForm, Subtitle, useStepFormContext, useWatch } from '@acx-ui/components'
+import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 import * as UI                          from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
@@ -30,8 +31,8 @@ export const SummaryForm = () => {
     setSmartEdgeData([
       {
         edgeName: edgeName,
-        segments: (segments).toString(),
-        devices: (devices).toString(),
+        segments: segments.toString(),
+        devices: devices.toString(),
         dhcpServiceName: dhcpName,
         dhcpPoolName: poolName
       }
@@ -43,8 +44,8 @@ export const SummaryForm = () => {
       <Col>
         <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
         <Alert message={
-          $t({ defaultMessage: `For segment assignment for AP wired, 
-            please go to the Venue/ property Units page to assign an AP 
+          $t({ defaultMessage: `For segment assignment for AP wired,
+            please go to the Venue/ property Units page to assign an AP
             for the specific unit/ persona.` })
         }
         type='info'

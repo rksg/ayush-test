@@ -15,7 +15,9 @@ describe('SpeedTest', () => {
 describe('SpeedTest.FieldSummary', () => {
   it('renders Enabled', async () => {
     renderForm(<SpeedTest.FieldSummary />, {
-      initialValues: { speedTestEnabled: true }
+      initialValues: {
+        configs: [{ speedTestEnabled: true }]
+      }
     })
 
     expect(screen.getByTestId('field')).toHaveTextContent('Enabled')
@@ -23,7 +25,9 @@ describe('SpeedTest.FieldSummary', () => {
 
   it('renders Disabled', async () => {
     renderForm(<SpeedTest.FieldSummary />, {
-      initialValues: { speedTestEnabled: false }
+      initialValues: {
+        configs: [{ speedTestEnabled: false }]
+      }
     })
 
     expect(screen.getByTestId('field')).toHaveTextContent('Disabled')

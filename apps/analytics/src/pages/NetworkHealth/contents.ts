@@ -6,7 +6,8 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 import {
   ClientType,
   TestStage,
-  TestType
+  TestType,
+  ScheduleFrequency
 } from './types'
 
 import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
@@ -28,9 +29,16 @@ export const clientTypes = {
   [ClientType.VirtualWirelessClient]: defineMessage({ defaultMessage: 'Virtual Wireless Client' })
 }
 
-export const testTypes = {
+export const testTypes: Record<string, MessageDescriptor> = {
   [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
   [TestType.Scheduled]: defineMessage({ defaultMessage: 'Scheduled' })
+}
+
+export const testTypesWithSchedule: Record<string, MessageDescriptor> = {
+  [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
+  [ScheduleFrequency.Daily]: defineMessage({ defaultMessage: 'Daily' }),
+  [ScheduleFrequency.Weekly]: defineMessage({ defaultMessage: 'Weekly' }),
+  [ScheduleFrequency.Monthly]: defineMessage({ defaultMessage: 'Monthly' })
 }
 
 export const unsupportedAuthMethods = {
@@ -78,6 +86,13 @@ export const clientTypeTooltip = defineMessage({
     user WiFi experience (e.g. during video calls). Thus, when Virtual Wireless Client is selected,
     the test procedure will be done one AP at a time to minimize disruption to the network, resulting
     in a longer test duration compared to the Virtual Client option.</p>
+  `
+})
+
+export const scheduleMonthlyTooltip = defineMessage({
+  defaultMessage: `
+    Schedule will fall on last day of the month if 29th, 30th or 31st is selected
+    and the month does not have these days.
   `
 })
 

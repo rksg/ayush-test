@@ -35,7 +35,7 @@ import {
   GuestErrorRes
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }                                           from '@acx-ui/utils'
+import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -63,20 +63,43 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export default function GuestsTable () {
+export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
-      filters: { includeExpired: ['true'] }
+      filters: {
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
+      }
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
+
+  useEffect(()=>{
+    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
+    let customPayload = {
+      ...tableQuery.payload,
+      filters: {
+        ..._.omit(payload.filters, ['fromTime', 'toTime']),
+        includeExpired: ['true'],
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
+      }
+    }
+    tableQuery.setPayload(customPayload)
+  }, [startDate, endDate])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -356,7 +379,12 @@ export default function GuestsTable () {
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }
-        ]}
+        ].filter(((item, index)=> {
+          if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
+            return false
+          }
+          return true
+        }))}
       />
 
       <Drawer
