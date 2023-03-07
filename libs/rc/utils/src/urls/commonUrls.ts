@@ -397,7 +397,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateVenueSwitchSetting: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/venue'
+    url: '/venues/:venueId/switchSettings',
+    oldUrl: '/api/switch/tenant/:tenantId/venue',
+    newApi: true
   },
   getVenueConfigHistory: {
     method: 'post',
