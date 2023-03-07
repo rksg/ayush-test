@@ -20,6 +20,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -233,11 +234,11 @@ export function DeviceInventory () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Device Inventory' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={filterByAccess([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <DeviceTable />
     </>

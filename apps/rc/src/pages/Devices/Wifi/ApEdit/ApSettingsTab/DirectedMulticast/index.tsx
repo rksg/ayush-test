@@ -5,7 +5,7 @@ import { isEmpty }                                  from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useGetApDirectedMulticastQuery,
   useGetApQuery,
@@ -140,11 +140,8 @@ export function DirectedMulticast () {
         }).unwrap()
       }
 
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

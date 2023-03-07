@@ -12,6 +12,7 @@ import { cssStr }                            from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
 import { CommonUrlsInfo, createHttpRequest } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { UserUrlsInfo }                      from '@acx-ui/user'
 
 
 declare global {
@@ -84,8 +85,8 @@ export function FetchBot (props:FetchBotProps) {
   }, [])
   useEffect(()=>{
     window.generateToken = async function (callback){
-      const userProfileReq = createHttpRequest (
-        CommonUrlsInfo.getUserProfile,
+      const userProfileReq = createHttpRequest(
+        UserUrlsInfo.getUserProfile,
         { ...params }
       )
       try {

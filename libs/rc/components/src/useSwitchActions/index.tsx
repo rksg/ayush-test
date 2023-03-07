@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { showActionModal,
-  showToast }  from '@acx-ui/components'
+import { showActionModal } from '@acx-ui/components'
 import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,
@@ -86,11 +85,8 @@ export function useSwitchActions () {
                 params: { tenantId: tenantId, switchId },
                 payload: { deviceRequestAction: DeviceRequestAction.REBOOT }
               }).unwrap()
-            } catch {
-              showToast({
-                type: 'error',
-                content: $t({ defaultMessage: 'An error occurred' })
-              })
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }
         }]
@@ -109,11 +105,8 @@ export function useSwitchActions () {
       setTimeout(() => {
         callBack && callBack()
       }, 3000)
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

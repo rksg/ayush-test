@@ -6,8 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal,
-  showToast
+  showActionModal
 } from '@acx-ui/components'
 import { useDeleteDpskMutation, useGetDpskListQuery } from '@acx-ui/rc/services'
 import {
@@ -24,6 +23,7 @@ import {
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function DpskTable () {
   const intl = useIntl()
@@ -48,12 +48,8 @@ export default function DpskTable () {
             try {
               await deleteDpsk({ params: { serviceId: id } }).unwrap()
               clearSelection()
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }
         })
@@ -149,12 +145,12 @@ export default function DpskTable () {
         breadcrumb={[
           { text: intl.$t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
@@ -163,7 +159,7 @@ export default function DpskTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

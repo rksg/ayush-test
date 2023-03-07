@@ -7,7 +7,6 @@ import {
   PageHeader,
   StepsForm,
   StepsFormInstance,
-  showToast,
   Loader
 } from '@acx-ui/components'
 import { useGetDHCPProfileQuery, useSaveOrUpdateDHCPMutation }              from '@acx-ui/rc/services'
@@ -71,11 +70,8 @@ export default function DHCPForm (props: DHCPFormProps) {
         })
       }
       await saveOrUpdateDHCP({ params, payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

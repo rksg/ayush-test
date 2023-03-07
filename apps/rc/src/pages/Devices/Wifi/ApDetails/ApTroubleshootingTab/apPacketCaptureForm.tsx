@@ -185,11 +185,8 @@ export function ApPacketCaptureForm () {
         setIsCapturing(true)
         setSessionId(result.response?.sessionId || '')
 
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     } else { // Stop
       const payload = { sessionId }
@@ -198,11 +195,8 @@ export function ApPacketCaptureForm () {
         packetCaptureStateRefetch()
         setIsPrepare(true)
         setHasRequest(true)
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
   }
