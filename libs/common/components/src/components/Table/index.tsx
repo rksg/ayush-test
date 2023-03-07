@@ -193,8 +193,26 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    if (groupable) {
-      for (let i = 0; i < finalParentColumns.length; ++i) {
+    if (groupable && isGroupByActive) {
+      // clear all parent row render which are default with search highlight
+      props.columns.forEach((cols) => {
+        if (cols.render) {
+          return
+        }
+
+        cols.render = (dom, record) => record.isParent
+          ? null
+          : cols.searchable
+            ? getHighlightFn(searchValue)(_.get(record, cols.key))
+            : dom
+      })
+
+      // override with parent columns
+      const maxOverride = Math.min(
+        finalParentColumns.length,
+        (props.columns ?? []).length
+      )
+      for (let i = 0; i < maxOverride; ++i) {
         props.columns[i].render = (dom, record) => record.isParent
           ? finalParentColumns[i].label(record)
           : props.columns[i].searchable

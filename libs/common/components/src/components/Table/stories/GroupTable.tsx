@@ -23,6 +23,7 @@ type APExtendedGroupedResponse = {
     deviceStatus: string
     model: string
     clients: number
+    name?: string
     aps: APExtended[]
   })[]
 }
@@ -30,9 +31,19 @@ type APExtendedGroupedResponse = {
 /**
  * Sample function cleaning
 */
-function cleanResponse (response: APExtendedGroupedResponse) {
-  return response.data.map(apGroup => {
-    const { aps } = apGroup
+function cleanResponse (response: APExtendedGroupedResponse | APExtended[] | undefined) {
+  if (!response) return []
+
+  let typedData
+
+  if (Array.isArray(response)) {
+    typedData = response
+  } else {
+    typedData = response.data
+  }
+
+  return typedData.map(apGroup => {
+    const { aps } = apGroup as unknown as { aps: APExtended[] | undefined }
     const validAps = aps ?? []
     return {
       ...apGroup,
@@ -105,7 +116,7 @@ const apGroupResponse: APExtendedGroupedResponse = {
           meshRole: 'DISABLED',
           deviceGroupId: '99227979648c421c93c15c586e6ed80b',
           clients: 2,
-          tags: '',
+          tags: 'tag 1',
           deviceGroupName: 'apgroup1'
         },
         {
@@ -139,7 +150,7 @@ const apGroupResponse: APExtendedGroupedResponse = {
           meshRole: 'DISABLED',
           deviceGroupId: '99227979648c421c93c15c586e6ed80b',
           clients: 2,
-          tags: '',
+          tags: 'tag 2',
           deviceGroupName: 'apgroup1'
         }
       ]
@@ -386,7 +397,7 @@ const modelResponse: APExtendedGroupedResponse = {
           meshRole: 'DISABLED',
           deviceGroupId: '99227979648c421c93c15c586e6ed80b',
           clients: 2,
-          tags: '',
+          tags: 'tag2',
           deviceGroupName: 'AP_GROUP'
         },
         {
@@ -420,7 +431,7 @@ const modelResponse: APExtendedGroupedResponse = {
           meshRole: 'DISABLED',
           deviceGroupId: '99227979648c421c93c15c586e6ed80b',
           clients: 2,
-          tags: '',
+          tags: 'tag2',
           deviceGroupName: 'AP_GROUP'
         }
       ]
@@ -468,7 +479,7 @@ const modelResponse: APExtendedGroupedResponse = {
           meshRole: 'DISABLED',
           deviceGroupId: '99227979648c421c93c15c586e6ed80b',
           clients: 2,
-          tags: '',
+          tags: 'tag1',
           deviceGroupName: 'AP_GROUP'
         }
       ]
@@ -476,13 +487,119 @@ const modelResponse: APExtendedGroupedResponse = {
   ]
 }
 
+const flatData: APExtended[] = [
+  {
+    serialNumber: '302002015735',
+    name: 'ap2',
+    model: ' ',
+    fwVersion: '6.2.0.103.500',
+    venueId: '4c778ed630394b76b17bce7fe230cf9f',
+    venueName: 'My-Venue',
+    deviceStatus: '2_00_Operational',
+    IP: '10.206.1.34',
+    apMac: '34:20:E3:19:79:00',
+    apStatusData: {
+      APRadio: [
+        {
+          txPower: null,
+          channel: 1,
+          band: '2.4G',
+          Rssi: null,
+          radioId: 0
+        },
+        {
+          txPower: null,
+          channel: 36,
+          band: '5G',
+          Rssi: null,
+          radioId: 1
+        }
+      ]
+    },
+    meshRole: 'DISABLED',
+    deviceGroupId: '99227979648c421c93c15c586e6ed80b',
+    clients: 2,
+    tags: 'tag1',
+    deviceGroupName: 'AP_GROUP'
+  },
+  {
+    serialNumber: '302002015736',
+    name: 'ap1',
+    model: 'R550',
+    fwVersion: '6.2.0.103.500',
+    venueId: '4c778ed630394b76b17bce7fe230cf9f',
+    venueName: 'My-Venue',
+    deviceStatus: '2_00_Operational',
+    IP: '10.206.1.34',
+    apMac: '10:10:E3:19:79:F0',
+    apStatusData: {
+      APRadio: [
+        {
+          txPower: null,
+          channel: 1,
+          band: '2.4G',
+          Rssi: null,
+          radioId: 0
+        },
+        {
+          txPower: null,
+          channel: 36,
+          band: '5G',
+          Rssi: null,
+          radioId: 1
+        }
+      ]
+    },
+    meshRole: 'DISABLED',
+    deviceGroupId: '99227979648c421c93c15c586e6ed80b',
+    clients: 2,
+    tags: 'tag3',
+    deviceGroupName: 'AP_GROUP'
+  },
+  {
+    serialNumber: '302002015732',
+    name: 'ap-test-2',
+    model: 'R550',
+    fwVersion: '6.2.0.103.500',
+    venueId: '4c778ed630394b76b17bce7fe230cf9f',
+    venueName: 'My-Venue',
+    deviceStatus: '2_00_Operational',
+    IP: '10.206.1.34',
+    apMac: 'C4:AA:E3:19:79:F0',
+    apStatusData: {
+      APRadio: [
+        {
+          txPower: null,
+          channel: 1,
+          band: '2.4G',
+          Rssi: null,
+          radioId: 0
+        },
+        {
+          txPower: null,
+          channel: 36,
+          band: '5G',
+          Rssi: null,
+          radioId: 1
+        }
+      ]
+    },
+    meshRole: 'DISABLED',
+    deviceGroupId: '99227979648c421c93c15c586e6ed80b',
+    clients: 2,
+    tags: 'tag3',
+    deviceGroupName: 'AP_GROUP'
+  }
+]
+
 export const groupTBData = cleanResponse(apGroupResponse)
 
 export function GroupTable () {
-  const [ currData, setCurrData ] = React.useState<typeof groupTBData>(() => groupTBData)
+  const [ currData, setCurrData ] =
+    React.useState<typeof groupTBData | typeof flatData>(() => cleanResponse(flatData))
 
   const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName' | undefined) => {
-    let response: APExtendedGroupedResponse | null
+    let response: APExtendedGroupedResponse | undefined
     switch (key) {
       case 'deviceGroupName': {
         response = apGroupResponse
@@ -497,39 +614,41 @@ export function GroupTable () {
         break
       }
       default: {
-        response = null
+        response = undefined
         break
       }
     }
-    if (!response) return []
     const data = cleanResponse(response)
     setCurrData(() => data)
-    return data
   }
 
   // can do mocked table query here with pagination and delay + loader
-  const columns: TableProps<typeof groupTBData[0]>['columns'] = [
+  const columns: TableProps<typeof groupTBData[0] | typeof flatData[0]>['columns'] = [
     {
       title: 'AP Name',
       dataIndex: 'name',
       key: 'name',
-      searchable: true
+      searchable: true,
+      sorter: true
     },
     {
       title: 'Status',
       dataIndex: 'deviceStatus',
       key: 'deviceStatus',
-      filterable: true
+      filterable: true,
+      sorter: true
     },
     {
       title: 'Model',
       dataIndex: 'model',
-      key: 'model'
+      key: 'model',
+      sorter: true
     },
     {
       title: 'IP Address',
       dataIndex: 'IP',
-      key: 'ip'
+      key: 'ip',
+      sorter: true
     },
     {
       title: 'MAC Addresses',
@@ -540,7 +659,8 @@ export function GroupTable () {
     {
       title: 'Venue',
       key: 'venueName',
-      dataIndex: 'venueId'
+      dataIndex: 'venueId',
+      sorter: true
     },
     {
       title: 'Switch',
@@ -551,15 +671,14 @@ export function GroupTable () {
       title: 'Connected Clients',
       key: 'clients',
       dataIndex: 'clients',
-      render: (dom, record) => record.isParent ? '' : dom
+      sorter: true
     },
     {
       title: 'AP Group',
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
       filterable: true,
-      searchable: true,
-      render: (dom, record) => record.isParent ? '' : dom
+      searchable: true
     },
     {
       title: 'RF Channels',
@@ -577,7 +696,7 @@ export function GroupTable () {
   return (
     <>
     with groupby:
-      <Table<typeof groupTBData[0]>
+      <Table<typeof groupTBData[0] | typeof flatData[0]>
         columns={columns}
         dataSource={currData as unknown as TableProps<typeof groupTBData[0]>['dataSource']}
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
@@ -602,8 +721,8 @@ export function GroupTable () {
           onClear: () => {
             // eslint-disable-next-line no-console
             console.log('clear data, reset to AP Group')
-            // reset table to default
-            setCurrData(groupableCallback('deviceGroupName'))
+            // reset table to default flat data
+            setCurrData(() => cleanResponse(flatData))
           },
           parentColumns: [
             {
@@ -619,8 +738,10 @@ export function GroupTable () {
               label: (record) => <div>Connected Clients: {record.clients}</div>
             },
             {
-              key: 'clients',
-              label: (record) => <div>Wireless Networks: {record.networks.count}</div>
+              key: 'networks',
+              label: (record) => <div>
+                Wireless Networks: {record.networks ? record.networks.count : 0}
+              </div>
             }
           ]
         }}
