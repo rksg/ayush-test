@@ -114,7 +114,7 @@ describe('Wired - VlanSetting', () => {
     fireEvent.click(await within(row2).findByRole('radio'))
     fireEvent.click(await within(drawer).findByRole('button', { name: /Edit/i }))
 
-    const dialog = await screen.findByTestId('dialog')
+    const dialog = await screen.findByTestId('vlanSettingModal')
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Next' }))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Finish' }))
