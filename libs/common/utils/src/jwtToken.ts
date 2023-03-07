@@ -1,3 +1,4 @@
+import { TenantIdFromJwt } from './apiService'
 import { getTenantId } from './getTenantId'
 
 export enum AccountTier {
@@ -107,7 +108,8 @@ export async function loadImageWithJWT (imageId: string) {
   let gImgUrl = ''
   const headers = {
     mode: 'no-cors',
-    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {}),
+    ...((getTenantId() !== TenantIdFromJwt()) ? { 'x-rks-tenantid': getTenantId() } : {})
   }
   const url = `/files/${imageId}/urls`
   const result = await fetch(url, { headers }).then(function (response) {
