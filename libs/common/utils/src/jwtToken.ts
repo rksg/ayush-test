@@ -110,7 +110,7 @@ export async function loadImageWithJWT (imageId: string) {
     mode: 'no-cors',
     ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
   }
-  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
+  const url = `/files/${imageId}/urls`
   const result = await fetch(url, { headers }).then(function (response) {
     return response.json()
   })
