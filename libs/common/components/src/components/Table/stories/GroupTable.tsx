@@ -678,7 +678,39 @@ export function GroupTable () {
       key: 'deviceGroupName',
       dataIndex: 'deviceGroupName',
       filterable: true,
-      searchable: true
+      searchable: true,
+      groupable: {
+        key: 'deviceGroupName',
+        label: 'AP Group',
+        actions: [{
+          key: 'edit',
+          label: <Button>Edit</Button>,
+          callback: (record) => {
+            // eslint-disable-next-line no-console
+            console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
+          }
+        }],
+        parentColumns: [
+          {
+            key: 'members',
+            renderer: (record) => <div>Members: {record.members}</div>
+          },
+          {
+            key: 'incidents',
+            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          },
+          {
+            key: 'clients',
+            renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          },
+          {
+            key: 'networks',
+            renderer: (record) => <div>
+              Wireless Networks: {record.networks ? record.networks.count : 0}
+            </div>
+          }
+        ]
+      }
     },
     {
       title: 'RF Channels',
@@ -702,7 +734,6 @@ export function GroupTable () {
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
-        rowClassName={(record) => record.isParent ? 'parent-row-data' : ''}
         groupable={{
           selectors: [
             { key: 'deviceGroupName', label: 'AP Group', actionEnable: true },

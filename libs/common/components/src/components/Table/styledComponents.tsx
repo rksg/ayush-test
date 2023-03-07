@@ -362,6 +362,18 @@ export const Wrapper = styled.div<StyledTable>`
     }
 
     .ant-table {
+      .parent-row-data {
+        background-color: var(--acx-neutrals-20) !important;
+        
+        .ant-table-cell-row-hover {
+          background-color: var(--acx-neutrals-20) !important;
+        }
+
+        .ant-table-cell-fix-right {
+          background-color: var(--acx-neutrals-20) !important; 
+        }
+      }
+
       &-cell-fix-left {
         border-bottom: 1px solid var(--acx-neutrals-30) !important;
       }

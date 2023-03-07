@@ -80,6 +80,12 @@ type AdditionalColumnType <RecordType, ValueType> = {
     children: ReactNode
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     props: any
+  },
+  groupable?: {
+    key: string,
+    label: ReactNode,
+    parentColumns: { key: string, renderer: (record: RecordType) => ReactNode }[]
+    actions?: { key: string, label: ReactNode, callback?: (record: RecordType) => void }[]
   }
 }
 
