@@ -15,8 +15,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
   }
 
   defaultFallback () {
-    // TODO:
-    // hide detailed error/show summary in prod
+    if (process.env['NODE_ENV'] === 'production') return null
+
     let error
     if (this.state.error instanceof Error) {
       const { name, message, stack } = this.state.error
@@ -27,10 +27,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
     } else {
       error = JSON.stringify(this.state.error)
     }
-    return <>
-      <p>Something went wrong.</p>
-      <p>{error}</p>
-    </>
+    return <p>{error}</p>
   }
 
   override render () {
