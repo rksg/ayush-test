@@ -40,7 +40,7 @@ const Activities = () => {
       },
       detailLevel: currentUserDetailLevel
     })
-  }, [fromTime, toTime])
+  }, [fromTime, toTime, currentUserDetailLevel])
 
   return <ActivityTable tableQuery={tableQuery}/>
 }

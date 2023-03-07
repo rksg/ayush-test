@@ -40,7 +40,7 @@ const Events = () => {
       detailLevel: currentUserDetailLevel
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTime, toTime, venueId])
+  }, [fromTime, toTime, venueId, currentUserDetailLevel])
   const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
@@ -71,7 +71,7 @@ const Activities = () => {
       },
       detailLevel: currentUserDetailLevel
     })
-  }, [fromTime, toTime])
+  }, [fromTime, toTime, currentUserDetailLevel])
   const tableQuery = usePollingTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: activityDefaultPayload,

@@ -42,7 +42,7 @@ const Events = () => {
       detailLevel: currentUserDetailLevel
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fromTime, toTime, serialNumber])
+  }, [fromTime, toTime, serialNumber, currentUserDetailLevel])
   const tableQuery = usePollingTableQuery<Event>({
     useQuery: useEventsQuery,
     defaultPayload: {
@@ -89,7 +89,7 @@ const Activities = () => {
       },
       detailLevel: currentUserDetailLevel
     })
-  }, [fromTime, toTime])
+  }, [fromTime, toTime, currentUserDetailLevel])
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}

@@ -39,7 +39,7 @@ const Events = () => {
       },
       detailLevel: currentUserDetailLevel
     })
-  }, [fromTime, toTime])
+  }, [fromTime, toTime, currentUserDetailLevel])
 
   return <EventTable tableQuery={tableQuery}/>
 }
