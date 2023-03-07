@@ -245,6 +245,7 @@ export default function DpskPassphraseManagement () {
       visible={networkModalVisible}
       mask={true}
       children={networkForm}
+      destroyOnClose={true}
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
