@@ -261,6 +261,16 @@ export interface NewTableResult<T> {
   pageable: NewTablePageable
 }
 
+export interface NewTableResultPolicy<T> {
+  content: T[]
+  paging: {
+    totalCount: number,
+    page: number,
+    pageSize: number,
+    pageCount: number
+  }
+}
+
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
@@ -280,6 +290,15 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
   }
 }
 
+// eslint-disable-next-line max-len
+export function transferToTableResultPolicy<T> (newResult: NewTableResultPolicy<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.paging ? newResult.paging.page : 1,
+    totalCount: newResult.paging.totalCount
+  }
+}
+
 export function transferToNewTablePaginationParams (payload: TableChangePayload | undefined) {
   const pagination = {
     ...DEFAULT_PAGINATION,
@@ -292,32 +311,5 @@ export function transferToNewTablePaginationParams (payload: TableChangePayload 
     pageSize: pagination.pageSize.toString(),
     page: (pagination.pageStartZero? (pagination.page - 1) : pagination.page).toString(),
     sort: pagination.sortField + ',' + pagination.sortOrder.toLowerCase()
-  }
-}
-
-
-export interface NewTableResultPolicy<T> {
-  totalElements: number
-  totalPages: number
-  sort: {
-    unsorted: boolean,
-    sorted: boolean,
-    empty: boolean
-  }
-  content: T[]
-  paging: {
-    totalCount: number,
-    page: number,
-    pageSize: number,
-    pageCount: number
-  }
-}
-
-// eslint-disable-next-line max-len
-export function transferToTableResultPolicy<T> (newResult: NewTableResultPolicy<T>): TableResult<T> {
-  return {
-    data: newResult.content,
-    page: newResult.paging ? newResult.paging.page : 1,
-    totalCount: newResult.paging.totalCount
   }
 }

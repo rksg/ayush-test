@@ -9,7 +9,13 @@ export interface AdaptivePolicy {
   name: string,
   description: string,
   policyType: string,
-  onMatchResponse: string
+  onMatchResponse: string,
+  prioritizedSelect?: boolean
+}
+
+export interface PrioritizedPolicy {
+  policyId: string,
+  priority?: number
 }
 
 export interface RuleTemplate {
@@ -36,7 +42,7 @@ export interface AccessCondition {
 }
 
 export interface EvaluationRule {
-  criteriaType: string,
+  criteriaType: CriteriaOption,
   regexStringCriteria: string
 }
 

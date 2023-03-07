@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, Input, Select, Space } from 'antd'
-import { defineMessage, useIntl }     from 'react-intl'
+import { Form, Input, Select } from 'antd'
+import { useIntl }             from 'react-intl'
 
-import { Drawer }                         from '@acx-ui/components'
-import { useLazyAttributesListQuery }     from '@acx-ui/rc/services'
-import { AccessCondition, RuleAttribute } from '@acx-ui/rc/utils'
+import { Drawer }                                         from '@acx-ui/components'
+import { useLazyAttributesListQuery }                     from '@acx-ui/rc/services'
+import { AccessCondition, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
 
 interface AccessConditionDrawerProps {
   visible: boolean
@@ -15,15 +15,6 @@ interface AccessConditionDrawerProps {
   setAccessCondition: (condition: AccessCondition) => void,
   templateId: number | undefined
 }
-
-const OperationTypeOption = [
-  { label: defineMessage({ defaultMessage: 'Equals' }), value: 'Equals' },
-  { label: defineMessage({ defaultMessage: 'Does not equal' }), value: 'Does not equal' },
-  { label: defineMessage({ defaultMessage: 'Contains' }), value: 'Contains' },
-  { label: defineMessage({ defaultMessage: 'Does not contain' }), value: 'Does not contain' },
-  { label: defineMessage({ defaultMessage: 'Start with' }), value: 'Start with' },
-  { label: defineMessage({ defaultMessage: 'Ends with' }), value: 'Ends with' }
-]
 
 export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const { $t } = useIntl()
@@ -79,7 +70,7 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
       name: data.name,
       templateAttributeId: data.templateAttributeId,
       evaluationRule: {
-        criteriaType: data.criteriaType,
+        criteriaType: CriteriaOption[data.criteriaType as keyof typeof CriteriaOption],
         regexStringCriteria: data.attributeValue
       }
     } as AccessCondition
@@ -114,19 +105,20 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         >
         </Select>
       </Form.Item>
-      <Form.Item label={$t({ defaultMessage: 'Condition Value' })}>
-        <Space direction='horizontal'>
-          <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>
-            <Select
-              options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>
-            </Select>
-          </Form.Item>
-          <Form.Item name='attributeValue'
-            rules={[{ required: true,
-              message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
-            children={<Input />}/>
-        </Space>
-      </Form.Item>
+      {/*<Form.Item label={$t({ defaultMessage: 'Condition Value' })}>*/}
+      {/*<Space direction='horizontal'>*/}
+      {/*  <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>*/}
+      {/*    <Select*/}
+      {/*      options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>*/}
+      {/*    </Select>*/}
+      {/*  </Form.Item>*/}
+      <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
+        name='attributeValue'
+        rules={[{ required: true,
+          message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
+        children={<Input />}/>
+      {/*</Space>*/}
+      {/*</Form.Item>*/}
     </Form>
   )
 

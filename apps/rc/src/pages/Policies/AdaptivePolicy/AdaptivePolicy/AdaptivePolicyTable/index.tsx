@@ -42,6 +42,11 @@ function useColumns (conditionsMap: Map<string, string>, templateIdMap: Map<stri
       }
     },
     {
+      title: $t({ defaultMessage: 'Policy Type' }),
+      key: 'policyType',
+      dataIndex: 'policyType'
+    },
+    {
       title: $t({ defaultMessage: 'Access Conditions' }),
       key: 'accessConditions',
       dataIndex: 'accessConditions',

@@ -7,7 +7,7 @@ import { v4 as uuidv4 }                        from 'uuid'
 
 import { Button, Descriptions, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
-  useLazyAdaptivePolicyLisByQueryQuery,
+  useLazyAdaptivePolicyLisByQueryQuery, useLazyGetRadiusAttributeGroupQuery,
   usePolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -16,9 +16,8 @@ import {
   RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
 
-import { AccessConditionDrawer }          from './AccessConditionDrawer'
-import { RadiusAttributeGroupDrawer }     from './RadiusAttributeGroupDrawer'
-import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
+import { AccessConditionDrawer }      from './AccessConditionDrawer'
+import { RadiusAttributeGroupDrawer } from './RadiusAttributeGroupDrawer'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -40,16 +39,22 @@ function useColumns () {
   return columns
 }
 
-export function AdaptivePolicySettingForm () {
+interface AdaptivePolicySettingFormProps {
+  editMode?: boolean,
+  drawerMode?: boolean
+}
+
+export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps) {
   const { $t } = useIntl()
+  const { editMode = false, drawerMode = false } = props
 
   const evaluationRules = Form.useWatch('evaluationRules')
   const templateId = Form.useWatch('templateTypeId')
+  const attributeGroupId = Form.useWatch('attributeGroupId')
 
   const [accessConditionsVisible, setAccessConditionsVisible] = useState(false)
   const [attributeGroupVisible, setAttributeGroupVisible] = useState(false)
-  // eslint-disable-next-line max-len
-  const [radiusAttributeGroupFormDrawerVisible, setRadiusAttributeGroupFormDrawerVisible] = useState(false)
+
   const [editConditionMode, setEditConditionMode] = useState(false)
   // eslint-disable-next-line max-len
   const [selectRadiusAttributeGroup, setSelectRadiusAttributeGroup] = useState({} as RadiusAttributeGroup)
@@ -60,14 +65,34 @@ export function AdaptivePolicySettingForm () {
 
   const [policyList] = useLazyAdaptivePolicyLisByQueryQuery()
 
-  // eslint-disable-next-line max-len
-  const { data: templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647', sortField: 'name', sortOrder: 'desc' } })
+  const { data: templateList } = usePolicyTemplateListQuery({
+    payload: {
+      page: '1',
+      pageSize: '2147483647',
+      sortField: 'name',
+      sortOrder: 'desc' }
+  })
+
+  const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
 
   useEffect(() => {
     if(templateList?.data && templateList?.data.length > 0) {
       form.setFieldValue('templateTypeId', templateList?.data[0].id)
     }
   }, [templateList?.data])
+
+  useEffect( () =>{
+    if(attributeGroupId) {
+      let radiusAttributeGroup = {} as RadiusAttributeGroup
+      getAttributeGroup({
+        params: { policyId: attributeGroupId }
+      }).then(result => radiusAttributeGroup = {
+        id: result.data?.id,
+        name: result.data?.name ?? '',
+        attributeAssignments: result.data?.attributeAssignments ?? []
+      } ).finally(() => setSelectRadiusAttributeGroup(radiusAttributeGroup))
+    }
+  }, [attributeGroupId])
 
   const nameValidator = async (value: string) => {
     const list = (await policyList({
@@ -94,11 +119,6 @@ export function AdaptivePolicySettingForm () {
       newConditions.push(condition)
     }
     form.setFieldValue('evaluationRules', newConditions)
-  }
-
-  const setRadiusAttributeGroup = (group: RadiusAttributeGroup) => {
-    setSelectRadiusAttributeGroup(group)
-    form.setFieldValue('attributeGroupId', group.id)
   }
 
   const rowActions: TableProps<AccessCondition>['rowActions'] = [
@@ -140,6 +160,7 @@ export function AdaptivePolicySettingForm () {
       for (const attribute of attributes) {
         rows.push(
           <Descriptions.Item
+            key={attribute.attributeName}
             label={attribute.attributeName}
             children={attribute.attributeValue}/>
         )
@@ -149,107 +170,105 @@ export function AdaptivePolicySettingForm () {
   }
 
   return (
-    <Row gutter={20}>
-      <Col span={10}>
-        <Form.Item name='name'
-          label={$t({ defaultMessage: 'Policy Name' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => nameValidator(value) }
-          ]}
-          validateFirst
-          hasFeedback
-          children={<Input/>}
-        />
-        <Form.Item name='templateTypeId'
-          label={$t({ defaultMessage: 'Policy Type' })}
-          rules={[
-            { required: true }
-          ]}
-          children={
-            <Radio.Group
-              onChange={() => {
-                setAccessConditionsVisible(false)
-              }}>
-              <Space direction='vertical'>
-                {templateList?.data.map(({ id, ruleType }) => (
-                  <Radio key={ruleType} value={id}>
-                    {ruleType}
-                  </Radio>
-                ))}
-              </Space>
-            </Radio.Group>
-          }/>
-        <Form.Item
-          name='evaluationRules'
-          label={$t({ defaultMessage: 'Access Conditions' })}
-          rules={[
-            {
-              required: false,
-              message: $t({ defaultMessage: 'Please create access conditions' })
-            }]}
-        >
-          <>
-            {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Only clients who meet All conditions you define will be able to connect' })}
-            <Table
-              rowKey='id'
-              columns={useColumns()}
-              dataSource={evaluationRules}
-              rowActions={rowActions}
-              rowSelection={{ type: 'radio' }}
-              actions={[{
-                label: $t({ defaultMessage: 'Add' }),
-                onClick: () => {
-                  setEditConditionMode(false)
-                  setEditCondition(undefined)
-                  setAccessConditionsVisible(true)
-                }
+    <>
+      <Row>
+        <Col span={drawerMode ? 24 : 10}>
+          <Form.Item name='name'
+            label={$t({ defaultMessage: 'Policy Name' })}
+            rules={[
+              { required: true },
+              { validator: (_, value) => nameValidator(value) }
+            ]}
+            validateFirst
+            hasFeedback
+            children={<Input/>}
+          />
+          <Form.Item name='templateTypeId'
+            label={$t({ defaultMessage: 'Policy Type' })}
+            rules={[
+              { required: true }
+            ]}
+            children={
+              <Radio.Group
+                disabled={editMode}
+                onChange={() => {
+                  setAccessConditionsVisible(false)
+                }}>
+                <Space direction='vertical'>
+                  {templateList?.data.map(({ id, ruleType }) => (
+                    <Radio key={ruleType} value={id}>
+                      {ruleType}
+                    </Radio>
+                  ))}
+                </Space>
+              </Radio.Group>
+            }/>
+          <Form.Item
+            name='evaluationRules'
+            label={$t({ defaultMessage: 'Access Conditions' })}
+            rules={[
+              {
+                required: false,
+                message: $t({ defaultMessage: 'Please create access conditions' })
               }]}
-            />
-          </>
-        </Form.Item>
-        <Form.Item
-          name='attributeGroupId'
-          label={$t({ defaultMessage: 'RADIUS Attribute Group' })}
-          rules={[
-            { required: false,
-              message: $t({ defaultMessage: 'Please select group' }) }
-          ]}
-        >
-          <>
-            {$t({ defaultMessage: 'The RADIUS attributes to apply when this policy is matched' })}
-          </>
-        </Form.Item>
-        <Space>
-          <label>{selectRadiusAttributeGroup.id ?
-            selectRadiusAttributeGroup.name :
-            $t({ defaultMessage: 'No Group selected' })}</label>
-          <Button type={'link'} onClick={() => setAttributeGroupVisible(true)}>
-            {selectRadiusAttributeGroup.id ?
-              $t({ defaultMessage: 'Change Group' }) :
-              $t({ defaultMessage: 'Select Group' })
-            }
-          </Button>
-        </Space>
-        {getAttributes(selectRadiusAttributeGroup.attributeAssignments)}
-        <AccessConditionDrawer
-          visible={accessConditionsVisible}
-          setVisible={setAccessConditionsVisible}
-          setAccessCondition={setAccessCondition}
-          editCondition={editCondition}
-          isEdit={editConditionMode}
-          templateId={templateId}/>
-        <RadiusAttributeGroupDrawer
-          visible={attributeGroupVisible}
-          setVisible={setAttributeGroupVisible}
-          setRadiusAttributeGroup={setRadiusAttributeGroup}
-          setRadiusAttributeGroupFormDrawerVisible={setRadiusAttributeGroupFormDrawerVisible}/>
-        <RadiusAttributeGroupFormDrawer
-          visible={radiusAttributeGroupFormDrawerVisible}
-          setVisible={setRadiusAttributeGroupFormDrawerVisible}
-        />
-      </Col>
-    </Row>
+          >
+            <>
+              {/* eslint-disable-next-line max-len */}
+              {$t({ defaultMessage: 'Only clients who meet All conditions you define will be able to connect' })}
+              <Table
+                rowKey='id'
+                columns={useColumns()}
+                dataSource={evaluationRules}
+                rowActions={rowActions}
+                rowSelection={{ type: 'radio' }}
+                actions={[{
+                  label: $t({ defaultMessage: 'Add' }),
+                  onClick: () => {
+                    setEditConditionMode(false)
+                    setEditCondition(undefined)
+                    setAccessConditionsVisible(true)
+                  }
+                }]}
+              />
+            </>
+          </Form.Item>
+          <Form.Item
+            name='attributeGroupId'
+            label={$t({ defaultMessage: 'RADIUS Attribute Group' })}
+            rules={[
+              { required: true,
+                message: $t({ defaultMessage: 'Please select group' }) }
+            ]}
+          >
+            <>
+              {$t({ defaultMessage: 'The RADIUS attributes to apply when this policy is matched' })}
+            </>
+          </Form.Item>
+          <Space>
+            <label>{selectRadiusAttributeGroup.id ?
+              selectRadiusAttributeGroup.name :
+              $t({ defaultMessage: 'No Group selected' })}</label>
+            <Button type={'link'} onClick={() => setAttributeGroupVisible(true)}>
+              {selectRadiusAttributeGroup.id ?
+                $t({ defaultMessage: 'Change Group' }) :
+                $t({ defaultMessage: 'Select Group' })
+              }
+            </Button>
+          </Space>
+          {getAttributes(selectRadiusAttributeGroup.attributeAssignments)}
+        </Col>
+      </Row>
+      <AccessConditionDrawer
+        visible={accessConditionsVisible}
+        setVisible={setAccessConditionsVisible}
+        setAccessCondition={setAccessCondition}
+        editCondition={editCondition}
+        isEdit={editConditionMode}
+        templateId={templateId}/>
+      <RadiusAttributeGroupDrawer
+        visible={attributeGroupVisible}
+        setVisible={setAttributeGroupVisible}
+        settingForm={form}/>
+    </>
   )
 }

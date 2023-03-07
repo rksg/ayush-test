@@ -45,5 +45,21 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
   getAttributeVendors: {
     method: 'get',
     url: attributeBaseUrl + '/vendors'
+  },
+  createAssignment: {
+    method: 'post',
+    url: attributeBaseUrl + '/:policyId/assignments'
+  },
+  getAssignment: {
+    method: 'get',
+    url: attributeBaseUrl + '/:policyId/assignments/:assignmentId'
+  },
+  deleteAssignment: {
+    method: 'delete',
+    url: attributeBaseUrl + '/:policyId/assignments/:assignmentId'
+  },
+  getAssignments: {
+    method: 'get',
+    url: attributeBaseUrl + '/:policyId/assignments' + paginationParams
   }
 }

@@ -27,5 +27,7 @@ export enum Features {
   LOAD_BALANCING='wifi-consumer-load-balancing-toggle',
   AP_STATIC_IP='wifi-consumer-ap-static-ip-toggle',
   SWITCH_SUPPORT_ICX8200='switch-support-icx8200',
-  NEW_API='acx-ui-new-api'
+  NEW_API='acx-ui-new-api',
+  MAC_REGISTRATION_SERVICE='mac-registration-service-enabled',
+  RADIUS_CLIENT_CONFIG_API='radius-client-config-api-enabled'
 }

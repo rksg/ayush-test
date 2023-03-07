@@ -6,18 +6,6 @@ const policyTemplateApiBaseUrl = '/policyTemplates'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
-  getAdaptivePolicySets: {
-    method: 'get',
-    url: policySetApiBaseUrl + paginationParams
-  },
-  getAdaptivePolicySet: {
-    method: 'get',
-    url: policySetApiBaseUrl + '/:policyId'
-  },
-  createAdaptivePolicySet: {
-    method: 'post',
-    url: policySetApiBaseUrl
-  },
   getPolicyTemplateList: {
     method: 'get',
     url: policyTemplateApiBaseUrl + paginationParams
@@ -67,8 +55,44 @@ export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: policyTemplateApiBaseUrl + '/:templateId/policies/:policyId/conditions/:conditionId'
   },
+  getPolicySets: {
+    method: 'get',
+    url: policySetApiBaseUrl + paginationParams
+  },
+  getPolicySet: {
+    method: 'get',
+    url: policySetApiBaseUrl + '/:policySetId'
+  },
+  createPolicySet: {
+    method: 'post',
+    url: policySetApiBaseUrl
+  },
   deletePolicySet: {
     method: 'delete',
-    url: policySetApiBaseUrl + '/:policyId'
+    url: policySetApiBaseUrl + '/:policySetId'
+  },
+  updatePolicySet: {
+    method: 'PATCH',
+    url: policySetApiBaseUrl + '/:policySetId'
+  },
+  getPrioritizedPolicies: {
+    method: 'get',
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies'
+  },
+  getPolicySetsByQuery: {
+    method: 'post',
+    url: policySetApiBaseUrl + '/query?excludeContent=:excludeContent'
+  },
+  assignPolicyPriority: {
+    method: 'put',
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
+  },
+  getPrioritizedPolicy: {
+    method: 'get',
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
+  },
+  removePrioritizedAssignment: {
+    method: 'delete',
+    url: policySetApiBaseUrl + '/:policySetId/prioritizedPolicies/:policyId'
   }
 }

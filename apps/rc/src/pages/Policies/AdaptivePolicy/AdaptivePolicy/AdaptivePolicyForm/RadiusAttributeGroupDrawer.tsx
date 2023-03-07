@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 
-import { Form }     from 'antd'
-import {  useIntl } from 'react-intl'
+import { Form, FormInstance } from 'antd'
+import {  useIntl }           from 'react-intl'
 
 import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
 import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
 import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
 
+import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
+
 interface RadiusAttributeDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void,
-  setRadiusAttributeGroup: (attribute: RadiusAttributeGroup) => void,
-  setRadiusAttributeGroupFormDrawerVisible: (visible: boolean) => void
+  setVisible: (visible: boolean) => void
+  settingForm: FormInstance
 }
 
 function useColumns () {
@@ -51,10 +52,13 @@ function useColumns () {
 
 export function RadiusAttributeGroupDrawer (props: RadiusAttributeDrawerProps) {
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
-  const { visible, setVisible, setRadiusAttributeGroup, setRadiusAttributeGroupFormDrawerVisible } = props
+
+  const { visible, setVisible, settingForm } = props
   const [selectedGroup, setSelectedGroup ] = useState({} as RadiusAttributeGroup)
   const [form] = Form.useForm()
+
+  // eslint-disable-next-line max-len
+  const [radiusAttributeGroupFormDrawerVisible, setRadiusAttributeGroupFormDrawerVisible] = useState(false)
 
   const tableQuery = useTableQuery({
     useQuery: useRadiusAttributeGroupListQuery,
@@ -75,7 +79,7 @@ export function RadiusAttributeGroupDrawer (props: RadiusAttributeDrawerProps) {
   }
 
   const onSubmit = () => {
-    setRadiusAttributeGroup(selectedGroup)
+    settingForm.setFieldValue('attributeGroupId', selectedGroup.id)
     onClose()
   }
 
@@ -124,13 +128,19 @@ export function RadiusAttributeGroupDrawer (props: RadiusAttributeDrawerProps) {
   )
 
   return (
-    <Drawer
-      title={$t({ defaultMessage: 'Select RADIUS Attribute Group' })}
-      visible={visible}
-      onClose={onClose}
-      children={content}
-      footer={footer}
-      width={600}
-    />
+    <>
+      <Drawer
+        title={$t({ defaultMessage: 'Select RADIUS Attribute Group' })}
+        visible={visible}
+        onClose={onClose}
+        children={content}
+        footer={footer}
+        width={600}
+      />
+      <RadiusAttributeGroupFormDrawer
+        visible={radiusAttributeGroupFormDrawerVisible}
+        setVisible={setRadiusAttributeGroupFormDrawerVisible}
+      />
+    </>
   )
 }

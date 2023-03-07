@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { useAdaptivePolicyListQuery, useRadiusAttributeGroupListQuery } from '@acx-ui/rc/services'
+import {
+  useAdaptivePolicyListQuery,
+  useAdaptivePolicySetListQuery,
+  useRadiusAttributeGroupListQuery
+} from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
@@ -34,15 +38,20 @@ export default function AdaptivePolicyTabs () {
     defaultPayload: {}
   })
 
+  const policySetTableQuery = useTableQuery({
+    useQuery: useAdaptivePolicySetListQuery,
+    defaultPayload: {}
+  })
+
   useEffect(() => {
-    if (attributeGroupTableQuery.data || policyTableQuery.data) {
+    if (attributeGroupTableQuery.data || policyTableQuery.data || policySetTableQuery.data) {
       setAdaptivePolicyCount({
-        policySetTotalCount: 0,
+        policySetTotalCount: policySetTableQuery.data?.totalCount ?? 0,
         policyTotalCount: policyTableQuery.data?.totalCount ?? 0,
         attributeGroupTotalCount: attributeGroupTableQuery.data?.totalCount ?? 0
       })
     }
-  }, [attributeGroupTableQuery.data, policyTableQuery.data])
+  }, [attributeGroupTableQuery.data, policyTableQuery.data, policySetTableQuery.data])
 
   const tabsPathMapping: Record<AdaptivePolicyTabKey, Path> = {
     [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: useTenantLink(getPolicyRoutePath({
