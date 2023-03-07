@@ -5,7 +5,6 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { showToast }            from '@acx-ui/components'
 import { SpaceWrapper }         from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
@@ -79,11 +78,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
 
     try {
       await triggerAction({ params }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

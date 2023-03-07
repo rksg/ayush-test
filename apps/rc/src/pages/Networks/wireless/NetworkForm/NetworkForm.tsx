@@ -5,7 +5,6 @@ import { defineMessage, useIntl, IntlShape } from 'react-intl'
 
 import {
   PageHeader,
-  showToast,
   showActionModal,
   StepsForm,
   StepsFormInstance
@@ -221,11 +220,8 @@ export default function NetworkForm (props:{
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
       modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -241,11 +237,8 @@ export default function NetworkForm (props:{
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
       modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

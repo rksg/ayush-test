@@ -19,7 +19,6 @@ import { useIntl } from 'react-intl'
 import {
   GoogleMap,
   PageHeader,
-  showActionModal,
   StepsForm,
   StepsFormInstance,
   Subtitle
@@ -364,14 +363,8 @@ export function ManageIntegrator () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToIntegrators, { replace: true })
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: intl.$t({ defaultMessage: 'Add Integrator Failed' }),
-        // eslint-disable-next-line max-len
-        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -413,14 +406,8 @@ export function ManageIntegrator () {
       await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
         payload: customer }).unwrap()
       navigate(linkToIntegrators, { replace: true })
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: intl.$t({ defaultMessage: 'Update Integrator Failed' }),
-        // eslint-disable-next-line max-len
-        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

@@ -8,8 +8,8 @@ import {
   useUpdateSwitchConfigProfileMutation,
   useSwitchConfigProfileQuery
 }                   from '@acx-ui/rc/services'
-import { showGeneralError, SwitchConfigurationProfile, Vlan } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }              from '@acx-ui/react-router-dom'
+import { SwitchConfigurationProfile, Vlan }      from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AclSetting }                      from './AclSetting'
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
@@ -91,7 +91,7 @@ export function ConfigurationProfileForm () {
       await addSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
       navigate(linkToProfiles, { replace: true })
     } catch(err) {
-      showGeneralError(err)
+      console.log(err) // eslint-disable-line no-console
     }
   }
 
@@ -100,7 +100,7 @@ export function ConfigurationProfileForm () {
       await updateSwitchConfigProfile({ params, payload: proceedData(data) }).unwrap()
       navigate(linkToProfiles, { replace: true })
     } catch (err) {
-      showGeneralError(err)
+      console.log(err) // eslint-disable-line no-console
     }
   }
 
