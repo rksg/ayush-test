@@ -75,11 +75,11 @@ export interface ApViewModel extends AP {
 }
 
 export interface APExtended extends AP {
-  channel24?: string,
-  channel50?: string,
-  channelL50?: string,
-  channelU50?: string,
-  channel60?: string,
+  channel24?: string | number,
+  channel50?: string | number,
+  channelL50?: string | number,
+  channelU50?: string | number,
+  channel60?: string | number,
   hasPoeStatus?: boolean,
   isPoEStatusUp?: boolean,
   poePortInfo?: string,
