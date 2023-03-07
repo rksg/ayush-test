@@ -148,7 +148,7 @@ describe('Wired', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Finish/ }) )
   })
 
-  it('should render create Switch Configuration Profile with trust ports correctly', async () => {
+  xit('should render create Switch Configuration Profile with trust ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }

@@ -268,13 +268,15 @@ export function TaggedPortsStep () {
                           data-value={timeslot.value}
                           data-testid={`tagged_module1_${i}`}
                           data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            .includes(timeslot.value)}
+                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
+                              .includes(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
+                      && vlanSettingValues.switchFamilyModels?.untaggedPorts
                         .includes(timeslot.value)
                     }))}
                   />
@@ -310,14 +312,16 @@ export function TaggedPortsStep () {
                               data-value={timeslot.value}
                               data-testid={`tagged_module2_${i}`}
                               data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                                .includes(timeslot.value)}
+                                && vlanSettingValues.switchFamilyModels?.untaggedPorts
+                                  .includes(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
                             <p>{i+1}</p>
                           </Tooltip>,
                           value: timeslot.value,
                           disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            .includes(timeslot.value)
+                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
+                              .includes(timeslot.value)
                         }))}
                       />
                     </UI.Module>
@@ -353,14 +357,16 @@ export function TaggedPortsStep () {
                           data-value={timeslot.value}
                           data-testid={`tagged_module3_${i}`}
                           data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            .includes(timeslot.value)}
+                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
+                              .includes(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
                       disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
-                        .includes(timeslot.value)
+                        && vlanSettingValues.switchFamilyModels?.untaggedPorts
+                          .includes(timeslot.value)
                     }))}
                   />
                 </UI.Module>
