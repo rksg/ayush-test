@@ -3,23 +3,22 @@ import { createContext, useContext } from 'react'
 import { RolesEnum }   from '@acx-ui/types'
 import { useTenantId } from '@acx-ui/utils'
 
-import { rolesOk }         from './helpers'
 import {
   useAllowedOperationsQuery,
   useGetUserProfileQuery
 } from './services'
-import { UserProfile }                    from './types'
-import { getUserProfile, setUserProfile } from './userProfile'
+import { UserProfile }              from './types'
+import { setUserProfile, hasRoles } from './userProfile'
 
 export interface UserProfileContextProps {
   data: UserProfile
-  hasRole: (role: RolesEnum) => boolean
+  hasRole: typeof hasRoles
   isPrimeAdmin: () => boolean
   allowedOperations: string[]
 }
 
-const isPrimeAdmin = () => rolesOk(getUserProfile().profile, RolesEnum.PRIME_ADMIN)
-const hasRole = (role: RolesEnum) => rolesOk(getUserProfile().profile, [role])
+const isPrimeAdmin = () => hasRoles(RolesEnum.PRIME_ADMIN)
+const hasRole = hasRoles
 
 // eslint-disable-next-line max-len
 export const UserProfileContext = createContext<UserProfileContextProps>({} as UserProfileContextProps)
