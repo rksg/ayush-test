@@ -9,6 +9,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   GuestClient,
@@ -45,7 +46,7 @@ describe('Add Guest Drawer', () => {
         res(ctx.json(GuestClient))
       ),
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(userProfile))
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
@@ -57,7 +58,7 @@ describe('Add Guest Drawer', () => {
       rest.get(WifiUrlsInfo.getNetwork.url, (req, res, ctx) =>
         res(ctx.json(wifiNetworkDetail))
       ),
-      rest.get(CommonUrlsInfo.getUserProfile.url, (req, res, ctx) =>
+      rest.get(UserUrlsInfo.getUserProfile.url, (req, res, ctx) =>
         res(ctx.json(UserProfile))
       )
     )

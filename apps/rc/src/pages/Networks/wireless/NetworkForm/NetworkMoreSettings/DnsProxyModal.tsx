@@ -22,6 +22,7 @@ import {
   checkItemNotIncluded,
   DnsProxyRule
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { DnsProxyContext } from './ServicesForm'
 
@@ -188,7 +189,7 @@ export function MultiSelectTable (props: {
     <Table
       columns={useColumns()}
       dataSource={dnsProxyList}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowKey='domainName'
       rowSelection={{ type: 'checkbox' }}
     />

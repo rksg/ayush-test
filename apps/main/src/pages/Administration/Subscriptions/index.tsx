@@ -17,7 +17,8 @@ import {
   Entitlement,
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
@@ -120,8 +121,9 @@ const SubscriptionTable = () => {
     }
   ]
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
+  const GetStatus = (expirationDate: string) => {
+    const isValid = moment(expirationDate).isAfter(Date.now())
+    if( isValid) {
       return $t({ defaultMessage: 'Active' })
     } else {
       return $t({ defaultMessage: 'Expired' })
@@ -132,7 +134,7 @@ const SubscriptionTable = () => {
     return {
       ...response,
       name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
-      status: GetStatus(response?.status as string)
+      status: GetStatus(response?.expirationDate)
     }
   })
 
@@ -140,7 +142,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={actions}
+        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom'
-import { render } from '@testing-library/react'
-
-import { BrowserRouter } from '@acx-ui/react-router-dom'
+import { BrowserRouter }  from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Tabs } from '../Tabs'
 
 import { PageHeader } from '.'
 
 describe('PageHeader', () => {
+  afterEach(() => jest.restoreAllMocks())
+
   it('should render basic page header', () => {
     const { asFragment } = render(<PageHeader title='Basic' />)
     expect(asFragment()).toMatchSnapshot()
@@ -69,5 +70,19 @@ describe('PageHeader', () => {
       </BrowserRouter>
     )
     expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('automatially adds key for extra that does not add it', async () => {
+    const spy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+    render(<PageHeader
+      title='Title'
+      extra={[
+        <button>Button 1</button>,
+        <button>Button 2</button>
+      ]}
+    />, { route: {} })
+
+    expect(await screen.findAllByRole('button')).toHaveLength(2)
+    expect(spy).not.toBeCalled()
   })
 })

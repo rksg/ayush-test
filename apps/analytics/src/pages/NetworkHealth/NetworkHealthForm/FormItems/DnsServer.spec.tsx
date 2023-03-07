@@ -11,9 +11,7 @@ const { clear, click, type } = userEvent
 describe('DnsServer', () => {
   it('handles Default', async () => {
     renderForm(<DnsServer />, {
-      initialValues: {
-        isDnsServerCustom: false
-      }
+      initialValues: { isDnsServerCustom: false }
     })
 
     expect(screen.getByRole('radio', { name: 'Default' })).toBeChecked()
@@ -58,7 +56,7 @@ describe('DnsServer', () => {
     renderForm(<DnsServer />, {
       initialValues: {
         isDnsServerCustom: true,
-        dnsServer: '10.10.10.10'
+        configs: [{ dnsServer: '10.10.10.10' }]
       }
     })
 
@@ -87,7 +85,7 @@ describe('DnsServer.FieldSummary', () => {
     renderForm(<DnsServer.FieldSummary />, {
       initialValues: {
         isDnsServerCustom: true,
-        dnsServer: value
+        configs: [{ dnsServer: value }]
       }
     })
 

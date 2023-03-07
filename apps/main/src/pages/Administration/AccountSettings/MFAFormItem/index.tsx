@@ -3,11 +3,10 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal }      from '@acx-ui/components'
-import { SpaceWrapper }               from '@acx-ui/rc/components'
-import { useToggleMFAMutation }       from '@acx-ui/rc/services'
-import { MFAStatus, MfaDetailStatus } from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { Card, showActionModal }                            from '@acx-ui/components'
+import { SpaceWrapper }                                     from '@acx-ui/rc/components'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
