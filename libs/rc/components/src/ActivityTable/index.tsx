@@ -23,6 +23,17 @@ export const defaultSorter = {
   sortOrder: 'DESC'
 }
 
+export const columnState = {
+  hidden: false,
+  defaultValue: {
+    startDateTime: true,
+    product: false,
+    status: true,
+    source: true,
+    description: true
+  }
+}
+
 export const useActivityTableFilter = () => {
   const { startDate, endDate } = useDateFilter()
   return {

@@ -4,10 +4,15 @@ import { useEffect } from 'react'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                                                                     from '@acx-ui/components'
-import { useUserProfileContext }                                                    from '@acx-ui/rc/components'
-import { EventTable, eventDefaultPayload, eventDefaultSorter, useEventTableFilter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                                           from '@acx-ui/rc/services'
+import { Tabs }           from '@acx-ui/components'
+import {
+  EventTable,
+  eventDefaultPayload,
+  eventDefaultSorter,
+  useEventTableFilter,
+  useUserProfileContext
+} from '@acx-ui/rc/components'
+import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,

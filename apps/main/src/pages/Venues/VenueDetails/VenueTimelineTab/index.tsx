@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react'
 
-
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                  from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
+import { Tabs }           from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -15,7 +13,8 @@ import {
   ActivityTable,
   activityDefaultSorter,
   activityDefaultPayload,
-  useActivityTableFilter
+  useActivityTableFilter,
+  useUserProfileContext
 } from '@acx-ui/rc/components'
 import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
