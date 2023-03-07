@@ -164,3 +164,32 @@ describe('Donut Chart - large', () => {
       .toEqual("font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;")
   })
 })
+
+describe('Donut Chart - Thick', () => {
+  it('should render the chart properly with data and only title, without legend', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'thick'}
+      onClick={jest.fn()}
+      title='Donut Chart'
+      showLegend={false}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Donut Chart').getAttribute('style'))
+      .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
+  })
+  it('should render the chart with title and value passed as prop, with Legends', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'thick'}
+      title='Some Title'
+      value='100'
+      legend='name'
+      showLegend={true}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Requires Attention')).toBeVisible()
+  })
+})
