@@ -411,27 +411,18 @@ function Table <RecordType extends Record<string, any>> ({
             <UI.HeaderRight>
               {(Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH))
-            && <Button onClick={() => {
-              setFilterValues({} as Filter)
-              setSearchValue('')
-            }}>
+            && <Button
+              style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+              onClick={() => {
+                setFilterValues({} as Filter)
+                setSearchValue('')
+              }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
             </UI.HeaderRight>
           </Space>
         </div>
         <UI.HeaderRight>
-          {(
-            Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
-          ) && <Button
-            style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
-            onClick={() => {
-              setFilterValues({} as Filter)
-              setSearchValue('')
-            }}>
-            {$t({ defaultMessage: 'Clear Filters' })}
-          </Button>}
         </UI.HeaderRight>
       </UI.Header>
     )}
