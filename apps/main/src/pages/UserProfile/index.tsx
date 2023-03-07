@@ -6,19 +6,19 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { MultiFactor }                  from '@acx-ui/msp/components'
-import { useUserProfileContext }        from '@acx-ui/rc/components'
-import { useUpdateUserProfileMutation } from '@acx-ui/rc/services'
-import {
-  DetailLevel,
-  UserProfile as UserProfileInterface,
-  RolesEnum
-} from '@acx-ui/rc/utils'
+import { MultiFactor } from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }             from '@acx-ui/types'
+import {
+  DetailLevel,
+  UserProfile as UserProfileInterface,
+  useUserProfileContext,
+  useUpdateUserProfileMutation
+} from '@acx-ui/user'
 
 import {
   RecentLogin

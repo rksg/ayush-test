@@ -5,14 +5,14 @@ import { Form }       from 'antd'
 import { rest }       from 'msw'
 import { act }        from 'react-dom/test-utils'
 
-import { UserUrlsInfo, MFAStatus, MFAMethod } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo, MFAStatus, MFAMethod } from '@acx-ui/user'
 
 import { AuthenticationMethod } from './'
 

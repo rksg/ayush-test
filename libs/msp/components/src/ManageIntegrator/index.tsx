@@ -37,8 +37,7 @@ import {
   useUpdateCustomerMutation,
   useGetMspEcQuery,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery,
-  useGetUserProfileQuery
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -50,7 +49,6 @@ import {
   MspEc,
   MspEcData,
   roleDisplayText,
-  RolesEnum,
   EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
@@ -62,7 +60,9 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { AccountType } from '@acx-ui/utils'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
+import { AccountType }            from '@acx-ui/utils'
 
 import { AssignEcDrawer }     from '../AssignEcDrawer'
 import { ManageAdminsDrawer } from '../ManageAdminsDrawer'

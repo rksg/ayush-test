@@ -16,6 +16,7 @@ import {
   useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                              from '@acx-ui/user'
 
 import {
   DpskPoolLink,
@@ -291,8 +292,8 @@ export function PersonaGroupTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
 

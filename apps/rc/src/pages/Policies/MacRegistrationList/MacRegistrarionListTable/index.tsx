@@ -20,6 +20,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                               from '@acx-ui/user'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
@@ -148,7 +149,7 @@ export default function MacRegistrationListsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -164,15 +165,14 @@ export default function MacRegistrationListsTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='add'
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <MacRegistrationListsTable />
     </>

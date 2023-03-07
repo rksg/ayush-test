@@ -6,17 +6,15 @@ import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal }                    from '@acx-ui/components'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
-import {
-  useLazyGetNetworkQuery,
-  useLazyGetUserProfileQuery
-} from '@acx-ui/rc/services'
+import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
   Guest,
   LangCode,
   PdfGeneratorService
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { useLazyGetUserProfileQuery } from '@acx-ui/user'
+import { getIntl }                    from '@acx-ui/utils'
 
 import {
   getHumanizedLocale,

@@ -5,6 +5,7 @@ import { useIntl }           from 'react-intl'
 
 import { Table, TableProps }                         from '@acx-ui/components'
 import { LldpQosModel, QOS_APP_Type, QOS_VLAN_Type } from '@acx-ui/rc/utils'
+import { filterByAccess }                            from '@acx-ui/user'
 
 import { EditLldpModal } from './editLldpModal'
 
@@ -90,7 +91,7 @@ export function LldpQOSTable (props : {
     <Table
       columns={columns}
       dataSource={lldpQosList}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       pagination={false}
       rowKey='id'
       rowSelection={{

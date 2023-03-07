@@ -14,6 +14,7 @@ import {
   useLazyGetClientListQuery
 } from '@acx-ui/rc/services'
 import { ClientList, getOsTypeIcon, Persona, PersonaDevice } from '@acx-ui/rc/utils'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
 import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
@@ -197,8 +198,8 @@ export function PersonaDevicesTable (props: {
         rowKey={'macAddress'}
         columns={columns}
         dataSource={dataSource}
-        rowActions={rowActions}
-        actions={actions}
+        rowActions={filterByAccess(rowActions)}
+        actions={filterByAccess(actions)}
         rowSelection={{ type: 'checkbox' }}
         pagination={{ defaultPageSize: 5 }}
       />

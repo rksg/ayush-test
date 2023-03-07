@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { render, screen, mockServer } from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
 import { CloudMessageBanner } from '.'
 
@@ -14,7 +14,7 @@ describe('cloud Message Banner', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getCloudMessageBanner.url,
+        UserUrlsInfo.getCloudMessageBanner.url,
         (_, res, ctx) => res(ctx.json(
           {
             createdBy: 'd7fba54cb0e14c6cae48b90baf7e631c',
