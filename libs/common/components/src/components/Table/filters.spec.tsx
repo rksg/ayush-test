@@ -2,10 +2,10 @@ import React from 'react'
 
 import { IntlShape } from 'react-intl'
 
-import { cleanup, renderHook } from '@acx-ui/test-utils'
+import { cleanup, render, renderHook } from '@acx-ui/test-utils'
 
-import { useGroupBy }  from './filters'
-import { groupTBData } from './stories/GroupTable'
+import { renderFilter, useGroupBy } from './filters'
+import { groupTBData }              from './stories/GroupTable'
 
 describe('Table Filters', () => {
   afterEach(() => cleanup())
@@ -60,6 +60,55 @@ describe('Table Filters', () => {
       expect(isGroupByActive).toBeFalsy()
       clearGroupByFn()
       expect(GroupBySelect()).toBeNull()
+    })
+
+    it('render hook for expandable props', () => {
+      const { result } = renderHook(() => useGroupBy(groupable, groupTBData.length, mockIntl))
+      const { expandable } = result.current
+      const { rowExpandable } = expandable as
+        unknown as { rowExpandable: (data: typeof groupTBData[0]) => boolean }
+      expect(rowExpandable).toBeDefined()
+      expect(rowExpandable && rowExpandable(groupTBData[0])).toBeTruthy()
+    })
+  })
+
+  describe('renderFilter', () => {
+    it('should render with correct data', () => {
+      const filterableCol = jest.fn()
+      const view = renderFilter<{ name: string }>(
+        {
+          key: 'name',
+          dataIndex: 'name',
+          filterable: true,
+          filterMultiple: false
+        },
+        0,
+        [{ name: 'john tan' }, { name: 'dragon den' }],
+        {},
+        filterableCol,
+        false
+      )
+      expect(view).toBeDefined()
+      render(<view/>)
+    })
+
+    it('should render with undefined data', () => {
+      const filterableCol = jest.fn()
+      const view = renderFilter<{ name: string }>(
+        {
+          key: 'name',
+          dataIndex: 'name',
+          filterable: true,
+          filterMultiple: false
+        },
+        0,
+        undefined,
+        {},
+        filterableCol,
+        false
+      )
+      expect(view).toBeDefined()
+      render(<view/>)
     })
   })
 })
