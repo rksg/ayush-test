@@ -417,6 +417,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
         { required: true },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (deviceList && deviceList
             .filter(device => editMode ? (devicePolicyInfo?.name !== device) : true)

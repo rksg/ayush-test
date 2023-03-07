@@ -389,6 +389,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         label={$t({ defaultMessage: 'Policy Name:' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 32 },
           { validator: (_, value) => {
             if (layer2List && layer2List
               .filter(layer2 => editMode ? (layer2PolicyInfo?.name !== layer2) : true)

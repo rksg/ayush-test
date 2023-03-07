@@ -483,6 +483,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
         { required: true },
+        { min: 2 },
+        { max: 32 },
         { validator: (_, value) => {
           if (appList && appList
             .filter(app => editMode ? (appPolicyInfo?.name !== app) : true)

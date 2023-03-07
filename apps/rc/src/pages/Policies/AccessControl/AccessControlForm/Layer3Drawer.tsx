@@ -628,16 +628,17 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
         { required: true },
-        { required: true,
-          validator: (_, value) => {
-            if (layer3List && layer3List
-              .filter(layer3 => editMode ? (layer3PolicyInfo?.name !== layer3) : true)
-              .findIndex(layer3 => layer3 === value) !== -1) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { min: 2 },
+        { max: 32 },
+        { validator: (_, value) => {
+          if (layer3List && layer3List
+            .filter(layer3 => editMode ? (layer3PolicyInfo?.name !== layer3) : true)
+            .findIndex(layer3 => layer3 === value) !== -1) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
