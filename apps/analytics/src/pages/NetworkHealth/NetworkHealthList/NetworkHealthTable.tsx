@@ -26,7 +26,8 @@ import { ClientType, TestType } from '../types'
 import {
   statsFromSummary,
   formatApsUnderTest,
-  formatLastResult
+  formatLastResult,
+  formatTestType
 } from '../utils'
 
 export function lastResultSort (a: NetworkHealthTableRow, b: NetworkHealthTableRow) {
@@ -145,7 +146,7 @@ export function NetworkHealthTable () {
       title: $t(defineMessage({ defaultMessage: 'Test Type' })),
       dataIndex: 'type',
       sorter: { compare: sortProp('type', defaultSort) },
-      render: (value) => $t(contents.testTypes[value as TestType])
+      render: (value, row) => formatTestType(value as TestType, row.schedule)
     },
     {
       key: 'apsCount',

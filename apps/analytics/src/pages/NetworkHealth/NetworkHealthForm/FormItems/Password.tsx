@@ -1,33 +1,36 @@
-import { useEffect } from 'react'
-
-import { Form, Input }            from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form, FormInstance, Input } from 'antd'
+import { NamePath }                  from 'antd/es/form/interface'
+import { defineMessage, useIntl }    from 'react-intl'
 
 import {
   StepsFormNew,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 
-import { authMethodsByCode }    from '../../authMethods'
-import { NetworkHealthFormDto } from '../../types'
+import { authMethodsByCode }                         from '../../authMethods'
+import {
+  NetworkHealthFormDto,
+  AuthenticationMethod as AuthenticationMethodEnum
+} from '../../types'
 
-const name = 'wlanPassword' as const
+import { AuthenticationMethod } from './AuthenticationMethod'
+
+const name = ['configs', 0, 'wlanPassword'] as const
 const label = defineMessage({ defaultMessage: 'Password' })
 const labelAlt = defineMessage({ defaultMessage: 'Pre-Shared Key' })
 
-function fieldOfCode (code?: NetworkHealthFormDto['authenticationMethod']) {
+function fieldOfCode (code?: AuthenticationMethodEnum) {
   const spec = code ? authMethodsByCode[code] : undefined
-  return spec?.fields.find(field => field.key === name)
+  return spec?.fields.find(field => field.key === 'wlanPassword')
 }
 
 const useField = () => {
   const { $t } = useIntl()
   const { editMode, form, initialValues } = useStepFormContext<NetworkHealthFormDto>()
-  const code = useWatch('authenticationMethod', form)
+  const code = Form.useWatch(AuthenticationMethod.fieldName as unknown as NamePath, form)
 
   const field = fieldOfCode(code)
-  const previousField = fieldOfCode(initialValues?.authenticationMethod)
+  const previousField = fieldOfCode(initialValues?.configs?.[0].authenticationMethod)
 
   if (!field) return { form, field }
 
@@ -48,18 +51,20 @@ const useField = () => {
   let disabled = false
   if (field.preConfigured) disabled = true
 
-  return { form, field, placeholder, disabled, required }
+  return { field, placeholder, disabled, required }
+}
+
+function reset (form: FormInstance, code: AuthenticationMethodEnum) {
+  const field = fieldOfCode(code)
+
+  if (!field || field.preConfigured)
+    form.setFieldValue(name as unknown as NamePath, undefined)
 }
 
 export function Password () {
   const { $t } = useIntl()
-  const { form, field, disabled, placeholder, required } = useField()
-
-  useEffect(() => {
-    if (field && !field.preConfigured) return
-
-    form.setFieldValue(name, undefined)
-  }, [form, field])
+  const { field, disabled, placeholder, required } = useField()
+  const fieldName = name as unknown as NamePath
 
   if (!field) return null
 
@@ -68,7 +73,7 @@ export function Password () {
     : <Input.Password {...{ placeholder, disabled }} />
 
   return <Form.Item
-    name={name}
+    name={fieldName}
     label={$t(field.preConfigured ? labelAlt : label)}
     rules={[{ required }]}
     children={children}
@@ -78,6 +83,8 @@ export function Password () {
 Password.fieldName = name
 Password.label = label
 Password.labelAlt = labelAlt
+Password.useField = useField
+Password.reset = reset
 
 Password.FieldSummary = function PasswordFieldSummary () {
   const { $t } = useIntl()
@@ -86,7 +93,7 @@ Password.FieldSummary = function PasswordFieldSummary () {
   if (!field) return null
 
   return <Form.Item
-    name={name}
+    name={name as unknown as NamePath}
     label={$t(field.preConfigured ? labelAlt : label)}
     children={<StepsFormNew.FieldSummary<string>
       convert={(value) => field.preConfigured
