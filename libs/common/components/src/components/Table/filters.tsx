@@ -139,10 +139,12 @@ export function renderFilter <RecordType> (
 
 export function useGroupBy<RecordType> (
   groupables: TableProps<RecordType>['groupable'],
-  colLength: number
+  colLength: number,
+  intl: IntlShape
 ) {
   const [value, setValue] = React.useState<{ key: string, value: string } | undefined>(undefined)
   const [enableAction, setEnableAction] = React.useState(false)
+  const { $t } = intl
 
   if (groupables) {
     const getChildren = (record: RecordType) =>
@@ -191,7 +193,7 @@ export function useGroupBy<RecordType> (
 
     const GroupBySelect = () => {
       return <UI.FilterSelect
-        placeholder='Group By...'
+        placeholder={$t({ defaultMessage: 'Group By...' })}
         allowClear
         showArrow
         value={value}
@@ -208,6 +210,7 @@ export function useGroupBy<RecordType> (
           setValue(undefined)
         }}
         key='select-group-by'
+        data-testid='select-group-by'
       >
         {selectors.map((item) => <Select.Option
           key={item.key}
@@ -236,11 +239,21 @@ export function useGroupBy<RecordType> (
       }
     }
 
+    const clearGroupByFn = () => {
+      onClear()
+      setEnableAction(false)
+      setValue(undefined)
+    }
+
+    const isGroupByActive = Boolean(value)
+
     return {
       GroupBySelect,
       expandable,
       groupActionColumns,
-      finalParentColumns
+      finalParentColumns,
+      clearGroupByFn,
+      isGroupByActive
     }
   }
 
@@ -248,6 +261,8 @@ export function useGroupBy<RecordType> (
     GroupBySelect: () => null,
     expandable: undefined,
     groupActionColumns: [],
-    finalParentColumns: []
+    finalParentColumns: [],
+    clearGroupByFn: () => {},
+    isGroupByActive: false
   }
 }
