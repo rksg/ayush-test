@@ -20,7 +20,8 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import { useApContext } from './ApContext'
 import ApTabs           from './ApTabs'
@@ -85,7 +86,7 @@ function ApPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Access Points' }), link: '/devices/wifi' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -93,7 +94,7 @@ function ApPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu} key='actionMenu'>
+        <Dropdown overlay={menu}>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -102,7 +103,6 @@ function ApPageHeader () {
           </Button>
         </Dropdown>,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -111,7 +111,7 @@ function ApPageHeader () {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<ApTabs apDetail={data as ApDetailHeader} />}
     />
   )

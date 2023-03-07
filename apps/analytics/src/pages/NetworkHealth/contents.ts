@@ -119,7 +119,7 @@ export const messageMapping = {
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {
-  auth: defineMessage({ defaultMessage: '802.11 Authentication' }),
+  auth: defineMessage({ defaultMessage: '802.11 Auth' }),
   assoc: defineMessage({ defaultMessage: 'Association' }),
   eap: defineMessage({ defaultMessage: 'EAP' }),
   radius: defineMessage({ defaultMessage: 'RADIUS' }),
@@ -129,4 +129,97 @@ export const stages: Record<TestStage, MessageDescriptor> = {
   ping: defineMessage({ defaultMessage: 'Ping' }),
   traceroute: defineMessage({ defaultMessage: 'Traceroute' }),
   speedTest: defineMessage({ defaultMessage: 'Speed Test' })
+}
+
+type errorMapValue = { id : number , text : MessageDescriptor }
+export const stagesErrorMappings: Record<string,errorMapValue>= {
+
+  SPEED_TEST_INVALID: {
+    id: -3,
+    text: defineMessage({ defaultMessage: 'Speed test timeout' })
+  },
+  SPEED_TEST_UNSUCCESSFUL: {
+    id: -2,
+    text: defineMessage({ defaultMessage: 'Speed test unsuccessful' })
+  },
+  SPEED_TEST_TIMEOUT: {
+    id: -1,
+    text: defineMessage({ defaultMessage: 'Speed test timeout' })
+  },
+  NO_ERROR: {
+    id: 0,
+    text: defineMessage({ defaultMessage: 'No error' })
+  },
+  SPEED_TEST_SKIPPED_UE_TUNNEL_SAME_SUBNET: {
+    id: 1,
+    text: defineMessage({ defaultMessage: 'Speed test skipped as virtual client and data plane mapped to tunnel WLAN are in same subnet and is not supported' })
+  },
+  SPEED_TEST_SKIPPED_UE_SZ_SAME_SUBNET: {
+    id: 2,
+    text: defineMessage({ defaultMessage: 'Speed test skipped as virtual client and AP management interface are in same subnet and is not supported' })
+  }
+}
+
+export const errorMappings : Record<string, errorMapValue> = {
+  AP_6GHZ_NOT_SUPPORT: {
+    id: -6,
+    text: defineMessage({ defaultMessage: '6 GHz is not supported by target AP' })
+  },
+  NO_SERIAL: {
+    id: -5,
+    text: defineMessage({ defaultMessage: 'Unable to find AP serial' })
+  },
+  TEST_TIMEOUT: {
+    id: -4,
+    text: defineMessage({ defaultMessage: 'Test timeout' })
+  },
+  STATION_CANNOT_FIND_TARGET: {
+    id: -3,
+    text: defineMessage({ defaultMessage: 'Station AP unable to find target AP' })
+  },
+  NO_TARGET_AP: {
+    id: -2,
+    text: defineMessage({ defaultMessage: 'No traffic on target AP in the last 7 days (try again after WLANs are configured)' })
+  },
+  NO_STATION_AP: {
+    id: -1,
+    text: defineMessage({ defaultMessage: 'Unable to find station AP' })
+  },
+  NO_ERROR: {
+    id: 0,
+    text: defineMessage({ defaultMessage: 'No error' })
+  },
+  AP_OFFLINE: {
+    id: 1,
+    text: defineMessage({ defaultMessage: 'AP offline' })
+  },
+  AP_RESPONSE_TIMEOUT: {
+    id: 2,
+    text: defineMessage({ defaultMessage: 'AP response timeout' })
+  },
+  AP_MODEL_NOT_SUPPORT: {
+    id: 3,
+    text: defineMessage({ defaultMessage: 'AP not ready for test' })
+  },
+  OVER_VRUE_CAPACITY: {
+    id: 4,
+    text: defineMessage({ defaultMessage: 'Another test in progress' })
+  },
+  WLAN_CONF_ERROR: {
+    id: 5,
+    text: defineMessage({ defaultMessage: 'WLAN configuration errors' })
+  },
+  SPEED_TEST_LIMITATION: {
+    id: 6,
+    text: defineMessage({ defaultMessage: 'Another speed test in progress' })
+  },
+  SG_APCONFIG_UNSUPPORT: {
+    id: 7,
+    text: defineMessage({ defaultMessage: 'AP configuration not supported (refer to release notes)' })
+  }
+}
+
+export const noFailureDetailsMap = {
+  PROCESSING: defineMessage({ defaultMessage: 'Failure reason pending' }),
+  UNKNOWN: defineMessage({ defaultMessage: 'Failure reason unavailable' })
 }

@@ -6,6 +6,7 @@ import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button } 
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                   from '@acx-ui/rc/services'
 import { exportCSV, SWITCH_CLIENT_TYPE }                                        from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                       from '@acx-ui/user'
 import { getCurrentDate }                                                       from '@acx-ui/utils'
 
 interface Client {
@@ -142,10 +143,10 @@ export function SwitchClientDetails () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Switch Users' }), link: '/users/switch' }
         ]}
-        extra={[
-          <Button key='export' type='link' onClick={exportClientToCSV}>
+        extra={filterByAccess([
+          <Button key='DownloadSwitchUsers' type='link' onClick={exportClientToCSV}>
             {$t({ defaultMessage: 'Download Information' })}</Button>
-        ]}
+        ])}
       />
 
       <GridRow>

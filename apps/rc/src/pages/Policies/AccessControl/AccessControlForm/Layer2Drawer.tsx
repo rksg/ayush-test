@@ -18,6 +18,7 @@ import { DeleteSolid, DownloadOutlined }                                        
 import { useAddL2AclPolicyMutation, useGetL2AclPolicyQuery, useL2AclPolicyListQuery } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                  from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                             from '@acx-ui/user'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -318,7 +319,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       }
       setInputValue('')
     } catch (e) {
-      invalidateMacToast()
+      console.log(e) // eslint-disable-line no-console
     }
   }
 
@@ -352,15 +353,8 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         setRequestId(l2AclRes.requestId)
         setQueryPolicyName(policyName)
       }
-    } catch(error) {
-      const responseData = error as { status: number, data: { [key: string]: string } }
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, {
-          error: responseData.data.error
-        })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -465,7 +459,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
           columns={basicColumns}
           dataSource={macAddressList}
           rowKey='macAddress'
-          actions={actions}
+          actions={filterByAccess(actions)}
           columnState={{ hidden: true }}
         />
       </Form.Item>

@@ -17,6 +17,7 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
 
@@ -146,7 +147,7 @@ const Layer3Component = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>

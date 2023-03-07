@@ -17,6 +17,7 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import DeviceOSDrawer from '../AccessControlForm/DeviceOSDrawer'
 
@@ -146,7 +147,7 @@ const DevicePolicyComponent = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>
