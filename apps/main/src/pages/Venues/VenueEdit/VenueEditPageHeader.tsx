@@ -7,6 +7,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import VenueEditTabs from './VenueEditTabs'
 
@@ -24,7 +25,7 @@ function VenueEditPageHeader () {
       breadcrumb={[
         { text: 'Venues', link: '/venues' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <Button
           key='back'
           type='primary'
@@ -34,7 +35,7 @@ function VenueEditPageHeader () {
               pathname: `${basePath.pathname}/overview`
             })
           }>{ $t({ defaultMessage: 'Back to venue details' }) }</Button>
-      ]}
+      ])}
       footer={<VenueEditTabs />}
     />
   )

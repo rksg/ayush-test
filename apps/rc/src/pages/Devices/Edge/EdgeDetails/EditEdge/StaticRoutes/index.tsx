@@ -9,6 +9,7 @@ import { Loader, showToast, StepsForm, Table, TableProps }        from '@acx-ui/
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
+import { filterByAccess }                                         from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -137,9 +138,9 @@ const StaticRoutes = () => {
                 {$t({ defaultMessage: 'Static Routes' })}
               </Typography.Title>
               <Table<EdgeStaticRoute>
-                actions={actionButtons}
+                actions={filterByAccess(actionButtons)}
                 columns={columns}
-                rowActions={rowActions}
+                rowActions={filterByAccess(rowActions)}
                 dataSource={routesData}
                 rowSelection={{ type: 'checkbox' }}
                 rowKey='id'

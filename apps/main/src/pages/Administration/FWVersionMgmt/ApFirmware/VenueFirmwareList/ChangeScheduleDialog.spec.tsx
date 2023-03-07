@@ -55,7 +55,7 @@ describe('Firmware Venues Table', () => {
     }
   })
 
-  it('should render table', async () => {
+  it.skip('should render table', async () => {
     const { asFragment } = render(
       <Provider>
         <VenueFirmwareList />

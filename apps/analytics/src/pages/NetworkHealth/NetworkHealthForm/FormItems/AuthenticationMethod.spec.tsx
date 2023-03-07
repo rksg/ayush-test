@@ -1,20 +1,29 @@
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { NamePath } from 'antd/es/form/interface'
 
-import { act, screen, within } from '@acx-ui/test-utils'
+import { screen, within } from '@acx-ui/test-utils'
 
-import { renderForm }                       from '../../__tests__/fixtures'
-import { authMethodsByClientType }          from '../../authMethods'
-import { ClientType, AuthenticationMethod } from '../../types'
+import { renderForm, renderFormHook }                from '../../__tests__/fixtures'
+import { authMethodsByClientType }                   from '../../authMethods'
+import {
+  ClientType,
+  AuthenticationMethod as AuthenticationMethodEnum
+} from '../../types'
 
-import { AuthenticationMethod as Input } from './AuthenticationMethod'
+import { AuthenticationMethod } from './AuthenticationMethod'
+import { Password }             from './Password'
+import { Username }             from './Username'
 
-const { click } = userEvent
-const field = <Input />
-
+type MockSelectProps = React.PropsWithChildren<{
+  onChange: (code: AuthenticationMethodEnum) => void
+}>
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ children, ...props }: React.PropsWithChildren) => (
-    <select {...props}>
+  const Select = ({ children, onChange, ...props }: MockSelectProps) => (
+    <select
+      onChange={(e) => onChange(e.target.value as AuthenticationMethodEnum)}
+      {...props}
+    >
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       <option value={undefined}></option>
       {children}
@@ -23,11 +32,13 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+jest.mock('./Password', () => ({ Password: { reset: jest.fn() } }))
+jest.mock('./Username', () => ({ Username: { reset: jest.fn() } }))
 
 describe('AuthenticationMethod', () => {
   it('handle virtual-client', async () => {
     const clientType = ClientType.VirtualClient
-    renderForm(field, {
+    renderForm(<AuthenticationMethod />, {
       initialValues: { clientType }
     })
 
@@ -40,7 +51,7 @@ describe('AuthenticationMethod', () => {
 
   it('handle virtual-wireless-client', async () => {
     const clientType = ClientType.VirtualWirelessClient
-    renderForm(field, {
+    renderForm(<AuthenticationMethod />, {
       initialValues: { clientType }
     })
 
@@ -52,49 +63,39 @@ describe('AuthenticationMethod', () => {
     expect(result).toEqual(expected)
   })
 
-  it('reset to undefined when clientType changed and current no longer available', async () => {
-    const selected = AuthenticationMethod.WPA3_PERSONAL
-    renderForm(field, {
-      initialValues: {
-        clientType: ClientType.VirtualWirelessClient,
-        authenticationMethod: selected
-      },
-      valuesToUpdate: {
-        clientType: ClientType.VirtualClient
-      }
+  it('resets other fields on change', async () => {
+    const clientType = ClientType.VirtualWirelessClient
+    renderForm(<AuthenticationMethod />, {
+      initialValues: { clientType }
     })
 
-    expect(await screen.findByRole('combobox')).toHaveValue(selected)
+    const dropdown = await screen.findByRole('combobox')
+    await userEvent.selectOptions(
+      dropdown,
+      within(dropdown).getByRole('option', { name: 'WPA3-Personal' })
+    )
 
-    // prevent warning thrown
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await click(screen.getByRole('button', { name: 'Update' }))
-    })
-
-    expect(screen.getByRole('combobox')).toHaveValue('')
+    expect(Username.reset)
+      .toHaveBeenCalledWith(expect.anything(), AuthenticationMethodEnum.WPA3_PERSONAL)
+    expect(Password.reset)
+      .toHaveBeenCalledWith(expect.anything(), AuthenticationMethodEnum.WPA3_PERSONAL)
   })
 
-  it('retain current selected value if it is available in different clientType', async () => {
-    const selected = AuthenticationMethod.WPA2_PERSONAL
-    renderForm(field, {
-      initialValues: {
-        clientType: ClientType.VirtualWirelessClient,
-        authenticationMethod: selected
-      },
-      valuesToUpdate: {
-        clientType: ClientType.VirtualClient
-      }
+  describe('reset', () => {
+    const name = AuthenticationMethod.fieldName as unknown as NamePath
+
+    it('resets to undefined', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, AuthenticationMethodEnum.WPA3_PERSONAL)
+      AuthenticationMethod.reset(form, ClientType.VirtualClient)
+      expect(form.getFieldValue(name)).toEqual(undefined)
     })
 
-    expect(await screen.findByRole('combobox')).toHaveValue(selected)
-
-    // prevent warning thrown
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => {
-      await click(screen.getByRole('button', { name: 'Update' }))
+    it('does not reset', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, AuthenticationMethodEnum.WPA2_PERSONAL)
+      AuthenticationMethod.reset(form, ClientType.VirtualClient)
+      expect(form.getFieldValue(name)).toEqual(AuthenticationMethodEnum.WPA2_PERSONAL)
     })
-
-    expect(screen.getByRole('combobox')).toHaveValue(selected)
   })
 })

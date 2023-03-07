@@ -12,6 +12,7 @@ import {
 import { getPolicyRoutePath, PolicyType, SyslogConstant, SyslogDetailContextType } from '@acx-ui/rc/utils'
 import { getPolicyDetailsLink, PolicyOperation }                                   from '@acx-ui/rc/utils'
 import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                          from '@acx-ui/user'
 
 
 import SyslogDetailContent from './SyslogDetailContent'
@@ -33,18 +34,17 @@ const SyslogDetailView = () => {
           { text: $t({ defaultMessage: 'Syslog' }),
             link: getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }) }
         ]}
-        extra={policyName !== SyslogConstant.DefaultProfile ? [
+        extra={policyName !== SyslogConstant.DefaultProfile ? filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.SYSLOG,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]: []}
+        ]) : []}
       />
 
       <GridRow>
