@@ -46,7 +46,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
         payload: { psk: passphrase.join('') }
       }).unwrap()
 
-      setVisible(false)
+      onClose()
     } catch {
       showToast({
         type: 'error',
@@ -69,8 +69,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   }
 
   React.useEffect(() => {
-    setPassphrase(data.trim() === '' ? [] : data.split(' '))
-  }, [data])
+    if (visible)
+      setPassphrase(data.trim() === '' ? [] : data.split(' '))
+  }, [data, visible])
 
   return (
     <Drawer
