@@ -78,13 +78,23 @@ const AddNetworkSegmentation = () => {
         form={form}
         onCancel={() => navigate(linkToServices)}
         onFinish={handleFinish}
+        initialValues={{
+          // Refactoring note:
+          // Not sure if it make sense to have it as null,
+          // setting it null end up causing warning on shouldn't use null for Select.
+          // Will retain from its `defaultValue` usage,
+          // so it remain the same as what was implemented
+          venueId: null as unknown as NetworkSegmentationGroupForm['venueId'],
+          // eslint-disable-next-line max-len
+          vxlanTunnelProfileId: null as unknown as NetworkSegmentationGroupForm['vxlanTunnelProfileId']
+        }}
       >
         {
           steps.map((item, index) =>
             <StepsFormNew.StepForm
-              name={(index).toString()}
+              key={`step-${index}`}
+              name={index.toString()}
               title={item.title}
-              onFinish={async () => true}
             >
               {item.content}
             </StepsFormNew.StepForm>)

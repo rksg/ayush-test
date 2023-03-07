@@ -14,7 +14,8 @@ import {
 import {
   DateFormatEnum,
   EntitlementUtil,
-  Entitlement
+  Entitlement,
+  EntitlementDeviceType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -42,7 +43,10 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        return row?.deviceSubType ? EntitlementUtil.deviceSubTypeToText(row?.deviceSubType) : ''
+        if (row.deviceType === EntitlementDeviceType.SWITCH)
+          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+        else
+          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
       }
     },
     {
@@ -116,8 +120,9 @@ const SubscriptionTable = () => {
     }
   ]
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
+  const GetStatus = (expirationDate: string) => {
+    const isValid = moment(expirationDate).isAfter(Date.now())
+    if( isValid) {
       return $t({ defaultMessage: 'Active' })
     } else {
       return $t({ defaultMessage: 'Expired' })
@@ -128,7 +133,7 @@ const SubscriptionTable = () => {
     return {
       ...response,
       name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
-      status: GetStatus(response?.status as string)
+      status: GetStatus(response?.expirationDate)
     }
   })
 

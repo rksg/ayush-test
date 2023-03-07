@@ -1,11 +1,14 @@
-import moment from 'moment-timezone'
+import moment        from 'moment-timezone'
+import { IntlShape } from 'react-intl'
 
 import {
   firmwareTypeTrans,
   FirmwareVersion,
   FirmwareVenue,
+  FirmwareSwitchVenue,
   FirmwareVenueVersion,
-  FirmwareType
+  FirmwareType,
+  Schedule
 } from '@acx-ui/rc/utils'
 
 export const expirationTimeUnits: Record<string, string> = {
@@ -83,11 +86,18 @@ export const getVersionLabel = (version: FirmwareVersion): string => {
   return `${versionName} (${versionType}) ${versionOnboardDate ? '- ' + versionOnboardDate : ''}`
 }
 
+export const getSwitchVersionLabel = (version: FirmwareVersion): string => {
+  const versionName = version?.name
+  const versionType = transform(version?.category)
+
+  return `${versionName} (${versionType})`
+}
+
 const transformToUserDate = (firmwareVersion: FirmwareVersion): string | undefined => {
   return toUserDate(firmwareVersion?.onboardDate as string)
 }
 
-const toUserDate = (date: string): string => {
+export const toUserDate = (date: string): string => {
   if (date) {
     return getDateByFormat(date, 'MM/DD/YYYY hh:mm A')
   }
@@ -97,3 +107,54 @@ const toUserDate = (date: string): string => {
 const getDateByFormat = (date: string, format: string) => {
   return moment(date).format(format)
 }
+
+const getLastSkippedSwitchVersion = (venue: FirmwareSwitchVenue) : string => {
+  const version = venue.lastSkippedVersions
+  return version && version.length > 0 ? version[0].version : ''
+}
+
+export const getNextScheduleTpl = (intl: IntlShape, venue: FirmwareSwitchVenue) => {
+  const schedule = venue.nextSchedule
+  if (schedule?.timeSlot?.startDateTime) {
+    let endTime = moment(schedule.timeSlot.startDateTime).add(2, 'hours')
+    // eslint-disable-next-line max-len
+    return getDateByFormat(schedule.timeSlot.startDateTime, SCHEDULE_START_TIME_FORMAT) + ' - ' + endTime.format(SCHEDULE_END_TIME_FORMAT)
+  } else {
+    // eslint-disable-next-line max-len
+    const isVersionSkipped: boolean | string = getLastSkippedSwitchVersion(venue) && venue.availableVersions.some(version => version.version === getLastSkippedSwitchVersion(venue))
+    // eslint-disable-next-line max-len
+    return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
+  }
+}
+
+// eslint-disable-next-line max-len
+const scheduleTypeIsApFunc = (value: Schedule) => value && value.versionInfo && value.versionInfo.type && value.versionInfo.type === FirmwareType.AP_FIRMWARE_UPGRADE
+
+const getApSchedule = (venue: FirmwareVenue): Schedule | undefined => {
+  const apSchedules = venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc)
+  return apSchedules && apSchedules.length > 0 ? apSchedules[0] : undefined
+}
+
+const getLastSkippedApVersion = (venue: FirmwareVenue) : string | undefined => {
+  const version = venue.lastSkippedVersions && venue.lastSkippedVersions.filter(typeIsApFunc)
+  return version && version.length > 0 ? version[0].version : undefined
+}
+
+const getApAvailableVersions = (venue: FirmwareVenue) : FirmwareVenueVersion[] => {
+  return venue.availableVersions && venue.availableVersions.filter(typeIsApFunc)
+}
+
+export const getApNextScheduleTpl = (intl: IntlShape, venue: FirmwareVenue) => {
+  const schedule = getApSchedule(venue)
+  if (schedule) {
+    let endTime = moment(schedule.startDateTime).add(2, 'hours')
+    // eslint-disable-next-line max-len
+    return getDateByFormat(schedule.startDateTime, SCHEDULE_START_TIME_FORMAT) + ' - ' + endTime.format(SCHEDULE_END_TIME_FORMAT)
+  } else {
+    // eslint-disable-next-line max-len
+    const isVersionSkipped: boolean | string | undefined = getLastSkippedApVersion(venue) && getApAvailableVersions(venue).some(version => version.version === getLastSkippedApVersion(venue))
+    // eslint-disable-next-line max-len
+    return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
+  }
+}
+
