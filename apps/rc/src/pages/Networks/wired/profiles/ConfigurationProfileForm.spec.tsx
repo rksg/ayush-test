@@ -182,9 +182,9 @@ describe('Wired', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     const trustedPortModal = await screen.findByTestId('trustedPortModal')
-    const family = await screen.findByText('ICX-7150')
+    const family = await within(trustedPortModal).findByText('ICX-7150')
     await userEvent.click(family)
-    const model = await screen.findByText('24')
+    const model = await within(trustedPortModal).findByText('24')
     await userEvent.click(model)
     const nextTrustPortButton =
       await within(trustedPortModal).findByRole('button', { name: 'Next' })
@@ -275,7 +275,7 @@ describe('Wired', () => {
     await userEvent.click(finishButton[1])
   })
 
-  xit('should edit Switch Configuration Profile form', async () => {
+  it('should edit Switch Configuration Profile form', async () => {
     const profileValues = {
       editMode: true,
       currentData: profile
@@ -314,7 +314,7 @@ describe('Wired', () => {
     await userEvent.click(finishButton)
   })
 
-  xit('should render Profile form with drag select VLAN ports correctly', async () => {
+  it('should render Profile form with drag select VLAN ports correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -338,12 +338,12 @@ describe('Wired', () => {
     fireEvent.change(vIdInput, { target: { value: '1' } })
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
-    const dialog = await screen.findAllByRole('dialog')
-    const family = await screen.findByText('ICX-7150')
+    const dialog = await screen.findByTestId('vlanSettingModal')
+    const family = await within(dialog).findByText('ICX-7150')
     await userEvent.click(family)
-    const model = await screen.findByText('24')
+    const model = await within(dialog).findByText('24')
     await userEvent.click(model)
-    const nextTrustPortButton = await within(dialog[1]).findByRole('button', { name: 'Next' })
+    const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton)
 
     const dst = await screen.findAllByTestId('untagged_module1_0')
@@ -354,11 +354,11 @@ describe('Wired', () => {
     fireEvent.drop(dst[0])
     fireEvent.dragLeave(dst[0])
     fireEvent.dragEnd(dst[0])
-    const nextTrustPortButton1 = await within(dialog[1]).findByRole('button', { name: 'Next' })
+    const nextTrustPortButton1 = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 
-    await userEvent.click(await within(dialog[1]).findByTestId('tagged_module1_20'))
-    const saveTrustPortButton = await within(dialog[1]).findAllByRole('button', { name: 'Finish' })
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_20'))
+    const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Finish' })
     await userEvent.click(saveTrustPortButton[0])
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }) )
