@@ -56,6 +56,10 @@ describe('Persona Group Table', () => {
         (req, res, ctx) => res(ctx.json( { data: [] }))
       ),
       rest.get(
+        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        (req, res, ctx) => res(ctx.json( { id: 'nsg-id-1', name: 'nsg-name-1' }))
+      ),
+      rest.get(
         NetworkSegmentationUrls.getNetworkSegmentationGroupList.url,
         // just for filterable options generation
         (req, res, ctx) => res(ctx.json({ content: [{ id: 'nsg-id-1', name: 'nsg-name-1' }] }))
