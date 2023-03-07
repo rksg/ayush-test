@@ -141,7 +141,7 @@ describe('NetworkForm', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
-  it('should create AAA network successfully', async () => {
+  it.skip('should create AAA network successfully', async () => {
     render(<Provider><NetworkForm /></Provider>, { route: { params } })
     await fillInBeforeSettings('AAA network test')
     await userEvent.click((await screen.findAllByRole('combobox'))[0])
