@@ -30,8 +30,7 @@ const defaultPayload = {
     'description',
     'numOfRules',
     'venueIds'
-  ],
-  pageSize: 25
+  ]
 }
 
 export default function RogueAPDetectionTable () {
@@ -79,7 +78,7 @@ export default function RogueAPDetectionTable () {
   }, [tableQuery.data])
 
   useEffect(() => {
-    if (venueTableQuery.data) {
+    if (venueTableQuery.data && venueIds.length) {
       setVenueFilterOptions(
         [...venueTableQuery.data.data.map(
           (venue) => {
@@ -87,7 +86,7 @@ export default function RogueAPDetectionTable () {
           })]
       )
     }
-  }, [venueTableQuery.data])
+  }, [venueTableQuery.data, venueIds])
 
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {

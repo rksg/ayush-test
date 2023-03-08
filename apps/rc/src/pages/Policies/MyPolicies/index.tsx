@@ -2,8 +2,9 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import {
+  useEnhancedRoguePoliciesQuery,
   usePolicyListQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/rc/services';
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
@@ -41,6 +42,11 @@ const defaultPayload = {
     'scope',
     'cog'
   ]
+}
+
+const defaultRoguePayload = {
+  searchString: '',
+  fields: ['id']
 }
 
 export default function MyPolicies () {
@@ -132,8 +138,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.ROGUE_AP_DETECTION,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ROGUE_AP_DETECTION] } }
+      totalCount: useEnhancedRoguePoliciesQuery({
+        params, payload: { ...defaultRoguePayload }
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))
