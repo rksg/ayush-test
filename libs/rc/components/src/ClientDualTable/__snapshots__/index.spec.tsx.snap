@@ -70,7 +70,7 @@ exports[`ClientDualTable should render list correctly 1`] = `
         Connected Clients
       </h4>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 gQCJXG"
       >
         <div
           class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
@@ -309,15 +309,7 @@ exports[`ClientDualTable should render list correctly 1`] = `
               </div>
               <div
                 class="ant-space-item"
-                style="margin-right: 12px;"
               />
-              <div
-                class="ant-space-item"
-              >
-                <div
-                  class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
-                />
-              </div>
             </div>
           </div>
           <div

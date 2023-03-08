@@ -201,8 +201,8 @@ export function useGroupBy<RecordType> (
     }
 
     const checkParent = (record: RecordType) => {
-      const { isParent } = (record as unknown as { isParent: boolean })
-      return isParent
+      const { children } = (record as unknown as { children: RecordType[] })
+      return Array.isArray(children)
     }
 
     const { onChange, onClear } = tableActions ?? {}

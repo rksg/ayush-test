@@ -85,7 +85,6 @@ export interface APExtended extends AP {
   poePortInfo?: string,
   xPercent?: number,
   yPercent?: number,
-  isParent?: boolean,
   members?: number,
   incidents?: number,
   clients?: number,
