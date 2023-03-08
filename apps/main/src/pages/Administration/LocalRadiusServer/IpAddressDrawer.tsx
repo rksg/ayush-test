@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { Drawer, showToast }                   from '@acx-ui/components'
+import { Drawer }                              from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
 import { ClientConfig }                        from '@acx-ui/rc/utils'
 
@@ -13,10 +13,6 @@ interface IpAddressDrawerProps {
   editMode?: boolean
   editIpAddress?: string
   clientConfig: ClientConfig
-}
-
-interface httpErrorResponse {
-  status: number
 }
 
 export function IpAddressDrawer (props: IpAddressDrawerProps) {
@@ -103,24 +99,8 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               } else {
                 form.resetFields()
               }
-            } catch(error) {
-              if (error instanceof Error){
-                throw error
-              }
-              const errorResponse = error as httpErrorResponse
-              if(errorResponse.status) {
-                if (errorResponse.status === 409) {
-                  showToast({
-                    type: 'error',
-                    content: $t({ defaultMessage: 'IP Address already exists' })
-                  })
-                } else {
-                  showToast({
-                    type: 'error',
-                    content: $t({ defaultMessage: 'An error occurred' })
-                  })
-                }
-              }
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }}
         />

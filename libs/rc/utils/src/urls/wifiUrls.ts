@@ -150,13 +150,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueDefaultApGroup: {
-    // new api not working
-    // method: 'get',
-    // url: '/venues/:venueId/apGroups',
-    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group',
-    // newApi: true
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group'
+    url: '/venues/:venueId/apGroups',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/default-ap-group',
+    newApi: true
   },
   getApGroupsList: {
     method: 'post',

@@ -17,6 +17,7 @@ import {
   getPolicyRoutePath, EnhancedRoguePolicyType, Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { useDefaultVenuePayload } from '../../../../../../main/src/pages/Venues/VenuesTable'
@@ -142,14 +143,14 @@ export default function RogueAPDetectionTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>
             <Button type='primary'>
               {$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<EnhancedRoguePolicyType>
@@ -160,7 +161,7 @@ export default function RogueAPDetectionTable () {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

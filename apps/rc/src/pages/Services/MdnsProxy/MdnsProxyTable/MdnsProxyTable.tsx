@@ -6,8 +6,7 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal,
-  showToast
+  showActionModal
 } from '@acx-ui/components'
 import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
 import {
@@ -17,10 +16,10 @@ import {
   ServiceOperation,
   Service,
   getServiceListRoutePath,
-  getServiceRoutePath,
-  CatchErrorResponse
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -63,14 +62,7 @@ export default function MdnsProxyTable () {
             deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
               .then(clearSelection)
               .catch(error => {
-                const errorResponse = error as CatchErrorResponse
-                // eslint-disable-next-line max-len
-                const errorMsg = errorResponse.data.errors.map(error => error.message).join('<br />')
-
-                showToast({
-                  type: 'error',
-                  content: errorMsg ?? $t({ defaultMessage: 'An error occurred' })
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })
@@ -105,12 +97,12 @@ export default function MdnsProxyTable () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })} key='add'>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<Service>
@@ -119,7 +111,7 @@ export default function MdnsProxyTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

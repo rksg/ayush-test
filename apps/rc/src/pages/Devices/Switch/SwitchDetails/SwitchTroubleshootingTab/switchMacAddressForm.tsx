@@ -7,7 +7,7 @@ import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Button, Loader, showToast } from '@acx-ui/components'
+import { Button, Loader }  from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
   useGetVlanListBySwitchLevelQuery,
@@ -201,12 +201,9 @@ export function SwitchMacAddressForm () {
       if (result) {
         refetchResult()
       }
-    } catch {
+    } catch (error) {
       setIsValid(false)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

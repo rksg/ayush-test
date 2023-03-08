@@ -118,7 +118,7 @@ describe('MultiBarTimeSeriesChart', () => {
         data={getData()}
         chartBoundary={[1595829463000, 1609048663000]}
         tooltipFormatter={tooltipFormatter}
-        LabelFormatter={labelFormatter}
+        labelFormatter={labelFormatter}
       />
     )
   })

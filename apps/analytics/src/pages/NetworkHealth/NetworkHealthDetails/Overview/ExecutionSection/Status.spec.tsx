@@ -91,20 +91,18 @@ describe('StatusBlock', () => {
 describe('Status', () => {
   it('should render correctly', () => {
     const data = {
-      details: {
-        configured: {
-          passedApsPercent: 'configured',
-          avgPingTime: 'configured',
-          avgUpload: 'configured',
-          avgDownload: 'configured'
-        },
-        passedApsPercent: [0.4, 0.5],
-        avgPingTime: [100, 50],
-        avgUpload: [100, 0.000001],
-        avgDownload: [0.0000001, 1000000]
-      }
+      configured: {
+        passedApsPercent: 'configured',
+        avgPingTime: 'configured',
+        avgUpload: 'configured',
+        avgDownload: 'configured'
+      },
+      passedApsPercent: [0.4, 0.5],
+      avgPingTime: [100, 50],
+      avgUpload: [100, 0.000001],
+      avgDownload: [0.0000001, 1000000]
     } as unknown as ReturnType<typeof getExecutionSectionData>
-    render(<Status details={data.details}/>)
+    render(<Status details={data}/>)
     expect(screen.queryByText('Test Result')).toBeVisible()
   })
 })

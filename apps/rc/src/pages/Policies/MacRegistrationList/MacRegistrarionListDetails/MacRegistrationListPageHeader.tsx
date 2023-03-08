@@ -9,6 +9,7 @@ import {
   PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -27,10 +28,9 @@ function MacRegistrationListPageHeader () {
           // eslint-disable-next-line max-len
           link: getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }) }
       ]}
-      extra={[
+      extra={filterByAccess([
         // eslint-disable-next-line max-len
         <TenantLink
-          key='edit'
           to={getPolicyDetailsLink({
             type: PolicyType.MAC_REGISTRATION_LIST,
             oper: PolicyOperation.EDIT,
@@ -39,7 +39,7 @@ function MacRegistrationListPageHeader () {
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<MacRegistrationListTabs />}
     />
   )
