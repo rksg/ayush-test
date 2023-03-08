@@ -99,7 +99,7 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
       }
     }
     tableQuery.setPayload(customPayload)
-  }, [startDate, endDate])
+  }, [startDate, endDate, range])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
