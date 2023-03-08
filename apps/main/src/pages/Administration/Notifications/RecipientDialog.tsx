@@ -67,9 +67,6 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
 
-  const emailInputVal = Form.useWatch('email', form)
-  const mobileInputVal = Form.useWatch('mobile', form)
-
   const getSavePayload = (data: NotificationRecipientUIModel) => {
     let dataToSave = {
       description: data.description,
@@ -144,28 +141,38 @@ const RecipientDialog = (props: RecipientDialogProps) => {
     }
   }
 
-  const checkOptionFieldsEntered = ():boolean => {
-    return mobileInputVal || emailInputVal
-  }
-
   const handleInputChange = (changedFields: FieldData[]) => {
     const changedField = changedFields[0]
     const changedFieldName = changedField.name.toString()
     const value = changedField.value
+    const { email, mobile } = form.getFieldsValue()
 
     const errors = form.getFieldsError()
-    setIsValid(errors.some((field) => field.errors.length > 0) === false)
+    const hasErrors = errors.some((field) => field.errors.length > 0)
+    let isEmpty = true
+
+    if ((changedFieldName === 'emailEnabled' || changedFieldName === 'mobileEnabled')) {
+      isEmpty = _.isEmpty(changedFieldName === 'emailEnabled' ? email.trim() : mobile.trim())
+
+      if (value === true)
+        form.setFieldValue(changedFieldName, !isEmpty)
+
+    } else {
+      isEmpty = _.isEmpty(value?.trim())
+
+      if (changedFieldName === 'email') {
+        if (changedField.errors?.length === 0)
+          form.setFieldValue('emailEnabled', !isEmpty)
+      }
+
+      if (changedFieldName === 'mobile') {
+        if (changedField.errors?.length === 0)
+          form.setFieldValue('mobileEnabled', !isEmpty)
+      }
+    }
+
+    setIsValid(!hasErrors && (email?.trim() || mobile?.trim()))
     setIsChanged(true)
-
-    if (changedFieldName === 'email') {
-      if (changedField.errors?.length === 0)
-        form.setFieldValue('emailEnabled', Boolean(value.trim()))
-    }
-
-    if (changedFieldName === 'mobile') {
-      if (changedField.errors?.length === 0)
-        form.setFieldValue('mobileEnabled', Boolean(value.trim()))
-    }
   }
 
   const handleSubmit = async () => {
@@ -191,7 +198,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
       const errors = respData.data.errors
 
       let errMsg: string
-      if (errors.find(e => e.code === 'TNT-10100')) {
+      if (errors?.find(e => e.code === 'TNT-10100')) {
         errMsg = errors[0].message
 
         const duplicateEndpoints = findDuplicateEndpoints(allData)
@@ -220,6 +227,8 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   }
 
   const handleClose = () => {
+    setIsChanged(false)
+    setIsValid(false)
     setVisible(false)
     form.resetFields()
   }
@@ -231,7 +240,7 @@ const RecipientDialog = (props: RecipientDialogProps) => {
   }, [form, editData, visible])
 
   const isLoading = addState.isLoading || updateState.isLoading
-  const disableSave = !(isChanged && checkOptionFieldsEntered() && isValid)
+  const disableSave = !(isChanged && isValid)
 
   return (
     <Modal
