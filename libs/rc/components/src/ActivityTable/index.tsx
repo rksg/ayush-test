@@ -25,9 +25,9 @@ import { TimelineDrawer } from '../TimelineDrawer'
 export const columnState = {
   defaultValue: {
     startDateTime: true,
-    product: false,
     status: true,
-    source: true,
+    product: false,
+    name: true,
     description: true
   }
 }
@@ -134,9 +134,10 @@ const ActivityTable = ({
         && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
-      key: 'source',
+      key: 'name',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: ['admin', 'name']
+      dataIndex: ['admin', 'name'],
+      sorter: true
     },
     {
       key: 'description',
