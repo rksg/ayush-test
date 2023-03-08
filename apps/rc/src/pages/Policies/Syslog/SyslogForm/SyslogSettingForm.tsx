@@ -1,9 +1,17 @@
 import React, { MutableRefObject, useContext, useEffect } from 'react'
 
-import { ProFormInstance }                      from '@ant-design/pro-form'
-import { Col, Form, Input, Row, Select, Space } from 'antd'
-import { useIntl }                              from 'react-intl'
-import { useParams }                            from 'react-router-dom'
+import { ProFormInstance } from '@ant-design/pro-form'
+import {
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Space
+} from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { StepsForm }                   from '@acx-ui/components'
 import { useGetSyslogPolicyListQuery } from '@acx-ui/rc/services'
@@ -48,10 +56,10 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
             ...state,
             policyName: policyData.name ?? '',
             server: policyData?.primary?.server ?? '',
-            port: policyData.primary?.port?.toString() ?? '',
+            port: policyData.primary?.port ?? 514,
             protocol: policyData.primary?.protocol ?? ProtocolEnum.UDP,
             secondaryServer: policyData.secondary?.server ?? '',
-            secondaryPort: policyData.secondary?.port?.toString() ?? '',
+            secondaryPort: policyData.secondary?.port ?? 514,
             secondaryProtocol: policyData.secondary?.protocol ?? ProtocolEnum.TCP,
             facility: policyData.facility ?? FacilityEnum.KEEP_ORIGINAL,
             priority: policyData.priority ?? PriorityEnum.INFO,
@@ -62,10 +70,10 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
       })
       formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
       formRef?.current?.setFieldValue('server', policyData.primary.server ?? '')
-      formRef?.current?.setFieldValue('port', policyData.primary.port ?? '')
+      formRef?.current?.setFieldValue('port', policyData.primary.port ?? 514)
       formRef?.current?.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
       formRef?.current?.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
-      formRef?.current?.setFieldValue('secondaryPort', policyData.secondary?.port ?? '')
+      formRef?.current?.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
       // eslint-disable-next-line max-len
       formRef?.current?.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
       formRef?.current?.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
@@ -92,7 +100,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     })
   }
 
-  const handlePort = (port: string) => {
+  const handlePort = (port: number) => {
     dispatch({
       type: SyslogActionTypes.PORT,
       payload: {
@@ -135,7 +143,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     })
   }
 
-  const handleSecondaryPort = (port: string) => {
+  const handleSecondaryPort = (port: number) => {
     dispatch({
       type: SyslogActionTypes.SECONDARYPORT,
       payload: {
@@ -181,7 +189,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const selectFacility = (
     <Select
       data-testid='selectFacility'
-      style={{ width: '490px' }}
+      style={{ width: '380px' }}
       onChange={(evt) => {
         handleFacility(evt)
       }}
@@ -206,7 +214,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const selectFlowLevel = (
     <Select
       data-testid='selectFlowLevel'
-      style={{ width: '490px' }}
+      style={{ width: '380px' }}
       onChange={(evt) => {
         handleFlowLevel(evt)
       }}
@@ -236,7 +244,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
           initialValue={state.policyName}
           children={<Input
             data-testid='name'
-            style={{ width: '490px' }}
+            style={{ width: '380px' }}
             onChange={(event => {handlePolicyName(event.target.value)})}
           />}
         />
@@ -263,12 +271,15 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
               label={$t({ defaultMessage: 'Port' })}
               rules={[
                 { required: true },
-                { min: 1 },
-                { max: 5 }
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }
               ]}
-              children={<Input
+              initialValue={514}
+              children={<InputNumber
                 data-testid='port'
-                onChange={(event => {handlePort(event.target.value)})}/>}
+                min={1}
+                max={65535}
+                onChange={handlePort}/>}
             />
             <Form.Item
               name='protocol'
@@ -302,12 +313,15 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
               name='secondaryPort'
               label={$t({ defaultMessage: 'Port' })}
               rules={[
-                { min: 1 },
-                { max: 5 }
+                { type: 'number', min: 1 },
+                { type: 'number', max: 65535 }
               ]}
-              children={<Input
+              initialValue={514}
+              children={<InputNumber
                 data-testid='port2'
-                onChange={(event => {handleSecondaryPort(event.target.value)})}/>}
+                min={1}
+                max={65535}
+                onChange={handleSecondaryPort}/>}
             />
             <Form.Item
               name='secondaryProtocol'
