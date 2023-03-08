@@ -232,13 +232,7 @@ export function useGroupBy<RecordType> (
       .map((val) => ({
         key: val.key,
         dataIndex: '',
-        render: (_, record) => {
-          return checkParent(record)
-            ? <div onClick={() => val.callback && val.callback(record)}>
-              {val.label}
-            </div>
-            : null
-        }
+        render: (_, record) => checkParent(record) ? val.label : null
       }))
 
     const expandable: TableProps<RecordType>['expandable'] = {

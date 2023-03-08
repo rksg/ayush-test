@@ -714,11 +714,7 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
       label: 'AP Group',
       actions: [{
         key: 'edit',
-        label: <Button>Edit</Button>,
-        callback: (record) => {
-          // eslint-disable-next-line no-console
-          console.log(`edit callbacked clicked on: ${JSON.stringify(record)}`)
-        }
+        label: <Button>Edit</Button>
       }],
       parentColumns: [
         {
