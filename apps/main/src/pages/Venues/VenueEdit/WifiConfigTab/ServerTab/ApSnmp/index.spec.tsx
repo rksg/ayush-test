@@ -53,12 +53,13 @@ describe('Ap Snmp', () => {
           <ApSnmp />
         </Form>
       </Provider>, {
-        route: { params, path: '/api/venues/:venueId/snmpAgentSettings' }
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('AP SNMP'))
     expect(await screen.findByText(/AP SNMP/)).toBeVisible()
     expect(await screen.findByText(/SNMP-1/)).toBeVisible()
+
   })
 
   it('Should Update AP SNMP Agent Profile After Save', async () => {
@@ -74,12 +75,13 @@ describe('Ap Snmp', () => {
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/api/venues/:venueId/snmpAgentSettings' }
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await waitFor(() => screen.findByText('AP SNMP'))
     expect(await screen.findByText(/AP SNMP/)).toBeVisible()
+
     fireEvent.mouseDown(await screen.findByRole('combobox'))
-    const option = screen.getByText('SNMP-1')
+    const option = screen.getByText('SNMP-2')
     await userEvent.click(option)
   })
 
@@ -96,7 +98,7 @@ describe('Ap Snmp', () => {
           </Form>
         </VenueEditContext.Provider>
       </Provider>, {
-        route: { params, path: '/api/venues/:venueId/snmpAgentSettings' }
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
     await waitFor(() => screen.findByText('AP SNMP'))
     expect(await screen.findByText(/AP SNMP/)).toBeVisible()
