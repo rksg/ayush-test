@@ -112,6 +112,7 @@ export function ApGroupForm () {
   }
 
   const handleAddApGroup = async (values: AddApGroup) => {
+    const venueId = formRef.current?.getFieldValue('venueId')
     try {
       if (values.apSerialNumbers) {
         values.apSerialNumbers = values.apSerialNumbers.map(i => { return { serialNumber: i } })
@@ -122,7 +123,7 @@ export function ApGroupForm () {
       if (isEditMode) {
         await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
       } else {
-        await addApGroup({ params: { tenantId }, payload }).unwrap()
+        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
       navigate(`${basePath.pathname}/wifi`, { replace: true })

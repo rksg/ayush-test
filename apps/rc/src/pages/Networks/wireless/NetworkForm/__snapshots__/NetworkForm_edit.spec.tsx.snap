@@ -469,7 +469,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                 aria-checked="false"
                                 class="ant-switch ant-switch-disabled"
                                 disabled=""
-                                id="settings_isCloudpathEnabled"
+                                id="settings_wlan_macAddressAuthentication"
                                 role="switch"
                                 type="button"
                               >
@@ -481,7 +481,7 @@ exports[`NetworkForm should edit open network successfully 1`] = `
                                 />
                               </button>
                               <span>
-                                Use Cloudpath Server
+                                Use MAC Auth
                               </span>
                             </div>
                           </div>

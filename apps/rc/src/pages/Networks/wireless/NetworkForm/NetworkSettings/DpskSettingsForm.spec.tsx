@@ -57,7 +57,7 @@ describe('DpskSettingsForm', () => {
       }
     )
 
-    await userEvent.click(screen.getByText('Use Cloudpath Server'))
+    await userEvent.click(screen.getByText('Use AAA Server'))
   })
 
   it('should render edit form with DPSK service profile', async () => {
