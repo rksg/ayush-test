@@ -429,28 +429,27 @@ describe('Recipient form dialog edit mode', () => {
   })
 
   it('should submit with correct data when add email endpoint', async () => {
-    dialogProps.editData = {
-      id: 'afd39af2f9854963a61c38700089bc40',
-      description: 'testUser',
-      endpoints: [{
-        type: 'SMS',
-        id: '478127f284b84a6286aef6324613e3f4',
-        createdDate: '2023-02-06T02:11:51.841+00:00',
-        updatedDate: '2023-02-06T02:11:51.841+00:00',
-        destination: '+886912345678',
-        active: true,
-        status: 'OK'
-      }] as NotificationEndpoint[],
-      email: '',
-      emailEnabled: false,
-      mobile: '+886912345678',
-      mobileEnabled: true
-    } as NotificationRecipientUIModel
-
     render(
       <Provider>
         <RecipientDialog
           {...dialogProps}
+          editData={{
+            id: 'afd39af2f9854963a61c38700089bc40',
+            description: 'testUser',
+            endpoints: [{
+              type: 'SMS',
+              id: '478127f284b84a6286aef6324613e3f4',
+              createdDate: '2023-02-06T02:11:51.841+00:00',
+              updatedDate: '2023-02-06T02:11:51.841+00:00',
+              destination: '+886912345678',
+              active: true,
+              status: 'OK'
+            }] as NotificationEndpoint[],
+            email: '',
+            emailEnabled: false,
+            mobile: '+886912345678',
+            mobileEnabled: true
+          } as NotificationRecipientUIModel}
         />
       </Provider>, {
         route: { params }
@@ -463,6 +462,9 @@ describe('Recipient form dialog edit mode', () => {
     const mobileInputElem = await screen.findByPlaceholderText(exampleMobile)
     await userEvent.clear(mobileInputElem)
     await userEvent.type(mobileInputElem, '+886912345690')
+    const smsSwitchElem = (await screen.findAllByRole('switch'))
+      .filter((elem) => elem.id === 'mobileEnabled')[0]
+    await userEvent.click(smsSwitchElem)
 
     const saveBtn = await screen.findByRole('button', { name: 'Save' })
     await userEvent.click(saveBtn)
@@ -472,13 +474,68 @@ describe('Recipient form dialog edit mode', () => {
       description: 'testUser',
       endpoints: [{
         id: '478127f284b84a6286aef6324613e3f4',
-        active: true,
+        active: false,
         destination: '+886912345690',
         type: NotificationEndpointType.sms
-      },{
+      }, {
         active: true,
         destination: 'another_test_user@gmail.com',
         type: NotificationEndpointType.email
+      }]
+    })
+  })
+
+  it('should submit with correct data when add sms endpoint', async () => {
+    render(
+      <Provider>
+        <RecipientDialog
+          {...dialogProps}
+          editData={{
+            id: 'afd39af2f9854963a61c38700089bc40',
+            description: 'testUser',
+            endpoints: [{
+              type: 'EMAIL',
+              id: '478127f284b84a6286aef6324613e3f6',
+              createdDate: '2023-02-06T02:11:51.841+00:00',
+              updatedDate: '2023-02-06T02:11:51.841+00:00',
+              destination: 'other_test_user@gmail.com',
+              active: true,
+              status: 'OK'
+            }] as NotificationEndpoint[],
+            email: 'other_test_user@gmail.com',
+            emailEnabled: true,
+            mobile: '',
+            mobileEnabled: false
+          } as NotificationRecipientUIModel}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findByText('Edit Recipient')
+    await screen.findByPlaceholderText('Email')
+    const mailSwitchElem = (await screen.findAllByRole('switch'))
+      .filter((elem) => elem.id === 'emailEnabled')[0]
+    await userEvent.click(mailSwitchElem)
+
+    const mobileInputElem = await screen.findByPlaceholderText(exampleMobile)
+    await userEvent.type(mobileInputElem, '+886912345678')
+
+    const saveBtn = await screen.findByRole('button', { name: 'Save' })
+    await userEvent.click(saveBtn)
+
+    expect(mockedUpdateFn).toBeCalledWith({
+      id: 'afd39af2f9854963a61c38700089bc40',
+      description: 'testUser',
+      endpoints: [{
+        id: '478127f284b84a6286aef6324613e3f6',
+        active: false,
+        destination: 'other_test_user@gmail.com',
+        type: NotificationEndpointType.email
+      }, {
+        active: true,
+        destination: '+886912345678',
+        type: NotificationEndpointType.sms
       }]
     })
   })
