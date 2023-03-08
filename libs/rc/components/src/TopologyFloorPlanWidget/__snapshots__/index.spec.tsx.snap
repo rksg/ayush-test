@@ -73,9 +73,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                       />
                     </span>
                     <span>
-                      <span>
-                        Topology
-                      </span>
+                      Topology
                     </span>
                   </label>
                   <label
@@ -100,9 +98,6 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                   </label>
                 </div>
               </div>
-            </div>
-            <div>
-              Floor Plan
             </div>
           </div>
         </div>
