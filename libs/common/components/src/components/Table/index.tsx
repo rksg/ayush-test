@@ -84,7 +84,8 @@ export interface TableProps <RecordType>
     floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
-      search: { searchString?: string, searchTargetFields?: string[] }
+      search: { searchString?: string, searchTargetFields?: string[] },
+      groupBy?: string | undefined
     ) => void,
     /**
      * Assumes that dataSource is nested with children key.
@@ -155,10 +156,6 @@ function Table <RecordType extends Record<string, any>> ({
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
-  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
-    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
-
-
   const groupable = props.columns.filter(col => col.groupable)
   const {
     GroupBySelect,
@@ -167,8 +164,15 @@ function Table <RecordType extends Record<string, any>> ({
     finalParentColumns,
     clearGroupByFn,
     isGroupByActive
-  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>
-  (groupable, groupByTableActions, props.columns.length, intl)
+  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
+    groupable, 
+    groupByTableActions, 
+    props.columns.length, 
+    intl
+  )
+
+  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
+  onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {

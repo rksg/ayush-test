@@ -197,8 +197,6 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         return Boolean(children) && Array.isArray(children) && children.length > 0
       }
 
-      const checkParent = (record: ParentRecord) => 'children' in record
-
       const { onChange, onClear } = tableActions ?? {}
 
       const validGroupables = groupables.filter(cols => Boolean(cols.groupable))
@@ -224,7 +222,7 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         .map((val) => ({
           key: val.key,
           dataIndex: '',
-          render: (_, record) => checkParent(record) ? val.label : null
+          render: (_, record) => 'children' in record ? val.label : null
         }))
 
       const expandable: TableProps<ParentRecord>['expandable'] = {
