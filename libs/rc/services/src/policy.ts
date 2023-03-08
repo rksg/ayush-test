@@ -1023,7 +1023,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.updateVenueApSnmpSettings, params)
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpSettings, params)
         return {
           ...req,
           body: payload
