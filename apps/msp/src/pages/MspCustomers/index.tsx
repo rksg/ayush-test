@@ -19,7 +19,6 @@ import {
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
@@ -35,6 +34,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -324,17 +324,19 @@ export function MspCustomers () {
           return false
         },
         onClick: ([{ name, id }], clearSelection) => {
-          const title = $t({
-            defaultMessage: `Deactivate Customer 
-           "{formattedName}"?`
-          }, { formattedName: name })
+          const title = $t(
+            { defaultMessage: 'Deactivate Customer "{formattedName}"?' },
+            { formattedName: name }
+          )
 
           showActionModal({
             type: 'confirm',
             title: title,
             content: $t({
-              defaultMessage: `Deactivate "{formattedName}" will suspend all its services, 
-              are you sure you want to proceed?`
+              defaultMessage: `
+                Deactivate "{formattedName}" will suspend all its services,
+                are you sure you want to proceed?
+              `
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
             onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
@@ -352,18 +354,18 @@ export function MspCustomers () {
           return true
         },
         onClick: ([{ name, id }], clearSelection) => {
-          const title = $t({
-            defaultMessage: `Reactivate Customer 
-           "{formattedName}"?`
-          }, { formattedName: name })
+          const title = $t(
+            { defaultMessage: 'Reactivate Customer "{formattedName}"?' },
+            { formattedName: name }
+          )
 
           showActionModal({
             type: 'confirm',
             title: title,
-            content: $t({
-              defaultMessage: `Reactivate this customer 
-              "{formattedName}"?`
-            }, { formattedName: name }),
+            content: $t(
+              { defaultMessage: 'Reactivate this customer "{formattedName}"?' },
+              { formattedName: name }
+            ),
             okText: $t({ defaultMessage: 'Reactivate' }),
             onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
@@ -398,7 +400,7 @@ export function MspCustomers () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -431,17 +433,17 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={filterByAccess([
+          <TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
+          <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
               hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />} />
-        ]}
+          <DisabledButton icon={<DownloadOutlined />} />
+        ])}
       />
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && <MspEcTable />}

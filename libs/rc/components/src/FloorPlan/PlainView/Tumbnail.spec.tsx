@@ -1,7 +1,11 @@
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
+
+// eslint-disable-next-line import/order
+import { rest } from 'msw'
+
 import Thumbnail from './Thumbnail'
 
 const floorPlan: FloorPlanDto = {
@@ -51,7 +55,40 @@ const networkDevices: {
 
 const networkDeviceType: NetworkDeviceType[] = []
 
+const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
+},
+'7231da344778480d88f37f0cca1c534f-001.png': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+}
+}
+
 describe('Floor Plan Thumbnail Image', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
+  })
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
+  })
 
   it('should render correctly', async () => {
     const onClick = jest.fn()
@@ -63,7 +100,10 @@ describe('Floor Plan Thumbnail Image', () => {
       networkDevicesVisibility={networkDeviceType}/>)
     await screen.findByText(floorPlan?.name)
     expect(screen.getByText(floorPlan?.name).textContent).toBe(floorPlan?.name)
-    expect(screen.getByRole('img')).toHaveAttribute('src', floorPlan?.imageUrl)
+    await waitFor(() => {
+      expect(screen.getByRole('img')).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl)
+    })
     expect(screen.getByRole('img')).toBeVisible()
     const component = screen.getByTestId('thumbnailBg')
     fireEvent.click(component)

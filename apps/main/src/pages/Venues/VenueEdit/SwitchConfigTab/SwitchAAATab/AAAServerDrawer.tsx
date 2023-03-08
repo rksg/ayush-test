@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer, showToast, Tooltip }                  from '@acx-ui/components'
+import { Button, Drawer, Tooltip }                             from '@acx-ui/components'
 import { useAddAAAServerMutation, useUpdateAAAServerMutation } from '@acx-ui/rc/services'
 import { AAAServerTypeEnum,
   excludeExclamationRegExp,
@@ -89,11 +89,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         }).unwrap()
       }
     }
-    catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
     setLoading(false)
     onClose()

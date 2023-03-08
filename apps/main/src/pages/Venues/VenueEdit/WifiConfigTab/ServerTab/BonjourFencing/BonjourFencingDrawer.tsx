@@ -4,8 +4,8 @@ import { FormInstance } from 'antd/es/form/Form'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { Drawer, showActionModal } from '@acx-ui/components'
-import { BonjourFencingService }   from '@acx-ui/rc/utils'
+import { Drawer, showActionModal }                  from '@acx-ui/components'
+import { BonjourFencingService, BridgeServiceEnum } from '@acx-ui/rc/utils'
 
 import BonjourFencingServiceForm        from './BonjourFencingServiceForm/BonjourFencingServiceForm'
 import { BonjourFencingServiceContext } from './BonjourFencingServiceTable'
@@ -43,7 +43,20 @@ export default function BonjourFencingDrawer (props: BonjourFencingDrawerProps) 
   }
 
   const validFormData = (d: BonjourFencingService) => {
-    const { wiredEnabled, wiredRules=[], customMappingEnabled, customStrings=[] } = d
+    const { service, wiredEnabled, wiredRules=[], customMappingEnabled, customStrings=[] } = d
+
+    if (service === BridgeServiceEnum.OTHER && !customMappingEnabled) {
+      showActionModal({
+        type: 'error',
+        //title: $t({ defaultMessage: 'Error' }),
+        content:
+          $t({
+            defaultMessage: 'The Custom Mapping must be enabled when the service is \'Other\'.'
+          })
+      })
+      return false
+    }
+
     if (wiredEnabled && wiredRules.length === 0) {
       showActionModal({
         type: 'error',

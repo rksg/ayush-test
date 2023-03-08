@@ -21,14 +21,17 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUserProfileContext }             from '@acx-ui/rc/components'
-import { isDelegationMode, RolesEnum, TenantIdFromJwt }          from '@acx-ui/rc/utils'
+import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
+import { isDelegationMode, TenantIdFromJwt }                     from '@acx-ui/rc/utils'
 import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useParams }                                             from '@acx-ui/react-router-dom'
+import { RolesEnum }                                             from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+
 
 
 function Layout () {
@@ -44,21 +47,20 @@ function Layout () {
 
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(() => {
-    if (userProfile) {
-      if(userProfile.role === RolesEnum.GUEST_MANAGER){
-        navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}`
-        })
-      }
+    if (isGuestManager) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}`
+      })
     }
-  }, [userProfile])
+  }, [isGuestManager])
 
   return (
     <LayoutComponent
-      menuConfig={useMenuConfig(userProfile?.role as RolesEnum)}
+      menuConfig={useMenuConfig()}
       content={
         <>
           <CloudMessageBanner />

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
-
 import {
   ConnectedClientsOverTime,
   NetworkHistory,
@@ -10,24 +8,23 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter, useAnalyticsFilter }                                  from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, NoData }                                             from '@acx-ui/components'
-import { ApInfoWidget }                                                         from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery }                               from '@acx-ui/rc/services'
-import { ApDetails, ApPosition, ApViewModel, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { AnalyticsFilter }                                                                                          from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                                                                                         from '@acx-ui/components'
+import { ApInfoWidget, TopologyFloorPlanWidget }                                                                    from '@acx-ui/rc/components'
+import { useApDetailsQuery, useApViewModelQuery }                                                                   from '@acx-ui/rc/services'
+import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { useDateFilter }                                                                                            from '@acx-ui/utils'
 
 import { useApContext } from '../ApContext'
 
-import ApFloorplan      from './ApFloorplan'
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
 
 export function ApOverviewTab () {
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
-  const { $t } = useIntl()
   const params = useApContext()
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
@@ -50,14 +47,14 @@ export function ApOverviewTab () {
       _currentApDevice.position=apDetails?.position
       setCurrentApDevice(_currentApDevice)
       setApFilter({
-        ...filters,
+        ...dateFilter,
         path: [{ type: 'AP', name: currentAP.apMac as string }]
       })
     }
-  }, [currentAP, filters])
+  }, [currentAP, dateFilter])
 
 
-  return (  // TODO: Remove background: '#F7F7F7' and Add Floor plan
+  return (
     <GridRow>
       <GridCol col={{ span: 18 }} style={{ height: '152px' }}>
         { apFilter && <ApInfoWidget currentAP={currentAP as ApViewModel} filters={apFilter} /> }
@@ -65,12 +62,13 @@ export function ApOverviewTab () {
       <GridCol col={{ span: 6 }} style={{ height: '152px' }}>
         <ApPhoto />
       </GridCol>
-      <GridCol col={{ span: 18 }} style={{ background: '#F7F7F7' }}>
-        {apDetails?.position?.floorplanId ? <ApFloorplan
-          activeDevice={currentApDevice}
+      <GridCol col={{ span: 18 }} style={{ height: '420px' }}>
+        { apDetails && <TopologyFloorPlanWidget
+          showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
+          currentDevice={currentApDevice}
           venueId={apDetails?.venueId}
-          apPosition={apDetails?.position as ApPosition}/>
-          : <NoData text={$t({ defaultMessage: 'This AP is not placed on any floor plan' })}/>}
+          devicePosition={apDetails?.position as NetworkDevicePosition}/>
+        }
       </GridCol>
       <GridCol col={{ span: 6 }}>
         <ApProperties

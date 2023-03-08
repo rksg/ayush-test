@@ -8,7 +8,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Modal, showActionModal/*, showToast */ } from '@acx-ui/components'
+import { Modal }                from '@acx-ui/components'
 import {
   useUpdateAdminMutation,
   useGetMspEcAdminQuery,
@@ -70,14 +70,8 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
         payload
       }).unwrap()
 
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Update User Name Failed' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -98,14 +92,8 @@ const EditAdministratorDialog = (props: EditAdministratorDialogProps) => {
       }
 
       handleCancel()
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: $t({ defaultMessage: 'Update User Failed' }),
-        // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

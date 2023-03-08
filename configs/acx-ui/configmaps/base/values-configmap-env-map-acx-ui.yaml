@@ -42,3 +42,6 @@ data:
       - configmap: configmap-acx-ui
         key: supported.ap.models
         name: SUPPORTED_AP_MODELS
+      - configmap: configmap-acx-ui
+        key: how.to.videos
+        name: HOW_TO_VIDEOS

@@ -92,6 +92,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       ...saveData,
       ...{
         wlan: {
+          ...saveData.wlan,
           advancedCustomization: new OpenWlanAdvancedCustomization(),
           enable: true,
           vlanId: 1
