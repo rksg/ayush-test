@@ -50,8 +50,7 @@ const Events = () => {
     },
     sorter: eventDefaultSorter,
     search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL },
-    detailLevel: currentUserDetailLevel
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }

@@ -48,7 +48,6 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
-  detailLevel?: string
 }
 export type PAGINATION = {
   page: number,

@@ -81,6 +81,7 @@ interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
+  detailLevel?: string
 }
 
 type EntityType = typeof entityTypes[number]
