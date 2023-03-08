@@ -453,7 +453,7 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
             )}
-            <GroupBySelect />
+            {groupable.length && <GroupBySelect />}
           </Space>
         </div>
         <UI.HeaderRight>
