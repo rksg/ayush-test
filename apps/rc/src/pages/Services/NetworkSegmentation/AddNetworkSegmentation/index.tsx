@@ -8,8 +8,8 @@ import { useCreateNetworkSegmentationGroupMutation }    from '@acx-ui/rc/service
 import { useTenantLink }                                from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
-import AccessSwitchSetting              from '../NetworkSegmentationForm/AccessSwitchForm/AccessSwitchSetting'
-import DistributionSwitchSetting        from '../NetworkSegmentationForm/DistributionSwitchForm/DistributionSwitchSetting'
+import { AccessSwitchForm }             from '../NetworkSegmentationForm/AccessSwitchForm'
+import { DistributionSwitchForm }       from '../NetworkSegmentationForm/DistributionSwitchForm'
 import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
 import { SmartEdgeForm }                from '../NetworkSegmentationForm/SmartEdgeForm'
 import { SummaryForm }                  from '../NetworkSegmentationForm/SummaryForm'
@@ -39,11 +39,11 @@ const AddNetworkSegmentation = () => {
     },
     {
       title: $t({ defaultMessage: 'Dist. Switch' }),
-      content: <DistributionSwitchSetting />
+      content: <DistributionSwitchForm />
     },
     {
       title: $t({ defaultMessage: 'Access Switch' }),
-      content: <AccessSwitchSetting />
+      content: <AccessSwitchForm />
     },
     {
       title: $t({ defaultMessage: 'Summary' }),
@@ -67,7 +67,7 @@ const AddNetworkSegmentation = () => {
       }],
       networkIds: formData.networkIds,
       distributionSwitchInfos: formData.distributionSwitchInfos.map(ds=>_.omit(
-        { ...ds, siteName: formData.edgeId }, ['accessSwitches', 'name'])),
+        ds, ['accessSwitches', 'name'])),
       accessSwitchInfos: formData.accessSwitchInfos.map(as=>_.omit(
         as, ['name', 'familyId', 'firmwareVersion', 'model'])),
       forceOverwriteReboot: false

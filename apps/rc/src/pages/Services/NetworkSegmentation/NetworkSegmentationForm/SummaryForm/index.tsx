@@ -7,8 +7,8 @@ import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/componen
 
 import { NetworkSegmentationGroupForm } from '..'
 import { useWatch }                     from '../../useWatch'
-import { AccessSwitchTable }            from '../AccessSwitchForm/AccessSwitchSetting'
-import { DistributionSwitchTable }      from '../DistributionSwitchForm/DistributionSwitchSetting'
+import { AccessSwitchTable }            from '../AccessSwitchForm/AccessSwitchTable'
+import { DistributionSwitchTable }      from '../DistributionSwitchForm/DistributionSwitchTable'
 import * as UI                          from '../styledComponents'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
