@@ -5,10 +5,11 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, showToast, StepsForm, Table, TableProps }        from '@acx-ui/components'
+import { Loader, StepsForm, Table, TableProps }                   from '@acx-ui/components'
 import { useGetStaticRoutesQuery, useUpdateStaticRoutesMutation } from '@acx-ui/rc/services'
 import { EdgeStaticRoute }                                        from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
+import { filterByAccess }                                         from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
@@ -102,11 +103,8 @@ const StaticRoutes = () => {
         routes: routesData
       }
       await updateStaticRoutes({ params: params, payload: payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -137,9 +135,9 @@ const StaticRoutes = () => {
                 {$t({ defaultMessage: 'Static Routes' })}
               </Typography.Title>
               <Table<EdgeStaticRoute>
-                actions={actionButtons}
+                actions={filterByAccess(actionButtons)}
                 columns={columns}
-                rowActions={rowActions}
+                rowActions={filterByAccess(rowActions)}
                 dataSource={routesData}
                 rowSelection={{ type: 'checkbox' }}
                 rowKey='id'

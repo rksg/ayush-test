@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -21,14 +21,17 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { CloudMessageBanner, useUserProfileContext } from '@acx-ui/rc/components'
-import { isDelegationMode, TenantIdFromJwt }         from '@acx-ui/rc/utils'
-import { getBasePath, Link, Outlet }                 from '@acx-ui/react-router-dom'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { CloudMessageBanner }                                    from '@acx-ui/rc/components'
+import { isDelegationMode, TenantIdFromJwt }                     from '@acx-ui/rc/utils'
+import { getBasePath, Link, Outlet, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useParams }                                             from '@acx-ui/react-router-dom'
+import { RolesEnum }                                             from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 
 import { useMenuConfig } from './menuConfig'
 import SearchBar         from './SearchBar'
 import * as UI           from './styledComponents'
+
 
 
 function Layout () {
@@ -37,12 +40,23 @@ function Layout () {
   const companyName = userProfile?.companyName
   const showHomeButton = isDelegationMode() || userProfile?.var
   const { $t } = useIntl()
-
+  const basePath = useTenantLink('/users/guestsManager')
+  const navigate = useNavigate()
   const params = useParams()
   const searchFromUrl = params.searchVal || ''
 
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  useEffect(() => {
+    if (isGuestManager) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}`
+      })
+    }
+  }, [isGuestManager])
 
   return (
     <LayoutComponent

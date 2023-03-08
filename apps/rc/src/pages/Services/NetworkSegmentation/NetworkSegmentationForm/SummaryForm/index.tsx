@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import { Alert, StepsForm, Subtitle, useStepFormContext, useWatch } from '@acx-ui/components'
+import { Alert, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 import { AccessSwitchTable }            from '../AccessSwitchForm/AccessSwitchSetting'
 import { DistributionSwitchTable }      from '../DistributionSwitchForm/DistributionSwitchSetting'
 import * as UI                          from '../styledComponents'
@@ -34,104 +35,106 @@ export const SummaryForm = () => {
     setSmartEdgeData([
       {
         edgeName: edgeName,
-        segments: (segments).toString(),
-        devices: (devices).toString(),
+        segments: segments.toString(),
+        devices: devices.toString(),
         dhcpServiceName: dhcpName,
         dhcpPoolName: poolName
       }
     ])
   }, [edgeName, segments, devices, dhcpName, poolName])
 
-  return (
-    <>
-      <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-      <Alert message={
-        $t({ defaultMessage: `For segment assignment for AP wired,
-          please go to the Venue/ property Units page to assign an AP
-          for the specific unit/ persona.` })
-      }
-      type='info'
-      showIcon />
-      <Subtitle level={4}>
-        { $t({ defaultMessage: 'General Settings' }) }
-      </Subtitle>
-      <Row>
-        <Col span={6}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'Service Name' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {nsgName}
-          </UI.FieldValue>
-        </Col>
-        <Col span={6}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'Tags' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {tags?.join(', ')}
-          </UI.FieldValue>
-        </Col>
-        <Col span={10}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'Venue with the property management enabled' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {venueName}
-          </UI.FieldValue>
-        </Col>
-        <Col span={10}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'APs' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {''}
-          </UI.FieldValue>
-        </Col>
-      </Row>
-      <Subtitle level={4}>
-        { $t({ defaultMessage: 'SmartEdge' }) }
-      </Subtitle>
-      <SmartEdgeTable data={smartEdgeData} /><br />
-      <Subtitle level={4}>
-        { $t({ defaultMessage: 'Wireless Network' }) }
-      </Subtitle>
-      <Row>
-        <Col span={6}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'Tunnel Profile' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {tunnelProfileName}
-          </UI.FieldValue>
-        </Col>
-      </Row>
-      <Row gutter={20}>
-        <Col span={24}>
-          <UI.FieldTitle>
-            {$t({ defaultMessage: 'Wireless Networks' })}
-          </UI.FieldTitle>
-          <UI.FieldValue>
-            {networkNames?.map(item => (
-              <Row>
-                {item}
-              </Row>
-            ))}
-          </UI.FieldValue>
-        </Col>
-      </Row><br />
-      <Subtitle level={4}>
-        { $t({ defaultMessage: 'Distribution Switch' }) }
-      </Subtitle>
+  return (<>
+    <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
+    <Alert message={
+      $t({ defaultMessage: `For segment assignment for AP wired,
+        please go to the Venue/ property Units page to assign an AP
+        for the specific unit/ persona.` })
+    }
+    type='info'
+    showIcon />
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'General Settings' }) }
+    </Subtitle>
+    <Row>
+      <Col span={6}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'Service Name' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {nsgName}
+        </UI.FieldValue>
+      </Col>
+      <Col span={6}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'Tags' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {tags?.join(', ')}
+        </UI.FieldValue>
+      </Col>
+      <Col span={10}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'Venue with the property management enabled' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {venueName}
+        </UI.FieldValue>
+      </Col>
+      <Col span={10}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'APs' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {''}
+        </UI.FieldValue>
+      </Col>
+    </Row>
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'SmartEdge' }) }
+    </Subtitle>
+    <Form.Item>
+      <SmartEdgeTable data={smartEdgeData} />
+    </Form.Item>
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Wireless Network' }) }
+    </Subtitle>
+    <Row>
+      <Col span={6}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'Tunnel Profile' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {tunnelProfileName}
+        </UI.FieldValue>
+      </Col>
+    </Row>
+    <Row gutter={20}>
+      <Col span={24}>
+        <UI.FieldTitle>
+          {$t({ defaultMessage: 'Wireless Networks' })}
+        </UI.FieldTitle>
+        <UI.FieldValue>
+          {networkNames?.map(item => (
+            <Row>
+              {item}
+            </Row>
+          ))}
+        </UI.FieldValue>
+      </Col>
+    </Row>
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Distribution Switch' }) }
+    </Subtitle>
+    <Form.Item>
       <DistributionSwitchTable type='form'
         rowActions={undefined}
-        dataSource={distributionSwitchInfos} /><br />
-      <Subtitle level={4}>
-        { $t({ defaultMessage: 'Access Switch' }) }
-      </Subtitle>
+        dataSource={distributionSwitchInfos} /></Form.Item>
+    <Subtitle level={4}>
+      { $t({ defaultMessage: 'Access Switch' }) }
+    </Subtitle>
+    <Form.Item>
       <AccessSwitchTable type='form'
         rowActions={undefined}
-        dataSource={accessSwitchInfos}/>
-    </>
-  )
+        dataSource={accessSwitchInfos}/></Form.Item>
+  </>)
 }

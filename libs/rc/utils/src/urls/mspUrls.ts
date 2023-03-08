@@ -184,5 +184,13 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   updateMspLabel: {
     method: 'put',
     url: '/api/mspservice/tenant/:tenantId/msplabel'
+  },
+  acceptRejectInvitation: {
+    method: 'put',
+    url: '/api/tenant/:tenantId/delegation/:delegationId'
+  },
+  getGenerateLicenseUsageRpt: {
+    method: 'get',
+    url: '/api/entitlement-assign/tenant/:tenantId'
   }
 }

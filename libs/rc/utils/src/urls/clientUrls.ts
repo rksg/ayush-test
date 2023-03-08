@@ -3,13 +3,22 @@ import { ApiInfo } from '../apiService'
 export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   getClientList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/clientlist'
+    url: '/clients/clientlist',
+    oldUrl: '/api/viewmodel/:tenantId/client/clientlist',
+    newApi: true
   },
   getClientMeta: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/client/meta'
+    url: '/clients/metas',
+    oldUrl: '/api/viewmodel/:tenantId/client/meta',
+    newApi: true
   },
   getClientDetails: {
+    // Path variable not match
+    // method: 'get',
+    // url: '/clients/:clientId/query',
+    // oldUrl: '/api/viewmodel/:tenantId/client/:clientId',
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/client/:clientId'
   },
@@ -21,36 +30,52 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   },
   importGuestPass: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/guest-user/import'
-  },
-  guestsAction: {
-    method: 'patch',
-    url: '/guestUsers/:guestUserId',
+    url: '/networks/:networkId/guestUsers',
+    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/import',
     newApi: true
   },
   enableGuests: {
+    // different method
+    // method: 'patch',
+    // url: '/guestUsers/:guestUserId',
+    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    // newApi: true
     method: 'post',
-    url: '/guestUsers/:guestUserId',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
-    newApi: true
+    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable'
   },
   disableGuests: {
+    // different method
+    // method: 'patch',
+    // url: '/guestUsers/:guestUserId',
+    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    // newApi: true
     method: 'post',
-    url: '/guestUsers/:guestUserId',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
-    newApi: true
+    url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
   },
   getGuests: {
+    // 404 Not Found
+    // method: 'post',
+    // url: '/guestUsers/query/csvFiles',
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    // newApi: true
     method: 'post',
-    url: '/guestUsers/query/csvFiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
-    newApi: true
+    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
   },
   generateGuestPassword: {
+    // different method
+    // method: 'patch',
+    // url: '/guestUsers/:guestUserId',
+    // oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate'
   },
   disconnectClient: {
+    // different method
+    // method: 'patch',
+    // url: '/aps/clients',
+    // oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/disconnect-client'
   }

@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import {
   showActionModal,
-  showToast,
   ColumnType,
   Table,
   TableProps,
@@ -24,6 +23,7 @@ import {
 import {
   Schedule,
   UpgradePreferences,
+  FirmwareCategory,
   FirmwareType,
   FirmwareVenue,
   FirmwareVersion,
@@ -31,30 +31,36 @@ import {
   UpdateScheduleRequest,
   TableQuery,
   RequestPayload,
+  firmwareTypeTrans,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   compareVersions,
-  getApVersion
+  getApVersion,
+  getApNextScheduleTpl,
+  toUserDate
 } from '../../FirmwareUtils'
+import { PreferencesDialog } from '../../PreferencesDialog'
 
 import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { PreferencesDialog }    from './PreferencesDialog'
 import { RevertDialog }         from './RevertDialog'
 import { UpdateNowDialog }      from './UpdateNowDialog'
+
+const transform = firmwareTypeTrans()
 
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const isEdgeEnabled = useIsSplitOn(Features.EDGES)
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: intl.$t({ defaultMessage: 'Venue Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -66,45 +72,50 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: 'Current AP Firmware' }),
+      title: intl.$t({ defaultMessage: 'Current AP Firmware' }),
       key: 'versions[0].version',
       dataIndex: 'versions[0].version',
       sorter: true,
       filterable: filterables ? filterables['version'] : false,
       width: 120,
       render: function (data, row) {
-        return row.versions[0].version
+        return row.versions[0].version ?? '--'
       }
     },
     {
-      title: $t({ defaultMessage: 'Firmware Type' }),
+      title: intl.$t({ defaultMessage: 'Firmware Type' }),
       key: 'versions[0].category',
       dataIndex: 'versions[0].category',
       sorter: true,
       filterable: filterables ? filterables['type'] : false,
       width: 120,
       render: function (data, row) {
-        return row.versions[0].category
+        if (!row.versions[0]) return '--'
+        const text = transform(row.versions[0].category as FirmwareCategory, 'type')
+        const subText = transform(row.versions[0].category as FirmwareCategory, 'subType')
+        if (!subText) return text
+        return `${text} (${subText})`
       }
     },
     {
-      title: $t({ defaultMessage: 'Last Update' }),
+      title: intl.$t({ defaultMessage: 'Last Update' }),
       key: 'lastUpdate',
       dataIndex: 'lastUpdate',
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.lastScheduleUpdate ?? '-'
+        if (!row.lastScheduleUpdate) return '--'
+        return toUserDate(row.lastScheduleUpdate)
       }
     },
     {
-      title: $t({ defaultMessage: 'Next Update Schedule' }),
+      title: intl.$t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       sorter: true,
       width: 120,
       render: function (data, row) {
-        return row.nextSchedules? row.nextSchedules[0].startDateTime : 'Not scheduled'
+        return getApNextScheduleTpl(intl, row)
       }
     }
   ]
@@ -161,11 +172,8 @@ export const VenueFirmwareTable = (
   const handleModalSubmit = async (payload: UpgradePreferences) => {
     try {
       await updateUpgradePreferences({ params, payload }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -179,11 +187,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -196,11 +201,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -214,11 +216,8 @@ export const VenueFirmwareTable = (
         params: { ...params },
         payload: data
       }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -442,7 +441,7 @@ export const VenueFirmwareTable = (
         onOk () {
           skipVenueUpgradeSchedules({
             params: { ...params },
-            payload: { ...selectedRows.map((row) => row.id) }
+            payload: { venueIds: selectedRows.map((row) => row.id) }
           }).then(clearSelection)
         },
         onCancel () {}
@@ -506,12 +505,12 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={rowSelection}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }]}
+        }])}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

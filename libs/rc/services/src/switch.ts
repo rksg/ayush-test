@@ -421,13 +421,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       transformResponse: (res: TableResult<ConfigurationBackup>) => {
         return {
           ...res,
-          data: res.data
+          data: Array.isArray(res.data) ? res.data
             .map(item => ({
               ...item,
               createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-            }))
+            })) : []
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -628,6 +628,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Switch', id: 'DETAIL' }]
+    }),
+    getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1206,5 +1215,6 @@ export const {
   useAddAclMutation,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchModelListQuery
 } = switchApi

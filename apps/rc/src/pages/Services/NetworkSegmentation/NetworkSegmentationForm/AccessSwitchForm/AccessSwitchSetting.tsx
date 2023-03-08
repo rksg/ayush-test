@@ -20,8 +20,7 @@ import {
   Table,
   TableProps,
   Tooltip,
-  useStepFormContext,
-  useWatch
+  useStepFormContext
 } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import { isLAGMemberPort }              from '@acx-ui/rc/components'
@@ -38,6 +37,7 @@ import { useParams }                                                       from 
 
 import { NetworkSegmentationGroupForm } from '..'
 import { defaultTemplateData }          from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
+import { useWatch }                     from '../../useWatch'
 
 
 export default function AccessSwitchSetting () {

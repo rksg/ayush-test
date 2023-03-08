@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Col, Form, Input, InputNumber, Row, Select, Space, Transfer } from 'antd'
 import { useIntl }                                                     from 'react-intl'
 
-import { Button, Drawer, Modal, StepsForm, Subtitle, Table, TableProps, useStepFormContext, useWatch } from '@acx-ui/components'
+import { Button, Drawer, Modal, StepsForm, Subtitle, Table, TableProps, useStepFormContext } from '@acx-ui/components'
 import {
   useGetAccessSwitchesByDSQuery,
   useGetAvailableSwitchesQuery,
@@ -20,6 +20,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '..'
+import { useWatch }                     from '../../useWatch'
 
 
 export default function DistributionSwitchSetting () {

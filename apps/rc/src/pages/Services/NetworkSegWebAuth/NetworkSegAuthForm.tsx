@@ -11,7 +11,6 @@ import { defineMessage, useIntl } from 'react-intl'
 import {
   Button,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance,
   Subtitle
@@ -71,11 +70,8 @@ export default function NetworkSegAuthForm ({ editMode = false }: { editMode?: b
       }
 
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

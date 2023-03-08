@@ -9,6 +9,7 @@ import { NetworkDeviceMarker }                                                  
 import { useApListQuery, useGetFloorPlanQuery }                                                  from '@acx-ui/rc/services'
 import { ApPosition, FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                                                      from '@acx-ui/utils'
 
 import { useApContext } from '../../ApContext'
 
@@ -24,6 +25,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
   const [imageLoaded, setImageLoaded] = useState<boolean>(false)
   const [apList, setApList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
+  const [imageUrl, setImageUrl] = useState('')
 
   const { data: extendedApList } = useApListQuery({ params, payload: {
     filters: {
@@ -62,6 +64,15 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
   const { data: floorplan } =
    useGetFloorPlanQuery({ params: { tenantId: params.tenantId, venueId,
      floorPlanId: apPosition.floorplanId } })
+
+  useEffect(() => {
+    if (floorplan?.imageId) {
+      const response = loadImageWithJWT(floorplan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [floorplan?.imageId])
 
   function onImageLoad () {
     activeDevice.position = apPosition
@@ -121,7 +132,7 @@ export default function ApFloorplan (props: { activeDevice: NetworkDevice,
           border: 'none' }}
         ref={imageRef}
         alt={floorplan?.name}
-        src={floorplan?.imageUrl} />
+        src={imageUrl} />
     </div>
   </div>
 }

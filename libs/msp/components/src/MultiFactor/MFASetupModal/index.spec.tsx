@@ -2,14 +2,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { UserUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   fakeMFAEnabledTenantDetail,
