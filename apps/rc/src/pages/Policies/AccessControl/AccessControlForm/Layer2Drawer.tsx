@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, MacAddressFilterRegExp } from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                             from '@acx-ui/user'
+import { filterByAccess }                                     from '@acx-ui/user'
 
 const { useWatch } = Form
 const { Option } = Select
