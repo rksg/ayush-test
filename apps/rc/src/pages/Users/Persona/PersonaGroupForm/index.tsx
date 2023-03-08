@@ -6,7 +6,7 @@ import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
 import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, PersonaGroup, useTableQuery }                            from '@acx-ui/rc/utils'
+import { checkObjectNotExists, DpskSaveData, PersonaGroup, useTableQuery }              from '@acx-ui/rc/utils'
 
 import MacRegistrationListForm
   from '../../../Policies/MacRegistrationList/MacRegistrationListForm/MacRegistrationListForm'
@@ -154,9 +154,16 @@ export function PersonaGroupForm (props: {
         type={ModalType.ModalStepsForm}
         children={<DpskForm
           modalMode
-          modalCallBack={onDpskModalClose}
+          modalCallBack={(result?: DpskSaveData) => {
+            if (result) {
+              form.setFieldValue('dpskPoolId', result.id)
+            }
+            onDpskModalClose()
+          }}
         />}
         onCancel={onDpskModalClose}
+        width={1200}
+        destroyOnClose={true}
       />
 
       <Modal
@@ -168,6 +175,7 @@ export function PersonaGroupForm (props: {
           modalCallBack={onMacModalClose}
         />}
         onCancel={onMacModalClose}
+        width={1200}
       />
     </Form>
   )

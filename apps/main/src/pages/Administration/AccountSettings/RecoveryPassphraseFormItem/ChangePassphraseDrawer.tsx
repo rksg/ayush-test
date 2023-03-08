@@ -6,7 +6,7 @@ import { useParams }  from 'react-router-dom'
 import styled         from 'styled-components/macro'
 
 
-import { Drawer, Button, showToast }    from '@acx-ui/components'
+import { Drawer, Button }               from '@acx-ui/components'
 import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'
@@ -47,11 +47,8 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
       }).unwrap()
 
       onClose()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

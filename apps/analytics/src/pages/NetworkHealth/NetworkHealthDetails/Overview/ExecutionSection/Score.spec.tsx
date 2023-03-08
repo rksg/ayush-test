@@ -7,14 +7,12 @@ import { ConfigStatusEnum, getExecutionSectionData } from '.'
 describe('Score', () => {
   it('should render correctly', () => {
     const data = {
-      details: {
-        testedAps: 100,
-        successAps: 22,
-        failureAps: 8,
-        errorAps: 60
-      }
+      testedAps: 100,
+      successAps: 22,
+      failureAps: 8,
+      errorAps: 60
     } as unknown as ReturnType<typeof getExecutionSectionData>
-    render(<Score details={data.details}/>)
+    render(<Score details={data}/>)
     expect(screen.queryByText('APs Under Test')).toBeVisible()
     expect(screen.queryByText('100')).toBeVisible()
     expect(screen.queryByText('Pass')).toBeVisible()
@@ -26,14 +24,12 @@ describe('Score', () => {
   })
   it('should handle empty data', () => {
     const data = {
-      details: {
-        testedAps: undefined,
-        successAps: undefined,
-        failureAps: undefined,
-        errorAps: undefined
-      }
+      testedAps: undefined,
+      successAps: undefined,
+      failureAps: undefined,
+      errorAps: undefined
     } as unknown as ReturnType<typeof getExecutionSectionData>
-    render(<Score details={data.details}/>)
+    render(<Score details={data}/>)
     expect(screen.queryByText('APs Under Test')).toBeVisible()
     expect(screen.queryByText('Pass')).toBeVisible()
     expect(screen.queryByText('Fail')).toBeVisible()
@@ -42,20 +38,18 @@ describe('Score', () => {
   })
   it('should handle no data', () => {
     const data = {
-      details: {
-        configured: {
-          testedAps: ConfigStatusEnum.NoData,
-          successAps: ConfigStatusEnum.NoData,
-          failureAps: ConfigStatusEnum.NoData,
-          errorAps: ConfigStatusEnum.NoData
-        },
-        testedAps: undefined,
-        successAps: undefined,
-        failureAps: undefined,
-        errorAps: undefined
-      }
+      configured: {
+        testedAps: ConfigStatusEnum.NoData,
+        successAps: ConfigStatusEnum.NoData,
+        failureAps: ConfigStatusEnum.NoData,
+        errorAps: ConfigStatusEnum.NoData
+      },
+      testedAps: undefined,
+      successAps: undefined,
+      failureAps: undefined,
+      errorAps: undefined
     } as unknown as ReturnType<typeof getExecutionSectionData>
-    render(<Score details={data.details}/>)
+    render(<Score details={data}/>)
     expect(screen.queryByText('APs Under Test')).toBeVisible()
     expect(screen.queryByText('Pass')).toBeVisible()
     expect(screen.queryByText('Fail')).toBeVisible()

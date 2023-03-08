@@ -109,13 +109,8 @@ const SubscriptionTable = () => {
               defaultMessage: 'Successfully refreshed.'
             })
           })
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({
-              defaultMessage: 'Failed, please try again later.'
-            })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     }

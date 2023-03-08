@@ -102,3 +102,27 @@ export function getJwtToken () {
   }
   return null
 }
+
+export async function loadImageWithJWT (imageId: string) {
+  let gImgUrl = ''
+  let headers = {
+    mode: 'no-cors',
+    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+  }
+  if(getTenantId() !== getJwtTokenPayload().tenantId){
+    headers = {
+      ...headers,
+      ...{ 'x-rks-tenantid': getTenantId() }
+    }
+  }
+  const url = `/files/${imageId}/urls`
+  const result = await fetch(url, { headers }).then(function (response) {
+    return response.json()
+  })
+  if (result) {
+    gImgUrl = result.signedUrl
+  } else {
+    throw new Error(`Error! status: ${result}`)
+  }
+  return gImgUrl
+}
