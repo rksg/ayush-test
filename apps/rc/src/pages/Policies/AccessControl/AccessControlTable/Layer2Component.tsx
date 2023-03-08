@@ -12,7 +12,7 @@ import {
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                         from '@acx-ui/user'
+import { filterByAccess }                                     from '@acx-ui/user'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
