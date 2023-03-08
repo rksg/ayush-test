@@ -5,6 +5,16 @@ import { PriorityEnum }       from '../../models/PriorityEnum'
 import { ProtocolEnum }       from '../../models/ProtocolEnum'
 
 
+export interface SyslogPolicyListType {
+  id: string,
+  name: string,
+  venueIds?: string[],
+  facility: FacilityEnum,
+  flowLevel: FlowLevelEnum,
+  primaryServer?: string,
+  secondaryServer?: string
+}
+
 export interface SyslogPolicyType {
   policyName: string,
   name: string,
@@ -47,10 +57,10 @@ export interface SyslogPolicyDetailType {
 export interface SyslogContextType {
   policyName: string,
   server: string,
-  port: string,
+  port: number,
   protocol: ProtocolEnum,
   secondaryServer?: string,
-  secondaryPort?: string,
+  secondaryPort?: number,
   secondaryProtocol?: ProtocolEnum,
   facility: FacilityEnum,
   priority: PriorityEnum,
@@ -121,7 +131,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.PORT,
   payload: {
-    port: string
+    port: number
   }
 } | {
   type: SyslogActionTypes.PROTOCOL,
@@ -136,7 +146,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.SECONDARYPORT,
   payload: {
-    secondaryPort: string
+    secondaryPort: number
   }
 } | {
   type: SyslogActionTypes.SECONDARYPROTOCOL,
