@@ -4,11 +4,11 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, StepsForm, showToast } from '@acx-ui/components'
+import { Loader, StepsForm, showToast }   from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetVenueApSnmpSettingsQuery,
-  useUpdateApSnmpSettingsMutation
+  useUpdateVenueApSnmpSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -46,7 +46,7 @@ export function ApSnmp () {
   const RetrievedVenueApSnmpAgentProfileId =
    RetrievedVenueApSnmpSettings?.data?.apSnmpAgentProfileId ?? ''
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }] =
-   useUpdateApSnmpSettingsMutation()
+   useUpdateVenueApSnmpSettingsMutation()
 
   useEffect(() => {
     const { data: settings, isLoading } = RetrievedVenueApSnmpSettings || {}
