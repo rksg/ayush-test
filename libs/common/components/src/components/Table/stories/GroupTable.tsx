@@ -47,11 +47,9 @@ function cleanResponse (response: APExtendedGroupedResponse | APExtended[] | und
     const validAps = aps ?? []
     return {
       ...apGroup,
-      isParent: true,
-      id: uniqueId(), // hacky trick, set the parent's device group as serialNumber since the table's id focuses on aps serial number
+      id: uniqueId(),
       children: validAps.map(ap => ({
         ...ap,
-        isParent: false,
         deviceGroupName: (ap.deviceGroupName !== '')
           ? ap.deviceGroupName
           : 'Uncategorized',
@@ -155,7 +153,6 @@ const apGroupResponse: APExtendedGroupedResponse = {
         }
       ]
     }, {
-
       deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
       deviceGroupName: 'apgroup2',
       deviceStatus: '',

@@ -196,7 +196,7 @@ function Table <RecordType extends Record<string, any>> ({
           return
         }
 
-        cols.render = (dom, record) => record.isParent
+        cols.render = (dom, record) => record.children
           ? null
           : cols.searchable
             ? getHighlightFn(searchValue)(_.get(record, cols.key))
@@ -209,7 +209,7 @@ function Table <RecordType extends Record<string, any>> ({
         (props.columns ?? []).length
       )
       for (let i = 0; i < maxOverride; ++i) {
-        props.columns[i].render = (dom, record) => record.isParent
+        props.columns[i].render = (dom, record) => record.children
           ? calculatedParentCols[i].renderer(record)
           : props.columns[i].searchable
             ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
@@ -483,7 +483,7 @@ function Table <RecordType extends Record<string, any>> ({
       key={Number(isGroupByActive)}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && record.isParent
+        : (record) => isGroupByActive && record.children
           ? 'parent-row-data'
           : ''
       }
