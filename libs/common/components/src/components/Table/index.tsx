@@ -431,11 +431,13 @@ function Table <RecordType extends Record<string, any>> ({
             }
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
             )}
             <GroupBySelect />
-            <UI.HeaderRight>
-              {(Boolean(activeFilters.length) ||
+          </Space>
+        </div>
+        <UI.HeaderRight>
+          {(Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
             isGroupByActive)
             && <Button
@@ -447,10 +449,6 @@ function Table <RecordType extends Record<string, any>> ({
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
-            </UI.HeaderRight>
-          </Space>
-        </div>
-        <UI.HeaderRight>
         </UI.HeaderRight>
       </UI.Header>
     )}
