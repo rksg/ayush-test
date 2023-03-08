@@ -3,7 +3,7 @@ import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
 import escapeStringRegexp                                             from 'escape-string-regexp'
-import _, { cloneDeep }                                                              from 'lodash'
+import _                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 import AutoSizer                                                      from 'react-virtualized-auto-sizer'
@@ -193,9 +193,9 @@ function Table <RecordType extends Record<string, any>> ({
 
     let tableCols: typeof props.columns
 
-    if (groupable && isGroupByActive) {
+    if (isGroupByActive) {
       // create deep copy of current cols
-      const colCopy: typeof props.columns = cloneDeep(props.columns)
+      const colCopy: typeof props.columns = _.cloneDeep(props.columns)
 
       // calculate the smallest possible amount of parent cols to override
       const calculatedParentCols = finalParentColumns ?? []
@@ -209,7 +209,7 @@ function Table <RecordType extends Record<string, any>> ({
         const { render, searchable, key } = colCopy[i]
         colCopy[i].render = (dom, record, index, highlightFn, action, schema) => {
           if ('children' in record) {
-            return <div onClick={() => console.log('to-soy')}>{calculatedParentCols[i].renderer(record)}</div>
+            return calculatedParentCols[i].renderer(record)
           } else {
             if (render) {
               return render(dom, record, index, highlightFn, action, schema)
@@ -234,7 +234,7 @@ function Table <RecordType extends Record<string, any>> ({
       }
       tableCols = colCopy
     } else {
-      tableCols = cloneDeep(props.columns)
+      tableCols = _.cloneDeep(props.columns)
     }
 
     const cols = type === 'tall'
