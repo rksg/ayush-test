@@ -31,6 +31,7 @@ import {
   VenueAlarmWidget,
   VenueDevicesWidget
 } from '@acx-ui/rc/components'
+import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
 import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
@@ -79,7 +80,8 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
       </GridCol>
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
-        <TopologyFloorPlanWidget />
+        <TopologyFloorPlanWidget
+          showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/>
       </GridCol>
     </GridRow>
   )
