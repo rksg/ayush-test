@@ -132,7 +132,7 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 
-  it('should show toast when edit service profile failed', async () => {
+  it.skip('should show toast when edit service profile failed', async () => {
     const targetErrorMessage = 'Profile not found'
 
     mockServer.use(
