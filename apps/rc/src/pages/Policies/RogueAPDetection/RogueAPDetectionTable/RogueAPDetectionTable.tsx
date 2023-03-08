@@ -25,7 +25,9 @@ const defaultPayload = {
   searchString: '',
   fields: [
     'id',
-    'name'
+    'name',
+    'numOfRules',
+    'venueIds'
   ],
   pageSize: 25
 }

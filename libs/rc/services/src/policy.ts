@@ -45,8 +45,9 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork, EnhancedRoguePolicyType
-} from '@acx-ui/rc/utils';
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork,
+  EnhancedRoguePolicyType
+} from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
