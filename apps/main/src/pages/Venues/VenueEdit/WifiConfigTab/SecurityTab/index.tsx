@@ -4,7 +4,7 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { Button, Fieldset, Loader, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
@@ -129,11 +129,8 @@ export function SecurityTab () {
         ...editContextData,
         isDirty: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

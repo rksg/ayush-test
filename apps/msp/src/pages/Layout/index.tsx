@@ -14,14 +14,12 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import {
-  CloudMessageBanner,
-  useUserProfileContext
-} from '@acx-ui/rc/components'
+import { CloudMessageBanner } from '@acx-ui/rc/components'
 import {
   useGetTenantDetailQuery
 } from '@acx-ui/rc/services'
-import { Outlet, useParams } from '@acx-ui/react-router-dom'
+import { Outlet, useParams }     from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { useMenuConfig }     from './menuConfig'
 import { LeftHeaderWrapper } from './styledComponents'

@@ -191,7 +191,7 @@ export const showTxToast = (tx: Transaction) => {
   if (msg.severity === 'error' as ToastType) {
     config = {
       ...config,
-      link: { onClick: () => showDetails(tx, intl) }
+      ...(!!tx.error && { link: { onClick: () => showDetails(tx, intl) } })
     }
   }
   if (msg.data?.link) {

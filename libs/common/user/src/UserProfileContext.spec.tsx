@@ -1,18 +1,19 @@
+import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, RolesEnum } from '@acx-ui/rc/utils'
-import { BrowserRouter as Router }   from '@acx-ui/react-router-dom'
-import { Provider }                  from '@acx-ui/store'
+import { store, Provider, userApi } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
+import { RolesEnum } from '@acx-ui/types'
 
+import { UserUrlsInfo } from './services'
 import {
   useUserProfileContext,
   UserProfileProvider
-} from '.'
+} from './UserProfileContext'
 
 const tenantId = 'a27e3eb0bd164e01ae731da8d976d3b1'
 
@@ -29,34 +30,33 @@ function TestUserProfile () {
   </div>
 }
 
-describe('UserProfileContext', () => {
-  beforeEach(async () => {
-    const location = {
-      ...window.location,
-      pathname: `/t/${tenantId}`
-    }
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      enumerable: true,
-      value: location
-    })
+const route = { path: '/t/:tenantId', params: { tenantId } }
 
+describe('UserProfileContext', () => {
+  const wrapper = (props: { children: React.ReactNode }) => (
+    <Provider>
+      <UserProfileProvider {...props} />
+    </Provider>
+  )
+
+  beforeEach(async () => {
+    store.dispatch(userApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json(mockedUserProfile))
-      )
+      ),
+      rest.get(UserUrlsInfo.wifiAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.switchAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.tenantAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.venueAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.guestAllowedOperations.url, (req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.upgradeAllowedOperations.url, (req, res, ctx) => res(ctx.json([])))
     )
   })
 
   it('requests for user profile and stores in context', async () => {
-    render(<Router>
-      <Provider>
-        <UserProfileProvider>
-          <TestUserProfile />
-        </UserProfileProvider>
-      </Provider>
-    </Router>)
+    render(<TestUserProfile />, { wrapper, route })
 
     expect(await screen.findByText('First Last')).toBeVisible()
   })
@@ -69,13 +69,7 @@ describe('UserProfileContext', () => {
       </div>
     }
 
-    render(<Router>
-      <Provider>
-        <UserProfileProvider>
-          <TestPrimeAdmin />
-        </UserProfileProvider>
-      </Provider>
-    </Router>)
+    render(<TestPrimeAdmin />, { wrapper, route })
 
     expect(await screen.findByText('true')).toBeVisible()
   })
@@ -83,7 +77,7 @@ describe('UserProfileContext', () => {
   it('user profile hasRole()', async () => {
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getUserProfile.url,
+        UserUrlsInfo.getUserProfile.url,
         (req, res, ctx) => res(ctx.json({
           ...mockedUserProfile,
           roles: [RolesEnum.ADMINISTRATOR]
@@ -98,13 +92,9 @@ describe('UserProfileContext', () => {
       </div>
     }
 
-    render(<Router>
-      <Provider>
-        <UserProfileProvider>
-          <TestUserRole role={RolesEnum.GUEST_MANAGER} />
-        </UserProfileProvider>
-      </Provider>
-    </Router>)
+    render(<TestUserRole
+      role={RolesEnum.GUEST_MANAGER}
+    />, { wrapper, route })
 
     expect(await screen.findByText('false')).toBeVisible()
   })

@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
 import { useEffect, useState, useMemo } from 'react'
 
-import { useIntl } from 'react-intl'
 
 import { TrafficByBand, TrafficByUsage }       from '@acx-ui/analytics/components'
 import { defaultNetworkPath }                  from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, showToast }         from '@acx-ui/components'
+import { GridCol, GridRow }                    from '@acx-ui/components'
 import {
-  useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
+  useLazyGetApCapabilitiesQuery,
   useLazyGetClientDetailsQuery,
   useLazyGetHistoricalClientListQuery,
   useLazyGetHistoricalStatisticsReportsQuery
@@ -52,7 +51,6 @@ const historicalPayload = {
 }
 
 export function ClientOverviewTab () {
-  const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const filters = useMemo(() => ({
     path: defaultNetworkPath,
@@ -134,11 +132,8 @@ export function ClientOverviewTab () {
           }
         }, true)?.unwrap()
         setClientStatistics(clientStatistics as ClientStatistic)
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
 

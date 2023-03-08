@@ -4,10 +4,10 @@ import styled                                    from 'styled-components/macro'
 
 import { Drawer }              from '@acx-ui/components'
 import {
+  MFAMethod,
   useMfaRegisterPhoneQuery,
   useSetupMFAAccountMutation
-} from '@acx-ui/rc/services'
-import { MFAMethod } from '@acx-ui/rc/utils'
+} from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 

@@ -18,7 +18,7 @@ describe('stage', () => {
     })
 
     expect(result.current).toEqual([
-      { key: 'auth', title: '802.11 Authentication' },
+      { key: 'auth', title: '802.11 Auth' },
       { key: 'assoc', title: 'Association' },
       { key: 'eap', title: 'EAP' },
       { key: 'radius', title: 'RADIUS' },

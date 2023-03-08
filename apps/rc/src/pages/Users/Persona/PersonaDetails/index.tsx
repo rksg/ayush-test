@@ -13,7 +13,8 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetPersonaGroupByIdQuery, useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                                                                    from '../PersonaDrawer'
@@ -228,11 +229,11 @@ function PersonaDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = [
-    <Button key={'config-btn'} type={'primary'} onClick={onClick}>
+  const extra = filterByAccess([
+    <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
-  ]
+  ])
 
   return (
     <PageHeader
