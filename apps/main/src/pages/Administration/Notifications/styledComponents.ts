@@ -5,6 +5,10 @@ export const Wrapper = styled.div`
     padding: 12px;
     background-color: var(--acx-neutrals-15);
   }
+
+  .ant-table-tbody > tr > td.ant-table-cell {
+    word-break: break-word;
+  }
 `
 
 export const Spacer = styled.div`
