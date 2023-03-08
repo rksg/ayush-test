@@ -72,11 +72,7 @@ export default function ClientIsolationTable () {
   return (
     <>
       <PageHeader
-        title={
-          $t({
-            defaultMessage: 'Client Isolation'
-          })
-        }
+        title={$t({ defaultMessage: 'Client Isolation' })}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'Policies & Profiles' }),
