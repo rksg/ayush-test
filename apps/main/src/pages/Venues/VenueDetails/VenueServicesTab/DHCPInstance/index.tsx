@@ -1,3 +1,4 @@
+import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -8,6 +9,9 @@ import {
   ContentSwitcher
 } from '@acx-ui/components'
 import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery } from '@acx-ui/rc/services'
+import {
+  DHCPLeasesStatusEnum
+} from '@acx-ui/rc/utils'
 
 import BasicInfo  from './BasicInfo'
 import LeaseTable from './LeaseTable'
@@ -18,6 +22,10 @@ const DHCPInstance = () => {
   const params = useParams()
 
   const { data: leasesList } = useVenuesLeasesListQuery({ params })
+
+  const onlineList = _.filter(leasesList, (item)=>{
+    return item.status===DHCPLeasesStatusEnum.ONLINE
+  })
 
   const { data: venueDHCPProfile } = useVenueDHCPProfileQuery({
     params
@@ -35,7 +43,7 @@ const DHCPInstance = () => {
     },
     {
       label: $t({ defaultMessage: 'Lease Table ({count} Online)' },
-        { count: leasesList?.length || 0 }),
+        { count: onlineList.length || 0 }),
       value: 'lease',
       children: <GridCol col={{ span: 24 }}><LeaseTable /></GridCol>
     }
