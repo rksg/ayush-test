@@ -46,7 +46,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
         payload: { psk: passphrase.join('') }
       }).unwrap()
 
-      setVisible(false)
+      onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -66,8 +66,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   }
 
   React.useEffect(() => {
-    setPassphrase(data.trim() === '' ? [] : data.split(' '))
-  }, [data])
+    if (visible)
+      setPassphrase(data.trim() === '' ? [] : data.split(' '))
+  }, [data, visible])
 
   return (
     <Drawer

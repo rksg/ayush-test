@@ -14,12 +14,14 @@ import {
   SearchFullOutlined
 } from '@acx-ui/icons'
 import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { loadImageWithJWT }                                                                                                                  from '@acx-ui/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
 
 import * as UI   from './styledComponents'
 import Thumbnail from './Thumbnail'
+
 
 
 
@@ -76,6 +78,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [fitContainerSize, setFitContanierSize] = useState(0)
+  const [imageUrl, setImageUrl] = useState('')
 
   const prepareImageTofit = useCallback((floorPlan: FloorPlanDto) => {
     zoom(ImageMode.ORIGINAL)
@@ -87,6 +90,15 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   useEffect(() => {
     prepareImageTofit(defaultFloorPlan)
   },[defaultFloorPlan])
+
+  useEffect(() => {
+    if (selectedFloorPlan?.imageId) {
+      const response = loadImageWithJWT(selectedFloorPlan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [selectedFloorPlan?.imageId])
 
   const [{ isActive }, drop] = useDrop(
     () => ({
@@ -284,7 +296,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
               border: isActive ? '2px solid var(--acx-accents-orange-50)' : 'none' }}
             ref={imageRef}
             alt={selectedFloorPlan?.name}
-            src={selectedFloorPlan?.imageUrl} />
+            src={imageUrl} />
         </UI.ImageContainer>
         { !imageLoaded && <UI.ImageLoaderContainer>
           <Loader states={[{ isLoading: !imageLoaded }]}></Loader>

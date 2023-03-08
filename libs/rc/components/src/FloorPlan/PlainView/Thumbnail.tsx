@@ -1,10 +1,14 @@
+import { useEffect, useState } from 'react'
+
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { loadImageWithJWT }                                        from '@acx-ui/utils'
 
 import NetworkDevices from '../NetworkDevices'
 
 import * as UI from './styledComponents'
+
 
 export default function Thumbnail (props: {
     floorPlan: FloorPlanDto,
@@ -19,10 +23,20 @@ export default function Thumbnail (props: {
     onFloorPlanSelection,
     networkDevicesVisibility,
     networkDevices } = props
+  const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
   function selectFloorPlan () {
     onFloorPlanSelection(floorPlan)
   }
+
+  useEffect(() => {
+    if (floorPlan?.imageId) {
+      const response = loadImageWithJWT(floorPlan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [floorPlan?.imageId])
 
   const altMessage: MessageDescriptor = defineMessage({
     defaultMessage: 'Thumbnail for {floorPlanName}'
@@ -42,8 +56,9 @@ export default function Thumbnail (props: {
           contextAlbum={true}
           galleryMode={false}/>
         <img
+          data-testid='thumbnailBgImage'
           style={{ width: '100%', height: '100%' }}
-          src={floorPlan.imageUrl}
+          src={imageUrl}
           alt={$t(altMessage,
             { floorPlanName: floorPlan?.name })}/>
       </div>
