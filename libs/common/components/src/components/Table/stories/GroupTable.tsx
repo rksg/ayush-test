@@ -35,7 +35,6 @@ function cleanResponse (response: APExtendedGroupedResponse | APExtended[] | und
   if (!response) return []
 
   let typedData
-
   if (Array.isArray(response)) {
     typedData = response
   } else {
@@ -44,17 +43,17 @@ function cleanResponse (response: APExtendedGroupedResponse | APExtended[] | und
 
   return typedData.map(apGroup => {
     const { aps } = apGroup as unknown as { aps: APExtended[] | undefined }
-    const validAps = aps ?? []
+    const children = aps?.map(ap => ({
+      ...ap,
+      deviceGroupName: (ap.deviceGroupName !== '')
+        ? ap.deviceGroupName
+        : 'Uncategorized',
+      id: uniqueId()
+    }))
     return {
       ...apGroup,
       id: uniqueId(),
-      children: validAps.map(ap => ({
-        ...ap,
-        deviceGroupName: (ap.deviceGroupName !== '')
-          ? ap.deviceGroupName
-          : 'Uncategorized',
-        id: uniqueId()
-      }))
+      children: children ?? null
     }
   })
 }

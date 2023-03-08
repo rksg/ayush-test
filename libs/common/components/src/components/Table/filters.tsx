@@ -181,7 +181,7 @@ export function GroupSelect ({
   </UI.FilterSelect>
 }
 
-export function useGroupBy<RecordType> (
+export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<RecordType>> (
   groupables: TableProps<RecordType>['columns'],
   tableActions: TableProps<RecordType>['groupByTableActions'],
   colLength: number,
@@ -192,18 +192,12 @@ export function useGroupBy<RecordType> (
   const { $t } = intl
 
   if (Array.isArray(groupables) && groupables.length > 0) {
-    const getChildren = (record: RecordType) =>
-      (record as unknown as { children: RecordType[] | undefined }).children
-
-    const hasValidChildren = (record: RecordType) => {
-      const children = getChildren(record)
+    const hasValidChildren = (record: ParentRecord) => {
+      const { children } = record
       return Boolean(children) && Array.isArray(children) && children.length > 0
     }
 
-    const checkParent = (record: RecordType) => {
-      const { children } = (record as unknown as { children: RecordType[] })
-      return Array.isArray(children)
-    }
+    const checkParent = (record: ParentRecord) => Array.isArray(record.children)
 
     const { onChange, onClear } = tableActions ?? {}
     const currentKey = value?.key ?? ' '
@@ -228,14 +222,14 @@ export function useGroupBy<RecordType> (
 
     const targetCol = groupables.find(col => col.key === currentKey)
     const actionsList = targetCol?.groupable!.actions ?? []
-    const groupActionColumns: TableProps<RecordType>['columns'] = actionsList
+    const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
       .map((val) => ({
         key: val.key,
         dataIndex: '',
         render: (_, record) => checkParent(record) ? val.label : null
       }))
 
-    const expandable: TableProps<RecordType>['expandable'] = {
+    const expandable: TableProps<ParentRecord>['expandable'] = {
       expandIconColumnIndex: colLength + groupActionColumns.length,
       rowExpandable: (record) => hasValidChildren(record),
       defaultExpandAllRows: isGroupByActive,
@@ -256,7 +250,7 @@ export function useGroupBy<RecordType> (
 
     return {
       GroupBySelect: () => Select,
-      expandable,
+      expandable: (isGroupByActive) ? expandable : undefined,
       groupActionColumns,
       finalParentColumns,
       clearGroupByFn,

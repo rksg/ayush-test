@@ -35,6 +35,7 @@ import type {
   TablePaginationConfig
 } from 'antd'
 import type { RowSelectMethod } from 'antd/lib/table/interface'
+import { RecordWithChildren } from '@acx-ui/components'
 
 export type {
   ColumnType,
@@ -86,8 +87,7 @@ export interface TableProps <RecordType>
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void,
     /**
-     * Assumes that dataSource is nested with children key, and that
-     * isParent boolean property is set on each record item in dataSource.
+     * Assumes that dataSource is nested with children key.
      */
     groupByTableActions?: {
       onChange: CallableFunction
@@ -167,7 +167,8 @@ function Table <RecordType extends Record<string, any>> ({
     finalParentColumns,
     clearGroupByFn,
     isGroupByActive
-  } = useGroupBy<RecordType>(groupable, groupByTableActions, props.columns.length, intl)
+  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>
+  (groupable, groupByTableActions, props.columns.length, intl)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
