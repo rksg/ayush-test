@@ -103,7 +103,7 @@ function SettingsForm () {
                   { $t({ defaultMessage: 'Use the DPSK Service' }) }
                 </Radio>
                 <Radio value={true} disabled={editMode||disableAAA}>
-                  { $t({ defaultMessage: 'Use Cloudpath Server' }) }
+                  { $t({ defaultMessage: 'Use AAA Server' }) }
                 </Radio>
               </Space>
             </Radio.Group>

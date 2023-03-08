@@ -27,34 +27,16 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     if(edgeGeneralSettings) {
-      formRef.current?.setFieldsValue({
-        venueId: edgeGeneralSettings?.venueId || '',
-        edgeGroupId: edgeGeneralSettings?.edgeGroupId || '',
-        name: edgeGeneralSettings?.name || '',
-        serialNumber: edgeGeneralSettings?.serialNumber || '',
-        description: edgeGeneralSettings?.description || '',
-        tags: edgeGeneralSettings?.tags || ''
-      })
+      formRef.current?.setFieldsValue(edgeGeneralSettings)
     }
   }, [edgeGeneralSettings])
 
   const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {
-      // TODO when Tags component ready remove this
-      const payload = { ...data, tags: [] as string[] }
-      if(data.tags) {
-        if(typeof data.tags === 'string') {
-          payload.tags = data.tags.split(',').map(item => item.trim())
-        } else {
-          payload.tags = data.tags
-        }
-      }
-
       // Following config cannot be sent in update API's payload
-      delete payload.venueId
-      delete payload.serialNumber
-
-      await upadteEdge({ params: params, payload: payload }).unwrap()
+      delete data.venueId
+      delete data.serialNumber
+      await upadteEdge({ params, payload: data }).unwrap()
       navigate(linkToEdgeList)
 
     } catch (error) {

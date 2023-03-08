@@ -10,8 +10,9 @@ import { Button,
   Tabs, Tooltip } from '@acx-ui/components'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }             from '@acx-ui/user'
+import { getIntl }                    from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -26,6 +27,9 @@ export function ConfigProfileModal (props: {
   setFormData: (data: VenueSwitchConfiguration) => void,
 }) {
   const { $t } = getIntl()
+  const addRegularProfilePath = useTenantLink('/networks/wired/profiles/add')
+  const addCliProfilePath = useTenantLink('/networks/wired/profiles/cli/add')
+  const navigate = useNavigate()
   const { formState, setFormState, formData, setFormData } = props
   const [disableButton, setDisableButton] = useState(false)
   const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
@@ -131,8 +135,8 @@ export function ConfigProfileModal (props: {
             </Radio>
           </Radio.Group>
         </Picker>
-        <Button type='link' size='small' disabled>
-          {$t({ defaultMessage: 'Add configuration profile' })}
+        <Button type='link' size='small' onClick={() => { navigate(addRegularProfilePath) }}>
+          {$t({ defaultMessage: 'Add Configuration Profile' })}
         </Button>
       </Tabs.TabPane>
 
@@ -157,10 +161,11 @@ export function ConfigProfileModal (props: {
               defaultSelectedRowKeys: selectedCLIKeys,
               onChange: onChangeCLI
             }}
-            // TODO:
             actions={filterByAccess([{
-              label: 'Add CLI Profile',
-              onClick: () => {}
+              label: $t({ defaultMessage: 'Add CLI Profile' }),
+              onClick: () => {
+                navigate(addCliProfilePath)
+              }
             }])}
           />
         </>

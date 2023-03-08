@@ -81,10 +81,7 @@ describe('EditEdge general settings', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    const tagsInput = screen.getByRole('textbox',
-      { name: 'Tags' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
-    fireEvent.change(tagsInput, { target: { value: '1,2,3' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
   })
