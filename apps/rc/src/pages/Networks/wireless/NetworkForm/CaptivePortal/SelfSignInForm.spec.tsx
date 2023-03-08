@@ -44,7 +44,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   it('should test Self sign in network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
-        editMode: true, cloneMode: true, data: selfsignData
+        editMode: false, cloneMode: true, data: selfsignData
       }}
     ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
@@ -68,6 +68,25 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /Twitter/ }))
     await userEvent.click(await screen.findByText('Finish'))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /LinkedIn/ }))
+    await userEvent.click(await screen.findByText('Finish'))
+  })
+  it('should create Self sign in network successfully', async () => {
+    render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: false, cloneMode: false, data: selfsignData
+      }}
+    ><StepsForm><StepsForm.StepForm><SelfSignInForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /SMS Token/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Facebook/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Google/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /Twitter/ }))
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /LinkedIn/ }))
     await userEvent.click(await screen.findByText('Finish'))
