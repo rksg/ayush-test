@@ -17,7 +17,7 @@ import { APsSelectionInput } from './APsSelectionInput'
 import type { NetworkNodes, NetworkPaths } from '../../../types'
 import type { NamePath }                   from 'antd/lib/form/interface'
 
-const name = ['networkPaths', 'networkNodes'] as const
+const name = ['configs', 0, 'networkPaths', 'networkNodes'] as const
 const label = defineMessage({ defaultMessage: 'APs Selection' })
 
 function useNetworkHierarchy () {

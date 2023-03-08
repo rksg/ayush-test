@@ -16,6 +16,7 @@ import { ApTable, CsvSize, ImportFileDrawer }                            from '@
 import { useApGroupsListQuery, useImportApMutation, useVenuesListQuery } from '@acx-ui/rc/services'
 import { APExtended }                                                    from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                         from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                from '@acx-ui/user'
 
 
 
@@ -576,11 +577,11 @@ export default function ApsTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Wi-Fi' })}
-        extra={[
-          <Dropdown overlay={addMenu} key='addMenu'>{() =>
+        extra={filterByAccess([
+          <Dropdown overlay={addMenu}>{() =>
             <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
           }</Dropdown>
-        ]}
+        ])}
       />
       <ApTable
         searchable={true}

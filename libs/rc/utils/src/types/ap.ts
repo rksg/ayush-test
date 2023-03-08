@@ -84,7 +84,15 @@ export interface APExtended extends AP {
   isPoEStatusUp?: boolean,
   poePortInfo?: string,
   xPercent?: number,
-  yPercent?: number
+  yPercent?: number,
+  isParent?: boolean,
+  members?: number,
+  incidents?: number,
+  clients?: number,
+  networks?: {
+    count?: number
+  },
+  name?: string
 }
 
 export interface CelluarInfo {

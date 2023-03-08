@@ -50,8 +50,8 @@ export const Collapse = styled(AntCollapse)`
   textarea {
     background: var(--acx-neutrals-10);
     border: 1px solid var(--acx-neutrals-30);
-    font-size: 10px;
-    line-height: 1.5;
+    font-size: var(--acx-subtitle-6-font-size);
+    line-height: var(--acx-subtitle-6-line-height);
     padding: 12px;
     max-height: 200px;
     resize: none;
@@ -66,7 +66,7 @@ export const Collapse = styled(AntCollapse)`
 export const CopyButton = styled(Button)`
   display: inline-flex;
   justify-content: flex-end;
-  font-size: 10px;
+  font-size: var(--acx-body-5-font-size);
   line-height: 16px;
   color: var(--acx-accents-blue-50);
   height: auto;

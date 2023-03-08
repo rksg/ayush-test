@@ -32,6 +32,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
@@ -387,8 +388,8 @@ export function ApTable (props: ApTableProps) {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        rowActions={rowActions}
-        actions={props.enableActions ? [{
+        rowActions={filterByAccess(rowActions)}
+        actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
             navigate({
@@ -409,8 +410,7 @@ export function ApTable (props: ApTableProps) {
           onClick: () => {
             setImportVisible(true)
           }
-        }
-        ] : []}
+        }]) : []}
       />
       <ImportFileDrawer type='AP'
         title={$t({ defaultMessage: 'Import from file' })}

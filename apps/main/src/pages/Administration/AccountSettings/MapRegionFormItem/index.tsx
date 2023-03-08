@@ -4,7 +4,6 @@ import { DEFAULT_ID }                         from '@googlemaps/js-api-loader'
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { showToast }                                           from '@acx-ui/components'
 import { get }                                                 from '@acx-ui/config'
 import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
 import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/services'
@@ -38,11 +37,8 @@ const MapRegionFormItem = () => {
       await updatePreferences({ params, payload }).unwrap()
 
       setCurrentRegion(regionCode)
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

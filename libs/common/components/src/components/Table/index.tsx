@@ -57,25 +57,26 @@ export interface TableProps <RecordType>
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string,
-      disabled?: boolean,
-      tooltip?: string,
-      onClick?: () => void,
+      key?: string
+      label: string
+      disabled?: boolean
+      tooltip?: string
+      onClick?: () => void
       dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
-      label: string,
-      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
-      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined),
-      visible?: boolean | ((selectedItems: RecordType[]) => boolean),
+      key?: string
+      label: string
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
+      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
-      & {
-      alwaysShowAlert?: boolean;
-    })
+      & { alwaysShowAlert?: boolean }
+    )
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
     enableApiFilter?: boolean,
@@ -88,16 +89,9 @@ export interface TableProps <RecordType>
      * Assumes that dataSource is nested with children key, and that
      * isParent boolean property is set on each record item in dataSource.
      */
-    groupable?: {
-      selectors: { key: string, label: string, actionEnable?: boolean }[]
+    groupByTableActions?: {
       onChange: CallableFunction
       onClear: CallableFunction
-      /**
-       * By default, the groupable selectors with be at the first item displayed.
-       * Only the second parent column info is needed to be passed.
-       */
-      parentColumns: { key: string, label: (record: RecordType) => JSX.Element }[]
-      actions?: { key: string, label: React.ReactNode, callback?: (record: RecordType) => void }[]
     }
   }
 
@@ -151,7 +145,7 @@ function getHighlightFn (searchValue: string): TableHighlightFnArgs {
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, onFilterChange, groupable, ...props
+  type = 'tall', columnState, enableApiFilter, onFilterChange, groupByTableActions, ...props
 }: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
@@ -164,6 +158,8 @@ function Table <RecordType extends Record<string, any>> ({
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
     onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
+
+  const groupable = props.columns.filter(col => col.groupable)
   const {
     GroupBySelect,
     expandable,
@@ -171,7 +167,7 @@ function Table <RecordType extends Record<string, any>> ({
     finalParentColumns,
     clearGroupByFn,
     isGroupByActive
-  } = useGroupBy<RecordType>(groupable, props.columns.length, intl)
+  } = useGroupBy<RecordType>(groupable, groupByTableActions, props.columns.length, intl)
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -193,10 +189,28 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    if (groupable) {
-      for (let i = 0; i < finalParentColumns.length; ++i) {
+    if (groupable && isGroupByActive) {
+      // clear all parent row render which are default with search highlight
+      props.columns.forEach((cols) => {
+        if (cols.render) {
+          return
+        }
+
+        cols.render = (dom, record) => record.isParent
+          ? null
+          : cols.searchable
+            ? getHighlightFn(searchValue)(_.get(record, cols.key))
+            : dom
+      })
+      const calculatedParentCols = finalParentColumns ?? []
+      // override with parent columns
+      const maxOverride = Math.min(
+        calculatedParentCols.length,
+        (props.columns ?? []).length
+      )
+      for (let i = 0; i < maxOverride; ++i) {
         props.columns[i].render = (dom, record) => record.isParent
-          ? finalParentColumns[i].label(record)
+          ? calculatedParentCols[i].renderer(record)
           : props.columns[i].searchable
             ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
             : dom
@@ -218,7 +232,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue])
+  }, [props.columns, type, searchValue, isGroupByActive])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -389,21 +403,15 @@ function Table <RecordType extends Record<string, any>> ({
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => {
+        const props: ButtonProps & { key: React.Key } = {
+          key: action.key ?? `action-${index}`,
+          type: 'link',
+          size: 'small',
+          children: action.label
+        }
         const content = !action.disabled
-          ? <Button
-            key={index}
-            type='link'
-            size='small'
-            onClick={action.dropdownMenu ? undefined : action.onClick}
-            children={action.label}
-          />
-          : <DisabledButton
-            key={index}
-            type='link'
-            size='small'
-            title={action.tooltip || ''}
-            children={action.label}
-          />
+          ? <Button {...props} onClick={action.dropdownMenu ? undefined : action.onClick} />
+          : <DisabledButton {...props} title={action.tooltip || ''} />
         return action.dropdownMenu
           ? <Dropdown
             key={`dropdown-${index}`}
@@ -423,11 +431,13 @@ function Table <RecordType extends Record<string, any>> ({
             }
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
             )}
             <GroupBySelect />
-            <UI.HeaderRight>
-              {(Boolean(activeFilters.length) ||
+          </Space>
+        </div>
+        <UI.HeaderRight>
+          {(Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
             isGroupByActive)
             && <Button
@@ -439,10 +449,6 @@ function Table <RecordType extends Record<string, any>> ({
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
-            </UI.HeaderRight>
-          </Space>
-        </div>
-        <UI.HeaderRight>
         </UI.HeaderRight>
       </UI.Header>
     )}
@@ -474,6 +480,8 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
+      key={Number(isGroupByActive)}
+      rowClassName={(record) => isGroupByActive && record.isParent ? 'parent-row-data' : ''}
       tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
@@ -507,7 +515,7 @@ function Table <RecordType extends Record<string, any>> ({
               const buttonProps: ButtonProps & { key: React.Key } = {
                 type: 'link',
                 size: 'small',
-                key: option.label
+                key: option.key ?? option.label
               }
 
               if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>

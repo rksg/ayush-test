@@ -909,7 +909,6 @@ describe('Table component', () => {
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
-
       fireEvent.mouseDown(groupBySelector)
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
@@ -927,7 +926,21 @@ describe('Table component', () => {
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
-      fireEvent.click(await screen.findByRole('img', { name: 'down' }))
+      fireEvent.click(await screen.findByRole('img', { name: 'close-circle' }))
+    })
+
+    it('should trigger edit action', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
+      const editBtns = await screen.findAllByRole('button', { name: 'Edit' })
+      expect(editBtns.length).toEqual(3)
+      fireEvent.click(editBtns[0])
     })
 
     it('should add and remove selction from groupby filter', async () => {
@@ -939,6 +952,7 @@ describe('Table component', () => {
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+      fireEvent.click(await screen.findByTestId('CollapseInactive'))
       fireEvent.click(await screen.findByTestId('CollapseActive'))
       fireEvent.click(await screen.findByTestId('CollapseInactive'))
     })

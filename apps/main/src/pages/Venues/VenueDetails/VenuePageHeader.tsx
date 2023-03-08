@@ -11,7 +11,8 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -48,10 +49,9 @@ function VenuePageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <DatePicker key='date-filter' />,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -60,7 +60,7 @@ function VenuePageHeader () {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
   )
