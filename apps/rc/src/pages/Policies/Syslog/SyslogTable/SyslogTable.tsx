@@ -1,31 +1,38 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelSyslogPolicyMutation, usePolicyListQuery }                 from '@acx-ui/rc/services'
+import { useDelSyslogPolicyMutation, useSyslogPolicyListQuery }           from '@acx-ui/rc/services'
 import {
+  FacilityEnum,
+  FlowLevelEnum,
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
+  SyslogPolicyListType,
   getPolicyListRoutePath,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
+import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
+
+
 const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: ['Syslog Server']
-  },
   fields: [
     'id',
     'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+    'venueIds',
+    'primaryServer',
+    'secondaryServer',
+    'flowLevel',
+    'facility'
+  ],
+  searchString: '',
+  filters: {},
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
 
 export default function SyslogTable () {
@@ -36,11 +43,11 @@ export default function SyslogTable () {
   const [ deleteFn ] = useDelSyslogPolicyMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+    useQuery: useSyslogPolicyListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -92,7 +99,7 @@ export default function SyslogTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<SyslogPolicyListType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -109,12 +116,13 @@ export default function SyslogTable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<SyslogPolicyListType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
+      searchable: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
@@ -130,11 +138,44 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'primaryServer',
+      title: $t({ defaultMessage: 'Primary Server' }),
+      dataIndex: 'primaryServer',
+      render: function (data, row) {
+        return row.primaryServer ?? '--'
+      }
+    },
+    {
+      key: 'secondaryServer',
+      title: $t({ defaultMessage: 'Secondary Server' }),
+      dataIndex: 'secondaryServer',
+      render: function (data, row) {
+        return row.secondaryServer ?? '--'
+      }
+    },
+    {
+      key: 'facility',
+      title: $t({ defaultMessage: 'Event Facility' }),
+      dataIndex: 'facility',
+      render: function (data, row) {
+        return row.facility ? $t(facilityLabelMapping[row.facility as FacilityEnum]) : '--'
+      }
+    },
+    {
+      key: 'flowLevel',
+      title: $t({ defaultMessage: 'Send Logs' }),
+      dataIndex: 'flowLevel',
+      render: function (data, row) {
+        return row.flowLevel ? $t(flowLevelLabelMapping[row.flowLevel as FlowLevelEnum]) : '--'
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      render: function (data, row) {
+        return row.venueIds?.length ?? '--'
+      }
     }
   ]
 

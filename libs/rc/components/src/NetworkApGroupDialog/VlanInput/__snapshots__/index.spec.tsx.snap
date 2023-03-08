@@ -10,7 +10,7 @@ exports[`VlanInput should render correctly 1`] = `
       style="margin-right: 8px;"
     >
       <label>
-        VLAN-1 (Default)
+        VLAN-1 (Custom)
       </label>
     </div>
     <div

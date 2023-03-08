@@ -18,6 +18,7 @@ import {
   SyslogUrls,
   SyslogContextType,
   SyslogPolicyDetailType,
+  SyslogPolicyListType,
   VenueSyslogPolicyType,
   VenueSyslogSettingType,
   VenueRoguePolicyType,
@@ -915,6 +916,27 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+    }),
+    syslogPolicyList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SyslogUrls.syslogPolicyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add Syslog Policy Profile',
+            'Update Syslog Policy Profile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+
     })
   })
 })
@@ -997,5 +1019,6 @@ export const {
   useGetVenueSyslogApQuery,
   useUpdateVenueSyslogApMutation,
   useGetSyslogPolicyListQuery,
-  useGetVenueSyslogListQuery
+  useGetVenueSyslogListQuery,
+  useSyslogPolicyListQuery
 } = policyApi
