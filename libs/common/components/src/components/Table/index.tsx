@@ -481,7 +481,12 @@ function Table <RecordType extends Record<string, any>> ({
       tableAlertOptionRender={false}
       expandable={expandable}
       key={Number(isGroupByActive)}
-      rowClassName={(record) => isGroupByActive && record.isParent ? 'parent-row-data' : ''}
+      rowClassName={props.rowClassName
+        ? props.rowClassName
+        : (record) => isGroupByActive && record.isParent
+          ? 'parent-row-data'
+          : ''
+      }
       tableAlertRender={props.tableAlertRender ?? (({ onCleanSelected }) => (
         <Space size={32}>
           <Space size={6}>
