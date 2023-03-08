@@ -38,7 +38,8 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       const reason = clientEventDescription(event.event, state)
       eventDetails.push({
         label: $t({ defaultMessage: 'Reason' }),
-        value: $t(reason)
+        value: ((typeof reason === 'string' || reason instanceof String) ? reason :
+          $t(reason)) as string
       })
       break
     }

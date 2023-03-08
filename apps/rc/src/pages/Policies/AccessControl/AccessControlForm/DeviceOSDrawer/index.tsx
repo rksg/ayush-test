@@ -9,7 +9,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps,
   Drawer, GridCol, GridRow,
-  showActionModal, showToast,
+  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -21,6 +21,7 @@ import {
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -368,12 +369,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           payload: convertToPayload(queryPolicyId)
         }).unwrap()
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -452,8 +449,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>

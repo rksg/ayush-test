@@ -16,6 +16,7 @@ import {
   useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                              from '@acx-ui/user'
 
 import {
   DpskPoolLink,
@@ -203,11 +204,8 @@ export function PersonaGroupTable () {
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
-    downloadCsv({ payload: tableQuery.payload }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export Persona Groups.' })
-      })
+    downloadCsv({ payload: tableQuery.payload }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -257,10 +255,7 @@ export function PersonaGroupTable () {
                 clearSelection()
               })
               .catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })
@@ -297,8 +292,8 @@ export function PersonaGroupTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
 

@@ -8,6 +8,7 @@ import { showActionModal, Table, TableProps }                      from '@acx-ui
 import { Drag }                                                    from '@acx-ui/icons'
 import { useRoguePolicyQuery }                                     from '@acx-ui/rc/services'
 import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 import { rogueRuleLabelMapping } from '../../contentsMap'
 import RogueAPDetectionContext   from '../RogueAPDetectionContext'
@@ -188,8 +189,8 @@ const RuleTable = (props: RuleTableProps) => {
         columns={basicColumns}
         dataSource={state.rules}
         rowKey='name'
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         components={{
           body: {

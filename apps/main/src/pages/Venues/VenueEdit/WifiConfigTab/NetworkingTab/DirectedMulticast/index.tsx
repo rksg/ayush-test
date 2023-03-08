@@ -4,7 +4,7 @@ import { Col, Form, Row, Switch } from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, showToast }                from '@acx-ui/components'
+import { Loader }                           from '@acx-ui/components'
 import {
   useGetVenueDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation
@@ -107,11 +107,8 @@ export function DirectedMulticast () {
         payload
       }).unwrap()
 
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

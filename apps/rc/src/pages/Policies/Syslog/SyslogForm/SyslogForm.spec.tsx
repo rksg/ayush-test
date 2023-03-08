@@ -32,12 +32,12 @@ const policyListContent = [
     id: 'policyId1',
     primary: {
       server: '1.1.1.1',
-      port: '514',
+      port: 514,
       protocol: 'TCP'
     },
     secondary: {
       server: '2.2.2.2',
-      port: '1514',
+      port: 1514,
       potocol: 'UDP'
     },
     facility: 'KEEP_ORIGINAL',
@@ -49,12 +49,12 @@ const policyListContent = [
     id: 'be62604f39aa4bb8a9f9a0733ac07add',
     primary: {
       server: '1.1.1.1',
-      port: '514',
+      port: 514,
       protocol: 'TCP'
     },
     secondary: {
       server: '2.2.2.2',
-      port: '1514',
+      port: 1514,
       protocol: 'UDP'
     },
     facility: 'KEEP_ORIGINAL',
@@ -122,10 +122,10 @@ const setSyslogAPConfigure = jest.fn()
 const initState = {
   policyName: '',
   server: '',
-  port: '',
+  port: 514,
   protocol: ProtocolEnum.TCP,
   secondaryServer: '',
-  secondaryPort: '',
+  secondaryPort: 514,
   secondaryProtocol: ProtocolEnum.TCP,
   facility: FacilityEnum.KEEP_ORIGINAL,
   priority: PriorityEnum.ALL,

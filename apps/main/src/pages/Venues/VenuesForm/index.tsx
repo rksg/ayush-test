@@ -8,7 +8,6 @@ import {
   GoogleMap,
   GoogleMapMarker,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -235,11 +234,8 @@ export function VenuesForm () {
       }
 
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -249,11 +245,8 @@ export function VenuesForm () {
       formData.address = address
       await updateVenue({ params, payload: formData }).unwrap()
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

@@ -4,12 +4,13 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Subtitle }             from '@acx-ui/components'
+import { useParams }            from '@acx-ui/react-router-dom'
 import {
+  MFAMethod,
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
-} from '@acx-ui/rc/services'
-import { MFAMethod, isDelegationMode } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
+} from '@acx-ui/user'
+import { isDelegationMode } from '@acx-ui/utils'
 
 import { AuthenticationMethod }       from './AuthenticationMethod'
 import { BackupAuthenticationMethod } from './BackupAuthenticationMethod'

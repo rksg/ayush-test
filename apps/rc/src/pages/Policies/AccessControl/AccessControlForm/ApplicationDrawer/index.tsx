@@ -11,7 +11,6 @@ import {
   GridCol,
   GridRow,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -28,6 +27,7 @@ import {
   ApplicationRuleType, AvcCategory,
   CommonResult
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   genRuleObject,
@@ -434,12 +434,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
           }
         }).unwrap()
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -506,8 +502,8 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       columns={basicColumns}
       dataSource={applicationsRuleList as ApplicationsRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>
