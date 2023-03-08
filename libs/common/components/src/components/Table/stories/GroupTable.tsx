@@ -606,6 +606,7 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
     dataIndex: 'deviceStatus',
     key: 'deviceStatus',
     filterable: true,
+    filterValueNullable: false,
     sorter: true,
     groupable: {
       key: 'deviceStatus',
@@ -613,7 +614,7 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
       parentColumns: [
         {
           key: 'deviceStatus',
-          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceStatus}</div>
+          renderer: (record) => <b>{record.deviceStatus}</b>
         },
         {
           key: 'members',
@@ -647,7 +648,7 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
       parentColumns: [
         {
           key: 'model',
-          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+          renderer: (record) => <b>{record.model}</b>
         },
         {
           key: 'members',
@@ -714,8 +715,8 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
       }],
       parentColumns: [
         {
-          key: 'AP Group',
-          renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+          key: 'deviceGroupName',
+          renderer: (record) => <b>{record.deviceGroupName}</b>
         },
         {
           key: 'members',

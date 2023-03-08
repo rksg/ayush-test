@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { Select }      from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
@@ -187,83 +187,83 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
   colLength: number,
   intl: IntlShape
 ) {
-  const [value, setValue] = React.useState<{ key: string, value: string } | undefined>(undefined)
-
+  const [value, setValue] = useState<{ key: string, value: string } | undefined>(undefined)
   const { $t } = intl
 
-  if (Array.isArray(groupables) && groupables.length > 0) {
-    const hasValidChildren = (record: ParentRecord) => {
-      const { children } = record
-      return Boolean(children) && Array.isArray(children) && children.length > 0
-    }
+  return useMemo(() => {
+    if (Array.isArray(groupables) && groupables.length > 0) {
+      const hasValidChildren = (record: ParentRecord) => {
+        const { children } = record
+        return Boolean(children) && Array.isArray(children) && children.length > 0
+      }
 
-    const checkParent = (record: ParentRecord) => Array.isArray(record.children)
+      const checkParent = (record: ParentRecord) => 'children' in record
 
-    const { onChange, onClear } = tableActions ?? {}
-    const currentKey = value?.key ?? ' '
+      const { onChange, onClear } = tableActions ?? {}
 
-    const validGroupables = groupables.filter(cols => Boolean(cols.groupable))
-    const selectors = validGroupables.map(col => col.groupable!)
-    const Select = <GroupSelect
-      $t={$t}
-      onChange={onChange}
-      onClear={onClear}
-      selectors={selectors}
-      setValue={setValue}
-      value={value}
-    />
+      const validGroupables = groupables.filter(cols => Boolean(cols.groupable))
+      const selectors = validGroupables.map(col => col.groupable!)
+      const Select = <GroupSelect
+        $t={$t}
+        onChange={onChange}
+        onClear={onClear}
+        selectors={selectors}
+        setValue={setValue}
+        value={value}
+      />
 
-    const clearGroupByFn = () => {
-      onClear && onClear()
-      setValue(undefined)
-    }
+      const clearGroupByFn = () => {
+        onClear && onClear()
+        setValue(undefined)
+      }
 
-    const isGroupByActive = Boolean(value)
+      const isGroupByActive = Boolean(value)
+      const targetCol = groupables.find(col => col.key === value?.key)
+      const actionsList = targetCol?.groupable?.actions ?? []
+      const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
+        .map((val) => ({
+          key: val.key,
+          dataIndex: '',
+          render: (_, record) => checkParent(record) ? val.label : null
+        }))
 
-    const targetCol = groupables.find(col => col.key === currentKey)
-    const actionsList = targetCol?.groupable!.actions ?? []
-    const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
-      .map((val) => ({
-        key: val.key,
-        dataIndex: '',
-        render: (_, record) => checkParent(record) ? val.label : null
-      }))
+      const expandable: TableProps<ParentRecord>['expandable'] = {
+        expandIconColumnIndex: colLength + groupActionColumns.length,
+        rowExpandable: (record) => hasValidChildren(record),
+        defaultExpandAllRows: true,
+        expandIcon: (props) => {
+          if (!hasValidChildren(props.record)) return null
+          const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
+            ? <CollapseInactive />
+            : <CollapseActive />
+          const WrappedExpand = () => <UI.ExpandWrapper
+            onClick={(e) => props.onExpand(props.record, e)}>
+            <ExpandIcon isActive={props.expanded}/>
+          </UI.ExpandWrapper>
+          return <WrappedExpand />
+        }
+      }
 
-    const expandable: TableProps<ParentRecord>['expandable'] = {
-      expandIconColumnIndex: colLength + groupActionColumns.length,
-      rowExpandable: (record) => hasValidChildren(record),
-      defaultExpandAllRows: isGroupByActive,
-      expandIcon: (props) => {
-        if (!hasValidChildren(props.record)) return null
-        const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
-          ? <CollapseInactive />
-          : <CollapseActive />
-        const WrappedExpand = () => <UI.ExpandWrapper
-          onClick={(e) => props.onExpand(props.record, e)}>
-          <ExpandIcon isActive={props.expanded}/>
-        </UI.ExpandWrapper>
-        return <WrappedExpand />
+      const finalParentColumns = targetCol?.groupable!.parentColumns
+
+      return {
+        GroupBySelect: () => Select,
+        expandable,
+        groupActionColumns,
+        finalParentColumns,
+        clearGroupByFn,
+        isGroupByActive
       }
     }
 
-    const finalParentColumns = targetCol?.groupable!.parentColumns
-
     return {
-      GroupBySelect: () => Select,
-      expandable: (isGroupByActive) ? expandable : undefined,
-      groupActionColumns,
-      finalParentColumns,
-      clearGroupByFn,
-      isGroupByActive
+      GroupBySelect: () => null,
+      expandable: undefined,
+      groupActionColumns: [],
+      finalParentColumns: [],
+      clearGroupByFn: () => {},
+      isGroupByActive: false
     }
-  }
-
-  return {
-    GroupBySelect: () => null,
-    expandable: undefined,
-    groupActionColumns: [],
-    finalParentColumns: [],
-    clearGroupByFn: () => {},
-    isGroupByActive: false
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
 }

@@ -3,7 +3,7 @@ import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
 import escapeStringRegexp                                             from 'escape-string-regexp'
-import _                                                              from 'lodash'
+import _, { cloneDeep }                                                              from 'lodash'
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 import AutoSizer                                                      from 'react-virtualized-auto-sizer'
@@ -190,36 +190,55 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    if (groupable && isGroupByActive) {
-      // clear all parent row render which are default with search highlight
-      props.columns.forEach((cols) => {
-        if (cols.render) {
-          return
-        }
 
-        cols.render = (dom, record) => record.children
-          ? null
-          : cols.searchable
-            ? getHighlightFn(searchValue)(_.get(record, cols.key))
-            : dom
-      })
+    let tableCols: typeof props.columns
+
+    if (groupable && isGroupByActive) {
+      // create deep copy of current cols
+      const colCopy: typeof props.columns = cloneDeep(props.columns)
+
+      // calculate the smallest possible amount of parent cols to override
       const calculatedParentCols = finalParentColumns ?? []
-      // override with parent columns
-      const maxOverride = Math.min(
+      const lastParentCol = Math.min(
         calculatedParentCols.length,
-        (props.columns ?? []).length
+        (colCopy ?? []).length
       )
-      for (let i = 0; i < maxOverride; ++i) {
-        props.columns[i].render = (dom, record) => record.children
-          ? calculatedParentCols[i].renderer(record)
-          : props.columns[i].searchable
-            ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
-            : dom
+
+      // overwrite parent row render in column
+      for (let i = 0; i < lastParentCol; ++i) {
+        const { render, searchable, key } = colCopy[i]
+        colCopy[i].render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return <div onClick={() => console.log('to-soy')}>{calculatedParentCols[i].renderer(record)}</div>
+          } else {
+            if (render) {
+              return render(dom, record, index, highlightFn, action, schema)
+            }
+            if (searchable) {
+              return getHighlightFn(searchValue)(_.get(record, key))
+            }
+            return dom
+          }
+        }
       }
+
+      // remove remining row data for parent cols
+      for (let j = lastParentCol; j < colCopy.length; ++j) {
+        const { render } = colCopy[j] 
+        colCopy[j].render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return null
+          }
+          return render && render(dom, record, index, highlightFn, action, schema)
+        }
+      }
+      tableCols = colCopy
+    } else {
+      tableCols = cloneDeep(props.columns)
     }
 
     const cols = type === 'tall'
-      ? [...props.columns, ...groupActionColumns, settingsColumn] as typeof props.columns
+      ? [...tableCols, ...groupActionColumns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({
@@ -233,7 +252,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, isGroupByActive])
+  }, [props.columns, type, searchValue, isGroupByActive, finalParentColumns])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -480,11 +499,11 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={expandable}
+      expandable={isGroupByActive ? expandable : undefined}
       key={Number(isGroupByActive)}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && record.children
+        : (record) => isGroupByActive && 'children' in record
           ? 'parent-row-data'
           : ''
       }

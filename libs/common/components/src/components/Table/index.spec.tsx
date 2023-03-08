@@ -956,5 +956,31 @@ describe('Table component', () => {
       fireEvent.click(await screen.findByTestId('CollapseActive'))
       fireEvent.click(await screen.findByTestId('CollapseInactive'))
     })
+
+    it('should support groupBy, search and filter', async () => {
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      fireEvent.mouseDown(groupBySelector)
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
+      fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+
+      const statusFilter = filters[0]
+      const filterTerm1 = '2_00_Operational'
+      fireEvent.change(statusFilter, { target: { value: filterTerm1 } })
+      expect(await screen.findAllByText(filterTerm1)).toHaveLength(6)
+      const filterTerm2 = '1_InSetupPhase_Offline'
+      fireEvent.change(statusFilter, { target: { value: filterTerm2 } })
+      expect(await screen.findAllByText(filterTerm2)).toHaveLength(4)
+
+      const searchInput = await screen.findByPlaceholderText(
+        'Search AP Name, MAC Addresses, AP Group'
+      )
+      const searchTerm = '34:2'
+      fireEvent.change(searchInput, { target: { value: searchTerm } })
+      expect(await screen.findAllByText(searchTerm)).toHaveLength(2)
+    })
   })
 })

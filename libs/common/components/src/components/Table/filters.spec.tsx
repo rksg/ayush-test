@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { IntlShape } from 'react-intl'
 
-import { render, renderHook, screen, fireEvent } from '@acx-ui/test-utils'
+import { render, renderHook, screen, fireEvent, act } from '@acx-ui/test-utils'
 
 import { GroupSelect, renderFilter, useGroupBy } from './filters'
 import { groupTBData, groupByColumns }           from './stories/GroupTable'
@@ -23,7 +23,6 @@ describe('Table Filters', () => {
         useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
       const {
         isGroupByActive,
-        clearGroupByFn,
         GroupBySelect,
         expandable,
         finalParentColumns
@@ -32,8 +31,6 @@ describe('Table Filters', () => {
       expect(GroupBySelect).toBeDefined()
       expect(expandable).toBeDefined()
       expect(finalParentColumns).toBeUndefined()
-      clearGroupByFn()
-      expect(groupTableAction.onClear).toBeCalledTimes(1)
     })
 
     it('render hook correctly with empty actions data', async () => {
@@ -56,11 +53,13 @@ describe('Table Filters', () => {
     it('render hook for expandable props', () => {
       const { result } = renderHook(() =>
         useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
+
+      act(() => {result.current.isGroupByActive = true})
       const { expandable } = result.current
       const { rowExpandable } = expandable as
         unknown as { rowExpandable: (data: typeof groupTBData[0]) => boolean }
       expect(rowExpandable).toBeDefined()
-      expect(rowExpandable && rowExpandable(groupTBData[0])).toBeTruthy()
+      expect(rowExpandable(groupTBData[0])).toBeTruthy()
     })
   })
 
