@@ -8,11 +8,12 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter, useAnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                                                                                          from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                                                                                         from '@acx-ui/components'
 import { ApInfoWidget, TopologyFloorPlanWidget }                                                                    from '@acx-ui/rc/components'
 import { useApDetailsQuery, useApViewModelQuery }                                                                   from '@acx-ui/rc/services'
 import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { useDateFilter }                                                                                            from '@acx-ui/utils'
 
 import { useApContext } from '../ApContext'
 
@@ -21,7 +22,7 @@ import { ApProperties } from './ApProperties'
 
 
 export function ApOverviewTab () {
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const [ apFilter, setApFilter ] = useState(null as unknown as AnalyticsFilter)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const params = useApContext()
@@ -46,11 +47,11 @@ export function ApOverviewTab () {
       _currentApDevice.position=apDetails?.position
       setCurrentApDevice(_currentApDevice)
       setApFilter({
-        ...filters,
+        ...dateFilter,
         path: [{ type: 'AP', name: currentAP.apMac as string }]
       })
     }
-  }, [currentAP, filters])
+  }, [currentAP, dateFilter])
 
 
   return (
