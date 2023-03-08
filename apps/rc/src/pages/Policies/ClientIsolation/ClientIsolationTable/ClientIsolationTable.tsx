@@ -1,31 +1,28 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteClientIsolationMutation, usePolicyListQuery }           from '@acx-ui/rc/services'
+import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
+import {
+  useDeleteClientIsolationMutation,
+  useGetEnhancedClientIsolationListQuery,
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [PolicyType.CLIENT_ISOLATION]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  filters: {},
+  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds']
 }
 
 export default function ClientIsolationTable () {
@@ -35,12 +32,12 @@ export default function ClientIsolationTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteClientIsolationMutation()
 
-  const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
+  const tableQuery = useTableQuery<ClientIsolationViewModel>({
+    useQuery: useGetEnhancedClientIsolationListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
+  const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -81,8 +78,10 @@ export default function ClientIsolationTable () {
           })
         }
         breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
+            link: getPolicyListRoutePath(true)
+          }
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
@@ -92,7 +91,7 @@ export default function ClientIsolationTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<ClientIsolationViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -100,6 +99,8 @@ export default function ClientIsolationTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -108,14 +109,24 @@ export default function ClientIsolationTable () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const columns: TableProps<Policy>['columns'] = [
+  const { data: venues } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+
+  const columns: TableProps<ClientIsolationViewModel>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -130,11 +141,40 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description'
+    },
+    {
+      key: 'clientEntries',
+      title: $t({ defaultMessage: 'Client Entries' }),
+      dataIndex: 'clientEntries',
+      align: 'center',
+      render: function (data) {
+        return data
+          ? <SimpleListTooltip items={data as string[]} displayText={(data as string[]).length} />
+          : 0
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      align: 'center',
+      filterKey: 'venueIds',
+      filterable: venues?.data?.map(venue => ({ key: venue.id, value: venue.name })) ?? [],
+      render: function (data) {
+        // return data ? (data as Array<string>).length : 0
+
+        if (!data) return 0
+
+        const venueIds = data as string[]
+
+        if (!venues?.data) return venueIds.length
+
+        const venueTooltipItems = venues.data.filter(v => venueIds.includes(v.id)).map(v => v.name)
+        return <SimpleListTooltip items={venueTooltipItems} displayText={venueIds.length} />
+      }
     }
   ]
 
