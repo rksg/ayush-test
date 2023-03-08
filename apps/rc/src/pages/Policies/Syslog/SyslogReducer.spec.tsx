@@ -48,7 +48,7 @@ describe('SyslogReducer test', () => {
     const action = {
       type: SyslogActionTypes.PORT,
       payload: {
-        port: '514'
+        port: 514
       }
     }
 
@@ -56,7 +56,7 @@ describe('SyslogReducer test', () => {
 
     expect(updatedState).toEqual({
       ...initState,
-      port: '514'
+      port: 514
     })
   })
   it('should update the protocol when PROTOCOL action is dispatched', () => {
@@ -99,7 +99,7 @@ describe('SyslogReducer test', () => {
     const action = {
       type: SyslogActionTypes.SECONDARYPORT,
       payload: {
-        secondaryPort: '1514'
+        secondaryPort: 1514
       }
     }
 
@@ -107,7 +107,7 @@ describe('SyslogReducer test', () => {
 
     expect(updatedState).toEqual({
       ...initState,
-      secondaryPort: '1514'
+      secondaryPort: 1514
     })
   })
   it('should update the secondary protocol when SECONDARYPROTOCOL action is dispatched', () => {
@@ -269,10 +269,10 @@ describe('SyslogReducer test', () => {
     const initState = {
       policyName: '',
       server: '1.1.1.1',
-      port: '514',
+      port: 514,
       protocol: 'TCP',
       secondaryServer: '2.2.2.2',
-      secondaryPort: '1514',
+      secondaryPort: 1514,
       secondaryProtocol: 'UDP',
       facility: 'KEEP_ORIGINAL',
       priority: 'ERROR',
@@ -289,10 +289,10 @@ describe('SyslogReducer test', () => {
         state: {
           policyName: '',
           server: '1.1.1.1',
-          port: '514',
+          port: 514,
           protocol: 'TCP',
           secondaryServer: '2.2.2.2',
-          secondaryPort: '1514',
+          secondaryPort: 1514,
           secondaryProtocol: 'UDP',
           facility: 'KEEP_ORIGINAL',
           priority: 'ERROR',

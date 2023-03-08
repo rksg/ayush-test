@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, NetworkTypeEnum, RadioEnum, WifiUrlsInfo }         from '@acx-ui/rc/utils'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render }                                               from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                     from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -23,12 +24,13 @@ jest.mock('socket.io-client')
 
 const mockSummary = {
   name: 'test',
-  type: 'dpsk',
+  type: NetworkTypeEnum.DPSK,
   isCloudpathEnabled: false,
   venues: [
     {
       venueId: '6cf550cdb67641d798d804793aaa82db',
-      name: 'My-Venue'
+      name: 'My-Venue',
+      allApGroupsRadio: RadioEnum.Both
     }
   ],
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
@@ -43,7 +45,7 @@ describe('SummaryForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'AAA network test'
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),

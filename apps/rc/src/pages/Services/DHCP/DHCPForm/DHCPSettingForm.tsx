@@ -26,8 +26,8 @@ async function poolValidator (
   pools: DHCPPool[]
 ) {
   const { $t } = getIntl()
+  const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
   if(type === DHCPConfigTypeEnum.HIERARCHICAL){
-    const hasVlan1 = _.findIndex(pools, { vlanId: 1 })
     if(hasVlan1===-1){
       return Promise.reject($t({
         defaultMessage:
@@ -35,6 +35,13 @@ async function poolValidator (
           'At least one DHCP pool with VLAN ID equals "1" must be configured for "Hierarchical" type of DHCP.'
       }))
     }
+  }
+  if(hasVlan1 >=0 && type === DHCPConfigTypeEnum.MULTIPLE){
+    return Promise.reject($t({
+      defaultMessage:
+        // eslint-disable-next-line max-len
+        'The pool has VLAN ID 1 which is not allowed in Multiple AP DHCP mode.'
+    }))
   }
   return
 }
@@ -61,7 +68,7 @@ export function SettingForm (props: DHCPFormProps) {
   const {
     data
   } = useGetDHCPProfileQuery({ params }, { skip: !editMode })
-
+  const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
   return (<>
     <Row gutter={20}>
       <Col span={10}>
@@ -82,7 +89,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
+          children={<Input disabled={isDefaultService}/>}
         />
 
         <Form.Item
@@ -92,7 +99,7 @@ export function SettingForm (props: DHCPFormProps) {
           rules={[{ required: true,
             message: $t({ defaultMessage: 'Please select DHCP Configuration' }) }]}
         >
-          <Radio.Group>
+          <Radio.Group disabled={isDefaultService}>
             <Space direction='vertical'>
               {types.map(type => (
                 <Radio key={type} value={type}>
@@ -127,7 +134,7 @@ export function SettingForm (props: DHCPFormProps) {
           ]}
           label={$t({ defaultMessage: 'Set DHCP Pools' })}
           children={<DHCPPoolTable dhcpMode={type}
-            isDefaultService={editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME}/>}
+            isDefaultService={isDefaultService}/>}
         />
       </Col>
     </Row>

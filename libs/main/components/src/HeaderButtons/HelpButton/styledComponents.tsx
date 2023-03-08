@@ -20,3 +20,8 @@ export const CopyableText = styled(Typography.Link)
   margin-bottom: 3px !important;
   display: block;
 `
+export const ButtonWrapper = styled.span`
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+`

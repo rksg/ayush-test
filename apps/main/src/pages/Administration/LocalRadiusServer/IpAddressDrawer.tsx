@@ -126,11 +126,6 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
                     // eslint-disable-next-line max-len
                     content: $t({ defaultMessage: 'IP Address is already used by another tenant' })
                   })
-                } else {
-                  showToast({
-                    type: 'error',
-                    content: $t({ defaultMessage: 'An error occurred' })
-                  })
                 }
               }
             }

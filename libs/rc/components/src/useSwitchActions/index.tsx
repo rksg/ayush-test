@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { useIntl } from 'react-intl'
 
-import { showActionModal,
-  showToast }  from '@acx-ui/components'
+import { showActionModal } from '@acx-ui/components'
 import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,
   useSyncDataMutation
 } from '@acx-ui/rc/services'
 import {
+  DeviceRequestAction,
   getSwitchName,
   SwitchRow,
   SwitchStatusEnum,
@@ -81,12 +81,12 @@ export function useSwitchActions () {
           closeAfterAction: true,
           handler: async () => {
             try {
-              await rebootSwitch({ params: { tenantId: tenantId, switchId } }).unwrap()
-            } catch {
-              showToast({
-                type: 'error',
-                content: $t({ defaultMessage: 'An error occurred' })
-              })
+              await rebootSwitch({
+                params: { tenantId: tenantId, switchId },
+                payload: { deviceRequestAction: DeviceRequestAction.REBOOT }
+              }).unwrap()
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }
         }]
@@ -98,15 +98,15 @@ export function useSwitchActions () {
 
   const doSyncData= async (switchId: string, tenantId: string, callBack?: ()=>void ) => {
     try {
-      await syncData({ params: { tenantId: tenantId, switchId }, payload: { isManual: true } }).unwrap()
+      await syncData({
+        params: { tenantId: tenantId, switchId },
+        payload: { deviceRequestAction: DeviceRequestAction.SYNC, isManual: true }
+      }).unwrap()
       setTimeout(() => {
         callBack && callBack()
       }, 3000)
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

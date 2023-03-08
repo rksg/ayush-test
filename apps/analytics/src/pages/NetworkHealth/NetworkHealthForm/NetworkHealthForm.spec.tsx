@@ -1,7 +1,10 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import {
+  dataApi,
+  dataApiURL,
   networkHealthApi as api,
   networkHealthApiURL as apiUrl
 } from '@acx-ui/analytics/services'
@@ -17,10 +20,14 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { fetchServiceGuardSpec, serviceGuardSpecNames } from '../__tests__/fixtures'
+import {
+  fetchServiceGuardSpec,
+  serviceGuardSpecNames,
+  mockNetworkHierarchy
+}                                 from '../__tests__/fixtures'
+import { NetworkHealthSpecGuard } from '../NetworkHealthGuard'
 
-import { NetworkHealthForm }      from './NetworkHealthForm'
-import { NetworkHealthSpecGuard } from './NetworkHealthSpecGuard'
+import { NetworkHealthForm } from './NetworkHealthForm'
 
 const { click, type, selectOptions } = userEvent
 
@@ -32,19 +39,30 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
-  const Select = ({ children, ...props }: React.PropsWithChildren) => (
-    <select {...props}>
+  const Select = ({
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    ...props
+  }: React.PropsWithChildren<{ showSearch: boolean, onChange?: (value: string) => void }>) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       <option value={undefined}></option>
       {children}
-    </select>
-  )
+    </select>)
+  }
   Select.Option = 'option'
+  Select.OptGroup = 'optgroup'
   return { ...components, Select }
 })
 
-const networkNames = Array(5).fill(null)
-  .map((_, i) => ({ id: `n-${i}`, name: `Network ${i}` }))
+const [wlans, networkNames] = _(Array(5))
+  .map((_, i) => [
+    { name: `Network ${i}`, authMethods: [] },
+    { id: `n-${i}`, name: `Network ${i}`, aps: 1, venues: { count: 1 } }
+  ])
+  .unzip()
+  .value()
+
 
 const mockNetworksQuery = (data = networkNames) => mockServer.use(
   rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
@@ -61,13 +79,16 @@ const EditWrapper = (props: React.PropsWithChildren) => {
 describe('NetworkHealthForm', () => {
   beforeEach(() => {
     mockedNavigate.mockReset()
+    store.dispatch(dataApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(api.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', { data: mockNetworkHierarchy })
   })
 
   it('works correctly for create flow', async () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
     render(<NetworkHealthForm />, {
       wrapper: Provider,
@@ -82,10 +103,18 @@ describe('NetworkHealthForm', () => {
 
     // Step 1
     await type(body.getByRole('textbox', { name: 'Test Name' }), 'Test 1')
-    await selectOptions(await body.findByRole('combobox', { name: 'Network' }), 'Network 1')
+    await selectOptions(await body.findByRole('combobox', { name: 'Test Type' }), 'On-Demand')
     await selectOptions(
-      body.getByRole('combobox', { name: (_, el) => el.id === 'authenticationMethod' }),
-      body.getByRole('option', { name: 'Pre-Shared Key (PSK)' })
+      await body.findByRole('combobox', {
+        name: (_, el) => el.id === 'configs_0_wlanName'
+      }),
+      'Network 1'
+    )
+    await selectOptions(
+      await body.findByRole('combobox', {
+        name: (_, el) => el.id === 'configs_0_authenticationMethod'
+      }),
+      await body.findByRole('option', { name: 'Pre-Shared Key (PSK)' })
     )
 
     // Navigate to Step 2
@@ -93,12 +122,8 @@ describe('NetworkHealthForm', () => {
     expect(await body.findByRole('heading', { name: 'APs Selection' })).toBeVisible()
 
     // Step 2
-    await type(
-      await screen.findByRole('textbox', {
-        name: (_, el) => el.id === 'networkPaths_networkNodes'
-      }),
-      'Venue Name|00:00:00:00:00:01'
-    )
+    await type(await screen.findByRole('combobox'), '2')
+    await click(await screen.findByRole('menuitemcheckbox', { name: /AP 4/ }))
 
     // Navigate to Step 3
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -119,6 +144,7 @@ describe('NetworkHealthForm', () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
     render(<NetworkHealthForm />, {
       wrapper: EditWrapper,
@@ -151,6 +177,7 @@ describe('NetworkHealthForm', () => {
     mockNetworksQuery()
     mockGraphqlQuery(apiUrl, 'FetchServiceGuardSpec', { data: fetchServiceGuardSpec })
     mockGraphqlQuery(apiUrl, 'ServiceGuardSpecNames', { data: serviceGuardSpecNames })
+    mockGraphqlQuery(apiUrl, 'Wlans', { data: { wlans } })
 
     render(<NetworkHealthForm />, {
       wrapper: EditWrapper,

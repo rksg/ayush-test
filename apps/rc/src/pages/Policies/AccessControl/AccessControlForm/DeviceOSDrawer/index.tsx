@@ -9,7 +9,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps,
   Drawer, GridCol, GridRow,
-  showActionModal, showToast,
+  showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -19,6 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import { AccessStatus, CommonResult, DeviceRule } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -347,12 +348,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(deviceRes.requestId)
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -395,14 +392,14 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       name={'policyName'}
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
-        { required: true,
-          validator: (_, value) => {
-            if (deviceList && deviceList.find(device => device === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { required: true },
+        { validator: (_, value) => {
+          if (deviceList && deviceList.find(device => device === value)) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -427,8 +424,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       columns={basicColumns}
       dataSource={deviceOSRuleList as DeviceOSRule[]}
       rowKey='ruleName'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Form>
@@ -449,6 +446,8 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
           <Form.Item
             name={[...inputName, 'devicePolicyId']}
             rules={[{
+              required: true
+            }, {
               message: $t({ defaultMessage: 'Please select Device & OS profile' })
             }]}
             children={
@@ -495,6 +494,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         footer={
           <Drawer.FormFooter
             showAddAnother={false}
+            showSaveButton={!isViewMode()}
             onCancel={handleDeviceOSDrawerClose}
             onSave={async () => {
               try {

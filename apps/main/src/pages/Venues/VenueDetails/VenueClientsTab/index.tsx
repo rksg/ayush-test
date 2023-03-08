@@ -21,7 +21,7 @@ export function VenueClientsTab () {
   const navigate = useNavigate()
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/clients`)
-  const [ showIdx, setShowIdx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(0)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -56,7 +56,7 @@ export function VenueClientsTab () {
         tab={$t({ defaultMessage: 'Switch' })}
         key='switch'
         disabled={!useIsSplitOn(Features.DEVICES)}>
-        <SwitchClientsTable />
+        <SwitchClientsTable filterBySwitch={true}/>
       </Tabs.TabPane>
     </Tabs>
   )
