@@ -201,7 +201,6 @@ export const userApi = createApi({
 const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
   const isDevModeOn = window.location.hostname === 'localhost'
   const endpoint = action?.meta?.arg?.endpointName || ''
-  console.log('roger: ' + endpoint)
   if (isRejectedWithValue(action)) {
     const { needLogout, ...details } = getErrorContent(action)
     if (!ignoreEndpointList.includes(endpoint)) {
