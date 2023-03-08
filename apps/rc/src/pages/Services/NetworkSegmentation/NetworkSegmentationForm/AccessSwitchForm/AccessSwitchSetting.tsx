@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import {
   Card,
   Col,
-  Divider,
   Form,
   Input,
   Radio,
@@ -24,17 +23,18 @@ import {
   useStepFormContext,
   useWatch
 } from '@acx-ui/components'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { isLAGMemberPort }            from '@acx-ui/rc/components'
+import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
+import { isLAGMemberPort }              from '@acx-ui/rc/components'
 import {
   useSwitchPortlistQuery,
   useGetSwitchVlanQuery,
   useLazyGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
-  useGetLagListQuery
+  useGetLagListQuery,
+  useValidateAccessSwitchInfoMutation
 } from '@acx-ui/rc/services'
-import { AccessSwitch, UplinkInfo, WebAuthTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                 from '@acx-ui/react-router-dom'
+import { AccessSwitch, AccessSwitchSaveData, UplinkInfo, WebAuthTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '..'
 import { defaultTemplateData }          from '../../../NetworkSegWebAuth/NetworkSegAuthForm'
@@ -42,20 +42,66 @@ import { defaultTemplateData }          from '../../../NetworkSegWebAuth/Network
 
 export default function AccessSwitchSetting () {
   const { $t } = useIntl()
+  const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
+
+  const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState<AccessSwitch[]>()
+
+  const accessSwitchInfos = useWatch('accessSwitchInfos', form)
+  const venueId = useWatch('venueId', form)
+
+  const onClose = () => {
+    setOpen(false)
+  }
+
+  const onSave = (values: Partial<AccessSwitch>) => {
+    if (!selected || !accessSwitchInfos) return
+
+    const newList = accessSwitchInfos.map(as => {
+      const isSelected = selected.map(item => item.id).includes(as.id)
+      if (isSelected) {
+        return { ...as, ...values }
+      }
+      return as
+    })
+    setSelected(undefined)
+    setOpen(false)
+
+    form.setFieldValue('accessSwitchInfos', newList)
+  }
+
+  const rowActions: TableProps<AccessSwitch>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (selectedRows) => {
+        setSelected(selectedRows)
+        setOpen(true)
+      }
+    }
+  ]
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Access Switch Settings' })}</StepsForm.Title>
     <Typography.Paragraph>
       {$t({ defaultMessage: 'Set the configuration on these access switches:' })}
     </Typography.Paragraph>
-    <Form.Item name='accessSwitches' hidden />
-    <AccessSwitchTable />
+    <Form.Item name='accessSwitchInfos' hidden />
+    <AccessSwitchTable rowActions={rowActions}
+      rowSelection={{ type: 'checkbox', selectedRowKeys: selected? selected.map(as=>as.id) : [] }}
+      dataSource={accessSwitchInfos} />
+    <AccessSwitchDrawer
+      open={open}
+      editRecords={selected}
+      venueId={venueId}
+      onClose={onClose}
+      onSave={onSave} />
   </>)
 }
 
 function AccessSwitchDrawer (props: {
   open: boolean,
   editRecords?: AccessSwitch[],
+  venueId: string,
   onClose: ()=>void
   onSave: (values: Partial<AccessSwitch>)=>void
 }) {
@@ -63,10 +109,12 @@ function AccessSwitchDrawer (props: {
   const { tenantId } = useParams()
   const [form] = Form.useForm()
 
-  const { open, editRecords, onClose, onSave } = props
+  const { open, editRecords, venueId, onClose, onSave } = props
 
   const switchId = editRecords && editRecords[0].id
-  const editingWebAuthPageType = editRecords && editRecords[0].webAuthPageType
+  const editingWebAuthPageType = (editRecords && editRecords[0].webAuthPageType) || 'TEMPLATE'
+
+  const [validateAccessSwitchInfo] = useValidateAccessSwitchInfoMutation()
 
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
   const { vlanList } = useGetSwitchVlanQuery({ params: { tenantId, switchId }, payload: {
@@ -111,14 +159,15 @@ function AccessSwitchDrawer (props: {
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
 
-  const [webAuthPageType, setWebAuthPageType] = useState(editingWebAuthPageType)
   const [template, setTemplate] = useState<WebAuthTemplate>()
 
   const templateId = Form.useWatch('templateId', form)
+  const webAuthPageType = Form.useWatch('webAuthPageType', form)
   const uplinkInfoType = Form.useWatch(['uplinkInfo', 'uplinkType'], form)
 
   useEffect(()=>{
     form.resetFields()
+    form.setFieldValue('webAuthPageType', editingWebAuthPageType)
   }, [form, open])
 
 
@@ -131,8 +180,16 @@ function AccessSwitchDrawer (props: {
           setTemplate(templateRes)
         })
         .catch(()=>{})
+    } else {
+      setTemplate(undefined)
     }
   }, [templateId, tenantId])
+
+  useEffect(()=>{
+    if (webAuthPageType === 'USER_DEFINED') {
+      form.setFieldValue('templateId', '')
+    }
+  }, [webAuthPageType])
 
   const UplinkRadio = (props: {
     value: UplinkInfo['uplinkType'],
@@ -174,11 +231,15 @@ function AccessSwitchDrawer (props: {
       footer={<Drawer.FormFooter
         onCancel={onClose}
         onSave={async () => {
+          const values: AccessSwitchSaveData = form.getFieldsValue()
           try {
-            await form.validateFields()
+            await validateAccessSwitchInfo({
+              params: { tenantId, venueId },
+              payload: values
+            }).unwrap()
             form.submit()
           } catch (error) {
-            if (error instanceof Error) throw error
+            console.log(error) // eslint-disable-line no-console
           }
         }}
       />}>
@@ -186,6 +247,10 @@ function AccessSwitchDrawer (props: {
         form={form}
         onFinish={onSave}
         initialValues={editRecords ? editRecords[0] : {}} >
+
+        <Form.Item name='id' hidden />
+        <Form.Item name='distributionSwitchId' hidden />
+
         <Form.Item label={$t({ defaultMessage: 'Uplink Port' })} >
           <Form.Item name={['uplinkInfo', 'uplinkType']} noStyle>
             <Radio.Group onChange={uplinkTypeChangeHandler}>
@@ -208,6 +273,9 @@ function AccessSwitchDrawer (props: {
           <Select options={vlanList}
             placeholder={$t({ defaultMessage: 'Select ...' })} />
         </Form.Item>
+
+        <Form.Item name='webAuthPageType' hidden />
+
         <Row justify='space-between'>
           <Col>
             <Subtitle level={4}>
@@ -215,21 +283,25 @@ function AccessSwitchDrawer (props: {
             </Subtitle>
           </Col>
           <Col>{ webAuthPageType === 'USER_DEFINED' ?
-            <span>
-              <Button type='link' onClick={()=>{/*TODO*/}}>
-                {$t({ defaultMessage: 'Save as Template' })}
-              </Button>
-              <Divider type='vertical' />
-              <Button type='link' onClick={()=>setWebAuthPageType('TEMPLATE')}>
-                {$t({ defaultMessage: 'Select Auth Template' })}
-              </Button>
-            </span> :
-            <Button type='link' onClick={()=>setWebAuthPageType('USER_DEFINED')}>
+            <Button type='link' onClick={()=>form.setFieldValue('webAuthPageType', 'TEMPLATE')}>
+              {$t({ defaultMessage: 'Select Auth Template' })}
+            </Button> :
+            <Button type='link' onClick={()=>form.setFieldValue('webAuthPageType', 'USER_DEFINED')}>
               {$t({ defaultMessage: 'Customize' })}
             </Button>
           }
           </Col>
         </Row>
+
+        <Form.Item name='templateId'
+          wrapperCol={{ span: 10 }}
+          hidden={webAuthPageType === 'USER_DEFINED'}>
+          <Select
+            placeholder={$t({ defaultMessage: 'Select Template ...' })}
+            options={templateList?.map(t => ({
+              value: t.id, label: t.name
+            }))} />
+        </Form.Item>
 
         { webAuthPageType === 'USER_DEFINED' ? (<>
           <Form.Item name='webAuthCustomTop'
@@ -253,53 +325,45 @@ function AccessSwitchDrawer (props: {
             label={$t({ defaultMessage: 'Footer' })} >
             <Input.TextArea autoSize placeholder={$t(defaultTemplateData['webAuthCustomBottom'])}/>
           </Form.Item>
-        </>) : (<>
-          <Form.Item name='templateId' wrapperCol={{ span: 10 }}>
-            <Select
-              placeholder={$t({ defaultMessage: 'Select Template ...' })}
-              // defaultValue={templateList[0]?.id}
-              options={templateList?.map(t => ({
-                value: t.id, label: t.name
-              }))} />
+        </>) : (<Card>
+          <Form.Item
+            label={$t({ defaultMessage: 'Header' })} >
+            <p>{template?.webAuthCustomTop}</p>
           </Form.Item>
-          <Card>
-            <Form.Item
-              label={$t({ defaultMessage: 'Header' })} >
-              <p>{template?.webAuthCustomTop}</p>
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Title' })} >
-              <p>{template?.webAuthCustomTitle}</p>
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Password Label' })} >
-              <p>{template?.webAuthPasswordLabel}</p>
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Button Text' })} >
-              <p>{template?.webAuthCustomLoginButton}</p>
-            </Form.Item>
-            <Form.Item
-              label={$t({ defaultMessage: 'Footer' })} >
-              <p>{template?.webAuthCustomBottom}</p>
-            </Form.Item>
-          </Card>
-        </>)}
+          <Form.Item
+            label={$t({ defaultMessage: 'Title' })} >
+            <p>{template?.webAuthCustomTitle}</p>
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Password Label' })} >
+            <p>{template?.webAuthPasswordLabel}</p>
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Button Text' })} >
+            <p>{template?.webAuthCustomLoginButton}</p>
+          </Form.Item>
+          <Form.Item
+            label={$t({ defaultMessage: 'Footer' })} >
+            <p>{template?.webAuthCustomBottom}</p>
+          </Form.Item>
+        </Card>)}
       </Form>
     </Drawer>
   )
 }
 
-function AccessSwitchTable () {
+export function AccessSwitchTable (props: {
+  rowSelection?: TableProps<AccessSwitch>['rowSelection'],
+  rowActions?: TableProps<AccessSwitch>['rowActions'],
+  type?: TableProps<AccessSwitch>['type'],
+  dataSource: AccessSwitch[]
+}) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { form } = useStepFormContext<NetworkSegmentationGroupForm>()
 
-  const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<AccessSwitch[]>()
-  const [accessSwitchList, setAccessSwitchList ] = useState<AccessSwitch[]>([])
+
   const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
-  const accessSwitchInfos = useWatch('accessSwitchInfos', form)
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
@@ -307,42 +371,6 @@ function AccessSwitchTable () {
       fields: [ 'name', 'id' ]
     }
   })
-
-  useEffect(()=>{
-    if (accessSwitchInfos) {
-      setAccessSwitchList(accessSwitchInfos)
-    }
-  }, [accessSwitchInfos])
-
-  const onClose = () => {
-    setOpen(false)
-  }
-
-  const onSave = (values: Partial<AccessSwitch>) => {
-    if (!selected || !accessSwitchList) return
-
-    const newList = accessSwitchList.map(as => {
-      const isSelected = selected.map(item => item.id).includes(as.id)
-      if (isSelected) {
-        return { ...as, ...values }
-      }
-      return as
-    })
-    setSelected(undefined)
-    setOpen(false)
-
-    form.setFieldValue('accessSwitchInfos', newList)
-  }
-
-  const rowActions: TableProps<AccessSwitch>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
-        setSelected(selectedRows)
-        setOpen(true)
-      }
-    }
-  ]
 
   const columns: TableProps<AccessSwitch>['columns'] = [{
     key: 'name',
@@ -383,17 +411,17 @@ function AccessSwitchTable () {
     dataIndex: 'templateId',
     sorter: true,
     render: (data, row) => {
+      if (row.webAuthPageType === 'USER_DEFINED') {
+        return $t({ defaultMessage: 'custom' })
+      }
       return templateListResult?.data.find(tp=>tp.id===row.templateId)?.name || data
     }
   }]
 
-  return (<>
+  return (
     <Table
       columns={columns}
-      dataSource={accessSwitchList}
       rowKey='id'
-      rowActions={rowActions}
-      rowSelection={{ type: 'checkbox' }} />
-    <AccessSwitchDrawer open={open} editRecords={selected} onClose={onClose} onSave={onSave} />
-  </>)
+      {...props} />
+  )
 }

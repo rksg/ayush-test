@@ -46,11 +46,11 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   },
   validateDistributionSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitchInfo'
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/distributionSwitchInfo'
   },
   validateAccessSwitchInfo: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/accessSwitchInfo'
   },
   createNetworkSegmentationGroup: {
     method: 'post',

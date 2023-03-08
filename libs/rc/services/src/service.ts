@@ -756,6 +756,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    validateDistributionSwitchInfo: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(NetworkSegmentationUrls.validateDistributionSwitchInfo,params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    validateAccessSwitchInfo: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(NetworkSegmentationUrls.validateAccessSwitchInfo, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -819,5 +837,7 @@ export const {
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
   useGetAccessSwitchesByDSQuery,
-  useGetAvailableSwitchesQuery
+  useGetAvailableSwitchesQuery,
+  useValidateDistributionSwitchInfoMutation,
+  useValidateAccessSwitchInfoMutation
 } = serviceApi

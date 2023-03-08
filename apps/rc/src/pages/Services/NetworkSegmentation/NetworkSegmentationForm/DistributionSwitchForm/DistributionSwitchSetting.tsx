@@ -6,11 +6,13 @@ import { useIntl }                                                     from 'rea
 import { Button, Drawer, Modal, StepsForm, Subtitle, Table, TableProps, useStepFormContext, useWatch } from '@acx-ui/components'
 import {
   useGetAccessSwitchesByDSQuery,
-  useGetAvailableSwitchesQuery
+  useGetAvailableSwitchesQuery,
+  useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
 import {
   AccessSwitch,
   DistributionSwitch,
+  DistributionSwitchSaveData,
   networkWifiIpRegExp,
   subnetMaskIpRegExp,
   SwitchLite
@@ -32,6 +34,7 @@ export default function DistributionSwitchSetting () {
   const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
   const venueId = useWatch('venueId', form)
+  const edgeId = useWatch('edgeId', form)
 
   const { availableSwitches } = useGetAvailableSwitchesQuery({
     params: { tenantId, venueId }
@@ -114,13 +117,14 @@ export default function DistributionSwitchSetting () {
     <Form.Item name='distributionSwitchInfos' hidden />
     <DistributionSwitchTable rowActions={rowActions}
       dataSource={dsList}
-      selectedRowKeys={selected ? [selected.id] : []}/>
+      rowSelection={{ type: 'radio', selectedRowKeys: selected ? [selected.id] : [] }} />
     <DistributionSwitchDrawer
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches}
       selectedSwitches={dsList}
       venueId={venueId}
+      edgeId={edgeId}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
   </>)
@@ -132,23 +136,25 @@ function DistributionSwitchDrawer (props: {
   availableSwitches: SwitchLite[],
   selectedSwitches: DistributionSwitch[],
   venueId: string,
+  edgeId: string,
   onClose: ()=>void,
   onSaveDS?:(values: DistributionSwitch)=>void
 }) {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
   const [form] = Form.useForm()
   const {
-    open, editRecord, availableSwitches, selectedSwitches, venueId, onClose, onSaveDS
+    open, editRecord, availableSwitches, selectedSwitches, venueId, edgeId, onClose, onSaveDS
   } = props
 
-  const defaultRecord = { siteKeepAlive: 5, siteRetry: 3 }
+  const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
 
   const [openModal, setOpenModal] = useState(false)
   const [asList, setAsList] = useState<AccessSwitch[]>([])
 
+  const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
+
   const dsId = Form.useWatch('id', form)
-
-
 
   useEffect(()=>{
     form.resetFields()
@@ -172,11 +178,15 @@ function DistributionSwitchDrawer (props: {
       footer={<Drawer.FormFooter
         onCancel={onClose}
         onSave={async () => {
+          const values: DistributionSwitchSaveData = form.getFieldsValue()
           try {
-            await form.validateFields()
+            await validateDistributionSwitchInfo({
+              params: { tenantId, venueId },
+              payload: values
+            }).unwrap()
             form.submit()
           } catch (error) {
-            if (error instanceof Error) throw error
+            console.log(error) // eslint-disable-line no-console
           }
         }}
       />} >
@@ -184,6 +194,8 @@ function DistributionSwitchDrawer (props: {
         onFinish={handleFormFinish}
         layout='vertical'
         initialValues={editRecord || defaultRecord}>
+
+        <Form.Item name='siteName' hidden />
         <Form.Item name='id'
           label={$t({ defaultMessage: 'Distribution Switch' })}
           rules={[{ required: true }]}
@@ -205,7 +217,7 @@ function DistributionSwitchDrawer (props: {
         >
           <Input disabled/>
         </Form.Item>
-        <Form.Item name='vlanList'
+        <Form.Item name='vlans'
           label={$t({ defaultMessage: 'VLAN Range' })}
           rules={[{ required: true }]}>
           <Input />
@@ -229,12 +241,12 @@ function DistributionSwitchDrawer (props: {
           <Form.Item name='siteKeepAlive'
             label={$t({ defaultMessage: 'Keep Alive' })}
             rules={[{ required: true }]}>
-            <InputNumber style={{ width: '200px' }} max={20} min={1} />
+            <InputNumber<string> style={{ width: '200px' }} min='1' max='20' stringMode />
           </Form.Item>
           <Form.Item name='siteRetry'
             label={$t({ defaultMessage: 'Retry Times' })}
             rules={[{ required: true }]}>
-            <InputNumber style={{ width: '200px' }} max={5} min={1} />
+            <InputNumber<string> style={{ width: '200px' }} min='1' max='5' stringMode />
           </Form.Item>
         </Space>
         <Row justify='space-between' style={{ padding: '30px 0 10px' }}>
@@ -359,14 +371,13 @@ function SelectAccessSwitchModal ({
     </Modal>)
 }
 
-function DistributionSwitchTable ( props: {
-  rowActions: TableProps<DistributionSwitch>['rowActions'],
-  dataSource: DistributionSwitch[],
-  selectedRowKeys: string[]
+export function DistributionSwitchTable ( props: {
+  rowActions?: TableProps<DistributionSwitch>['rowActions'],
+  rowSelection?: TableProps<DistributionSwitch>['rowSelection'],
+  type?: TableProps<DistributionSwitch>['type'],
+  dataSource: DistributionSwitch[]
 }) {
   const { $t } = useIntl()
-
-  const { rowActions, dataSource, selectedRowKeys } = props
 
   const columns: TableProps<DistributionSwitch>['columns'] = React.useMemo(() => {
     return [{
@@ -376,9 +387,9 @@ function DistributionSwitchTable ( props: {
       sorter: true,
       defaultSortOrder: 'ascend'
     }, {
-      key: 'vlanList',
+      key: 'vlans',
       title: $t({ defaultMessage: 'VLAN Range' }),
-      dataIndex: 'vlanList',
+      dataIndex: 'vlans',
       sorter: true
     }, {
       key: 'accessSwitches',
@@ -417,13 +428,10 @@ function DistributionSwitchTable ( props: {
       sorter: true
     }]
   }, [$t])
-  return (<>
+  return (
     <Table
       columns={columns}
-      dataSource={dataSource}
       rowKey='id'
-      rowActions={rowActions}
-      rowSelection={{ type: 'radio', selectedRowKeys }} />
-    <br />
-  </>)
+      {...props} />
+  )
 }

@@ -8,7 +8,6 @@ export interface NetworkSegmentationGroup {
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
   forceOverwriteReboot: boolean
-  adminName: string
 }
 
 export interface NetworkSegmentationGroupStats {
@@ -59,8 +58,11 @@ interface MduSwitchAddtionalInfo {
 }
 
 export interface AccessSwitch extends
-  Omit<WebAuthTemplate, 'name' | 'tag' >,
-  Partial<MduSwitchAddtionalInfo>
+  AccessSwitchSaveData,
+  Partial<MduSwitchAddtionalInfo>{}
+
+export interface AccessSwitchSaveData extends
+  Omit<WebAuthTemplate, 'name' | 'tag' >
 {
   id: string
   vlanId?: number
@@ -70,17 +72,23 @@ export interface AccessSwitch extends
   distributionSwitchId: string
 }
 
-export interface DistributionSwitch extends Partial<MduSwitchAddtionalInfo> {
+export interface DistributionSwitch extends
+  DistributionSwitchSaveData,
+  Partial<MduSwitchAddtionalInfo>
+{
+  siteIp: string
+  accessSwitches?: AccessSwitch[]
+}
+
+export interface DistributionSwitchSaveData {
   id: string
   siteName: string
-  siteIp: string
   vlans: string
   siteKeepAlive: string
   siteRetry: string
   loopbackInterfaceId: string
   loopbackInterfaceIp: string
   loopbackInterfaceSubnetMask: string
-  accessSwitches?: AccessSwitch[]
 }
 
 export interface SwitchLite extends Partial<UplinkInfo> {
@@ -89,10 +97,4 @@ export interface SwitchLite extends Partial<UplinkInfo> {
   firmwareVersion: string
   familyId: string
   model: string
-}
-
-export interface NetworkSegmentationSwitchSaveData {
-  distributionSwitches: DistributionSwitch[]
-  accessSwitches: AccessSwitch[]
-  forceOverwriteReboot?: boolean
 }

@@ -1,4 +1,5 @@
 
+import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
@@ -64,7 +65,12 @@ const AddNetworkSegmentation = () => {
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
-      networkIds: formData.networkIds
+      networkIds: formData.networkIds,
+      distributionSwitchInfos: formData.distributionSwitchInfos.map(ds=>_.omit(
+        { ...ds, siteName: formData.edgeId }, ['accessSwitches', 'name'])),
+      accessSwitchInfos: formData.accessSwitchInfos.map(as=>_.omit(
+        as, ['name', 'familyId', 'firmwareVersion', 'model'])),
+      forceOverwriteReboot: false
     }
     try{
       await createNetworkSegmentationGroup({ payload }).unwrap()
