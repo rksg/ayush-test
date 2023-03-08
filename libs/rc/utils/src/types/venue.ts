@@ -797,7 +797,7 @@ export interface VenueBonjourFencingPolicy {
   services?: BonjourFencingService[]
 }
 
-export enum SHOW_TOPOLOGY_FLOORPLAN_ON {
+export enum ShowTopologyFloorplanOn {
 	VENUE_OVERVIEW='VENUE_OVERVIEW',
 	AP_OVERVIEW='AP_OVERVIEW',
 	SWITCH_OVERVIEW='SWITCH_OVERVIEW'

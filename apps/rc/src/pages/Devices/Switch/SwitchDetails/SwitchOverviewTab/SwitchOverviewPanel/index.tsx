@@ -1,10 +1,10 @@
 
-import { SwitchesTrafficByVolume }                                                                        from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                                                                             from '@acx-ui/analytics/components'
-import { AnalyticsFilter }                                                                                from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                                                                               from '@acx-ui/components'
-import { TopologyFloorPlanWidget }                                                                        from '@acx-ui/rc/components'
-import { NetworkDevice, NetworkDevicePosition, SHOW_TOPOLOGY_FLOORPLAN_ON, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
+import { SwitchesTrafficByVolume }                                                                     from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                                                                          from '@acx-ui/analytics/components'
+import { AnalyticsFilter }                                                                             from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                                                                            from '@acx-ui/components'
+import { TopologyFloorPlanWidget }                                                                     from '@acx-ui/rc/components'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
@@ -20,7 +20,7 @@ export function SwitchOverviewPanel (props:{
   return <><GridRow>
     <GridCol col={{ span: 24 }} style={{ height: '380px' }}>
       { switchDetail && <TopologyFloorPlanWidget
-        showTopologyFloorplanOn={SHOW_TOPOLOGY_FLOORPLAN_ON.SWITCH_OVERVIEW}
+        showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
         currentDevice={currentSwitchDevice}
         venueId={switchDetail?.venueId}
         devicePosition={switchDetail?.position as NetworkDevicePosition}/>

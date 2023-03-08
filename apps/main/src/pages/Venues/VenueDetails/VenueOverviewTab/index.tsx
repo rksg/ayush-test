@@ -30,8 +30,8 @@ import {
   VenueAlarmWidget,
   VenueDevicesWidget
 } from '@acx-ui/rc/components'
-import { SHOW_TOPOLOGY_FLOORPLAN_ON } from '@acx-ui/rc/utils'
-import { generateVenueFilter }        from '@acx-ui/utils'
+import { ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { generateVenueFilter }     from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
@@ -76,7 +76,7 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
 
       <GridCol col={{ span: 24 }} style={{ height: '520px' }}>
         <TopologyFloorPlanWidget
-          showTopologyFloorplanOn={SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW}/>
+          showTopologyFloorplanOn={ShowTopologyFloorplanOn.VENUE_OVERVIEW}/>
       </GridCol>
     </GridRow>
   )

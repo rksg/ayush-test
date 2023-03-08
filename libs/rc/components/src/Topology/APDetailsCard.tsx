@@ -1,9 +1,9 @@
 import { Badge, Button, Divider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Card, Descriptions, Loader, Subtitle }                                                                                   from '@acx-ui/components'
-import { ApDeviceStatusEnum, APExtended, APMeshRole, ApRadioBands, APView, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { formatter }                                                                                                              from '@acx-ui/utils'
+import { Card, Descriptions, Loader, Subtitle }                                                                                                  from '@acx-ui/components'
+import { ApDeviceStatusEnum, APExtended, APMeshRole, ApRadioBands, APView, noDataDisplay, RadioProperties, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
+import { formatter }                                                                                                                             from '@acx-ui/utils'
 
 import * as UI                         from './styledComponents'
 import { getDeviceColor, getMeshRole } from './utils'
@@ -50,17 +50,17 @@ export function APDetailsCard (props: {
         {/* model  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'AP Model' })}
-          children={apDetail?.model || '--'} />
+          children={apDetail?.model || noDataDisplay} />
 
         {/* MAC address  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'MAC Address' })}
-          children={apDetail?.apMac || '--'} />
+          children={apDetail?.apMac || 'noDataDisplay'} />
 
         {/* IP Address  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'IP Address' })}
-          children={apDetail?.IP || '--'} />
+          children={apDetail?.IP || noDataDisplay} />
 
         {/* Status  */}
         <Descriptions.Item
@@ -78,7 +78,7 @@ export function APDetailsCard (props: {
         {/* Health  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Health' })}
-          children={apDetail?.healthStatus || '--'} />
+          children={apDetail?.healthStatus || noDataDisplay} />
 
         {/* Wireless Radio  */}
         <Descriptions.Item
@@ -105,9 +105,9 @@ export function APDetailsCard (props: {
                 <UI.TextNumber>
                   <label><Subtitle level={5}>{ getApRadio(radioDetail?.band as ApRadioBands) }
                   </Subtitle></label>
-                  <span>{radioDetail?.channel || '--'}</span>
-                  <span>{radioDetail?.operativeChannelBandwidth || '--'}</span>
-                  <span>{radioDetail?.txPower || '--'}</span>
+                  <span>{radioDetail?.channel || noDataDisplay}</span>
+                  <span>{radioDetail?.operativeChannelBandwidth || noDataDisplay}</span>
+                  <span>{radioDetail?.txPower || noDataDisplay}</span>
                 </UI.TextNumber>
               ))
             }
@@ -118,7 +118,7 @@ export function APDetailsCard (props: {
         {/* Clients count  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Clients Connected' })}
-          children={apDetail?.clients || '--'} />
+          children={apDetail?.clients || noDataDisplay} />
 
         {/* Last seen for offline devices */
           apDetail?.lastSeenTime &&
@@ -133,7 +133,7 @@ export function APDetailsCard (props: {
         <Descriptions.Item
           label={$t({ defaultMessage: 'Mesh Role' })}
           children={
-            getMeshRole(apDetail?.meshRole as APMeshRole || '--')
+            getMeshRole(apDetail?.meshRole as APMeshRole || noDataDisplay)
           }
         />
       </Descriptions>

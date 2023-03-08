@@ -8,11 +8,11 @@ import {
   TopSSIDsByTraffic,
   TrafficByVolume
 } from '@acx-ui/analytics/components'
-import { AnalyticsFilter, useAnalyticsFilter }                                                                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow }                                                                                            from '@acx-ui/components'
-import { ApInfoWidget, TopologyFloorPlanWidget }                                                                       from '@acx-ui/rc/components'
-import { useApDetailsQuery, useApViewModelQuery }                                                                      from '@acx-ui/rc/services'
-import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, SHOW_TOPOLOGY_FLOORPLAN_ON } from '@acx-ui/rc/utils'
+import { AnalyticsFilter, useAnalyticsFilter }                                                                      from '@acx-ui/analytics/utils'
+import { GridCol, GridRow }                                                                                         from '@acx-ui/components'
+import { ApInfoWidget, TopologyFloorPlanWidget }                                                                    from '@acx-ui/rc/components'
+import { useApDetailsQuery, useApViewModelQuery }                                                                   from '@acx-ui/rc/services'
+import { ApDetails, ApViewModel, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
 
 import { useApContext } from '../ApContext'
 
@@ -63,7 +63,7 @@ export function ApOverviewTab () {
       </GridCol>
       <GridCol col={{ span: 18 }} style={{ height: '420px' }}>
         { apDetails && <TopologyFloorPlanWidget
-          showTopologyFloorplanOn={SHOW_TOPOLOGY_FLOORPLAN_ON.AP_OVERVIEW}
+          showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
           currentDevice={currentApDevice}
           venueId={apDetails?.venueId}
           devicePosition={apDetails?.position as NetworkDevicePosition}/>

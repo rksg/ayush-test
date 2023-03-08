@@ -13,7 +13,7 @@ import { useParams }                                                from 'react-
 import { Loader }                                                                                                                                                                                                                     from '@acx-ui/components'
 import { CloudSolid, MagnifyingGlassMinusOutlined, MagnifyingGlassPlusOutlined, AccessPointWifiMesh, AccessPointWifiMeshRoot, SearchFitOutlined, StackDevice, AccessPointWifi, Switch, Unknown, AccessPointWifiPort, SearchOutlined } from '@acx-ui/icons'
 import { useGetTopologyQuery }                                                                                                                                                                                                        from '@acx-ui/rc/services'
-import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, SHOW_TOPOLOGY_FLOORPLAN_ON, UINode }                                                                                     from '@acx-ui/rc/utils'
+import { ConnectionStates, ConnectionStatus, DeviceStates, DeviceStatus, DeviceTypes, GraphData, Link, Node, ShowTopologyFloorplanOn, UINode }                                                                                        from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                 from '@acx-ui/react-router-dom'
 
 import LinkTooltip      from './LinkTooltip'
@@ -31,7 +31,7 @@ type OptionType = {
 }
 
 export function TopologyGraph (props:{ venueId?: string,
-  showTopologyOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
+  showTopologyOn: ShowTopologyFloorplanOn,
   deviceMac?: string }) {
 
   const { $t } = useIntl()
@@ -231,7 +231,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
       hoverNode(selectedNode)
 
-      if (showTopologyOn !== SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW) {
+      if (showTopologyOn !== ShowTopologyFloorplanOn.VENUE_OVERVIEW) {
         searchNodeByid(svg, zoom, selectedNode)
       }
 
@@ -320,12 +320,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
     allpathes
       .on('mouseout', function (){
-        if (selectedNode) {
-          lowVisibleAll();
-          (selectedNode as SVGGElement).style.opacity = '1'
-        } else {
-          highlightAll()
-        }
+        highlightNodeOnMouseout(selectedNode)
         setShowLinkTooltip(false)
 		 })
 
@@ -369,12 +364,7 @@ export function TopologyGraph (props:{ venueId?: string,
     }, 500)
 
     const handleOnMouseLeave = () => {
-      if (selectedNode) {
-        lowVisibleAll();
-        (selectedNode as SVGGElement).style.opacity = '1'
-      } else {
-        highlightAll()
-      }
+      highlightNodeOnMouseout(selectedNode)
       setShowDeviceTooltip(false)
       debouncedHandleMouseEnter.cancel()
     }
@@ -390,6 +380,15 @@ export function TopologyGraph (props:{ venueId?: string,
         // delay 500s to avoid multiple calls
         debouncedHandleMouseEnter.call(this, node, d, self)
       })
+  }
+
+  function highlightNodeOnMouseout (selectedNode: SVGGElement) {
+    if (selectedNode) {
+      lowVisibleAll();
+      (selectedNode as SVGGElement).style.opacity = '1'
+    } else {
+      highlightAll()
+    }
   }
 
   function searchNodeByid (svg: d3.Selection<SVGSVGElement | null, unknown, null, undefined>,
@@ -483,7 +482,7 @@ export function TopologyGraph (props:{ venueId?: string,
     }}>{ topologyData?.nodes.length ?
         <>
           {
-            (showTopologyOn === SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW)
+            (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
             && !!filterNodes?.length
             && <AutoComplete
               id='searchNodes'
@@ -527,7 +526,7 @@ export function TopologyGraph (props:{ venueId?: string,
           height: '100%'
         }}>
           {
-            (showTopologyOn === SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW)
+            (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
                 <Row>
                   <Col span={12}>

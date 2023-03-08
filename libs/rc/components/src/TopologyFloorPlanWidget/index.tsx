@@ -2,11 +2,11 @@ import { Empty }   from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card }                                                             from '@acx-ui/components'
-import { ContentSwitcher, ContentSwitcherProps }                            from '@acx-ui/components'
-import { NetworkDevice, NetworkDevicePosition, SHOW_TOPOLOGY_FLOORPLAN_ON } from '@acx-ui/rc/utils'
-import { TenantLink }                                                       from '@acx-ui/react-router-dom'
-import { getIntl }                                                          from '@acx-ui/utils'
+import { Card }                                                          from '@acx-ui/components'
+import { ContentSwitcher, ContentSwitcherProps }                         from '@acx-ui/components'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn } from '@acx-ui/rc/utils'
+import { TenantLink }                                                    from '@acx-ui/react-router-dom'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 import { ApFloorplan }     from '../ApFloorplan'
 import { FloorPlan }       from '../FloorPlan'
@@ -15,7 +15,7 @@ import { TopologyGraph }   from '../Topology'
 
 
 export function TopologyFloorPlanWidget (props: {
-  showTopologyFloorplanOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
+  showTopologyFloorplanOn: ShowTopologyFloorplanOn,
   currentDevice?: NetworkDevice,
   venueId?: string,
   devicePosition?: NetworkDevicePosition }) {
@@ -58,55 +58,53 @@ export function TopologyFloorPlanWidget (props: {
   )
 }
 
-export function getFloorplanComponent (showTopologyFloorplanOn: SHOW_TOPOLOGY_FLOORPLAN_ON,
+export function getFloorplanComponent (showTopologyFloorplanOn: ShowTopologyFloorplanOn,
   currentDevice: NetworkDevice,
   venueId: string,
   devicePosition: NetworkDevicePosition) {
 
-  const { $t } = getIntl()
-
   switch(showTopologyFloorplanOn) {
-    case SHOW_TOPOLOGY_FLOORPLAN_ON.VENUE_OVERVIEW:
+    case ShowTopologyFloorplanOn.VENUE_OVERVIEW:
       return <FloorPlan />
-    case SHOW_TOPOLOGY_FLOORPLAN_ON.SWITCH_OVERVIEW:
+    case ShowTopologyFloorplanOn.SWITCH_OVERVIEW:
       return (devicePosition && devicePosition.floorplanId) ? <SwitchFloorplan
         activeDevice={currentDevice}
         venueId={venueId}
         switchPosition={devicePosition as NetworkDevicePosition}
       />
-        : <div style={{
-          width: '100%',
-          height: 'calc(100% - 80px)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: 'inline-flex'
-        }}><Empty description={$t({
-            defaultMessage: 'This Switch is not placed on any floor plan' })}>
-            <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
-              {$t({ defaultMessage: 'Go to floor plans to place the Switch' })}
-            </TenantLink>
-          </Empty>
-        </div>
-    case SHOW_TOPOLOGY_FLOORPLAN_ON.AP_OVERVIEW:
+        : getEmptyTemplate(ShowTopologyFloorplanOn.SWITCH_OVERVIEW, venueId)
+    case ShowTopologyFloorplanOn.AP_OVERVIEW:
       return (devicePosition && devicePosition.floorplanId) ? <ApFloorplan
         activeDevice={currentDevice}
         venueId={venueId}
         apPosition={devicePosition as NetworkDevicePosition}
       />
-        : <div style={{
-          width: '100%',
-          height: 'calc(100% - 80px)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: 'inline-flex'
-        }}>
-          <Empty description={$t({ defaultMessage: 'This AP is not placed on any floor plan' })}>
-            <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
-              {$t({ defaultMessage: 'Go to floor plans to place the Access Point' })}
-            </TenantLink>
-          </Empty>
-        </div>
+        : getEmptyTemplate(ShowTopologyFloorplanOn.AP_OVERVIEW, venueId)
   }
 
   return
+}
+
+export function getEmptyTemplate (emptyTemplateFor: ShowTopologyFloorplanOn, venueId: string) {
+
+  const { $t } = getIntl()
+
+  const deviceType = emptyTemplateFor === ShowTopologyFloorplanOn.AP_OVERVIEW
+    ? 'Access Point' : 'Switch'
+
+  return <div style={{
+    width: '100%',
+    height: 'calc(100% - 80px)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    display: 'inline-flex'
+  }}>
+    <Empty description={$t({ defaultMessage:
+      'This {deviceType} is not placed on any floor plan' }, { deviceType })}>
+      <TenantLink to={`/venues/${venueId}/venue-details/overview`}>
+        {$t({ defaultMessage: 'Go to floor plans to place the {deviceType}' }, { deviceType })}
+      </TenantLink>
+    </Empty>
+  </div>
+
 }
