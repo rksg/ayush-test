@@ -119,3 +119,51 @@ describe('jwtToken', () => {
 
   })
 })
+
+describe('loadImageWithJWT', () => {
+  const mockResponse = { signedUrl: 'https://example.com/image.png' }
+
+  beforeEach(() => {
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+      json: () => Promise.resolve(mockResponse)
+    }))
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should return image URL when result is truthy', async () => {
+
+    const token = {
+      acx_account_regions: ['EU', 'AS', 'NA'],
+      acx_account_tier: 'Gold',
+      tenantType: 'REC',
+      acx_account_vertical: 'Default'
+    }
+    const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
+    sessionStorage.setItem('jwt', jwtToken)
+    const imageId = '123'
+
+    const result = await loadImageWithJWT(imageId)
+
+    expect(global.fetch).toHaveBeenCalledWith('/files/123/urls', expect.objectContaining({
+      headers: {
+        // eslint-disable-next-line max-len
+        Authorization: 'Bearer JWT=xxx.eyJhY3hfYWNjb3VudF9yZWdpb25zIjpbIkVVIiwiQVMiLCJOQSJdLCJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsInRlbmFudFR5cGUiOiJSRUMiLCJhY3hfYWNjb3VudF92ZXJ0aWNhbCI6IkRlZmF1bHQifQ==.xxx;',
+        mode: 'no-cors'
+      }
+    }))
+    expect(result).toEqual('https://example.com/image.png')
+  })
+
+  it('should throw error when result is falsy', async () => {
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+      json: () => Promise.reject(new Error('Error! status: 404')),
+      status: 404
+    }))
+    const imageId = '456'
+
+    await expect(loadImageWithJWT(imageId)).rejects.toThrow('Error! status: 404')
+  })
+})
