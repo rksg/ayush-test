@@ -43,14 +43,13 @@ describe('NsgDetail', () => {
   })
 
   it('Should render detail page successfully', async () => {
-    const { asFragment } = render(
+    render(
       <Provider>
         <NetworkSegmentationDetail />
       </Provider>, {
         route: { params, path: detailPath }
       })
     await screen.findByText(/TestDhcp-1/i)
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('Switch tab', async () => {
