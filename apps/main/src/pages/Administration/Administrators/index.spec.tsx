@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { UserProfileContext, UserProfileContextProps } from '@acx-ui/rc/components'
-import { AdministrationUrlsInfo, MspUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
+import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakeMspEcProfile, fakeTenantDetails } from './__tests__/fixtures'
 
@@ -38,6 +38,8 @@ describe('Administrators', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }

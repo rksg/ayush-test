@@ -6,7 +6,7 @@ import { act }          from 'react-dom/test-utils'
 
 import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }                      from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }             from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
 
@@ -91,6 +91,16 @@ const venueRogueAp = {
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
 }
 
+const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
+},
+'7231da344778480d88f37f0cca1c534f-001.png': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+}
+}
+
 describe('Floor Plans', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
@@ -114,6 +124,13 @@ describe('Floor Plans', () => {
       rest.get(
         CommonUrlsInfo.getVenueRogueAp.url,
         (req, res, ctx) => res(ctx.json(venueRogueAp))
+      ),
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
       )
     )
     params = {
@@ -130,6 +147,26 @@ describe('Floor Plans', () => {
 
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
+
+    expect(asFragment()).toMatchSnapshot()
 
     const plainViewImage = await screen.findAllByTestId('floorPlanImage')
     const thumbnailImages = screen.getAllByTestId('thumbnailBg')
@@ -158,7 +195,6 @@ describe('Floor Plans', () => {
     expect(await screen.findByTestId('EyeOpenOutlined')).toBeInTheDocument()
     fireEvent.click(await screen.findByTestId('EyeOpenOutlined'))
 
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('Floor Plans should render gallery correctly', async () => {
@@ -171,6 +207,24 @@ describe('Floor Plans', () => {
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('thumbnailBgImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
+
     const plainViewImage = await screen.findAllByTestId('floorPlanImage')
     const thumbnailImages = screen.getAllByTestId('thumbnailBg')
     await expect(plainViewImage).toHaveLength(1)
@@ -179,14 +233,28 @@ describe('Floor Plans', () => {
     fireEvent.click(await screen.findByTestId('ApplicationsSolid'))
     expect(plainViewImage[0]).not.toBeInTheDocument()
     expect(thumbnailImages[0]).not.toBeInTheDocument()
+
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
+
+    expect(asFragment()).toMatchSnapshot()
+
     const fpImage = await screen.findAllByTestId('fpImage')
     expect(fpImage[0]).toBeVisible()
 
     fireEvent.click(await fpImage[0])
     expect(fpImage[0]).not.toBeVisible()
     fireEvent.click(await fpImage[1])
-
-    expect(asFragment()).toMatchSnapshot()
   })
   it('test sortByFloorNumber function', async () => {
     expect(sortByFloorNumber(list[1], list[0])).toEqual(1)

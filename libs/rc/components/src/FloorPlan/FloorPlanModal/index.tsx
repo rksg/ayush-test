@@ -8,7 +8,7 @@ import { useParams }    from 'react-router-dom'
 import { Button }                                            from '@acx-ui/components'
 import { useGetUploadURLMutation }                           from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, UploadUrlResponse } from '@acx-ui/rc/utils'
-import { getIntl }                                           from '@acx-ui/utils'
+import { getIntl, loadImageWithJWT }                         from '@acx-ui/utils'
 
 import FloorPlanForm from '../FloorPlanForm'
 
@@ -49,6 +49,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [imageUrl, setImageUrl] = useState('')
   const params = useParams()
 
   const { $t } = getIntl()
@@ -64,6 +65,15 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
       })
     }
   })
+
+  useEffect(() => {
+    if (selectedFloorPlan?.imageId) {
+      const response = loadImageWithJWT(selectedFloorPlan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [selectedFloorPlan?.imageId])
 
   useResetFormOnCloseModal({
     form,
@@ -146,7 +156,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
             form={form}
             formLoading={loading}
             onFormSubmit={onFormSubmit}
-            imageFile={isEditMode ? selectedFloorPlan?.imageUrl: ''}/>
+            imageFile={isEditMode ? imageUrl: ''}/>
         </Modal>
       </Form.Provider>
     </ModalContext.Provider>

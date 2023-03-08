@@ -1,7 +1,6 @@
-import { ColumnsType } from 'antd/lib/table'
 
-import { ApDeviceStatusEnum, ConnectionStatus, DeviceStatus, RadioProperties, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                               from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APMeshRole, ConnectionStatus, DeviceStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                          from '@acx-ui/utils'
 
 
 export function getDeviceColor (deviceStatus: DeviceStatus
@@ -54,7 +53,7 @@ export const switchStatus = (switchStatus: SwitchStatusEnum) => {
     case SwitchStatusEnum.OPERATIONAL:
       return $t({ defaultMessage: 'Operational' })
     case SwitchStatusEnum.DISCONNECTED:
-      return $t({ defaultMessage: 'Requires Attention' })
+      return $t({ defaultMessage: 'Disconnected' })
     case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
       return $t({ defaultMessage: 'Never contacted cloud' })
     case SwitchStatusEnum.INITIALIZING:
@@ -68,28 +67,14 @@ export const switchStatus = (switchStatus: SwitchStatusEnum) => {
   }
 }
 
-export function getWirelessRadioColumns () :ColumnsType<RadioProperties> {
+export function getMeshRole (meshRole: APMeshRole) {
   const { $t } = getIntl()
-  return [
-    {
-      title: '',
-      dataIndex: 'band',
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'RF Channel' }),
-      dataIndex: 'channel',
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'RF Bandwidth' }),
-      dataIndex: 'operativeChannelBandwidth',
-      align: 'center'
-    },
-    {
-      title: $t({ defaultMessage: 'TX Power' }),
-      dataIndex: 'txPower',
-      align: 'center'
-    }
-  ]
+
+  switch(meshRole) {
+    case APMeshRole.RAP: return $t({ defaultMessage: 'Root AP' })
+    case APMeshRole.MAP: return $t({ defaultMessage: 'Mesh AP' })
+    case APMeshRole.EMAP: return $t({ defaultMessage: 'eMesh AP' })
+    case APMeshRole.DISABLED: return $t({ defaultMessage: 'disabled' })
+  }
+
 }

@@ -10,6 +10,7 @@ import {
   useL2AclPolicyListQuery
 } from '@acx-ui/rc/services'
 import { L2AclPolicy, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
@@ -96,7 +97,7 @@ const Layer2Component = () => {
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       rowKey='id'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
     />
   </Loader>
