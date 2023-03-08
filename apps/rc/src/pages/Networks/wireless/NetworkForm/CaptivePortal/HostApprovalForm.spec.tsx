@@ -58,7 +58,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
   it('should test Host approval network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
-        editMode: true, cloneMode: true, data: hostapprovalData
+        editMode: false, cloneMode: true, data: hostapprovalData
       }}
     ><StepsForm><StepsForm.StepForm><HostApprovalForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
@@ -82,5 +82,16 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /1 Day/ }))
   })
-
+  it('should create Host approval network successfully', async () => {
+    render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: false, cloneMode: false, data: hostapprovalData
+      }}
+    ><StepsForm><StepsForm.StepForm><HostApprovalForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /1 Hour/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /4 Hours/ }))
+  })
 })

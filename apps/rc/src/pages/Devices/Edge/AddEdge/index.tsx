@@ -27,12 +27,7 @@ const AddEdge = () => {
 
   const handleAddEdge = async (data: EdgeGeneralSetting) => {
     try {
-      // TODO when Tags component ready remove this
-      const payload = { ...data, tags: [] as string[] }
-      if(data.tags) {
-        payload.tags = data.tags.split(',').map(item => item.trim())
-      }
-      await addEdge({ payload: payload }).unwrap()
+      await addEdge({ payload: data }).unwrap()
       navigate(linkToEdgeList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
