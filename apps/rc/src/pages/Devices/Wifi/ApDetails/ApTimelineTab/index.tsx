@@ -11,19 +11,16 @@ import {
   eventDefaultSearch,
   eventDefaultSorter,
   useEventTableFilter,
+  useActivityTableQuery,
   ActivityTable,
-  activityDefaultSorter,
-  activityDefaultPayload,
-  useActivityTableFilter,
   columnState
 } from '@acx-ui/rc/components'
-import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
+import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
   TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  Activity
+  TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 import { useTenantLink }         from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
@@ -59,28 +56,8 @@ const Events = () => {
 
 const Activities = () => {
   const { serialNumber } = useApContext()
-  const { fromTime, toTime } = useActivityTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
+  const tableQuery = useActivityTableQuery({ entityType: 'AP', entityId: serialNumber! })
 
-  const tableQuery = usePollingTableQuery<Activity>({
-    useQuery: useActivitiesQuery,
-    defaultPayload: activityDefaultPayload,
-    sorter: activityDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        fromTime,
-        toTime,
-        entityType: 'AP',
-        entityId: serialNumber
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
   return <ActivityTable
     tableQuery={tableQuery}
     filterables={['status']}

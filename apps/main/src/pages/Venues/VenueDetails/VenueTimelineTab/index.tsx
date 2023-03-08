@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }            from '@acx-ui/components'
+import { Tabs }           from '@acx-ui/components'
 import {
   EventTable,
   eventDefaultPayload,
@@ -11,17 +11,14 @@ import {
   eventDefaultSorter,
   useEventTableFilter,
   ActivityTable,
-  activityDefaultSorter,
-  activityDefaultPayload,
-  useActivityTableFilter
+  useActivityTableQuery
 } from '@acx-ui/rc/components'
-import { useActivitiesQuery, useEventsQuery } from '@acx-ui/rc/services'
+import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   Event,
   usePollingTableQuery,
   TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL,
-  Activity
+  TABLE_QUERY_LONG_POLLING_INTERVAL
 } from '@acx-ui/rc/utils'
 import { useTenantLink }         from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
@@ -48,35 +45,16 @@ const Events = () => {
     },
     sorter: eventDefaultSorter,
     search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL },
+    detailLevel: currentUserDetailLevel
   })
   return <EventTable tableQuery={tableQuery}/>
 }
 
 const Activities = () => {
   const { venueId } = useParams()
-  const { fromTime, toTime } = useActivityTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
+  const tableQuery = useActivityTableQuery({ entityType: 'VENUE', entityId: venueId! })
 
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        fromTime,
-        toTime,
-        entityType: 'VENUE',
-        entityId: venueId
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Activity>({
-    useQuery: useActivitiesQuery,
-    defaultPayload: activityDefaultPayload,
-    sorter: activityDefaultSorter,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
   return <ActivityTable tableQuery={tableQuery} filterables={['status', 'product']}/>
 }
 

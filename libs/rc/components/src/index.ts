@@ -1,8 +1,6 @@
 export {
+  useActivityTableQuery,
   ActivityTable,
-  useActivityTableFilter,
-  defaultSorter as activityDefaultSorter,
-  defaultPayload as activityDefaultPayload,
   columnState
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
