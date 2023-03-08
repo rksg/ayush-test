@@ -27,6 +27,7 @@ const defaultPayload = {
   fields: [
     'id',
     'name',
+    'description',
     'numOfRules',
     'venueIds'
   ],
@@ -192,6 +193,11 @@ function useColumns (venueFilterOptions: { key: string, value: string }[]) {
           </TenantLink>
         )
       }
+    },
+    {
+      key: 'description',
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description'
     },
     {
       key: 'numOfRules',
