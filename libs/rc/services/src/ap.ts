@@ -77,6 +77,34 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
+    groupByApList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apListReq = createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+        return {
+          ...apListReq,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
+        return transformGroupByList(result)
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddAps',
+            'UpdateAp',
+            'DeleteAp',
+            'DeleteAps',
+            'AddApGroupLegacy'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
     apGroupList: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApGroupList, params)
@@ -87,7 +115,10 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroup>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        let venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        if((payload as { groupBy : string })?.groupBy){
+          venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsListByGroup, params)
+        }
         return {
           ...venueListReq,
           body: payload
@@ -564,6 +595,7 @@ export const apApi = baseApApi.injectEndpoints({
 
 export const {
   useApListQuery,
+  useGroupByApListQuery,
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useApViewModelQuery,
@@ -686,6 +718,16 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   })
   result.extra = channelColumnStatus
   return result
+}
+
+const transformGroupByList = (result: TableResult<APExtended, ApExtraParams>) => {
+  result.data = result.data.map(item => {
+    let newItem = {...item, children : []}
+    newItem.children = (item as unknown as {aps : []}).aps || []
+    return newItem
+  })
+  return result
+
 }
 
 const transformApViewModel = (result: ApViewModel) => {

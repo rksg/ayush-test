@@ -10,11 +10,12 @@ import {
   Table,
   TableProps,
   deviceStatusColors,
-  ColumnType
+  ColumnType,
+  Button
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
-  useApListQuery, useImportApMutation
+  useApListQuery, useImportApMutation,useGroupByApListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -52,6 +53,27 @@ export const defaultApPayload = {
     'fwVersion'
   ]
 }
+const groupedFields = [
+  'check-all',
+  'name',
+  'deviceStatus',
+  'model',
+  'meshRole',
+  'IP',
+  'apMac',
+  'venueName',
+  'switchName',
+  'clients',
+  'deviceGroupName',
+  'apStatusData.APRadio.band',
+  'tags',
+  'serialNumber',
+  'fwVersion',
+  'cog',
+  'venueId',
+  'apStatusData.APRadio.radioId',
+  'apStatusData.APRadio.channel'
+]
 
 const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`
@@ -103,7 +125,6 @@ interface ApTableProps
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  groupable?: Omit<TableProps<APExtended>, 'columns'> | any
 }
 
 export function ApTable (props: ApTableProps) {
@@ -112,32 +133,42 @@ export function ApTable (props: ApTableProps) {
   const params = useParams()
   const filters = getFilters(params)
   const { searchable, filterables } = props
+  const [groupBySelection, setGroupBySelection] = useState<
+  'deviceStatus' | 'model' | 'deviceGroupName' | null
+>(null)
 
-  const inlineTableQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
-      ...defaultApPayload,
-      filters,
-      search: {
-        searchTargetFields: defaultApPayload.searchTargetFields
-      }
+const groupByTableQuery = usePollingTableQuery({
+  useQuery: useGroupByApListQuery,
+  defaultPayload: {
+    fields: groupedFields,
+    filters: filters,
+    groupBy: 'deviceStatus' },
+  option: { skip: Boolean(props.tableQuery) ||  !Boolean(groupBySelection)}
+})
+const inlineTableQuery = usePollingTableQuery({
+  useQuery: useApListQuery,
+  defaultPayload: {
+    ...defaultApPayload,
+    filters,
+    search: {
+      searchTargetFields: defaultApPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) }
-  })
-  const tableQuery = props.tableQuery || inlineTableQuery
+  },
+  option: { skip: Boolean(props.tableQuery) ||  Boolean(groupBySelection)}
+})
+const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : inlineTableQuery
 
   const apAction = useApActions()
   const releaseTag = useIsSplitOn(Features.DEVICES)
-
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
     key, value: <Badge color={color} text={name} />
   }))
 
-  const tableData = tableQuery.data?.data ?? []
+  const tableData = tableQuery?.data?.data ?? []
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
   const columns = React.useMemo(() => {
-    const extraParams = tableQuery.data?.extra ?? {
+    const extraParams = tableQuery?.data?.extra ?? {
       channel24: true,
       channel50: false,
       channelL50: false,
@@ -164,13 +195,69 @@ export function ApTable (props: ApTableProps) {
       disable: true,
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
+      groupable: {
+        key: 'deviceStatus',
+        label: 'Status',
+        parentColumns: [
+          {
+            key: 'deviceStatus',
+            renderer: (record) =>  <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
+          },
+          {
+            key: 'members',
+            renderer: (record) => <div>Members: {record.members}</div>
+          },
+          {
+            key: 'incidents',
+            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          },
+          {
+            key: 'clients',
+            renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          },
+          {
+            key: 'networks',
+            renderer: (record) => <div>
+                Wireless Networks: {record.networks ? record.networks.count : 0}
+            </div>
+          }
+        ]
+      },
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
-      sorter: true
+      sorter: true,
+      groupable: {
+        key: 'model',
+        label: 'Model',
+        parentColumns: [
+          {
+            key: 'model',
+            renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+          },
+          {
+            key: 'members',
+            renderer: (record) => <div>Members: {record.members}</div>
+          },
+          {
+            key: 'incidents',
+            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          },
+          {
+            key: 'clients',
+            renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          },
+          {
+            key: 'networks',
+            renderer: (record) => <div>
+                Wireless Networks: {record.networks ? record.networks.count : 0}
+            </div>
+          }
+        ]
+      }
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -261,7 +348,39 @@ export function ApTable (props: ApTableProps) {
       dataIndex: 'deviceGroupName',
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
-      sorter: true
+      sorter: true,
+      groupable: {
+        key: 'deviceGroupName',
+        label: 'AP Group',
+        actions: [{
+          key: 'edit',
+          label: <Button>Edit</Button>
+        }],
+        parentColumns: [
+          {
+            key: 'AP Group',
+            renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+          },
+          {
+            key: 'members',
+            renderer: (record) => <div>Members: {record.members}</div>
+          },
+          {
+            key: 'incidents',
+            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          },
+          {
+            key: 'clients',
+            renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          },
+          {
+            key: 'networks',
+            renderer: (record) => <div>
+                Wireless Networks: {record.networks ? record.networks.count : 0}
+            </div>
+          }
+        ]
+      }
       //TODO: Click-> Filter by AP group
     }, {
       key: 'rf-channels',
@@ -317,7 +436,7 @@ export function ApTable (props: ApTableProps) {
         )
       }
     }] as TableProps<APExtended>['columns']
-  }, [$t, tableQuery.data?.extra])
+  }, [$t, tableQuery?.data?.extra])
 
   const isActionVisible = (
     selectedRows: APExtended[],
@@ -377,6 +496,7 @@ export function ApTable (props: ApTableProps) {
   },[importResult])
 
   const basePath = useTenantLink('/devices')
+
   return (
     <Loader states={[tableQuery]}>
       <Table<APExtended>
@@ -384,11 +504,17 @@ export function ApTable (props: ApTableProps) {
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        pagination={tableQuery?.pagination}
+        onChange={tableQuery?.handleTableChange}
+        onFilterChange={tableQuery?.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
+        groupByTableActions={{
+          onChange: (key : 'deviceStatus' | 'model' | 'deviceGroupName' | null) => setGroupBySelection(key),
+          onClear: () => {
+            setGroupBySelection(null)
+          }
+        }}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {

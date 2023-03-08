@@ -85,6 +85,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/:tenantId/aps',
     newApi: true
   },
+  getApGroupsListByGroup: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/aps/grouped'
+  },
   getApGroupList: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
