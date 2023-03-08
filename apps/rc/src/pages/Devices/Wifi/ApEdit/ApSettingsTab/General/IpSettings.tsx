@@ -67,14 +67,25 @@ export function IpSettings () {
       setDynamicDns2(secondaryDnsServer || '')
 
       let ipSettings = getApIpSettings.data
-      if (!ipSettings) {
-        ipSettings = {
-          ipType: (ipType === 'static')? IpTypeEnum.STATIC : IpTypeEnum.DYNAMIC,
-          ip: currentAP.IP || '',
-          netmask: netmask || '',
-          gateway: gateway || '',
-          primaryDnsServer: primaryDnsServer || '',
-          secondaryDnsServer: secondaryDnsServer || ''
+      if (!ipSettings) { // Do not config yet, use viewmodel data
+        if (ipType === 'static') {
+          ipSettings = {
+            ipType: IpTypeEnum.STATIC,
+            ip: currentAP.IP || '',
+            netmask: netmask || '',
+            gateway: gateway || '',
+            primaryDnsServer: primaryDnsServer || '',
+            secondaryDnsServer: secondaryDnsServer || ''
+          }
+        } else {
+          ipSettings = {
+            ipType: IpTypeEnum.DYNAMIC,
+            ip: '',
+            netmask: '',
+            gateway: '',
+            primaryDnsServer: '',
+            secondaryDnsServer: ''
+          }
         }
       }
       setCurrentIpType(ipSettings.ipType || IpTypeEnum.DYNAMIC)
@@ -95,6 +106,10 @@ export function IpSettings () {
 
       const payload = {
         ...values
+      }
+
+      if (payload?.secondaryDnsServer?.trim() === '') {
+        delete payload.secondaryDnsServer
       }
 
       await updateApIpSettings({

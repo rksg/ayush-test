@@ -122,7 +122,7 @@ export async function loadImageWithJWT (imageId: string) {
   if (result) {
     gImgUrl = result.signedUrl
   } else {
-    throw new Error(`Error! status: ${result.status}`)
+    throw new Error(`Error! status: ${result}`)
   }
   return gImgUrl
 }
