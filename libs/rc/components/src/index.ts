@@ -16,6 +16,7 @@ export type { EdgesTableQueryProps } from './EdgesTable'
 export { SpaceWrapper } from './SpaceWrapper/index'
 export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
+export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
   useEventTableFilter,
