@@ -1,5 +1,5 @@
-import { TenantIdFromJwt } from './apiService'
-import { getTenantId }     from './getTenantId'
+import { isDelegationMode } from './apiService'
+import { getTenantId }      from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
@@ -109,7 +109,7 @@ export async function loadImageWithJWT (imageId: string) {
   const headers = {
     mode: 'no-cors',
     ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {}),
-    ...((getTenantId() !== TenantIdFromJwt()) ? { 'x-rks-tenantid': getTenantId() } : {})
+    ...(isDelegationMode() ? { 'x-rks-tenantid': getTenantId() } : {})
   }
   const url = `/files/${imageId}/urls`
   const result = await fetch(url, { headers }).then(function (response) {

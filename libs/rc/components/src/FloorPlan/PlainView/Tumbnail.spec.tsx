@@ -53,6 +53,8 @@ const networkDevices: {
   }
 }
 
+const networkDeviceType: NetworkDeviceType[] = []
+
 const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
   // eslint-disable-next-line max-len
   signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
@@ -63,9 +65,18 @@ const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
 }
 }
 
-const networkDeviceType: NetworkDeviceType[] = []
-
 describe('Floor Plan Thumbnail Image', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
+  })
 
   beforeEach(() => {
     mockServer.use(

@@ -5,7 +5,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, mockServer, render, screen }                                                         from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 
@@ -162,6 +162,18 @@ describe('Floor Plan Gallery View', () => {
         networkDevices={networkDevices}
         networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>
     </NetworkDeviceContext.Provider>)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
 
@@ -190,6 +202,18 @@ describe('Floor Plan Gallery View', () => {
       onFloorPlanClick={onFloorPlanClick}
       networkDevices={networkDevices}
       networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
 
     const images = screen.getAllByTestId('fpImage')
     fireEvent.click(images[1])
