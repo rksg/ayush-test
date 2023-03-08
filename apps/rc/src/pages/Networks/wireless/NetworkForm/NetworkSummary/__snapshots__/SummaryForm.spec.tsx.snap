@@ -156,9 +156,9 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
             >
               <label
                 class=""
-                title="Use Cloudpath Server:"
+                title="Use AAA Server:"
               >
-                Use Cloudpath Server
+                Use AAA Server
               </label>
             </div>
             <div
@@ -426,9 +426,9 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
             >
               <label
                 class=""
-                title="Use Cloudpath Server:"
+                title="Use AAA Server:"
               >
-                Use Cloudpath Server
+                Use AAA Server
               </label>
             </div>
             <div

@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
-import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
-import {
-  useAnalyticsFilter
-} from '@acx-ui/analytics/utils'
+
+import { TrafficByBand, TrafficByUsage }       from '@acx-ui/analytics/components'
+import { defaultNetworkPath }                  from '@acx-ui/analytics/utils'
 import { GridCol, GridRow }                    from '@acx-ui/components'
 import {
-  useLazyGetApCapabilitiesQuery,
   useLazyGetApQuery,
+  useLazyGetApCapabilitiesQuery,
   useLazyGetClientDetailsQuery,
   useLazyGetHistoricalClientListQuery,
   useLazyGetHistoricalStatisticsReportsQuery
@@ -22,6 +21,7 @@ import {
   useParams,
   useSearchParams
 } from '@acx-ui/react-router-dom'
+import { useDateFilter } from '@acx-ui/utils'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
 import { ClientProperties }     from './ClientProperties'
@@ -51,7 +51,11 @@ const historicalPayload = {
 }
 
 export function ClientOverviewTab () {
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
+  const filters = useMemo(() => ({
+    path: defaultNetworkPath,
+    ...dateFilter
+  }), [dateFilter])
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
 
@@ -65,7 +69,7 @@ export function ClientOverviewTab () {
     = useState(searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED)
   const [clientDetails, setClientDetails] = useState({} as Client)
   const [clientStatistics, setClientStatistics] = useState({} as ClientStatistic)
-  const [isTribandAp, setIsTribandAp] = useState(null as unknown as boolean)
+  const [isTribandAp, setIsTribandAp] = useState(false)
 
   useEffect(() => {
     const getClientData = async () => {
@@ -132,10 +136,7 @@ export function ClientOverviewTab () {
         console.log(error) // eslint-disable-line no-console
       }
     }
-
-    if (isTribandAp !== null) {
-      getClientData()
-    }
+    getClientData()
   }, [filters, isTribandAp])
   // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
   return <GridRow>
