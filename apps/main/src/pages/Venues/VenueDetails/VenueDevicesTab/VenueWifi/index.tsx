@@ -244,7 +244,7 @@ export function VenueWifi () {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      filters: { isDefault: [false], venueId: params.venueId }
+      filters: { isDefault: [false], venueId: [params.venueId] }
     }
   }, {
     selectFromResult: ({ data }) => ({

@@ -85,7 +85,8 @@ export const NotificationsTable = () => {
       title: $t({ defaultMessage: 'Recipient Name' }),
       key: 'description',
       dataIndex: 'description',
-      defaultSortOrder: 'ascend'
+      defaultSortOrder: 'ascend',
+      width: 600
     },
     {
       title: $t({ defaultMessage: 'Email Address' }),
