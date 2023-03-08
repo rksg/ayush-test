@@ -83,8 +83,11 @@ export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkV
         if (editedApGroup.vlanPoolName) {
           ret.vlanPoolId = editedApGroup.vlanPoolId
           ret.vlanPoolName = editedApGroup.vlanPoolName
+          delete ret.vlanId
         } else {
           ret.vlanId = editedApGroup.vlanId
+          delete ret.vlanPoolName
+          delete ret.vlanPoolId
         }
 
         if (keepApGroupBasicData) { //For Networkform > Venues page

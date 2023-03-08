@@ -32,14 +32,21 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
 
+  const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
-  const apGroupVlanPool = apgroup?.vlanPoolId ? {
-    name: apgroup.vlanPoolName || '',
-    id: apgroup.vlanPoolId || '',
-    vlanMembers: []
-  } : wlan?.advancedCustomization?.vlanPool
-
-  const apGroupVlanType = apGroupVlanPool ? VlanType.Pool : VlanType.VLAN
+  const apGroupVlanPool = apGroupVlanType === VlanType.Pool
+    ? apgroup.vlanPoolName
+      ? {
+        name: apgroup.vlanPoolName || '',
+        id: apgroup.vlanPoolId || '',
+        vlanMembers: []
+      }
+      : wlan?.advancedCustomization?.vlanPool
+    : {
+      name: '',
+      id: '',
+      vlanMembers: []
+    }
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
@@ -63,7 +70,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
     const compareKeys = ['vlanString', 'vlanType']
     const selected = getVlanString(selectedVlan.vlanPool, selectedVlan.vlanId)
     const label = getVlanString(
-      selectedVlan.vlanPool,
+      selectedVlan.vlanType === VlanType.Pool ? selectedVlan.vlanPool : null,
       selectedVlan.vlanId,
       _.isEqual(
         _.pick(selected, compareKeys),
@@ -132,6 +139,7 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
     onChange(initVlanData)
   }
 
+  const isPoolType = editingVlan.vlanType === VlanType.Pool
   return (
     <Space size='small'>
       { isEditMode ? (
@@ -145,6 +153,10 @@ export function VlanInput ({ apgroup, wlan, onChange }: { apgroup: NetworkApGrou
           ) : (
             <Select labelInValue
               onChange={handleVlanPoolChange}
+              value={{
+                value: isPoolType ? editingVlan.vlanPool?.id || '' : '',
+                label: isPoolType ? editingVlan.vlanPool?.name || '' : ''
+              }}
               fieldNames={{ label: 'name', value: 'id' }}
               // value={editingVlan.vlanPool}
               placeholder={$t({ defaultMessage: 'Select profile...' })}
