@@ -83,6 +83,7 @@ export default function SnmpAgentTable () {
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={rowActions}
           rowSelection={{ type: 'radio' }}
@@ -100,6 +101,7 @@ function useColumns () {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {

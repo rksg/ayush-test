@@ -4,54 +4,80 @@ import { ApiInfo } from '../../apiService'
 export const ApSnmpUrls: { [key: string]: ApiInfo } = {
   deleteApSnmpProfile: {
     method: 'delete',
-    url: '/api//apSnmpAgentProfiles/:policyId'
+    url: '/apSnmpAgentProfiles/:policyId',
+    oldUrl: '/api/apSnmpAgentProfiles/:policyId',
+    newApi: true
   },
   deleteApSnmpPolicies: {
     method: 'delete',
-    url: '/api/apSnmpAgentProfiles'
+    url: '/apSnmpAgentProfiles',
+    oldUrl: '/api/apSnmpAgentProfiles',
+    newApi: true
   },
   addApSnmpPolicy: {
     method: 'post',
-    url: '/api/apSnmpAgentProfiles'
+    url: '/apSnmpAgentProfiles',
+    oldUrl: '/api/apSnmpAgentProfiles',
+    newApi: true
   },
   getApUsageByApSnmpProfile: { // detail
     method: 'post',
-    url: '/api/apSnmpAgentProfiles/:policyId/aps/query'
+    url: '/apSnmpAgentProfiles/:policyId/aps/query',
+    oldUrl: '/api/apSnmpAgentProfiles/:policyId/aps/query',
+    newApi: true
   },
   getApSnmpPolicy: {
     method: 'get',
-    url: '/api/apSnmpAgentProfiles/:policyId'
+    url: '/apSnmpAgentProfiles/:policyId',
+    oldUrl: '/api/apSnmpAgentProfiles/:policyId',
+    newApi: true
   },
   updateApSnmpPolicy: {
     method: 'put',
-    url: '/api/apSnmpAgentProfiles/:policyId'
+    url: '/apSnmpAgentProfiles/:policyId',
+    oldUrl: '/api/apSnmpAgentProfiles/:policyId',
+    newApi: true
   },
   getApSnmpPolicyList: { // scop form
     method: 'get',
-    url: '/api/apSnmpAgentProfiles'
+    url: '/apSnmpAgentProfiles',
+    oldUrl: '/api/apSnmpAgentProfiles',
+    newApi: true
   },
   getVenueApSnmpSettings: { //venue instances
     method: 'get',
-    url: '/api/venues/:venueId/snmpAgentSettings'
+    url: '/venues/:venueId/snmpAgentSettings',
+    oldUrl: '/api/venues/:venueId/snmpAgentSettings',
+    newApi: true
   },
   updateVenueApSnmpSettings: { //venue instances
     method: 'put',
-    url: '/api/venues/:venueId/snmpAgentSettings'
+    url: '/venues/:venueId/snmpAgentSettings',
+    oldUrl: '/api/venues/:venueId/snmpAgentSettings',
+    newApi: true
   },
   getApSnmpSettings: { //ap instances
     method: 'get',
-    url: '/api/venues/aps/:serialNumber/snmpAgentSettings'
+    url: '/venues/aps/:serialNumber/snmpAgentSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/snmpAgentSettings',
+    newApi: true
   },
   updateApSnmpSettings: { //ap instances
     method: 'put',
-    url: '/api/venues/aps/:serialNumber/snmpAgentSettings'
+    url: '/venues/aps/:serialNumber/snmpAgentSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/snmpAgentSettings',
+    newApi: true
   },
   resetApSnmpSettings: { //ap instances - use venue setting
     method: 'delete',
-    url: '/api/venues/aps/:serialNumber/snmpAgentSettings'
+    url: '/venues/aps/:serialNumber/snmpAgentSettings',
+    oldUrl: '/api/venues/aps/:serialNumber/snmpAgentSettings',
+    newApi: true
   },
   getApSnmpFromViewModel: {
     method: 'post',
-    url: '/api/snmpAgents'
+    url: '/snmpAgents/query',
+    oldUrl: '/api/snmpAgents/query',
+    newApi: true
   }
 }

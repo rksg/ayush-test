@@ -896,7 +896,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApSnmpPolicyList: build.query<ApSnmpProfile[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params)
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -915,7 +915,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApSnmpPolicy: build.query<ApSnmpProfile, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicy, params)
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -924,7 +924,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addApSnmpPolicy: build.mutation<ApSnmpProfile, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params)
+        const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -934,7 +934,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateApSnmpPolicy: build.mutation<ApSnmpProfile, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.updateApSnmpPolicy, params)
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -944,7 +944,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params)
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -953,7 +953,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteApSnmpPolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params)
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -962,7 +962,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpProfile, params)
+        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpProfile, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -972,7 +972,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApSnmpFromViewModel, params)
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpFromViewModel, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -995,7 +995,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVenueApSnmpSettings: build.query<VenueApSnmpSettings, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getVenueApSnmpSettings, params)
+        const req = createHttpRequest(ApSnmpUrls.getVenueApSnmpSettings, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -1004,7 +1004,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateVenueApSnmpSettings: build.mutation<VenueApSnmpSettings, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.updateVenueApSnmpSettings, params)
+        const req = createHttpRequest(ApSnmpUrls.updateVenueApSnmpSettings, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -1014,7 +1014,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getApSnmpSettings: build.query<ApSnmpSettings, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getVenueApSnmpSettings, params)
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpSettings, params, RKS_NEW_UI)
         return {
           ...req
         }
@@ -1023,7 +1023,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.updateApSnmpSettings, params)
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpSettings, params, RKS_NEW_UI)
         return {
           ...req,
           body: payload
@@ -1033,7 +1033,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params)
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
         return {
           ...req
         }
