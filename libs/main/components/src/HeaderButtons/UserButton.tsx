@@ -2,8 +2,8 @@ import { Menu, Dropdown } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { get }                     from '@acx-ui/config'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
 import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { useUserProfileContext }   from '@acx-ui/user'
 
 import { UserNameButton, LogOut } from './styledComponents'
 
@@ -27,8 +27,9 @@ const UserButton = () => {
             window.open(changePasswordUrl, '_blank')
             break
           case 'logout':
+            const token = sessionStorage.getItem('jwt')?? null
             sessionStorage.removeItem('jwt')
-            window.location.href = '/logout'
+            window.location.href = token? `/logout?token=${token}` : '/logout'
             break
         }
       }}

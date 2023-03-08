@@ -5,15 +5,15 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
-import { showToast }                           from '@acx-ui/components'
-import { SpaceWrapper, useUserProfileContext } from '@acx-ui/rc/components'
+import { SpaceWrapper }         from '@acx-ui/rc/components'
 import {
   useEnableAccessSupportMutation,
   useDisableAccessSupportMutation,
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 } from '@acx-ui/rc/services'
-import { formatter } from '@acx-ui/utils'
+import { useUserProfileContext } from '@acx-ui/user'
+import { formatter }             from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -78,11 +78,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
 
     try {
       await triggerAction({ params }).unwrap()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

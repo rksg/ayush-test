@@ -56,28 +56,30 @@ export interface TableProps <RecordType>
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string,
-      disabled?: boolean,
-      tooltip?: string,
-      onClick?: () => void,
+      key?: string
+      label: string
+      disabled?: boolean
+      tooltip?: string
+      onClick?: () => void
       dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
-      label: string,
-      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
-      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined),
-      visible?: boolean | ((selectedItems: RecordType[]) => boolean),
+      key?: string
+      label: string
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
+      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
-      & {
-      alwaysShowAlert?: boolean;
-    })
+      & { alwaysShowAlert?: boolean }
+    )
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean
+    enableApiFilter?: boolean,
+    floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
@@ -349,21 +351,15 @@ function Table <RecordType extends Record<string, any>> ({
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => {
+        const props: ButtonProps & { key: React.Key } = {
+          key: action.key ?? `action-${index}`,
+          type: 'link',
+          size: 'small',
+          children: action.label
+        }
         const content = !action.disabled
-          ? <Button
-            key={index}
-            type='link'
-            size='small'
-            onClick={action.dropdownMenu ? undefined : action.onClick}
-            children={action.label}
-          />
-          : <DisabledButton
-            key={index}
-            type='link'
-            size='small'
-            title={action.tooltip || ''}
-            children={action.label}
-          />
+          ? <Button {...props} onClick={action.dropdownMenu ? undefined : action.onClick} />
+          : <DisabledButton {...props} title={action.tooltip || ''} />
         return action.dropdownMenu
           ? <Dropdown
             key={`dropdown-${index}`}
@@ -375,7 +371,7 @@ function Table <RecordType extends Record<string, any>> ({
       })}
     </Space>}
     {hasHeader && (
-      <UI.Header>
+      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
@@ -391,10 +387,12 @@ function Table <RecordType extends Record<string, any>> ({
           {(
             Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
-          ) && <Button onClick={() => {
-            setFilterValues({} as Filter)
-            setSearchValue('')
-          }}>
+          ) && <Button
+            style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+            onClick={() => {
+              setFilterValues({} as Filter)
+              setSearchValue('')
+            }}>
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
@@ -460,7 +458,7 @@ function Table <RecordType extends Record<string, any>> ({
               const buttonProps: ButtonProps & { key: React.Key } = {
                 type: 'link',
                 size: 'small',
-                key: option.label
+                key: option.key ?? option.label
               }
 
               if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>

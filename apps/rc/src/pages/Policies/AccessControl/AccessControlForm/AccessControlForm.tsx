@@ -4,7 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -149,11 +149,8 @@ const AccessControlForm = (props: AccessControlFormProps) => {
       }
 
       navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

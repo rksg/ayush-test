@@ -1,15 +1,14 @@
 import { useRef, useReducer } from 'react'
 
-import { FormattedList, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   PolicyType,
   PolicyOperation,
   getPolicyListRoutePath,
@@ -42,10 +41,10 @@ const SyslogForm = (props: SyslogFormProps) => {
 
   const policyName = ''
   const server = ''
-  const port = ''
+  const port = 514
   const protocol = ProtocolEnum.UDP
   const secondaryServer = ''
-  const secondaryPort = ''
+  const secondaryPort = 514
   const secondaryProtocol = ProtocolEnum.TCP
   const facility = FacilityEnum.KEEP_ORIGINAL
   const priority = PriorityEnum.INFO
@@ -72,6 +71,21 @@ const SyslogForm = (props: SyslogFormProps) => {
   const [ updateSyslog ] = useUpdateSyslogPolicyMutation()
 
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
+    if (!(state.secondaryServer && state.secondaryPort)) {
+      return {
+        id: edit ? params.policyId : '',
+        name: state.policyName,
+        primary: {
+          server: state.server,
+          port: state.port,
+          protocol: state.protocol
+        },
+        facility: state.facility,
+        flowLevel: state.flowLevel,
+        venues: state.venues
+      }
+    }
+
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
@@ -86,7 +100,8 @@ const SyslogForm = (props: SyslogFormProps) => {
         protocol: state.secondaryProtocol
       },
       facility: state.facility,
-      flowLevel: state.flowLevel
+      flowLevel: state.flowLevel,
+      venues: state.venues
     }
   }
 
@@ -104,15 +119,8 @@ const SyslogForm = (props: SyslogFormProps) => {
         }).unwrap()
       }
       navigate(linkToPolicies, { replace: true })
-    } catch(error) {
-      const errorResponse = error as CatchErrorResponse
-      showToast({
-        type: 'error',
-        content: (<div>
-          <p style={{ textAlign: 'left' }}>{$t({ defaultMessage: 'An error occurred' })}</p>
-          <FormattedList value={errorResponse.data.errors.map(error => error.message)} />
-        </div>)
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

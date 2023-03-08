@@ -165,11 +165,6 @@ describe('SwitchClientsTable', () => {
     const searchInput = await screen.findByRole('textbox')
     fireEvent.change(searchInput, { target: { value: '34:' } })
     await screen.findByText('34:20:E3:2C:B5:B0')
-
-    const infoIcon = await screen.findByTestId('QuestionMarkCircleOutlined')
-    infoIcon.focus()
-    await userEvent.hover(infoIcon)
-    await userEvent.click(infoIcon)
   })
 
   it('should render switch client table correctly', async () => {
@@ -181,7 +176,7 @@ describe('SwitchClientsTable', () => {
 
     render(
       <Provider>
-        <ClientsTable searchString='' />
+        <ClientsTable searchable={true} />
       </Provider>,
       {
         route: {

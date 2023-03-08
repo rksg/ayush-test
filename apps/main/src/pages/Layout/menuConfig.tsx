@@ -20,6 +20,8 @@ import {
   NetworksSolid,
   PoliciesOutlined,
   PoliciesSolid as PoliciesSolidBase,
+  DataStudioOutlined,
+  DataStudioSolid,
   ReportsOutlined,
   ReportsSolid,
   ServicesOutlined,
@@ -30,6 +32,8 @@ import {
   ServiceValidationOutlined
 } from '@acx-ui/icons'
 import { getServiceCatalogRoutePath, getServiceListRoutePath } from '@acx-ui/rc/utils'
+import { RolesEnum }                                           from '@acx-ui/types'
+import { hasRoles }                                            from '@acx-ui/user'
 
 const AIOutlined = styled(AIOutlinedBase)`${LayoutUI.iconOutlinedOverride}`
 const AISolid = styled(AISolidBase)`${LayoutUI.iconOutlinedOverride}`
@@ -42,6 +46,8 @@ export function useMenuConfig () {
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
   const isEdgeEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -50,7 +56,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    {
+    ...(isAdmin ? [{
       path: '/analytics',
       name: $t({ defaultMessage: 'AI Analytics' }),
       inactiveIcon: AIOutlined,
@@ -75,14 +81,14 @@ export function useMenuConfig () {
         //   name: $t({ defaultMessage: 'Config Change' })
         // }
       ]
-    },
+    }] : []),
     {
       path: '/timeline',
       name: $t({ defaultMessage: 'Timeline' }),
       inactiveIcon: CalendarDateOutlined,
       activeIcon: CalendarDateSolid
     },
-    ...(useIsTierAllowed('ANLT-ADV') ? [{
+    ...(useIsTierAllowed('ANLT-ADV') && isAdmin ? [{
       path: '/serviceValidation',
       name: $t({ defaultMessage: 'Service Validation' }),
       inactiveIcon: ServiceValidationOutlined,
@@ -95,51 +101,6 @@ export function useMenuConfig () {
       ],
       disabled: !showSV
     }] : []),
-    {
-      path: '/reports',
-      name: $t({ defaultMessage: 'Reports' }),
-      inactiveIcon: ReportsOutlined,
-      activeIcon: ReportsSolid,
-      disabled: false,
-      routes: [
-        {
-          path: '/reports/overview',
-          name: $t({ defaultMessage: 'Overview' })
-        },
-        {
-          path: '/reports/wireless',
-          name: $t({ defaultMessage: 'Wireless' })
-        },
-        {
-          path: '/reports/wired',
-          name: $t({ defaultMessage: 'Wired' })
-        },
-        {
-          path: '/reports/aps',
-          name: $t({ defaultMessage: 'APs' })
-        },
-        {
-          path: '/reports/switches',
-          name: $t({ defaultMessage: 'Switches' })
-        },
-        {
-          path: '/reports/wlans',
-          name: $t({ defaultMessage: 'WLANs' })
-        },
-        {
-          path: '/reports/clients',
-          name: $t({ defaultMessage: 'Wireless Clients' })
-        },
-        {
-          path: '/reports/applications',
-          name: $t({ defaultMessage: 'Applications' })
-        },
-        {
-          path: '/reports/airtime',
-          name: $t({ defaultMessage: 'Airtime Utilization' })
-        }
-      ]
-    },
     genPlaceholder(),
     {
       path: '/venues',
@@ -181,8 +142,7 @@ export function useMenuConfig () {
         },
         {
           path: '/networks/wired/profiles',
-          name: $t({ defaultMessage: 'Wired Networks' }),
-          disabled: !useIsSplitOn(Features.UNRELEASED)
+          name: $t({ defaultMessage: 'Wired Networks' })
         }
       ]
     },
@@ -234,6 +194,58 @@ export function useMenuConfig () {
     },
     genPlaceholder(),
     {
+      path: '/dataStudio',
+      name: $t({ defaultMessage: 'Data Studio' }),
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    },
+    {
+      path: '/reports',
+      name: $t({ defaultMessage: 'Reports' }),
+      inactiveIcon: ReportsOutlined,
+      activeIcon: ReportsSolid,
+      disabled: false,
+      routes: [
+        {
+          path: '/reports/overview',
+          name: $t({ defaultMessage: 'Overview' })
+        },
+        {
+          path: '/reports/wireless',
+          name: $t({ defaultMessage: 'Wireless' })
+        },
+        {
+          path: '/reports/wired',
+          name: $t({ defaultMessage: 'Wired' })
+        },
+        {
+          path: '/reports/aps',
+          name: $t({ defaultMessage: 'APs' })
+        },
+        {
+          path: '/reports/switches',
+          name: $t({ defaultMessage: 'Switches' })
+        },
+        {
+          path: '/reports/wlans',
+          name: $t({ defaultMessage: 'WLANs' })
+        },
+        {
+          path: '/reports/clients',
+          name: $t({ defaultMessage: 'Wireless Clients' })
+        },
+        {
+          path: '/reports/applications',
+          name: $t({ defaultMessage: 'Applications' })
+        },
+        {
+          path: '/reports/airtime',
+          name: $t({ defaultMessage: 'Airtime Utilization' })
+        }
+      ]
+    },
+    genPlaceholder(),
+    {
       path: '/administration',
       name: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
@@ -241,5 +253,8 @@ export function useMenuConfig () {
       disabled: !isAdministrationEnabled
     }
   ]
+  if (isGuestManager) {
+    return []
+  }
   return config
 }

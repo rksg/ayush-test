@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { List, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { Table, TableProps, Loader, Tooltip }     from '@acx-ui/components'
-import { LineChartOutline, ListSolid, MeshSolid } from '@acx-ui/icons'
-import { ApTable }                                from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useMeshApsQuery }  from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip }                              from '@acx-ui/components'
+import { LineChartOutline, ListSolid, MeshSolid }                          from '@acx-ui/icons'
+import { ApTable }                                                         from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -233,7 +233,10 @@ function transformData (data: APMesh[]) {
 export function VenueWifi () {
   const params = useParams()
 
-  const [ showIdx, setShowIdx ] = useState(1)
+  const [ showIdx, setShowIdx ] = useState(0)
+  const [ enabledMesh, setEnabledMesh ] = useState(false)
+
+  const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
 
   const { apgroupFilterOptions } = useApGroupsListQuery({
     params: { tenantId: params.tenantId }, payload: {
@@ -241,13 +244,19 @@ export function VenueWifi () {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      filters: { isDefault: [false], venueId: params.venueId }
+      filters: { isDefault: [false], venueId: [params.venueId] }
     }
   }, {
     selectFromResult: ({ data }) => ({
       apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
     })
   })
+
+  useEffect(() => {
+    if (venueWifiSetting) {
+      setEnabledMesh(!!venueWifiSetting?.mesh?.enabled)
+    }
+  }, [venueWifiSetting])
 
   const VenueMeshApsTable = () => {
     const tableQuery = useTableQuery({
@@ -270,8 +279,6 @@ export function VenueWifi () {
     )
   }
 
-
-
   return (
     <>
       <IconRadioGroup value={showIdx}
@@ -280,7 +287,10 @@ export function VenueWifi () {
         onChange={e => setShowIdx(e.target.value)}>
         <Radio.Button value={0}><LineChartOutline /></Radio.Button>
         <Radio.Button value={1}><ListSolid /></Radio.Button>
-        <Radio.Button value={2}><MeshSolid /></Radio.Button>
+        {
+          enabledMesh &&
+          <Radio.Button value={2}><MeshSolid /></Radio.Button>
+        }
       </IconRadioGroup>
       { showIdx === 0 &&
         <div style={{ paddingTop: 20 }}>

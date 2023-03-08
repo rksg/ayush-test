@@ -12,6 +12,7 @@ import {
   ServiceOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -80,21 +81,18 @@ export default function NetworkSegAuthDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
-        extra={[
-          <Button key='preview' disabled>
+        extra={filterByAccess([
+          <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.WEBAUTH_SWITCH,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId as string
-            })}
-            key='edit'
-          >
+          <TenantLink to={getServiceDetailsLink({
+            type: ServiceType.WEBAUTH_SWITCH,
+            oper: ServiceOperation.EDIT,
+            serviceId: params.serviceId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Card title={$t({ defaultMessage: 'Attributes' })}>
         <NetworkSegAuthSummary data={data} />

@@ -45,6 +45,13 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const [disableSave, setDisableSave] = useState(false)
 
   useEffect(() => {
+    if (availableVersions && availableVersions[0]) {
+      let firstIndex = availableVersions.findIndex(isRecommanded)
+      setSelectedVersion(availableVersions[firstIndex].name)
+    }
+  }, [availableVersions])
+
+  useEffect(() => {
     if (selectMode === VersionsSelectMode.Dropdown && !selectedVersion) {
       setDisableSave(true)
     } else {

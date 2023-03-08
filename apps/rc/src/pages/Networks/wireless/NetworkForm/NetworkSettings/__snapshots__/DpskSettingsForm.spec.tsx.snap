@@ -23,7 +23,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
           >
             <div>
               <h3
-                class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
               >
                 DPSK Settings
               </h3>
@@ -185,7 +185,7 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                                   />
                                 </span>
                                 <span>
-                                  Use Cloudpath Server
+                                  Use AAA Server
                                 </span>
                               </label>
                             </div>

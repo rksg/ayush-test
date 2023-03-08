@@ -1,17 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { Menu }    from 'antd'
-import { useIntl } from 'react-intl'
-
 import {
   Layout as LayoutComponent,
-  LayoutUI,
-  Dropdown
+  LayoutUI
 } from '@acx-ui/components'
-import {
-  WorldSolid,
-  ArrowExpand
-} from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -19,22 +11,20 @@ import {
   HelpButton,
   UserButton,
   LicenseBanner,
-  HeaderContext
+  HeaderContext,
+  RegionButton
 } from '@acx-ui/main/components'
-import {
-  CloudMessageBanner,
-  useUserProfileContext
-} from '@acx-ui/rc/components'
+import { CloudMessageBanner } from '@acx-ui/rc/components'
 import {
   useGetTenantDetailQuery
 } from '@acx-ui/rc/services'
-import { Outlet, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Outlet, useParams }     from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import { useMenuConfig }     from './menuConfig'
 import { LeftHeaderWrapper } from './styledComponents'
 
 function Layout () {
-  const { $t } = useIntl()
   const { tenantId } = useParams()
   const [tenantType, setTenantType] = useState('')
   const [supportStatus,setSupportStatus] = useState('')
@@ -54,16 +44,6 @@ function Layout () {
     }
   }, [data, userProfile])
 
-
-  const regionMenu = <Menu
-    selectable
-    defaultSelectedKeys={['US']}
-    items={[
-      { key: 'US', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'US' })}</TenantLink> },
-      { key: 'EU', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'EU' })}</TenantLink> },
-      { key: 'Asia', label: <TenantLink to='TODO'>{$t({ defaultMessage: 'ASIA' })}</TenantLink> }
-    ]}
-  />
   return (
     <LayoutComponent
       menuConfig={useMenuConfig(tenantType)}
@@ -74,13 +54,7 @@ function Layout () {
         </>
       }
       leftHeaderContent={<LeftHeaderWrapper>
-        <Dropdown overlay={regionMenu}>{(selectedKeys) =>
-          <LayoutUI.DropdownText>
-            <LayoutUI.Icon children={<WorldSolid />} />
-            {selectedKeys}
-            <LayoutUI.Icon children={<ArrowExpand />} />
-          </LayoutUI.DropdownText>
-        }</Dropdown>
+        <RegionButton/>
         <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
           <LicenseBanner isMSPUser={true}/>
         </HeaderContext.Provider>

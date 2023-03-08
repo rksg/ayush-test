@@ -1,11 +1,11 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdateAAASettingMutation }                           from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { useUpdateAAASettingMutation }                from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
 
 
 import { AAAServers }  from './AAAServers'
@@ -17,6 +17,7 @@ export function SwitchAAATab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
+  const [aaaSettingId, setAAASettingId] = useState<string>('')
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
@@ -74,14 +75,11 @@ export function SwitchAAATab () {
     }
 
     await updateAAASettingMutation({
-      params: { tenantId, venueId },
+      params: { tenantId, venueId, aaaSettingId },
       payload: _.pickBy(payload, v => v !== undefined)
     }).unwrap()
       .catch((error) => {
-        showToast({
-          type: 'error',
-          content: _.map(error.data.errors, 'message').join()
-        })
+        console.log(error) // eslint-disable-line no-console
       })
   }
 
@@ -104,7 +102,7 @@ export function SwitchAAATab () {
           { settingsTitle }
         </StepsForm.SectionTitle>
         <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ flex: '150px' }}>
-          <AAASettings />
+          <AAASettings setAAASettingId={setAAASettingId} />
         </StepsForm.StepForm>
       </>
     )
