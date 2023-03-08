@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import {
+  useGetEnhancedAccessControlProfileListQuery,
   usePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -41,6 +42,11 @@ const defaultPayload = {
     'scope',
     'cog'
   ]
+}
+
+const defaultAccessControlPayload = {
+  searchString: '',
+  fields: ['id']
 }
 
 export default function MyPolicies () {
@@ -103,8 +109,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.ACCESS_CONTROL,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.ACCESS_CONTROL] } }
+      totalCount: useGetEnhancedAccessControlProfileListQuery({
+        params, payload: { ...defaultAccessControlPayload }
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))

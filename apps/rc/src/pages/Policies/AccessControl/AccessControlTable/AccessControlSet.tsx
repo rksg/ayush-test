@@ -42,8 +42,7 @@ const defaultPayload = {
     'clientRateDownLinkLimit',
     'networkIds'
   ],
-  page: 1,
-  pageSize: 25
+  page: 1
 }
 
 const AccessControlSet = () => {

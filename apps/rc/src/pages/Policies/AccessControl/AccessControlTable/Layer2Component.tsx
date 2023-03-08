@@ -26,8 +26,7 @@ const defaultPayload = {
     'macAddress',
     'networkIds'
   ],
-  page: 1,
-  pageSize: 25
+  page: 1
 }
 
 const Layer2Component = () => {
