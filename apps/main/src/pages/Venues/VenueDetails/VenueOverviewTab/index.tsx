@@ -18,7 +18,8 @@ import {
 } from '@acx-ui/analytics/components'
 import {
   AnalyticsFilter,
-  useAnalyticsFilter } from '@acx-ui/analytics/utils'
+  defaultNetworkPath
+} from '@acx-ui/analytics/utils'
 import {
   GridRow,
   GridCol,
@@ -30,13 +31,17 @@ import {
   VenueAlarmWidget,
   VenueDevicesWidget
 } from '@acx-ui/rc/components'
-import { generateVenueFilter } from '@acx-ui/utils'
+import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
-  const venueFilter = { ...filters, filter: generateVenueFilter([venueId as string]) }
+  const venueFilter = {
+    ...dateFilter,
+    path: defaultNetworkPath,
+    filter: generateVenueFilter([venueId as string])
+  }
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
