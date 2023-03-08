@@ -172,14 +172,6 @@ const ActivityTable = ({
       value: data.admin.name
     },
     {
-      title: defineMessage({ defaultMessage: 'Admin IP' }),
-      value: data.admin.ip
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin Interface' }),
-      value: data.admin.interface
-    },
-    {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getActivityDescription(data.descriptionTemplate, data.descriptionData)
     }
