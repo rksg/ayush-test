@@ -208,8 +208,8 @@ export function useTableQuery <
     } as SORTER
 
     const paginationDetail = {
-      page: customPagination.current,
-      pageSize: customPagination.pageSize
+      page: customPagination.current ?? payload.page,
+      pageSize: customPagination.pageSize ?? payload.pageSize
     } as PAGINATION
 
     const tableProps = { ...sorterDetail, ...paginationDetail }
