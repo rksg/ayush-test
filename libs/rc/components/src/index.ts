@@ -1,4 +1,10 @@
-export { ActivityTable } from './ActivityTable'
+export {
+  ActivityTable,
+  useActivityTableFilter,
+  defaultSorter as activityDefaultSorter,
+  defaultPayload as activityDefaultPayload,
+  columnState
+} from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
