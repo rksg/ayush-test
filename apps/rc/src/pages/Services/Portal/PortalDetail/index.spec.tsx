@@ -163,7 +163,8 @@ const detailChangeResult = {
 
       { cs: true, zh_TW: false, fi: true,
         fr: true, de: true, el: true, hu: true, it: false }
-  }
+  },
+  networkIds: [1, 2]
 }
 
 
