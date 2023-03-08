@@ -9,6 +9,7 @@ import { PersonaGroupSelect }                                      from '@acx-ui
 import {
   useGetPropertyConfigsQuery,
   useGetResidentPortalListQuery,
+  useGetVenueQuery,
   usePatchPropertyConfigsMutation,
   useUpdatePropertyConfigsMutation
 } from '@acx-ui/rc/services'
@@ -39,11 +40,13 @@ const defaultPropertyConfigs: PropertyConfigs = {
 export function PropertyManagementTab () {
   const { $t } = useIntl()
   const basePath = useTenantLink('/venues/')
-  const { venueId } = useParams()
+  const { tenantId, venueId } = useParams()
+  const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<PropertyConfigs>>()
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
   const [isPropertyEnable, setIsPropertyEnable] = useState(false)
+  const [enableResidentPortal, setEnableResidentPortal] = useState(false)
   const [personaGroupVisible, setPersonaGroupVisible] = useState(false)
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
   const { data: residentPortalList } = useGetResidentPortalListQuery({})
@@ -64,6 +67,7 @@ export function PropertyManagementTab () {
           params: { venueId },
           payload: {
             ...info.values,
+            venueName: venueData?.name ?? venueId,
             status: isPropertyEnable
               ? PropertyConfigStatus.ENABLED
               : PropertyConfigStatus.DISABLED
@@ -150,36 +154,46 @@ export function PropertyManagementTab () {
                       {$t({ defaultMessage: 'Add Persona Group' })}
                     </Button>
                   </Form.Item>
-                  <StepsForm.FieldLabel width={'190px'}>
-                    {$t({ defaultMessage: 'Enable Resident Portal' })}
-                    <Form.Item
-                      name={['unitConfiguration', 'residentPortalAllowed']}
-                      rules={[{ required: true }]}
-                      valuePropName={'checked'}
-                      children={<Switch/>}
-                    />
-                  </StepsForm.FieldLabel>
+                  <Form.Item
+                    hidden
+                    name={['unitConfig', 'type']}
+                    initialValue={'unitConfig'}
+                  />
                   <StepsForm.FieldLabel width={'190px'}>
                     {$t({ defaultMessage: 'Enable Guest DPSK for Units' })}
                     <Form.Item
-                      name='enableGuestDpsk'
+                      name={['unitConfig', 'guestAllowed']}
                       rules={[{ required: true }]}
                       valuePropName={'checked'}
                       children={<Switch />}
                     />
                   </StepsForm.FieldLabel>
-                  <Form.Item
-                    name='residentPortalId'
-                    label={$t({ defaultMessage: 'Resident Portal profile' })}
-                    // rules={[{ required: true }]}
-                    children={<Select options={residentPortalList?.data
-                      .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
-                  />
+                  <StepsForm.FieldLabel width={'190px'}>
+                    {$t({ defaultMessage: 'Enable Resident Portal' })}
+                    <Form.Item
+                      name={['unitConfig', 'residentPortalAllowed']}
+                      rules={[{ required: true }]}
+                      valuePropName={'checked'}
+                      children={<Switch
+                        checked={enableResidentPortal}
+                        onChange={setEnableResidentPortal}
+                      />}
+                    />
+                  </StepsForm.FieldLabel>
+                  {enableResidentPortal &&
+                    <Form.Item
+                      name='residentPortalId'
+                      label={$t({ defaultMessage: 'Resident Portal profile' })}
+                      rules={[{ required: true }]}
+                      children={<Select options={residentPortalList?.data
+                        .map(r => ({ value: r.id, label: r.name })) ?? []}/>}
+                    />
+                  }
                 </Col>
               </Row>
               <Row gutter={20}>
                 <Col span={8}>
-            Communications:
+            Communication Templates:
                   <Form.Item
                     label={$t({ defaultMessage: 'Send communications via...' })}
                   >

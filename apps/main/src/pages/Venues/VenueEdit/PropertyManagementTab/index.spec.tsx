@@ -3,7 +3,7 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { PropertyUrlsInfo }                                      from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, PropertyUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -45,6 +45,14 @@ describe('Property Config Tab', () => {
       rest.patch(
         PropertyUrlsInfo.patchPropertyConfigs.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (req, res, ctx) => res(ctx.json({ data: 'venue-id' }))
+      ),
+      rest.get(
+        PropertyUrlsInfo.getResidentPortalList.url,
+        (req, res, ctx) => res(ctx.json({ content: [] }))
       )
     )
   })
@@ -72,7 +80,7 @@ describe('Property Config Tab', () => {
     })
   })
 
-  it('should render simple Property config tab with 401 api response', async () => {
+  it('should render simple Property config tab with 404 api response', async () => {
     render(<Provider>
       <VenueEditContext.Provider
         // @ts-ignore
