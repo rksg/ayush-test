@@ -2,11 +2,11 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 
-import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                                     from '@acx-ui/icons'
-import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                  from '@acx-ui/user'
-import { useDateFilter }                                   from '@acx-ui/utils'
+import { Button, DisabledButton, PageHeader, RangePicker }    from '@acx-ui/components'
+import { ArrowExpand }                                        from '@acx-ui/icons'
+import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                     from '@acx-ui/user'
+import { useDateFilter }                                      from '@acx-ui/utils'
 
 import NetworkTabs       from './NetworkTabs'
 import { useGetNetwork } from './services'
@@ -14,6 +14,9 @@ import { useGetNetwork } from './services'
 function NetworkPageHeader () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const network = useGetNetwork()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const basePath = useTenantLink('/networks/wireless')
   const { networkId } = useParams()
   const { $t } = useIntl()
   return (
@@ -32,9 +35,19 @@ function NetworkPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <TenantLink to={`/networks/wireless/${networkId}/edit`}>
-          <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        </TenantLink>
+        <Button
+          type='primary'
+          onClick={() =>
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/${networkId}/edit`
+            }, {
+              state: {
+                from: location
+              }
+            })
+          }
+        >{$t({ defaultMessage: 'Configure' })}</Button>
       ])}
       footer={<NetworkTabs />}
     />

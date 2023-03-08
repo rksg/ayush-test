@@ -85,13 +85,13 @@ describe('ServerTab', () => {
 
     await fireEvent.click(await screen.findByTestId('syslog-switch'))
   })
-  it('should navigate to venue details page when clicking cancel button', async () => {
+  it('should navigate to venue list page when clicking cancel button', async () => {
     render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Enable Server'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/t/${params.tenantId}/venues`,
       hash: '',
       search: ''
     })
