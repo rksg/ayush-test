@@ -1,11 +1,11 @@
-import React from 'react'
+import { useState } from 'react'
 
 import { IntlShape } from 'react-intl'
 
-import { render, renderHook } from '@acx-ui/test-utils'
+import { render, renderHook, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { renderFilter, useGroupBy }    from './filters'
-import { groupTBData, groupByColumns } from './stories/GroupTable'
+import { GroupSelect, renderFilter, useGroupBy } from './filters'
+import { groupTBData, groupByColumns }           from './stories/GroupTable'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
@@ -29,7 +29,7 @@ describe('Table Filters', () => {
         finalParentColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
-      expect(GroupBySelect()).toBeDefined()
+      expect(GroupBySelect).toBeDefined()
       expect(expandable).toBeDefined()
       expect(finalParentColumns).toBeUndefined()
       clearGroupByFn()
@@ -48,6 +48,7 @@ describe('Table Filters', () => {
       const { result } = renderHook(() =>
         useGroupBy([], groupTableAction,groupTBData.length, mockIntl))
       const { GroupBySelect, clearGroupByFn } = result.current
+      expect(GroupBySelect).toBeDefined()
       expect(GroupBySelect()).toBeNull()
       clearGroupByFn()
     })
@@ -64,28 +65,30 @@ describe('Table Filters', () => {
   })
 
   describe('renderFilter', () => {
-    it('should render with correct data', () => {
+    it('should handle unchecking selected data with correct data', async () => {
       const filterableCol = jest.fn()
-      const view = renderFilter<{ name: string }>(
+      render(renderFilter<{ name: string }>(
         {
           key: 'name',
           dataIndex: 'name',
           filterable: true,
+          filterValueNullable: false,
           filterMultiple: false
         },
         0,
         [{ name: 'john tan' }, { name: 'dragon den' }],
-        { 'john tan': [true] },
+        { xd: true as unknown as boolean[] },
         filterableCol,
         false
-      )
-      expect(view).toBeDefined()
-      render(<view/>)
+      )())
+      const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
+      fireEvent.mouseDown(select)
+      fireEvent.click((await screen.findAllByText('john tan'))[0])
     })
 
     it('should render with undefined data', () => {
       const filterableCol = jest.fn()
-      const view = renderFilter<{ name: string }>(
+      render(renderFilter<{ name: string }>(
         {
           key: 'name',
           dataIndex: 'name',
@@ -97,13 +100,12 @@ describe('Table Filters', () => {
         {},
         filterableCol,
         false
-      )
-      expect(view).toBeDefined()
+      )())
     })
 
     it('should render with filterable array data', () => {
       const filterableCol = jest.fn()
-      const view = renderFilter<{ name: string }>(
+      render(renderFilter<{ name: string }>(
         {
           key: 'name',
           dataIndex: 'name',
@@ -115,8 +117,49 @@ describe('Table Filters', () => {
         {},
         filterableCol,
         false
-      )
-      expect(view).toBeDefined()
+      )())
+    })
+  })
+
+  describe('GroupBySelect', () => {
+    it('should handle onClear correctly', async () => {
+      const mock$t = jest.fn() as unknown as IntlShape['$t']
+      const onChange = jest.fn()
+      const onClear = jest.fn()
+      const mockedSetVal = jest.fn()
+      const selectors = [{ key: 'test', label: 'soy' }]
+      const Test = () => {
+        const [value, setValue] = useState<{
+          key: string, value: string
+        } | undefined>(undefined)
+        const handleValue = (val: { key: string, value: string } | undefined) => {
+          mockedSetVal(val)
+          setValue(val)
+        }
+        return <GroupSelect
+          $t={mock$t}
+          value={value}
+          setValue={handleValue}
+          onClear={onClear}
+          onChange={onChange}
+          selectors={selectors}
+        />
+      }
+      render(<Test />)
+
+      const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
+      fireEvent.mouseDown(select)
+      const soy = await screen.findByText('soy')
+      fireEvent.click(soy)
+      expect(onChange).toBeCalled()
+      const downArrow =
+        await screen.findByRole('img', { name: 'down', hidden: true, queryFallbacks: true })
+      fireEvent.mouseOver(downArrow)
+      const cross =
+        await screen.findByRole('img', { name: 'close-circle', hidden: true, queryFallbacks: true })
+      fireEvent.mouseDown(cross)
+      expect(mockedSetVal).toBeCalledWith({ key: 'test', value: 'soy' })
+      expect(onClear).toBeCalled()
     })
   })
 })

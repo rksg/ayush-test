@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Select }      from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
@@ -85,7 +85,7 @@ export function renderFilter <RecordType> (
   filterValues: Filter,
   setFilterValues: Function,
   enableApiFilter: boolean
-): React.ReactNode {
+) {
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
     if (!data.includes(value)) {
@@ -108,7 +108,7 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v }))
       : []
 
-  return <UI.FilterSelect
+  return () => <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
@@ -134,6 +134,50 @@ export function renderFilter <RecordType> (
         {option.value}
       </Select.Option>
     )}
+  </UI.FilterSelect>
+}
+
+export function GroupSelect ({
+  $t,
+  value,
+  onChange,
+  setValue,
+  onClear,
+  selectors
+}: {
+  $t: IntlShape['$t'],
+  value: { key: string, value: string } | undefined,
+  onChange: CallableFunction | undefined,
+  setValue: (val: { key: string, value: string } | undefined) => void,
+  onClear: CallableFunction | undefined,
+  selectors: { key: string, label: ReactNode }[]
+}) {
+  return <UI.FilterSelect
+    placeholder={$t({ defaultMessage: 'Group By...' })}
+    allowClear
+    showArrow
+    value={value}
+    onChange={(val, options) => {
+      if (!val) return
+      onChange && onChange(val)
+      const { key, children } = options as { key: string, children: string }
+      const option = { key, value: children }
+      setValue(option)
+    }}
+    onClear={() => {
+      onClear && onClear()
+      setValue(undefined)
+    }}
+    key='select-group-by'
+    data-testid='select-group-by'
+  >
+    {selectors.map((item) => <Select.Option
+      key={item.key}
+      value={item.key}
+      data-testid={`option-${item.key}`}
+    >
+      {item.label}
+    </Select.Option>)}
   </UI.FilterSelect>
 }
 
@@ -166,35 +210,14 @@ export function useGroupBy<RecordType> (
 
     const validGroupables = groupables.filter(cols => Boolean(cols.groupable))
     const selectors = validGroupables.map(col => col.groupable!)
-    const GroupBySelect = () => {
-      return <UI.FilterSelect
-        placeholder={$t({ defaultMessage: 'Group By...' })}
-        allowClear
-        showArrow
-        value={value}
-        onChange={(val, options) => {
-          if (!val) return
-          onChange && onChange(val)
-          const { key, children } = options as { key: string, children: string }
-          const option = { key, value: children }
-          setValue(option)
-        }}
-        onClear={() => {
-          onClear && onClear()
-          setValue(undefined)
-        }}
-        key='select-group-by'
-        data-testid='select-group-by'
-      >
-        {selectors.map((item) => <Select.Option
-          key={item.key}
-          value={item.key}
-          data-testid={`option-${item.key}`}
-        >
-          {item.label}
-        </Select.Option>)}
-      </UI.FilterSelect>
-    }
+    const Select = <GroupSelect
+      $t={$t}
+      onChange={onChange}
+      onClear={onClear}
+      selectors={selectors}
+      setValue={setValue}
+      value={value}
+    />
 
     const clearGroupByFn = () => {
       onClear && onClear()
@@ -221,6 +244,7 @@ export function useGroupBy<RecordType> (
     const expandable: TableProps<RecordType>['expandable'] = {
       expandIconColumnIndex: colLength + groupActionColumns.length,
       rowExpandable: (record) => hasValidChildren(record),
+      defaultExpandAllRows: isGroupByActive,
       expandIcon: (props) => {
         if (!hasValidChildren(props.record)) return null
         const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
@@ -237,7 +261,7 @@ export function useGroupBy<RecordType> (
     const finalParentColumns = targetCol?.groupable!.parentColumns
 
     return {
-      GroupBySelect,
+      GroupBySelect: () => Select,
       expandable,
       groupActionColumns,
       finalParentColumns,

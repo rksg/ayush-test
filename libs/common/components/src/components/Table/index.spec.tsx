@@ -952,6 +952,7 @@ describe('Table component', () => {
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+      fireEvent.click(await screen.findByTestId('CollapseInactive'))
       fireEvent.click(await screen.findByTestId('CollapseActive'))
       fireEvent.click(await screen.findByTestId('CollapseInactive'))
     })
