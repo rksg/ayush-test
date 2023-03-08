@@ -4,7 +4,7 @@ import { Col, Form, Image, Row, Select, Space } from 'antd'
 import { isEqual, replace }                     from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { Loader, showToast, Tabs } from '@acx-ui/components'
+import { Loader, Tabs }            from '@acx-ui/components'
 import { LanPortSettings }         from '@acx-ui/rc/components'
 import {
   useGetVenueCapabilitiesQuery,
@@ -158,11 +158,8 @@ export function LanPorts () {
           payload
         }).unwrap()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

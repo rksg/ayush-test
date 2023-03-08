@@ -12,6 +12,7 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
+import { filterByAccess }                         from '@acx-ui/user'
 
 import { dpskTabNameMapping }   from './contentsMap'
 import DpskOverview             from './DpskOverview'
@@ -60,7 +61,7 @@ export default function DpskDetails () {
             link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={[
+        extra={filterByAccess([
           <DisabledButton key={'date-filter'} icon={<ClockOutlined />}>
             {$t({ defaultMessage: 'Last 24 hours' })}
           </DisabledButton>,
@@ -70,11 +71,10 @@ export default function DpskDetails () {
               oper: ServiceOperation.EDIT,
               serviceId: serviceId!
             })}
-            key='edit'
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
         footer={
           <Tabs onChange={onTabChange} activeKey={activeTab}>
             <Tabs.TabPane

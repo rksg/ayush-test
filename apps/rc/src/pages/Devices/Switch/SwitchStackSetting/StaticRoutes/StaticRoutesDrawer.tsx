@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { Drawer, showToast }           from '@acx-ui/components'
+import { Drawer }                      from '@acx-ui/components'
 import {
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation
@@ -29,7 +29,7 @@ interface StaticRoutesDrawerProps {
 const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
-  const params = useParams()
+  const { tenantId, switchId } = useParams()
   const { visible, setVisible, data } = props
   const [formRef] = Form.useForm()
   const [addSwitchStaticRoute] = useAddSwitchStaticRouteMutation()
@@ -77,21 +77,16 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = (formData: StaticRoute) => {
     const payload = formData
+    const params = { tenantId, switchId, staticRouteId: formData.id }
     if(data) {
       updateSwitchStaticRoute({ params, payload }).unwrap()
         .catch((error) => {
-          showToast({
-            type: 'error',
-            content: error.data.errors[0].message
-          })
+          console.log(error) // eslint-disable-line no-console
         })
     } else {
       addSwitchStaticRoute({ params, payload }).unwrap()
         .catch((error) => {
-          showToast({
-            type: 'error',
-            content: error.data.errors[0].message
-          })
+          console.log(error) // eslint-disable-line no-console
         })
     }
     formRef.resetFields()

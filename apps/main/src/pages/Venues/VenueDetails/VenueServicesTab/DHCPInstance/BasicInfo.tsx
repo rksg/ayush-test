@@ -12,7 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import { TenantLink }         from '@acx-ui/react-router-dom'
-
+import { hasAccess }          from '@acx-ui/user'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
@@ -150,14 +150,16 @@ export default function BasicInfo () {
           </GridCol>
         </>}
         <GridCol col={{ span: SPAN_NUM }}>
-          <Button style={{ paddingLeft: 0 }}
-            onClick={()=>{
-              setVisible(true)
-            }}
-            type='link'
-            block>
-            {$t({ defaultMessage: 'Manage Local Service' })}
-          </Button>
+          {hasAccess() &&
+            <Button style={{ paddingLeft: 0 }}
+              onClick={()=>{
+                setVisible(true)
+              }}
+              type='link'
+              block>
+              {$t({ defaultMessage: 'Manage Local Service' })}
+            </Button>
+          }
         </GridCol>
       </GridRow>
     </Card>

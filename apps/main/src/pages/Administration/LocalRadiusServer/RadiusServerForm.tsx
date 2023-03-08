@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig } from '@acx-ui/rc/utils'
+import { ClientConfig }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -52,11 +53,8 @@ export function RadiusServerForm () {
       }
       await updateConfig({ payload }).unwrap()
       setChangePassword(false)
-    } catch (error){
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -160,15 +158,15 @@ export function RadiusServerForm () {
                     dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                     showHeader={false}
                     rowSelection={{ type: 'radio' }}
-                    rowActions={ipTableRowActions}
+                    rowActions={filterByAccess(ipTableRowActions)}
                     type={'form'}
-                    actions={[{
+                    actions={filterByAccess([{
                       label: $t({ defaultMessage: 'Add IP Address' }),
                       onClick: () => {
                         setVisible(true)
                         setIsEditMode(false)
                       }
-                    }]}
+                    }])}
                   />
                 </Col>
               </Row>

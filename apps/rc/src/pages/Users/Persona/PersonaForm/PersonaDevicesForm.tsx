@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import {  Table, TableProps } from '@acx-ui/components'
 import { PersonaDevice }      from '@acx-ui/rc/utils'
+import { filterByAccess }     from '@acx-ui/user'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
@@ -75,8 +76,8 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         rowKey='macAddress'
         columns={columns}
         dataSource={value ?? []}
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ defaultSelectedRowKeys: [] }}
       />
       <PersonaDevicesImportDialog

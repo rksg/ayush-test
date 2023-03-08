@@ -3,12 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  CommonUrlsInfo,
   VlanPoolUrls,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { VLANPoolPolicyType }         from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { UserUrlsInfo }               from '@acx-ui/user'
 
 import VLANPoolForm from './VLANPoolForm'
 
@@ -32,7 +32,7 @@ const vlanList=[{
 describe('VLANPoolForm', () => {
   it('should create VLAN pool successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
@@ -72,7 +72,7 @@ describe('VLANPoolForm', () => {
 
   it('should edit vlan successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(
@@ -113,7 +113,7 @@ describe('VLANPoolForm', () => {
 
   it('should cancel vlan Form successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(

@@ -1,9 +1,10 @@
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { NamePath } from 'antd/es/form/interface'
 
 import { cleanup, screen } from '@acx-ui/test-utils'
 
-import { renderForm }           from '../../__tests__/fixtures'
-import { AuthenticationMethod } from '../../types'
+import { renderForm, renderFormHook } from '../../__tests__/fixtures'
+import { AuthenticationMethod }       from '../../types'
 
 import { Password } from './Password'
 
@@ -18,25 +19,33 @@ describe('Password', () => {
 
   it('render field', async () => {
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }]
+      }
     })
     expect(await screen.findByText('Using configured password')).toBeVisible()
     cleanup()
 
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA3_PERSONAL }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA3_PERSONAL }]
+      }
     })
     expect(await screen.findByText('Using configured password')).toBeVisible()
     cleanup()
 
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_WPA3_PERSONAL }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_WPA3_PERSONAL }]
+      }
     })
     expect(await screen.findByText('Using configured password')).toBeVisible()
     cleanup()
 
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      }
     })
     const field = await screen.findByLabelText('Password')
     expect(field).toBeVisible()
@@ -45,7 +54,9 @@ describe('Password', () => {
 
   it('invalidate field if not preconfigured', async () => {
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      }
     })
     await click(screen.getByRole('button', { name: 'Submit' }))
 
@@ -54,7 +65,9 @@ describe('Password', () => {
 
   it('valid if not preconfigured but in edit mode', async () => {
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }]
+      }
     })
     await click(screen.getByRole('button', { name: 'Submit' }))
 
@@ -63,7 +76,9 @@ describe('Password', () => {
 
   it('show correct placeholder if preconfigured', async () => {
     renderForm(<Password />, {
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }]
+      }
     })
     expect(await screen.findByText('Using configured password')).toBeVisible()
   })
@@ -71,7 +86,9 @@ describe('Password', () => {
   it('show correct placeholder if previous not preconfigured but in edit mode', async () => {
     renderForm(<Password />, {
       editMode: true,
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      }
     })
     const field = await screen.findByLabelText('Password')
     expect(field).toHaveAttribute('placeholder', 'Leave blank to remain unchanged')
@@ -80,8 +97,12 @@ describe('Password', () => {
   it('not show placeholder previous preconfigured, but current not in edit mode - 1', async () => {
     renderForm(<Password />, {
       editMode: true,
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_PERSONAL },
-      valuesToUpdate: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_PERSONAL }]
+      },
+      valuesToUpdate: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      }
     })
 
     expect(await screen.findByText('Using configured password')).toBeVisible()
@@ -95,8 +116,12 @@ describe('Password', () => {
   it('not show placeholder previous preconfigured, but current not in edit mode - 2', async () => {
     renderForm(<Password />, {
       editMode: true,
-      initialValues: { authenticationMethod: AuthenticationMethod.OPEN_AUTH },
-      valuesToUpdate: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.OPEN_AUTH }]
+      },
+      valuesToUpdate: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      }
     })
 
     expect(screen.getByTestId('field')).toBeEmptyDOMElement()
@@ -110,8 +135,12 @@ describe('Password', () => {
   it('resets value when authentication method chosen do not need password', async () => {
     renderForm(<Password />, {
       editMode: true,
-      initialValues: { authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE },
-      valuesToUpdate: { authenticationMethod: AuthenticationMethod.OPEN_AUTH }
+      initialValues: {
+        configs: [{ authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE }]
+      },
+      valuesToUpdate: {
+        configs: [{ authenticationMethod: AuthenticationMethod.OPEN_AUTH }]
+      }
     })
 
     expect(await screen.findByLabelText('Password')).toBeVisible()
@@ -120,6 +149,31 @@ describe('Password', () => {
 
     expect(screen.getByTestId('field')).toBeEmptyDOMElement()
   })
+
+  describe('reset', () => {
+    const name = Password.fieldName as unknown as NamePath
+
+    it('resets to undefined if field not needed', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.OPEN_AUTH)
+      expect(form.getFieldValue(name)).toEqual(undefined)
+    })
+
+    it('resets to undefined if preconfigured', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.WPA2_PERSONAL)
+      expect(form.getFieldValue(name)).toEqual(undefined)
+    })
+
+    it('does not reset', () => {
+      const { form } = renderFormHook()
+      form.setFieldValue(name, 'some-password')
+      Password.reset(form, AuthenticationMethod.WPA2_ENTERPRISE)
+      expect(form.getFieldValue(name)).toEqual('some-password')
+    })
+  })
 })
 
 describe('Password.FieldSummary', () => {
@@ -127,8 +181,10 @@ describe('Password.FieldSummary', () => {
   it('renders if selected auth method requires this field', async () => {
     renderForm(<Password.FieldSummary />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
-        wlanPassword: value
+        configs: [{
+          authenticationMethod: AuthenticationMethod.WPA2_ENTERPRISE,
+          wlanPassword: value
+        }]
       }
     })
 
@@ -138,8 +194,10 @@ describe('Password.FieldSummary', () => {
   it('hidden if selected auth method not require this field', async () => {
     renderForm(<Password.FieldSummary />, {
       initialValues: {
-        authenticationMethod: AuthenticationMethod.OPEN_AUTH,
-        wlanUsername: value
+        configs: [{
+          authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+          wlanUsername: value
+        }]
       }
     })
 

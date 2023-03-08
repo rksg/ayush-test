@@ -3,11 +3,10 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal, showToast } from '@acx-ui/components'
-import { SpaceWrapper }                     from '@acx-ui/rc/components'
-import { useUpdateMFAAccountMutation }      from '@acx-ui/rc/services'
-import { MFAStatus, MFASession }            from '@acx-ui/rc/utils'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { Card, showActionModal }                            from '@acx-ui/components'
+import { SpaceWrapper }                                     from '@acx-ui/rc/components'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -17,7 +16,7 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 interface MFAFormItemProps {
   className?: string;
-  mfaTenantDetailsData?: MFASession;
+  mfaTenantDetailsData?: MfaDetailStatus;
   isPrimeAdminUser: boolean;
 }
 
@@ -25,7 +24,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
   const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
   const params = useParams()
-  const [updateMFAAccount, { isLoading: isUpdating }] = useUpdateMFAAccountMutation()
+  const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -46,17 +45,14 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
         : $t({ defaultMessage: 'Disable MFA' }),
       onOk: async () => {
         try {
-          await updateMFAAccount({
+          await toggleMFA({
             params: {
               tenantId: params.tenantId,
               enable: isChecked + ''
             }
           }).unwrap()
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({ defaultMessage: 'An error occurred' })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     })

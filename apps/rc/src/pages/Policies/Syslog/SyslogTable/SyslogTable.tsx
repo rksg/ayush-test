@@ -14,6 +14,7 @@ import {
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
 
@@ -90,12 +91,12 @@ export default function SyslogTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Syslog Server' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
@@ -104,7 +105,7 @@ export default function SyslogTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

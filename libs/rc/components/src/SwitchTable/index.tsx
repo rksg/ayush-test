@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Space, Badge } from 'antd'
-import { useIntl }      from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { Space, Badge }        from 'antd'
+import { useIntl }             from 'react-intl'
 
 import {
   Table,
@@ -11,7 +12,9 @@ import {
   deviceStatusColors,
   ColumnType
 } from '@acx-ui/components'
-import { useLazyGetJwtTokenQuery, useSwitchListQuery } from '@acx-ui/rc/services'
+import { useImportSwitchesMutation,
+  useLazyGetJwtTokenQuery,
+  useSwitchListQuery } from '@acx-ui/rc/services'
 import {
   getSwitchStatusString,
   SwitchRow,
@@ -27,8 +30,10 @@ import {
   isStrictOperationalSwitch
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                    from '@acx-ui/user'
 
 import { seriesSwitchStatusMapping } from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { SwitchCliSession }          from '../SwitchCliSession'
 import { useSwitchActions }          from '../useSwitchActions'
 
@@ -66,6 +71,7 @@ export function SwitchTable (props : {
   showAllColumns?: boolean,
   tableQuery?: TableQuery<SwitchRow, RequestPayload<unknown>, unknown>
   searchable?: boolean
+  enableActions?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const { $t } = useIntl()
@@ -73,6 +79,10 @@ export function SwitchTable (props : {
   const navigate = useNavigate()
   const { showAllColumns, searchable, filterableKeys } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
+
+  const [ importVisible, setImportVisible] = useState(false)
+  const [ importCsv, importResult ] = useImportSwitchesMutation()
+  const importTemplateLink = 'assets/templates/switches_import_template.csv'
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
@@ -147,6 +157,7 @@ export function SwitchTable (props : {
     key: 'model',
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'model',
+    filterable: filterableKeys ? filterableKeys['model'] : false,
     sorter: true,
     searchable: searchable
   }, {
@@ -229,6 +240,7 @@ export function SwitchTable (props : {
     disabled: (rows) => rows[0].deviceStatus === SwitchStatusEnum.DISCONNECTED
   }, {
     label: $t({ defaultMessage: 'CLI Session' }),
+    key: 'EnableCliSessionButton',
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     disabled: (rows) => {
       const row = rows[0]
@@ -286,7 +298,7 @@ export function SwitchTable (props : {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey={(record)=> record.serialNumber + (!record.isFirstLevel ? 'stack-member' : '')}
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -295,6 +307,23 @@ export function SwitchTable (props : {
             : null
         }
       }}
+      actions={filterByAccess(props.enableActions ? [{
+        label: $t({ defaultMessage: 'Add Switch' }),
+        onClick: () => {
+          navigate(`${linkToEditSwitch.pathname}/add`)
+        }
+      }, {
+        label: $t({ defaultMessage: 'Add Stack' }),
+        onClick: () => {
+          navigate(`${linkToEditSwitch.pathname}/stack/add`)
+        }
+      }, {
+        label: $t({ defaultMessage: 'Import from file' }),
+        onClick: () => {
+          setImportVisible(true)
+        }
+      }
+      ] : [])}
     />
     <SwitchCliSession
       modalState={cliModalState}
@@ -302,6 +331,20 @@ export function SwitchTable (props : {
       serialNumber={cliData.serialNumber}
       jwtToken={cliData.token}
       switchName={cliData.switchName}
+    />
+    <ImportFileDrawer type='Switch'
+      title={$t({ defaultMessage: 'Import from file' })}
+      maxSize={CsvSize['5MB']}
+      maxEntries={50}
+      acceptType={['csv']}
+      templateLink={importTemplateLink}
+      visible={importVisible}
+      isLoading={importResult.isLoading}
+      importError={importResult.error as FetchBaseQueryError}
+      importRequest={(formData) => {
+        importCsv({ params, payload: formData })
+      }}
+      onClose={() => setImportVisible(false)}
     />
   </Loader>
 }

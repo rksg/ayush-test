@@ -5,18 +5,22 @@ import {
   useGetLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
+  firmwareTypeTrans,
   FirmwareVersion,
   FirmwareVenueVersion,
   FirmwareCategory
 } from '@acx-ui/rc/utils'
+import { formatter } from '@acx-ui/utils'
 
+const transform = firmwareTypeTrans()
 
 export const VersionBanner = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  let versions = getReleaseFirmware(latestReleaseVersions)
-  let firmware = versions[0]
+  const versions = getReleaseFirmware(latestReleaseVersions)
+  const firmware = versions[0]
+
   return (
     <div>
       <div>
@@ -26,10 +30,10 @@ export const VersionBanner = () => {
         )}
       </div>
       <div>
-        <span>Release </span>
-        <span>(Recommended)</span>
+        <span>{transform(firmware?.category, 'type')}</span>
+        <span>({transform(firmware?.category, 'subType')})</span>
         <span>-</span>
-        <span>Dec 16, 2022</span>
+        <span>{formatter('dateFormat')(firmware?.createdDate)}</span>
       </div>
     </div>
   )

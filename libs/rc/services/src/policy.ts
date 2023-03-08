@@ -34,7 +34,6 @@ import {
   AAAPolicyType,
   AaaUrls,
   AAATempType,
-  AAADetailInstances,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   L2AclPolicy,
@@ -47,7 +46,7 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation
+  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
 } from '@acx-ui/rc/utils'
 
 const RKS_NEW_UI = {
@@ -410,11 +409,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    aaaNetworkInstances: build.query<TableResult<AAADetailInstances>, RequestPayload>({
-      query: ({ params }) => {
+    aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
+      query: ({ params, payload }) => {
         const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
         return {
-          ...instancesRes
+          ...instancesRes,
+          body: payload
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
