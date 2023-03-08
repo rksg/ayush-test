@@ -61,9 +61,7 @@ export function TopologyGraph (props:{ venueId?: string,
 
   useEffect(() => {
     if(topologyData) {
-      const nodes: Node[] = topologyData?.nodes.map((_node: any) => {
-        return { ..._node } as Node
-      })
+      const nodes: Node[] = topologyData?.nodes
 
       const _data: GraphData = {
         type: 'graph',
