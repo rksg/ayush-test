@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, useAnalyticsFilter }                                   from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                                                       from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
 import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
 import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
 import { isRouter, SwitchViewModel, SWITCH_TYPE, StackMember }                   from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { useDateFilter }                                                         from '@acx-ui/utils'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -18,7 +19,7 @@ import { SwitchOverviewVLANs }           from './SwitchOverviewVLANs'
 export function SwitchOverviewTab () {
   const { $t } = useIntl()
   const params = useParams()
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const [ switchFilter, setSwitchFilter ] = useState(null as unknown as AnalyticsFilter)
   const [ switchDetail, setSwitchDetail ] = useState(null as unknown as SwitchViewModel)
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
@@ -51,11 +52,11 @@ export function SwitchOverviewTab () {
   useEffect(() => {
     if(switchDetail) {
       setSwitchFilter({
-        ...filters,
+        ...dateFilter,
         path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
       })
     }
-  }, [switchDetail, filters])
+  }, [switchDetail, dateFilter])
 
   const onTabChange = (tab: string) => {
     navigate({
