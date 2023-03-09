@@ -122,13 +122,9 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        // eslint-disable-next-line max-len
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.MAC_REGISTRATION_LIST] } }
-      }).data?.totalCount,
+      totalCount: useMacRegListsQuery({ params }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: true
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
@@ -156,13 +152,6 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
-    },
-    {
-      type: PolicyType.MAC_REGISTRATION_LIST,
-      category: RadioCardCategory.WIFI,
-      totalCount: useMacRegListsQuery({ params }).data?.totalCount,
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST }))
     }
   ]
 }
