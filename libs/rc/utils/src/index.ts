@@ -1,6 +1,5 @@
 export * from './urls'
 export * from './apiService'
-export * from './userService'
 export * from './toast/toastService'
 export * from './constants'
 export * from './contents'

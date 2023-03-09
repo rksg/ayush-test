@@ -3,8 +3,8 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch } from 'antd'
 import { isEqual }                                  from 'lodash'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { ConfigurationOutlined }                                   from '@acx-ui/icons'
+import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { ConfigurationOutlined }                        from '@acx-ui/icons'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -148,7 +148,7 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId }, payload: {
+      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
         ...formRef?.current?.getFieldsValue(),
         id: venueId,
         profileId: formData?.profileId,
@@ -156,11 +156,8 @@ export function GeneralSettingForm () {
         syslogPrimaryServer: formData?.syslogPrimaryServer,
         syslogSecondaryServer: formData?.syslogSecondaryServer
       } })
-    } catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

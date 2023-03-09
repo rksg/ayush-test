@@ -92,6 +92,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       ...saveData,
       ...{
         wlan: {
+          ...saveData.wlan,
           advancedCustomization: new OpenWlanAdvancedCustomization(),
           macAddressAuthentication: data.wlan?.macAddressAuthentication,
           macRegistrationListId: data.wlan?.macRegistrationListId,

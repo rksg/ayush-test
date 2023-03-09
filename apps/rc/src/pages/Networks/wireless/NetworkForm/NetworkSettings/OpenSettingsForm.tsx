@@ -57,20 +57,14 @@ export function OpenSettingsForm () {
 
 function SettingsForm () {
   const [
-    isCloudpathEnabled,
     macAddressAuthentication,
     isMacRegistrationList
   ] = [
-    useWatch<boolean>('isCloudpathEnabled'),
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
     useWatch(['wlan', 'isMacRegistrationList'])
   ]
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-
-  const onCloudPathChange = (checked: boolean) => {
-    setData && setData({ ...data, isCloudpathEnabled: checked })
-  }
 
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
@@ -84,7 +78,6 @@ function SettingsForm () {
     })
   }
 
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return (
@@ -129,16 +122,7 @@ function SettingsForm () {
             inputName={['wlan']}
           />}
 
-          { !isMacRegistrationList && <>
-            <Form.Item>
-              <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-                <Switch disabled={editMode||disableAAA} onChange={onCloudPathChange} />
-              </Form.Item>
-              <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
-            </Form.Item>
-
-            {isCloudpathEnabled && <CloudpathServerForm />}
-          </>}
+          { !isMacRegistrationList && <CloudpathServerForm /> }
 
         </>}
       </div>

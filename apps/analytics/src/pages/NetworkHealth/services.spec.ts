@@ -11,15 +11,18 @@ import * as fixtures          from './__tests__/fixtures'
 import {
   specToDto,
   useNetworkHealthSpec,
+  useNetworkHealthTestResults,
   useNetworkHealthTest,
   useNetworkHealthRelatedTests,
   useAllNetworkHealthSpecsQuery,
   useNetworkHealthSpecMutation,
   useDeleteNetworkHealthTestMutation,
   useRunNetworkHealthTestMutation,
+  useCloneNetworkHealthTestMutation,
   useMutationResponseEffect
 } from './services'
 import {
+  TestResultByAP,
   AuthenticationMethod,
   Band,
   ClientType,
@@ -33,6 +36,8 @@ import {
   MutationResponse,
   MutationUserError
 } from './types'
+
+import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
 const networkNodes = [[
   { type: 'zone', name: 'VENUE' },
@@ -129,6 +134,39 @@ describe('useAllNetworkHealthSpecsQuery', () => {
   })
 })
 
+it('useRunNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
+  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
+})
+
+it('useDeleteNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
+  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
+})
+
+it('useCloneNetworkHealthTestMutation', async () => {
+  mockGraphqlMutation(apiUrl, 'CloneServiceGuardSpec', { data: fixtures.cloneNetworkHealth })
+  const { result } = renderHook(() => useCloneNetworkHealthTestMutation(), { wrapper: Provider })
+  act(() => {
+    result.current.cloneTest({
+      id: fixtures.cloneNetworkHealth.cloneServiceGuardSpec.spec.id,
+      name: 'test-name'
+    })
+  })
+  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
+  expect(result.current.response.data).toEqual(fixtures.cloneNetworkHealth.cloneServiceGuardSpec)
+})
+
 describe('useNetworkHealthSpecMutation', () => {
   it('handles create mutation', async () => {
     const dto: NetworkHealthFormDto = {
@@ -223,26 +261,6 @@ describe('useNetworkHealthSpecMutation', () => {
 
     expect(result.current.response.data).toEqual(expected)
   })
-})
-
-it('useDeleteNetworkHealthTestMutation', async () => {
-  mockGraphqlMutation(apiUrl, 'DeleteServiceGuardSpec', { data: fixtures.deleteNetworkHealth })
-  const { result } = renderHook(() => useDeleteNetworkHealthTestMutation(), { wrapper: Provider })
-  act(() => {
-    result.current.deleteTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
-  })
-  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
-  expect(result.current.response.data).toEqual(fixtures.deleteNetworkHealth.deleteServiceGuardSpec)
-})
-
-it('useRunNetworkHealthTestMutation', async () => {
-  mockGraphqlMutation(apiUrl, 'RunNetworkHealthTest', { data: fixtures.runServiceGuardTest })
-  const { result } = renderHook(() => useRunNetworkHealthTestMutation(), { wrapper: Provider })
-  act(() => {
-    result.current.runTest({ id: fixtures.runServiceGuardTest.runServiceGuardTest.spec.id })
-  })
-  await waitFor(() => expect(result.current.response.isSuccess).toBe(true))
-  expect(result.current.response.data).toEqual(fixtures.runServiceGuardTest.runServiceGuardTest)
 })
 
 describe('specToDto', () => {
@@ -584,6 +602,48 @@ describe('specToDto', () => {
 
   it('handle spec = undefined', () => {
     expect(specToDto()).toBe(undefined)
+  })
+})
+describe('useNetworkHealthTestResults', () => {
+  it('load spec data if specId in URL', async () => {
+    const config = {
+      pingAddress: null,
+      tracerouteAddress: null,
+      speedTestEnabled: false
+    }
+    mockGraphqlQuery(apiUrl, 'ServiceGuardResults', {
+      data: { serviceGuardTest: fixtures.mockResultForVirtualClient({ ...config }) }
+    })
+    const { result } = renderHook(useNetworkHealthTestResults, {
+      wrapper: Provider,
+      route: { params: { testId: '1' } }
+    })
+    await waitFor(() => expect(result.current.tableQuery.isSuccess).toBe(true))
+    expect(result.current.tableQuery.data).toEqual(
+      fixtures.mockResultForVirtualClient({ ...config })
+    )
+  })
+
+  it('does not load spec data if specId not in URL', () => {
+    const { result } = renderHook(useNetworkHealthTestResults, { wrapper: Provider })
+    expect(result.current.tableQuery.isUninitialized).toBe(true)
+  })
+
+  it('handleTableChange should update pagination', () => {
+    const { result } = renderHook(useNetworkHealthTestResults, { wrapper: Provider })
+    const customPagination = { current: 1, pageSize: 10 }
+    result.current.onPageChange(
+      customPagination,
+      { filter: null },
+      [],
+      [] as unknown as TableCurrentDataSource<TestResultByAP>
+    )
+    expect(result.current.pagination).toEqual({
+      defaultPageSize: 10,
+      page: 1,
+      pageSize: 10,
+      total: 0
+    })
   })
 })
 

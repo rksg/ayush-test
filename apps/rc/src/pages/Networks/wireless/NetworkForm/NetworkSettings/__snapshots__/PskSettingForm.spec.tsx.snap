@@ -941,9 +941,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Use AAA Server:"
                           >
-                            Use Cloudpath Server:
+                            Use AAA Server:
                           </label>
                         </div>
                         <div

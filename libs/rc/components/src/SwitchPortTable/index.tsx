@@ -12,8 +12,9 @@ import {
   SwitchPortViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
@@ -264,7 +265,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey='portId'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -279,10 +280,10 @@ export function SwitchPortTable ({ isVenueLevel }: {
         }
       }}
       actions={!isVenueLevel
-        ? [{
+        ? filterByAccess([{
           label: $t({ defaultMessage: 'Manage LAG' }),
           onClick: () => {setLagDrawerVisible(true)}
-        }]
+        }])
         : []
       }
     />

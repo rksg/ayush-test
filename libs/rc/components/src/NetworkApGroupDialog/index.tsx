@@ -180,11 +180,11 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
     const handleVlanInputChange = (value: VlanDate) => {
       // console.log('handleVlanInputChange', value)
-
+      const isPoolType = value.vlanType === VlanType.Pool
       form.setFields([
-        { name: ['apgroups', name, 'vlanId'], value: value.vlanId },
-        { name: ['apgroups', name, 'vlanPoolId'], value: value.vlanPool?.id },
-        { name: ['apgroups', name, 'vlanPoolName'], value: value.vlanPool?.name },
+        { name: ['apgroups', name, 'vlanId'], value: !isPoolType ? value.vlanId : '' },
+        { name: ['apgroups', name, 'vlanPoolId'], value: isPoolType ? value.vlanPool?.id||'' : '' },
+        { name: ['apgroups', name, 'vlanPoolName'], value: isPoolType ? value.vlanPool?.name||'' : '' },
         { name: ['apgroups', name, 'vlanType'], value: value.vlanType }
       ])
     }
@@ -209,15 +209,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
           <Form.Item name={[name, 'vlanType']} initialValue={apGroupVlanType} noStyle>
             <Input type='hidden' />
           </Form.Item>
-          <Form.Item name={[name, 'vlanId']} initialValue={apGroupVlanId} noStyle>
-            <Input type='hidden' />
-          </Form.Item>
-          <Form.Item name={[name, 'vlanPoolId']} initialValue={apGroupVlanPool?.id} noStyle>
-            <Input type='hidden' />
-          </Form.Item>
-          <Form.Item name={[name, 'vlanPoolName']} initialValue={apGroupVlanPool?.name} noStyle>
-            <Input type='hidden' />
-          </Form.Item>
+          { apgroup.vlanId &&
+            <Form.Item name={[name, 'vlanId']} initialValue={apGroupVlanId} noStyle>
+              <Input type='hidden' />
+            </Form.Item>
+          }
+          { !apgroup.vlanId && <>
+            <Form.Item name={[name, 'vlanPoolId']} initialValue={apGroupVlanPool?.id} noStyle>
+              <Input type='hidden' />
+            </Form.Item>
+            <Form.Item name={[name, 'vlanPoolName']} initialValue={apGroupVlanPool?.name} noStyle>
+              <Input type='hidden' />
+            </Form.Item>
+          </>}
+
+
           <Tooltip title={errorTooltip}>
             <UI.FormItemRounded name={[name, 'selected']} valuePropName='checked'>
               <Checkbox disabled={apgroup.validationError}

@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
 import { ArrowExpand }                                     from '@acx-ui/icons'
 import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                  from '@acx-ui/user'
 import { useDateFilter }                                   from '@acx-ui/utils'
 
 import NetworkTabs       from './NetworkTabs'
@@ -21,7 +22,7 @@ function NetworkPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <DisabledButton key='hierarchy-filter'>
           {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
         <RangePicker
@@ -31,10 +32,10 @@ function NetworkPageHeader () {
           showTimePicker
           selectionType={range}
         />,
-        <TenantLink to={`/networks/wireless/${networkId}/edit`} key='edit'>
+        <TenantLink to={`/networks/wireless/${networkId}/edit`}>
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<NetworkTabs />}
     />
   )

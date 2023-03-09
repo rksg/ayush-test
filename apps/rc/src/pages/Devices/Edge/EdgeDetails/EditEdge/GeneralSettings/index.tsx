@@ -3,10 +3,10 @@ import { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { EdgeSettingForm }                         from '@acx-ui/rc/components'
-import { useGetEdgeQuery, useUpdateEdgeMutation }  from '@acx-ui/rc/services'
-import { EdgeGeneralSetting }                      from '@acx-ui/rc/utils'
+import { StepsForm, StepsFormInstance }           from '@acx-ui/components'
+import { EdgeSettingForm }                        from '@acx-ui/rc/components'
+import { useGetEdgeQuery, useUpdateEdgeMutation } from '@acx-ui/rc/services'
+import { EdgeGeneralSetting }                     from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -27,42 +27,20 @@ const GeneralSettings = () => {
 
   useEffect(() => {
     if(edgeGeneralSettings) {
-      formRef.current?.setFieldsValue({
-        venueId: edgeGeneralSettings?.venueId || '',
-        edgeGroupId: edgeGeneralSettings?.edgeGroupId || '',
-        name: edgeGeneralSettings?.name || '',
-        serialNumber: edgeGeneralSettings?.serialNumber || '',
-        description: edgeGeneralSettings?.description || '',
-        tags: edgeGeneralSettings?.tags || ''
-      })
+      formRef.current?.setFieldsValue(edgeGeneralSettings)
     }
   }, [edgeGeneralSettings])
 
   const handleUpdateEdge = async (data: EdgeGeneralSetting) => {
     try {
-      // TODO when Tags component ready remove this
-      const payload = { ...data, tags: [] as string[] }
-      if(data.tags) {
-        if(typeof data.tags === 'string') {
-          payload.tags = data.tags.split(',').map(item => item.trim())
-        } else {
-          payload.tags = data.tags
-        }
-      }
-
       // Following config cannot be sent in update API's payload
-      delete payload.venueId
-      delete payload.serialNumber
-
-      await upadteEdge({ params: params, payload: payload }).unwrap()
+      delete data.venueId
+      delete data.serialNumber
+      await upadteEdge({ params, payload: data }).unwrap()
       navigate(linkToEdgeList)
 
-    } catch {
-      // TODO error message not be defined
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

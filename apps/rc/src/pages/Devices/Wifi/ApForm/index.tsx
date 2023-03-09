@@ -12,7 +12,6 @@ import {
   PageHeader,
   Loader,
   Modal,
-  showToast,
   showActionModal,
   StepsForm,
   StepsFormInstance,
@@ -197,8 +196,9 @@ export function ApForm () {
           errorTypeMap[errorType] as keyof typeof ApErrorHandlingMessages
     ] ?? ApErrorHandlingMessages.ERROR_OCCURRED
 
-    showToast({
+    showActionModal({
       type: 'error',
+      title: $t({ defaultMessage: 'Error' }),
       content: (<FormattedMessage
         {...errorMsg}
         values={{
@@ -207,7 +207,11 @@ export function ApForm () {
             ? $t({ defaultMessage: 'updating' })
             : $t({ defaultMessage: 'creating' })
         }}
-      />)
+      />),
+      customContent: {
+        action: 'SHOW_ERRORS',
+        errorDetails: error
+      }
     })
   }
 
@@ -246,7 +250,7 @@ export function ApForm () {
     if (sameAsVenue) {
       setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
     }
-    formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
+    formRef?.current?.setFieldValue('apGroupId', options[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }

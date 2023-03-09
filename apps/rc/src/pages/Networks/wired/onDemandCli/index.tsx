@@ -5,6 +5,7 @@ import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
+import { filterByAccess }                                         from '@acx-ui/user'
 
 export function OnDemandCliTab () {
   const { $t } = useIntl()
@@ -86,14 +87,14 @@ export function OnDemandCliTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
           onClick: () => {
             navigate('add', { replace: false })
           }
-        }]}
+        }])}
       />
     </Loader></>
   )
