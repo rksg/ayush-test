@@ -61,5 +61,8 @@ export * from './components/Toast'
 export * from './components/Tooltip'
 export type { TooltipProps } from './components/Tooltip'
 export { VerticalStackedBarChart } from './components/VerticalStackedBarChart'
-export type { VerticalStackedBarChartData, VerticalStackedBarChartProps } from './components/VerticalStackedBarChart'
+export type {
+  VerticalStackedBarChartData,
+  VerticalStackedBarChartProps
+} from './components/VerticalStackedBarChart'
 export * from './theme/helper'
