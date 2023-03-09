@@ -1,17 +1,27 @@
 import React from 'react'
 
+import { take }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter, getSeriesData }                           from '@acx-ui/analytics/utils'
-import { HistoricalCard, Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
-import { formatter }                                                from '@acx-ui/formatter'
+import { AnalyticsFilter, getSeriesData }                 from '@acx-ui/analytics/utils'
+import {
+  HistoricalCard,
+  Loader, StackedAreaChart,
+  NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
 type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
 
-export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilter }) {
+ConnectedClientsOverTime.defaultProps = {
+  vizType: 'line'
+}
+
+export function ConnectedClientsOverTime ({
+  filters, vizType
+}: { filters : AnalyticsFilter , vizType: string }) {
   const { $t } = useIntl()
   const seriesMapping = [
     { key: 'uniqueUsers_all', name: $t({ defaultMessage: 'All Bands' }) },
@@ -20,10 +30,12 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
     { key: 'uniqueUsers_6', name: formatter('radioFormat')('6') }
   ] as Array<{ key: Key, name: string }>
 
+  const stackColors = take(qualitativeColorSet(), 4).reverse()
+
   const queryResults = useConnectedClientsOverTimeQuery(filters, {
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
-      data: getSeriesData(data!, seriesMapping)
+      data: getSeriesData(data!, vizType === 'area' ? seriesMapping.reverse() : seriesMapping)
     })
   })
 
@@ -33,10 +45,16 @@ export function ConnectedClientsOverTime ({ filters }: { filters : AnalyticsFilt
         <AutoSizer>
           {({ height, width }) => (
             queryResults.data.length ?
-              <MultiLineTimeSeriesChart
-                style={{ width, height }}
-                data={queryResults.data}
-              />
+              vizType === 'area' ?
+                <StackedAreaChart
+                  stackColors={stackColors}
+                  style={{ width, height }}
+                  data={queryResults.data}
+                /> :
+                <MultiLineTimeSeriesChart
+                  style={{ width, height }}
+                  data={queryResults.data}
+                />
               : <NoData/>
           )}
         </AutoSizer>

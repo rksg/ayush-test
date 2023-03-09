@@ -6,8 +6,10 @@ import {
   NetworkSegmentationGroup,
   NetworkSegmentationGroupStats,
   NetworkSegmentationUrls,
+  NewTableResult,
   RequestPayload,
-  TableResult
+  TableResult,
+  transferToTableResult
 } from '@acx-ui/rc/utils'
 import { baseNsgApi } from '@acx-ui/store'
 
@@ -54,6 +56,28 @@ export const nsgApi = baseNsgApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Networksegmentation', id: 'LIST' }]
+    }),
+    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
+        return transferToTableResult<NetworkSegmentationGroup>(result)
+      }
     })
   })
 })
@@ -62,5 +86,8 @@ export const {
   useCreateNetworkSegmentationGroupMutation,
   useGetNetworkSegmentationStatsListQuery,
   useDeleteNetworkSegmentationGroupMutation,
-  useUpdateNetworkSegmentationGroupMutation
+  useUpdateNetworkSegmentationGroupMutation,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupByIdQuery,
+  useGetNetworkSegmentationGroupListQuery
 } = nsgApi

@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useContext, useEffect } from 'react'
+import React, { MutableRefObject, useContext, useEffect, useState } from 'react'
 
 import { ProFormInstance } from '@ant-design/pro-form'
 import {
@@ -39,6 +39,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const { $t } = useIntl()
   const { edit, formRef } = props
   const params = useParams()
+  const [originalName, setOriginalName] = useState('')
 
   const {
     state, dispatch
@@ -68,6 +69,7 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
           }
         }
       })
+      setOriginalName(policyData.name)
       formRef?.current?.setFieldValue('policyName', policyData.name ?? '')
       formRef?.current?.setFieldValue('server', policyData.primary.server ?? '')
       formRef?.current?.setFieldValue('port', policyData.primary.port ?? 514)
@@ -237,7 +239,23 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
           rules={[
             { required: true },
             { min: 2 },
-            { max: 32 }
+            { max: 32 },
+            { validator: async (rule, value) => {
+              if (!edit && value
+                  && data?.findIndex((policy) => policy.name === value) !== -1) {
+                return Promise.reject(
+                  $t({ defaultMessage: 'The syslog server with that name already exists' })
+                )
+              }
+              if (edit && value && value !== originalName
+                  && data?.filter((policy) => policy.name !== originalName)
+                    .findIndex((policy) => policy.name === value) !== -1) {
+                return Promise.reject(
+                  $t({ defaultMessage: 'The syslog server with that name already exists' })
+                )
+              }
+              return Promise.resolve()
+            } }
           ]}
           validateFirst
           hasFeedback
