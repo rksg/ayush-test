@@ -53,6 +53,7 @@ const DHCPInstance = () => {
     },
     {
       label: leaseLabel,
+      disabled: leaseDisable,
       value: 'lease',
       children: <GridCol col={{ span: 24 }}><LeaseTable /></GridCol>
     }
