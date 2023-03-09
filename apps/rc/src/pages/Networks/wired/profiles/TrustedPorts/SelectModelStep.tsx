@@ -342,7 +342,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                     <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -367,7 +367,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                     <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
