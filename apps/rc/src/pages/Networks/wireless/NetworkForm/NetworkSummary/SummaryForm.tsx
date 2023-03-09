@@ -57,6 +57,7 @@ export function SummaryForm (props: {
     }
   }
 
+  // @ts-ignore
   return (
     <>
       <StepsForm.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsForm.Title>
@@ -88,8 +89,8 @@ export function SummaryForm (props: {
             label={$t({ defaultMessage: 'Use AAA Server:' })}
             children={
               summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication
-                ? 'Yes'
-                : 'No'
+                ? $t({ defaultMessage: 'Yes' })
+                : $t({ defaultMessage: 'No' })
             }
           />
           }
