@@ -1,17 +1,16 @@
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
+import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { TenantLink, useParams }           from '@acx-ui/react-router-dom'
+import { filterByAccess }                  from '@acx-ui/user'
+import { useDateFilter }                   from '@acx-ui/utils'
 
-import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                                     from '@acx-ui/icons'
-import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                  from '@acx-ui/user'
-import { useDateFilter }                                   from '@acx-ui/utils'
+import { ActiveVenueFilter } from './ActiveVenueFilter'
+import NetworkTabs           from './NetworkTabs'
+import { useGetNetwork }     from './services'
 
-import NetworkTabs       from './NetworkTabs'
-import { useGetNetwork } from './services'
-
-function NetworkPageHeader () {
+function NetworkPageHeader ({ setSelectedVenues }: { setSelectedVenues?: CallableFunction }) {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const network = useGetNetwork()
   const { networkId } = useParams()
@@ -23,8 +22,9 @@ function NetworkPageHeader () {
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
       extra={filterByAccess([
-        <DisabledButton key='hierarchy-filter'>
-          {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
+        ...setSelectedVenues
+          ? [<ActiveVenueFilter setSelectedVenues={setSelectedVenues} key='hierarchy-filter'/>]
+          : [],
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

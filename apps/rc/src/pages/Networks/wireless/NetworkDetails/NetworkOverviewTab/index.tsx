@@ -20,22 +20,21 @@ import {
   Loader,
   HistoricalCard
 } from '@acx-ui/components'
-import { NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { useDateFilter }   from '@acx-ui/utils'
+import { NetworkTypeEnum }                    from '@acx-ui/rc/utils'
+import { useDateFilter, generateVenueFilter } from '@acx-ui/utils'
 
 import { networkTypes }                     from '../../NetworkForm/contentsMap'
 import { extractSSIDFilter, useGetNetwork } from '../services'
 
-export function NetworkOverviewTab () {
+export function NetworkOverviewTab ({ selectedVenues }: { selectedVenues?: string[] }) {
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const network = useGetNetwork()
-  const ssids = extractSSIDFilter(network)
-  const filters = {
-    ...dateFilter,
-    path: defaultNetworkPath,
-    filter: { ssids }
-  } as AnalyticsFilter
+  let filter = { ssids: extractSSIDFilter(network) }
+  if (selectedVenues?.length) {
+    filter = { ...filter, ...generateVenueFilter(selectedVenues) }
+  }
+  const filters = { ...dateFilter, path: defaultNetworkPath, filter } as AnalyticsFilter
   const title = network.data?.type
     ? $t(networkTypes[network.data?.type as NetworkTypeEnum])
     : ''
