@@ -78,6 +78,7 @@ function SettingsForm () {
     })
   }
 
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return (
@@ -110,7 +111,7 @@ function SettingsForm () {
                 <Radio value={true} disabled={!macRegistrationEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
                 </Radio>
-                <Radio value={false}>
+                <Radio value={false} disabled={disableAAA}>
                   { $t({ defaultMessage: 'External MAC Auth' }) }
                 </Radio>
               </Space>
