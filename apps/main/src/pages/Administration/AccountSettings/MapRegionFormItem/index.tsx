@@ -1,17 +1,73 @@
-import { useState, useEffect } from 'react'
-
-import { DEFAULT_ID }                         from '@googlemaps/js-api-loader'
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { get }                                                 from '@acx-ui/config'
-import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
-import { useGetPreferencesQuery, useUpdatePreferenceMutation } from '@acx-ui/rc/services'
-import { COUNTRY_CODE }                                        from '@acx-ui/rc/utils'
-import { useParams }                                           from '@acx-ui/react-router-dom'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 import { MessageMapping } from '../MessageMapping'
 
+import { countryCodes, usePreference } from './usePreference'
+
+const MapRegionFormItem = () => {
+  const { $t } = useIntl()
+  const params = useParams()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+
+  const {
+    data: preferenceData,
+    currentMapRegion,
+    update: updatePreferences,
+    getReqState,
+    updateReqState
+  } = usePreference()
+
+  const handleMapRegionChange = async (regionCode:string) => {
+    if (!regionCode) return
+    const payload = {
+      global: { ...preferenceData?.global, mapRegion: regionCode }
+    }
+
+    try {
+      await updatePreferences({ params, payload }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const isLoadingPreference = getReqState.isLoading || getReqState.isFetching
+  const isUpdatingPreference = updateReqState.isLoading
+
+  return (
+    <Row gutter={24}>
+      <Col span={10}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Map Region' })}
+        >
+          {isMapEnabled ? (
+            <Select
+              value={currentMapRegion}
+              options={countryCodes}
+              onChange={handleMapRegionChange}
+              showSearch
+              allowClear
+              optionFilterProp='label'
+              disabled={isUpdatingPreference || isLoadingPreference}
+            />
+          ) :
+            $t(MessageMapping.map_region_not_enabled_message)
+          }
+        </Form.Item>
+        <Typography.Paragraph className='description greyText'>
+          {$t(MessageMapping.map_region_description)}
+        </Typography.Paragraph>
+      </Col>
+    </Row>
+  )
+}
+
+export { MapRegionFormItem }
+
+/*
 const countryCodes = COUNTRY_CODE.map(item=> ({
   label: item.name,
   value: item.code
@@ -22,7 +78,7 @@ const MapRegionFormItem = () => {
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
-  const [currentRegion, setCurrentRegion] = useState('')
+  const [currentRegion, setCurrentRegion] = useState<string>('')
   const { data: preferenceData, isLoading: isLoadingPreference, isFetching: isFetchingPreference }
     = useGetPreferencesQuery({ params })
   const [updatePreferences, { isLoading: isUpdatingPreference }] = useUpdatePreferenceMutation()
@@ -78,7 +134,7 @@ const MapRegionFormItem = () => {
 
   useEffect(() => {
     if (preferenceData?.global.mapRegion)
-      setCurrentRegion(preferenceData?.global.mapRegion)
+      setCurrentRegion(preferenceData?.global.mapRegion as string)
   }, [preferenceData])
 
 
@@ -111,3 +167,4 @@ const MapRegionFormItem = () => {
 }
 
 export { MapRegionFormItem }
+*/
