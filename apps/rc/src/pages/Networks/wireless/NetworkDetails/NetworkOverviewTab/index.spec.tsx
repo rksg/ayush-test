@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 
-
 import { Form } from 'antd'
 
-import { Provider } from '@acx-ui/store'
-import { render }   from '@acx-ui/test-utils'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { Provider }        from '@acx-ui/store'
+import { render }          from '@acx-ui/test-utils'
 
 import { useGetNetwork } from '../services'
 
@@ -18,7 +18,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TrafficByVolume: () => <div></div>,
   VenueHealth: () => <div></div>,
   IncidentBySeverityDonutChart: () => <div></div>,
-  KpiWidget: () => <div></div>,
+  KpiWidget: ({ filters }: { filters: AnalyticsFilter }) =>
+    <div>{JSON.stringify(filters.filter)}</div>,
   TtcTimeWidget: () => <div></div>
 }))
 const mockUseGetNetwork = useGetNetwork as jest.Mock
@@ -54,6 +55,21 @@ describe('NetworkOverviewTab', () => {
       <Provider>
         <Form>
           <NetworkOverviewTab />
+        </Form>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render network overview tab with venue filter', () => {
+    mockUseGetNetwork.mockImplementationOnce(() => ({ data: { type: 'psk' } }))
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    const { asFragment } = render(
+      <Provider>
+        <Form>
+          <NetworkOverviewTab selectedVenues={['venue1', 'venue2']} />
         </Form>
       </Provider>, {
         route: { params }
