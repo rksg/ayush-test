@@ -19,7 +19,7 @@ exports[`EdgeDhcpDetail Should render EdgeDhcpDetail successfully 1`] = `
               <a
                 href="/t/ecc2d7cf9d2342fdb31ae0e24958fcac/services/list"
               >
-                My Services
+                Services
               </a>
             </span>
             <span
