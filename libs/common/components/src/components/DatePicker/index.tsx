@@ -4,7 +4,6 @@ import {
   DatePicker as AntDatePicker,
   DatePickerProps as AntDatePickerProps
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { ClockOutlined } from '@acx-ui/icons'
