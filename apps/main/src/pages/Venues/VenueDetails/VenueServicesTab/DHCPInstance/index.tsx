@@ -10,12 +10,14 @@ import {
 } from '@acx-ui/components'
 import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery } from '@acx-ui/rc/services'
 import {
-  DHCPLeasesStatusEnum
+  DHCPLeasesStatusEnum,
+  DHCPConfigTypeEnum
 } from '@acx-ui/rc/utils'
 
-import BasicInfo  from './BasicInfo'
-import LeaseTable from './LeaseTable'
-import PoolTable  from './PoolTable'
+import BasicInfo         from './BasicInfo'
+import LeaseTable        from './LeaseTable'
+import PoolTable         from './PoolTable'
+import { DisabledLabel } from './styledComponents'
 
 const DHCPInstance = () => {
   const { $t } = useIntl()
@@ -34,6 +36,14 @@ const DHCPInstance = () => {
     params: { ...params, serviceId: venueDHCPProfile?.serviceProfileId }
   }, { skip: !venueDHCPProfile?.serviceProfileId })
 
+  const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },
+    { count: onlineList.length || 0 })
+  const leaseDisable = dhcpProfile?.dhcpMode === DHCPConfigTypeEnum.SIMPLE
+  const leaseLabel = leaseDisable ?
+    <DisabledLabel children={leaseContent}/>
+    :
+    leaseContent
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Pools ({count})' },
@@ -42,8 +52,7 @@ const DHCPInstance = () => {
       children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
     },
     {
-      label: $t({ defaultMessage: 'Lease Table ({count} Online)' },
-        { count: onlineList.length || 0 }),
+      label: leaseLabel,
       value: 'lease',
       children: <GridCol col={{ span: 24 }}><LeaseTable /></GridCol>
     }
