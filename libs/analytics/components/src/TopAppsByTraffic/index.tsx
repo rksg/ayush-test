@@ -63,7 +63,7 @@ export function TopAppsByTraffic ({
                   showTotal={false}
                   legend='name'
                   dataFormatter={dataFormatter}
-                  size={'thick'}
+                  size={'x-large'}
                 />
               </div>
               : <NoData />

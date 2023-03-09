@@ -27,7 +27,7 @@ interface DonutChartOptionalProps {
   showLabel: boolean,
   showTotal: boolean,
   legend: 'value' | 'name' | 'name-value',
-  size: 'small' | 'large' | 'thick'
+  size: 'small' | 'large' | 'x-large'
 }
 
 const defaultProps: DonutChartOptionalProps = {
@@ -99,7 +99,7 @@ export function DonutChart ({
   }
 
   const styles = {
-    small: {
+    'small': {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-subtitle-6-font-size'),
@@ -110,7 +110,7 @@ export function DonutChart ({
         ...commonStyles
       }
     },
-    large: {
+    'large': {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-body-2-font-size'),
@@ -124,7 +124,7 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-1-font-weight')
       }
     },
-    thick: {
+    'x-large': {
       title: {
         ...commonFontStyle,
         fontSize: cssNumber('--acx-body-2-font-size'),
@@ -138,7 +138,7 @@ export function DonutChart ({
         fontWeight: cssNumber('--acx-subtitle-1-font-weight')
       }
     },
-    label: {
+    'label': {
       ...commonFontStyle,
       fontSize: cssNumber('--acx-body-4-font-size'),
       lineHeight: cssNumber('--acx-body-4-line-height'),
@@ -152,7 +152,7 @@ export function DonutChart ({
         return ['82%', '92%']
       case props.showLabel:
         return ['62%', '78%']
-      case props.size === 'thick':
+      case props.size === 'x-large':
         return ['58%', '82%']
       default:
         return ['78%', '92%']
@@ -181,11 +181,11 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: props.size === 'thick' ? '55%' : '60%',
+      left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
-      itemGap: props.size === 'thick'? 16 : 4,
+      itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
@@ -239,7 +239,7 @@ export function DonutChart ({
           length2: isSmall ? 5 : 10
         },
         itemStyle: {
-          borderWidth: props.size === 'large' || props.size === 'thick' ? 2 : 1,
+          borderWidth: props.size === 'large' || props.size === 'x-large' ? 2 : 1,
           borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }

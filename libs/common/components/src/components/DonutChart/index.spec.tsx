@@ -165,12 +165,12 @@ describe('Donut Chart - large', () => {
   })
 })
 
-describe('Donut Chart - Thick', () => {
+describe('Donut Chart - x-large', () => {
   it('should render the chart properly with data and only title, without legend', async () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
-      size={'thick'}
+      size={'x-large'}
       onClick={jest.fn()}
       title='Donut Chart'
       showLegend={false}
@@ -183,7 +183,7 @@ describe('Donut Chart - Thick', () => {
     const { asFragment } = render(<DonutChart
       style={{ width: 238, height: 176 }}
       data={data}
-      size={'thick'}
+      size={'x-large'}
       title='Some Title'
       value='100'
       legend='name'
