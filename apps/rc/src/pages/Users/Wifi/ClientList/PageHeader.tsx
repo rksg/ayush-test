@@ -1,17 +1,17 @@
-// import moment      from 'moment'
+
 import { useIntl } from 'react-intl'
 
 import { PageHeader }            from '@acx-ui/components'
 import { useGetClientListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
-// import { useDateFilter }           from '@acx-ui/utils'
 
 import Tabs from './Tabs'
 
+
+
 function Header () {
   const { $t } = useIntl()
-  // const { startDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, venueId, serialNumber, activeTab } = useParams()
+  const { tenantId, venueId, serialNumber } = useParams()
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
@@ -27,15 +27,6 @@ function Header () {
     <PageHeader
       title={$t({ defaultMessage: 'Wi-Fi' })}
       footer={<Tabs clientCount={data?.totalCount ? data.totalCount : 0} />}
-      // Have side effect, revert it and check the rangePicker
-      extra={activeTab === 'guests' ? [
-        //   <RangePicker
-        //     selectionType={range}
-        //     showAllTime={true}
-        //     selectedRange={{ startDate: moment(startDate), endDate: null }}
-        //     onDateApply={setDateFilter as CallableFunction}
-        // />
-      ] : []}
     />
   )
 }

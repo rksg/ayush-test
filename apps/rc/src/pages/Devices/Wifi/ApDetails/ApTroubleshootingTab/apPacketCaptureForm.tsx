@@ -183,7 +183,7 @@ export function ApPacketCaptureForm () {
         const result =
           await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
         setIsCapturing(true)
-        setSessionId(result.response?.sessionId || '')
+        setSessionId(result.requestId || '')
 
       } catch (error) {
         console.log(error) // eslint-disable-line no-console

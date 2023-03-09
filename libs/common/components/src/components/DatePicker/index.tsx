@@ -4,7 +4,6 @@ import {
   DatePicker as AntDatePicker,
   DatePickerProps as AntDatePickerProps
 } from 'antd'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { ClockOutlined } from '@acx-ui/icons'
@@ -16,8 +15,7 @@ import {
   resetRanges,
   getJwtTokenPayload,
   AccountTier,
-  dateRangeForLast,
-  useDateFilter
+  dateRangeForLast
 } from '@acx-ui/utils'
 
 import { DatePickerFooter } from './DatePickerFooter'
@@ -43,7 +41,6 @@ interface DatePickerProps {
   onDateChange?: Function;
   onDateApply: Function;
   selectionType: DateRange;
-  showAllTime?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 const { dateFormat, dateTimeFormat } = dateTimeFormats
@@ -54,12 +51,10 @@ export const RangePicker = ({
   selectedRange,
   onDateChange,
   onDateApply,
-  selectionType,
-  showAllTime
+  selectionType
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
   const { $t } = useIntl()
-  const { range: dateRange } = useDateFilter()
   const { translatedRanges, translatedOptions } = useMemo(() => {
     const ranges = defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
@@ -109,16 +104,6 @@ export const RangePicker = ({
     }
   }, [range, onDateChange, onDateApply, translatedOptions])
 
-  useEffect(() => {
-    if (showAllTime) {
-      onDateApply({ range: DateRange.allTime })
-      onDateChange?.(range)
-    } else if (dateRange === DateRange.allTime) {
-      onDateApply({ range: DateRange.last24Hours })
-      onDateChange?.(range)
-    }
-  }, [showAllTime])
-
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
@@ -130,8 +115,7 @@ export const RangePicker = ({
     >
       <AntRangePicker
         ref={rangeRef}
-        ranges={showAllTime ? translatedRanges :
-          _.omit(translatedRanges, [DateRange.allTime])}
+        ranges={translatedRanges}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
@@ -158,6 +142,7 @@ export const RangePicker = ({
           : rangeText
         }
         allowClear={false}
+        inputReadOnly
       />
     </UI.RangePickerWrapper>
   )

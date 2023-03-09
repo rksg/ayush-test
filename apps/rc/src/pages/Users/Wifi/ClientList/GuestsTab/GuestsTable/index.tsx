@@ -66,40 +66,19 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
-  // const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
       filters: {
-        includeExpired: ['true']//,
-        // ...(range === DateRange.allTime ? {} : {
-        //   fromTime: [moment(startDate).utc().format()],
-        //   toTime: [moment(endDate).utc().format()]
-        // })
+        includeExpired: ['true']
       }
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
-
-  // useEffect(()=>{
-  //   const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-  //   let customPayload = {
-  //     ...tableQuery.payload,
-  //     filters: {
-  //       ..._.omit(payload.filters, ['fromTime', 'toTime']),
-  //       includeExpired: ['true']//,
-  //       // ...(range === DateRange.allTime ? {} : {
-  //       //   fromTime: [moment(startDate).utc().format()],
-  //       //   toTime: [moment(endDate).utc().format()]
-  //       // })
-  //     }
-  //   }
-  //   tableQuery.setPayload(customPayload)
-  // }, [startDate, endDate])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,

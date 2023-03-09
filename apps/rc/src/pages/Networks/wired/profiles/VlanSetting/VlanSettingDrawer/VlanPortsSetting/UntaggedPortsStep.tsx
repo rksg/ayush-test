@@ -75,6 +75,11 @@ export function UntaggedPortsStep () {
         setSelectedItems1(untaggedPorts.filter(item=> item.split('/')[1] === '1'))
         setSelectedItems2(untaggedPorts.filter(item=> item.split('/')[1] === '2'))
         setSelectedItems3(untaggedPorts.filter(item=> item.split('/')[1] === '3'))
+      }else{
+        form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], [])
+        setSelectedItems1([])
+        setSelectedItems2([])
+        setSelectedItems3([])
       }
     }
   }, [vlanSettingValues])
