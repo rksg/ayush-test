@@ -1,13 +1,20 @@
 import { useRef } from 'react'
 
-import ReactECharts from 'echarts-for-react'
+import ReactECharts                          from 'echarts-for-react'
+import { renderToString }                    from 'react-dom/server'
+import { RawIntlProvider, FormattedMessage } from 'react-intl'
+
+import { getIntl } from '@acx-ui/utils'
 
 import {
+  TooltipFormatterParams,
   tooltipOptions,
+  defaultRichTextFormatValues,
   axisLabelOptions,
   yAxisOptions,
   xAxisOptions
 } from '../Chart/helper'
+import * as ChartUI from '../Chart/styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
@@ -24,6 +31,46 @@ interface VerticalStackedBarChartProps
   data: TChartData,
   categories: string[]
   dataFormatter?: (value: number) => string
+  yAxisLabelFormatter?: (value: number) => string
+}
+
+export const tooltipFormatter = (
+  dataFormatter?: (value: number) => string
+) => (
+  parameters: TooltipFormatterParams | TooltipFormatterParams[]
+) => {
+  const intl = getIntl()
+  const params = Array.isArray(parameters) ? parameters : [parameters]
+  const name = params[0].name
+  const reversedParams = [...params].reverse()
+
+  return renderToString(
+    <RawIntlProvider value={intl}>
+      <ChartUI.TooltipWrapper>
+        <b>{name}</b>
+        <ul>{
+          reversedParams.map(({ seriesName, value, color }) => {
+            const text = <FormattedMessage
+              defaultMessage='{name}: <b>{value}</b>'
+              description='Label before colon, value after colon'
+              values={{
+                ...defaultRichTextFormatValues,
+                name: seriesName,
+                value: dataFormatter ? dataFormatter(value as number) : String(value)
+              }}
+            />
+            return <li key={seriesName}>
+              <ChartUI.Badge
+                className='acx-chart-tooltip'
+                color={(color) as string}
+                text={text}
+              />
+            </li>
+          })
+        }</ul>
+      </ChartUI.TooltipWrapper>
+    </RawIntlProvider>
+  )
 }
 
 export function VerticalStackedBarChart<TChartData extends VerticalStackedBarChartData[]>
@@ -31,6 +78,7 @@ export function VerticalStackedBarChart<TChartData extends VerticalStackedBarCha
   data,
   categories,
   dataFormatter,
+  yAxisLabelFormatter,
   ...props
 }: VerticalStackedBarChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -45,7 +93,7 @@ export function VerticalStackedBarChart<TChartData extends VerticalStackedBarCha
     tooltip: {
       ...tooltipOptions(),
       trigger: 'axis',
-      order: 'seriesDesc'
+      formatter: tooltipFormatter(dataFormatter)
     },
     xAxis: {
       ...xAxisOptions(),
@@ -62,7 +110,7 @@ export function VerticalStackedBarChart<TChartData extends VerticalStackedBarCha
       new Array(categories.length).fill(0))),
       axisLabel: {
         ...axisLabelOptions(),
-        formatter: dataFormatter ? dataFormatter : (value: number) => `${value}`
+        formatter: yAxisLabelFormatter ? yAxisLabelFormatter : (value: number) => `${value}`
       },
       splitLine: { show: false }
     },

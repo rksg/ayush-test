@@ -54,7 +54,7 @@ export type ChartFormatterFn = (
   index?: number
 ) => string
 
-const defaultRichTextFormatValues: Record<
+export const defaultRichTextFormatValues: Record<
   string,
   FormatXMLElementFn<React.ReactNode, React.ReactNode>
 > = {
@@ -237,6 +237,7 @@ export const timeSeriesTooltipFormatter = (
             const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
             let text = <FormattedMessage
               defaultMessage='{name}: <b>{value}</b>'
+              description='Label before colon, value after colon'
               values={{
                 ...defaultRichTextFormatValues,
                 name: data.name,
