@@ -71,7 +71,10 @@ export function useActivityTableQuery (baseFilters: Record<string, string> = {})
   })
 
   useEffect(
-    () => tableQuery.setPayload({ ...tableQuery.payload, filters }),
+    () => tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { ...(tableQuery.payload.filters as object), ...filters }
+    }),
     [fromTime, toTime]
   )
 
