@@ -922,7 +922,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    addApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
+    addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params, RKS_NEW_UI)
         return {
@@ -985,8 +985,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AP SNMP agent Profile',
-            'Update AP SNMP agent Profile'
+            'AddApSnmpAgentProfile',
+            'UpdateApSnmpAgentProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })

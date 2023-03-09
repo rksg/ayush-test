@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -26,8 +26,6 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
   const usedCommunityName = othersData.map(d => d.communityName)
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
-
-  const [ hasNoPrivilegeError, setHasNoPrivilegeError ] = useState(false)
 
   const title = isEditMode
     ? $t({ defaultMessage: 'Edit SNMPv2 Agent' })
@@ -91,7 +89,6 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
       children={<Input />}
     />
     <PrivilegeForm
-      hasNoPrivilegeError={hasNoPrivilegeError}
       hasOtherReadPrivilegeEnabled={hasOtherReadPrivilegeEnabled}
       hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
   </Form>
@@ -119,9 +116,7 @@ const SnmpV2AgentDrawer = (props: SnmpV2AgentDrawerProps) => {
                 const newData = form.getFieldsValue()
                 const { readPrivilege, trapPrivilege } = newData
 
-                if (!readPrivilege && !trapPrivilege) {
-                  setHasNoPrivilegeError(true)
-                } else {
+                if (readPrivilege || trapPrivilege) {
                   onDataChanged(newData)
                   //form.submit()
                   const allPrivilegeEnabled = (readPrivilege || hasOtherReadPrivilegeEnabled)

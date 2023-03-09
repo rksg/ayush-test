@@ -55,15 +55,19 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
           />
         </GridCol>
       </GridRow>
-      <GridRow style={{ height: '350px' }}>
+      <GridRow style={{ height: '300px' }}>
         <GridCol col={{ span: 14 }}>
           <StepsForm.Title>{$t({ defaultMessage: 'SNMP Agent Settings' })}</StepsForm.Title>
-          <SnmpAgentV2Table data={snmpV2Agents} />
+          <Form.Item name='snmpV2Agents'>
+            <SnmpAgentV2Table data={snmpV2Agents} />
+          </Form.Item>
         </GridCol>
       </GridRow>
       <GridRow>
         <GridCol col={{ span: 14 }}>
-          <SnmpAgentV3Table data={snmpV3Agents} />
+          <Form.Item name='snmpV3Agents'>
+            <SnmpAgentV3Table data={snmpV3Agents} />
+          </Form.Item>
         </GridCol>
       </GridRow>
     </>

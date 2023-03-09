@@ -95,6 +95,7 @@ const SnmpAgentV2Table = (props: SnmpAgentV2TableProps) => {
         const newData = tableData.filter(r => keys.indexOf(r.communityName) === -1)
         setTableData(newData)
         clearSelection()
+
         // update form data
         form.setFieldValue('snmpV2Agents', newData)
       }

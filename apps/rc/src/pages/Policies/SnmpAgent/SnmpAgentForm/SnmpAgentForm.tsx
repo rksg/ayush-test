@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm, StepsFormInstance }                                           from '@acx-ui/components'
+import { PageHeader, showActionModal, StepsForm, StepsFormInstance }                          from '@acx-ui/components'
 import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation } from '@acx-ui/rc/services'
 import { ApSnmpPolicy, getPolicyListRoutePath }                                               from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
@@ -47,21 +47,36 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const handleSaveApSnmpAgentPolicy = async (data: ApSnmpPolicy) => {
     try {
-      if (!editMode) {
-        await createApSnmpPolicy({
-          params,
-          payload: data
-        }).unwrap().then(()=>{
-          //data.id = res?.response?.id
+      const payload = { ...data }
+      if (!payload.snmpV2Agents) payload.snmpV2Agents = []
+      if (!payload.snmpV3Agents) payload.snmpV3Agents = []
+
+      const { snmpV2Agents, snmpV3Agents } = payload
+      if (snmpV2Agents.length === 0 && snmpV3Agents.length === 0) {
+        showActionModal({
+          type: 'error',
+          content:
+            $t({
+              defaultMessage: 'At least one SNMPv2 agent or SNMPv3 agent must be created.'
+            })
         })
       } else {
-        await updateApSnmpPolicy({
-          params,
-          payload: data
-        }).unwrap()
-      }
+        if (!editMode) {
+          await createApSnmpPolicy({
+            params,
+            payload
+          }).unwrap().then((res)=>{
+            data.id = res?.response?.id
+          })
+        } else {
+          await updateApSnmpPolicy({
+            params,
+            payload: data
+          }).unwrap()
+        }
 
-      navigate(linkToPolicies, { replace: true })
+        navigate(linkToPolicies, { replace: true })
+      }
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }

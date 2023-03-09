@@ -19,7 +19,6 @@ export const HasAllPrivilegeEnabled = (data: SnmpV2Agent[] | SnmpV3Agent[]) => {
 }
 
 type PrivilegeFormProps = {
-  hasNoPrivilegeError: boolean,
   hasOtherReadPrivilegeEnabled: boolean,
   hasOtherTrapPrivilegeEnabled: boolean
 }
@@ -27,11 +26,12 @@ type PrivilegeFormProps = {
 const PrivilegeForm = (props: PrivilegeFormProps) => {
   const { $t } = useIntl()
   const {
-    hasNoPrivilegeError=false,
     hasOtherReadPrivilegeEnabled=false,
     hasOtherTrapPrivilegeEnabled=false } = props
 
-  const trapPrivilege = useWatch<boolean>('trapPrivilege')
+  const [readPrivilege, trapPrivilege] = [
+    useWatch<boolean>('readPrivilege'),
+    useWatch<boolean>('trapPrivilege')]
 
   return (<>
     <Form.Item label={$t({ defaultMessage: 'Privilege' })} style={{ marginBottom: '0' }}>
@@ -58,7 +58,7 @@ const PrivilegeForm = (props: PrivilegeFormProps) => {
         }
       />
     </Form.Item>
-    {hasNoPrivilegeError &&
+    {(!readPrivilege && !trapPrivilege) &&
       <div style={{ color: 'red' }}>
         {$t({ defaultMessage: 'Please enable at least one privilege option.' })}
       </div>
