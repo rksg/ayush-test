@@ -4,13 +4,10 @@ export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
-    // Path variable not match
-    // method: 'post',
-    // url: '/networks/query',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/network',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/network'
+    url: '/networks/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/network',
+    newApi: true
   },
   getNetworksDetailHeader: {
     // 404 Not Found

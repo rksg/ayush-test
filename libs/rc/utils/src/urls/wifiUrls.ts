@@ -25,7 +25,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId'
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId',
+    newApi: true
   },
   addNetworkVenue: {
     method: 'post',
@@ -304,13 +306,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
   },
   startPacketCapture: {
-    // Not working properly
-    // method: 'post',
-    // url: '/venues/aps/:serialNumber/packets',
-    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
-    // newApi: true
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+    url: '/venues/aps/:serialNumber/packets',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
+    newApi: true
   },
   stopPacketCapture: {
     // different method
