@@ -49,6 +49,7 @@ export function TrustedPortsModal (props: {
       closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
+      data-testid='trustedPortModal'
     >
       <StepsForm
         editMode={!!editRecord}
