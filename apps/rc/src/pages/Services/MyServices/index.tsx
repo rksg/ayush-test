@@ -7,6 +7,7 @@ import {
   useGetDpskListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
+  useGetWifiCallingServiceListQuery,
   useServiceListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -26,6 +27,18 @@ const defaultPayload = {
     'type',
     'scope',
     'cog'
+  ]
+}
+
+const defaultWifiCallingPayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'qosPriority',
+    'tenantId',
+    'epdgs',
+    'networkIds'
   ]
 }
 
@@ -79,8 +92,8 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.WIFI_CALLING] } }
+      tableQuery: useGetWifiCallingServiceListQuery({
+        params, payload: { ...defaultWifiCallingPayload }
       })
     },
     {

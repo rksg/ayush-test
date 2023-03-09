@@ -381,6 +381,8 @@ export interface WifiCallingSetting {
   serviceName: string,
   description: string | undefined,
   qosPriority: QosPriorityEnum,
+  tenantId?: string,
+  name?: string,
   epdgs?: EPDG[],
   networkIds?: string[]
 }

@@ -47,7 +47,7 @@ export function WifiCallingSettingModal () {
       height: '100%'
     }}
     operations={[$t({ defaultMessage: 'Add' }), $t({ defaultMessage: 'Remove' })]}
-    dataSource={data?.map(data => {
+    dataSource={data?.data.map(data => {
       return { ...data, key: data.id }
     })}
     render={item => item.serviceName}
@@ -66,7 +66,7 @@ export function WifiCallingSettingModal () {
   }
 
   const handleOk = async () => {
-    data && setWifiCallingSettingList(data.filter(data => targetKeys.indexOf(data.id) !== -1))
+    data && setWifiCallingSettingList(data.data.filter(data => targetKeys.indexOf(data.id) !== -1))
     setVisible(false)
     form.setFieldValue(
       ['wlan', 'advancedCustomization', 'wifiCallingIds'],
@@ -83,7 +83,7 @@ export function WifiCallingSettingModal () {
   useEffect(() => {
     const networkIds = form.getFieldValue(['wlan', 'advancedCustomization', 'wifiCallingIds'])
     if (!wifiCallingSettingList.length && data && networkIds) {
-      setWifiCallingSettingList(data.filter(item => networkIds.indexOf(item.id) !== -1))
+      setWifiCallingSettingList(data.data.filter(item => networkIds.indexOf(item.id) !== -1))
       setTargetKeys(networkIds)
     }
   }, [data, wifiCallingSettingList.length])
