@@ -32,7 +32,7 @@ describe('Edge Detail Drawer', () => {
   it('should render -- if data is undefined', async () => {
     const edgeWithoutModel = { ...currentEdge }
     delete edgeWithoutModel.cpuUsed
-    delete edgeWithoutModel.fwVersion
+    delete edgeWithoutModel.firmwareVersion
 
     render(<Provider>
       <EdgeDetailsDrawer

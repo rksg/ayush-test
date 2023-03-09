@@ -20,7 +20,6 @@ import {
   MdnsProxyUrls,
   DHCPSaveData,
   LeaseUnit,
-  DHCPDetailInstances,
   WifiCallingUrls,
   WifiCallingFormContextType,
   WifiCallingSetting,
@@ -44,7 +43,6 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   NetworkSegmentationUrls,
-  NetworkSegmentationGroup,
   WebAuthTemplate,
   AccessSwitch,
   DistributionSwitch,
@@ -402,15 +400,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
@@ -734,29 +723,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
-    }),
-    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    // eslint-disable-next-line max-len
-    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
-        return transferToTableResult<NetworkSegmentationGroup>(result)
-      }
     })
+
   })
 })
 
@@ -768,7 +736,6 @@ export const {
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useDhcpVenueInstancesQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
@@ -809,9 +776,6 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,
