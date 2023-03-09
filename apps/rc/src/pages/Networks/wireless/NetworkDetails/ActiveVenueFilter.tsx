@@ -25,6 +25,7 @@ export function ActiveVenueFilter ({
     }
   })
   const activeVenues = networkQuery.data?.venues?.map(({ venueId }) => venueId)
+  const values = selectedVenues.map(venue => [venue])
   return <Loader states={[networkQuery, venuesQuery]} style={{ minWidth: '159px' }}>
     <Select
       entityName={{
@@ -33,8 +34,8 @@ export function ActiveVenueFilter ({
       }}
       placeholder={$t({ defaultMessage: 'All Active Venues' })}
       multiple
-      value={selectedVenues}
-      defaultValue={selectedVenues}
+      value={values}
+      defaultValue={values}
       options={venuesQuery.data?.data
         ?.filter(({ id }) => activeVenues?.includes(id))
         .map(({ id, name }) => ({ value: id, label: name }))
