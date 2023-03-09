@@ -329,7 +329,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           type='link'
           icon={<SearchFitOutlined />}/>
       </UI.ImageButtonsContainer>
-      {floorPlans.length > 1 && <Row style={{ backgroundColor: 'var(--acx-neutrals-10' }}>
+      {!!(floorPlans.length > 1) && <Row style={{ backgroundColor: 'var(--acx-neutrals-10' }}>
         <UI.GallaryWrapper>
           <UI.GallaryIcon
             data-testid='galleryIcon'
