@@ -157,7 +157,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApGroupsList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/ap-groups'
+    url: '/apGroups/query',
+    oldUrl: '/api/viewmodel/:tenantId/ap-groups',
+    newApi: true
   },
   addApGroup: {
     method: 'post',
@@ -167,27 +169,39 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApsByApGroup: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId/ap'
+    url: '/venues/apGroups/:apGroupId/aps',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId/ap',
+    newApi: true
   },
   getApGroup: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   updateApGroup: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   deleteApGroup: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId'
+    url: '/venues/apGroups/:apGroupId',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group/:apGroupId',
+    newApi: true
   },
   deleteApGroups: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/ap-group'
+    url: '/venues/apGroups',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap-group',
+    newApi: true
   },
   getDhcpAp: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/dhcp-ap'
+    url: '/venues/dhcpApSettings/query',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/dhcp-ap',
+    newApi: true
   },
   deleteAp: {
     method: 'delete',
@@ -219,16 +233,21 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/download-log',
     newApi: true
   },
-  apAction: {
-    method: 'patch',
-    url: '/venues/aps/:serialNumber',
-    newApi: true
-  },
   rebootAp: {
+    // different method
+    // method: 'patch',
+    // url: '/venues/aps/:serialNumber',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/reboot'
   },
   factoryResetAp: {
+    // different method
+    // method: 'patch',
+    // url: '/venues/aps/:serialNumber',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/factory-reset'
   },
@@ -267,18 +286,38 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   pingAp: {
+    // different method
+    // method: 'patch',
+    // url: '/venues/aps/:serialNumber',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ping'
   },
   traceRouteAp: {
+    // different method
+    // method: 'patch',
+    // url: '/venues/aps/:serialNumber',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
   },
   startPacketCapture: {
+    // Not working properly
+    // method: 'post',
+    // url: '/venues/aps/:serialNumber/packets',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
   },
   stopPacketCapture: {
+    // different method
+    // method: 'delete',
+    // url: '/venues/aps/:serialNumber/packets',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/stop'
   },
@@ -289,6 +328,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   blinkLedAp: {
+    // different method
+    // method: 'patch',
+    // url: '/venues/aps/:serialNumber',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/blink-led'
   },

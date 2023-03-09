@@ -6,6 +6,12 @@ import { useParams }       from 'react-router-dom'
 
 import { Card, GridCol, GridRow }  from '@acx-ui/components'
 import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
+import {
+  FacilityEnum,
+  FlowLevelEnum
+} from '@acx-ui/rc/utils'
+
+import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
@@ -53,7 +59,7 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Event Facility' })}
           </Card.Title>
           <Paragraph>
-            {data.facility}
+            {data.facility ? $t(facilityLabelMapping[data.facility as FacilityEnum]) : ''}
           </Paragraph>
         </GridCol>
         <GridCol col={{ span: 4 }}>
@@ -61,7 +67,7 @@ const SyslogDetailContent = () => {
             {$t({ defaultMessage: 'Send Logs' })}
           </Card.Title>
           <Paragraph>
-            {data.flowLevel}
+            {data.flowLevel ? $t(flowLevelLabelMapping[data.flowLevel as FlowLevelEnum]) : ''}
           </Paragraph>
         </GridCol>
       </GridRow>

@@ -1,4 +1,5 @@
-import { getTenantId } from './getTenantId'
+import { isDelegationMode } from './apiService'
+import { getTenantId }      from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
@@ -105,24 +106,19 @@ export function getJwtToken () {
 
 export async function loadImageWithJWT (imageId: string) {
   let gImgUrl = ''
-  let headers = {
+  const headers = {
     mode: 'no-cors',
-    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+    ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {}),
+    ...(isDelegationMode() ? { 'x-rks-tenantid': getTenantId() } : {})
   }
-  if(getTenantId() !== getJwtTokenPayload().tenantId){
-    headers = {
-      ...headers,
-      ...{ 'x-rks-tenantid': getTenantId() }
-    }
-  }
-  const url = `/files/${imageId}/urls`
+  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const result = await fetch(url, { headers }).then(function (response) {
     return response.json()
   })
   if (result) {
     gImgUrl = result.signedUrl
   } else {
-    throw new Error(`Error! status: ${result}`)
+    throw new Error(`Error! status: ${result.status}`)
   }
   return gImgUrl
 }
