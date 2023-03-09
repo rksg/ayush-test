@@ -47,7 +47,9 @@ import {
   NetworkSegmentationGroup,
   WebAuthTemplate,
   downloadFile,
-  SwitchLite
+  SwitchLite,
+  DistributionSwitch,
+  AccessSwitch
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -716,12 +718,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
-        return {
-          ...req
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const nsgRequest = createHttpRequest(
+          NetworkSegmentationUrls.getNetworkSegmentationGroupById, arg.params)
+        const nsgQuery = await fetchWithBQ(nsgRequest)
+        const nsg = nsgQuery.data as NetworkSegmentationGroup
+
+        const nsgSwitchRequest = createHttpRequest(
+          NetworkSegmentationUrls.getSwitchInfoByNSGId, {
+            ...arg.params,
+            venueId: nsg.venueInfos[0].venueId
+          })
+        const nsgSwitchQuery = await fetchWithBQ(nsgSwitchRequest)
+        const nsgSwitch = nsgSwitchQuery.data as {
+          distributionSwitches: DistributionSwitch[]
+          accessSwitches: AccessSwitch[]
         }
+
+        const aggregatedData = aggregatedNSGData(nsg, nsgSwitch)
+
+        return nsgQuery.data
+          ? { data: aggregatedData }
+          : { error: nsgQuery.error as FetchBaseQueryError }
       }
     }),
     // eslint-disable-next-line max-len
@@ -780,6 +798,35 @@ export const serviceApi = baseServiceApi.injectEndpoints({
   })
 })
 
+const aggregatedNSGData = (
+  nsg: NetworkSegmentationGroup,
+  nsgSwitch: {
+    distributionSwitches: DistributionSwitch[]
+    accessSwitches: AccessSwitch[]
+  }
+) => {
+  let distributionSwitchInfos: DistributionSwitch[]
+  let accessSwitchInfos: AccessSwitch[]
+  let dsMap: { [key: string]: AccessSwitch[] } = {}
+
+  accessSwitchInfos = nsg.accessSwitchInfos?.map(as=>{
+    const asDetail = nsgSwitch.accessSwitches.find(item=>item.id === as.id)
+    const dsId = asDetail!.distributionSwitchId
+    const ret: AccessSwitch = { ...as, ...asDetail }
+    if (!dsMap.hasOwnProperty(dsId)) {
+      dsMap[dsId] = []
+    }
+    dsMap[dsId].push(ret)
+    return ret
+  }) || []
+  distributionSwitchInfos = nsg.distributionSwitchInfos?.map(ds=>{
+    const dsDetail = nsgSwitch.distributionSwitches.find(item=>item.id === ds.id)
+    const ret: DistributionSwitch = { ...ds, ...dsDetail, accessSwitches: dsMap[ds.id] }
+    return ret
+  }) || []
+
+  return { ...nsg, distributionSwitchInfos, accessSwitchInfos } as NetworkSegmentationGroup
+}
 
 export const {
   useCloudpathListQuery,

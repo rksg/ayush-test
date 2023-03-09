@@ -7,7 +7,7 @@ export interface NetworkSegmentationGroup {
   networkIds: string[]
   distributionSwitchInfos: DistributionSwitch[]
   accessSwitchInfos: AccessSwitch[]
-  forceOverwriteReboot: boolean
+  forceOverwriteReboot?: boolean
 }
 
 export interface NetworkSegmentationGroupStats {
@@ -76,7 +76,7 @@ export interface DistributionSwitch extends
   DistributionSwitchSaveData,
   Partial<MduSwitchAddtionalInfo>
 {
-  siteIp: string
+  siteIp?: string
   accessSwitches?: AccessSwitch[]
 }
 

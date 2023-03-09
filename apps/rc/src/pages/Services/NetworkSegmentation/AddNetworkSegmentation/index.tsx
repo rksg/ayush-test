@@ -3,9 +3,11 @@ import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { PageHeader, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }    from '@acx-ui/rc/services'
-import { useTenantLink }                                from '@acx-ui/react-router-dom'
+import { PageHeader, showActionModal, StepsFormNew, useStepFormContext } from '@acx-ui/components'
+import { useCreateNetworkSegmentationGroupMutation }                     from '@acx-ui/rc/services'
+import { CatchErrorDetails, CatchErrorResponse }                         from '@acx-ui/rc/utils'
+import { useTenantLink }                                                 from '@acx-ui/react-router-dom'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
 import { AccessSwitchForm }             from '../NetworkSegmentationForm/AccessSwitchForm'
@@ -70,13 +72,27 @@ const AddNetworkSegmentation = () => {
         ds, ['accessSwitches', 'name'])),
       accessSwitchInfos: formData.accessSwitchInfos.map(as=>_.omit(
         as, ['name', 'familyId', 'firmwareVersion', 'model'])),
-      forceOverwriteReboot: false
+      forceOverwriteReboot: formData.forceOverwriteReboot || false
     }
     try{
       await createNetworkSegmentationGroup({ payload }).unwrap()
       navigate(linkToServices, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'Please confirm before overwriting' }),
+        content: afterSubmitMessage(error as CatchErrorResponse,
+          [...formData.distributionSwitchInfos, ...formData.accessSwitchInfos]),
+        okText: $t({ defaultMessage: 'Yes' }),
+        cancelText: $t({ defaultMessage: 'No' }),
+        onOk: async () => {
+          formData.forceOverwriteReboot = true
+          handleFinish(formData)
+        },
+        onCancel: async () => {}
+      })
     }
   }
 
@@ -116,6 +132,54 @@ const AddNetworkSegmentation = () => {
       </StepsFormNew>
     </>
   )
+}
+
+export const afterSubmitMessage = (
+  error: CatchErrorResponse,
+  allSwitches: { id: string, name?: string }[]
+) => {
+  const { $t } = getIntl()
+
+  const errorMsg = (error.data.errors[0] as unknown as { error: CatchErrorDetails }).error.message
+  const webAuthVlanDNE = /\[WebAuth VLAN\]/.test(errorMsg)
+  const forceOverwriteReboot = /\[forceOverwriteReboot\]/.test(errorMsg)
+  const hasVXLAN = /VXLAN/i.test(errorMsg)
+
+  const macRegexString = '([0-9a-fA-F][0-9a-fA-F]:){5}[0-9a-fA-F][0-9a-fA-F]'
+  const macRegex = new RegExp(macRegexString, 'g')
+  const macGroupRegex = new RegExp('\\[('+macRegexString+',? ?){1,}\\]', 'g')
+
+  const switchIdList = errorMsg.match(macGroupRegex) as string[]
+
+  const mapping: { [key: string]: string } = {}
+  allSwitches.forEach(s=>{
+    mapping[s.id] = s.name || s.id
+  })
+
+  const replaceMacWithName = (msg?: string) => {
+    return msg ? msg.replace(macRegex, m => mapping[m] || m) : ''
+  }
+
+  let message: string[] = []
+  if (forceOverwriteReboot && switchIdList.length > 0) {
+    if (hasVXLAN) {
+      message.push($t({ defaultMessage:
+        'Distribution Switch {switchName} already has VXLAN config.' },
+      { switchName: replaceMacWithName(switchIdList.shift()) }
+      ))
+    }
+    if (switchIdList.length > 0) {
+      message.push($t({ defaultMessage:
+        'Distribution Switch {switchName} will reboot after set up forwarding profile.' },
+      { switchName: replaceMacWithName(switchIdList.shift()) }
+      ))
+    }
+
+    message.push($t({ defaultMessage: 'Click Yes to proceed, No to cancel.' }))
+  } else if (webAuthVlanDNE) {
+    message.push(replaceMacWithName(errorMsg))
+  }
+  return message.map(m=><p>{m}</p>)
 }
 
 export default AddNetworkSegmentation

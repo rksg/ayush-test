@@ -1,7 +1,7 @@
-
 import { useEffect } from 'react'
 
 import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -10,6 +10,8 @@ import { useGetNetworkSegmentationGroupByIdQuery, useUpdateNetworkSegmentationGr
 import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
+import { AccessSwitchForm }             from '../NetworkSegmentationForm/AccessSwitchForm'
+import { DistributionSwitchForm }       from '../NetworkSegmentationForm/DistributionSwitchForm'
 import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
 import { SmartEdgeForm }                from '../NetworkSegmentationForm/SmartEdgeForm'
 import { WirelessNetworkForm }          from '../NetworkSegmentationForm/WirelessNetworkForm'
@@ -36,6 +38,14 @@ const EditNetworkSegmentation = () => {
     {
       title: $t({ defaultMessage: 'Wireless Network' }),
       content: <WirelessNetworkForm />
+    },
+    {
+      title: $t({ defaultMessage: 'Dist. Switch' }),
+      content: <DistributionSwitchForm />
+    },
+    {
+      title: $t({ defaultMessage: 'Access Switch' }),
+      content: <AccessSwitchForm />
     }
   ]
 
@@ -51,6 +61,8 @@ const EditNetworkSegmentation = () => {
       form.setFieldValue('poolId', nsgData.edgeInfos[0]?.dhcpPoolId)
       form.setFieldValue('vxlanTunnelProfileId', nsgData.vxlanTunnelProfileId)
       form.setFieldValue('networkIds', nsgData.networkIds)
+      form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
+      form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
     }
   }, [nsgData])
 
@@ -68,7 +80,12 @@ const EditNetworkSegmentation = () => {
         dhcpInfoId: formData.dhcpId,
         dhcpPoolId: formData.poolId
       }],
-      networkIds: formData.networkIds
+      networkIds: formData.networkIds,
+      distributionSwitchInfos: formData.distributionSwitchInfos.map(ds=>_.omit(
+        ds, ['accessSwitches', 'name'])),
+      accessSwitchInfos: formData.accessSwitchInfos.map(as=>_.omit(
+        as, ['name', 'familyId', 'firmwareVersion', 'model'])),
+      forceOverwriteReboot: false
     }
     try{
       await updateNetworkSegmentationGroup({ params, payload }).unwrap()
@@ -86,7 +103,7 @@ const EditNetworkSegmentation = () => {
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
       />
-      <StepsFormNew
+      <StepsFormNew editMode
         form={form}
         onCancel={() => navigate(linkToServices)}
         onFinish={handleFinish}

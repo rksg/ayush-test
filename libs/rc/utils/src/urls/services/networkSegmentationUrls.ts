@@ -35,10 +35,10 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations'
   },
-  // getSwitchesByServiceId: {
-  //   method: 'get',
-  //   url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
-  // },
+  getSwitchInfoByNSGId: {
+    method: 'get',
+    url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations/:serviceId'
+  },
   getAccessSwitchesByDS: {
     method: 'get',
     url: '/api/switch/tenant/:tenantId/venues/:venueId/networkSegmentations' +
@@ -72,12 +72,4 @@ export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/networkSegmentationGroups/:serviceId'
   }
-  // getAccessSwitches: {
-  //   method: 'post',
-  //   url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/accessSwitches'
-  // },
-  // getDistributionSwitches: {
-  //   method: 'post',
-  //   url: '/api/switch/tenant/:tenantId/venue/:venueId/networkSegmentations/distributionSwitches'
-  // }
 }
