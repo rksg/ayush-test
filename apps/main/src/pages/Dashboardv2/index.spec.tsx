@@ -8,7 +8,7 @@ import Dashboard from '.'
 /* eslint-disable max-len */
 jest.mock('@acx-ui/analytics/components', () => ({
   ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
-  IncidentsDashboard: () => <div data-testid={'analytics-IncidentsDashboard'} title='IncidentsDashboard' />,
+  IncidentsDashboardv2: () => <div data-testid={'analytics-IncidentsDashboardv2'} title='IncidentsDashboard' />,
   NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
   SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
   TopApplicationsByTraffic: () => <div data-testid={'analytics-TopApplicationsByTraffic'} title='TopApplicationsByTraffic' />,
@@ -39,7 +39,7 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
 
@@ -68,7 +68,7 @@ describe('Dashboard', () => {
   it('should switch tab correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
   it('should show report link correctly', async () => {

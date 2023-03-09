@@ -11,6 +11,7 @@ export { IncidentBySeverityDonutChart } from './IncidentBySeverity/IncidentBySev
 export { IncidentTabContent, IncidentListPage } from './Incidents'
 export { IncidentTable } from './IncidentTable'
 export { IncidentsDashboard } from './IncidentsDashboard'
+export { IncidentsDashboardv2 } from './IncidentsDashboardv2'
 export { KpiWidget } from './KpiWidget'
 export { NetworkFilter, getSupersetRlsClause, getNetworkFilterData } from './NetworkFilter'
 export { useNetworkFilterQuery } from './NetworkFilter/services'
