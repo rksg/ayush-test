@@ -96,7 +96,7 @@ export function SwitchInfoWidget (props:{
       sortOrder: 'DESC'
     },
     pagination: {
-      pageSize: 25,
+      pageSize: 10000,
       page: 1,
       total: 0
     }
