@@ -181,13 +181,13 @@ function ACLSettingForm (props: ACLSettingFormProps) {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        setRuleList(
-          ruleList?.filter((option: { sequence: number }) => {
-            return !selectedRows
-              .map((r) => r.sequence)
-              .includes(option.sequence)
-          })
-        )
+        const rules = ruleList?.filter((option: { sequence: number }) => {
+          return !selectedRows
+            .map((r) => r.sequence)
+            .includes(option.sequence)
+        })
+        setRuleList(rules)
+        form.setFieldValue('aclRules', rules)
         setSelected(undefined)
       }
     }
