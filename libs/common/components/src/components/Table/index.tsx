@@ -85,15 +85,8 @@ export interface TableProps <RecordType>
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
-      groupBy?: string
-    ) => void,
-    /**
-     * Assumes that dataSource is nested with children key.
-     */
-    groupByTableActions?: {
-      onChange: CallableFunction
-      onClear: CallableFunction
-    }
+      groupBy?: string | undefined
+    ) => void
   }
 
 export interface TableHighlightFnArgs {
@@ -146,12 +139,13 @@ function getHighlightFn (searchValue: string): TableHighlightFnArgs {
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, onFilterChange, groupByTableActions, ...props
+  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
 }: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
+  const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
@@ -162,30 +156,35 @@ function Table <RecordType extends Record<string, any>> ({
     expandable,
     groupActionColumns,
     finalParentColumns,
-    clearGroupByFn,
-    isGroupByActive,
-    groupBy
+    isGroupByActive
   } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
     groupable, 
-    groupByTableActions, 
+    groupByValue,
+    setGroupByValue, 
     props.columns.length, 
     intl
   )
 
   const debounced = useCallback(_.debounce((filter: Filter, searchString: string, groupBy: string | undefined) =>
-  onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+  onFilterChange 
+    && onFilterChange(filter, { searchString }, groupBy), 1000), [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue, groupBy)
+      debounced(filterValues, searchValue, groupByValue)
     }
     return () => debounced.cancel()
-  }, [searchValue, debounced, groupBy])
+  }, [searchValue, debounced])
 
   useEffect(() => {
-    debounced(filterValues, searchValue, groupBy)
+    debounced(filterValues, searchValue, groupByValue)
     return () => debounced.cancel()
-  }, [filterValues, debounced, groupBy])
+  }, [filterValues, debounced])
+
+  useEffect(() => {
+    debounced(filterValues, searchValue, groupByValue)
+    return () => debounced.cancel()
+  }, [groupByValue, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -196,6 +195,7 @@ function Table <RecordType extends Record<string, any>> ({
     }
 
     let tableCols: typeof props.columns
+
     if (isGroupByActive) {
       // create deep copy of current cols
       const colCopy: typeof props.columns = _.cloneDeep(props.columns)
@@ -255,7 +255,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, isGroupByActive, finalParentColumns])
+  }, [props.columns, type, searchValue, groupByValue])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -468,7 +468,7 @@ function Table <RecordType extends Record<string, any>> ({
               onClick={() => {
                 setFilterValues({} as Filter)
                 setSearchValue('')
-                clearGroupByFn()
+                setGroupByValue(undefined)
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
@@ -502,8 +502,7 @@ function Table <RecordType extends Record<string, any>> ({
       onRow={onRow}
       showSorterTooltip={false}
       tableAlertOptionRender={false}
-      expandable={isGroupByActive ? expandable : undefined}
-      key={Number(isGroupByActive)}
+      expandable={expandable}
       rowClassName={props.rowClassName
         ? props.rowClassName
         : (record) => isGroupByActive && 'children' in record

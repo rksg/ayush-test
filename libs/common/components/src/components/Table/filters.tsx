@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { Select }      from 'antd'
 import { FilterValue } from 'antd/lib/table/interface'
@@ -23,7 +23,7 @@ function hasChildrenColumn <RecordType> (
 }
 
 export function getFilteredData <RecordType> (
-  dataSource: readonly (RecordType|RecordWithChildren<RecordType>)[] | undefined,
+  dataSource: readonly (RecordType | RecordWithChildren<RecordType>)[] | undefined,
   filterValues: Filter,
   activeFilters: TableColumn<RecordType, 'text'>[],
   searchables: TableColumn<RecordType, 'text'>[],
@@ -48,7 +48,7 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-  const typedData = Array.isArray(dataSource) ? dataSource.slice() : []
+  const typedData = Array.isArray(dataSource) ? dataSource : []
   return typedData.reduce((
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
@@ -92,7 +92,7 @@ export function renderFilter <RecordType> (
       data.push(value)
     }
   }
-  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource.slice() : []
+  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource : []
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
@@ -137,35 +137,26 @@ export function renderFilter <RecordType> (
   </UI.FilterSelect>
 }
 
-export function GroupSelect ({
-  $t,
-  value,
-  onChange,
-  setValue,
-  onClear,
-  selectors
+export function GroupSelect<RecordType> ({
+  $t, value, setValue, groupables
 }: {
   $t: IntlShape['$t'],
-  value: { key: string, value: string } | undefined,
-  onChange: CallableFunction | undefined,
-  setValue: (val: { key: string, value: string } | undefined) => void,
-  onClear: CallableFunction | undefined,
-  selectors: { key: string, label: ReactNode }[]
+  value: string | undefined,
+  setValue: (val: string | undefined) => void,
+  groupables: TableProps<RecordType>['columns']
 }) {
+  const selectors = groupables
+    .filter(cols => Boolean(cols.groupable))
+    .map(col => col.groupable!)
   return <UI.FilterSelect
     placeholder={$t({ defaultMessage: 'Group By...' })}
     allowClear
     showArrow
     value={value}
-    onChange={(val, options) => {
-      if (!val) return
-      onChange && onChange(val)
-      const { key, children } = options as { key: string, children: string }
-      const option = { key, value: children }
-      setValue(option)
+    onChange={(key) => {
+      setValue(key as string | undefined)
     }}
     onClear={() => {
-      onClear && onClear()
       setValue(undefined)
     }}
     key='select-group-by'
@@ -183,48 +174,40 @@ export function GroupSelect ({
 
 export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<RecordType>> (
   groupables: TableProps<RecordType>['columns'],
-  tableActions: TableProps<RecordType>['groupByTableActions'],
+  groupByValue: string | undefined,
+  setGroupByValue: (value: string | undefined) => void,
   colLength: number,
   intl: IntlShape
 ) {
-  const [value, setValue] = useState<{ key: string, value: string } | undefined>(undefined)
-  const { $t } = intl
-
   return useMemo(() => {
-    if (Array.isArray(groupables) && groupables.length > 0) {
+    const { $t } = intl
+
+    if (groupables.length > 0) {
       const hasValidChildren = (record: ParentRecord) => {
         const { children } = record
         return Boolean(children) && Array.isArray(children) && children.length > 0
       }
 
-      const { onChange, onClear } = tableActions ?? {}
-
-      const selectors = groupables
-        .filter(cols => Boolean(cols.groupable))
-        .map(col => col.groupable!)
-
-      const Select = <GroupSelect
+      const GroupBySelect = () => <GroupSelect<RecordType>
         $t={$t}
-        onChange={onChange}
-        onClear={onClear}
-        selectors={selectors}
-        setValue={setValue}
-        value={value}
+        groupables={groupables}
+        setValue={setGroupByValue}
+        value={groupByValue}
       />
 
-      const clearGroupByFn = () => {
-        onClear && onClear()
-        setValue(undefined)
-      }
+      // need to optimize for renders
+      const targetCol = groupables.find(col => col.key === groupByValue)
 
-      const isGroupByActive = Boolean(value)
-      const targetCol = groupables.find(col => col.key === value?.key)
+      const finalParentColumns = targetCol?.groupable!.parentColumns
+
+      const isGroupByActive = typeof groupByValue !== 'undefined'
+
       const actionsList = targetCol?.groupable?.actions ?? []
       const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
         .map((val) => ({
           key: val.key,
           dataIndex: '',
-          render: (_, record) => 'children' in record ? val.label : null
+          render: (_, record) => 'children' in record ? val.label(record) : null
         }))
 
       const expandable: TableProps<ParentRecord>['expandable'] = {
@@ -244,28 +227,22 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         }
       }
 
-      const finalParentColumns = targetCol?.groupable!.parentColumns
-
       return {
-        GroupBySelect: () => Select,
-        expandable,
-        groupActionColumns,
+        GroupBySelect,
         finalParentColumns,
-        clearGroupByFn,
         isGroupByActive,
-        groupBy: value?.key
+        groupActionColumns,
+        expandable: (isGroupByActive) ? expandable : undefined
       }
     }
 
     return {
       GroupBySelect: () => null,
-      expandable: undefined,
-      groupActionColumns: [],
       finalParentColumns: [],
-      clearGroupByFn: () => {},
       isGroupByActive: false,
-      groupBy: undefined
+      groupActionColumns: [],
+      expandable: undefined
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [groupByValue, intl])
 }

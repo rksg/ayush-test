@@ -711,7 +711,10 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
       label: 'AP Group',
       actions: [{
         key: 'edit',
-        label: <Button>Edit</Button>
+        label: (record) => <Button onClick={() => {
+          // eslint-disable-next-line no-console
+          console.log(`trigger edit apgroup button with data: ${JSON.stringify(record)}`)
+        }}>Edit</Button>
       }],
       parentColumns: [
         {
@@ -752,34 +755,43 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
   }
 ]
 
-export function GroupTable () {
+function useMockData () {
   const [ currData, setCurrData ] =
     React.useState<typeof groupTBData | typeof flatData>(() => cleanResponse(flatData))
 
-  const groupableCallback = (key: 'deviceStatus' | 'model' | 'deviceGroupName' | undefined) => {
-    let response: APExtendedGroupedResponse | undefined
+  const [groupByKey, setGroupByKey] = React.useState<string | undefined>(undefined)
+
+  const updateGroupBy = (key: string | undefined) => {
     switch (key) {
       case 'deviceGroupName': {
-        response = apGroupResponse
-        break
+        setCurrData(cleanResponse(apGroupResponse))
+        return
       }
       case 'deviceStatus': {
-        response = deviceStatusResponse
-        break
+        setCurrData(cleanResponse(deviceStatusResponse))
+        return
       }
       case 'model' : {
-        response = modelResponse
-        break
+        setCurrData(cleanResponse(modelResponse))
+        return
       }
       default: {
-        response = undefined
-        break
+        setCurrData(cleanResponse(flatData))
+        return
       }
     }
-    const data = cleanResponse(response)
-    setCurrData(() => data)
   }
 
+  React.useEffect(() => {
+    updateGroupBy(groupByKey)
+  }, [groupByKey])
+
+  return { currData, setGroupByKey }
+}
+
+
+export function GroupTable () {
+  const { currData, setGroupByKey } = useMockData()
   return (
     <>
     with groupby:
@@ -789,14 +801,8 @@ export function GroupTable () {
         rowKey='id' // need to set unique entry per record to ensure proper behaviour
         indentSize={6}
         columnEmptyText='-'
-        groupByTableActions={{
-          onChange: groupableCallback,
-          onClear: () => {
-            // eslint-disable-next-line no-console
-            console.log('clear data, reset to AP Group')
-            // reset table to default flat data
-            setCurrData(() => cleanResponse(flatData))
-          }
+        onFilterChange={(_filter, _search, groupBy) => {
+          setGroupByKey(groupBy)
         }}
       />
     </>

@@ -85,7 +85,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
     key: string,
     label: ReactNode,
     parentColumns: { key: string, renderer: (record: RecordType) => ReactNode }[]
-    actions?: { key: string, label: ReactNode }[]
+    actions?: { key: string, label: (record: RecordType) => ReactNode }[]
   }
 }
 

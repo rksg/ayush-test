@@ -141,7 +141,7 @@ describe('Table Filters', () => {
           setValue={handleValue}
           onClear={onClear}
           onChange={onChange}
-          selectors={selectors}
+          groupables={selectors}
         />
       }
       render(<Test />)
