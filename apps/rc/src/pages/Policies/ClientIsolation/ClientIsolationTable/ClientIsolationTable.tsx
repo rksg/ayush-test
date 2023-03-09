@@ -160,8 +160,6 @@ function useColumns () {
       filterKey: 'venueIds',
       filterable: venues?.data?.map(venue => ({ key: venue.id, value: venue.name })) ?? [],
       render: function (data) {
-        // return data ? (data as Array<string>).length : 0
-
         if (!data) return 0
 
         const venueIds = data as string[]

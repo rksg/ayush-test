@@ -6,34 +6,23 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  Tooltip
 } from '@acx-ui/components'
-import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
+import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
+import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  MdnsProxyViewModel,
+  MdnsProxyForwardingRule
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
-
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [ServiceType.MDNS_PROXY]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
 
 export default function MdnsProxyTable () {
   const { $t } = useIntl()
@@ -43,11 +32,11 @@ export default function MdnsProxyTable () {
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useServiceListQuery,
-    defaultPayload
+    useQuery: useGetEnhancedMdnsProxyListQuery,
+    defaultPayload: { fields: ['id'] }
   })
 
-  const rowActions: TableProps<Service>['rowActions'] = [
+  const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -59,11 +48,7 @@ export default function MdnsProxyTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
-              .then(clearSelection)
-              .catch(error => {
-                console.log(error) // eslint-disable-line no-console
-              })
+            deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
           }
         })
       }
@@ -87,12 +72,7 @@ export default function MdnsProxyTable () {
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'mDNS Proxy ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'mDNS Proxy ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
@@ -105,7 +85,7 @@ export default function MdnsProxyTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Service>
+        <Table<MdnsProxyViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -113,6 +93,8 @@ export default function MdnsProxyTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -121,14 +103,23 @@ export default function MdnsProxyTable () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const params = useParams()
+  const { data: venues } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
 
-  const columns: TableProps<Service>['columns'] = [
+  const columns: TableProps<MdnsProxyViewModel>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -143,11 +134,35 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'rules',
+      title: $t({ defaultMessage: 'Forwarding Rules' }),
+      dataIndex: 'rules',
+      align: 'center',
+      render: function (data) {
+        return (
+          <Tooltip
+            // eslint-disable-next-line max-len
+            title={<MdnsProxyForwardingRulesTable readonly={true} rules={data as MdnsProxyForwardingRule[]}/>}
+            children={data}
+          />
+        )
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      align: 'center',
+      render: function (data) {
+        if (!data) return 0
+
+        const venueIds = data as string[]
+
+        if (!venues?.data) return venueIds.length
+
+        const venueTooltipItems = venues.data.filter(v => venueIds.includes(v.id)).map(v => v.name)
+        return <SimpleListTooltip items={venueTooltipItems} displayText={venueIds.length} />
+      }
     }
   ]
 

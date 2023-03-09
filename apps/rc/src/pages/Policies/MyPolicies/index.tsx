@@ -34,14 +34,7 @@ interface CardDataProps {
 }
 
 const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  fields: ['id']
 }
 
 export default function MyPolicies () {
@@ -114,7 +107,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.CLIENT_ISOLATION,
       category: RadioCardCategory.WIFI,
       totalCount: useGetEnhancedClientIsolationListQuery({
-        params, payload: { searchString: '', filters: {}, fields: ['id'] }
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
