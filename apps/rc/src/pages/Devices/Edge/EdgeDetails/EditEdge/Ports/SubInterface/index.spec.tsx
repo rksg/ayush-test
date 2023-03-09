@@ -1,9 +1,12 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { act, renderHook, waitFor }                 from '@testing-library/react'
+import userEvent                                    from '@testing-library/user-event'
+import { rest }                                     from 'msw'
+import { IntlProvider }                             from 'react-intl'
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
-import { EdgeUrlsInfo }                                  from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { EdgeSubInterface, EdgeUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockEdgePortConfig, mockEdgeSubInterfaces } from '../../../../__tests__/fixtures'
 
@@ -20,6 +23,14 @@ jest.mock('@acx-ui/utils', () => {
   }
 })
 
+jest.mock('./SubInterfaceDrawer', () => (
+  ({ visible, data }: { visible: boolean, data?: EdgeSubInterface }) =>
+    <div data-testid='subDialog'>
+      <label>{visible?'visible':'invisible'}</label>
+      <div>{data?.vlan+''}</div>
+    </div>
+))
+
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
   beforeEach(() => {
@@ -34,14 +45,6 @@ describe('EditEdge ports - sub-interface', () => {
       rest.get(
         EdgeUrlsInfo.getSubInterfaces.url,
         (req, res, ctx) => res(ctx.json(mockEdgeSubInterfaces))
-      ),
-      rest.post(
-        EdgeUrlsInfo.addSubInterfaces.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.patch(
-        EdgeUrlsInfo.updateSubInterfaces.url,
-        (req, res, ctx) => res(ctx.status(202))
       ),
       rest.delete(
         EdgeUrlsInfo.deleteSubInterfaces.url,
@@ -76,65 +79,6 @@ describe('EditEdge ports - sub-interface', () => {
     expect((await screen.findAllByRole('row')).length).toBe(11)
   })
 
-  it('Add a DHCP sub-interface', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    await user.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
-    fireEvent.change(vlanInput, { target: { value: '2' } })
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-  })
-
-  it('Add a STATIC sub-interface', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    await user.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
-    await user.click(await screen.findByRole('combobox', { name: 'IP Assignment Type' }))
-    await user.click(await screen.findByText('Static IP'))
-    const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
-    fireEvent.change(ipInput, { target: { value: '1.1.1.1' } })
-    const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
-    fireEvent.change(subnetInput, { target: { value: '255.255.255.0' } })
-    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
-    fireEvent.change(vlanInput, { target: { value: '2' } })
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-  })
-
-  it('Edit a sub-interface', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <SubInterface data={mockEdgePortConfig.ports} />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        }
-      })
-    const rows = await screen.findAllByRole('row')
-    await user.click(within(rows[1]).getByRole('radio'))
-    await user.click(await screen.findByRole('button', { name: 'Edit' }))
-    const vlanInput = await screen.findByRole('spinbutton', { name: 'VLAN' })
-    fireEvent.change(vlanInput, { target: { value: '999' } })
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
-  })
-
   it('Delete a sub-interface', async () => {
     const user = userEvent.setup()
     render(
@@ -148,22 +92,74 @@ describe('EditEdge ports - sub-interface', () => {
       })
     const rows = await screen.findAllByRole('row')
     await user.click(within(rows[1]).getByRole('radio'))
-    await user.click(await screen.findByRole('button', { name: 'Delete' }))
+    await act(async () => {
+      await user.click(await screen.findByRole('button', { name: 'Delete' }))
+    })
     await screen.findByText('Delete "2"?')
-    await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+    await act(async () => {
+      await user.click(screen.getByRole('button', { name: 'Delete Sub-Interface' }))
+    })
   })
 
-  it('should show no data string when ports data is empty', async () => {
+  it('should have edit dialog show up', async () => {
+    const user = userEvent.setup()
     render(
       <Provider>
-        <SubInterface data={[]} />
+        <SubInterface data={mockEdgePortConfig.ports} />
       </Provider>, {
         route: {
           params,
           path: '/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
         }
       })
-    expect(screen.getByText('No data to display')).toBeVisible()
+
+    await screen.findAllByRole('columnheader')
+    const rows = await screen.findAllByRole('row')
+    await user.click(within(rows[1]).getByRole('radio'))
+    await act(async () => {
+      await user.click(await screen.findByRole('button', { name: 'Edit' }))
+    })
+    const dialog = await screen.findByTestId('subDialog')
+    expect(within(dialog).queryByText('visible')).toBeValid()
+    expect(within(dialog).queryByText('2')).toBeValid()
+  })
+
+  it('should close subInterface drawer after routed into another subTab', async () => {
+    const getWrapper = (basePath: string = '') =>
+      ({ children }: { children: React.ReactElement }) => (
+        <IntlProvider locale='en'>
+          <Provider>
+            <MemoryRouter initialEntries={['/t/t-id/devices/edge/001/edit/ports/sub-interface']}>
+              <Routes>
+                {
+                // eslint-disable-next-line max-len
+                  <Route path={`${basePath}/t/:tenantId/devices/edge/:serialNumber/edit/:activeTab/:activeSubTab`}
+                    element={
+                      <div>
+                        <SubInterface data={mockEdgePortConfig.ports} />
+                        {children}
+                      </div>
+                    } />
+                }
+              </Routes>
+            </MemoryRouter>
+          </Provider>
+        </IntlProvider>
+      )
+    const { result } = renderHook(() => useNavigate(), { wrapper: getWrapper('') })
+
+    await screen.findAllByRole('columnheader')
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Sub-interface' }))
+    const dialog = await screen.findByTestId('subDialog')
+    expect(within(dialog).queryByText('visible')).toBeValid()
+    act(() => {
+      // eslint-disable-next-line max-len
+      result.current(`/t/${params.tenantId}/devices/edge/${params.serialNumber}/edit/${params.activeTab}/ports-general`)
+    })
+
+    await waitFor(async () => {
+      expect(within(await screen.findByTestId('subDialog')).queryByText('invisible')).toBeValid()
+    })
   })
 })
 

@@ -79,6 +79,7 @@ const SubInterfaceDrawer = (props: StaticRoutesDrawerProps) => {
         await addSubInterface(requestPayload).unwrap()
       }
     } catch (error) {
+      // TODO error message not be defined
       console.log(error) // eslint-disable-line no-console
     }
     handleClose()
