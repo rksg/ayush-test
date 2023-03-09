@@ -7,6 +7,7 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation
@@ -62,10 +63,11 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isEdgeEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
 
   const queryResults = useGetEntitlementsListQuery({ params })
-
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
+  const licenseTypeOpts = subscriptionTypeFilterOpts($t)
 
   const columns: TableProps<Entitlement>['columns'] = [
     {
@@ -74,7 +76,10 @@ const SubscriptionTable = () => {
       key: 'deviceType',
       filterMultiple: false,
       filterValueNullable: true,
-      filterable: subscriptionTypeFilterOpts($t),
+      filterable: licenseTypeOpts.filter(o =>
+        (isEdgeEnabled && o.key === EntitlementDeviceType.EDGE)
+        || o.key !== EntitlementDeviceType.EDGE
+      ),
       render: function (_, row) {
         return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
       }
