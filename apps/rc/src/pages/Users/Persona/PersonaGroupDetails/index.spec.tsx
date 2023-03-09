@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PersonaUrls,
   MacRegListUrlsInfo,
@@ -21,6 +22,7 @@ import {
 
 import PersonaGroupDetails from '.'
 
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Persona Group Details', () => {
   let params: { tenantId: string, personaGroupId: string }
