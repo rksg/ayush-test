@@ -75,10 +75,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
 
       navigate(linkToList, { replace: true })
     } catch (error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -103,10 +100,7 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
 
       navigate(linkToList, { replace: true })
     } catch (error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, showToast }   from '@acx-ui/components'
+import { Drawer }              from '@acx-ui/components'
 import { AttributeAssignment } from '@acx-ui/rc/utils'
 
 import { RadiusAttributeForm } from './RadiusAttributeForm'
@@ -46,12 +46,7 @@ export function RadiusAttributeDrawer (props: RadiusAttributeDrawerProps) {
       setAttributeAssignments(data)
       onClose()
     } catch (e) {
-      if (e instanceof Error) {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
-      }
+      console.log(e) // eslint-disable-line no-console
     }
   }
 

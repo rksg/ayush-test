@@ -1,7 +1,7 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
+import { Table, TableProps }                                       from '@acx-ui/components'
 import { useLazyRadiusAttributeGroupListByQueryQuery }             from '@acx-ui/rc/services'
 import { AttributeAssignment, checkObjectNotExists, OperatorType } from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
@@ -75,21 +75,11 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Attribute' }),
-            entityValue: selectedRows[0].attributeName
-          },
-          onOk: () => {
-            const newAttributes = attributeAssignments.filter((r: AttributeAssignment) => {
-              return selectedRows[0].id !== r.id
-            })
-            handleAttributeAssignments(newAttributes)
-            clearSelection()
-          }
+        const newAttributes = attributeAssignments.filter((r: AttributeAssignment) => {
+          return selectedRows[0].id !== r.id
         })
+        handleAttributeAssignments(newAttributes)
+        clearSelection()
       }
     }
   ]
