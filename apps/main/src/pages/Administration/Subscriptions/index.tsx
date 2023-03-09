@@ -1,5 +1,5 @@
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                 from 'moment-timezone'
+import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Loader,
@@ -14,13 +14,49 @@ import {
 import {
   DateFormatEnum,
   EntitlementUtil,
-  Entitlement
+  Entitlement,
+  EntitlementDeviceType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
 
+const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: 'All Subscriptions' },
+  {
+    key: EntitlementDeviceType.ANALYTICS,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.ANALYTICS )
+  },
+  {
+    key: EntitlementDeviceType.SWITCH,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.SWITCH )
+  },
+  {
+    key: EntitlementDeviceType.WIFI,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.WIFI )
+  },
+  {
+    key: EntitlementDeviceType.EDGE,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.EDGE )
+  },
+  {
+    key: EntitlementDeviceType.LTE,
+    value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.LTE )
+  }
+]
+
+const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: 'Show All' },
+  {
+    key: 'valid',
+    value: $t({ defaultMessage: 'Show Active' })
+  },
+  {
+    key: 'invalid',
+    value: $t({ defaultMessage: 'Show Expired' })
+  }
+]
 
 const SubscriptionTable = () => {
   const { $t } = useIntl()
@@ -33,9 +69,14 @@ const SubscriptionTable = () => {
   const columns: TableProps<Entitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'name',
-      key: 'name',
-      filterable: true
+      dataIndex: 'deviceType',
+      key: 'deviceType',
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: subscriptionTypeFilterOpts($t),
+      render: function (_, row) {
+        return EntitlementUtil.getDeviceTypeText($t, row.deviceType)
+      }
     },
     {
       title: $t({ defaultMessage: 'Type' }),
@@ -82,7 +123,14 @@ const SubscriptionTable = () => {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
-      filterable: true
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterable: statusTypeFilterOpts($t),
+      render: function (_, row) {
+        return row.status === 'valid'
+          ? $t({ defaultMessage: 'Active' })
+          : $t({ defaultMessage: 'Expired' })
+      }
     }
   ]
 
@@ -116,19 +164,15 @@ const SubscriptionTable = () => {
     }
   ]
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
-      return $t({ defaultMessage: 'Active' })
-    } else {
-      return $t({ defaultMessage: 'Expired' })
-    }
+  const GetStatus = (expirationDate: string) => {
+    const isValid = moment(expirationDate).isAfter(Date.now())
+    return isValid ? 'valid' : 'invalid'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
-      status: GetStatus(response?.status as string)
+      status: GetStatus(response?.expirationDate)
     }
   })
 
