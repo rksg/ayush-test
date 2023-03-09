@@ -3,14 +3,20 @@ import { ApiInfo } from '../apiService'
 export const LicenseUrlsInfo: { [key: string]: ApiInfo } = {
   getEntitlementsBanners: {
     method: 'get',
-    url: '/api/tenant/:tenantId/entitlement/banner'
+    url: '/banners',
+    oldUrl: '/api/tenant/:tenantId/entitlement/banner',
+    newApi: true
   },
   getEntitlements: {
     method: 'get',
-    url: '/api/tenant/:tenantId/entitlement'
+    url: '/entitlements',
+    oldUrl: '/api/tenant/:tenantId/entitlement',
+    newApi: true
   },
   getEntitlementsSummary: {
     method: 'get',
-    url: '/api/tenant/:tenantId/entitlement/summary'
+    url: '/entitlements/summaries',
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary',
+    newApi: true
   }
 }
