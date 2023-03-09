@@ -120,8 +120,7 @@ const getErrorContent = (action: ErrorAction) => {
     case 403:
       errorMsg = errorMessage.SESSION_EXPIRED
       type = 'info'
-      //ONLY for test
-      needLogout = false//true
+      needLogout = true
       break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
