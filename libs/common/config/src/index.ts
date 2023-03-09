@@ -22,6 +22,7 @@ export interface EnvironmentConfig {
   MY_OPEN_CASES: string
   PRIVACY: string
   SUPPORTED_AP_MODELS: string
+  HOW_TO_VIDEOS: string
 }
 
 const config: { value?: EnvironmentConfig } = {}

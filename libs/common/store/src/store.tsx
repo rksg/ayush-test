@@ -3,30 +3,31 @@ import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit
 import { defineMessage, FormattedMessage }                from 'react-intl'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
-import { dataApi, networkHealthApi }                           from '@acx-ui/analytics/services'
 import { showActionModal, ActionModalType, ErrorDetailsProps } from '@acx-ui/components'
-import {
-  baseCommonApi as commonApi,
-  baseNetworkApi as networkApi,
-  baseVenueApi as venueApi,
-  baseEventAlarmApi as eventAlarmApi,
-  baseTimelineApi as timelineApi,
-  baseServiceApi as serviceApi,
-  apApi,
-  baseDhcpApi as dhcpApi,
-  baseMspApi as mspApi,
-  baseLicenseApi as licenseApi,
-  baseEdgeApi as edgeApi,
-  basePolicyApi as policyApi,
-  baseClientApi as clientApi,
-  baseSwitchApi as switchApi,
-  baseAdministrationApi as administrationApi,
-  baseFirmwareApi as firmwareApi,
-  baseEdgeDhcpApi as edgeDhcpApi,
-  basePersonaApi as personaApi,
-  baseNsgApi as nsgApi
-} from '@acx-ui/rc/services'
-import { getIntl } from '@acx-ui/utils'
+import { getIntl }                                             from '@acx-ui/utils'
+
+import { baseAdministrationApi as administrationApi } from './baseApi/baseAdministrationApi'
+import { baseApApi as apApi }                         from './baseApi/baseApApi'
+import { baseClientApi as clientApi }                 from './baseApi/baseClientApi'
+import { baseCommonApi as commonApi }                 from './baseApi/baseCommonApi'
+import { baseDhcpApi as dhcpApi }                     from './baseApi/baseDhcpApi'
+import { baseEdgeApi as edgeApi  }                    from './baseApi/baseEdgeApi'
+import { baseEdgeDhcpApi as edgeDhcpApi }             from './baseApi/baseEdgeDhcpApi'
+import { baseEventAlarmApi as eventAlarmApi }         from './baseApi/baseEventAlarmApi'
+import { baseFirmwareApi as firmwareApi }             from './baseApi/baseFirmwareApi'
+import { baseLicenseApi as licenseApi }               from './baseApi/baseLicenseApi'
+import { baseMspApi as mspApi }                       from './baseApi/baseMspApi'
+import { baseNetworkApi as networkApi }               from './baseApi/baseNetworkApi'
+import { baseNsgApi as nsgApi }                       from './baseApi/baseNsgApi'
+import { basePersonaApi as personaApi }               from './baseApi/basePersonaApi'
+import { basePolicyApi as policyApi }                 from './baseApi/basePolicyApi'
+import { baseServiceApi as serviceApi }               from './baseApi/baseServiceApi'
+import { baseSwitchApi as switchApi }                 from './baseApi/baseSwitchApi'
+import { baseTimelineApi as timelineApi }             from './baseApi/baseTimelineApi'
+import { baseVenueApi as venueApi }                   from './baseApi/baseVenueApi'
+import { dataApi }                                    from './baseApi/dataApi'
+import { networkHealthApi }                           from './baseApi/networkHealthApi'
+
 
 import type { Middleware } from '@reduxjs/toolkit'
 
@@ -56,7 +57,7 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient'
+  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers'
 ]
 const errorMessage = {
   SERVER_ERROR: {
@@ -207,8 +208,9 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {
+      const token = sessionStorage.getItem('jwt')?? null
       sessionStorage.removeItem('jwt')
-      window.location.href = '/logout'
+      window.location.href = token? `/logout?token=${token}` : '/logout'
     }
   }
   return next(action)

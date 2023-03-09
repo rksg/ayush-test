@@ -35,7 +35,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
-import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
+import { DateRange, getIntl, useDateFilter  }                from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -99,7 +99,7 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
       }
     }
     tableQuery.setPayload(customPayload)
-  }, [startDate, endDate])
+  }, [startDate, endDate, range])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -194,7 +194,9 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         formData.append(key, value as string)
       }
     })
-    importCsv({ params, payload: formData })
+    importCsv({
+      params: { tenantId: params.tenantId, networkId: values.networkId }, payload: formData
+    })
   }
 
   const columns: TableProps<Guest>['columns'] = [

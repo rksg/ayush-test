@@ -1,12 +1,11 @@
 import { Badge, Button } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Card, Descriptions, Loader }        from '@acx-ui/components'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
-import { SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Card, Descriptions, Loader }                       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                        from '@acx-ui/formatter'
+import { noDataDisplay, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { getDeviceColor, switchStatus } from './utils'
-
 
 export function SwitchDetailsCard (props: {
     switchDetail: SwitchViewModel
@@ -38,17 +37,17 @@ export function SwitchDetailsCard (props: {
         {/* model  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Model' })}
-          children={switchDetail?.model || '--'} />
+          children={switchDetail?.model || noDataDisplay} />
 
         {/* MAC address  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'MAC Address' })}
-          children={switchDetail?.switchMac || '--'} />
+          children={switchDetail?.switchMac || noDataDisplay} />
 
         {/* IP Address  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'IP Address' })}
-          children={switchDetail?.ipAddress || '--'} />
+          children={switchDetail?.ipAddress || noDataDisplay} />
 
         {/* Status  */}
         <Descriptions.Item
@@ -61,12 +60,12 @@ export function SwitchDetailsCard (props: {
         {/* Uptime  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Uptime' })}
-          children={switchDetail?.uptime || '--'} />
+          children={switchDetail?.uptime || noDataDisplay} />
 
         {/* Clients count  */}
         <Descriptions.Item
           label={$t({ defaultMessage: 'Clients Connected' })}
-          children={switchDetail?.clientCount || '--'} />
+          children={switchDetail?.clientCount || noDataDisplay} />
 
         {/* Last seen for offline devices */
           switchDetail?.lastSeenTime &&

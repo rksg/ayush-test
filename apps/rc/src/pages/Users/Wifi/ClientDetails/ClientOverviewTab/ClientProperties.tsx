@@ -146,7 +146,9 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         }
       }
 
-      getApData()
+      if (serialNumber) {
+        getApData()
+      }
       getVenueData()
       getNetworkData()
 

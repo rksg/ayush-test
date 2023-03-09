@@ -21,18 +21,6 @@ const params = {
   serialNumber: 'serialNumber'
 }
 
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  useAnalyticsFilter: () => ({
-    filters: { path: [{ type: 'network', name: 'Network' }] },
-    getNetworkFilter: jest
-      .fn()
-      .mockReturnValueOnce({
-        networkFilter: { path: [{ type: 'network', name: 'Network' }] }
-      })
-  })
-}))
-
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({

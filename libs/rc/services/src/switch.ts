@@ -409,13 +409,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       transformResponse: (res: TableResult<ConfigurationBackup>) => {
         return {
           ...res,
-          data: res.data
+          data: Array.isArray(res.data) ? res.data
             .map(item => ({
               ...item,
               createdDate: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-            }))
+            })) : []
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
