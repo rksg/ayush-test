@@ -90,13 +90,14 @@ const defaultSorter = {
   sortOrder: 'DESC'
 }
 
-const defaultSearch = {
+export const defaultSearch = {
   searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
 }
 
 export function useEventsTableQuery (
   baseFilters: Record<string, unknown> = {},
-  search: Record<string, unknown> = defaultSearch
+  search: Record<string, unknown> = defaultSearch,
+  pagination?: Record<string, unknown>
 ) {
   const { fromTime, toTime } = useEventTableFilter()
   const detailLevel = useUserProfileContext().data.detailLevel
@@ -109,6 +110,7 @@ export function useEventsTableQuery (
       detailLevel,
       filters: { ...defaultPayload.filters, ...filters }
     },
+    pagination,
     sorter: defaultSorter,
     search,
     option: {

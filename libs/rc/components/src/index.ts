@@ -23,7 +23,8 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
-  useEventsTableQuery
+  useEventsTableQuery,
+  defaultSearch as eventDefaultSearch
 } from './EventTable'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'

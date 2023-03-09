@@ -8,18 +8,17 @@ import {
   NetworkTable,
   defaultNetworkPayload,
   EventTable,
-  eventDefaultPayload,
   SwitchTable,
   defaultSwitchPayload,
   defaultClientPayload,
   ConnectedClientsTable,
   defaultSwitchClientPayload,
   ClientsTable as SwitchClientTable,
-  eventDefaultSearch
+  eventDefaultSearch,
+  useEventsTableQuery
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
-  useEventsQuery,
   useNetworkListQuery,
   useVenuesListQuery,
   useSwitchListQuery,
@@ -33,7 +32,6 @@ import {
   Venue,
   AP,
   ApExtraParams,
-  Event,
   SwitchRow,
   ClientList,
   SwitchClient
@@ -104,22 +102,10 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Event>({
-      useQuery: useEventsQuery,
-      defaultPayload: {
-        ...eventDefaultPayload,
-        filters: {}
-      },
-      pagination,
-      search: {
-        searchString,
-        searchTargetFields: eventDefaultSearch.searchTargetFields
-      },
-      sorter: {
-        sortField: 'event_datetime',
-        sortOrder: 'DESC'
-      }
-    })
+    const result = useEventsTableQuery({}, {
+      searchString,
+      searchTargetFields: eventDefaultSearch.searchTargetFields
+    }, pagination)
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
