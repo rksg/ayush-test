@@ -25,7 +25,7 @@ tooltipEdge: Link
       width: '280px',
       minHeight: '350px',
       zIndex: 9999,
-      top: tooltipPosition.y + 80,
+      top: tooltipPosition.y - 100,
       left: tooltipPosition.x + 15
     }}>
     <Card

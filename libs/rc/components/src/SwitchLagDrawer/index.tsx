@@ -25,6 +25,7 @@ import {
 }                            from '@acx-ui/rc/services'
 import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
+import { filterByAccess }           from '@acx-ui/user'
 
 import { SwitchLagModal } from './SwitchLagModal'
 
@@ -167,17 +168,14 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               type='compact'
               dataSource={data}
               rowKey='name'
-              actions={
-                [{
-                  label: $t({ defaultMessage: 'Add LAG' }),
-                  disabled: !isOperational,
-                  onClick: () => {
-                    setModalVisible(true)
-                    setIsEditMode(false)
-                  }
-                }]
-
-              }
+              actions={filterByAccess([{
+                label: $t({ defaultMessage: 'Add LAG' }),
+                disabled: !isOperational,
+                onClick: () => {
+                  setModalVisible(true)
+                  setIsEditMode(false)
+                }
+              }])}
             />
           </Loader>
         }

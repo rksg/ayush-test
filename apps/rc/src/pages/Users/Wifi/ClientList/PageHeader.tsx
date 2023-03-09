@@ -27,13 +27,15 @@ function Header () {
     <PageHeader
       title={$t({ defaultMessage: 'Wi-Fi' })}
       footer={<Tabs clientCount={data?.totalCount ? data.totalCount : 0} />}
+      // Have side effect, revert it and check the rangePicker
       extra={activeTab === 'guests' ? [
         <RangePicker
           selectionType={range}
           showAllTime={true}
           selectedRange={{ startDate: moment(startDate), endDate: null }}
           onDateApply={setDateFilter as CallableFunction}
-        />] : []}
+        />
+      ] : []}
     />
   )
 }

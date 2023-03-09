@@ -6,7 +6,8 @@ import { MessageDescriptor, defineMessage } from 'react-intl'
 import {
   ClientType,
   TestStage,
-  TestType
+  TestType,
+  ScheduleFrequency
 } from './types'
 
 import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
@@ -28,9 +29,16 @@ export const clientTypes = {
   [ClientType.VirtualWirelessClient]: defineMessage({ defaultMessage: 'Virtual Wireless Client' })
 }
 
-export const testTypes = {
+export const testTypes: Record<string, MessageDescriptor> = {
   [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
   [TestType.Scheduled]: defineMessage({ defaultMessage: 'Scheduled' })
+}
+
+export const testTypesWithSchedule: Record<string, MessageDescriptor> = {
+  [TestType.OnDemand]: defineMessage({ defaultMessage: 'On-Demand' }),
+  [ScheduleFrequency.Daily]: defineMessage({ defaultMessage: 'Daily' }),
+  [ScheduleFrequency.Weekly]: defineMessage({ defaultMessage: 'Weekly' }),
+  [ScheduleFrequency.Monthly]: defineMessage({ defaultMessage: 'Monthly' })
 }
 
 export const unsupportedAuthMethods = {
@@ -81,6 +89,13 @@ export const clientTypeTooltip = defineMessage({
   `
 })
 
+export const scheduleMonthlyTooltip = defineMessage({
+  defaultMessage: `
+    Schedule will fall on last day of the month if 29th, 30th or 31st is selected
+    and the month does not have these days.
+  `
+})
+
 export const apsSelectionTooltip = defineMessage({
   defaultMessage: `<p>
     802.11ac wave 1 APs and older are not supported.
@@ -92,6 +107,7 @@ export const apsSelectionTooltip = defineMessage({
 export const messageMapping = {
   RUN_TEST_NO_APS: defineMessage({ defaultMessage: 'There are no APs to run the test' }),
   SPEC_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
+  TEST_NOT_FOUND: defineMessage({ defaultMessage: 'Network Health test does not exist' }),
   INTERNAL_SERVER_ERROR: defineMessage({ defaultMessage: 'Internal Server Error' }),
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
@@ -99,11 +115,12 @@ export const messageMapping = {
   TEST_CREATED: defineMessage({ defaultMessage: 'Network Health test created' }),
   TEST_UPDATED: defineMessage({ defaultMessage: 'Network Health test updated' }),
   TEST_DELETED: defineMessage({ defaultMessage: 'Network Health test deleted' }),
+  TEST_CLONED: defineMessage({ defaultMessage: 'Network Health test cloned' }),
   RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Network Health test running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {
-  auth: defineMessage({ defaultMessage: '802.11 Authentication' }),
+  auth: defineMessage({ defaultMessage: '802.11 Auth', description: '802.11 Authentication' }),
   assoc: defineMessage({ defaultMessage: 'Association' }),
   eap: defineMessage({ defaultMessage: 'EAP' }),
   radius: defineMessage({ defaultMessage: 'RADIUS' }),
@@ -113,4 +130,97 @@ export const stages: Record<TestStage, MessageDescriptor> = {
   ping: defineMessage({ defaultMessage: 'Ping' }),
   traceroute: defineMessage({ defaultMessage: 'Traceroute' }),
   speedTest: defineMessage({ defaultMessage: 'Speed Test' })
+}
+
+type errorMapValue = { id : number , text : MessageDescriptor }
+export const stagesErrorMappings: Record<string,errorMapValue>= {
+
+  SPEED_TEST_INVALID: {
+    id: -3,
+    text: defineMessage({ defaultMessage: 'Speed test timeout' })
+  },
+  SPEED_TEST_UNSUCCESSFUL: {
+    id: -2,
+    text: defineMessage({ defaultMessage: 'Speed test unsuccessful' })
+  },
+  SPEED_TEST_TIMEOUT: {
+    id: -1,
+    text: defineMessage({ defaultMessage: 'Speed test timeout' })
+  },
+  NO_ERROR: {
+    id: 0,
+    text: defineMessage({ defaultMessage: 'No error' })
+  },
+  SPEED_TEST_SKIPPED_UE_TUNNEL_SAME_SUBNET: {
+    id: 1,
+    text: defineMessage({ defaultMessage: 'Speed test skipped as virtual client and data plane mapped to tunnel WLAN are in same subnet and is not supported' })
+  },
+  SPEED_TEST_SKIPPED_UE_SZ_SAME_SUBNET: {
+    id: 2,
+    text: defineMessage({ defaultMessage: 'Speed test skipped as virtual client and AP management interface are in same subnet and is not supported' })
+  }
+}
+
+export const errorMappings : Record<string, errorMapValue> = {
+  AP_6GHZ_NOT_SUPPORT: {
+    id: -6,
+    text: defineMessage({ defaultMessage: '6 GHz is not supported by target AP' })
+  },
+  NO_SERIAL: {
+    id: -5,
+    text: defineMessage({ defaultMessage: 'Unable to find AP serial' })
+  },
+  TEST_TIMEOUT: {
+    id: -4,
+    text: defineMessage({ defaultMessage: 'Test timeout' })
+  },
+  STATION_CANNOT_FIND_TARGET: {
+    id: -3,
+    text: defineMessage({ defaultMessage: 'Station AP unable to find target AP' })
+  },
+  NO_TARGET_AP: {
+    id: -2,
+    text: defineMessage({ defaultMessage: 'No traffic on target AP in the last 7 days (try again after WLANs are configured)' })
+  },
+  NO_STATION_AP: {
+    id: -1,
+    text: defineMessage({ defaultMessage: 'Unable to find station AP' })
+  },
+  NO_ERROR: {
+    id: 0,
+    text: defineMessage({ defaultMessage: 'No error' })
+  },
+  AP_OFFLINE: {
+    id: 1,
+    text: defineMessage({ defaultMessage: 'AP offline' })
+  },
+  AP_RESPONSE_TIMEOUT: {
+    id: 2,
+    text: defineMessage({ defaultMessage: 'AP response timeout' })
+  },
+  AP_MODEL_NOT_SUPPORT: {
+    id: 3,
+    text: defineMessage({ defaultMessage: 'AP not ready for test' })
+  },
+  OVER_VRUE_CAPACITY: {
+    id: 4,
+    text: defineMessage({ defaultMessage: 'Another test in progress' })
+  },
+  WLAN_CONF_ERROR: {
+    id: 5,
+    text: defineMessage({ defaultMessage: 'WLAN configuration errors' })
+  },
+  SPEED_TEST_LIMITATION: {
+    id: 6,
+    text: defineMessage({ defaultMessage: 'Another speed test in progress' })
+  },
+  SG_APCONFIG_UNSUPPORT: {
+    id: 7,
+    text: defineMessage({ defaultMessage: 'AP configuration not supported (refer to release notes)' })
+  }
+}
+
+export const noFailureDetailsMap = {
+  PROCESSING: defineMessage({ defaultMessage: 'Failure reason pending' }),
+  UNKNOWN: defineMessage({ defaultMessage: 'Failure reason unavailable' })
 }

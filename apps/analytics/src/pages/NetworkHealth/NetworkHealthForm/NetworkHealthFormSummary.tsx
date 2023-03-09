@@ -19,6 +19,7 @@ export function NetworkHealthFormSummary () {
         <FormItems.TestName.FieldSummary />
         <FormItems.ClientType.FieldSummary />
         <FormItems.TestType.FieldSummary />
+        <FormItems.Schedule.FieldSummary />
         <FormItems.WlanName.FieldSummary />
         <FormItems.AuthenticationMethod.FieldSummary />
         <FormItems.Username.FieldSummary />

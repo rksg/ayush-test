@@ -5,6 +5,7 @@ import _                         from 'lodash'
 
 import { showActionModal, StepsForm, Table, TableProps } from '@acx-ui/components'
 import { TrustedPort }                                   from '@acx-ui/rc/utils'
+import { filterByAccess }                                from '@acx-ui/user'
 import { getIntl }                                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
@@ -118,15 +119,15 @@ export function TrustedPorts () {
           </label>
           <Table
             rowKey='model'
-            rowActions={rowActions}
+            rowActions={filterByAccess(rowActions)}
             columns={aclsColumns}
             dataSource={ruleList}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Model' }),
               onClick: () => {
                 setOpenModal(true)
               }
-            }]}
+            }])}
             rowSelection={{
               type: 'radio',
               onChange: (keys: React.Key[]) => {

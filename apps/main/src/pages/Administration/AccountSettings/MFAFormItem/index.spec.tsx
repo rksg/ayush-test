@@ -2,14 +2,14 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { UserUrlsInfo, MFAStatus } from '@acx-ui/rc/utils'
-import { Provider  }               from '@acx-ui/store'
+import { Provider  } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo, MFAStatus } from '@acx-ui/user'
 
 import { fakeMFATenantDetail } from '../__tests__/fixtures'
 

@@ -8,6 +8,7 @@ import { Loader, Table, TableProps, showActionModal, showToast }                
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, handleBlobDownloadFile, RESTORE_IN_PROGRESS_TOOLTIP, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                              from '@acx-ui/user'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -185,12 +186,14 @@ export function SwitchConfigBackupTable () {
   }
 
   const rowActions: TableProps<ConfigurationBackup>['rowActions'] = [{
+    key: 'ViewConfig',
     label: $t({ defaultMessage: 'View' }),
     disabled: () => !enabledRowButton.find(item => item === 'View'),
     onClick: (rows, clearSelection) => {
       showViewModal(rows, clearSelection)
     }
   }, {
+    key: 'CompareConfig',
     label: $t({ defaultMessage: 'Compare' }),
     disabled: () => !enabledRowButton.find(item => item === 'Compare'),
     onClick: (rows) => {
@@ -203,6 +206,7 @@ export function SwitchConfigBackupTable () {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
+    key: 'DownloadConfig',
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
@@ -218,7 +222,7 @@ export function SwitchConfigBackupTable () {
   ]
 
   const viewModalActions = {
-    compare:　showCompareModal,
+    compare: showCompareModal,
     restore: showRestoreModal,
     download: downloadBackup,
     delete: showDeleteModal
@@ -239,8 +243,8 @@ export function SwitchConfigBackupTable () {
         rowKey='id'
         columns={columns}
         dataSource={tableData}
-        rowActions={rowActions}
-        actions={rightActions}
+        rowActions={filterByAccess(rowActions)}
+        actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
         rowSelection={{
           type: 'checkbox',
