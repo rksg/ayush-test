@@ -32,7 +32,6 @@ const AddEdge = () => {
       await addEdge({ payload: data }).unwrap()
       navigate(linkToEdgeList, { replace: true })
     } catch (error) {
-      console.log(error)
       showActionModal({
         type: 'error',
         ...getErrorModalInfo(error as CatchErrorResponse)
