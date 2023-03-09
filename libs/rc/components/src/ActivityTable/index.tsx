@@ -21,7 +21,6 @@ import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-
 export const columnState = {
   defaultValue: {
     startDateTime: true,

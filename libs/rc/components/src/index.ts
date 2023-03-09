@@ -1,7 +1,7 @@
 export {
-  useActivityTableQuery,
   ActivityTable,
-  columnState
+  columnState,
+  useActivityTableQuery
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
