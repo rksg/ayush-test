@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AP floorplan should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    style="width: 100%; position: relative; max-height: 300px; padding-right: 35px; margin-bottom: 35px;"
+  >
+    <a
+      href="/t/undefined/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
+      style="margin-left: 10px; line-height: 24px; font-size: 14px;"
+    >
+      TEST_2
+    </a>
+    <div
+      style="position: relative; margin: 0px auto; width: calc(100%);"
+    >
+      <img
+        alt="TEST_2"
+        data-testid="floorPlanImage"
+        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+        style="max-height: 100%; width: 100%;"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

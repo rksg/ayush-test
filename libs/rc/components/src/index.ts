@@ -25,7 +25,6 @@ export {
   EventTable,
   useEventsTableQuery
 } from './EventTable'
-export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
@@ -51,7 +50,6 @@ export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
-export { NetworkDeviceMarker } from './FloorPlan/NetworkDevices/NetworkDeviceMarker'
 export { ApSelector } from './ApSelector'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'

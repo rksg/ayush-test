@@ -129,15 +129,15 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEntitlementSummary: {
     method: 'get',
-    newApi: false,
     url: '/entitlements/summaries',
-    oldUrl: '/api/tenant/:tenantId/entitlement/summary'
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary',
+    newApi: true
   },
   getEntitlementsList: {
     method: 'get',
-    newApi: false,
     url: '/entitlements',
-    oldUrl: '/api/tenant/:tenantId/entitlement'
+    oldUrl: '/api/tenant/:tenantId/entitlement',
+    newApi: true
   },
   refreshLicensesData: {
     method: 'post',
