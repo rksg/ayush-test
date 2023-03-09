@@ -35,10 +35,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
-import { DateRange, getIntl  }                               from '@acx-ui/utils'
+import { DateRange, getIntl, useDateFilter  }                from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
-import { useDateForGuestFilter }             from '../../PageHeader'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -67,7 +66,7 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { startDate, endDate, range } = useDateForGuestFilter()
+  const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,

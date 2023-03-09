@@ -119,6 +119,13 @@ export const RangePicker = ({
     }
   }, [showAllTime])
 
+  useEffect(() => {
+    if (dateRange === DateRange.allTime) {
+      onDateApply({ range: DateRange.last24Hours })
+      onDateChange?.(range)
+    }
+  }, [])
+
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
