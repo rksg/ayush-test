@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }         from '@acx-ui/components'
-import { SimpleListTooltip }               from '@acx-ui/rc/components'
+import { Card, Table, TableProps }          from '@acx-ui/components'
+import { SimpleListTooltip }                from '@acx-ui/rc/components'
 import {
   useGetVenueUsageByClientIsolationQuery
 } from '@acx-ui/rc/services'
-import { useTableQuery, VenueUsageByClientIsolation } from '@acx-ui/rc/utils'
-import { TenantLink }                                 from '@acx-ui/react-router-dom'
+import { SEARCH, FILTER, useTableQuery, VenueUsageByClientIsolation } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 export function ClientIsolationInstancesTable () {
   const { $t } = useIntl()
@@ -51,6 +51,13 @@ export function ClientIsolationInstancesTable () {
     }
   ]
 
+  const handleSearch = (filters: FILTER, search: SEARCH) => {
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      searchVenueNameString: search.searchString
+    })
+  }
+
   return (
     <Card title={
       $t(
@@ -63,7 +70,7 @@ export function ClientIsolationInstancesTable () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleSearch}
         enableApiFilter={true}
         rowKey='venueId'
       />
