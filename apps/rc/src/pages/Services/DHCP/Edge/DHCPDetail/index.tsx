@@ -104,7 +104,7 @@ const EdgeDHCPDetail = () => {
       <PageHeader
         title={dhcpStats && dhcpStats.data[0]?.serviceName}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
           {
             text: $t({ defaultMessage: 'DHCP for SmartEdge' }),
             link: getServiceRoutePath({
