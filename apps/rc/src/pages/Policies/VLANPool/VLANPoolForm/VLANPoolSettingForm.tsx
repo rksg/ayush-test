@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input }               from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsForm } from '@acx-ui/components'
-import { useVlanPoolListQuery }        from '@acx-ui/rc/services'
+import { GridCol, GridRow, StepsForm, Tooltip } from '@acx-ui/components'
+import { useVlanPoolListQuery }                 from '@acx-ui/rc/services'
 import {
   checkVlanPoolMembers
 } from '@acx-ui/rc/utils'
@@ -33,7 +33,7 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
         vlanPool.name === value) !== -1
       ) {
         return reject(
-          $t({ defaultMessage: 'The DHCP service with that name already exists' })
+          $t({ defaultMessage: 'The VLAN Pool with that name already exists' })
         )
       }
       return resolve()
@@ -65,7 +65,24 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
         />
         <Form.Item
           name='vlanMembers'
-          label={$t({ defaultMessage: 'VLANs' })}
+          label={<>{$t({ defaultMessage: 'VLANs' })}
+            <Tooltip.Question
+              placement='right'
+              title={<FormattedMessage
+                values={{
+                  br: (chunks) => <>{chunks}<br /></>
+                }}
+                /* eslint-disable max-len */
+                defaultMessage={`
+                  You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br>
+                  Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br>
+                  The total number of VLAN members per pool is 64 (including ranges)<br></br>
+                  IF DHCP/NAT is enabled on a venue, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>
+                `}
+                /* eslint-enable */
+              />}
+            />
+          </>}
           initialValue={''}
           rules={[
             { required: true },

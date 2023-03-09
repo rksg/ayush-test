@@ -1,14 +1,16 @@
 import '@testing-library/jest-dom'
 
+import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
 import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, render, screen }                                                                     from '@acx-ui/test-utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 
 import GalleryView from './GalleryView'
+
 
 
 const list: FloorPlanDto[] = [
@@ -125,8 +127,30 @@ for (let deviceType in NetworkDeviceType) {
   _networkDevicesVisibility.push(networkDevicetype)
 }
 
+const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg'
+},
+'7231da344778480d88f37f0cca1c534f-001.png': {
+  // eslint-disable-next-line max-len
+  signedUrl: 'https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png'
+}
+}
+
 
 describe('Floor Plan Gallery View', () => {
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )}
+  )
 
   it('should render correctly Gallery View', async () => {
 
@@ -138,6 +162,18 @@ describe('Floor Plan Gallery View', () => {
         networkDevices={networkDevices}
         networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>
     </NetworkDeviceContext.Provider>)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
     const component = await screen.findAllByTestId('fpImage')
     expect(component.length).toEqual(list.length)
 
@@ -166,6 +202,18 @@ describe('Floor Plan Gallery View', () => {
       onFloorPlanClick={onFloorPlanClick}
       networkDevices={networkDevices}
       networkDevicesVisibility={_networkDevicesVisibility}/></DndProvider>)
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[0]).toHaveAttribute('src',
+        imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl
+      )
+    })
+
+    await waitFor(() => {
+      expect(screen.queryAllByTestId('fpImage')[1]).toHaveAttribute('src',
+        imageObj['7231da344778480d88f37f0cca1c534f-001.png'].signedUrl
+      )
+    })
 
     const images = screen.getAllByTestId('fpImage')
     fireEvent.click(images[1])

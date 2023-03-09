@@ -54,7 +54,7 @@ export default function PortalViewContentPreview (props:{
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
-      >{demoValue.secondaryText || props.portalLang.secondaryText}
+      >{demoValue.secondaryText}
       </UI.FieldText>}
       {((view === PortalViewEnum.ClickThrough && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough

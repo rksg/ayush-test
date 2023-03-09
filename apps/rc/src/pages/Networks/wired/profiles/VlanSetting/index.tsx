@@ -7,7 +7,8 @@ import {
   Vlan,
   SwitchModel,
   SpanningTreeProtocolName } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -133,7 +134,7 @@ export function VlanSetting () {
           <Table
             rowKey='vlanId'
             columns={vlansColumns}
-            rowActions={rowActions}
+            rowActions={filterByAccess(rowActions)}
             dataSource={vlanTable}
             rowSelection={{
               type: 'radio',
@@ -143,7 +144,7 @@ export function VlanSetting () {
                 )
               }
             }}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add VLAN' }),
               onClick: () => {
                 form.resetFields()
@@ -157,7 +158,7 @@ export function VlanSetting () {
                   { vlanId: defaultVlan?.vlanId }) :
                 $t({ defaultMessage: 'Default VLAN settings' }),
               onClick: () => { setDefaultVlanDrawerVisible(true) }
-            }]} />
+            }])} />
         </Col>
       </Row>
       <VlanSettingDrawer

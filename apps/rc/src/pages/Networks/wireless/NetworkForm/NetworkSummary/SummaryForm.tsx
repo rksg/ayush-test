@@ -16,6 +16,7 @@ import { PskSummaryForm }    from './PskSummaryForm'
 
 const defaultPayload = {
   searchString: '',
+  pageSize: 10000,
   fields: [
     'name',
     'id'
@@ -84,7 +85,7 @@ export function SummaryForm (props: {
           />}
           {summaryData.type !== NetworkTypeEnum.PSK &&
           <Form.Item
-            label={$t({ defaultMessage: 'Use Cloudpath Server:' })}
+            label={$t({ defaultMessage: 'Use AAA Server:' })}
             children={summaryData.isCloudpathEnabled ? 'Yes' : 'No'}
           />
           }

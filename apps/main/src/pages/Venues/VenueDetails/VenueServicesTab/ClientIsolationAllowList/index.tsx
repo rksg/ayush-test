@@ -37,13 +37,18 @@ export default function ClientIsolationAllowList () {
       }
     },
     {
+      title: $t({ defaultMessage: 'Description' }),
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: $t({ defaultMessage: 'Client' }),
       dataIndex: 'clientCount',
       key: 'clientCount',
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Networks' }),
+      title: $t({ defaultMessage: 'Active On' }),
       dataIndex: 'networkCount',
       key: 'networkCount',
       align: 'center'

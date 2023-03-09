@@ -124,9 +124,8 @@ function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
     : moment(number as moment.MomentInput).format(format)
 }
 
-function calendarFormat (number: number, intl: IntlShape) {
-  const { $t } = intl
-  moment.locale(intl.locale)
+function calendarFormat (number: number) {
+  const { $t } = getIntl()
   return moment(number).calendar({
     lastDay: $t({ defaultMessage: '[Yesterday,] HH:mm' }),
     sameDay: $t({ defaultMessage: '[Today,] HH:mm' }),
@@ -150,7 +149,7 @@ function hertzFormat (number:number) {
 export const formats = {
   durationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'short', intl),
   longDurationFormat: (number: number, intl: IntlShape) => durationFormat(number, 'long', intl),
-  calendarFormat: (number: number, intl: IntlShape) => calendarFormat(number, intl),
+  calendarFormat: (number: number) => calendarFormat(number),
   decibelFormat: (number: number) => Math.round(number) + ' dB',
   decibelMilliWattsFormat: (number: number) => Math.round(number) + ' dBm',
   milliWattsFormat: (number:number) => numberFormat(1000, watts, number),
@@ -159,7 +158,6 @@ export const formats = {
   radioFormat: (value: string|number) => `${value} GHz`,
   hertzFormat: (number: number) => hertzFormat(number),
   floatFormat: (number: number) => numeral(number).format('0.[000]'),
-  enabledFormat: (value: boolean) => (value ? 'Enabled' : 'Disabled'),
   ratioFormat: ([x, y]:[number, number]) => `${x} / ${y}`,
   txFormat: (value: keyof typeof txpowerMapping) =>
     (txpowerMapping[value] ? txpowerMapping[value] : value),
@@ -184,6 +182,10 @@ export const dateTimeFormats = {
   sqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss'
 } as const
 
+const enabledFormat: MessageDescriptor = defineMessage({
+  defaultMessage: '{value, select, true {Enabled} other {Disabled}}'
+})
+
 const countFormat: MessageDescriptor = defineMessage({
   defaultMessage: '{value, number, ::K .##/@##r}'
 })
@@ -198,6 +200,7 @@ const scaleFormatRound: MessageDescriptor = defineMessage({
 })
 
 export const intlFormats = {
+  enabledFormat,
   countFormat,
   percentFormat,
   percentFormatRound,

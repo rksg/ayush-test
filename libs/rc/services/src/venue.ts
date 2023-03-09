@@ -55,7 +55,7 @@ import {
   TopologyData,
   VenueBonjourFencingPolicy
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, getJwtToken } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -287,7 +287,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           headers: {
             'accept': 'application/json, text/plain, */*',
             'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8'
+            'content-type': 'application/json; charset=UTF-8',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           },
           body: payload
         }
@@ -577,10 +578,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],

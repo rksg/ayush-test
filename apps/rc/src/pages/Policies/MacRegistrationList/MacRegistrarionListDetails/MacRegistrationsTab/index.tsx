@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/rc/services'
 import { MacRegistration, useTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
+import { filterByAccess }                 from '@acx-ui/user'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 import { toTimeString }     from '../../MacRegistrationListUtils'
@@ -78,10 +79,7 @@ export function MacRegistrationsTab () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
@@ -165,14 +163,14 @@ export function MacRegistrationsTab () {
   ]
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const toastDetailErrorMessage = (error: any) => {
-    const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-    showToast({
-      type: 'error',
-      content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-      link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-    })
-  }
+  // const toastDetailErrorMessage = (error: any) => {
+  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
+  //   showToast({
+  //     type: 'error',
+  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
+  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
+  //   })
+  // }
 
   return (
     <Loader states={[
@@ -198,8 +196,8 @@ export function MacRegistrationsTab () {
             await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          } catch (error: any) {
-            toastDetailErrorMessage(error)
+          } catch (error) {
+            console.log(error) // eslint-disable-line no-console
           }
         }}
         onClose={() => setUploadCsvDrawerVisible(false)} />
@@ -209,9 +207,9 @@ export function MacRegistrationsTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
@@ -222,7 +220,7 @@ export function MacRegistrationsTab () {
         {
           label: $t({ defaultMessage: 'Import From File' }),
           onClick: () => setUploadCsvDrawerVisible(true)
-        }]}
+        }])}
       />
     </Loader>
   )

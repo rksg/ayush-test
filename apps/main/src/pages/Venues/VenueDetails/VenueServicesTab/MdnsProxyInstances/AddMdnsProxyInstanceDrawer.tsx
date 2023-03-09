@@ -2,7 +2,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer, showToast }             from '@acx-ui/components'
+import { Drawer }                        from '@acx-ui/components'
 import { ApSelector, MdnsProxySelector } from '@acx-ui/rc/components'
 import { useAddMdnsProxyApsMutation }    from '@acx-ui/rc/services'
 
@@ -33,11 +33,8 @@ export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceD
       }).unwrap()
 
       onClose()
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

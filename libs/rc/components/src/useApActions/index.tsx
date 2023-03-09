@@ -60,7 +60,10 @@ export function useApActions () {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            rebootAp({ params: { tenantId: tenantId, serialNumber } })
+            rebootAp({
+              params: { tenantId: tenantId, serialNumber },
+              payload: { action: 'reboot' }
+            })
             callBack && callBack()
           }
         }]
@@ -96,12 +99,8 @@ export function useApActions () {
 
         callBack && callBack()
       })
-      .catch(() => {
-        showToast({
-          key: toastKey,
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download AP support log.' })
-        })
+      .catch((error) => {
+        console.log(error) // eslint-disable-line no-console
       })
   }
 
@@ -167,17 +166,18 @@ export function useApActions () {
   }
 
   const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber } }).unwrap().then(() => {
-      let count = blinkLedCount
-      const interval = setInterval(() => {
-        if (count <= 0) {
-          clearInterval(interval)
-          callBack && callBack()
-        } else {
-          genBlinkLedToast(count--, interval)
-        }
-      }, 1000)
-    })
+    blinkLedAp({ params: { tenantId, serialNumber }, payload: { action: 'blinkLed' } })
+      .unwrap().then(() => {
+        let count = blinkLedCount
+        const interval = setInterval(() => {
+          if (count <= 0) {
+            clearInterval(interval)
+            callBack && callBack()
+          } else {
+            genBlinkLedToast(count--, interval)
+          }
+        }, 1000)
+      })
   }
 
   return {

@@ -6,7 +6,7 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
+import { Button, Loader, Tooltip } from '@acx-ui/components'
 import {
   useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -84,18 +84,20 @@ export function SwitchTraceRouteForm () {
     try {
       const payload = {
         maxTtl: form.getFieldValue('maxTtl'),
-        targetHost: form.getFieldValue('targetHost')
+        targetHost: form.getFieldValue('targetHost'),
+        troubleshootingPayload: {
+          maxTtl: form.getFieldValue('maxTtl'),
+          targetHost: form.getFieldValue('targetHost')
+        },
+        troubleshootingType: 'trace-route'
       }
       const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }
-    } catch {
+    } catch (error) {
       setIsValid(false)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

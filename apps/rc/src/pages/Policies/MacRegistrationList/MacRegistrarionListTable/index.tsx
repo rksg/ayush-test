@@ -26,7 +26,8 @@ import {
   PolicyType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                               from '@acx-ui/user'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
@@ -203,15 +204,30 @@ export default function MacRegistrationListsTable () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
     }
   }]
+
+    return (
+      <Loader states={[
+        tableQuery,
+        { isLoading: false, isFetching: isDeleteMacRegListUpdating }
+      ]}>
+        <Table
+          columns={useColumns()}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={{ type: 'radio' }}
+        />
+      </Loader>
+    )
+  }
 
   return (
     <>
@@ -222,15 +238,14 @@ export default function MacRegistrationListsTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={[
+        extra={filterByAccess([
           <TenantLink
-            key='add'
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[
         tableQuery,

@@ -21,6 +21,7 @@ import {
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 
 import * as UI            from './styledComponents'
@@ -340,7 +341,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       </Row>
       <Table
         rowKey='model'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',

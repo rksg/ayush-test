@@ -5,7 +5,7 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, showToast, Tooltip }            from '@acx-ui/components'
+import { Button, Loader, Tooltip }                       from '@acx-ui/components'
 import { usePingApMutation }                             from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 
@@ -20,18 +20,16 @@ export function ApPingForm () {
   const handlePingAp = async () => {
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('name')
+        targetHost: pingForm.getFieldValue('name'),
+        action: 'ping'
       }
       const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
       if (pingApResult) {
 
         pingForm.setFieldValue('result', _.get(pingApResult, 'response.response'))
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

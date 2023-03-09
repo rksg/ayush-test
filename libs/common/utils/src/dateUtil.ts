@@ -7,6 +7,7 @@ export enum DateRange {
   last7Days = 'Last 7 Days',
   last30Days = 'Last 30 Days',
   custom = 'Custom',
+  allTime = 'All Time'
 }
 
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
@@ -29,6 +30,10 @@ export function getDateRangeFilter (
 }
 export function defaultRanges (subRange?: DateRange[]) {
   const defaultRange: Partial<{ [key in DateRange]: moment.Moment[] }> = {
+    [DateRange.allTime]: [
+      moment().subtract(1, 'days').seconds(0),
+      moment().seconds(0)
+    ],
     [DateRange.last24Hours]: [
       moment().subtract(1, 'days').seconds(0),
       moment().seconds(0)
@@ -61,6 +66,9 @@ export function dateRangeForLast (
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
+  [DateRange.allTime]: defineMessage({
+    defaultMessage: 'All Time'
+  }),
   [DateRange.last24Hours]: defineMessage({
     defaultMessage: 'Last 24 Hours'
   }),

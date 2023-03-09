@@ -744,6 +744,7 @@ describe('Table component', () => {
         columns={filteredColumns}
         dataSource={filteredData}
         enableApiFilter={true}
+        floatRightFilters={true}
       />)
       const input = await screen
         .findByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
