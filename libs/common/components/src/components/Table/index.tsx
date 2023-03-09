@@ -85,7 +85,7 @@ export interface TableProps <RecordType>
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
-      groupBy?: string | undefined
+      groupBy?: string
     ) => void,
     /**
      * Assumes that dataSource is nested with children key.
@@ -163,7 +163,8 @@ function Table <RecordType extends Record<string, any>> ({
     groupActionColumns,
     finalParentColumns,
     clearGroupByFn,
-    isGroupByActive
+    isGroupByActive,
+    groupBy
   } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
     groupable, 
     groupByTableActions, 
@@ -171,20 +172,20 @@ function Table <RecordType extends Record<string, any>> ({
     intl
   )
 
-  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
+  const debounced = useCallback(_.debounce((filter: Filter, searchString: string, groupBy: string | undefined) =>
   onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue)
+      debounced(filterValues, searchValue, groupBy)
     }
     return () => debounced.cancel()
-  }, [searchValue, debounced])
+  }, [searchValue, debounced, groupBy])
 
   useEffect(() => {
-    debounced(filterValues, searchValue)
+    debounced(filterValues, searchValue, groupBy)
     return () => debounced.cancel()
-  }, [filterValues, debounced])
+  }, [filterValues, debounced, groupBy])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -194,9 +195,7 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-
     let tableCols: typeof props.columns
-
     if (isGroupByActive) {
       // create deep copy of current cols
       const colCopy: typeof props.columns = _.cloneDeep(props.columns)

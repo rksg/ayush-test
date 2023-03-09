@@ -48,7 +48,7 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-  const typedData = Array.isArray(dataSource) ? dataSource : []
+  const typedData = Array.isArray(dataSource) ? dataSource.slice() : []
   return typedData.reduce((
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
@@ -92,7 +92,7 @@ export function renderFilter <RecordType> (
       data.push(value)
     }
   }
-  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource : []
+  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource.slice() : []
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
@@ -199,8 +199,10 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
 
       const { onChange, onClear } = tableActions ?? {}
 
-      const validGroupables = groupables.filter(cols => Boolean(cols.groupable))
-      const selectors = validGroupables.map(col => col.groupable!)
+      const selectors = groupables
+        .filter(cols => Boolean(cols.groupable))
+        .map(col => col.groupable!)
+
       const Select = <GroupSelect
         $t={$t}
         onChange={onChange}
@@ -250,7 +252,8 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         groupActionColumns,
         finalParentColumns,
         clearGroupByFn,
-        isGroupByActive
+        isGroupByActive,
+        groupBy: value?.key
       }
     }
 
@@ -260,7 +263,8 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
       groupActionColumns: [],
       finalParentColumns: [],
       clearGroupByFn: () => {},
-      isGroupByActive: false
+      isGroupByActive: false,
+      groupBy: undefined
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
