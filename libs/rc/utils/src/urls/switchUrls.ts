@@ -142,7 +142,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addSwitch: {
-    // 400 Bad Request
+    // Request payload should change to list
     // method: 'post',
     // url: '/switches',
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
@@ -180,10 +180,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   restoreBackup: {
+    // Wait for new uri ready
     method: 'put',
-    url: '/switches/configBackups/:configId/restoration',
+    url: '/switches/configBackups/:configId',
     oldUrl: '/api/switch/tenant/:tenantId/configBackup/restore/:configId',
-    newApi: true
+    newApi: false
   },
   downloadSwitchConfig: {
     method: 'get',
