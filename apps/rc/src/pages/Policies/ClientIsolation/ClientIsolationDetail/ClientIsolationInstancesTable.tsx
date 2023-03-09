@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps }         from '@acx-ui/components'
+import { SimpleListTooltip }               from '@acx-ui/rc/components'
 import {
   useGetVenueUsageByClientIsolationQuery
 } from '@acx-ui/rc/services'
@@ -25,6 +26,7 @@ export function ClientIsolationInstancesTable () {
       key: 'venueName',
       dataIndex: 'venueName',
       sorter: true,
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
@@ -40,7 +42,12 @@ export function ClientIsolationInstancesTable () {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkCount',
       key: 'networkCount',
-      align: 'center'
+      align: 'center',
+      render: (data, row) => {
+        return data
+          ? <SimpleListTooltip items={row.networkNames} displayText={row.networkCount} />
+          : 0
+      }
     }
   ]
 
@@ -56,6 +63,8 @@ export function ClientIsolationInstancesTable () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
         rowKey='venueId'
       />
     </Card>

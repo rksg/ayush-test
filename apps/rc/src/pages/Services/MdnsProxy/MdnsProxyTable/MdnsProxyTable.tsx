@@ -33,7 +33,7 @@ export default function MdnsProxyTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
-    defaultPayload: { fields: ['id'] }
+    defaultPayload: { fields: ['id', 'name', 'rules', 'venueIds'] }
   })
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
@@ -104,13 +104,20 @@ export default function MdnsProxyTable () {
 function useColumns () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: venues } = useGetVenuesQuery({
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
       sortOrder: 'ASC'
     }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
   })
 
   const columns: TableProps<MdnsProxyViewModel>['columns'] = [
@@ -139,12 +146,14 @@ function useColumns () {
       dataIndex: 'rules',
       align: 'center',
       render: function (data) {
-        return (
-          <Tooltip
-            // eslint-disable-next-line max-len
-            title={<MdnsProxyForwardingRulesTable readonly={true} rules={data as MdnsProxyForwardingRule[]}/>}
-            children={data}
+        const rules = data as MdnsProxyForwardingRule[]
+        return (rules && rules.length > 0
+          ? <Tooltip
+            title={<MdnsProxyForwardingRulesTable readonly={true} rules={rules}/>}
+            overlayStyle={{ maxWidth: 'none' }}
+            children={rules.length}
           />
+          : 0
         )
       }
     },
@@ -153,15 +162,14 @@ function useColumns () {
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
       align: 'center',
-      render: function (data) {
-        if (!data) return 0
+      filterKey: 'venueIds',
+      filterable: venueNameMap,
+      render: function (data, row) {
+        if (!row.venueIds) return 0
 
-        const venueIds = data as string[]
-
-        if (!venues?.data) return venueIds.length
-
-        const venueTooltipItems = venues.data.filter(v => venueIds.includes(v.id)).map(v => v.name)
-        return <SimpleListTooltip items={venueTooltipItems} displayText={venueIds.length} />
+        // eslint-disable-next-line max-len
+        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
       }
     }
   ]

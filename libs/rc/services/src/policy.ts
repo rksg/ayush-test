@@ -2,6 +2,7 @@ import {
   createApi,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react'
+import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
 import {
@@ -51,6 +52,7 @@ import {
   AAAPolicyNetwork,
   ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
+
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -782,9 +784,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(ClientIsolationUrls.getVenueUsageByClientIsolation, params)
+        const searchPayload = payload as { searchString?: string }
+        const body = {
+          searchVenueNameString: searchPayload?.searchString ?? '',
+          ...(_.omit(searchPayload, ['searchString']))
+        }
         return {
           ...req,
-          body: payload
+          body
         }
       }
     }),
