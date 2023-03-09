@@ -88,6 +88,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
         selectedOptionOfSlot3: selectedEnable3.option,
         selectedOptionOfSlot4: selectedEnable4.option
       })
+      setFamily(selectedFamily)
+      setModel(selectedModel)
       familyChangeAction(selectedFamily)
       modelChangeAction(selectedFamily, selectedModel)
       setEnableSlot2(selectedEnable2.enable)
@@ -199,6 +201,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setModuleSelectionEnable(true)
       setModule2SelectionEnable(true)
       setModule3SelectionEnable(true)
+    }else{
+      setModuleSelectionEnable(true)
     }
     setModel(model)
     checkIfModuleFixed(family, model)
@@ -288,7 +292,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
         const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
         const familyList = ICX_MODELS_MODULES[familyIndex]
         const modelIndex = selectedModel as keyof typeof familyList
-        slotPortInfo = familyList[modelIndex][slotNumber - 1][0]
+        slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
@@ -349,7 +353,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -373,7 +377,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
