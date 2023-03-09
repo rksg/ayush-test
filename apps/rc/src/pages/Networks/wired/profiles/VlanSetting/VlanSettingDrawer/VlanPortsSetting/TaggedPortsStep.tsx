@@ -75,6 +75,11 @@ export function TaggedPortsStep () {
         setSelectedItems1(taggedPorts.filter(item=> item.split('/')[1] === '1'))
         setSelectedItems2(taggedPorts.filter(item=> item.split('/')[1] === '2'))
         setSelectedItems3(taggedPorts.filter(item=> item.split('/')[1] === '3'))
+      }else{
+        form.setFieldValue(['switchFamilyModels', 'taggedPorts'], [])
+        setSelectedItems1([])
+        setSelectedItems2([])
+        setSelectedItems3([])
       }
     }
   }, [vlanSettingValues])
