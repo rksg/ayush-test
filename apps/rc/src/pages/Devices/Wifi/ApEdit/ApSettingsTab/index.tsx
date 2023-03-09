@@ -10,6 +10,7 @@ import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
+import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
@@ -49,7 +50,8 @@ export function ApSettingsTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
-      multicast: $t({ defaultMessage: 'Directed Multicast' })
+      multicast: $t({ defaultMessage: 'Directed Multicast' }),
+      snmp: $t({ defaultMessage: 'AP SNMP' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -83,6 +85,9 @@ export function ApSettingsTab () {
         }
         key='proxy'>
         <MdnsProxyTab />
+      </TabPane>
+      <TabPane tab={tabTitleMap('snmp')} key='snmp'>
+        <ApSnmp />
       </TabPane>
       {supportDirectedMulticast &&
         <TabPane tab={<>
