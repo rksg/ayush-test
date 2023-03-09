@@ -94,7 +94,7 @@ export default function NetworkSegAuthDetail () {
           </TenantLink>
         ])}
       />
-      <Card title={$t({ defaultMessage: 'Attributes' })}>
+      <Card>
         <NetworkSegAuthSummary data={data} />
       </Card>
       <br /><br />

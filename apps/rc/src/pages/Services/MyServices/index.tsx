@@ -7,7 +7,8 @@ import {
   useGetDpskListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
-  useServiceListQuery
+  useServiceListQuery,
+  useWebAuthTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -87,6 +88,11 @@ export default function MyServices () {
       type: ServiceType.PORTAL,
       category: RadioCardCategory.WIFI,
       tableQuery: useGetPortalProfileListQuery({ params })
+    },
+    {
+      type: ServiceType.WEBAUTH_SWITCH,
+      category: RadioCardCategory.SWITCH,
+      tableQuery: useWebAuthTemplateListQuery({ params, payload: {} })
     }
   ]
 
