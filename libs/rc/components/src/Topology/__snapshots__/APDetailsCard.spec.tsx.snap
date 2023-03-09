@@ -224,151 +224,96 @@ exports[`Topology AP Card should render correctly 1`] = `
                           class="ant-descriptions-item-content"
                         >
                           <div
-                            class="sc-ftvSup dEqZDE"
+                            class="styledComponents__NoLabel-sc-xapams-1 hllmcF"
                           >
                             <div
-                              class="ant-table-wrapper"
+                              class="sc-ftvSup xtVIh"
                             >
                               <div
-                                class="ant-spin-nested-loading"
+                                class="sc-papXJ juxkmC"
                               >
-                                <div
-                                  class="ant-spin-container"
-                                >
-                                  <div
-                                    class="ant-table ant-table-small"
+                                <label />
+                                <label>
+                                  <span>
+                                    RF
+                                  </span>
+                                  <span>
+                                    Channel
+                                  </span>
+                                </label>
+                                <label>
+                                  <span>
+                                    RF
+                                  </span>
+                                  <span>
+                                    Bandwidth
+                                  </span>
+                                </label>
+                                <label>
+                                  <span>
+                                    TX Power
+                                  </span>
+                                </label>
+                              </div>
+                              <div
+                                class="sc-jqUVSM cfFONd"
+                              >
+                                <label>
+                                  <h5
+                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
                                   >
-                                    <div
-                                      class="ant-table-container"
-                                    >
-                                      <div
-                                        class="ant-table-content"
-                                      >
-                                        <table
-                                          style="table-layout: auto;"
-                                        >
-                                          <colgroup />
-                                          <thead
-                                            class="ant-table-thead"
-                                          >
-                                            <tr>
-                                              <th
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              />
-                                              <th
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                RF Channel
-                                              </th>
-                                              <th
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                RF Bandwidth
-                                              </th>
-                                              <th
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                TX Power
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody
-                                            class="ant-table-tbody"
-                                          >
-                                            <tr
-                                              class="ant-table-row ant-table-row-level-0"
-                                            >
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                2.4G
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                0
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                20
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                max
-                                              </td>
-                                            </tr>
-                                            <tr
-                                              class="ant-table-row ant-table-row-level-0"
-                                            >
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                5G
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                0
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                80
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                max
-                                              </td>
-                                            </tr>
-                                            <tr
-                                              class="ant-table-row ant-table-row-level-0"
-                                            >
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                5G
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                0
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                80
-                                              </td>
-                                              <td
-                                                class="ant-table-cell"
-                                                style="text-align: center;"
-                                              >
-                                                max
-                                              </td>
-                                            </tr>
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                                    2.4 GHz
+                                  </h5>
+                                </label>
+                                <span>
+                                  0
+                                </span>
+                                <span>
+                                  20
+                                </span>
+                                <span>
+                                  max
+                                </span>
+                              </div>
+                              <div
+                                class="sc-jqUVSM cfFONd"
+                              >
+                                <label>
+                                  <h5
+                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                                  >
+                                    5 GHz
+                                  </h5>
+                                </label>
+                                <span>
+                                  0
+                                </span>
+                                <span>
+                                  80
+                                </span>
+                                <span>
+                                  max
+                                </span>
+                              </div>
+                              <div
+                                class="sc-jqUVSM cfFONd"
+                              >
+                                <label>
+                                  <h5
+                                    class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                                  >
+                                    5 GHz
+                                  </h5>
+                                </label>
+                                <span>
+                                  0
+                                </span>
+                                <span>
+                                  80
+                                </span>
+                                <span>
+                                  max
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -418,6 +363,45 @@ exports[`Topology AP Card should render correctly 1`] = `
                           class="ant-descriptions-item-content"
                         >
                           Feb 07 2023 08:31
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            class="ant-divider ant-divider-horizontal"
+            role="separator"
+          />
+          <div
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+          >
+            <div
+              class="ant-descriptions-view"
+            >
+              <table>
+                <tbody>
+                  <tr
+                    class="ant-descriptions-row"
+                  >
+                    <td
+                      class="ant-descriptions-item"
+                      colspan="1"
+                    >
+                      <div
+                        class="ant-descriptions-item-container"
+                      >
+                        <span
+                          class="ant-descriptions-item-label"
+                        >
+                          Mesh Role
+                        </span>
+                        <span
+                          class="ant-descriptions-item-content"
+                        >
+                          disabled
                         </span>
                       </div>
                     </td>

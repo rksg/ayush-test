@@ -22,12 +22,16 @@ import {
   GridCol,
   GridRow,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }                                                                       from '@acx-ui/icons'
-import { useAddL3AclPolicyMutation, useGetL3AclPolicyQuery, useL3AclPolicyListQuery } from '@acx-ui/rc/services'
+import { Drag }                  from '@acx-ui/icons'
+import {
+  useAddL3AclPolicyMutation,
+  useGetL3AclPolicyQuery,
+  useL3AclPolicyListQuery,
+  useUpdateL3AclPolicyMutation
+} from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
@@ -36,6 +40,7 @@ import {
   serverIpAddressRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { layer3ProtocolLabelMapping } from '../../contentsMap'
 
@@ -187,6 +192,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   ]
 
   const [ createL3AclPolicy ] = useAddL3AclPolicyMutation()
+
+  const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
 
   const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
     params: { ...params, requestId: requestId },
@@ -423,26 +430,39 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     onClick: handleAddAction
   }] : []
 
+  const convertToPayload = (policyId?: string) => {
+    let id = {}
+    if (policyId) {
+      id = { id: policyId }
+    }
+    let payload = {
+      name: policyName,
+      defaultAccess: accessStatus,
+      l3Rules: [...layer3RuleList.map(rule => {
+        return {
+          priority: rule.priority,
+          access: rule.access,
+          source: { ..._.omitBy(rule.source, _.isEmpty) },
+          destination: { ..._.omitBy(rule.destination, _.isEmpty) },
+          description: rule.description,
+          protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
+        }
+      })],
+      description: null
+    }
+
+    return {
+      ...id,
+      ...payload
+    }
+  }
+
   const handleL3AclPolicy = async (edit: boolean) => {
     try {
       if (!edit) {
         const l3AclRes: CommonResult = await createL3AclPolicy({
           params: params,
-          payload: {
-            name: policyName,
-            defaultAccess: accessStatus,
-            l3Rules: [...layer3RuleList.map(rule => {
-              return {
-                priority: rule.priority,
-                access: rule.access,
-                source: { ..._.omitBy(rule.source, _.isEmpty) },
-                destination: { ..._.omitBy(rule.destination, _.isEmpty) },
-                description: rule.description,
-                protocol: rule.protocol !== Layer3ProtocolType.ANYPROTOCOL ? rule.protocol : null
-              }
-            })],
-            description: null
-          }
+          payload: convertToPayload()
         }).unwrap()
         // let responseData = l3AclRes.response as {
         //   [key: string]: string
@@ -451,13 +471,14 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         // setQueryPolicyId(responseData.id)
         setRequestId(l3AclRes.requestId)
         setQueryPolicyName(policyName)
+      } else {
+        await updateL3AclPolicy({
+          params: { ...params, l3AclPolicyId: queryPolicyId },
+          payload: convertToPayload(queryPolicyId)
+        }).unwrap()
       }
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -603,14 +624,17 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       label={$t({ defaultMessage: 'Policy Name:' })}
       rules={[
         { required: true },
-        { required: true,
-          validator: (_, value) => {
-            if (layer3List && layer3List.find(layer3 => layer3 === value)) {
-              return Promise.reject($t({
-                defaultMessage: 'A policy with that name already exists'
-              }))
-            }
-            return Promise.resolve()}
+        { min: 2 },
+        { max: 32 },
+        { validator: (_, value) => {
+          if (layer3List && layer3List
+            .filter(layer3 => editMode ? (layer3PolicyInfo?.name !== layer3) : true)
+            .findIndex(layer3 => layer3 === value) !== -1) {
+            return Promise.reject($t({
+              defaultMessage: 'A policy with that name already exists'
+            }))
+          }
+          return Promise.resolve()}
         }
       ]}
       children={<Input disabled={isViewMode()}/>}
@@ -633,8 +657,8 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       columns={basicColumns}
       dataSource={layer3RuleList as Layer3Rule[]}
       rowKey='priority'
-      actions={actions}
-      rowActions={rowActions}
+      actions={filterByAccess(actions)}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{ type: 'radio' }}
       columnState={{ hidden: true }}
       components={{
@@ -907,7 +931,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL3AclPolicy(false)
+                  await handleL3AclPolicy(editMode.isEdit)
                 }
                 handleLayer3DrawerClose()
               } catch (error) {

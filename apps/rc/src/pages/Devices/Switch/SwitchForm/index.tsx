@@ -9,7 +9,6 @@ import { useIntl }                                                from 'react-in
 import {
   PageHeader,
   Loader,
-  showToast,
   StepsForm,
   StepsFormInstance,
   Tooltip,
@@ -199,11 +198,8 @@ export function SwitchForm () {
         }
         await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     } else if (switchRole === MEMEBER_TYPE.MEMBER) {
       const params = {
@@ -214,11 +210,8 @@ export function SwitchForm () {
       try {
         await addStackMember({ params }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
   }
@@ -259,12 +252,8 @@ export function SwitchForm () {
         ...basePath,
         pathname: `${basePath.pathname}/switch`
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

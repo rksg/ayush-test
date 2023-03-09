@@ -39,34 +39,6 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/admin',
     newApi: true
   },
-  // getMfaAdminDetails: {
-  //   method: 'get',
-  //   url: '/mfa/admin/:userId'
-  // },
-  // mfaRegisterAdmin: {
-  //   method: 'post',
-  //   url: '/mfa/registerAdmin/:userId'
-  // },
-  // mfaRegisterPhone: {
-  //   method: 'post',
-  //   url: '/mfa/registerPhone/:userId'
-  // },
-  // setupMFAAccount: {
-  //   method: 'post',
-  //   url: '/mfa/setupAdmin/admin/:userId'
-  // },
-  // mfaResendOTP: {
-  //   method: 'post',
-  //   url: '/mfa/resendOTP/admin/:tenantId'
-  // },
-  updateMFAAccount: {
-    method: 'put',
-    url: '/mfa/setupTenant/tenant/:tenantId/:enable'
-  },
-  getMfaTenantDetails: {
-    method: 'get',
-    url: '/mfa/tenant/:tenantId'
-  },
   getAccountDetails: {
     method: 'get',
     url: '/tenants/accounts',
@@ -157,15 +129,15 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEntitlementSummary: {
     method: 'get',
-    newApi: false,
     url: '/entitlements/summaries',
-    oldUrl: '/api/tenant/:tenantId/entitlement/summary'
+    oldUrl: '/api/tenant/:tenantId/entitlement/summary',
+    newApi: true
   },
   getEntitlementsList: {
     method: 'get',
-    newApi: false,
     url: '/entitlements',
-    oldUrl: '/api/tenant/:tenantId/entitlement'
+    oldUrl: '/api/tenant/:tenantId/entitlement',
+    newApi: true
   },
   refreshLicensesData: {
     method: 'post',

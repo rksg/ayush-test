@@ -16,7 +16,6 @@ import {
   useUpdateSwitchConfigProfileMutation
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   CliConfiguration
 } from '@acx-ui/rc/utils'
 import {
@@ -82,14 +81,7 @@ export default function CliProfileForm () {
       }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch (error) {
-      const errorRes = error as CatchErrorResponse
-      const message
-        = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
-      showToast({
-        type: 'error',
-        duration: 5,
-        content: $t({ defaultMessage: '{message}' }, { message })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -100,14 +92,7 @@ export default function CliProfileForm () {
       }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch (error) {
-      const errorRes = error as CatchErrorResponse
-      const message
-        = errorRes?.data?.errors?.[0]?.message ?? $t({ defaultMessage: 'An error occurred' })
-      showToast({
-        type: 'error',
-        duration: 5,
-        content: $t({ defaultMessage: '{message}' }, { message })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

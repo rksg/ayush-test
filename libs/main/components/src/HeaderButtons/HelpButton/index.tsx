@@ -5,10 +5,9 @@ import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
-import { useGetGlobalValuesQuery } from '@acx-ui/rc/services'
-import { useParams  }              from '@acx-ui/react-router-dom'
 import { notAvailableMsg }         from '@acx-ui/utils'
 
 import { DisabledButton } from '../styledComponents'
@@ -18,8 +17,6 @@ import Firewall          from './Firewall'
 import HelpPage          from './HelpPage'
 import { ButtonWrapper } from './styledComponents'
 
-// eslint-disable-next-line max-len
-const DOCUMENTATION_CENTER = 'https://docs.cloud.ruckuswireless.com/alto/master--1-220111/index.html'
 export interface HelpButtonProps{
   supportStatus?: string
 }
@@ -32,8 +29,6 @@ const HelpButton = (props:HelpButtonProps) => {
   const [helpPageModalState, setHelpPageModalOpen] = useState(false)
   const [isChatDisabled, setIsChatDisabled] = useState(true)
 
-  const params = useParams()
-  const { data } = useGetGlobalValuesQuery({ params })
   useEffect(()=>{
     switch (supportStatus) {
       case 'ready':
@@ -47,6 +42,12 @@ const HelpButton = (props:HelpButtonProps) => {
         break
     }
   },[supportStatus])
+
+  const documentationCenter = get('DOCUMENTATION_CENTER')
+  const myOpenCases = get('MY_OPEN_CASES')
+  const privacy = get('PRIVACY')
+  const supportedAPModels = get('SUPPORTED_AP_MODELS')
+  const howToVideos = get('HOW_TO_VIDEOS')
 
   const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
@@ -62,16 +63,19 @@ const HelpButton = (props:HelpButtonProps) => {
             setFirewallModalOpen(true)
             break
           case 'models':
-            if(data?.SUPPORTED_AP_MODELS) window.open(data?.SUPPORTED_AP_MODELS, '_blank')
+            window.open(supportedAPModels, '_blank')
             break
           case 'privacy':
-            if(data?.PRIVACY) window.open(data?.PRIVACY, '_blank')
+            window.open(privacy, '_blank')
             break
           case 'openCases':
-            if(data?.MY_OPEN_CASES) window.open(data?.MY_OPEN_CASES, '_blank')
+            window.open(myOpenCases, '_blank')
             break
           case 'documentation':
-            window.open(DOCUMENTATION_CENTER, '_blank')
+            window.open(documentationCenter, '_blank')
+            break
+          case 'videos':
+            window.open(howToVideos, '_blank')
             break
         }
       }}
@@ -80,7 +84,7 @@ const HelpButton = (props:HelpButtonProps) => {
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
 
-      <Menu.Item disabled key='videos'>
+      <Menu.Item key='videos'>
         {$t({ defaultMessage: 'How-To Videos' })}
       </Menu.Item>
 
@@ -98,7 +102,7 @@ const HelpButton = (props:HelpButtonProps) => {
         {$t({ defaultMessage: 'Contact Support' })}
       </Menu.Item>
 
-      <Menu.Item disabled={!data?.SUPPORTED_AP_MODELS} key='models'>
+      <Menu.Item key='models'>
         {$t({ defaultMessage: 'Supported Device Models' })}
       </Menu.Item>
 
@@ -108,13 +112,13 @@ const HelpButton = (props:HelpButtonProps) => {
 
       <Menu.Divider />
 
-      <Menu.Item disabled={!data?.MY_OPEN_CASES} key='openCases'>
+      <Menu.Item key='openCases'>
         {$t({ defaultMessage: 'My Open Cases' })}
       </Menu.Item>
 
       <Menu.Divider />
 
-      <Menu.Item disabled={!data?.PRIVACY} key='privacy'>
+      <Menu.Item key='privacy'>
         {$t({ defaultMessage: 'Privacy' })}
       </Menu.Item>
 

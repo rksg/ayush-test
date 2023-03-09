@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { useAnalyticsFilter, AnalyticsFilter } from '@acx-ui/analytics/utils'
+import { AnalyticsFilter }                     from '@acx-ui/analytics/utils'
 import { Tabs }                                from '@acx-ui/components'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { useDateFilter }                       from '@acx-ui/utils'
 
 import { IncidentTabContent, HealthPage } from '..'
 
@@ -16,7 +17,7 @@ export function AnalyticsTabs (props: {
   const location = useLocation()
   const navigate = useNavigate()
   const { activeSubTab } = useParams()
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const onTabChange = (tab: string) => {
     navigate({
       ...location,
@@ -32,10 +33,10 @@ export function AnalyticsTabs (props: {
     type='card'
   >
     <Tabs.TabPane tab={$t({ defaultMessage: 'Incidents' })} key='incidents'>
-      <IncidentTabContent filters={{ ...filters, ...incidentFilter }} />
+      <IncidentTabContent filters={{ ...dateFilter, ...incidentFilter }} />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Health' })} key='health'>
-      <HealthPage filters={{ ...filters, ...healthFilter }} path={healthPath} />
+      <HealthPage filters={{ ...dateFilter, ...healthFilter }} path={healthPath} />
     </Tabs.TabPane>
   </Tabs>
 }

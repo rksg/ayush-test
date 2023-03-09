@@ -43,8 +43,7 @@ export * from './components/StepsForm'
 export {
   StepsForm as StepsFormNew,
   useStepFormContext,
-  createStepsFormContext,
-  useWatch
+  createStepsFormContext
 } from './components/StepsFormNew'
 export type {
   FieldSummaryProps,
@@ -59,3 +58,4 @@ export * from './components/Toast'
 export * from './components/Tooltip'
 export type { TooltipProps } from './components/Tooltip'
 export * from './theme/helper'
+export * from './components/VerticalStackedBarChart'

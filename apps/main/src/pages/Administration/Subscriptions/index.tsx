@@ -17,7 +17,8 @@ import {
   Entitlement,
   EntitlementDeviceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
@@ -83,7 +84,10 @@ const SubscriptionTable = () => {
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        return row?.deviceSubType ? EntitlementUtil.deviceSubTypeToText(row?.deviceSubType) : ''
+        if (row.deviceType === EntitlementDeviceType.SWITCH)
+          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+        else
+          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
       }
     },
     {
@@ -152,13 +156,8 @@ const SubscriptionTable = () => {
               defaultMessage: 'Successfully refreshed.'
             })
           })
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({
-              defaultMessage: 'Failed, please try again later.'
-            })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     }
@@ -180,7 +179,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={actions}
+        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

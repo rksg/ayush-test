@@ -1,5 +1,90 @@
-import { NetworkHealthTest }                                      from './types'
-import { statsFromSummary, formatApsUnderTest, formatLastResult } from './utils'
+import userEvent                      from '@testing-library/user-event'
+import { MessageDescriptor, useIntl } from 'react-intl'
+
+import { render, renderHook, screen } from '@acx-ui/test-utils'
+
+import { fetchServiceGuardTest } from './__tests__/fixtures'
+import {
+  AuthenticationMethod,
+  NetworkHealthConfig,
+  NetworkHealthTest,
+  TestType,
+  Schedule,
+  ScheduleFrequency
+} from './types'
+import {
+  stagesFromConfig,
+  statsFromSummary,
+  formatApsUnderTest,
+  formatLastResult,
+  formatTestType
+} from './utils'
+
+describe('stagesFromConfig', () => {
+  it('returns stages when extra tests are configured', () => {
+    const { result } = renderHook(() =>
+      stagesFromConfig(fetchServiceGuardTest.serviceGuardTest.config as NetworkHealthConfig)
+        .map((set:{ key: string, title: MessageDescriptor }) => ({
+          ...set, title: useIntl().$t(set.title) })))
+    expect(result.current).toEqual([
+      { key: 'auth', title: '802.11 Auth' },
+      { key: 'assoc', title: 'Association' },
+      { key: 'eap', title: 'PSK' },
+      { key: 'dhcp', title: 'DHCP' },
+      { key: 'dns', title: 'DNS' },
+      { key: 'ping', title: 'Ping' },
+      { key: 'traceroute', title: 'Traceroute' },
+      { key: 'speedTest', title: 'Speed Test' }
+    ])
+  })
+
+  it('returns stages when extra tests are not configured', () => {
+    const config = {
+      ...fetchServiceGuardTest.serviceGuardTest.config,
+      authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+      pingAddress: null,
+      tracerouteAddress: null,
+      speedTestEnabled: false
+    } as unknown as NetworkHealthConfig
+    const { result } = renderHook(() => stagesFromConfig(config)
+      .map((set:{ key: string, title: MessageDescriptor }) => ({
+        ...set, title: useIntl().$t(set.title) })))
+    expect(result.current).toEqual([
+      { key: 'auth', title: '802.11 Auth' },
+      { key: 'assoc', title: 'Association' },
+      { key: 'dhcp', title: 'DHCP' },
+      { key: 'dns', title: 'DNS' }
+    ])
+  })
+
+  it('returns nothing when config is empty', () => {
+    expect(stagesFromConfig({} as NetworkHealthConfig)).toEqual([])
+  })
+
+  it('is a pure function', () => {
+    const config = {
+      ...fetchServiceGuardTest.serviceGuardTest.config,
+      authenticationMethod: AuthenticationMethod.OPEN_AUTH,
+      pingAddress: 'google.com',
+      tracerouteAddress: null,
+      speedTestEnabled: false
+    } as unknown as NetworkHealthConfig
+    const { result: { current: stages } } = renderHook(() => stagesFromConfig(config)
+      .map((set:{ key: string, title: MessageDescriptor }) => ({
+        ...set, title: useIntl().$t(set.title) })))
+    stages[0].key = 'speedTest'
+    const { result: newResult } = renderHook(() => stagesFromConfig(config)
+      .map((set:{ key: string, title: MessageDescriptor }) => ({
+        ...set, title: useIntl().$t(set.title) })))
+    expect(newResult.current).toEqual([
+      { key: 'auth', title: '802.11 Auth' },
+      { key: 'assoc', title: 'Association' },
+      { key: 'dhcp', title: 'DHCP' },
+      { key: 'dns', title: 'DNS' },
+      { key: 'ping', title: 'Ping' }
+    ])
+  })
+})
 
 describe('statsFromSummary', () => {
   it('should return correct data', () => {
@@ -93,5 +178,30 @@ describe('formatLastResult', () => {
   it('should return correct value - no data test', ()=>{
     const result = formatLastResult(undefined)
     expect(result).toEqual('-')
+  })
+})
+
+describe('formatTestType', () => {
+  it('should format for on-demand', () => {
+    expect(formatTestType(TestType.OnDemand, null)).toEqual('On-Demand')
+  })
+
+  it('should format for scheduled', async () => {
+    jest.useFakeTimers()
+    jest.setSystemTime(new Date(Date.parse('2023-03-01')))
+    const schedule = {
+      type: 'service_guard' as Schedule['type'],
+      frequency: ScheduleFrequency.Daily,
+      day: null,
+      hour: 4.25,
+      timezone: 'Europe/London',
+      nextExecutionTime: '2023-03-06T00:00:00.000Z'
+    }
+    render(formatTestType(TestType.Scheduled, schedule) as React.ReactElement)
+    const node = screen.getByText('Scheduled (in 5 days)')
+    expect(node).toBeVisible()
+    userEvent.hover(node)
+    expect(await screen.findByText('Mar 06 2023 00:00')).toBeInTheDocument()
+    jest.useRealTimers()
   })
 })

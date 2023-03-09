@@ -343,7 +343,7 @@ export function WISPrForm () {
           name={['wlan','bypassCPUsingMacAddressAuthentication']}
           noStyle
           valuePropName='checked'
-          initialValue={false}
+          initialValue={true}
           children={
             <Checkbox>
               {$t({ defaultMessage: 'Enable MAC auth bypass' })}

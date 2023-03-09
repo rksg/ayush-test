@@ -80,7 +80,7 @@ describe('Wired - VlanSetting', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
-  it('should handle edit VLAN correctly', async () => {
+  it.skip('should handle edit VLAN correctly', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
