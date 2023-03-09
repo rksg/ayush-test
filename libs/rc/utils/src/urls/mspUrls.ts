@@ -1,6 +1,7 @@
 import { ApiInfo } from '../apiService'
 
 export const MspUrlsInfo: { [key: string]: ApiInfo } = {
+  // TODO Need Owner to check it
   getMspCustomersList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/mspeclist'
@@ -9,7 +10,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/msps/:tenantId/ecInventories/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory',
-    newApi: false //Need Owner to check it
+    newApi: false
   },
   getIntegratorDeviceInventory: {
     method: 'post',
@@ -27,56 +28,69 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/mspCustomers/:mspEcTenantId'
     url: '/api/mspservice/tenant/:mspEcTenantId'
   },
-  getAdministrators: {
-    method: 'get',
-    // url: '/admins'
-    url: '/api/tenant/:tenantId/admin'
-  },
   getMspAdminList: {
     method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/admin'
   },
+  getAdministrators: {
+    method: 'get',
+    url: '/admins',
+    oldUrl: '/api/tenant/:tenantId/admin',
+    newApi: true
+  },
   getMspEntitlementBanner: {
     method: 'get',
-    // url: '/mspBanners'
-    url: '/api/entitlement-assign/tenant/:tenantId/mspEntitlementBanner'
+    url: '/mspBanners',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlementBanner',
+    newApi: true
   },
   refreshMspEntitlement: {
     method: 'post',
-    // '/mspEntitlements/summaries?referesh=true'
-    url: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement/refresh'
+    url: '/mspEntitlements/summaries?referesh=true',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement/refresh',
+    newApi: true
   },
   getMspEntitlement: {
     method: 'get',
-    // url: '/mspEntitlements'
-    url: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement'
+    url: '/mspEntitlements',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement',
+    newApi: true
   },
   getMspEntitlementSummary: {
     method: 'get',
-    // '/mspEntitlements/summaries?refresh=false'
-    url: '/api/entitlement-assign/tenant/:tenantId/mspEntitlementSummary'
+    url: '/mspEntitlements/summaries?refresh=false',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlementSummary',
+    newApi: true
   },
   getMspAssignmentSummary: {
     method: 'get',
-    // url: '/assignments/summaries'
-    url: '/api/entitlement-assign/tenant/:tenantId/assignment/summary'
+    url: '/assignments/summaries',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/summary',
+    newApi: true
   },
   getMspAssignmentHistory: {
     method: 'get',
-    // url: '/assignments'
-    url: '/api/entitlement-assign/tenant/:tenantId/assignment'
+    url: '/assignments',
+    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+    newApi: true
   },
   // addMspAssignment: {
   //   method: 'post',
-  //   url: '/api/entitlement-assign/tenant/:tenantId/assignment'
+  //   url: '/assignments',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+  //   newApi: true
   // },
   // revokeMspAssignment: {
   //   method: 'post',
-  //   url: '/api/entitlement-assign/tenant/:tenantId/assignment/{mspAssignmentId}/revoke'
+  //   url: '/assignments/{mspAssignmentId}',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/{mspAssignmentId}/revoke',
+  //   newApi: false
   // },
   // mspAssignmentBulkOperation: {
   //   method: 'post',
-  //   url: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation'
+  //   url: '/assignments',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation',
+  //   newApi: false
   // },
   resendEcInvitation: {
     method: 'post',
@@ -101,13 +115,15 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcAdmin: {
     method: 'get',
-    // url: '/mspCustomers/:mspEcTenantId/admins/:mspEcAdminId'
-    url: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId'
+    url: '/mspCustomers/:mspEcTenantId/admins/:mspEcAdminId',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId',
+    newApi: true
   },
   updateMspEcAdmin: {
     method: 'put',
-    // url: '/mspCustomers/:mspEcTenantId/admins/:mspEcAdminId'
-    url: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId'
+    url: '/mspCustomers/:mspEcTenantId/admins/:mspEcAdminId',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/admin/:mspEcAdminId',
+    newApi: true
   },
   getTenantDetail: {
     method: 'get',
@@ -116,18 +132,21 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSupportMspCustomersList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/mspeclist?delegation=support'
-    // url: '/mspecs/query?delegation=support'
+    url: '/mspecs/query?delegation=support',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/msp-ec?delegation=support',
+    newApi: true
   },
   getMspEcAdminList: {
     method: 'get',
-    // url: '/mspCustomers/:mspEcTenantId/admins'
-    url: '/api/mspservice/tenant/:mspEcTenantId/admins'
+    url: '/mspCustomers/:mspEcTenantId/admins',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/admins',
+    newApi: true
   },
   getMspEcAccount: {
     method: 'get',
-    // url: '/mspCustomers/:mspEcTenantId'
-    url: '/api/mspservice/tenant/:mspEcTenantId'
+    url: '/mspCustomers/:mspEcTenantId',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId',
+    newApi: true
   },
   addMspEcAccount: {
     method: 'post',
@@ -137,8 +156,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateMspEcAccount: {
     method: 'put',
-    // url: '/mspCustomers/:mspEcTenantId'
-    url: '/api/mspservice/tenant/:mspEcTenantId'
+    url: '/mspCustomers/:mspEcTenantId',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId',
+    newApi: true
   },
   getMspEcDelegatedAdmins: {
     method: 'get',
@@ -207,21 +227,18 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/mspLabels',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
-    // url: '/api/mspservice/tenant/:tenantId/msplabel'
   },
   addMspLabel: {
     method: 'post',
     url: '/mspLabels',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
-    // url: '/api/mspservice/tenant/:tenantId/msplabel'
   },
   updateMspLabel: {
     method: 'put',
     url: '/mspLabels',
     oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
-    // url: '/api/mspservice/tenant/:tenantId/msplabel'
   },
   acceptRejectInvitation: {
     method: 'put',
