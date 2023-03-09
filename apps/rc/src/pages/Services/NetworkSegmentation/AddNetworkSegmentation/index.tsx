@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsFormNew, useStepFormContext } from '@acx-ui/components'
 import { useCreateNetworkSegmentationGroupMutation }                     from '@acx-ui/rc/services'
-import { CatchErrorDetails, CatchErrorResponse }                         from '@acx-ui/rc/utils'
+import { CatchErrorResponse }                                            from '@acx-ui/rc/utils'
 import { useTenantLink }                                                 from '@acx-ui/react-router-dom'
 import { getIntl }                                                       from '@acx-ui/utils'
 
@@ -140,7 +140,7 @@ export const afterSubmitMessage = (
 ) => {
   const { $t } = getIntl()
 
-  const errorMsg = (error.data.errors[0] as unknown as { error: CatchErrorDetails }).error.message
+  const errorMsg = error.data.errors[0].message //TODO: for each errors
   const webAuthVlanDNE = /\[WebAuth VLAN\]/.test(errorMsg)
   const forceOverwriteReboot = /\[forceOverwriteReboot\]/.test(errorMsg)
   const hasVXLAN = /VXLAN/i.test(errorMsg)
