@@ -125,7 +125,9 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   delDevicePolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId'
+    url: '/devicePolicies/:devicePolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',
+    newApi: true
   },
   getDevicePolicyList: {
     method: 'post',
