@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnalyticsFilter, useAnalyticsFilter }                                   from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Tabs }                                        from '@acx-ui/components'
-import { SwitchInfoWidget }                                                      from '@acx-ui/rc/components'
-import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
-import { isRouter, SwitchViewModel, SWITCH_TYPE, StackMember }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { AnalyticsFilter }                                                                       from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, Loader, Tabs }                                                        from '@acx-ui/components'
+import { SwitchInfoWidget }                                                                      from '@acx-ui/rc/components'
+import { useGetVenueQuery, useStackMemberListQuery, useSwitchDetailHeaderQuery }                 from '@acx-ui/rc/services'
+import { NetworkDevice, NetworkDeviceType, SwitchViewModel, isRouter, SWITCH_TYPE, StackMember } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
+import { useDateFilter }                                                                         from '@acx-ui/utils'
 
 import { SwitchOverviewACLs }            from './SwitchOverviewACLs'
 import { SwitchOverviewPanel }           from './SwitchOverviewPanel'
@@ -18,10 +19,11 @@ import { SwitchOverviewVLANs }           from './SwitchOverviewVLANs'
 export function SwitchOverviewTab () {
   const { $t } = useIntl()
   const params = useParams()
-  const { filters } = useAnalyticsFilter()
+  const { dateFilter } = useDateFilter()
   const [ switchFilter, setSwitchFilter ] = useState(null as unknown as AnalyticsFilter)
   const [ switchDetail, setSwitchDetail ] = useState(null as unknown as SwitchViewModel)
   const [supportRoutedInterfaces, setSupportRoutedInterfaces] = useState(false)
+  const [currentSwitchDevice, setCurrentSwitchDevice] = useState<NetworkDevice>({} as NetworkDevice)
   const switchDetailQuery = useSwitchDetailHeaderQuery({ params })
   const { data: venue } = useGetVenueQuery({
     params: { tenantId: params.tenantId, venueId: switchDetailQuery.data?.venueId } },
@@ -50,12 +52,21 @@ export function SwitchOverviewTab () {
 
   useEffect(() => {
     if(switchDetail) {
+      const _currentSwitchDevice: NetworkDevice = { ...switchDetail,
+        networkDeviceType: NetworkDeviceType.switch } as NetworkDevice
+      switchDetail.position = {
+        floorplanId: switchDetail?.floorplanId,
+        xPercent: switchDetail?.xPercent,
+        yPercent: switchDetail?.yPercent
+      }
+      _currentSwitchDevice.position=switchDetail?.position
+      setCurrentSwitchDevice(_currentSwitchDevice)
       setSwitchFilter({
-        ...filters,
+        ...dateFilter,
         path: [{ type: 'switch', name: switchDetail.switchMac?.toUpperCase() as string }]
       })
     }
-  }, [switchDetail, filters])
+  }, [switchDetail, dateFilter])
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -83,8 +94,11 @@ export function SwitchOverviewTab () {
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
-        <SwitchOverviewPanel filters={switchFilter}
-          stackMember={stackMember?.data as StackMember[]} />
+        <SwitchOverviewPanel
+          filters={switchFilter}
+          stackMember={stackMember?.data as StackMember[]}
+          switchDetail={switchDetail}
+          currentSwitchDevice={currentSwitchDevice} />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
         <SwitchOverviewPorts />

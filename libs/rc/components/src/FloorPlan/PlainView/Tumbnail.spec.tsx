@@ -2,6 +2,7 @@ import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, 
 import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom'
+
 // eslint-disable-next-line import/order
 import { rest } from 'msw'
 
@@ -65,6 +66,18 @@ const imageObj = { '01acff37331949c686d40b5a00822ec2-001.jpeg': {
 }
 
 describe('Floor Plan Thumbnail Image', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        `${window.location.origin}/files/:imageId/urls`,
+        (req, res, ctx) => {
+          const { imageId } = req.params as { imageId: keyof typeof imageObj }
+          return res(ctx.json({ ...imageObj[imageId], imageId }))
+        }
+      )
+    )
+  })
+
   beforeEach(() => {
     mockServer.use(
       rest.get(
