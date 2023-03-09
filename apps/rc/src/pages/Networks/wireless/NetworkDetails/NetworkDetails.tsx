@@ -24,7 +24,7 @@ export default function NetworkDetails () {
   const [selectedVenues, setSelectedVenues] = useState<string[]>([])
   return activeTab === 'overview'
     ? <>
-      <NetworkPageHeader setSelectedVenues={setSelectedVenues} />
+      <NetworkPageHeader selectedVenues={selectedVenues} setSelectedVenues={setSelectedVenues} />
       { <NetworkOverviewTab selectedVenues={selectedVenues} /> }
     </>
     : <>

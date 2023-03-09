@@ -40,10 +40,9 @@ describe('ActiveVenueFilter', () => {
   })
   it('renders only active venues and calls setSelectedVenues on user selection', async () => {
     const setSelectedVenues = jest.fn()
-    render(
-      <Provider><ActiveVenueFilter setSelectedVenues={setSelectedVenues} /></Provider>,
-      { route }
-    )
+    render(<Provider>
+      <ActiveVenueFilter selectedVenues={[]} setSelectedVenues={setSelectedVenues} />
+    </Provider>, { route })
     await screen.findByText('All Active Venues')
     await userEvent.click(await screen.findByRole('combobox'))
     fireEvent.click(await screen.findByText('venue A'))

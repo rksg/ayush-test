@@ -6,9 +6,13 @@ import { useParams }          from '@acx-ui/react-router-dom'
 
 import { useGetNetwork } from './services'
 
-export function ActiveVenueFilter (
-  { setSelectedVenues }: { setSelectedVenues: CallableFunction }
-) {
+export function ActiveVenueFilter ({
+  setSelectedVenues,
+  selectedVenues
+}: {
+  setSelectedVenues: CallableFunction,
+  selectedVenues: string[]
+}) {
   const { $t } = useIntl()
   const { networkId } = useParams()
   const networkQuery = useGetNetwork()
@@ -29,6 +33,8 @@ export function ActiveVenueFilter (
       }}
       placeholder={$t({ defaultMessage: 'All Active Venues' })}
       multiple
+      value={selectedVenues}
+      defaultValue={selectedVenues}
       options={venuesQuery.data?.data
         ?.filter(({ id }) => activeVenues?.includes(id))
         .map(({ id, name }) => ({ value: id, label: name }))

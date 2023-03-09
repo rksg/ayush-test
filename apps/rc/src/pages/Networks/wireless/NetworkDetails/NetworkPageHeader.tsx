@@ -10,7 +10,13 @@ import { ActiveVenueFilter } from './ActiveVenueFilter'
 import NetworkTabs           from './NetworkTabs'
 import { useGetNetwork }     from './services'
 
-function NetworkPageHeader ({ setSelectedVenues }: { setSelectedVenues?: CallableFunction }) {
+function NetworkPageHeader ({
+  setSelectedVenues,
+  selectedVenues
+}: {
+  setSelectedVenues?: CallableFunction,
+  selectedVenues?: string[]
+}) {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const network = useGetNetwork()
   const { networkId } = useParams()
@@ -22,8 +28,14 @@ function NetworkPageHeader ({ setSelectedVenues }: { setSelectedVenues?: Callabl
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
       extra={filterByAccess([
-        ...setSelectedVenues
-          ? [<ActiveVenueFilter setSelectedVenues={setSelectedVenues} key='hierarchy-filter'/>]
+        ...(setSelectedVenues && selectedVenues)
+          ? [
+            <ActiveVenueFilter
+              selectedVenues={selectedVenues}
+              setSelectedVenues={setSelectedVenues}
+              key='hierarchy-filter'
+            />
+          ]
           : [],
         <RangePicker
           key='date-filter'
