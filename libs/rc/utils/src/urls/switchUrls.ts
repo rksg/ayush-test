@@ -83,6 +83,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchDetailHeader: {
+    // 404 Not Found
+    // method: 'get',
+    // url: '/switches/:switchId/configurations',
+    // oldUrl: '/api/viewmodel/:tenantId/switch/:switchId',
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/:switchId'
   },
@@ -102,7 +107,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/:tenantId/switch/portlist'
   },
   importSwitches: {
-    // Need confirm
+    // 400 Bad Request
     // method: 'post',
     // url: '/venues/switches',
     // oldUrl: '/api/switch/tenant/:tenantId/import',
@@ -137,6 +142,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addSwitch: {
+    // 400 Bad Request
     // method: 'post',
     // url: '/switches',
     // oldUrl: '/api/switch/tenant/:tenantId/switch',
@@ -145,12 +151,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/switch/tenant/:tenantId/switch'
   },
   updateSwitch: {
-    // method: 'put',
-    // url: '/switches/:switchId',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: true
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches/:switchId',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   convertToStack: {
     method: 'post',
@@ -364,6 +368,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchClientDetail: {
+    // TODO need add filter
+    // method: 'post',
+    // url: '/switches/clients/query',
+    // oldUrl: '/api/viewmodel/:tenantId/switch/client/:clientId',
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/client/:clientId'
   },
@@ -375,6 +384,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTroubleshootingClean: {
+    // different method
+    // method: 'delete',
+    // url: '/switches/:switchId/debugRequests/:troubleshootingType',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
+    // newApi: true
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
   },
@@ -440,6 +454,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   dhcpLeaseTable: {
+    // 404 Not Found
+    // method: 'get',
+    // url: '/switches/:switchId/dhcpServers/leaseTables',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable',
+    // newApi: true
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
   },

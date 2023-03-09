@@ -2,6 +2,7 @@ import { ApiInfo } from '../apiService'
 
 export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   GetDefaultDhcpServiceProfileForGuestNetwork: {
+    // used in testcase
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
   },
@@ -94,10 +95,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueTripleBandRadioSettings: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
-  },
-  getLteBandLockChannel: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
   },
   getAvailableLteBands: {
     method: 'get',
@@ -260,6 +257,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addApPhoto: {
+    // 500 Internal Server Error
+    // method: 'post',
+    // url: '/venues/aps/:serialNumber/pictures',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
   },
