@@ -25,6 +25,7 @@ const defaultPayload = {
     'switches',
     'aggregatedApStatus',
     'rogueDetection',
+    'syslogServer',
     'status'
   ],
   sortField: 'name',
@@ -80,16 +81,16 @@ const SyslogVenueTable = () => {
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Syslog server' }),
-      dataIndex: 'rogueDetection',
-      key: 'rogueDetection',
+      dataIndex: 'syslogServer',
+      key: 'syslogServer',
       align: 'center',
       render: (data, row) => {
-        if (row.rogueDetection?.enabled) {
+        if (row.syslogServer?.enabled) {
           return <div>
             <div>
               {$t({ defaultMessage: 'ON' })}
             </div>
-            <div>({row.rogueDetection.policyName})</div>
+            <div>({row.syslogServer.policyName})</div>
           </div>
         }
         return <div>
@@ -131,7 +132,7 @@ const SyslogVenueTable = () => {
       id: venue.id,
       name: venue.name,
       aggregatedApStatus: venue.aggregatedApStatus,
-      rogueDetection: venue.rogueDetection,
+      syslogServer: venue.syslogServer,
       activate: false
     }
   })
@@ -144,7 +145,7 @@ const SyslogVenueTable = () => {
           type: 'info',
           duration: 10,
           content: $t({ defaultMessage:
-            'The max-number of venues in a rogue ap policy profile is 64.' })
+            'The max-number of venues in a syslog server policy profile is 64.' })
         })
       } else {
         activateVenue(selectRows)

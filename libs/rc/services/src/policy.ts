@@ -58,7 +58,7 @@ const RKS_NEW_UI = {
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Venue', 'Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'Syslog'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -805,7 +805,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -814,7 +814,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -824,7 +824,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -834,7 +834,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Syslog', id: 'VENUE' }]
     }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
       query: ({ params }) => {
@@ -843,7 +843,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({
       query: ({ params }) => {
@@ -852,7 +852,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Venue', id: 'Syslog' }]
+      providesTags: [{ type: 'Syslog', id: 'VENUE' }]
     }),
     updateVenueSyslogAp: build.mutation<VenueSyslogSettingType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -862,7 +862,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'Syslog' }]
+      invalidatesTags: [{ type: 'Syslog', id: 'VENUE' }]
     }),
     getSyslogPolicyList: build.query<SyslogPolicyDetailType[], RequestPayload>({
       query: ({ params }) => {
@@ -871,14 +871,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'Syslog', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Syslog Policy Profile',
-            'Update Syslog Policy Profile'
+            'AddSyslogServerProfile',
+            'UpdateSyslogServerProfile',
+            'DeleteSyslogServerProfile'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
         })
       }
@@ -891,7 +892,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'Syslog', id: 'VENUE' }]
     }),
     syslogPolicyList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -901,7 +902,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'Syslog', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -909,11 +910,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateSyslogServerProfile',
             'DeleteSyslogServerProfile'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
         })
       }
-
     })
   })
 })
