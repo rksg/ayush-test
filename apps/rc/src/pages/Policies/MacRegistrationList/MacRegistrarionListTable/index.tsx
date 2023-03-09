@@ -27,7 +27,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
@@ -210,24 +210,6 @@ export default function MacRegistrationListsTable () {
       })
     }
   }]
-
-    return (
-      <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isDeleteMacRegListUpdating }
-      ]}>
-        <Table
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
-        />
-      </Loader>
-    )
-  }
 
   return (
     <>
