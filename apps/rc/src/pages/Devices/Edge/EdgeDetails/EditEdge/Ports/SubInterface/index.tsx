@@ -179,19 +179,17 @@ const SubInterface = (props: SubInterfaceProps) => {
   const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
-    if(data) {
-      setTabDetails(data.map((item, index) => {
-        return {
-          label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-          value: 'port_' + (index + 1),
-          children: <SubInterfaceTable
-            index={index}
-            ip={item.statusIp}
-            mac={item.mac}
-            setIsFetching={setIsFetching} />
-        }
-      }))
-    }
+    setTabDetails(data.map((item, index) => {
+      return {
+        label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
+        value: 'port_' + (index + 1),
+        children: <SubInterfaceTable
+          index={index}
+          ip={item.statusIp}
+          mac={item.mac}
+          setIsFetching={setIsFetching} />
+      }
+    }))
   }, [data, $t])
 
   return (

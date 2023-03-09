@@ -61,10 +61,15 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
   return chartData
 }
 
-export function AlarmWidget () {
+AlarmWidget.defaultProps = {
+  showList: true
+}
+
+export function AlarmWidget (props:{ showList?: boolean }) {
   const basePath = useTenantLink('/devices')
   const navigate = useNavigate()
   const { $t } = useIntl()
+  const { showList } = props
 
   const onNavigate = (alarm: Alarm) => {
     let path = alarm.entityType === EventTypeEnum.AP
@@ -111,13 +116,15 @@ export function AlarmWidget () {
             (data && data.length > 0) && (alarmQuery.data?.data && alarmQuery.data?.data.length>0)
               ? <>
                 <DonutChart
-                  style={{ width, height: height / 3 }}
+                  style={{ width, height: showList ? height / 3 : height }}
                   data={data}/>
-                <AlarmList
-                  data={alarmQuery.data?.data!}
-                  width={width - 10}
-                  height={height - (height / 3)}
-                  onNavigate={onNavigate} />
+                { showList &&
+                  <AlarmList
+                    data={alarmQuery.data?.data!}
+                    width={width - 10}
+                    height={height - (height / 3)}
+                    onNavigate={onNavigate} />
+                }
               </>
               : <NoActiveData text={$t({ defaultMessage: 'No active alarms' })}/>
           )}
