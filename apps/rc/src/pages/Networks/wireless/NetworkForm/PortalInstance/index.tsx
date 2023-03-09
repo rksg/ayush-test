@@ -133,7 +133,7 @@ const PortalInstance = (props:{
                 photo: data.content.photo?await loadImageWithJWT(data.content.photo): Photo,
                 bgImage: data.content.bgImage?await loadImageWithJWT(data.content.bgImage):'' })
             }}
-            portalCount={portalData.length}            
+            portalCount={portalData.length}
             />
           </Form.Item>
         </GridCol>
