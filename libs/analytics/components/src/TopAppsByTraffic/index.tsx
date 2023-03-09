@@ -62,7 +62,6 @@ export function TopAppsByTraffic ({
                   showLegend={true}
                   showTotal={false}
                   legend='name'
-                  //dataFormatter={(v) => formatter('bytesFormat')(v)}
                   dataFormatter={dataFormatter}
                   size={'thick'}
                 />

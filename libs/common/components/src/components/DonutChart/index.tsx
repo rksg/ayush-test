@@ -146,6 +146,19 @@ export function DonutChart ({
     }
   }
 
+  const getDonutRadius = () => {
+    switch(true) {
+      case isEmpty:
+        return ['82%', '92%']
+      case props.showLabel:
+        return ['62%', '78%']
+      case props.size === 'thick':
+        return ['58%', '82%']
+      default:
+        return ['78%', '92%']
+    }
+  }
+
   const option: EChartsOption = {
     animation: props.animation,
     tooltip: {
@@ -168,11 +181,11 @@ export function DonutChart ({
     legend: {
       show: props.showLegend,
       top: 'middle',
-      left: '60%',
+      left: props.size === 'thick' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
       selectedMode: false,
-      itemGap: props.size === 'thick'? 17: 4,
+      itemGap: props.size === 'thick'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
@@ -200,9 +213,7 @@ export function DonutChart ({
         type: 'pie',
         cursor: props.onClick ? 'pointer' : 'auto',
         center: [props.showLegend && !isEmpty ? '30%' : '50%', '50%'],
-        radius: isEmpty
-          ? ['82%', '92%']
-          : props.showLabel ? ['62%', '78%'] : [ props.size ==='thick'? '65%': '78%', '92%'],
+        radius: getDonutRadius(),
         avoidLabelOverlap: true,
         label: {
           show: props.showLabel,
@@ -228,7 +239,7 @@ export function DonutChart ({
           length2: isSmall ? 5 : 10
         },
         itemStyle: {
-          borderWidth: props.size === 'large' ? 2 : 1,
+          borderWidth: props.size === 'large' || props.size === 'thick' ? 2 : 1,
           borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }
