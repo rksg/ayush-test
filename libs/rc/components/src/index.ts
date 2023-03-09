@@ -23,10 +23,7 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
-  useEventTableFilter,
-  defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter,
-  defaultSearch as eventDefaultSearch
+  useEventsTableQuery
 } from './EventTable'
 export { FloorPlan } from './FloorPlan'
 export { HistoricalClientsTable } from './HistoricalClientsTable'

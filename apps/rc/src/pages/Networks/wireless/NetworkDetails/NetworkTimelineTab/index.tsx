@@ -1,57 +1,20 @@
-import { useEffect } from 'react'
-
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }           from '@acx-ui/components'
+import { Tabs }         from '@acx-ui/components'
 import {
-  EventTable,
-  eventDefaultPayload,
-  eventDefaultSearch,
-  eventDefaultSorter,
-  useEventTableFilter,
   ActivityTable,
   columnState,
-  useActivityTableQuery
+  EventTable,
+  useActivityTableQuery,
+  useEventsTableQuery
 } from '@acx-ui/rc/components'
-import { useEventsQuery }             from '@acx-ui/rc/services'
-import {
-  Event,
-  usePollingTableQuery,
-  TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
-} from '@acx-ui/rc/utils'
-import { useTenantLink }         from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+import { TimelineTypes } from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
   const { networkId } = useParams()
-  const { fromTime, toTime } = useEventTableFilter()
-  const { data: userProfileData } = useUserProfileContext()
-  const currentUserDetailLevel = userProfileData?.detailLevel
-
-  useEffect(()=>{
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        ...eventDefaultPayload.filters,
-        networkId: [ networkId ],
-        fromTime,
-        toTime
-      },
-      detailLevel: currentUserDetailLevel
-    })
-  }, [fromTime, toTime, currentUserDetailLevel])
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: {
-      ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, networkId: [ networkId ] }
-    },
-    sorter: eventDefaultSorter,
-    search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
+  const tableQuery = useEventsTableQuery({ networkId: [networkId] })
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
 }
 
