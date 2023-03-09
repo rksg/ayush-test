@@ -28,6 +28,19 @@ export default function SnmpAgentTable () {
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: ([{ id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
+            type: PolicyType.SNMP_AGENT,
+            oper: PolicyOperation.EDIT,
+            policyId: id!
+          })
+        })
+      }
+    },
+    {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -40,19 +53,6 @@ export default function SnmpAgentTable () {
           onOk: () => {
             deleteFn({ params: { tenantId, policyId: id } }).then(clearSelection)
           }
-        })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([{ id }]) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.SNMP_AGENT,
-            oper: PolicyOperation.EDIT,
-            policyId: id!
-          })
         })
       }
     }

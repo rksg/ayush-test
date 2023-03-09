@@ -5,10 +5,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm, StepsFormInstance }                                           from '@acx-ui/components'
 import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation } from '@acx-ui/rc/services'
-import { ApSnmpProfile, getPolicyListRoutePath }                                              from '@acx-ui/rc/utils'
+import { ApSnmpPolicy, getPolicyListRoutePath }                                               from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                      from '@acx-ui/react-router-dom'
 
-//import SnmpAgentSettingForm from './SnmpAgentSettingForm'
+import SnmpAgentSettingForm from './SnmpAgentSettingForm'
+
 
 type SnmpAgentFormProps = {
   editMode: boolean
@@ -21,7 +22,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const params = useParams()
 
   const { editMode } = props
-  const formRef = useRef<StepsFormInstance<ApSnmpProfile>>()
+  const formRef = useRef<StepsFormInstance<ApSnmpPolicy>>()
 
   const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
 
@@ -29,9 +30,9 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
-  const [saveState, updateSaveState] = useState<ApSnmpProfile>({} as ApSnmpProfile )
+  const [saveState, updateSaveState] = useState<ApSnmpPolicy>({} as ApSnmpPolicy )
 
-  const updateSaveData = (saveData: Partial<ApSnmpProfile>) => {
+  const updateSaveData = (saveData: Partial<ApSnmpPolicy>) => {
     updateSaveState({ ...saveState, ...saveData })
   }
 
@@ -44,7 +45,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
-  const handleSaveApSnmpAgentPolicy = async (data: ApSnmpProfile) => {
+  const handleSaveApSnmpAgentPolicy = async (data: ApSnmpPolicy) => {
     try {
       if (!editMode) {
         await createApSnmpPolicy({
@@ -81,16 +82,16 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: '/policies/snmpAgent/list' }
         ]}
       />
-      <StepsForm<ApSnmpProfile>
+      <StepsForm<ApSnmpPolicy>
         formRef={formRef}
         onCancel={handleCancel}
         onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
       >
         <StepsForm.StepForm
-          name='profile'
-
+          name='settings'
+          title={$t({ defaultMessage: 'SNMP Agent Settings' })}
         >
-         test
+          <SnmpAgentSettingForm editMode={editMode} saveState={saveState} />
         </StepsForm.StepForm>
       </StepsForm>
     </>

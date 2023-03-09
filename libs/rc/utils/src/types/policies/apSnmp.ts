@@ -1,45 +1,45 @@
 export enum SnmpNotificationTypeEnum {
-  Trap,
-  Inform
+  Trap = 'Trap',
+  Inform = 'Inform'
 }
 
 export interface SnmpPrivilege {
   readPrivilege: boolean,
   trapPrivilege: boolean,
-  notificationType: SnmpNotificationTypeEnum,
-  targetAddr: string,
-  targetPort: number
+  notificationType?: SnmpNotificationTypeEnum,
+  targetAddr?: string,
+  targetPort?: number
 }
 
-export interface SnmpV2Agents extends SnmpPrivilege {
+export interface SnmpV2Agent extends SnmpPrivilege {
   communityName: string
 }
 
 export enum SnmpAuthProtocolEnum {
-  SHA,
-  MD5
+  SHA = 'SHA',
+  MD5 = 'MD5'
 }
 
 export enum SnmpPrivacyProtocolEnum {
-  None,
-  DES,
-  AES
+  None = 'None',
+  DES = 'DES',
+  AES = 'AES'
 }
 
-export interface SnmpV3Agents extends SnmpPrivilege {
+export interface SnmpV3Agent extends SnmpPrivilege {
   userName: string,
   authProtocol: SnmpAuthProtocolEnum,
   authPassword: string,
   privacyProtocol: SnmpPrivacyProtocolEnum,
-  privacyPassword: string
+  privacyPassword?: string
 }
 
-export interface ApSnmpProfile {
+export interface ApSnmpPolicy {
   policyName: string,
   id?: string,
   tenantId?: string,
-  snmpV2Agents: SnmpV2Agents[],
-  snmpV3Agents: SnmpV3Agents[]
+  snmpV2Agents: SnmpV2Agent[],
+  snmpV3Agents: SnmpV3Agent[]
 }
 
 export interface VenueApSnmpSettings {

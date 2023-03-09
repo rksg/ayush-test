@@ -46,7 +46,7 @@ import {
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
   ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork,
-  ApSnmpUrls, ApSnmpProfile, VenueApSnmpSettings,
+  ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData
 } from '@acx-ui/rc/utils'
 
@@ -894,7 +894,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    getApSnmpPolicyList: build.query<ApSnmpProfile[], RequestPayload>({
+    getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
         return {
@@ -913,7 +913,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    getApSnmpPolicy: build.query<ApSnmpProfile, RequestPayload>({
+    getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicy, params, RKS_NEW_UI)
         return {
@@ -922,7 +922,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    addApSnmpPolicy: build.mutation<ApSnmpProfile, RequestPayload>({
+    addApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params, RKS_NEW_UI)
         return {
@@ -932,7 +932,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    updateApSnmpPolicy: build.mutation<ApSnmpProfile, RequestPayload>({
+    updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ApSnmpUrls.updateApSnmpPolicy, params, RKS_NEW_UI)
         return {
@@ -1123,6 +1123,7 @@ export const {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogListQuery,
   useGetApSnmpPolicyListQuery,
+  useLazyGetApSnmpPolicyListQuery,
   useGetApSnmpPolicyQuery,
   useAddApSnmpPolicyMutation,
   useUpdateApSnmpPolicyMutation,
