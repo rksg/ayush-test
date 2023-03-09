@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   useDelRoguePolicyMutation,
   useEnhancedRoguePoliciesQuery,
@@ -14,13 +15,42 @@ import {
   getPolicyDetailsLink,
   PolicyOperation,
   getPolicyListRoutePath,
-  getPolicyRoutePath, EnhancedRoguePolicyType, Venue
+  getPolicyRoutePath,
+  EnhancedRoguePolicyType,
+  Venue,
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { useDefaultVenuePayload } from '../../../../../../main/src/pages/Venues/VenuesTable'
+const useDefaultVenuePayload = (): RequestPayload => {
+  const isEdgeEnabled = useIsSplitOn(Features.EDGES)
+
+  return {
+    fields: [
+      'check-all',
+      'name',
+      'description',
+      'city',
+      'country',
+      'networks',
+      'aggregatedApStatus',
+      'switches',
+      'switchClients',
+      'clients',
+      ...(isEdgeEnabled ? ['edges'] : []),
+      'cog',
+      'latitude',
+      'longitude',
+      'status',
+      'id'
+    ],
+    searchTargetFields: ['name', 'description'],
+    filters: {},
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+}
 
 const defaultPayload = {
   searchString: '',

@@ -4,7 +4,7 @@ import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } fr
 import {
   useEnhancedRoguePoliciesQuery,
   usePolicyListQuery
-} from '@acx-ui/rc/services';
+} from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
