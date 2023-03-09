@@ -5,8 +5,8 @@ import { useIntl, MessageDescriptor, defineMessage } from 'react-intl'
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 import { AAAPolicyType }          from '@acx-ui/rc/utils'
 const typeDescription: Record<string, MessageDescriptor> = {
-  AUTHENTICATION: defineMessage({ defaultMessage: 'Accounting' }),
-  ACCOUNTING: defineMessage({ defaultMessage: 'Authentication' })
+  AUTHENTICATION: defineMessage({ defaultMessage: 'Authentication' }),
+  ACCOUNTING: defineMessage({ defaultMessage: 'Accounting' })
 }
 export default function AAAOverview (props: { aaaProfile: AAAPolicyType }) {
   const { $t } = useIntl()
