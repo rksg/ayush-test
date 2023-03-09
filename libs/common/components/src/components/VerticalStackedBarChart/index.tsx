@@ -25,7 +25,7 @@ export type VerticalStackedBarChartData = {
   color: string
 }
 
-interface VerticalStackedBarChartProps
+export interface VerticalStackedBarChartProps
   <TChartData extends VerticalStackedBarChartData[]>
   extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: TChartData,
