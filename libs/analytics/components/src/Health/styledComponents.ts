@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { Subtitle } from '@acx-ui/components'
+import { Subtitle, Tabs } from '@acx-ui/components'
 
 const pillDescCommom = `
   font-size: var(--acx-subtitle-6-font-size);
@@ -10,6 +10,10 @@ const pillDescCommom = `
 export const ThresholdTitle = styled(Subtitle).attrs({ level: 4 })`
   padding: 16px 0px 11px;
   border-bottom: 1px solid var(--acx-neutrals-30);
+`
+
+export const TabTitle = styled(Tabs)`
+  margin-right: -20px;
 `
 
 export const PillTitle = styled(Subtitle).attrs({ level: 5 })`
