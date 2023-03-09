@@ -4,10 +4,12 @@ import { ApiInfo } from '../../apiService'
 export const NetworkSegmentationUrls: { [key: string]: ApiInfo } = {
   getNetworkSegmentationGroupById: {
     method: 'get',
+    newApi: true,
     url: '/networkSegmentationGroups/:serviceId'
   },
   getNetworkSegmentationGroupList: {
     method: 'get',
+    newApi: true,
     url: '/networkSegmentationGroups'
   },
   getWebAuthTemplate: {
