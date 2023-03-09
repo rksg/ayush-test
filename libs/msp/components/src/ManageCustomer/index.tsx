@@ -19,7 +19,6 @@ import {
   Button,
   GoogleMap,
   PageHeader,
-  showActionModal,
   showToast,
   StepsForm,
   StepsFormInstance,
@@ -37,8 +36,7 @@ import {
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
   useMspAssignmentSummaryQuery,
-  useMspAssignmentHistoryQuery,
-  useGetUserProfileQuery
+  useMspAssignmentHistoryQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
@@ -50,7 +48,6 @@ import {
   MspEc,
   MspEcData,
   roleDisplayText,
-  RolesEnum,
   EntitlementUtil,
   MspAssignmentHistory,
   MspAssignmentSummary,
@@ -62,6 +59,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }              from '@acx-ui/types'
+import { useGetUserProfileQuery } from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -397,14 +396,8 @@ export function ManageCustomer () {
       // const ecTenantId = result.tenant_id
       }
       navigate(linkToCustomers, { replace: true })
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: intl.$t({ defaultMessage: 'Add Customer Failed' }),
-        // eslint-disable-next-line max-len
-        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -461,14 +454,8 @@ export function ManageCustomer () {
 
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
       navigate(linkToCustomers, { replace: true })
-    } catch(error) {
-      const respData = error as { status: number, data: { [key: string]: string } }
-      showActionModal({
-        type: 'error',
-        title: intl.$t({ defaultMessage: 'Update Customer Failed' }),
-        // eslint-disable-next-line max-len
-        content: intl.$t({ defaultMessage: 'An error occurred: {error}' }, { error: respData.data.message })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

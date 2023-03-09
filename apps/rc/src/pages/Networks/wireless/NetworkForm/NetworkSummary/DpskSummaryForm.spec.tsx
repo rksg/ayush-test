@@ -1,34 +1,66 @@
 import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
+import { rest } from 'msw'
 
-import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { render }                                                           from '@acx-ui/test-utils'
+import {
+  WlanSecurityEnum,
+  NetworkTypeEnum,
+  RadioEnum,
+  DpskUrls
+} from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { DpskSummaryForm } from './DpskSummaryForm'
 
+export const dpskListResponse = {
+  content: [
+    {
+      id: '123456789',
+      name: 'DPSK Service 1',
+      passphraseLength: 18,
+      passphraseFormat: 'MOST_SECURED',
+      expirationType: null
+    }
+  ],
+  totalElements: 1,
+  totalPages: 1,
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10
+  },
+  sort: []
+}
+
+const targetDpsk = dpskListResponse.content[0]
+
 const mockSummary = {
   name: 'test',
-  type: 'dpsk',
+  type: NetworkTypeEnum.DPSK,
   isCloudpathEnabled: false,
   venues: [
     {
       venueId: '6cf550cdb67641d798d804793aaa82db',
-      name: 'My-Venue'
+      name: 'My-Venue',
+      allApGroupsRadio: RadioEnum.Both
     }
   ],
   wlanSecurity: WlanSecurityEnum.WPA2Enterprise,
-  passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
-  passphraseLength: 18,
-  expiration: PassphraseExpirationEnum.UNLIMITED
+  dpskServiceProfileId: targetDpsk.id
 }
 
 describe('DpskSummaryForm', () => {
-  it('should render cloudpath enabled successfully', async () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(DpskUrls.getDpskList.url,
+        (_, res, ctx) => res(ctx.json(dpskListResponse)))
+    )
+  })
+  it('should render DPSK service summary', async () => {
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
-    mockSummary.isCloudpathEnabled = true
-    const { asFragment } = render(
+
+    render(
       <Provider>
         <Form>
           <DpskSummaryForm summaryData={mockSummary} />
@@ -39,6 +71,6 @@ describe('DpskSummaryForm', () => {
       }
     )
 
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText(targetDpsk.name)).toBeVisible()
   })
 })

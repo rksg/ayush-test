@@ -1,4 +1,4 @@
-import { DetailLevel, MFAStatus } from '@acx-ui/rc/utils'
+import { DetailLevel, MFAStatus, UserProfile } from '@acx-ui/user'
 
 export const fakeUserProfile = {
   region: '[NA]',
@@ -27,7 +27,7 @@ export const fakeUserProfile = {
   adminId: '4159559db15c4027903d9c3d4bdb8a7e',
   support: false,
   dogfood: false
-}
+} as UserProfile
 
 export const fakeTenantDelegation = [
   {
@@ -51,7 +51,8 @@ export const fakeMFATenantDetail = {
   tenantStatus: MFAStatus.DISABLED,
   recoveryCodes: ['678490','287605','230202','791760','169187'],
   mfaMethods: [],
-  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7'
+  userId: '9bd8c312-00e3-4ced-a63e-c4ead7bf36c7',
+  enabled: false
 }
 
 export const fakeMspEcProfile = {

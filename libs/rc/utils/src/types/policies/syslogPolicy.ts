@@ -5,6 +5,16 @@ import { PriorityEnum }       from '../../models/PriorityEnum'
 import { ProtocolEnum }       from '../../models/ProtocolEnum'
 
 
+export interface SyslogPolicyListType {
+  id: string,
+  name: string,
+  venueIds?: string[],
+  facility: FacilityEnum,
+  flowLevel: FlowLevelEnum,
+  primaryServer?: string,
+  secondaryServer?: string
+}
+
 export interface SyslogPolicyType {
   policyName: string,
   name: string,
@@ -21,13 +31,36 @@ export interface SyslogPolicyType {
   venueIds: string[]
 }
 
+export interface Server {
+  server?: string,
+  port?: number,
+  protocol?: ProtocolEnum,
+}
+
+export interface Venue {
+  id: string,
+  name: string
+}
+
+export interface SyslogPolicyDetailType {
+  policyName?: string,
+  name: string,
+  id?: string,
+  primary: Server,
+  secondary: Server,
+  facility?: FacilityEnum,
+  priority?: PriorityEnum,
+  flowLevel?: FlowLevelEnum,
+  venues: Venue[]
+}
+
 export interface SyslogContextType {
   policyName: string,
   server: string,
-  port: string,
+  port: number,
   protocol: ProtocolEnum,
   secondaryServer?: string,
-  secondaryPort?: string,
+  secondaryPort?: number,
   secondaryProtocol?: ProtocolEnum,
   facility: FacilityEnum,
   priority: PriorityEnum,
@@ -47,9 +80,14 @@ export interface SyslogDetailContextType {
   setPolicyName: (policyName: string) => void
 }
 
+export interface VenueSyslogSettingType {
+  enabled: boolean,
+  serviceProfileId: string
+}
+
 export interface VenueSyslogPolicyType {
-  id: string,
-  name: string,
+  id?: string,
+  name?: string,
   city?: string,
   country?: string,
   switches?: number,
@@ -93,7 +131,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.PORT,
   payload: {
-    port: string
+    port: number
   }
 } | {
   type: SyslogActionTypes.PROTOCOL,
@@ -108,7 +146,7 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.SECONDARYPORT,
   payload: {
-    secondaryPort: string
+    secondaryPort: number
   }
 } | {
   type: SyslogActionTypes.SECONDARYPROTOCOL,

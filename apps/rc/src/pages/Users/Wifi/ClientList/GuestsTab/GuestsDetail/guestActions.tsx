@@ -1,12 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal, showToast } from '@acx-ui/components'
+import { showActionModal }   from '@acx-ui/components'
 import {
   useGetGuestsMutation,
+  useDeleteGuestsMutation,
   useEnableGuestsMutation,
-  useDisableGuestsMutation,
-
-  useDeleteGuestsMutation
+  useDisableGuestsMutation
 } from '@acx-ui/rc/services'
 import {
   Guest
@@ -25,11 +24,8 @@ export function useGuestActions () {
     const guestIds = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
 
     getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
-      .catch(() => {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'Failed to download Information.' })
-        })
+      .catch((error) => {
+        console.log(error) // eslint-disable-line no-console
       })
   }
 
@@ -54,11 +50,11 @@ export function useGuestActions () {
   }
 
   const disableGuest = async (guest: Guest, tenantId?: string) => {
-    disableGuests({ params: { tenantId, guestId: guest.id } })
+    disableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'disabled' } })
   }
 
   const enableGuest = async (guest: Guest, tenantId?: string) => {
-    enableGuests({ params: { tenantId, guestId: guest.id } })
+    enableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'enabled' } })
   }
 
   return {

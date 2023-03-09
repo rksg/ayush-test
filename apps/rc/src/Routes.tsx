@@ -95,6 +95,7 @@ import PersonaGroupDetails          from './pages/Users/Persona/PersonaGroupDeta
 import SwitchClientList             from './pages/Users/Switch/ClientList'
 import WifiClientDetails            from './pages/Users/Wifi/ClientDetails'
 import WifiClientList               from './pages/Users/Wifi/ClientList'
+import GuestManagerPage             from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -123,6 +124,7 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
@@ -497,6 +499,7 @@ function PolicyRoutes () {
 function UserRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />

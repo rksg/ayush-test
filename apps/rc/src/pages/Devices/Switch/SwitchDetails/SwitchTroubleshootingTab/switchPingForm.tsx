@@ -6,7 +6,7 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
-import { Button, Loader, showToast, Tooltip } from '@acx-ui/components'
+import { Button, Loader, Tooltip } from '@acx-ui/components'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   usePingMutation }                             from '@acx-ui/rc/services'
@@ -72,18 +72,19 @@ export function SwitchPingForm () {
     setIsLoading(true)
     try {
       const payload = {
-        targetHost: pingForm.getFieldValue('targetHost')
+        targetHost: pingForm.getFieldValue('targetHost'),
+        troubleshootingPayload: {
+          targetHost: pingForm.getFieldValue('targetHost')
+        },
+        troubleshootingType: 'ping'
       }
       const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
       if (result) {
         refetchResult()
       }
-    } catch {
+    } catch (error) {
       setIsValid(false)
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

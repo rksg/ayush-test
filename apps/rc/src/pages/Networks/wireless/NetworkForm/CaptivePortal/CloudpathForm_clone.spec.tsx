@@ -1,10 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { StepsForm }                    from '@acx-ui/components'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
-import { mockServer, render }           from '@acx-ui/test-utils'
+import { StepsForm }                             from '@acx-ui/components'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -26,7 +27,7 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       guestPortal: cloudPathDataNone.guestPortal,
       wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan } }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
@@ -58,5 +59,16 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       }}
     ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+  })
+  it('should create WISPr network successfully', async () => {
+    render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
+      }}
+    ><StepsForm><StepsForm.StepForm><CloudpathForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    const walledGarden = (await screen.findAllByLabelText(/Walled Garden/))[1]
+    fireEvent.change(walledGarden, { target: { value: '' } })
+    fireEvent.blur(walledGarden)
   })
 })

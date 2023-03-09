@@ -19,10 +19,10 @@ const setSyslogSummary = jest.fn()
 const initState = {
   policyName: 'policyName1',
   server: '1.1.1.1',
-  port: '514',
+  port: 514,
   protocol: 'TCP',
   secondaryServer: '2.2.2.2',
-  secondaryPort: '1514',
+  secondaryPort: 1514,
   secondaryProtocol: 'UDP',
   facility: 'KEEP_ORIGINAL',
   priority: 'ERROR',

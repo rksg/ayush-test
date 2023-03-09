@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SyslogUrls }                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -38,24 +39,34 @@ jest.mock('react-router-dom', () => ({
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueSyslogAp.url,
+        SyslogUrls.getVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json(venueSyslog))),
       rest.post(
-        CommonUrlsInfo.updateVenueSyslogAp.url,
+        SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+        (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
+      rest.get(
+        CommonUrlsInfo.getVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ServerTab /></Provider>, { route: { params } })
+    render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable Server'))
-    expect(asFragment()).toMatchSnapshot()
   })
+
   it('should handle update setting', async () => {
     render(
       <Provider>

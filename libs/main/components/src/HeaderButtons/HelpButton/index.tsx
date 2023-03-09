@@ -5,6 +5,7 @@ import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { LayoutUI }                from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleSolid } from '@acx-ui/icons'
 import { notAvailableMsg }         from '@acx-ui/utils'
@@ -42,6 +43,12 @@ const HelpButton = (props:HelpButtonProps) => {
     }
   },[supportStatus])
 
+  const documentationCenter = get('DOCUMENTATION_CENTER')
+  const myOpenCases = get('MY_OPEN_CASES')
+  const privacy = get('PRIVACY')
+  const supportedAPModels = get('SUPPORTED_AP_MODELS')
+  const howToVideos = get('HOW_TO_VIDEOS')
+
   const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
   const menuHeaderDropdown = (
@@ -55,14 +62,29 @@ const HelpButton = (props:HelpButtonProps) => {
           case 'firewallACL':
             setFirewallModalOpen(true)
             break
+          case 'models':
+            window.open(supportedAPModels, '_blank')
+            break
+          case 'privacy':
+            window.open(privacy, '_blank')
+            break
+          case 'openCases':
+            window.open(myOpenCases, '_blank')
+            break
+          case 'documentation':
+            window.open(documentationCenter, '_blank')
+            break
+          case 'videos':
+            window.open(howToVideos, '_blank')
+            break
         }
       }}
     >
-      <Menu.Item disabled key='documentation'>
+      <Menu.Item key='documentation'>
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
 
-      <Menu.Item disabled key='videos'>
+      <Menu.Item key='videos'>
         {$t({ defaultMessage: 'How-To Videos' })}
       </Menu.Item>
 
@@ -80,7 +102,7 @@ const HelpButton = (props:HelpButtonProps) => {
         {$t({ defaultMessage: 'Contact Support' })}
       </Menu.Item>
 
-      <Menu.Item disabled key='models'>
+      <Menu.Item key='models'>
         {$t({ defaultMessage: 'Supported Device Models' })}
       </Menu.Item>
 
@@ -90,13 +112,13 @@ const HelpButton = (props:HelpButtonProps) => {
 
       <Menu.Divider />
 
-      <Menu.Item disabled key='openCases'>
+      <Menu.Item key='openCases'>
         {$t({ defaultMessage: 'My Open Cases' })}
       </Menu.Item>
 
       <Menu.Divider />
 
-      <Menu.Item disabled key='privacy'>
+      <Menu.Item key='privacy'>
         {$t({ defaultMessage: 'Privacy' })}
       </Menu.Item>
 

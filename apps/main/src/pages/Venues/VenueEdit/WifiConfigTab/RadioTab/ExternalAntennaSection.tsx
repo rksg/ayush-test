@@ -5,7 +5,7 @@ import { Col, Form, Row, Select } from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Loader, showToast }                                                                                      from '@acx-ui/components'
+import { Loader }                                                                                                 from '@acx-ui/components'
 import { useGetVenueApCapabilitiesQuery, useGetVenueExternalAntennaQuery, useUpdateVenueExternalAntennaMutation } from '@acx-ui/rc/services'
 import { CapabilitiesApModel, ExternalAntenna }                                                                   from '@acx-ui/rc/utils'
 import { useParams }                                                                                              from '@acx-ui/react-router-dom'
@@ -42,11 +42,8 @@ export function ExternalAntennaSection () {
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
     try {
       await updateVenueExternalAntenna({ params, payload: [ ...data ] })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
