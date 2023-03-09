@@ -4,8 +4,8 @@ import { rest } from 'msw'
 import {
   CommonUrlsInfo,
   getSelectPolicyRoutePath,
-  PolicyType
-} from '@acx-ui/rc/utils'
+  PolicyType, RogueApUrls
+} from '@acx-ui/rc/utils';
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
@@ -39,7 +39,11 @@ describe('MyPolicies', () => {
         }
         return res(ctx.json({ ...emptyPoliciesList }))
       }
-    )
+    ),
+    rest.post(
+      RogueApUrls.getEnhancedRoguePolicyList.url,
+      (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+    ),
   )
 
   it('should render My Policies', async () => {
