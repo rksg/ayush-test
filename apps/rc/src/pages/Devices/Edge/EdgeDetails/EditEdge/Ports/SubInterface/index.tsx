@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showActionModal, Table, TableProps } from '@acx-ui/components'
 import { useDeleteSubInterfacesMutation, useGetSubInterfacesQuery }                                  from '@acx-ui/rc/services'
 import { DEFAULT_PAGINATION, EdgeSubInterface, useTableQuery }                                       from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                            from '@acx-ui/user'
 
 import { EdgePortWithStatus } from '../PortsGeneral/PortConfigForm'
 import * as UI                from '../styledComponents'
@@ -148,12 +149,12 @@ const SubInterfaceTable = (props: SubInterfaceTableProps) => {
           />
           <Loader states={[tableQuery]}>
             <Table<EdgeSubInterface>
-              actions={actionButtons}
+              actions={filterByAccess(actionButtons)}
               dataSource={tableQuery?.data?.data}
               pagination={tableQuery.pagination}
               onChange={tableQuery.handleTableChange}
               columns={columns}
-              rowActions={rowActions}
+              rowActions={filterByAccess(rowActions)}
               rowSelection={{
                 type: 'radio',
                 selectedRowKeys: selectedRows,
@@ -178,19 +179,17 @@ const SubInterface = (props: SubInterfaceProps) => {
   const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
-    if(data) {
-      setTabDetails(data.map((item, index) => {
-        return {
-          label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
-          value: 'port_' + (index + 1),
-          children: <SubInterfaceTable
-            index={index}
-            ip={item.statusIp}
-            mac={item.mac}
-            setIsFetching={setIsFetching} />
-        }
-      }))
-    }
+    setTabDetails(data.map((item, index) => {
+      return {
+        label: $t({ defaultMessage: 'Port {index}' }, { index: index + 1 }),
+        value: 'port_' + (index + 1),
+        children: <SubInterfaceTable
+          index={index}
+          ip={item.statusIp}
+          mac={item.mac}
+          setIsFetching={setIsFetching} />
+      }
+    }))
   }, [data, $t])
 
   return (

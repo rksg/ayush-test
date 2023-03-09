@@ -75,6 +75,7 @@ import MdnsProxyTable               from './pages/Services/MdnsProxy/MdnsProxyTa
 import MyServices                   from './pages/Services/MyServices'
 import AddNetworkSegmentation       from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
 import EditNetworkSegmentation      from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
+import NetworkSegmentationDetail    from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
 import NetworkSegmentationTable     from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm           from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
@@ -94,6 +95,7 @@ import PersonaGroupDetails          from './pages/Users/Persona/PersonaGroupDeta
 import SwitchClientList             from './pages/Users/Switch/ClientList'
 import WifiClientDetails            from './pages/Users/Wifi/ClientDetails'
 import WifiClientList               from './pages/Users/Wifi/ClientList'
+import GuestManagerPage             from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -300,6 +302,11 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.DETAIL })}
+        element={<NetworkSegmentationDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
           oper: ServiceOperation.EDIT })}
         element={<EditNetworkSegmentation />}
       />
@@ -492,6 +499,7 @@ function PolicyRoutes () {
 function UserRoutes () {
   return rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />

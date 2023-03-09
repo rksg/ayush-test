@@ -5,10 +5,10 @@ import { InternalNamePath } from 'antd/lib/form/interface'
 import { FormChangeInfo }   from 'rc-field-form/es/FormContext'
 import { useIntl }          from 'react-intl'
 
-import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdatePortConfigMutation }                                                                    from '@acx-ui/rc/services'
-import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp }          from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                          from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, StepsForm, StepsFormInstance }   from '@acx-ui/components'
+import { useUpdatePortConfigMutation }                                                           from '@acx-ui/rc/services'
+import { EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, serverIpAddressRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                 from '@acx-ui/react-router-dom'
 
 import { EdgePortWithStatus, lanPortsubnetValidator, PortConfigForm } from './PortConfigForm'
 
@@ -124,12 +124,8 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
     try {
       await updatePortConfig({ params: params, payload: { ports: formData } }).unwrap()
-    } catch {
-      // TODO error message not be defined
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

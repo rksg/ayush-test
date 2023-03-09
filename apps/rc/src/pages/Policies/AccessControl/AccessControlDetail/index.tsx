@@ -11,7 +11,8 @@ import {
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import AccessControlNetworksDetail from './AccessControlNetworksDetail'
 import AccessControlOverview       from './AccessControlOverview'
@@ -30,18 +31,17 @@ export default function AccessControlDetail () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

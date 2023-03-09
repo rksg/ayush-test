@@ -56,6 +56,8 @@ export function CloudpathForm () {
     '*.ocsp.godaddy.com',
     '*.play.google.com',
     '*.play.googleapis.com',
+    '*.ruckuswireless.com',
+    '*.ruckus.cloud',
     '*.settings.crashlytics.com',
     '*.ssl.gstatic.com',
     'Android.clients.google.com',

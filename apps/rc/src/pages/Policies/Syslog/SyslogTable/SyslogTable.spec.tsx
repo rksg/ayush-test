@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
+  SyslogUrls,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
@@ -54,7 +54,7 @@ describe('SyslogTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
+        SyslogUrls.syslogPolicyList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )

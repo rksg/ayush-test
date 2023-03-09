@@ -10,13 +10,18 @@ import { To, useTenantLink } from '@acx-ui/react-router-dom'
 import {
   render,
   renderHook,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
+import { hasRoles } from '@acx-ui/user'
 
 import { ServiceCard } from '.'
 
-const mockedUseNavigate = jest.fn()
 
+jest.mock('@acx-ui/user')
+const mockedHasRoles = hasRoles as jest.MockedFunction<typeof hasRoles>
+
+const mockedUseNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -29,6 +34,10 @@ describe('ServiceCard', () => {
   }
 
   const path = '/t/:tenantId'
+
+  beforeEach(() => {
+    mockedHasRoles.mockReturnValue(true)
+  })
 
   it('should render LIST service card', async () => {
     const { result: listPath } = renderHook(() => {
@@ -89,5 +98,26 @@ describe('ServiceCard', () => {
     )
 
     expect(await screen.findByText('mDNS Proxy (5)')).toBeVisible()
+  })
+
+  it('should render readonly service card', async () => {
+    mockedHasRoles.mockReturnValue(false)
+
+    render(
+      <ServiceCard
+        serviceType={ServiceType.MDNS_PROXY}
+        categories={[RadioCardCategory.WIFI]}
+        type={'button'}
+      />, {
+        route: { params, path }
+      }
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Add' })).toBeNull()
+    }, {
+      timeout: 2000,
+      interval: 200
+    })
   })
 })

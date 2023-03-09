@@ -69,7 +69,7 @@ exports[`WifiConfigTab should render correctly 1`] = `
               id="rc-tabs-test-tab-servers"
               role="tab"
             >
-              External Servers
+              Services
             </div>
           </div>
           <div

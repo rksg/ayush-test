@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi }                                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
+import { Provider, store }                              from '@acx-ui/store'
+import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { apDetailData }       from './__tests__/fixtures'
-import { events, eventsMeta } from './ApTimelineTab/__tests__/fixtures'
+import { apDetailData } from './__tests__/fixtures'
+import { activities }   from './ApTimelineTab/__tests__/fixtures'
 
 import ApDetails from '.'
 
@@ -74,17 +74,14 @@ const list = {
 describe('ApDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))),
-      rest.post(CommonUrlsInfo.getEventList.url,
-        (_, res, ctx) => res(ctx.json(events))),
-      rest.post(CommonUrlsInfo.getEventListMeta.url,
-        (_, res, ctx) => res(ctx.json(eventsMeta)))
+        (_, res, ctx) => res(ctx.json(apDetailData)))
     )
   })
 
@@ -191,7 +188,7 @@ describe('ApDetails', () => {
     })
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Timeline')
-    await screen.findByTestId('rc-EventTable')
+    await screen.findByTestId('rc-ActivityTable')
   })
 
   it('should not navigate to non-existent tab', async () => {
