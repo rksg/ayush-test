@@ -77,6 +77,17 @@ export function VlanSetting () {
     const filterData = vlanTable.filter(
       (item: { vlanId: number }) => item.vlanId.toString() !== data.vlanId.toString())
 
+    const sfm = data.switchFamilyModels?.map(item => {
+      return {
+        ...item,
+        untaggedPorts: Array.isArray(item.untaggedPorts) ?
+          item.untaggedPorts?.join(',') : item.untaggedPorts,
+        taggedPorts: Array.isArray(item.taggedPorts) ?
+          item.taggedPorts?.join(',') : item.taggedPorts
+      }
+    })
+
+    data.switchFamilyModels = sfm
     setVlanTable([...filterData, data])
     form.setFieldValue('vlans', [...filterData, data])
     setDrawerEditMode(false)
