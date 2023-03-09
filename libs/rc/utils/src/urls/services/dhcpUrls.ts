@@ -26,7 +26,7 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   getDHCPProfilesViewModel: {
     //Get DHCP Profiles LIST
     method: 'post',
-    url: '/dhcpConfigServiceProfiles/query'
+    url: '/enhancedDhcpConfigServiceProfiles/query'
   },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings

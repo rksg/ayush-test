@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteAAAPolicyMutation, useGetAAAPolicyListQuery }           from '@acx-ui/rc/services'
+import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery }  from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -24,7 +24,7 @@ export default function AAATable () {
   const [ deleteFn ] = useDeleteAAAPolicyMutation()
   const AAA_LIMIT_NUMBER = 32
   const tableQuery = useTableQuery({
-    useQuery: useGetAAAPolicyListQuery,
+    useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
     }
   })

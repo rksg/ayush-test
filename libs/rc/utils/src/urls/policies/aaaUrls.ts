@@ -21,6 +21,10 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/radius'
   },
+  getAAAPolicyViewModelList: {
+    method: 'post',
+    url: '/enhancedRadiusServerProfiles/query'
+  },
   getAAANetworkInstances: {
     method: 'post',
     url: '/api/radius/:policyId/networks'

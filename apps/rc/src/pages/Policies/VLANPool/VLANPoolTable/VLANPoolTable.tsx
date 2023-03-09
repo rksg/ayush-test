@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelVLANPoolPolicyMutation, useGetVLANPoolPolicyListQuery }    from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }       from '@acx-ui/components'
+import { useDelVLANPoolPolicyMutation, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
@@ -14,9 +14,6 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
-const defaultPayload = {
-}
-
 export default function VLANPoolTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -25,8 +22,17 @@ export default function VLANPoolTable () {
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
   const VLAN_LIMIT_NUMBER = 64
   const tableQuery = useTableQuery({
-    useQuery: useGetVLANPoolPolicyListQuery,
-    defaultPayload
+    useQuery: useGetVLANPoolPolicyViewModelListQuery,
+    defaultPayload: {
+      searchString: '',
+      fields: [
+        'id',
+        'name',
+        'vlanMembers',
+        'venueApGroups',
+        'venueIds'
+      ]
+    }
   })
 
   const rowActions: TableProps<VLANPoolPolicyType>['rowActions'] = [
@@ -131,6 +137,15 @@ function useColumns () {
       sorter: true,
       render: (data) =>{
         return data?.toString()
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      sorter: true,
+      render: (data) =>{
+        return data? (data as []).length:0
       }
     }
   ]

@@ -426,7 +426,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'Add AAA Policy',
-            'UpdateAAAPolicyProfile',
+            'UpdateAAAPolicy',
+            'DeleteAAAPolicy'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getAAAPolicyViewModelList: build.query<TableResult<AAATempType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Add AAA Policy',
+            'UpdateAAAPolicy',
             'DeleteAAAPolicy'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
@@ -709,17 +730,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    getVLANPoolPolicyList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVlanPools, params, RKS_NEW_UI)
+    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params, RKS_NEW_UI)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }],
-      transformResponse (result: VLANPoolPolicyType[]) {
-        return { data: result, totalCount: result.length, page: 0 }
-      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -978,7 +997,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
   })
 })
 
-
 export const {
   usePolicyListQuery,
   useMacRegListsQuery,
@@ -1037,7 +1055,7 @@ export const {
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
-  useGetVLANPoolPolicyListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
@@ -1060,5 +1078,6 @@ export const {
   useUpdateVenueSyslogApMutation,
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogListQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetAAAPolicyViewModelListQuery
 } = policyApi

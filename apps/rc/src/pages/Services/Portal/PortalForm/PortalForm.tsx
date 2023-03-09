@@ -28,14 +28,14 @@ const initialPortalData : Portal ={
   content: {
     bgColor: '#FFFFFF',
     bgImage: '',
-    welcomeText: '',
+    welcomeText: undefined,
     welcomeColor: '#333333',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
     photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
     logoRatio: PortalDemoDefaultSize.logoRatio,
-    secondaryText: '',
+    secondaryText: undefined,
     secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: '#EC7100',
@@ -67,6 +67,7 @@ export const PortalForm = (props:{
   const params = useParams()
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
+  const [currentLang, setCurrentLang]=useState({} as { [key:string]:string })
   const formRef = useRef<StepsFormInstance<Portal>>()
   const [uploadURL] = useUploadURLMutation()
   const { data } = useGetPortalQuery({ params })
@@ -157,7 +158,8 @@ export const PortalForm = (props:{
           { text: $t({ defaultMessage: 'Services' }), link: tablePath }
         ]}
       />}
-      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
+      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData,
+        currentLang, setCurrentLang }}>
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => networkView? backToNetwork?.()
@@ -167,6 +169,12 @@ export const PortalForm = (props:{
               (data.content.componentDisplay.termsConditions&&!
               data.content.termsCondition?.trim())){
               return false
+            }
+            if(data.content.welcomeText===undefined){
+              data.content.welcomeText=currentLang.welcomeText
+            }
+            if(data.content.secondaryText===undefined){
+              data.content.secondaryText=currentLang.secondaryText
             }
             return handleAddPortalService(data)}}
         >
