@@ -93,8 +93,8 @@ export interface DistributionSwitchSaveData {
 
 export interface SwitchLite extends Partial<UplinkInfo> {
   id: string
-  name: string
-  firmwareVersion: string
-  familyId: string
-  model: string
+  name?: string
+  firmwareVersion?: string
+  familyId?: string
+  model?: string
 }

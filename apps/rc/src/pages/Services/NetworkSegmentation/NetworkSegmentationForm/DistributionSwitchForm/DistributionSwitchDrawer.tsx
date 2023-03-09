@@ -234,7 +234,7 @@ function SelectAccessSwitchModal ({
       }}
       width={662}>
       <Transfer
-        dataSource={availableAs.map(as => ({
+        dataSource={availableAs.concat(selected || []).map(as => ({
           key: as.id,
           title: as.name
         }))}
