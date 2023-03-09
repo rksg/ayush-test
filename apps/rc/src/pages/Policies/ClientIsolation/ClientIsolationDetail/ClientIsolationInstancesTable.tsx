@@ -52,6 +52,9 @@ export function ClientIsolationInstancesTable () {
   ]
 
   const handleSearch = (filters: FILTER, search: SEARCH) => {
+    if (tableQuery.payload.searchVenueNameString === search.searchString) {
+      return
+    }
     tableQuery.setPayload({
       ...tableQuery.payload,
       searchVenueNameString: search.searchString
