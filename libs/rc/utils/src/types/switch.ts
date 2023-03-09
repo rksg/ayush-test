@@ -3,8 +3,8 @@ import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTy
 import { NetworkVenue }                                                                  from '../models'
 import { PortSettingModel }                                                              from '../models/PortSetting'
 
-import { ProfileTypeEnum }        from './../constants'
-import { Acl, Vlan, SwitchModel } from './venue'
+import { ProfileTypeEnum }                               from './../constants'
+import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 
 import { GridDataRow } from './'
 
@@ -54,6 +54,11 @@ export enum TroubleshootingType {
   ROUTE_TABLE = 'route-table',
   MAC_ADDRESS_TABLE = 'mac-address-table',
   DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
+}
+
+export enum DeviceRequestAction {
+  SYNC = 'sync',
+  REBOOT = 'reboot'
 }
 
 export enum TroubleshootingMacAddressOptionsEnum {
@@ -222,6 +227,10 @@ export class SwitchViewModel extends Switch {
   cloudPort?: string
   lastSeenTime?: string
   rearModuleOption?: boolean
+  floorplanId?: string
+  xPercent?: number
+  yPercent?: number
+  position?: NetworkDevicePosition
 }
 
 export interface SwitchRow {
@@ -248,6 +257,8 @@ export interface SwitchRow {
   syncDataId?: string
   operationalWarning?: boolean
   switchName?: string
+  xPercent?: number
+  yPercent?: number
 }
 
 export interface StackMember {

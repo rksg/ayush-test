@@ -58,6 +58,7 @@ import {
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
+import { getJwtToken } from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -628,7 +629,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           },
           headers: {
             'Content-Type': 'text/csv',
-            'Accept': 'text/csv'
+            'Accept': 'text/csv',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
       }

@@ -12,6 +12,7 @@ import {
   VLANPoolPolicyType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
 }
@@ -75,7 +76,7 @@ export default function VLANPoolTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })} key='add'>
             <Button type='primary'
@@ -83,7 +84,7 @@ export default function VLANPoolTable () {
                 ? tableQuery.data?.totalCount >= VLAN_LIMIT_NUMBER
                 : false} >{$t({ defaultMessage: 'Add VLAN Pool' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<VLANPoolPolicyType>
@@ -92,7 +93,7 @@ export default function VLANPoolTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

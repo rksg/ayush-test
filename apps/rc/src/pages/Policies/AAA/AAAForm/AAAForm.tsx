@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import {
-  PageHeader, showToast,
+  PageHeader,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -70,12 +70,8 @@ const AAAForm = (props: AAAFormProps) => {
   const handleAAAPolicy = async (data: AAAPolicyType) => {
     try {
       await addOrUpdateAAA(data, edit)
-    } catch(error) {
-      showToast({
-        type: 'error',
-        duration: 10,
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

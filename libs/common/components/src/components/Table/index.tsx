@@ -11,14 +11,20 @@ import AutoSizer                                                      from 'reac
 import { SettingsOutlined }        from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
-import { Button, DisabledButton } from '../Button'
-import { Dropdown }               from '../Dropdown'
-import { Tooltip }                from '../Tooltip'
+import { Button, DisabledButton, ButtonProps } from '../Button'
+import { Dropdown }                            from '../Dropdown'
+import { Tooltip }                             from '../Tooltip'
 
-import { Filter, getFilteredData, renderFilter, renderSearch } from './filters'
-import { ResizableColumn }                                     from './ResizableColumn'
-import * as UI                                                 from './styledComponents'
-import { settingsKey, useColumnsState }                        from './useColumnsState'
+import {
+  Filter,
+  getFilteredData,
+  renderFilter,
+  renderSearch,
+  MIN_SEARCH_LENGTH
+} from './filters'
+import { ResizableColumn }              from './ResizableColumn'
+import * as UI                          from './styledComponents'
+import { settingsKey, useColumnsState } from './useColumnsState'
 
 import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
 import type { ParamsType }                                                                    from '@ant-design/pro-provider'
@@ -50,28 +56,30 @@ export interface TableProps <RecordType>
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<{
-      label: string,
-      disabled?: boolean,
-      tooltip?: string,
-      onClick?: () => void,
+      key?: string
+      label: string
+      disabled?: boolean
+      tooltip?: string
+      onClick?: () => void
       dropdownMenu?: Omit<MenuProps, 'placement'>
     }>
     rowActions?: Array<{
-      label: string,
-      disabled?: boolean | ((selectedItems: RecordType[]) => boolean),
-      tooltip?: string,
-      visible?: boolean | ((selectedItems: RecordType[]) => boolean),
+      key?: string
+      label: string
+      disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
+      tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)
+      visible?: boolean | ((selectedItems: RecordType[]) => boolean)
       onClick: (selectedItems: RecordType[], clearSelection: () => void) => void
     }>
     columnState?: ColumnStateOption
     rowSelection?: (ProAntTableProps<RecordType, ParamsType>['rowSelection']
       & AntTableProps<RecordType>['rowSelection']
-      & {
-      alwaysShowAlert?: boolean;
-    })
+      & { alwaysShowAlert?: boolean }
+    )
     extraSettings?: React.ReactNode[]
     onResetState?: CallableFunction
-    enableApiFilter?: boolean
+    enableApiFilter?: boolean,
+    floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
@@ -108,8 +116,6 @@ function useSelectedRowKeys <RecordType> (
 
   return [selectedRowKeys, setSelectedRowKeys]
 }
-
-const MIN_SEARCH_LENGTH = 2
 
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -345,21 +351,15 @@ function Table <RecordType extends Record<string, any>> ({
       split={<UI.Divider type='vertical' />}
       style={{ display: 'flex', justifyContent: 'flex-end', margin: '3px 0' }}>
       {props.actions?.map((action, index) => {
+        const props: ButtonProps & { key: React.Key } = {
+          key: action.key ?? `action-${index}`,
+          type: 'link',
+          size: 'small',
+          children: action.label
+        }
         const content = !action.disabled
-          ? <Button
-            key={index}
-            type='link'
-            size='small'
-            onClick={action.dropdownMenu ? undefined : action.onClick}
-            children={action.label}
-          />
-          : <DisabledButton
-            key={index}
-            type='link'
-            size='small'
-            title={action.tooltip || ''}
-            children={action.label}
-          />
+          ? <Button {...props} onClick={action.dropdownMenu ? undefined : action.onClick} />
+          : <DisabledButton {...props} title={action.tooltip || ''} />
         return action.dropdownMenu
           ? <Dropdown
             key={`dropdown-${index}`}
@@ -371,7 +371,7 @@ function Table <RecordType extends Record<string, any>> ({
       })}
     </Space>}
     {hasHeader && (
-      <UI.Header>
+      <UI.Header style={props.floatRightFilters ? { float: 'right' } : {}}>
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
@@ -387,10 +387,12 @@ function Table <RecordType extends Record<string, any>> ({
           {(
             Boolean(activeFilters.length) ||
             (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
-          ) && <Button onClick={() => {
-            setFilterValues({} as Filter)
-            setSearchValue('')
-          }}>
+          ) && <Button
+            style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+            onClick={() => {
+              setFilterValues({} as Filter)
+              setSearchValue('')
+            }}>
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
@@ -438,24 +440,37 @@ function Table <RecordType extends Record<string, any>> ({
           <Space size={0} split={<UI.Divider type='vertical' />}>
             {props.rowActions?.map((option) => {
               const rows = getSelectedRows(selectedRowKeys)
-              const label = option.tooltip
-                ? <Tooltip placement='top' title={option.tooltip}>{option.label}</Tooltip>
-                : option.label
-              let visible = typeof option.visible === 'function'
+
+              const visible = typeof option.visible === 'function'
                 ? option.visible(rows)
                 : option.visible ?? true
-
               if (!visible) return null
+
+              const tooltip = typeof option.tooltip === 'function'
+                ? option.tooltip(rows)
+                : option.tooltip
+              const label = tooltip
+                ? <Tooltip placement='top' title={tooltip}>{option.label}</Tooltip>
+                : option.label
+              const disabled = typeof option.disabled === 'function'
+                ? option.disabled(rows)
+                : option.disabled
+              const buttonProps: ButtonProps & { key: React.Key } = {
+                type: 'link',
+                size: 'small',
+                key: option.key ?? option.label
+              }
+
+              if (disabled && tooltip) return <DisabledButton {...buttonProps} title={tooltip}>
+                {option.label}
+              </DisabledButton>
+
               return <Button
-                type='link'
-                size='small'
-                key={option.label}
-                disabled={typeof option.disabled === 'function'
-                  ? option.disabled(rows)
-                  : option.disabled
-                }
+                {...buttonProps}
+                disabled={disabled}
                 onClick={() =>
-                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })}
+                  option.onClick(getSelectedRows(selectedRowKeys), () => { onCleanSelected() })
+                }
               >
                 {label}
               </Button>

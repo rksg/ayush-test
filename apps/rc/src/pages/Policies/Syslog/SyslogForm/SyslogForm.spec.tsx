@@ -30,12 +30,16 @@ const policyResponse = {
 const policyListContent = [
   {
     id: 'policyId1',
-    server: '1.1.1.1',
-    port: '514',
-    protocol: 'TCP',
-    secondaryServer: '2.2.2.2',
-    secondaryPort: '1514',
-    secondaryProtocol: 'UDP',
+    primary: {
+      server: '1.1.1.1',
+      port: 514,
+      protocol: 'TCP'
+    },
+    secondary: {
+      server: '2.2.2.2',
+      port: 1514,
+      potocol: 'UDP'
+    },
     facility: 'KEEP_ORIGINAL',
     priority: 'ERROR',
     flowLevel: 'ALL',
@@ -43,12 +47,16 @@ const policyListContent = [
   },
   {
     id: 'be62604f39aa4bb8a9f9a0733ac07add',
-    server: '1.1.1.1',
-    port: '514',
-    protocol: 'TCP',
-    secondaryServer: '2.2.2.2',
-    secondaryPort: '1514',
-    secondaryProtocol: 'UDP',
+    primary: {
+      server: '1.1.1.1',
+      port: 514,
+      protocol: 'TCP'
+    },
+    secondary: {
+      server: '2.2.2.2',
+      port: 1514,
+      protocol: 'UDP'
+    },
     facility: 'KEEP_ORIGINAL',
     priority: 'ERROR',
     flowLevel: 'ALL',
@@ -114,10 +122,10 @@ const setSyslogAPConfigure = jest.fn()
 const initState = {
   policyName: '',
   server: '',
-  port: '',
+  port: 514,
   protocol: ProtocolEnum.TCP,
   secondaryServer: '',
-  secondaryPort: '',
+  secondaryPort: 514,
   secondaryProtocol: ProtocolEnum.TCP,
   facility: FacilityEnum.KEEP_ORIGINAL,
   priority: PriorityEnum.ALL,
@@ -222,7 +230,7 @@ describe('SyslogForm', () => {
 
   it('should render SyslogForm with editMode successfully', async () => {
     mockServer.use(rest.post(
-      SyslogUrls.getVenueSyslogPolicy.url,
+      SyslogUrls.getVenueSyslogList.url,
       (_, res, ctx) => res(
         ctx.json(venueTable)
       )
@@ -259,10 +267,6 @@ describe('SyslogForm', () => {
     await screen.findByRole('heading', { name: 'Settings', level: 3 })
 
     await userEvent.type(await screen.findByTestId('name'), 'modify name')
-
-    await userEvent.type(await screen.findByTestId('server'), '1.1.1.2')
-
-    await userEvent.type(await screen.findByTestId('port'), '514')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 

@@ -241,7 +241,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Network Details
                     </h3>
@@ -602,7 +602,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Open Settings
                     </h3>
@@ -625,7 +625,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                 aria-checked="false"
                                 class="ant-switch ant-switch-disabled"
                                 disabled=""
-                                id="settings_isCloudpathEnabled"
+                                id="settings_wlan_macAddressAuthentication"
                                 role="switch"
                                 type="button"
                               >
@@ -637,7 +637,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                                 />
                               </button>
                               <span>
-                                Use Cloudpath Server
+                                Use MAC Auth
                               </span>
                             </div>
                           </div>
@@ -692,7 +692,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Venues
                 </h3>
@@ -769,7 +769,7 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Summary
                 </h3>
@@ -917,9 +917,9 @@ exports[`NetworkForm should create PSK network with WPA2 successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Use AAA Server:"
                           >
-                            Use Cloudpath Server:
+                            Use AAA Server:
                           </label>
                         </div>
                         <div

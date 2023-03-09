@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -62,11 +61,8 @@ export default function ClientIsolationForm (props: ClientIsolationFormProps) {
       }
 
       navigate(linkToPolicies, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

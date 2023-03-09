@@ -4,8 +4,8 @@ import { Form, Select, Space, Switch } from 'antd'
 import { isEqual }                     from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Loader, showToast, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Loader, StepsForm }       from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogApQuery,
@@ -14,8 +14,7 @@ import {
 import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType,
-  VenueSyslog
+  PolicyType
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -43,7 +42,7 @@ export function Syslog () {
   } = useContext(VenueEditContext)
 
   const syslogPolicyList = useGetSyslogPolicyListQuery({ params: { tenantId } })
-  const venueSettings = useGetVenueSyslogApQuery({ params: { tenantId, venueId } })
+  const venueSettings = useGetVenueSyslogApQuery({ params: { venueId } })
   const [updateVenueSyslog, {
     isLoading: isUpdatingVenueSyslog }] = useUpdateVenueSyslogApMutation()
 
@@ -93,7 +92,7 @@ export function Syslog () {
     })
   }
 
-  const updateSyslog = async (data?: VenueSyslog) => {
+  const updateSyslog = async (data?: VenueSettings) => {
     try {
       setEditContextData({
         ...editContextData,
@@ -103,15 +102,12 @@ export function Syslog () {
       const payload = data
       if (payload) {
         await updateVenueSyslog({
-          params: { tenantId, venueId },
+          params: { venueId },
           payload
         }).unwrap()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

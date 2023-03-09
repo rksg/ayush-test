@@ -19,6 +19,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   policyTypeDescMapping,
@@ -54,11 +55,11 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
-        extra={[
-          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
+        extra={filterByAccess([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         {policies.filter(policy => !policy.disabled).map((policy, index) => {

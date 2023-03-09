@@ -137,6 +137,8 @@ export interface NetworkDevice {
 	snr?: number;
 	macAddress?: string;
 	rogueCategoryType?: RogueDeviceCategoryType;
+	apMac?: string;
+	switchMac?: string;
 }
 
 export interface RogueApInfo {
@@ -764,4 +766,39 @@ export enum DeviceTypes {
 	ApMesh='ApMesh',
 	Unknown='Unknown',
 	Cloud='Cloud'
+}
+
+export interface BonjourFencingWirelessRule {
+  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
+}
+
+export interface BonjourFencingWiredRule {
+  name: string,
+  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
+  closestApMac: string,
+  deviceMacAddresses: string[]
+}
+
+export interface BonjourFencingService {
+  service: string,
+  customServiceName?: string,
+  description: string,
+  wirelessEnabled: boolean,
+  wirelessRule?: BonjourFencingWirelessRule,
+  wiredEnabled: boolean,
+  wiredRules?: BonjourFencingWiredRule[],
+  customMappingEnabled: boolean,
+  customStrings?: string[],
+  rowId?: string
+}
+
+export interface VenueBonjourFencingPolicy {
+  enabled: boolean,
+  services?: BonjourFencingService[]
+}
+
+export enum ShowTopologyFloorplanOn {
+	VENUE_OVERVIEW='VENUE_OVERVIEW',
+	AP_OVERVIEW='AP_OVERVIEW',
+	SWITCH_OVERVIEW='SWITCH_OVERVIEW'
 }

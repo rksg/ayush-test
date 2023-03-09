@@ -12,7 +12,8 @@ import {
   AAATempType,
   AAAPurposeEnum
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 
 export default function AAATable () {
@@ -75,7 +76,7 @@ export default function AAATable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })} key='add'>
             <Button type='primary'
@@ -83,7 +84,7 @@ export default function AAATable () {
                 ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
                 : false} >{$t({ defaultMessage: 'Add AAA Server' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<AAATempType>
@@ -92,7 +93,7 @@ export default function AAATable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>

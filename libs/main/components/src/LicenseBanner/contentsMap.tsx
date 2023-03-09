@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useIntl, defineMessage } from 'react-intl'
+import { defineMessage, IntlShape } from 'react-intl'
 
 import {
   LicenseBannerTypeEnum,
@@ -10,8 +10,8 @@ import {
 import { ExpireInfo } from './'
 
 
-export const LicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
-  const { $t } = useIntl()
+export const LicenseBannerRemindMapping = (expireInfo:ExpireInfo, $t: IntlShape['$t'])=> {
+
   const isMulti = expireInfo.isMultipleLicense
   const param = { deviceText: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType), daysText: expireInfo.effectDays, deviceCount: expireInfo.deviceCount }
   if(expireInfo.deviceType==='ANALYTICS'){
@@ -79,8 +79,7 @@ export const LicenseBannerDescMapping = ()=> {
 }
 
 
-export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo)=> {
-  const { $t } = useIntl()
+export const MSPLicenseBannerRemindMapping = (expireInfo:ExpireInfo, $t: IntlShape['$t'])=> {
   const isMulti = expireInfo.isMultipleLicense
   const param = {
     deviceText: EntitlementUtil.getDeviceTypeText($t, expireInfo.deviceType),

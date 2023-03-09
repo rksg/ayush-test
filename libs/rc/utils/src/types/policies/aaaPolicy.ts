@@ -1,4 +1,3 @@
-import { Network }      from '..'
 import { RadiusServer } from '../../models/RadiusServer'
 export interface AAAPolicyType{
   id?: string,
@@ -30,7 +29,9 @@ export enum AAAPurposeEnum{
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting Radius Server'
 }
-export interface AAADetailInstances{
-  id?: string,
-  network: Network
+export interface AAAPolicyNetwork {
+  networkId: string,
+  networkName: string,
+  networkType: string,
+  guestNetworkType?: string
 }

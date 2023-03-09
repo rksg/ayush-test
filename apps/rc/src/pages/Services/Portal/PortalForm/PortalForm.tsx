@@ -5,13 +5,13 @@ import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
 import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
 import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                                                                      from '@acx-ui/utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -65,7 +65,6 @@ export const PortalForm = (props:{
   const tablePath = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
   const linkToServices = useTenantLink(tablePath)
   const params = useParams()
-  const prefix = '/api/file/tenant/'+params.tenantId+'/'
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
   const formRef = useRef<StepsFormInstance<Portal>>()
@@ -88,14 +87,16 @@ export const PortalForm = (props:{
   const handleAddPortalService = async (data : Portal) => {
     try {
       const payload = { serviceName: data.serviceName, tags: 'test', content: {
-        ...data.content, logo: data?.content?.logo&&data?.content?.logo.indexOf(prefix)>=0?
-          data?.content?.logo?.replace(prefix,''): '',
-        photo: data?.content?.photo&&data?.content?.photo.indexOf(prefix)>=0?
-          data?.content?.photo?.replace(prefix,''): '',
-        poweredImg: data?.content?.poweredImg&&data?.content?.poweredImg.indexOf(prefix)>=0?
-          data?.content?.poweredImg?.replace(prefix,''): '',
-        bgImage: data?.content?.bgImage&&data?.content?.bgImage.indexOf(prefix)>=0?
-          data?.content?.bgImage?.replace(prefix,''): ''
+        ...data.content,
+        logo: data?.content?.logo&&data?.content?.logo.indexOf('https://storage')>=0?
+          data?.content?.logo?.split('/')[6].split('?')[0]: '',
+        photo: data?.content?.photo&&data?.content?.photo.indexOf('https://storage')>=0?
+          data?.content?.photo?.split('/')[6].split('?')[0]: '',
+        poweredImg: data?.content?.poweredImg&&
+        data?.content?.poweredImg.indexOf('https://storage')>=0?
+          data?.content?.poweredImg?.split('/')[6].split('?')[0]: '',
+        bgImage: data?.content?.bgImage&&data?.content?.bgImage.indexOf('https://storage')>=0?
+          data?.content?.bgImage?.split('/')[6].split('?')[0]: ''
       } }
       if(portalData.bgFile){
         payload.content.bgImage = await updateFileId(portalData.bgFile)
@@ -120,26 +121,30 @@ export const PortalForm = (props:{
           data.content = payload.content
         })
       networkView? backToNetwork?.(data) : navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
   const updateSaveData = (saveData: Partial<Portal>) => {
     setPortalData({ ...portalData, ...saveData })
   }
+
   useEffect(() => {
-    if (data) {
+    const fetchData= async (data:Portal) =>{
       const formatData = { ...data, content: {
-        ...data.content, logo: data.content?.logo ? (prefix+data.content.logo):Logo,
-        photo: data.content?.photo ? (prefix+data.content.photo):Photo,
-        poweredImg: data.content?.poweredImg ? (prefix+data.content.poweredImg):Powered,
-        bgImage: data.content?.bgImage ? (prefix+data.content.bgImage):'' } } as Portal
+        ...data.content, logo: data.content?.logo ?
+          await loadImageWithJWT(data.content.logo):Logo,
+        photo: data.content?.photo ? await loadImageWithJWT(data.content.photo):Photo,
+        poweredImg: data.content?.poweredImg ?
+          await loadImageWithJWT(data.content.poweredImg):Powered,
+        bgImage: data.content?.bgImage ?
+          await loadImageWithJWT(data.content.bgImage):'' } } as Portal
       formRef?.current?.resetFields()
       formRef?.current?.setFieldsValue(formatData)
       updateSaveData(formatData)
+    }
+    if(data){
+      fetchData(data)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
