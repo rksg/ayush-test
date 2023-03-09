@@ -69,6 +69,7 @@ export function SwitchConfigHistoryTable (props: {
   const handleCancel = () => {
     setDispatchFailedReason([])
     setVisible(false)
+    setFilterType('ALL')
   }
 
   const tableQuery = useTableQuery({
