@@ -27,7 +27,7 @@ describe('Topology utils', () => {
 
   it('test switchStatus', async () => {
     expect(switchStatus(SwitchStatusEnum.OPERATIONAL)).toBe('Operational')
-    expect(switchStatus(SwitchStatusEnum.DISCONNECTED)).toBe('Requires Attention')
+    expect(switchStatus(SwitchStatusEnum.DISCONNECTED)).toBe('Disconnected')
     expect(switchStatus(SwitchStatusEnum.NEVER_CONTACTED_CLOUD)).toBe('Never contacted cloud')
     expect(switchStatus(SwitchStatusEnum.INITIALIZING)).toBe('Initializing')
     expect(switchStatus(SwitchStatusEnum.APPLYING_FIRMWARE)).toBe('Firmware updating')
