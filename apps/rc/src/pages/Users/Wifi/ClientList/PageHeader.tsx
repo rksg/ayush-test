@@ -1,16 +1,42 @@
+import { useMemo } from 'react'
+
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, RangePicker } from '@acx-ui/components'
-import { useGetClientListQuery }   from '@acx-ui/rc/services'
-import { useParams }               from '@acx-ui/react-router-dom'
-import { useDateFilter }           from '@acx-ui/utils'
+import { PageHeader, RangePicker }                                        from '@acx-ui/components'
+import { useGetClientListQuery }                                          from '@acx-ui/rc/services'
+import { useParams }                                                      from '@acx-ui/react-router-dom'
+import { DateFilter, DateRange, getDateRangeFilter, useEncodedParameter } from '@acx-ui/utils'
 
 import Tabs from './Tabs'
 
+export const useDateForGuestFilter = () => {
+  const { read, write } = useEncodedParameter<DateFilter>('period')
+
+  return useMemo(() => {
+    const period = read()
+    const dateFilter = period
+      ? getDateRangeFilter(period.range, period.startDate, period.endDate)
+      : getDateRangeFilter(DateRange.last24Hours)
+
+    const setDateFilter = (date: DateFilter) => {
+      write({
+        ...date,
+        initiated: (new Date()).getTime() // for when we click same relative date again
+      })
+    }
+    return {
+      dateFilter,
+      setDateFilter,
+      ...dateFilter
+    } as const
+  }, [read, write])
+}
+
+
 function Header () {
   const { $t } = useIntl()
-  const { startDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateForGuestFilter()
   const { tenantId, venueId, serialNumber, activeTab } = useParams()
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -32,7 +58,7 @@ function Header () {
         <RangePicker
           selectionType={range}
           showAllTime={true}
-          selectedRange={{ startDate: moment(startDate), endDate: null }}
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
           onDateApply={setDateFilter as CallableFunction}
         />
       ] : []}
