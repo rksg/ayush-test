@@ -1,223 +1,33 @@
-import { configureStore, isRejectedWithValue }            from '@reduxjs/toolkit'
-import { createApi, fetchBaseQuery }                      from '@reduxjs/toolkit/query/react'
-import { defineMessage, FormattedMessage }                from 'react-intl'
+import { configureStore }                                 from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
-import { showActionModal, ActionModalType, ErrorDetailsProps } from '@acx-ui/components'
-import { getIntl }                                             from '@acx-ui/utils'
-
-import { baseAdministrationApi as administrationApi } from './baseApi/baseAdministrationApi'
-import { baseApApi as apApi }                         from './baseApi/baseApApi'
-import { baseClientApi as clientApi }                 from './baseApi/baseClientApi'
-import { baseCommonApi as commonApi }                 from './baseApi/baseCommonApi'
-import { baseDhcpApi as dhcpApi }                     from './baseApi/baseDhcpApi'
-import { baseEdgeApi as edgeApi  }                    from './baseApi/baseEdgeApi'
-import { baseEdgeDhcpApi as edgeDhcpApi }             from './baseApi/baseEdgeDhcpApi'
-import { baseEventAlarmApi as eventAlarmApi }         from './baseApi/baseEventAlarmApi'
-import { baseFirmwareApi as firmwareApi }             from './baseApi/baseFirmwareApi'
-import { baseLicenseApi as licenseApi }               from './baseApi/baseLicenseApi'
-import { baseMspApi as mspApi }                       from './baseApi/baseMspApi'
-import { baseNetworkApi as networkApi }               from './baseApi/baseNetworkApi'
-import { baseNsgApi as nsgApi }                       from './baseApi/baseNsgApi'
-import { basePersonaApi as personaApi }               from './baseApi/basePersonaApi'
-import { basePolicyApi as policyApi }                 from './baseApi/basePolicyApi'
-import { baseServiceApi as serviceApi }               from './baseApi/baseServiceApi'
-import { baseSwitchApi as switchApi }                 from './baseApi/baseSwitchApi'
-import { baseTimelineApi as timelineApi }             from './baseApi/baseTimelineApi'
-import { baseVenueApi as venueApi }                   from './baseApi/baseVenueApi'
-import { dataApi }                                    from './baseApi/dataApi'
-import { networkHealthApi }                           from './baseApi/networkHealthApi'
-
-
-import type { Middleware } from '@reduxjs/toolkit'
-
-type ErrorAction = {
-  type: string,
-  meta: {
-    baseQueryMeta: {
-      response: {
-        status: number
-      }
-    },
-    arg?: {
-      endpointName: string
-    }
-  },
-  payload: {
-    data?: ErrorDetailsProps
-    originalStatus?: number
-  }
-}
-
-interface ErrorMessageType {
-  title: { defaultMessage: string },
-  content: { defaultMessage: string }
-}
-
-let isModalShown = false
-// TODO: workaround for skipping general error dialog
-const ignoreEndpointList = [
-  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers'
-]
-const errorMessage = {
-  SERVER_ERROR: {
-    title: defineMessage({ defaultMessage: 'Server Error' }),
-    content: defineMessage({
-      defaultMessage: 'An internal error has occurred. Please contact support.'
-    })
-  },
-  SESSION_EXPIRED: {
-    title: defineMessage({ defaultMessage: 'Session Expired' }),
-    content: defineMessage({
-      defaultMessage: 'Your session has expired. Please login again.'
-    })
-  },
-  OPERATION_FAILED: {
-    title: defineMessage({ defaultMessage: 'Operation Failed' }),
-    content: defineMessage({
-      defaultMessage: 'The operation failed because of a request time out'
-    })
-  },
-  REQUEST_IN_PROGRESS: {
-    title: defineMessage({ defaultMessage: 'Request in Progress' }),
-    content: defineMessage({
-      defaultMessage: `A configuration request is currently being executed and additional
-      requests cannot be performed at this time.<br></br>Try again once the request has completed.`
-    })
-  },
-  CHECK_YOUR_CONNECTION: {
-    title: defineMessage({ defaultMessage: 'Check Your Connection' }),
-    content: defineMessage({
-      defaultMessage: 'Ruckus Cloud needs you to be online,<br></br>you appear to be offline.'
-    })
-  },
-  COUNTRY_INVALID: {
-    title: defineMessage({ defaultMessage: 'Error' }),
-    content: defineMessage({
-      defaultMessage: `The service is currently not supported in the country which you entered.
-      <br></br>Please make sure that you entered the correct address.`
-    })
-  }
-}
-
-const getErrorContent = (action: ErrorAction) => {
-  const { $t } = getIntl()
-  const status = action.meta.baseQueryMeta?.response?.status || action.payload?.originalStatus
-
-  let errorMsg = {} as ErrorMessageType
-  let type: ActionModalType = 'error'
-  let errors = action.payload.data
-  let needLogout = false
-  let callback = undefined
-
-  switch (status) {
-    case 400:
-      if (errors?.error === 'API-KEY not present') {
-        needLogout = true
-      }
-      errorMsg = errorMessage.SERVER_ERROR
-      break
-    case 401:
-    case 403:
-      errorMsg = errorMessage.SESSION_EXPIRED
-      type = 'info'
-      needLogout = true
-      break
-    case 408: // request timeout
-      errorMsg = errorMessage.OPERATION_FAILED
-      break
-    case 423:
-      errorMsg = errorMessage.REQUEST_IN_PROGRESS
-      errors = '' as ErrorDetailsProps
-      break
-    case 504: // no connection [development mode]
-    case 0:   // no connection
-      errorMsg = errorMessage.CHECK_YOUR_CONNECTION
-      type = 'info'
-      callback = () => window.location.reload()
-      break
-    case 422:
-      const countryInvalid // TODO: check error format
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        = (errors as any)?.error?.errors?.find((e:any) => e.code === 'WIFI-10114')
-      if (countryInvalid) {
-        errorMsg = errorMessage.COUNTRY_INVALID
-      } else {
-        errorMsg = errorMessage.SERVER_ERROR
-      }
-      break
-    default:
-      // TODO: shouldIgnoreErrorCode
-      errorMsg = errorMessage.SERVER_ERROR
-      break
-  }
-
-  return {
-    title: $t(errorMsg?.title),
-    content: <FormattedMessage
-      {...errorMsg?.content}
-      values={{ br: () => <br /> }}
-    />,
-    type,
-    errors,
-    callback,
-    needLogout
-  }
-}
-
-export const showErrorModal = (details: {
-  title: string,
-  content: JSX.Element,
-  type: ActionModalType,
-  errors?: ErrorDetailsProps,
-  callback?: () => void
-}) => {
-  const { title, content, type, errors, callback } = details
-  if (title && !isModalShown) {
-    isModalShown = true
-    showActionModal({
-      type,
-      title,
-      content,
-      ...(type === 'error' && { customContent: {
-        action: 'SHOW_ERRORS',
-        errorDetails: errors
-      } }),
-      onOk: () => {
-        callback?.()
-        isModalShown = false
-      }
-    })
-  }
-}
-
-export const userApi = createApi({
-  baseQuery: fetchBaseQuery(),
-  reducerPath: 'userApi',
-  tagTypes: ['UserProfile', 'Mfa'],
-  refetchOnMountOrArgChange: true,
-  endpoints: () => ({ })
-})
-
-const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
-  const isDevModeOn = window.location.hostname === 'localhost'
-  const endpoint = action?.meta?.arg?.endpointName || ''
-  if (isRejectedWithValue(action)) {
-    const { needLogout, ...details } = getErrorContent(action)
-    if (!ignoreEndpointList.includes(endpoint)) {
-      showErrorModal(details)
-    }
-    if (needLogout && !isDevModeOn) {
-      const token = sessionStorage.getItem('jwt')?? null
-      sessionStorage.removeItem('jwt')
-      window.location.href = token? `/logout?token=${token}` : '/logout'
-    }
-  }
-  return next(action)
-}
+import {
+  baseAdministrationApi as administrationApi ,
+  baseApApi as apApi,
+  baseClientApi as clientApi,
+  baseCommonApi as commonApi,
+  baseDhcpApi as dhcpApi,
+  baseEdgeApi as edgeApi ,
+  baseEdgeDhcpApi as edgeDhcpApi,
+  baseEventAlarmApi as eventAlarmApi,
+  baseFirmwareApi as firmwareApi,
+  baseLicenseApi as licenseApi,
+  baseMspApi as mspApi,
+  baseNetworkApi as networkApi,
+  baseNsgApi as nsgApi,
+  basePersonaApi as personaApi,
+  basePolicyApi as policyApi,
+  baseServiceApi as serviceApi,
+  baseSwitchApi as switchApi,
+  baseTimelineApi as timelineApi,
+  baseVenueApi as venueApi,
+  dataApi,
+  networkHealthApi,
+  userApi
+} from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
-const isTest = process.env['NODE_ENV'] === 'test'
 
 export const store = configureStore({
   reducer: {
@@ -251,7 +61,7 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      ...(!isTest ? [errorMiddleware] : []),
+      dynamicMiddlewares,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
