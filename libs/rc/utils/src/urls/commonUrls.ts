@@ -148,7 +148,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenues: {
-    // [New API] testing
     method: 'post',
     url: '/venues/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venues',
@@ -219,9 +218,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMeshAps: {
     method: 'post',
-    // url: '/aps/query',
-    // newApi: true,
-    url: '/api/viewmodel/:tenantId/aps/mesh'
+    url: '/aps/query?mesh=true',
+    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    newApi: true
   },
   getService: {
     // no use

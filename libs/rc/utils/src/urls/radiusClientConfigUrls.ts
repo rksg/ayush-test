@@ -1,6 +1,6 @@
 import { ApiInfo } from '../apiService'
 
-const newApiUrl = '/api/radiusClient'
+const newApiUrl = '/radiusClient'
 const apiUrl = '/api/radiusClient'
 
 export const RadiusClientConfigUrlsInfo: { [key: string]: ApiInfo } = {
