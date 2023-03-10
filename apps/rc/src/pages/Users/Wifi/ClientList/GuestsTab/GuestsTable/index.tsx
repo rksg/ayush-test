@@ -34,9 +34,9 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                          from '@acx-ui/types'
-import { GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
-import { getIntl  }                                           from '@acx-ui/utils'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
+import { getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
