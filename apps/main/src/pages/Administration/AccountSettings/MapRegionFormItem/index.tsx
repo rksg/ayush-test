@@ -1,16 +1,14 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
+import { countryCodes, usePreference } from '@acx-ui/rc/components'
 
 import { MessageMapping } from '../MessageMapping'
 
-import { countryCodes, usePreference } from './usePreference'
 
 const MapRegionFormItem = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const {
@@ -27,11 +25,7 @@ const MapRegionFormItem = () => {
       global: { ...preferenceData?.global, mapRegion: regionCode }
     }
 
-    try {
-      await updatePreferences({ params, payload }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    updatePreferences({ newData: payload })
   }
 
   const isLoadingPreference = getReqState.isLoading || getReqState.isFetching

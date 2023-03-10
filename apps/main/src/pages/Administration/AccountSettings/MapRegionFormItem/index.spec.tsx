@@ -24,7 +24,6 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn().mockReturnValue('fake-google-maps-key')
 }))
 
-
 describe('Map is not enabled', () => {
   beforeEach( () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
