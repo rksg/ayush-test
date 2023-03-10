@@ -68,6 +68,7 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -281,7 +282,14 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
     setVisible(false)
   }
 
-  const rowActions: TableProps<Guest>['rowActions'] = [
+  const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
+    {
+      label: $t({ defaultMessage: 'Download Information' }),
+      onClick: (selectedRows) => {
+        guestAction.showDownloadInformation(selectedRows, params.tenantId)
+      }
+    }
+  ] : [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
@@ -348,29 +356,39 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={filterByAccess([{
+        actions={[{
+          key: 'addGuest',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
+          key: 'addGuestNetwork',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
           disabled: !isServicesEnabled
         },
         {
+          key: 'importFromFile',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }].filter(((item, index)=> {
-          if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
-            return false
+        }].filter(((item)=> {
+          switch(item.key) {
+            case 'addGuest':
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
+            case 'addGuestNetwork':
+              return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
+            case 'importFromFile':
+              return true
+            default:
+              return false
           }
-          return true
-        })))}
+        }))}
       />
 
       <Drawer
