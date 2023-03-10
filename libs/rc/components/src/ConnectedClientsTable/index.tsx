@@ -394,6 +394,10 @@ export const ConnectedClientsTable = (props: {
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: { ...defaultClientPayload, searchString },
+    search: {
+      searchTargetFields: defaultClientPayload.searchTargetFields,
+      searchString: searchString
+    },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery

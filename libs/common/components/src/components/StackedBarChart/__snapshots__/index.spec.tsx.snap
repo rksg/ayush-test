@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tooltipFormatter should handle custom format 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><span></span> <br/> <span style=\\"margin-left:10px\\"> <b>formatted-10 units</b> </span></span></span></div>"`;
+
+exports[`tooltipFormatter should handle when dataFormatter is null 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><br/><span style=\\"margin-left:10px\\"><b>10</b></span></span></span></div>"`;
+
+exports[`tooltipFormatter should return correct Html string for single value 1`] = `"<div class=\\"styledComponents__TooltipWrapper-sc-ryy21w-0 cxnnu\\"><span class=\\"ant-badge ant-badge-status ant-badge-not-a-wrapper styledComponents__Badge-sc-ryy21w-1 gdrDEo acx-chart-tooltip\\"><span class=\\"ant-badge-status-dot\\" style=\\"background:color1\\"></span><span class=\\"ant-badge-status-text\\"><br/><span style=\\"margin-left:10px\\"><b>formatted-10</b></span></span></span></div>"`;

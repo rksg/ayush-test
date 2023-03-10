@@ -258,27 +258,6 @@ export function VenueWifi () {
     }
   }, [venueWifiSetting])
 
-  const VenueMeshApsTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useMeshApsQuery,
-      defaultPayload
-    })
-
-    return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          columns={getCols(useIntl())}
-          dataSource={transformData(tableQuery?.data?.data || [])}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='serialNumber'
-        />
-      </Loader>
-    )
-  }
-
   return (
     <>
       <IconRadioGroup value={showIdx}
@@ -310,4 +289,26 @@ export function VenueWifi () {
       {showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
+}
+
+export function VenueMeshApsTable () {
+  const tableQuery = useTableQuery({
+    useQuery: useMeshApsQuery,
+    defaultPayload
+  })
+
+  return (
+    <Loader states={[
+      tableQuery
+    ]}>
+      <Table
+        columns={getCols(useIntl())}
+        dataSource={transformData(tableQuery?.data?.data || [])}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='serialNumber'
+      />
+    </Loader>
+  )
+
 }
