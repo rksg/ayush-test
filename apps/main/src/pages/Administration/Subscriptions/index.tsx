@@ -25,7 +25,7 @@ import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
-  { key: '', value: 'All Subscriptions' },
+  { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
   {
     key: EntitlementDeviceType.ANALYTICS,
     value: EntitlementUtil.getDeviceTypeText($t, EntitlementDeviceType.ANALYTICS )
@@ -49,7 +49,7 @@ const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
 ]
 
 const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
-  { key: '', value: 'Show All' },
+  { key: '', value: $t({ defaultMessage: 'Show All' }) },
   {
     key: 'valid',
     value: $t({ defaultMessage: 'Show Active' })
