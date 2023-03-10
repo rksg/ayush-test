@@ -34,7 +34,7 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
+import { filterByAccess, GuestErrorRes, hasAccess }          from '@acx-ui/user'
 import { getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
@@ -66,6 +66,7 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -94,12 +95,16 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
       <span>
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
-      <Button type='link'
-        onClick={()=> setNetworkModalVisible(true)}
-        disabled={!useIsSplitOn(Features.SERVICES)}
-        size='small'>
-        {$t({ defaultMessage: 'Add Guest Pass Network' })}
-      </Button>
+      {
+        hasAccess() &&
+        <Button type='link'
+          onClick={() => setNetworkModalVisible(true)}
+          disabled={!isServicesEnabled}
+          size='small'>
+          {$t({ defaultMessage: 'Add Guest Pass Network' })}
+        </Button>
+      }
+
     </span>
 
   const guestAction = useGuestActions()
@@ -353,7 +358,7 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         }, {
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
-          disabled: !useIsSplitOn(Features.SERVICES)
+          disabled: !isServicesEnabled
         },
         {
           label: $t({ defaultMessage: 'Import from file' }),
