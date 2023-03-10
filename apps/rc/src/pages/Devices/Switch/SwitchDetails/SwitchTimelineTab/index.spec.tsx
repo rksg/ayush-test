@@ -9,6 +9,11 @@ import { activities, events, eventsMeta } from './__tests__/fixtures'
 
 import { SwitchTimelineTab } from '.'
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+}))
+
 describe('SwitchTimelineTab', () => {
   it('should render', async () => {
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
