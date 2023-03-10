@@ -14,9 +14,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getIntegratorDeviceInventory: {
     method: 'post',
-    url: '/msps/:mspTenantId/ecInventories/query',
-    oldUrl: '/api/viewmodel/tenant/:mspTenantId/ec-inventory',
-    newApi: false
+    // url: '/msps/:mspTenantId/ecInventories/query',
+    url: '/api/viewmodel/tenant/:mspTenantId/ec-inventory'
   },
   getVarDelegations: {
     method: 'post',
@@ -26,9 +25,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteMspEcAccount: {
     method: 'delete',
-    url: '/mspCustomers/:mspEcTenantId',
-    oldUrl: '/api/mspservice/tenant/:mspEcTenantId',
-    newApi: false
+    // url: '/mspCustomers/:mspEcTenantId'
+    url: '/api/mspservice/tenant/:mspEcTenantId'
+  },
+  getMspAdminList: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:tenantId/admin'
   },
   getAdministrators: {
     method: 'get',
@@ -72,29 +74,33 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
     newApi: true
   },
-  addMspAssignment: {
-    method: 'post',
-    url: '/assignments',
-    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-    newApi: true
-  },
-  revokeMspAssignment: {
-    method: 'post',
-    url: '/assignments/{mspAssignmentId}',
-    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/{mspAssignmentId}/revoke',
-    newApi: false
-  },
-  mspAssignmentBulkOperation: {
-    method: 'post',
-    url: '/assignments',
-    oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation',
-    newApi: false
-  },
+  // addMspAssignment: {
+  //   method: 'post',
+  //   url: '/assignments',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
+  //   newApi: true
+  // },
+  // revokeMspAssignment: {
+  //   method: 'post',
+  //   url: '/assignments/{mspAssignmentId}',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/{mspAssignmentId}/revoke',
+  //   newApi: false
+  // },
+  // mspAssignmentBulkOperation: {
+  //   method: 'post',
+  //   url: '/assignments',
+  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/bulkOperation',
+  //   newApi: false
+  // },
   resendEcInvitation: {
     method: 'post',
     url: '/mspCustomers/:mspEcTenantId/invitations',
     oldUrl: '/api/mspservice/tenant/:mspEcTenantId/emailinvitation',
     newApi: true
+  },
+  getMspCustomersListDropdown: {
+    method: 'post',
+    url: '/api/viewmodel/tenant/:mspTenantId/mspeclist'
   },
   getMspProfile: {
     method: 'get',
@@ -104,6 +110,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcProfile: {
     method: 'get',
+    // url: '/mspCustomers/:tenantId'
     url: '/api/mspservice/tenant/:tenantId'
   },
   getMspEcAdmin: {
@@ -120,6 +127,7 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTenantDetail: {
     method: 'get',
+    // url: '/tenants/self'
     url: '/api/tenant/:tenantId'
   },
   getSupportMspCustomersList: {
@@ -154,26 +162,33 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcDelegatedAdmins: {
     method: 'get',
+    // url: '/mspCustomers/:mspEcTenantId/mspadmins'
     url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
   },
   updateMspEcDelegatedAdmins: {
     method: 'put',
+    // url: '/mspCustomers/:mspEcTenantId/mspadmins'
     url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
   },
   getMspEcSupport: {
     method: 'get',
+    // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
   },
   enableMspEcSupport: {
     method: 'post',
+    // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
   },
   disableMspEcSupport: {
     method: 'delete',
+    // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
   },
   assignMspEcToIntegrator: {
     method: 'post',
+    // method: 'patch',
+    // url: '/mspCustomers/:mspEcTenantId/delegations'
     url: '/api/mspservice/tenant/assign/:mspIntegratorId'
   },
   getAssignedMspEcToIntegrator: {
@@ -186,20 +201,25 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   exportMspEcDeviceInventory: {
     method: 'post',
-    url: '/msps/:mspTenantId/ecInventories/query/csvFiles',
+    url: '/msps/:tenantId/ecInventories/query/csvFiles',
     oldUrl: '/api/viewmodel/tenant/:tenantId/ec-inventory/export',
     newApi: true
   },
   deactivateMspEcAccount: {
+    // method: 'patch',
+    // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/deactivation'
   },
   reactivateMspEcAccount: {
+    // method: 'patch',
+    // url: /mspCustomers/:mspEcTenantId
     method: 'post',
     url: '/api/mspservice/tenant/:mspEcTenantId/reactivation'
   },
   getMspBaseURL: {
     method: 'get',
+    // url: '/mspLabels/baseUrls'
     url: '/api/mspservice/baseurl'
   },
   getMspLabel: {
@@ -222,10 +242,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   acceptRejectInvitation: {
     method: 'put',
+    // url: '/tenants/delegations/:delegationId'
     url: '/api/tenant/:tenantId/delegation/:delegationId'
   },
   getGenerateLicenseUsageRpt: {
     method: 'get',
+    // url: '/licenseUsageReports'
     url: '/api/entitlement-assign/tenant/:tenantId'
   }
 }
