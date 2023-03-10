@@ -20,6 +20,11 @@ import { intlFormats, formatter, notAvailableMsg } from '@acx-ui/utils'
 import { useHealthQuery, HealthData } from './services'
 import * as UI                        from './styledComponents'
 
+export const calcPercent = ([val, sum]:(number | null)[]) => {
+  const percent = val !== null && sum ? val / sum : null
+  return { percent, formatted: formatter('percentFormatRound')(percent) }
+}
+
 export function VenuesHealthDashboard ({
   filters
 }: {
@@ -119,31 +124,6 @@ export function VenuesHealthDashboard ({
       }
     },
     {
-      title: $t({ defaultMessage: 'AP Capacity' }),
-      dataIndex: 'apCapacityPercent',
-      key: 'apCapacityPercent',
-      align: 'center' as const,
-      render: (value: unknown, row)=>{
-        const [n,d] = row.apCapacitySLA
-        const threshold = Number(row.apCapacityThreshold ??
-          kpiConfig.apCapacity.histogram.initialThreshold) * 1000
-        const thresholdText = $t({ defaultMessage: '> {threshold}' },
-          { threshold: formatter('networkSpeedFormat')(threshold) })
-        if(row.apCapacityThreshold === null) return <span>-</span>
-        const tooltipText = $t({
-          defaultMessage: '{n} of {d} APs above {threshold}' },
-        { n: $t(intlFormats.countFormat, { value: n }),
-          d: $t(intlFormats.countFormat, { value: d }),
-          threshold: formatter('networkSpeedFormat')(threshold) })
-        return (<Tooltip title={tooltipText}>
-          <span data-tooltip={tooltipText}>{value as string}</span>
-          <UI.ThresholdText>
-            {thresholdText}
-          </UI.ThresholdText>
-        </Tooltip>)
-      }
-    },
-    {
       title: $t({ defaultMessage: 'Online APs' }),
       dataIndex: 'onlineApsPercent',
       key: 'onlineApsPercent',
@@ -159,10 +139,6 @@ export function VenuesHealthDashboard ({
       }
     }
   ]
-  const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val !== null && sum ? val / sum : null
-    return { percent, formatted: formatter('percentFormatRound')(percent) }
-  }
 
   const calculateClientExp = (slas:(number|null)[]) => {
     const arr = slas.filter(sla => sla !== null)
@@ -175,14 +151,12 @@ export function VenuesHealthDashboard ({
         connectionSuccessSLA,
         timeToConnectSLA,
         clientThroughputSLA,
-        onlineApsSLA,
-        apCapacitySLA
+        onlineApsSLA
       } = row
       const connectionSuccessPercent = calcPercent(connectionSuccessSLA)
       const timeToConnectPercent = calcPercent(timeToConnectSLA)
       const clientThroughputPercent = calcPercent(clientThroughputSLA)
       const onlineApsPercent = calcPercent(onlineApsSLA)
-      const apCapacityPercent = calcPercent(apCapacitySLA)
       const clientExperience = calculateClientExp([
         connectionSuccessPercent.percent,
         timeToConnectPercent.percent,
@@ -193,7 +167,6 @@ export function VenuesHealthDashboard ({
         timeToConnectPercent: timeToConnectPercent.formatted,
         clientThroughputPercent: clientThroughputPercent.formatted,
         onlineApsPercent: onlineApsPercent.formatted,
-        apCapacityPercent: apCapacityPercent.formatted,
         clientExperience
       }
     }).filter(item=>item.clientExperience!==null)

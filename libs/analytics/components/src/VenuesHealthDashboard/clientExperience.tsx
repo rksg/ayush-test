@@ -1,28 +1,23 @@
-/* eslint-disable max-len */
-import { mean }  from 'lodash'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { mean }    from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { AnalyticsFilter }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, ProgressBarV2 } from '@acx-ui/components'
-import { formatter }                               from '@acx-ui/utils'
 
 import { HealthData, useHealthQuery } from './services'
 
-export function OverallExp ({
+import { calcPercent } from './index'
+
+
+export function ClientExperience ({
   filters
 }: {
       filters: AnalyticsFilter;
     }) {
+  const { $t } = useIntl()
   const queryResults = useHealthQuery(filters)
   const { data } = queryResults
-  const calcPercent = ([val, sum]:(number | null)[]) => {
-    const percent = val !== null && sum ? val / sum : null
-    return { percent, formatted: formatter('percentFormatRound')(percent) }
-  }
-  const calculateClientExp = (slas:(number|null)[]) => {
-    const arr = slas.filter(sla => sla !== null)
-    return arr.length ? mean(arr) : null
-  }
   const getHealthData = (healthData:HealthData[])=>{
     const connectionSuccess:number[] = []
     const timeToConnect:number[] = []
@@ -35,31 +30,20 @@ export function OverallExp ({
         connectionSuccessSLA,
         timeToConnectSLA,
         clientThroughputSLA,
-        onlineApsSLA,
-        apCapacitySLA
+        onlineApsSLA
       } = row
       const connectionSuccessPercent = calcPercent(connectionSuccessSLA)
       const timeToConnectPercent = calcPercent(timeToConnectSLA)
       const clientThroughputPercent = calcPercent(clientThroughputSLA)
       const onlineApsPercent = calcPercent(onlineApsSLA)
-      const apCapacityPercent = calcPercent(apCapacitySLA)
-      const clientExperiencePercent = calculateClientExp([
-        connectionSuccessPercent.percent,
-        timeToConnectPercent.percent,
-        clientThroughputPercent.percent
-      ])
       connectionSuccessPercent.percent !== null &&
        connectionSuccess.push(connectionSuccessPercent.percent)
       timeToConnectPercent.percent !== null &&
        timeToConnect.push(timeToConnectPercent.percent)
       clientThroughputPercent.percent !== null &&
        clientThroughput.push(clientThroughputPercent.percent)
-      apCapacityPercent.percent !== null &&
-       apCapacity.push(apCapacityPercent.percent)
       onlineApsPercent.percent !== null &&
        onlineAps.push(onlineApsPercent.percent)
-      clientExperiencePercent !== null &&
-       clientExperience.push(clientExperiencePercent)
     })
     return {
       connectionSuccess: mean(connectionSuccess) * 100,
@@ -76,44 +60,36 @@ export function OverallExp ({
     <AutoSizer>
       {({ height, width }) => (
         <div style={{ display: 'block', height, width }}>
-          <GridRow style={{ marginBottom: '10px' }}>
+          <GridRow style={{ marginBottom: '15px', marginTop: '10px' }}>
             <GridCol col={{ span: 12 }}>
-                Connection Success
+              {$t({ defaultMessage: 'Connection Success' })}
             </GridCol>
             <GridCol col={{ span: 12 }}>
               <ProgressBarV2 percent={healthData?.connectionSuccess || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow style={{ marginBottom: '10px' }}>
+          <GridRow style={{ marginBottom: '15px' }}>
             <GridCol col={{ span: 12 }}>
-                Time To Connect
+              {$t({ defaultMessage: 'Time To Connect' })}
             </GridCol>
             <GridCol col={{ span: 12 }}>
               <ProgressBarV2 percent={healthData?.timeToConnect || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow style={{ marginBottom: '10px' }}>
+          <GridRow style={{ marginBottom: '15px' }}>
             <GridCol col={{ span: 12 }}>
-                Client Throughput
+              {$t({ defaultMessage: 'Client Throughput' })}
             </GridCol>
             <GridCol col={{ span: 12 }}>
               <ProgressBarV2 percent={healthData?.clientThroughput || 0 as number}/>
             </GridCol>
           </GridRow>
-          <GridRow style={{ marginBottom: '10px' }}>
+          <GridRow style={{ marginBottom: '15px' }}>
             <GridCol col={{ span: 12 }}>
-                Online APs
+              {$t({ defaultMessage: 'Online APs' })}
             </GridCol>
             <GridCol col={{ span: 12 }}>
               <ProgressBarV2 percent={healthData?.onlineAps || 0 as number}/>
-            </GridCol>
-          </GridRow>
-          <GridRow style={{ marginBottom: '10px' }}>
-            <GridCol col={{ span: 12 }}>
-                AP Capacity
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.apCapacity || 0 as number}/>
             </GridCol>
           </GridRow>
         </div>)}
