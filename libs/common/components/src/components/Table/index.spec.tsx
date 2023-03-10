@@ -1,9 +1,8 @@
-import '@testing-library/jest-dom'
 import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup } from '@acx-ui/test-utils'
+import { render, fireEvent, screen, within, mockDOMSize, findTBody, waitFor, cleanup, act } from '@acx-ui/test-utils'
 
 import { columns as filteredColumns, data as filteredData } from './stories/FilteredTable'
 import { GroupTable }                                       from './stories/GroupTable'
@@ -952,9 +951,51 @@ describe('Table component', () => {
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceStatus'))
-      fireEvent.click(await screen.findByTestId('CollapseInactive'))
       fireEvent.click(await screen.findByTestId('CollapseActive'))
       fireEvent.click(await screen.findByTestId('CollapseInactive'))
+      fireEvent.click(await screen.findByTestId('CollapseActive'))
+    })
+
+    it('should support groupBy, search and filter', async () => {
+      jest.useFakeTimers()
+      render(<GroupTable />)
+      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
+      expect(filters.length).toBe(4)
+      const groupBySelector = filters[3]
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      act(() => {
+        fireEvent.mouseDown(groupBySelector)
+        jest.advanceTimersByTime(2000)
+      })
+      await waitFor(async () =>
+        expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      await act(async () => {
+        fireEvent.click(await screen.findByTestId('option-deviceStatus'))
+        jest.advanceTimersByTime(2000)
+      })
+
+      const statusFilter = filters[0]
+      const filterTerm1 = '2_00_Operational'
+      // eslint-disable-next-line testing-library/no-unnecessary-act
+      act(() => {
+        fireEvent.change(statusFilter, { target: { value: filterTerm1 } })
+        jest.advanceTimersByTime(2000)
+      })
+      expect(await screen.findAllByText(filterTerm1)).toHaveLength(4)
+
+      const searchInput = await screen.findByPlaceholderText(
+        'Search AP Name, MAC Addresses, AP Group'
+      )
+
+      const searchTerm = '34:2'
+      userEvent.type(searchInput, searchTerm)
+      jest.advanceTimersByTime(3000)
+
+      const targetElems = await screen.findAllByText('Members: 2')
+      expect(targetElems).toHaveLength(1)
+
+      jest.useRealTimers()
     })
   })
 })

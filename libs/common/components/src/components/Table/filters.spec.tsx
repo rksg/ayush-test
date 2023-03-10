@@ -1,68 +1,9 @@
-import { useState } from 'react'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
-import { IntlShape } from 'react-intl'
-
-import { render, renderHook, screen, fireEvent } from '@acx-ui/test-utils'
-
-import { GroupSelect, renderFilter, useGroupBy } from './filters'
-import { groupTBData, groupByColumns }           from './stories/GroupTable'
+import { renderFilter } from './filters'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
-  describe('useGroupBy', () => {
-    const mockIntl = { $t: jest.fn(({ defaultMessage }:{ defaultMessage: string }) =>
-      defaultMessage) } as unknown as IntlShape
-    const groupTableAction = {
-      onChange: jest.fn(),
-      onClear: jest.fn()
-    }
-    const groupables = groupByColumns.filter(cols => cols.groupable)
-
-    it('render hook correctly with valid data', async () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
-      const {
-        isGroupByActive,
-        clearGroupByFn,
-        GroupBySelect,
-        expandable,
-        finalParentColumns
-      } = result.current
-      expect(isGroupByActive).toBeFalsy()
-      expect(GroupBySelect).toBeDefined()
-      expect(expandable).toBeDefined()
-      expect(finalParentColumns).toBeUndefined()
-      clearGroupByFn()
-      expect(groupTableAction.onClear).toBeCalledTimes(1)
-    })
-
-    it('render hook correctly with empty actions data', async () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, undefined, groupTBData.length, mockIntl))
-      const { clearGroupByFn } = result.current
-      clearGroupByFn()
-      expect(groupTableAction.onClear).toBeCalledTimes(0)
-    })
-
-    it('render hook correctly with undefined groupable', () => {
-      const { result } = renderHook(() =>
-        useGroupBy([], groupTableAction,groupTBData.length, mockIntl))
-      const { GroupBySelect, clearGroupByFn } = result.current
-      expect(GroupBySelect).toBeDefined()
-      expect(GroupBySelect()).toBeNull()
-      clearGroupByFn()
-    })
-
-    it('render hook for expandable props', () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
-      const { expandable } = result.current
-      const { rowExpandable } = expandable as
-        unknown as { rowExpandable: (data: typeof groupTBData[0]) => boolean }
-      expect(rowExpandable).toBeDefined()
-      expect(rowExpandable && rowExpandable(groupTBData[0])).toBeTruthy()
-    })
-  })
 
   describe('renderFilter', () => {
     it('should handle unchecking selected data with correct data', async () => {
@@ -77,7 +18,7 @@ describe('Table Filters', () => {
         },
         0,
         [{ name: 'john tan' }, { name: 'dragon den' }],
-        { xd: true as unknown as boolean[] },
+        { 'john tan': true as unknown as boolean[] },
         filterableCol,
         false
       )())
@@ -118,48 +59,6 @@ describe('Table Filters', () => {
         filterableCol,
         false
       )())
-    })
-  })
-
-  describe('GroupBySelect', () => {
-    it('should handle onClear correctly', async () => {
-      const mock$t = jest.fn() as unknown as IntlShape['$t']
-      const onChange = jest.fn()
-      const onClear = jest.fn()
-      const mockedSetVal = jest.fn()
-      const selectors = [{ key: 'test', label: 'soy' }]
-      const Test = () => {
-        const [value, setValue] = useState<{
-          key: string, value: string
-        } | undefined>(undefined)
-        const handleValue = (val: { key: string, value: string } | undefined) => {
-          mockedSetVal(val)
-          setValue(val)
-        }
-        return <GroupSelect
-          $t={mock$t}
-          value={value}
-          setValue={handleValue}
-          onClear={onClear}
-          onChange={onChange}
-          selectors={selectors}
-        />
-      }
-      render(<Test />)
-
-      const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
-      fireEvent.mouseDown(select)
-      const soy = await screen.findByText('soy')
-      fireEvent.click(soy)
-      expect(onChange).toBeCalled()
-      const downArrow =
-        await screen.findByRole('img', { name: 'down', hidden: true, queryFallbacks: true })
-      fireEvent.mouseOver(downArrow)
-      const cross =
-        await screen.findByRole('img', { name: 'close-circle', hidden: true, queryFallbacks: true })
-      fireEvent.mouseDown(cross)
-      expect(mockedSetVal).toBeCalledWith({ key: 'test', value: 'soy' })
-      expect(onClear).toBeCalled()
     })
   })
 })

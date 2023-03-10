@@ -1097,7 +1097,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                               </span>
                             </div>
                             <div
-                              class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+                              class="styledComponents__Wrapper-sc-1abm7iv-12 QuVDX"
                             >
                               <div
                                 class="ant-pro-table"
@@ -2918,7 +2918,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                               <button
                                 aria-checked="false"
                                 class="ant-switch"
-                                id="settings_isCloudpathEnabled"
+                                id="settings_wlan_macAddressAuthentication"
                                 role="switch"
                                 type="button"
                               >
@@ -2930,7 +2930,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                 />
                               </button>
                               <span>
-                                Use Cloudpath Server
+                                Use MAC Auth
                               </span>
                             </div>
                           </div>
@@ -3210,9 +3210,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Use AAA Server:"
                           >
-                            Use Cloudpath Server:
+                            Use AAA Server:
                           </label>
                         </div>
                         <div

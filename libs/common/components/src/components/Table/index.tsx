@@ -20,16 +20,23 @@ import {
   getFilteredData,
   renderFilter,
   renderSearch,
-  MIN_SEARCH_LENGTH,
-  useGroupBy
+  MIN_SEARCH_LENGTH
 } from './filters'
+import { useGroupBy }                   from './groupBy'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
-import type { ParamsType }                                                                    from '@ant-design/pro-provider'
-import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
+import type {
+  ColumnType,
+  ColumnGroupType,
+  ColumnStateOption,
+  RecordWithChildren,
+  TableColumn,
+  TableColumnState
+} from './types'
+import type { ParamsType }        from '@ant-design/pro-provider'
+import type { SettingOptionType } from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -42,6 +49,7 @@ export type {
   RecordWithChildren,
   TableColumn
 } from './types'
+
 
 function isGroupColumn <RecordType, ValueType = 'text'> (
   column: TableColumn<RecordType, ValueType>
@@ -83,16 +91,9 @@ export interface TableProps <RecordType>
     floatRightFilters?: boolean,
     onFilterChange?: (
       filters: Filter,
-      search: { searchString?: string, searchTargetFields?: string[] }
-    ) => void,
-    /**
-     * Assumes that dataSource is nested with children key, and that
-     * isParent boolean property is set on each record item in dataSource.
-     */
-    groupByTableActions?: {
-      onChange: CallableFunction
-      onClear: CallableFunction
-    }
+      search: { searchString?: string, searchTargetFields?: string[] },
+      groupBy?: string | undefined
+    ) => void
   }
 
 export interface TableHighlightFnArgs {
@@ -145,19 +146,16 @@ function getHighlightFn (searchValue: string): TableHighlightFnArgs {
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
-  type = 'tall', columnState, enableApiFilter, onFilterChange, groupByTableActions, ...props
+  type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
 }: TableProps<RecordType>) {
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
+  const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
-
-  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
-    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
-
 
   const groupable = props.columns.filter(col => col.groupable)
   const {
@@ -165,21 +163,36 @@ function Table <RecordType extends Record<string, any>> ({
     expandable,
     groupActionColumns,
     finalParentColumns,
-    clearGroupByFn,
     isGroupByActive
-  } = useGroupBy<RecordType>(groupable, groupByTableActions, props.columns.length, intl)
+  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
+    groupable,
+    groupByValue,
+    setGroupByValue,
+    props.columns.length,
+    intl
+  )
+
+  const debounced = useCallback(_.debounce(
+    (filter: Filter, searchString: string, groupBy: string | undefined) =>
+      onFilterChange
+      && onFilterChange(filter, { searchString }, groupBy), 1000), [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue)
+      debounced(filterValues, searchValue, groupByValue)
     }
     return () => debounced.cancel()
   }, [searchValue, debounced])
 
   useEffect(() => {
-    debounced(filterValues, searchValue)
+    debounced(filterValues, searchValue, groupByValue)
     return () => debounced.cancel()
   }, [filterValues, debounced])
+
+  useEffect(() => {
+    debounced(filterValues, searchValue, groupByValue)
+    return () => debounced.cancel()
+  }, [groupByValue, debounced])
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -189,36 +202,54 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    if (groupable && isGroupByActive) {
-      // clear all parent row render which are default with search highlight
-      props.columns.forEach((cols) => {
-        if (cols.render) {
-          return
-        }
+    let tableCols: typeof props.columns
 
-        cols.render = (dom, record) => record.children
-          ? null
-          : cols.searchable
-            ? getHighlightFn(searchValue)(_.get(record, cols.key))
-            : dom
-      })
-      const calculatedParentCols = finalParentColumns ?? []
-      // override with parent columns
-      const maxOverride = Math.min(
+    if (isGroupByActive) {
+      // create deep copy of current cols
+      const colCopy: typeof props.columns = _.cloneDeep(props.columns)
+
+      // calculate the smallest possible amount of parent cols to override
+      const calculatedParentCols = finalParentColumns
+      const lastParentCol = Math.min(
         calculatedParentCols.length,
-        (props.columns ?? []).length
+        (colCopy).length
       )
-      for (let i = 0; i < maxOverride; ++i) {
-        props.columns[i].render = (dom, record) => record.children
-          ? calculatedParentCols[i].renderer(record)
-          : props.columns[i].searchable
-            ? getHighlightFn(searchValue)(_.get(record, props.columns[i].key))
-            : dom
+
+      // overwrite parent row render in column
+      for (let i = 0; i < lastParentCol; ++i) {
+        const { render, searchable, key } = colCopy[i]
+        colCopy[i].render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return calculatedParentCols[i].renderer(record)
+          } else {
+            if (render) {
+              return render(dom, record, index, highlightFn, action, schema)
+            }
+            if (searchable) {
+              return getHighlightFn(searchValue)(_.get(record, key))
+            }
+            return dom
+          }
+        }
       }
+
+      // remove remining row data for parent cols
+      for (let j = lastParentCol; j < colCopy.length; ++j) {
+        const { render } = colCopy[j]
+        colCopy[j].render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return null
+          }
+          return render && render(dom, record, index, highlightFn, action, schema)
+        }
+      }
+      tableCols = colCopy
+    } else {
+      tableCols = _.cloneDeep(props.columns)
     }
 
     const cols = type === 'tall'
-      ? [...props.columns, ...groupActionColumns, settingsColumn] as typeof props.columns
+      ? [...tableCols, ...groupActionColumns, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({
@@ -232,7 +263,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, isGroupByActive])
+  }, [props.columns, type, searchValue, groupByValue])
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -433,7 +464,7 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
             )}
-            <GroupBySelect />
+            {Boolean(groupable.length) && <GroupBySelect />}
           </Space>
         </div>
         <UI.HeaderRight>
@@ -445,7 +476,7 @@ function Table <RecordType extends Record<string, any>> ({
               onClick={() => {
                 setFilterValues({} as Filter)
                 setSearchValue('')
-                clearGroupByFn()
+                setGroupByValue(undefined)
               }}>
               {$t({ defaultMessage: 'Clear Filters' })}
             </Button>}
@@ -480,10 +511,9 @@ function Table <RecordType extends Record<string, any>> ({
       showSorterTooltip={false}
       tableAlertOptionRender={false}
       expandable={expandable}
-      key={Number(isGroupByActive)}
       rowClassName={props.rowClassName
         ? props.rowClassName
-        : (record) => isGroupByActive && record.children
+        : (record) => isGroupByActive && 'children' in record
           ? 'parent-row-data'
           : ''
       }

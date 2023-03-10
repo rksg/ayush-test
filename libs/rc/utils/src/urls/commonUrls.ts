@@ -4,13 +4,10 @@ export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
-    // Path variable not match
-    // method: 'post',
-    // url: '/networks/query',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/network',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/network'
+    url: '/networks/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/network',
+    newApi: true
   },
   getNetworksDetailHeader: {
     // 404 Not Found
@@ -70,6 +67,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   clearAlarm: {
+    // different method
+    // method: 'patch',
+    // url: '/alarms/:alarmId',
+    // oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
+    // newApi: true
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
   },
@@ -185,7 +187,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteVenues: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue'
+    url: '/venues',
+    oldUrl: '/api/tenant/:tenantId/venue',
+    newApi: true
   },
   getVenueDetailsHeader: {
     method: 'get',
@@ -194,6 +198,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueCityList: {
+    // 404 Not Found
+    // method: 'post',
+    // url: '/venues/citylist/query',
+    // oldUrl: '/api/viewmodel/:tenantId/venue/citylist',
+    // newApi: true
     method: 'post',
     url: '/api/viewmodel/:tenantId/venue/citylist'
   },
@@ -216,6 +225,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/:tenantId/aps/mesh'
   },
   getService: {
+    // no use
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
@@ -250,13 +260,10 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getUploadURL: {
-    // method not match
-    // method: 'post',
-    // url: '/files/uploadurl',
-    // oldUrl: '/api/file/tenant/:tenantId/upload-url',
-    // newApi: true
     method: 'post',
-    url: '/api/file/tenant/:tenantId/upload-url'
+    url: '/files/uploadurls',
+    oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    newApi: true
   },
   getAllDevices: {
     method: 'post',
@@ -266,7 +273,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   UpdateSwitchPosition: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/position'
+    url: '/switches/:serialNumber/position',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:serialNumber/position',
+    newApi: true
   },
   UpdateApPosition: {
     method: 'put',
@@ -335,10 +344,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   },
-  getDHCPVenueInstances: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/venues/:venueId/dosProtectionSettings',
@@ -397,7 +402,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateVenueSwitchSetting: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/venue'
+    url: '/venues/:venueId/switchSettings',
+    oldUrl: '/api/switch/tenant/:tenantId/venue',
+    newApi: true
   },
   getVenueConfigHistory: {
     method: 'post',
@@ -487,7 +494,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTopology: {
     method: 'get',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
+    url: '/venues/:venueId/topologies',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
+    newApi: true
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',

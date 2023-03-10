@@ -1,8 +1,8 @@
 import { Space } from 'antd'
 import styled    from 'styled-components'
 
-import { Button as acxButton } from '@acx-ui/components'
-import { ArrowsOut }           from '@acx-ui/icons'
+import { Button as acxButton }     from '@acx-ui/components'
+import { ArrowsOut, BulbOutlined } from '@acx-ui/icons'
 
 export const StyledSpace = styled(Space)`
   position: absolute;
@@ -41,4 +41,9 @@ export const RogueApButton = styled(Button)`
 svg path {
   stroke: var(--acx-accents-blue-50) !important
 }
+`
+export const BulbOutlinedIcon = styled(BulbOutlined)`
+ path {
+   stroke: var(--acx-accents-orange-50) !important
+ }
 `
