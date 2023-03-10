@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                                     from '@acx-ui/components'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclName } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
@@ -180,13 +181,13 @@ function ACLSettingForm (props: ACLSettingFormProps) {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
-        setRuleList(
-          ruleList?.filter((option: { sequence: number }) => {
-            return !selectedRows
-              .map((r) => r.sequence)
-              .includes(option.sequence)
-          })
-        )
+        const rules = ruleList?.filter((option: { sequence: number }) => {
+          return !selectedRows
+            .map((r) => r.sequence)
+            .includes(option.sequence)
+        })
+        setRuleList(rules)
+        form.setFieldValue('aclRules', rules)
         setSelected(undefined)
       }
     }
@@ -266,10 +267,10 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           initialValue={'standard'}
           children={
             <Radio.Group onChange={onAclTypeChange}>
-              <Radio value={'standard'}>
+              <Radio value={'standard'} data-testid='aclStandard'>
                 {$t({ defaultMessage: 'Standard' })}
               </Radio>
-              <Radio value={'extended'}>
+              <Radio value={'extended'} data-testid='aclExtended'>
                 {$t({ defaultMessage: 'Extended' })}
               </Radio>
             </Radio.Group>
@@ -296,7 +297,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
       </Row>
       <Table
         rowKey='sequence'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         columns={columns}
         rowSelection={{
           type: 'radio',

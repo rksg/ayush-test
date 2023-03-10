@@ -244,7 +244,7 @@ export function VenueWifi () {
       pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC',
-      filters: { isDefault: [false], venueId: params.venueId }
+      filters: { isDefault: [false], venueId: [params.venueId] }
     }
   }, {
     selectFromResult: ({ data }) => ({
@@ -257,27 +257,6 @@ export function VenueWifi () {
       setEnabledMesh(!!venueWifiSetting?.mesh?.enabled)
     }
   }, [venueWifiSetting])
-
-  const VenueMeshApsTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useMeshApsQuery,
-      defaultPayload
-    })
-
-    return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          columns={getCols(useIntl())}
-          dataSource={transformData(tableQuery?.data?.data || [])}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='serialNumber'
-        />
-      </Loader>
-    )
-  }
 
   return (
     <>
@@ -310,4 +289,26 @@ export function VenueWifi () {
       {showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
+}
+
+export function VenueMeshApsTable () {
+  const tableQuery = useTableQuery({
+    useQuery: useMeshApsQuery,
+    defaultPayload
+  })
+
+  return (
+    <Loader states={[
+      tableQuery
+    ]}>
+      <Table
+        columns={getCols(useIntl())}
+        dataSource={transformData(tableQuery?.data?.data || [])}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='serialNumber'
+      />
+    </Loader>
+  )
+
 }

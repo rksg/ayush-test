@@ -6,6 +6,7 @@ import {  useParams }                         from 'react-router-dom'
 
 import { noDataSymbol }                                                          from '@acx-ui/analytics/utils'
 import { Button, cssStr, Loader, PageHeader, Subtitle }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { CopyOutlined }                                                          from '@acx-ui/icons'
 import {
   useLazyGetDpskQuery,
@@ -13,7 +14,8 @@ import {
   useLazyGetMacRegListQuery,
   useLazyGetPersonaGroupByIdQuery, useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup } from '@acx-ui/rc/utils'
+import { PersonaGroup }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { DpskPoolLink, MacRegistrationPoolLink, NetworkSegmentationLink, PersonaGroupLink } from '../LinkHelper'
 import { PersonaDrawer }                                                                    from '../PersonaDrawer'
@@ -23,6 +25,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 
 function PersonaDetails () {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
@@ -72,7 +75,7 @@ function PersonaDetails () {
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
     }
 
-    if (personaGroupData.nsgId) {
+    if (personaGroupData.nsgId && networkSegmentationEnabled) {
       let name: string | undefined
       getNsgById({ params: { serviceId: personaGroupData.nsgId } })
         .then(result => name = result.data?.name)
@@ -228,11 +231,11 @@ function PersonaDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = [
-    <Button key={'config-btn'} type={'primary'} onClick={onClick}>
+  const extra = filterByAccess([
+    <Button type={'primary'} onClick={onClick}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
-  ]
+  ])
 
   return (
     <PageHeader

@@ -1,4 +1,4 @@
-import { MFAStatus, MFAMethod } from '@acx-ui/rc/utils'
+import { MFAStatus, MFAMethod } from '@acx-ui/user'
 
 export const fakeRecoveryCodes = ['123456','287600','230200','791660','169111']
 export const fakeMFAEnabledTenantDetail = {

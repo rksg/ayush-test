@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
@@ -13,10 +13,10 @@ import {
 import {
   useTableQuery,
   SwitchDhcp,
-  CatchErrorResponse,
   isOperationalSwitch
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
@@ -53,13 +53,7 @@ export function SwitchDhcpPoolTable () {
       setSelected(undefined)
       setDrawerVisible(false)
     } catch (error) {
-      const errorResponse = error as CatchErrorResponse | { error: string }
-      const message = ('error' in errorResponse) ? errorResponse.error:
-        errorResponse.data.errors.map(error => error.message).join('<br />')
-      showToast({
-        type: 'error',
-        content: message
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -136,16 +130,16 @@ export function SwitchDhcpPoolTable () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
           disabled: !isOperational || !!switchDetail?.cliApplied,
           onClick: () => {
             setSelected(undefined)
             setDrawerVisible(true)
           }
-        }]}
+        }])}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox',
           selectedRowKeys: selected ? [selected]:[],

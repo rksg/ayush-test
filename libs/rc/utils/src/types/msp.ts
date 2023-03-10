@@ -1,5 +1,7 @@
 import { defineMessage } from 'react-intl'
 
+import { RolesEnum } from '@acx-ui/types'
+
 import { Address } from './venue'
 
 export enum DelegationStatus {
@@ -143,13 +145,6 @@ export interface EcDeviceInventory {
   deviceStatus: string;
 }
 
-export enum RolesEnum {
-  PRIME_ADMIN = 'PRIME_ADMIN',
-  ADMINISTRATOR = 'ADMIN',
-  GUEST_MANAGER = 'OFFICE_ADMIN',
-  READ_ONLY = 'READ_ONLY'
-}
-
 export const roleDisplayText = {
   [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
@@ -168,7 +163,7 @@ export enum DateSelectionEnum {
 }
 
 export const dateDisplayText = {
-  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custom date' }),
   [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
   [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
   [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),
