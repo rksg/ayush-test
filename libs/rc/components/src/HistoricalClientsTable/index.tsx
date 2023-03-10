@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { Typography } from 'antd'
-import moment         from 'moment'
+import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { Checkbox, Form, Tooltip, Typography } from 'antd'
-import moment, { LocaleSpecifier }             from 'moment'
+import moment, { LocaleSpecifier }             from 'moment-timezone'
 import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal }                    from '@acx-ui/components'

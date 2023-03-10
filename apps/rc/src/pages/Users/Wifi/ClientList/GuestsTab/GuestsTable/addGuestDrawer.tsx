@@ -15,7 +15,7 @@ import {
 import { PhoneNumberUtil }                            from 'google-libphonenumber'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
-import moment, { LocaleSpecifier }                    from 'moment'
+import moment, { LocaleSpecifier }                    from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 

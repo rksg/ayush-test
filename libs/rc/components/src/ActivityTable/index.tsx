@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import moment                     from 'moment'
+import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'

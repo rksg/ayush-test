@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 import { fakeIncident }                                                 from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                                  from '@acx-ui/store'

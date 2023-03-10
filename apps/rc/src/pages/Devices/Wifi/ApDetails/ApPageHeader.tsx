@@ -4,7 +4,7 @@ import {
   MenuProps,
   Space
 } from 'antd'
-import moment      from 'moment'
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'

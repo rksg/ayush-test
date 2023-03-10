@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment'
+import moment  from 'moment-timezone'
 
 import { incidentCodes, IncidentFilter, calculateGranularity } from '@acx-ui/analytics/utils'
 import { dataApi }                                             from '@acx-ui/store'

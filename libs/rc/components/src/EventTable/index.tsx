@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import _                                            from 'lodash'
-import moment                                       from 'moment'
+import moment                                       from 'moment-timezone'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
 import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip }                 from '@acx-ui/components'
