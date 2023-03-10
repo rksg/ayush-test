@@ -2,6 +2,7 @@ import { ApiInfo } from '../apiService'
 
 export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   GetDefaultDhcpServiceProfileForGuestNetwork: {
+    // used in testcase
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
   },
@@ -29,7 +30,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/network/:networkId'
+    url: '/networks/:networkId',
+    oldUrl: '/api/tenant/:tenantId/wifi/network/:networkId',
+    newApi: true
   },
   addNetworkVenue: {
     method: 'post',
@@ -96,10 +99,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueTripleBandRadioSettings: {
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
-  },
-  getLteBandLockChannel: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/lte-band-lock-channel'
   },
   getAvailableLteBands: {
     method: 'get',
@@ -262,6 +261,11 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addApPhoto: {
+    // 500 Internal Server Error
+    // method: 'post',
+    // url: '/venues/aps/:serialNumber/pictures',
+    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep',
+    // newApi: true
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/picture/deep'
   },
@@ -308,13 +312,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/trace-route'
   },
   startPacketCapture: {
-    // Not working properly
-    // method: 'post',
-    // url: '/venues/aps/:serialNumber/packets',
-    // oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
-    // newApi: true
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start'
+    url: '/venues/aps/:serialNumber/packets',
+    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/ui/packet-capture/start',
+    newApi: true
   },
   stopPacketCapture: {
     // different method

@@ -1,10 +1,6 @@
 import { ApiInfo } from '../../apiService'
 
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
-  getPortals: {
-    method: 'get',
-    url: '/api/portalServiceProfiles/:serviceId'
-  },
   deletePortals: {
     method: 'delete',
     url: '/api/tenant/:tenantId/wifi/portal/portalServiceProfiles'
