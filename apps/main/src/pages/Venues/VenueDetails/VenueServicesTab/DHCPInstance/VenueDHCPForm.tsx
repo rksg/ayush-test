@@ -17,7 +17,7 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, AP } from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -51,7 +51,7 @@ const VenueDHCPForm = (props: {
     }
   })
 
-  const [filteredAPs, setFilteredAPs] = useState<AP[]>([])
+  const [selectedAPs, setSelectedAPs] = useState<string[]>([])
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
   const [dhcpServiceID, setDHCPServiceID] = useState('')
@@ -68,10 +68,6 @@ const VenueDHCPForm = (props: {
     }
   }
 
-
-  useEffect(() => {
-    if(apList?.data) setFilteredAPs(apList?.data)
-  },[apList])
   useEffect(() => {
     setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
   },[dhcpServiceID, dhcpProfileList])
@@ -97,6 +93,27 @@ const VenueDHCPForm = (props: {
     }
   }
 
+  const refreshList = ()=>{
+    setSelectedAPs([
+      form.getFieldsValue().primaryServerSN,
+      form.getFieldsValue().backupServerSN,
+      ...form.getFieldsValue().gateways.map((item:{ serialNumber:string }) => item.serialNumber)
+    ])
+    return []
+  }
+  const getOptionList = (sn:string)=>{
+    if(apList?.data) {
+      return _.filter(apList?.data, (o) => {
+
+        return !_.some(selectedAPs, (ap)=>{
+          return ap===o.serialNumber
+        }) || o.serialNumber===sn
+
+      })
+    }
+    return []
+  }
+
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
     const fieldsGateways = form.getFieldsValue().gateways
     const currentVal = fieldsGateways ? fieldsGateways[index] : null
@@ -105,11 +122,13 @@ const VenueDHCPForm = (props: {
       marginTop: 0, marginBottom: 0 }}>
       <StyledForm.Item name={['gateways', index, 'serialNumber']}>
         <AntSelect onChange={() => {
+          refreshList()
           const gatewayRawData = form.getFieldsValue().gateways
           setGateways([...gatewayRawData])
         }}
         placeholder={$t({ defaultMessage: 'Select AP...' })}>
-          {filteredAPs.map(ap =>
+          {getOptionList(form.getFieldsValue().gateways[index]
+            && form.getFieldsValue().gateways[index].serialNumber).map(ap =>
             <Option key={ap.serialNumber} value={ap.serialNumber}>
               {ap.name}
             </Option>
@@ -123,6 +142,7 @@ const VenueDHCPForm = (props: {
             _.pullAt(gatewayRawData, [index])
             form.setFieldsValue({ gateways: gatewayRawData })
             setGateways([...gatewayRawData])
+            refreshList()
           }}
           icon={<DeleteOutlinedIcon />} />
       </IconContainer>}
@@ -141,8 +161,13 @@ const VenueDHCPForm = (props: {
   }) : <><GridRow style={{ marginLeft: 0, marginRight: 0,
     marginTop: 0, marginBottom: 0 }}>
     <StyledForm.Item name={['gateways', 0, 'serialNumber']}>
-      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
-        {filteredAPs.map(ap =>
+      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
+        onChange={() => {
+          refreshList()
+        }}
+      >
+        {getOptionList(form.getFieldsValue().gateways
+          && form.getFieldsValue().gateways[0].serialNumber).map(ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
@@ -222,10 +247,10 @@ const VenueDHCPForm = (props: {
       hidden={isSimpleMode || !serviceEnabled}
       rules={[{ required: isSimpleMode ? false : true }]}>
       <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
-        onChange={value => {
-          setFilteredAPs(_.filter(apList?.data, (o) => { return o.serialNumber !== value}))
+        onChange={() => {
+          refreshList()
         }}>
-        {apList?.data?.map( ap =>
+        {getOptionList(form.getFieldsValue().primaryServerSN).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
@@ -235,8 +260,12 @@ const VenueDHCPForm = (props: {
     <StyledForm.Item label={$t({ defaultMessage: 'Secondary Server' })}
       hidden={isSimpleMode || !serviceEnabled}
       name='backupServerSN'>
-      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}>
-        {filteredAPs.map( ap =>
+      <AntSelect placeholder={$t({ defaultMessage: 'Select AP...' })}
+        onChange={() => {
+          refreshList()
+        }}
+      >
+        {getOptionList(form.getFieldsValue().backupServerSN).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
