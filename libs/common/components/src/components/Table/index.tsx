@@ -27,22 +27,23 @@ import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
-import type { ParamsType }                                                                    from '@ant-design/pro-provider'
-import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
+import type {
+  ColumnType,
+  ColumnGroupType,
+  ColumnStateOption,
+  RecordWithChildren,
+  TableColumn,
+  TableColumnState
+} from './types'
+import type { ParamsType }        from '@ant-design/pro-provider'
+import type { SettingOptionType } from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
 } from 'antd'
 import type { RowSelectMethod } from 'antd/lib/table/interface'
-import { RecordWithChildren } from '@acx-ui/components'
 
-export type {
-  ColumnType,
-  ColumnGroupType,
-  RecordWithChildren,
-  TableColumn
-} from './types'
+
 
 function isGroupColumn <RecordType, ValueType = 'text'> (
   column: TableColumn<RecordType, ValueType>
@@ -158,16 +159,17 @@ function Table <RecordType extends Record<string, any>> ({
     finalParentColumns,
     isGroupByActive
   } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
-    groupable, 
+    groupable,
     groupByValue,
-    setGroupByValue, 
-    props.columns.length, 
+    setGroupByValue,
+    props.columns.length,
     intl
   )
 
-  const debounced = useCallback(_.debounce((filter: Filter, searchString: string, groupBy: string | undefined) =>
-  onFilterChange 
-    && onFilterChange(filter, { searchString }, groupBy), 1000), [onFilterChange])
+  const debounced = useCallback(_.debounce(
+    (filter: Filter, searchString: string, groupBy: string | undefined) =>
+      onFilterChange
+      && onFilterChange(filter, { searchString }, groupBy), 1000), [onFilterChange])
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
@@ -227,7 +229,7 @@ function Table <RecordType extends Record<string, any>> ({
 
       // remove remining row data for parent cols
       for (let j = lastParentCol; j < colCopy.length; ++j) {
-        const { render } = colCopy[j] 
+        const { render } = colCopy[j]
         colCopy[j].render = (dom, record, index, highlightFn, action, schema) => {
           if ('children' in record) {
             return null
