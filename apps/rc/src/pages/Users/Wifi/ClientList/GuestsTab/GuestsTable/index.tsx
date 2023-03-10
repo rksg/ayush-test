@@ -68,7 +68,6 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
-  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
