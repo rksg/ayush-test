@@ -6,6 +6,7 @@ import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TablePr
 import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                                                                                         from '@acx-ui/rc/services'
 import { ApSnmpViewModelData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType, SnmpColumnData, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                                                                                         from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                                                                                    from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -114,12 +115,14 @@ export default function SnmpAgentTable () {
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={((tableQuery?.data?.totalCount as number) < 64) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add SNMP Agent' })}</Button>
+            <Button type='primary'>
+              {$t({ defaultMessage: 'Add SNMP Agent' })}
+            </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
         <Table<ApSnmpViewModelData>
@@ -130,7 +133,7 @@ export default function SnmpAgentTable () {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
