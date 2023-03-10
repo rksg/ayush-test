@@ -198,12 +198,15 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    venueDefaultApGroup: build.query<VenueDefaultApGroup, RequestPayload>({
+    venueDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
         return {
           ...req
         }
+      },
+      transformResponse (result: VenueDefaultApGroup) {
+        return Array.isArray(result) ? result : [result]
       }
     }),
     wifiCapabilities: build.query<Capabilities, RequestPayload>({
