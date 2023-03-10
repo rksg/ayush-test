@@ -66,7 +66,7 @@ export const Properties = (props: PropertiesProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'FW Version' })}
         children={
-          currentEdge?.fwVersion || '--'
+          currentEdge?.firmwareVersion || '--'
         }
       />
       <Form.Item

@@ -29,7 +29,7 @@ export interface Edge extends EdgeResourceUtilization {
   venueId: string
   tags: string[]
   description?: string
-  fwVersion?: string
+  firmwareVersion?: string
 }
 export interface EdgeStatus extends EdgeResourceUtilization {
   serialNumber: string
@@ -44,7 +44,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   deviceStatusSeverity: string
   ip: string
   ports: string
-  fwVersion?: string
+  firmwareVersion?: string
 }
 export interface EdgeDetails {
   serialNumber: string

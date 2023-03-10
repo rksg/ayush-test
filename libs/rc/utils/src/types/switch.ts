@@ -3,8 +3,8 @@ import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTy
 import { NetworkVenue }                                                                  from '../models'
 import { PortSettingModel }                                                              from '../models/PortSetting'
 
-import { ProfileTypeEnum }        from './../constants'
-import { Acl, Vlan, SwitchModel } from './venue'
+import { ProfileTypeEnum }                               from './../constants'
+import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 
 import { GridDataRow } from './'
 
@@ -227,6 +227,10 @@ export class SwitchViewModel extends Switch {
   cloudPort?: string
   lastSeenTime?: string
   rearModuleOption?: boolean
+  floorplanId?: string
+  xPercent?: number
+  yPercent?: number
+  position?: NetworkDevicePosition
 }
 
 export interface SwitchRow {
@@ -253,6 +257,8 @@ export interface SwitchRow {
   syncDataId?: string
   operationalWarning?: boolean
   switchName?: string
+  xPercent?: number
+  yPercent?: number
 }
 
 export interface StackMember {
