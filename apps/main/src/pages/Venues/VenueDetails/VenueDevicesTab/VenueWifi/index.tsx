@@ -176,7 +176,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return 0
+          return row.clients
         }
       }
     },
