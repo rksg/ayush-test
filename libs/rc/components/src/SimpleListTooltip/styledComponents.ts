@@ -7,4 +7,8 @@ export const SimpleListUl = styled.ul`
   li {
     padding: 2px 0;
   }
+  h4 {
+    color: var(--acx-primary-white);
+    font-weight: 800;
+  }
 `

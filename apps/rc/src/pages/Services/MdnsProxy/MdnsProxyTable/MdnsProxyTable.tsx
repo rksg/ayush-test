@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -19,10 +20,18 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   MdnsProxyViewModel,
-  MdnsProxyForwardingRule
+  MdnsProxyForwardingRule,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
+
+const defaultPayload = {
+  fields: ['id', 'name', 'rules', 'venueIds'],
+  searchString: '',
+  filters: {}
+}
 
 export default function MdnsProxyTable () {
   const { $t } = useIntl()
@@ -33,7 +42,7 @@ export default function MdnsProxyTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
-    defaultPayload: { fields: ['id', 'name', 'rules', 'venueIds'] }
+    defaultPayload
   })
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
@@ -68,6 +77,19 @@ export default function MdnsProxyTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString ?? '',
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
@@ -93,7 +115,7 @@ export default function MdnsProxyTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>

@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
@@ -14,13 +15,17 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  ClientIsolationViewModel
+  ClientIsolationViewModel,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds']
+  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds'],
+  searchString: '',
+  filters: {}
 }
 
 export default function ClientIsolationTable () {
@@ -67,6 +72,19 @@ export default function ClientIsolationTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString,
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
@@ -93,7 +111,7 @@ export default function ClientIsolationTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           enableApiFilter={true}
         />
       </Loader>
@@ -152,7 +170,11 @@ function useColumns () {
       align: 'center',
       render: function (data) {
         return data
-          ? <SimpleListTooltip items={data as string[]} displayText={(data as string[]).length} />
+          ? <SimpleListTooltip
+            items={data as string[]}
+            displayText={(data as string[]).length}
+            title={$t({ defaultMessage: 'MAC Address' })}
+          />
           : 0
       }
     },

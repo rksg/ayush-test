@@ -7,8 +7,9 @@ import { SimpleListUl } from './styledComponents'
 export interface SimpleListTooltipProps {
   items: string[]
   displayText: string | number
-  maximum?: number,
-  textForMore?: string,
+  title?: string
+  maximum?: number
+  textForMore?: string
   isValueUnique?: boolean
 }
 
@@ -17,6 +18,7 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
   const {
     items,
     displayText,
+    title,
     maximum = 10,
     isValueUnique = true
   } = props
@@ -28,6 +30,7 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
   )
   const displayedItems = items.slice(0, needDisplayMore ? maximum : items.length)
   const displayedComp = <SimpleListUl>
+    {title ? <h4>{title}</h4> : null}
     {displayedItems.map((item, index) => <li key={isValueUnique ? item : index}>{item}</li>)}
     {needDisplayMore ? <li key={'keyForMore'}>{textForMore}</li> : null}
   </SimpleListUl>

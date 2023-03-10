@@ -10,7 +10,7 @@ import { SimpleListTooltip } from '.'
 
 describe('SimpleListTooltip', () => {
   it('should render correctly', async () => {
-    render(
+    const { rerender } = render(
       <SimpleListTooltip items={['v1', 'v2', 'v3']} displayText={2} maximum={2} />
     )
 
@@ -27,5 +27,11 @@ describe('SimpleListTooltip', () => {
 
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('And 1 More')
+
+    rerender(
+      <SimpleListTooltip items={['v1']} displayText={2} maximum={2} title={'Hello'} />
+    )
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('Hello')
   })
 })
