@@ -1,4 +1,4 @@
-import { useRef, useEffect,   RefObject } from 'react'
+import { useRef, useEffect, RefObject } from 'react'
 
 import ReactECharts       from 'echarts-for-react'
 import { GridOption }     from 'echarts/types/dist/shared'
