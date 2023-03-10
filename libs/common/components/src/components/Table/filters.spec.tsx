@@ -9,50 +9,69 @@ import { groupTBData, groupByColumns }           from './stories/GroupTable'
 
 describe('Table Filters', () => {
   afterEach(() => jest.resetAllMocks())
+  const groupables = groupByColumns.filter(cols => cols.groupable)
   describe('useGroupBy', () => {
     const mockIntl = { $t: jest.fn(({ defaultMessage }:{ defaultMessage: string }) =>
       defaultMessage) } as unknown as IntlShape
-    const groupTableAction = {
-      onChange: jest.fn(),
-      onClear: jest.fn()
-    }
-    const groupables = groupByColumns.filter(cols => cols.groupable)
 
     it('render hook correctly with valid data', async () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
+      const mockedValue = jest.fn(((val: string | undefined) => val))
+      const { result } = renderHook(() => {
+        const [value, setValue] = useState<string | undefined>(undefined)
+        const handleValue = (val: string | undefined) => {
+          setValue(val)
+          mockedValue(val)
+        }
+        return useGroupBy(groupables, value, handleValue, groupTBData.length, mockIntl)
+      })
       const {
         isGroupByActive,
         GroupBySelect,
         expandable,
-        finalParentColumns
+        finalParentColumns,
+        groupActionColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
-      expect(expandable).toBeDefined()
+      expect(expandable).toBeUndefined()
       expect(finalParentColumns).toBeUndefined()
+      expect(groupActionColumns).toMatchObject([])
     })
 
-    it('render hook correctly with empty actions data', async () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, undefined, groupTBData.length, mockIntl))
-      const { clearGroupByFn } = result.current
-      clearGroupByFn()
-      expect(groupTableAction.onClear).toBeCalledTimes(0)
-    })
-
-    it('render hook correctly with undefined groupable', () => {
-      const { result } = renderHook(() =>
-        useGroupBy([], groupTableAction,groupTBData.length, mockIntl))
-      const { GroupBySelect, clearGroupByFn } = result.current
+    it('render hook correctly with empty array groupable', () => {
+      const mockedValue = jest.fn(((val: string | undefined) => val))
+      const { result } = renderHook(() => {
+        const [value, setValue] = useState<string | undefined>(undefined)
+        const handleValue = (val: string | undefined) => {
+          setValue(val)
+          mockedValue(val)
+        }
+        return useGroupBy([], value, handleValue, groupTBData.length, mockIntl)
+      })
+      const {
+        isGroupByActive,
+        GroupBySelect,
+        expandable,
+        finalParentColumns,
+        groupActionColumns
+      } = result.current
+      expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
-      expect(GroupBySelect()).toBeNull()
-      clearGroupByFn()
+      expect(expandable).toBeUndefined()
+      expect(finalParentColumns).toMatchObject([])
+      expect(groupActionColumns).toMatchObject([])
     })
 
     it('render hook for expandable props', () => {
-      const { result } = renderHook(() =>
-        useGroupBy(groupables, groupTableAction, groupTBData.length, mockIntl))
+      const mockedValue = jest.fn(((val: string | undefined) => val))
+      const { result } = renderHook(() => {
+        const [value, setValue] = useState<string | undefined>('deviceName')
+        const handleValue = (val: string | undefined) => {
+          setValue(val)
+          mockedValue(val)
+        }
+        return useGroupBy(groupables, value, handleValue, groupTBData.length, mockIntl)
+      })
 
       act(() => {result.current.isGroupByActive = true})
       const { expandable } = result.current
@@ -123,15 +142,10 @@ describe('Table Filters', () => {
   describe('GroupBySelect', () => {
     it('should handle onClear correctly', async () => {
       const mock$t = jest.fn() as unknown as IntlShape['$t']
-      const onChange = jest.fn()
-      const onClear = jest.fn()
       const mockedSetVal = jest.fn()
-      const selectors = [{ key: 'test', label: 'soy' }]
       const Test = () => {
-        const [value, setValue] = useState<{
-          key: string, value: string
-        } | undefined>(undefined)
-        const handleValue = (val: { key: string, value: string } | undefined) => {
+        const [value, setValue] = useState<string | undefined>(undefined)
+        const handleValue = (val: string | undefined) => {
           mockedSetVal(val)
           setValue(val)
         }
@@ -139,26 +153,23 @@ describe('Table Filters', () => {
           $t={mock$t}
           value={value}
           setValue={handleValue}
-          onClear={onClear}
-          onChange={onChange}
-          groupables={selectors}
+          groupables={groupables}
         />
       }
       render(<Test />)
 
       const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
       fireEvent.mouseDown(select)
-      const soy = await screen.findByText('soy')
-      fireEvent.click(soy)
-      expect(onChange).toBeCalled()
+      const deviceStatus = await screen.findByText('Status')
+      fireEvent.click(deviceStatus)
+      expect(mockedSetVal).toBeCalledWith('deviceStatus')
       const downArrow =
         await screen.findByRole('img', { name: 'down', hidden: true, queryFallbacks: true })
       fireEvent.mouseOver(downArrow)
       const cross =
         await screen.findByRole('img', { name: 'close-circle', hidden: true, queryFallbacks: true })
       fireEvent.mouseDown(cross)
-      expect(mockedSetVal).toBeCalledWith({ key: 'test', value: 'soy' })
-      expect(onClear).toBeCalled()
+      expect(mockedSetVal).toBeCalledWith('deviceStatus')
     })
   })
 })
