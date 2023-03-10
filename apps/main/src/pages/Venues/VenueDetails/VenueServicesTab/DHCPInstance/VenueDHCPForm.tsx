@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useImperativeHandle, Ref, forwardRef } from 'react'
 
 
 import {
@@ -33,7 +33,7 @@ const defaultAPPayload = {
 }
 const VenueDHCPForm = (props: {
   form: FormInstance,
-}) => {
+}, ref: Ref<unknown> | undefined) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = props.form
@@ -81,6 +81,18 @@ const VenueDHCPForm = (props: {
     setDHCPServiceID(dhcpInfo.id as string)
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber])
+
+
+  const resetForm = ()=>{
+    const initVal = getInitValue()
+    setGateways(initVal.gateways)
+    form.setFieldsValue(initVal)
+    setServiceEnabled(initVal.enabled)
+    setDHCPServiceID(dhcpInfo.id as string)
+  }
+  useImperativeHandle(ref, () => ({
+    resetForm: resetForm
+  }))
 
   const getInitValue = ()=>{
     const natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
@@ -279,4 +291,4 @@ const VenueDHCPForm = (props: {
   </StyledForm>
 }
 
-export default VenueDHCPForm
+export default forwardRef(VenueDHCPForm)
