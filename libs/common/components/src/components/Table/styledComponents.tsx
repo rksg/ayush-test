@@ -372,6 +372,10 @@ export const Wrapper = styled.div<StyledTable>`
         .ant-table-cell-fix-right {
           background-color: var(--acx-neutrals-20) !important; 
         }
+
+        .ant-table-column-sort {
+          background-color: var(--acx-neutrals-20) !important;
+        }
       }
 
       &-cell-fix-left {
