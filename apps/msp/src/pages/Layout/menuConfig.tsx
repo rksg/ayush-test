@@ -80,7 +80,7 @@ export function useMenuConfig (tenantType: string) {
       tenantType: 'v',
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid,
-      disabled: isVar || isIntegrator || isSupport
+      disabled: isIntegrator || isSupport
     }
   ]
 
