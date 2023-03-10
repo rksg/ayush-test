@@ -9,7 +9,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, StepsForm, StepsFormInstance }                                                                                 from '@acx-ui/components'
+import { Loader, StepsForm, StepsFormInstance }                                                                                            from '@acx-ui/components'
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
 
@@ -174,11 +174,8 @@ export function CellularOptionsForm () {
 
       await updateVenueCellularSettings({ params,
         payload: { ...payload, ...value } })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

@@ -4,6 +4,7 @@ import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } fr
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
   useGetApSnmpViewModelQuery,
+  useSyslogPolicyListQuery,
   usePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -19,6 +20,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   policyTypeDescMapping,
@@ -54,11 +56,11 @@ export default function MyPolicies () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
-        extra={[
-          <TenantLink to={getSelectPolicyRoutePath(true)} key='add'>
+        extra={filterByAccess([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         {policies.filter(policy => !policy.disabled).map((policy, index) => {
@@ -143,8 +145,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.SYSLOG,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: ['Syslog Server'] } }
+      totalCount: useSyslogPolicyListQuery({
+        params, payload: { }
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))
@@ -161,9 +163,6 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.SNMP_AGENT,
       category: RadioCardCategory.WIFI,
-      //totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-      //  params, payload: { ...defaultPayload, filters: { type: [PolicyType.VLAN_POOL] } }
-      //}).data?.totalCount,
       totalCount: useGetApSnmpViewModelQuery({
         params, payload: { ...defaultPayload }
       }).data?.totalCount,

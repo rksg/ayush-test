@@ -6,6 +6,7 @@ import { StepsForm }                             from '@acx-ui/components'
 import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                          from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -26,7 +27,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     const hostDataRes= { ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: hostapprovalData.guestPortal }
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url,
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
@@ -57,7 +58,7 @@ describe('CaptiveNetworkForm-HostApproval', () => {
   it('should test Host approval network successfully', async () => {
     render(<Provider><NetworkFormContext.Provider
       value={{
-        editMode: true, cloneMode: true, data: hostapprovalData
+        editMode: false, cloneMode: true, data: hostapprovalData
       }}
     ><StepsForm><StepsForm.StepForm><HostApprovalForm /></StepsForm.StepForm>
       </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
@@ -81,5 +82,16 @@ describe('CaptiveNetworkForm-HostApproval', () => {
     await userEvent.click(await screen.findByRole('checkbox',
       { name: /1 Day/ }))
   })
-
+  it('should create Host approval network successfully', async () => {
+    render(<Provider><NetworkFormContext.Provider
+      value={{
+        editMode: false, cloneMode: false, data: hostapprovalData
+      }}
+    ><StepsForm><StepsForm.StepForm><HostApprovalForm /></StepsForm.StepForm>
+      </StepsForm></NetworkFormContext.Provider></Provider>, { route: { params } })
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /1 Hour/ }))
+    await userEvent.click(await screen.findByRole('checkbox',
+      { name: /4 Hours/ }))
+  })
 })

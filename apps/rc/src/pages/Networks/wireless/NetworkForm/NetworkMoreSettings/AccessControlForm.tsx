@@ -12,7 +12,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button, Modal, ModalType, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Button, Modal, ModalType, StepsForm, StepsFormInstance }        from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -147,11 +147,8 @@ function SaveAsAcProfileButton () {
               }).unwrap()
 
               setVisible(false)
-            } catch(error) {
-              showToast({
-                type: 'error',
-                content: $t({ defaultMessage: 'An error occurred' })
-              })
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }}
         >

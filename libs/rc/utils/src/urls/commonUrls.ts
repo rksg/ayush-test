@@ -10,17 +10,19 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getNetworksDetailHeader: {
-    method: 'get',
-    // new api not found
+    // 404 Not Found
+    // method: 'get',
     // url: '/networks/:networkId/headerDetails',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/:tenantId/network/:networkId/detailheader',
+    // newApi: true
+    method: 'get',
     url: '/api/viewmodel/:tenantId/network/:networkId/detailheader'
   },
   getNetworksVenuesList: {
     method: 'post',
-    // url: '/networks/:networkId/venues',
-    // newApi: true,
-    url: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues'
+    url: '/networks/:networkId/venues',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
+    newApi: true
   },
   getCloudpathList: {
     method: 'get',
@@ -65,6 +67,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   clearAlarm: {
+    // different method
+    // method: 'patch',
+    // url: '/alarms/:alarmId',
+    // oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
+    // newApi: true
     method: 'delete',
     url: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId'
   },
@@ -85,10 +92,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apGroups',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/ap-group',
     newApi: true
-  },
-  getAllUserSettings: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/admin-settings/ui'
   },
   getL2AclPolicyList: {
     method: 'post',
@@ -156,43 +159,46 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addVenue: {
     method: 'post',
-    newApi: false,
     url: '/venues',
-    oldUrl: '/api/tenant/:tenantId/venue'
+    oldUrl: '/api/tenant/:tenantId/venue',
+    newApi: true
   },
   updateVenue: {
     method: 'put',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // newApi: false,
-    // url: '/venues/:venueId',
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   getVenue: {
     method: 'get',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // newApi: false,
-    // url: '/venues/:venueId',
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   deleteVenue: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue/:venueId'
-    // url: '/venues/:venueId',
-    // newApi: false,
-    // oldUrl: '/api/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId',
+    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   deleteVenues: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/venue'
+    url: '/venues',
+    oldUrl: '/api/tenant/:tenantId/venue',
+    newApi: true
   },
   getVenueDetailsHeader: {
     method: 'get',
-    // 500 internal server error for new api
-    // url: '/venues/:venueId/detailHeaders',
-    // newApi: true,
-    url: '/api/viewmodel/:tenantId/venue/:venueId/detailheader'
+    url: '/venues/:venueId/detailHeaders',
+    oldUrl: '/api/viewmodel/:tenantId/venue/:venueId/detailheader',
+    newApi: true
   },
   getVenueCityList: {
+    // 404 Not Found
+    // method: 'post',
+    // url: '/venues/citylist/query',
+    // oldUrl: '/api/viewmodel/:tenantId/venue/citylist',
+    // newApi: true
     method: 'post',
     url: '/api/viewmodel/:tenantId/venue/citylist'
   },
@@ -215,6 +221,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/:tenantId/aps/mesh'
   },
   getService: {
+    // no use
     method: 'get',
     url: '/api/tenant/:tenantId/service/:serviceId'
   },
@@ -250,7 +257,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getUploadURL: {
     method: 'post',
-    url: '/files/uploadurl',
+    url: '/files/uploadurls',
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
   },
@@ -262,7 +269,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   UpdateSwitchPosition: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch/:serialNumber/position'
+    url: '/switches/:serialNumber/position',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:serialNumber/position',
+    newApi: true
   },
   UpdateApPosition: {
     method: 'put',
@@ -311,10 +320,13 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueNetworkList: {
+    // Path variable not match
+    // method: 'post',
+    // url: '/venues/:venueId/networks/query',
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
+    // newApi: true
     method: 'post',
-    url: '/venues/:venueId/networks/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks',
-    newApi: true
+    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
   },
   venueNetworkApGroup: {
     method: 'post',
@@ -327,10 +339,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   validateRadius: {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
-  },
-  getDHCPVenueInstances: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/dhcp-service-profile/instances/:serviceId'
   },
   getDenialOfServiceProtection: {
     method: 'get',
@@ -384,13 +392,15 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueSwitchSetting: {
     method: 'get',
-    // url: '/venues/:venueId/switchSettings',
-    // newApi: true,
-    url: '/api/switch/tenant/:tenantId/venue/:venueId'
+    url: '/venues/:venueId/switchSettings',
+    oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId',
+    newApi: true
   },
   updateVenueSwitchSetting: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/venue'
+    url: '/venues/:venueId/switchSettings',
+    oldUrl: '/api/switch/tenant/:tenantId/venue',
+    newApi: true
   },
   getVenueConfigHistory: {
     method: 'post',
@@ -417,28 +427,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/policyProfiles',
     newApi: true
   },
-  getUserProfile: {
-    method: 'get',
-    url: '/tenants/userProfiles',
-    oldUrl: '/api/tenant/:tenantId/user-profile',
-    newApi: true
-  },
-  updateUserProfile: {
-    method: 'put',
-    url: '/tenants/userProfiles',
-    oldUrl: '/api/tenant/:tenantId/user-profile',
-    newApi: true
-  },
   getApDetailHeader: {
-    method: 'get',
-    // new api not found
+    // 404 Not Found
+    // method: 'get',
     // url: '/aps/:serialNumber/headerDetails',
-    // newApi: true,
-    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
-  },
-  getCloudVersion: {
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
+    // newApi: true
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/upgrade-version'
+    url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader'
   },
   getClientSessionHistory: {
     method: 'post',
@@ -459,10 +455,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getGuestsList: {
-    method: 'post',
-    // new api not found
+    // 404 Not Found
+    // method: 'post',
     // url: '/guestUsers/query',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
+    // newApi: true
+    method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/guests'
   },
   addGuestPass: {
@@ -472,9 +470,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApNetworkList: {
-    method: 'post',
+    // 500 Internal Server Error
+    // method: 'post',
     // url: '/aps/:serialNumber/networks/query',
-    // newApi: true,
+    // oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks',
+    // newApi: true
+    method: 'post',
     url: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/networks'
   },
   getExternalProviders: {
@@ -483,45 +484,15 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/network/external-providers',
     newApi: true
   },
-  getGlobalValues: {
-    method: 'get',
-    url: '/api/ui/globalValues'
-  },
-  getCloudMessageBanner: {
-    method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/banner'
-  },
   fetchBotAuth: {
     method: 'post',
     url: '/api/tenant/:tenantId/chatbot/idtoken'
   },
   getTopology: {
     method: 'get',
-    url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology'
-  },
-  wifiAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/allowed-operations'
-  },
-  switchAllowedOperations: {
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/allowed-operations'
-  },
-  tenantAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/allowed-operations'
-  },
-  venueAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/venue/allowed-operations'
-  },
-  guestAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations'
-  },
-  upgradeAllowedOperations: {
-    method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/allowed-operations'
+    url: '/venues/:venueId/topologies',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
+    newApi: true
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',

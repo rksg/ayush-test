@@ -47,6 +47,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const myOpenCases = get('MY_OPEN_CASES')
   const privacy = get('PRIVACY')
   const supportedAPModels = get('SUPPORTED_AP_MODELS')
+  const howToVideos = get('HOW_TO_VIDEOS')
 
   const isHelpEnabled = useIsSplitOn(Features.HELP_SUPPORT)
 
@@ -73,6 +74,9 @@ const HelpButton = (props:HelpButtonProps) => {
           case 'documentation':
             window.open(documentationCenter, '_blank')
             break
+          case 'videos':
+            window.open(howToVideos, '_blank')
+            break
         }
       }}
     >
@@ -80,7 +84,7 @@ const HelpButton = (props:HelpButtonProps) => {
         {$t({ defaultMessage: 'Documentation Center' })}
       </Menu.Item>
 
-      <Menu.Item disabled key='videos'>
+      <Menu.Item key='videos'>
         {$t({ defaultMessage: 'How-To Videos' })}
       </Menu.Item>
 

@@ -43,12 +43,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
 
       onClose()
     } catch (error) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(error)) }
-      })
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

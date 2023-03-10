@@ -49,6 +49,14 @@ export enum TestType {
   Scheduled = 'scheduled'
 }
 
+export enum ScheduleFrequency {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly'
+}
+
+export type TestTypeWithSchedule = TestType.OnDemand | ScheduleFrequency
+
 export enum Band {
   Band2_4 = '2.4',
   Band5 = '5',
@@ -62,16 +70,25 @@ export type NetworkHealthSpec = {
   apsCount: number
   userId: string,
   clientType: ClientType
+  schedule: Schedule | null
   configs: NetworkHealthConfig[]
   tests: { items: NetworkHealthTest[] }
-  schedule: Schedule | null
+}
+
+export type Schedule = {
+  type: 'service_guard'
+  timezone: string
+  frequency: ScheduleFrequency | null
+  day: number | null
+  hour: number | null
+  nextExecutionTime?: string // timestamp
 }
 
 export type NetworkHealthConfig = {
   id: string
   specId: string
   radio: Band
-  authenticationMethod: string
+  authenticationMethod: AuthenticationMethod
   wlanName: string
   networkPaths: { networkNodes: NetworkPaths }
   wlanUsername?: string
@@ -84,7 +101,16 @@ export type NetworkHealthConfig = {
   createdAt: string // timestamp
 }
 
-type WlanAuthSettings = {
+export type NetworkHealthFormDto = Pick<NetworkHealthSpec, 'clientType' | 'schedule'> & {
+  id?: NetworkHealthSpec['id']
+  name?: NetworkHealthSpec['name']
+  type?: NetworkHealthSpec['type']
+  configs: Array<Partial<NetworkHealthConfig>>
+  typeWithSchedule?: TestTypeWithSchedule
+  isDnsServerCustom: boolean
+}
+
+export type WlanAuthSettings = {
   authType?: string
   authentication?: string
   wpaEncryption?: string
@@ -106,24 +132,10 @@ export type NetworkHealthTest = {
   previousTest: NetworkHealthTest
   wlanAuthSettings: WlanAuthSettings
 }
-
-type Schedule = { nextExecutionTime: string }
-
-export type NetworkHealthFormDto = {
-  id?: NetworkHealthSpec['id']
-  isDnsServerCustom: boolean
-} & Pick<NetworkHealthSpec, 'name' | 'type' | 'clientType'>
-  & Pick<NetworkHealthConfig, 'radio'
-    | 'wlanName'
-    | 'authenticationMethod'
-    | 'wlanPassword'
-    | 'wlanUsername'
-    | 'speedTestEnabled'
-    | 'dnsServer'
-    | 'pingAddress'
-    | 'tracerouteAddress'
-    | 'networkPaths'
-  >
+export type UserErrors = {
+  field: string
+  message: string
+}
 
 export type MutationUserError = {
   field: string
@@ -134,6 +146,53 @@ export type MutationResult <Result> = {
   userErrors: MutationUserError[]
 } & Result
 
+export type TestResultByAP = {
+    apName:string
+    apMac:string
+    auth: string
+    assoc: string
+    eap: string
+    radius: string
+    dhcp: string
+    userAuth: string
+    dns: string
+    ping: string
+    traceroute: string
+    speedTest: string
+    pingReceive: string | null
+    pingTotal: string | null
+    avgPingTime: string | null
+    error: string
+    speedTestFailure: string
+    speedTestServer: string | null
+    download: string | null
+    upload: string | null
+    tracerouteLog: string | null
+    state: string
+    stationAp: { name : string, mac : string, snr : number }
+    clients : { failure : ClientFailure } []
+}
+
+export type ClientFailure = {
+    failedMsgId: string | null
+    messageIds: string | null
+    ssid: string | null
+    radio: string | null
+    reason: string | null
+    failureType: string | null
+}
+export type NetworkHealthTestResults = {
+  spec: NetworkHealthSpec
+  config: NetworkHealthConfig
+  wlanAuthSettings: WlanAuthSettings
+  aps: { items : TestResultByAP[], total : number }
+}
+export type Pagination = {
+  page: number,
+  pageSize: number,
+  defaultPageSize: number,
+  total: number
+}
 export type MutationResponse <
   Result extends { userErrors?: MutationUserError[] } = { userErrors?: MutationUserError[] }
 > = TypedUseMutationResult<Result, { id?: string }, NetworkHealthBaseQuery>

@@ -8,7 +8,8 @@ import {
   AclRule,
   transformTitleCase
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -120,10 +121,10 @@ export function AclSetting () {
           <StepsForm.Title children={$t({ defaultMessage: 'ACLs' })} />
           <Table
             rowKey='name'
-            rowActions={rowActions}
+            rowActions={filterByAccess(rowActions)}
             columns={aclsColumns}
             dataSource={aclsTable}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add ACL' }),
               onClick: () => {
                 setDrawerFormRule({
@@ -135,7 +136,7 @@ export function AclSetting () {
                 setDrawerEditMode(false)
                 setDrawerVisible(true)
               }
-            }]}
+            }])}
             rowSelection={{
               type: 'radio',
               onChange: () => {

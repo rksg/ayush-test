@@ -31,11 +31,11 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
-  GuestErrorRes
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { DateRange, getIntl, useDateFilter }                 from '@acx-ui/utils'
+import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
+import { getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -66,40 +66,19 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { startDate, endDate, range } = useDateFilter()
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
     defaultPayload: {
       ...defaultGuestPayload,
       filters: {
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
+        includeExpired: ['true']
       }
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
   })
-
-  useEffect(()=>{
-    const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-    let customPayload = {
-      ...tableQuery.payload,
-      filters: {
-        ..._.omit(payload.filters, ['fromTime', 'toTime']),
-        includeExpired: ['true'],
-        ...(range === DateRange.allTime ? {} : {
-          fromTime: [moment(startDate).utc().format()],
-          toTime: [moment(endDate).utc().format()]
-        })
-      }
-    }
-    tableQuery.setPayload(customPayload)
-  }, [startDate, endDate])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,
@@ -194,7 +173,9 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         formData.append(key, value as string)
       }
     })
-    importCsv({ params, payload: formData })
+    importCsv({
+      params: { tenantId: params.tenantId, networkId: values.networkId }, payload: formData
+    })
   }
 
   const columns: TableProps<Guest>['columns'] = [
@@ -361,11 +342,11 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -378,13 +359,12 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }
-        ].filter(((item, index)=> {
+        }].filter(((item, index)=> {
           if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
             return false
           }
           return true
-        }))}
+        })))}
       />
 
       <Drawer
