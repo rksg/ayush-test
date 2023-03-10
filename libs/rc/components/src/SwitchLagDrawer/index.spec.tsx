@@ -65,7 +65,7 @@ describe('SwitchLagDrawer', () => {
 
     const deleteBtns = screen.getAllByRole('deleteBtn')
     fireEvent.click(deleteBtns[0])
-    await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
 
   it('should click edit button correctly', async () => {
