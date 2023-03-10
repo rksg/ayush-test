@@ -229,13 +229,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       transformResponse (dhcpProfile: DHCPSaveData) {
         _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeHours && pool.leaseTimeHours > 0){
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
           if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
             pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes
+            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+          }else{
+            pool.leaseUnit = LeaseUnit.HOURS
+            pool.leaseTime = pool.leaseTimeHours
           }
 
         })

@@ -113,7 +113,10 @@ export default function DHCPPoolTable ({
 
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
-    if (item) form.setFieldsValue(item)
+    if (item) {
+      form.setFieldsValue(item)
+      setLeaseUnit(item.leaseUnit||LeaseUnit.HOURS)
+    }
     else form.resetFields()
   }
 

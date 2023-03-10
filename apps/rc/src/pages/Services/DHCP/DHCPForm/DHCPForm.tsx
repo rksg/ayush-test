@@ -79,7 +79,11 @@ export default function DHCPForm (props: DHCPFormProps) {
     _.each(data.dhcpPools, (pool, index) => {
       pool.leaseTimeMinutes = 0
       pool.leaseTimeHours = 0
-      if(pool.leaseUnit) pool[pool.leaseUnit] = pool.leaseTime
+      if(pool.leaseTime&&pool.leaseTime>=60){
+        pool.leaseTimeHours=Math.floor(pool.leaseTime/60)
+        pool.leaseTimeMinutes=pool.leaseTime%60
+      }
+      else if(pool.leaseUnit) pool[pool.leaseUnit] = pool.leaseTime
       data.dhcpPools[index] = _.omit(pool, 'leaseUnit', 'leaseTime')
     })
   }
