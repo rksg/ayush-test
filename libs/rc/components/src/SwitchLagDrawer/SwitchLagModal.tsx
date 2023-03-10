@@ -341,7 +341,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const footer = [
-    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+    <Space key='edit-port-footer'>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -349,7 +349,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         key='okBtn'
         type='secondary'
         onClick={() => form.submit()}>
-        {$t({ defaultMessage: 'Ok' })}
+        {$t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   ]

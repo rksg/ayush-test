@@ -6,6 +6,7 @@ import { useParams }    from 'react-router-dom'
 
 import { noDataSymbol }                                                 from '@acx-ui/analytics/utils'
 import { Button, Card, Loader, PageHeader, Subtitle, GridRow, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
   useLazyGetVenueQuery,
   useLazyGetDpskQuery,
@@ -49,6 +50,7 @@ function PersonaGroupDetailsPageHeader (props: {
 
 function PersonaGroupDetails () {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -88,7 +90,7 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (nsgId) {
+    if (nsgId && networkSegmentationEnabled) {
       let name: string | undefined
       getNsgById({ params: { serviceId: nsgId } })
         .then(result => name = result.data?.name)

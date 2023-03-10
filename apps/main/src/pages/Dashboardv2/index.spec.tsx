@@ -1,0 +1,78 @@
+import '@testing-library/jest-dom'
+import { BrowserRouter }             from '@acx-ui/react-router-dom'
+import { Provider }                  from '@acx-ui/store'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
+
+import Dashboard from '.'
+
+/* eslint-disable max-len */
+jest.mock('@acx-ui/analytics/components', () => ({
+  ConnectedClientsOverTime: () => <div data-testid={'analytics-ConnectedClientsOverTime'} title='ConnectedClientsOverTime' />,
+  IncidentsDashboard: () => <div data-testid={'analytics-IncidentsDashboard'} title='IncidentsDashboard' />,
+  NetworkHistory: () => <div data-testid={'analytics-NetworkHistory'} title='NetworkHistory' />,
+  SwitchesTrafficByVolume: () => <div data-testid={'analytics-SwitchesTrafficByVolume'} title='SwitchesTrafficByVolume' />,
+  TopApplicationsByTraffic: () => <div data-testid={'analytics-TopApplicationsByTraffic'} title='TopApplicationsByTraffic' />,
+  TopSSIDsByClient: () => <div data-testid={'analytics-TopSSIDsByClient'} title='TopSSIDsByClient' />,
+  TopSSIDsByTraffic: () => <div data-testid={'analytics-TopSSIDsByTraffic'} title='TopSSIDsByTraffic' />,
+  TopSwitchesByError: () => <div data-testid={'analytics-TopSwitchesByError'} title='TopSwitchesByError' />,
+  TopSwitchesByPoEUsage: () => <div data-testid={'analytics-TopSwitchesByPoEUsage'} title='TopSwitchesByPoEUsage' />,
+  TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
+  TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
+  TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
+  VenuesHealthDashboard: () => <div data-testid={'analytics-VenuesHealthDashboard'} title='VenuesHealthDashboard' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  AlarmWidget: () => <div data-testid={'rc-AlarmWidget'} title='AlarmWidget' />,
+  ClientsWidget: () => <div data-testid={'rc-ClientsWidget'} title='ClientsWidget' />,
+  DevicesDashboardWidget: () => <div data-testid={'rc-DevicesDashboardWidget'} title='DevicesDashboardWidget' />,
+  MapWidget: () => <div data-testid={'rc-MapWidget'} title='MapWidget' />,
+  VenuesDashboardWidget: () => <div data-testid={'rc-VenuesDashboardWidget'} title='VenuesDashboardWidget' />
+}))
+/* eslint-enable */
+
+jest.mock(
+  'rc/Widgets',
+  () => ({ name }: { name: string }) => <div data-testid={`networks-${name}`} title={name} />,
+  { virtual: true })
+
+describe('Dashboard', () => {
+  it('renders correctly', async () => {
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
+  })
+
+  it('switches between tabs', async () => {
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+
+    const wifiWidgets = [
+      'TrafficByVolume',
+      'ConnectedClientsOverTime',
+      'TopApplicationsByTraffic'
+    ]
+    wifiWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Switch' }))
+
+    const switchWidgets = [
+      'SwitchesTrafficByVolume',
+      'TopSwitchesByPoEUsage',
+      'TopSwitchesByTraffic',
+      'TopSwitchesByError',
+      'TopSwitchModels'
+    ]
+    switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
+  })
+
+  it('should switch tab correctly', async () => {
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+    fireEvent.click(await screen.findByText('Switch'))
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
+  })
+  it('should show report link correctly', async () => {
+    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
+    expect(screen.getByText('See more reports')).toBeVisible()
+  })
+})
