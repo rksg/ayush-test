@@ -173,7 +173,7 @@ function SettingsForm () {
     })
   }
 
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
+  const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return (
@@ -277,7 +277,7 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode} onChange={onMacAuthChange} />
+                <Switch disabled={editMode || disablePolicies} onChange={onMacAuthChange} />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
@@ -296,7 +296,7 @@ function SettingsForm () {
                   <Radio value={true} disabled={!macRegistrationEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
                   </Radio>
-                  <Radio value={false} disabled={disableAAA}>
+                  <Radio value={false}>
                     { intl.$t({ defaultMessage: 'External MAC Auth' }) }
                   </Radio>
                 </Space>
