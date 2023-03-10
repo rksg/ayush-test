@@ -20,16 +20,19 @@ import {
 
 import AAATable from './AAATable'
 
-const mockTableResult = [{
-  id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-  name: 'My AAA Server 1',
-  type: 'AUTHENTICATION',
-  primary: {
-    ip: '1.1.1.1',
-    port: 1811,
-    sharedSecret: 'xxxxxxxx'
-  }
-}]
+const mockTableResult = {
+  totalCount: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My AAA Server 1',
+    type: 'AUTHENTICATION',
+    primary: {
+      ip: '1.1.1.1',
+      port: 1811,
+      sharedSecret: 'xxxxxxxx'
+    }
+  }]
+}
 
 
 const mockedUseNavigate = jest.fn()
@@ -55,8 +58,8 @@ describe('AAATable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        AaaUrls.getAAAPolicyList.url,
+      rest.post(
+        AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -71,7 +74,7 @@ describe('AAATable', () => {
       }
     )
 
-    const targetName = mockTableResult[0].name
+    const targetName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add AAA Server/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
   })
@@ -98,7 +101,7 @@ describe('AAATable', () => {
       }
     )
 
-    const target = mockTableResult[0]
+    const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -123,7 +126,7 @@ describe('AAATable', () => {
       }
     )
 
-    const target = mockTableResult[0]
+    const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

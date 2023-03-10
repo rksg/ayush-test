@@ -21,12 +21,15 @@ import {
 
 import VLANPoolTable from './VLANPoolTable'
 
-const mockTableResult = [{
-  id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-  name: 'My Client Isolation 1',
-  type: 'Client Isolation',
-  scope: '5'
-}]
+const mockTableResult = {
+  totalCount: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My Client Isolation 1',
+    vlanMembers: ['1'],
+    venueIds: ['1']
+  }]
+}
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -51,8 +54,8 @@ describe('VLANPoolTable', () => {
 
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVlanPools.url,
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
@@ -67,7 +70,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const targetName = mockTableResult[0].name
+    const targetName = mockTableResult.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add VLAN Pool/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
@@ -94,7 +97,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const target = mockTableResult[0]
+    const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -119,7 +122,7 @@ describe('VLANPoolTable', () => {
       }
     )
 
-    const target = mockTableResult[0]
+    const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
