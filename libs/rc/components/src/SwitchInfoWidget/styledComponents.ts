@@ -1,6 +1,8 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
+import { DonutChart } from '@acx-ui/components'
+
 export const Wrapper = styled(Space)`
   justify-content: center;
   width: 100%;
@@ -13,6 +15,10 @@ export const Container = styled.div`
   .ant-btn-link {
     background: transparent;
   }
+`
+
+export const PointerContainer = styled.div`
+  cursor: pointer;
 `
 
 export const ChartTopTitle = styled.span`
@@ -30,4 +36,10 @@ export const LargeText = styled.span`
   line-height: var(--acx-headline-1-line-height);
   display: flex;
   align-items: baseline;
+`
+
+export const DonutChartWidget = styled(DonutChart)`
+  svg {
+    cursor: pointer
+  }
 `

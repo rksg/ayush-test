@@ -66,7 +66,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
               >
                 <div
                   class="ant-space-item"
@@ -75,24 +75,28 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
                   >
                     <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
+                      class="styledComponents__PointerContainer-sc-1kux3bo-0 kCQWDD"
                     >
                       <div
-                        class="ant-space-item"
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 iRdLpd"
                       >
-                        <svg
-                          class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
-                          data-testid="CheckMarkCircleSolid"
-                        />
+                        <div
+                          class="ant-space-item"
+                        >
+                          <svg
+                            class="styledComponents__GreenTickIcon-sc-m7jeli-3 bRCYfh"
+                            data-testid="CheckMarkCircleSolid"
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
-                    >
                       <div
-                        class="ant-space-item"
+                        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
                       >
-                        No active alarms
+                        <div
+                          class="ant-space-item"
+                        >
+                          No active alarms
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -108,15 +112,19 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
               >
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-IncidentBySeverityDonutChart"
-                    title="IncidentBySeverityDonutChart"
-                  />
+                  <a
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics"
+                  >
+                    <div
+                      data-testid="analytics-IncidentBySeverityDonutChart"
+                      title="IncidentBySeverityDonutChart"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -129,15 +137,19 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
               >
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-KpiWidget"
-                    title="KpiWidget"
-                  />
+                  <a
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -150,15 +162,19 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
               >
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-TtcTimeWidget"
-                    title="TtcTimeWidget"
-                  />
+                  <a
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-TtcTimeWidget"
+                      title="TtcTimeWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
@@ -171,15 +187,19 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
               class="Grid__Container-sc-5irhjd-1 zzbxI"
             >
               <div
-                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-1 FsDbs"
+                class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-1kux3bo-2 eHGaGv"
               >
                 <div
                   class="ant-space-item"
                 >
-                  <div
-                    data-testid="analytics-KpiWidget"
-                    title="KpiWidget"
-                  />
+                  <a
+                    href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
+                  >
+                    <div
+                      data-testid="analytics-KpiWidget"
+                      title="KpiWidget"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
