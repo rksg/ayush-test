@@ -92,7 +92,10 @@ export default function MyServices () {
     {
       type: ServiceType.WEBAUTH_SWITCH,
       category: RadioCardCategory.SWITCH,
-      tableQuery: useWebAuthTemplateListQuery({ params, payload: {} })
+      tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
+        skip: !networkSegmentationEnabled
+      }),
+      disabled: !networkSegmentationEnabled
     }
   ]
 

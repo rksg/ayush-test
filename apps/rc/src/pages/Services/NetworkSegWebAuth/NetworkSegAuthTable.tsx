@@ -75,10 +75,10 @@ export default function NetworkSegAuthTable () {
       title: $t({ defaultMessage: 'Service Version' }),
       key: 'version',
       dataIndex: 'version'
-    // }, {
+    // }, {  // TODO: Waiting for TAG feature support
     //   title: $t({ defaultMessage: 'Tags' }),
-    //   key: 'tags',
-    //   dataIndex: 'tags'
+    //   key: 'tag',
+    //   dataIndex: 'tag'
     }
   ]
 
