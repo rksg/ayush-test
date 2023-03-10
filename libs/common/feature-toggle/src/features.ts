@@ -30,5 +30,7 @@ export enum Features {
   SWITCH_SUPPORT_ICX8200 = 'switch-support-icx8200',
   BONJOUR_FENCING='wifi-consumer-bonjour-fencing-toggle',
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
-  NEW_API='acx-ui-new-api'
+  NEW_API='acx-ui-new-api',
+  PERSONA = 'persona-service-enabled',
+  MAC_REGISTRATION_SERVICE = 'mac-registration-service-enabled'
 }

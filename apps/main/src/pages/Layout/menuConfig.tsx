@@ -48,6 +48,8 @@ export function useMenuConfig () {
   const isAdministrationEnabled = useIsSplitOn(Features.UNRELEASED) || earlyBetaEnabled
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION_SERVICE)
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -188,7 +190,7 @@ export function useMenuConfig () {
         {
           path: '/users/persona-management',
           name: $t({ defaultMessage: 'Persona Management' }),
-          disabled: !useIsSplitOn(Features.SERVICES)
+          disabled: !(isPersonaEnabled && isMacRegistrationEnabled)
         }
       ]
     },
