@@ -30,6 +30,6 @@ export default function GuestManagerPage () {
     <PageHeader
       title={$t({ defaultMessage: 'Guest Management' })}
     />
-    <GuestsTable type='guests-manager'/>
+    <GuestsTable/>
   </>
 }
