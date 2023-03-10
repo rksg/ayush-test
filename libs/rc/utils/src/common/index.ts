@@ -1,2 +1,3 @@
 export * from './file.utils'
 export * from './countryCode'
+export * from './sorter'

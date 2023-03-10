@@ -17,9 +17,9 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, MSPUtils }               from '@acx-ui/rc/utils'
-import { RolesEnum }                             from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
+import { Administrator, MSPUtils, sortProp, defaultSort }       from '@acx-ui/rc/utils'
+import { RolesEnum }                                            from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -95,20 +95,23 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
-      dataIndex: 'id',
-      render: (data, row) => {
-        return row.fullName
-      }
+      dataIndex: 'fullName',
+      sorter: { compare: sortProp('fullName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       key: 'email',
-      dataIndex: 'email'
+      dataIndex: 'email',
+      sorter: { compare: sortProp('email', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Role' }),
-      key: 'roleDsc',
-      dataIndex: 'roleDsc'
+      key: 'role',
+      dataIndex: 'role',
+      sorter: { compare: sortProp('role', defaultSort) },
+      render: function (_, row) {
+        return roleStringMap[row.role] ? $t(roleStringMap[row.role]) : ''
+      }
     }
   ]
 

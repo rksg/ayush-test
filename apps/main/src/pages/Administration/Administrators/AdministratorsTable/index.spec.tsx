@@ -254,4 +254,44 @@ describe('Administrators Table', () => {
     expect(within(row).queryByRole('button', { name: 'Delete' })).toBeNull()
     expect(within(row).queryByRole('button', { name: 'Edit' })).toBeNull()
   })
+
+  it('should display blank when role is not valid', async () => {
+    const newFakedAdminLsit = [...fakedAdminLsit]
+    newFakedAdminLsit.push({
+      id: 'invalid_role_id',
+      email: 'invalidRole@email.com',
+      role: 'ROLE',
+      delegateToAllECs: false,
+      detailLevel: 'debug'
+    })
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getAdministrators.url,
+        (req, res, ctx) => res(ctx.json(newFakedAdminLsit))
+      )
+    )
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{
+            data: fakeNonPrimeAdminUserProfile,
+            isPrimeAdmin
+          } as UserProfileContextProps}
+        >
+          <AdministratorsTable
+            currentUserMail='erp.cheng@email.com'
+            isPrimeAdminUser={false}
+            isMspEc={false}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const row = await screen.findByRole('row', { name: /invalidRole@email.com/i })
+    const tableCells = within(row).getAllByRole('cell')
+    expect((tableCells[tableCells.length - 1] as HTMLElement).textContent).toBe('')
+  })
 })
