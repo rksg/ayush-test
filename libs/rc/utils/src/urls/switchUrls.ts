@@ -21,13 +21,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addAaaServer: {
     method: 'post',
-    url: '/venues/:venueId/aaaServer',
+    url: '/venues/:venueId/aaaServers',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
     newApi: true
   },
   updateAaaServer: {
     method: 'put',
-    url: '/venues/:venueId/aaaServer/:aaaServerId',
+    url: '/venues/:venueId/aaaServers/:aaaServerId',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
     newApi: true
   },
@@ -118,7 +118,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getPortSetting: {
     // different method
     // method: 'post',
-    // url: '/switches/:switchId/ports',
+    // url: '/switches/:switchId/portSettings',
     // newApi: true,
     method: 'get',
     url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'

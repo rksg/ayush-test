@@ -3,7 +3,9 @@ import { ApiInfo } from '../apiService'
 export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTenantDetails: {
     method: 'get',
-    url: '/api/tenant/:tenantId'
+    url: '/tenants/self',
+    oldUrl: '/api/tenant/:tenantId',
+    newApi: true
   },
   getRegisteredUsersList: {
     method: 'get',
@@ -120,6 +122,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   findVAR: {
+    // [New API] no mapping found
     method: 'get',
     url: '/api/tenant/:tenantId/find-var'
   },

@@ -1,18 +1,25 @@
 import { ApiInfo } from '../apiService'
 
+const newApiUrl = '/api/radiusClient'
 const apiUrl = '/api/radiusClient'
 
 export const RadiusClientConfigUrlsInfo: { [key: string]: ApiInfo } = {
   getRadiusClient: {
     method: 'get',
-    url: apiUrl
+    url: newApiUrl,
+    oldUrl: apiUrl,
+    newApi: true
   },
   updateRadiusClient: {
     method: 'PATCH',
-    url: apiUrl
+    url: newApiUrl,
+    oldUrl: apiUrl,
+    newApi: true
   },
   getRadiusServerSetting: {
     method: 'get',
-    url: apiUrl + '/serverSettings'
+    url: newApiUrl + '/serverSettings',
+    oldUrl: apiUrl + '/serverSettings',
+    newApi: true
   }
 }
