@@ -1,18 +1,28 @@
 import { useRef } from 'react'
 
-import ReactECharts          from 'echarts-for-react'
-import _                     from 'lodash'
-import { MessageDescriptor } from 'react-intl'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import ReactECharts                                from 'echarts-for-react'
+import _                                           from 'lodash'
+import { renderToString }                          from 'react-dom/server'
+import {
+  MessageDescriptor,
+  defineMessage,
+  FormattedMessage,
+  RawIntlProvider
+} from 'react-intl'
 
 import { incidentSeverities } from '@acx-ui/analytics/utils'
+import { getIntl }            from '@acx-ui/utils'
 
 import { cssStr }              from '../../theme/helper'
 import {
+  TooltipFormatterParams,
   tooltipOptions,
-  stackedBarTooltipFormatter,
+  defaultRichTextFormatValues,
   barChartAxisLabelOptions,
   barChartSeriesLabelOptions
 } from '../Chart/helper'
+import * as ChartUI            from '../Chart/styledComponents'
 import { useOnAxisLabelClick } from '../Chart/useOnAxisLabelClick'
 
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
@@ -136,6 +146,43 @@ const massageData = (
     })
 }
 
+export const tooltipFormatter = (
+  dataFormatter?: ((value: unknown) => string | null),
+  format?: MessageDescriptor
+) => (
+  parameters: TooltipComponentFormatterCallbackParams
+) => {
+  const intl = getIntl()
+  const param = parameters as TooltipFormatterParams
+  const value = param.value as string[]
+  const name = param.seriesName
+  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'StackedBarChart: default tooltip format for stacked bar chart'
+  })
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      ...defaultRichTextFormatValues,
+      name,
+      formattedValue,
+      value: value[0]
+    }}
+  />
+
+  return renderToString(
+    <RawIntlProvider value={intl}>
+      <ChartUI.TooltipWrapper>
+        <ChartUI.Badge
+          className='acx-chart-tooltip'
+          color={param.color?.toString()}
+          text={text}
+        />
+      </ChartUI.TooltipWrapper>
+    </RawIntlProvider>
+  )
+}
+
 export function StackedBarChart <TChartData extends ChartData = ChartData> ({
   data,
   dataFormatter,
@@ -191,7 +238,7 @@ export function StackedBarChart <TChartData extends ChartData = ChartData> ({
       ...tooltipOptions(),
       trigger: 'item',
       position: 'top',
-      formatter: stackedBarTooltipFormatter(
+      formatter: tooltipFormatter(
         dataFormatter,
         props.tooltipFormat),
       show: showTooltip
