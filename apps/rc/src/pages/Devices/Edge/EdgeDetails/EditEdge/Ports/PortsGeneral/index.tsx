@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Form }             from 'antd'
-import { InternalNamePath } from 'antd/lib/form/interface'
-import { FormChangeInfo }   from 'rc-field-form/es/FormContext'
-import { useIntl }          from 'react-intl'
+import { Form }                         from 'antd'
+import { InternalNamePath, StoreValue } from 'antd/lib/form/interface'
+import { FormChangeInfo }               from 'rc-field-form/es/FormContext'
+import { useIntl }                      from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, Loader, NoData, StepsForm, StepsFormInstance }   from '@acx-ui/components'
 import { useUpdatePortConfigMutation }                                                           from '@acx-ui/rc/services'
@@ -60,10 +60,24 @@ const PortsGeneral = (props: PortsGeneralProps) => {
     if(changedField) {
       const changedNamePath = changedField.name as InternalNamePath
       const changedValue = changedField.value
-      if(changedNamePath.includes('portType') &&
-          changedValue === EdgePortTypeEnum.LAN) {
-        formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
-        formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], false)
+      const index = Number(changedNamePath[0].toString().split('_')[1])
+
+      if (changedNamePath.includes('portType')) {
+        handlePortTypeChange(changedNamePath, changedValue, index)
+      }
+    }
+  }
+
+  const handlePortTypeChange = (changedNamePath: InternalNamePath, changedValue: StoreValue,
+    index: number) => {
+
+    if (changedValue === EdgePortTypeEnum.LAN) {
+      formRef.current?.setFieldValue([changedNamePath[0], 'ipMode'], EdgeIpModeEnum.STATIC)
+
+    } else if (changedValue === EdgePortTypeEnum.WAN) {
+      const initialPortType = data[index]?.portType
+      if (initialPortType !== EdgePortTypeEnum.WAN) {
+        formRef.current?.setFieldValue([changedNamePath[0], 'natEnabled'], true)
       }
     }
   }
