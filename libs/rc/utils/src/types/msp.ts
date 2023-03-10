@@ -159,7 +159,7 @@ export enum DateSelectionEnum {
 }
 
 export const dateDisplayText = {
-  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custom date' }),
   [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
   [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
   [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),

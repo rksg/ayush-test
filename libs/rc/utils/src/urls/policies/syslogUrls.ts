@@ -39,6 +39,8 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
   },
   syslogPolicyList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query'
+    url: '/enhancedSyslogServerProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query',
+    newApi: true
   }
 }
