@@ -27,7 +27,7 @@ export const generateHexKey = (keyLength: number):string => {
 }
 
 export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
-  const venuesNotInSetup = networkAdvertisedVenues.filter(v => {
+  const venuesNotInSetup = networkAdvertisedVenues?.filter(v => {
     return v.status !== ApVenueStatusEnum.IN_SETUP_PHASE
   })
   return venuesNotInSetup && venuesNotInSetup.length > 0
