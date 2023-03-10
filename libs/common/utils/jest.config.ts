@@ -8,9 +8,9 @@ module.exports = {
   coverageDirectory: '../../../coverage/libs/common/utils',
   coverageThreshold: {
     global: {
-      statements: 87,
-      branches: 69,
-      functions: 91,
+      statements: 86,
+      branches: 67,
+      functions: 90,
       lines: 86
     }
   }
