@@ -54,7 +54,6 @@ export function WISPrForm () {
     if(providerData.data){
       const providers = providerData.data.providers
       setExternalProviders(providers)
-      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
     }
     if((editMode || cloneMode) && data){
       if(data.guestPortal?.wisprPage?.accountingRadius){
@@ -100,6 +99,9 @@ export function WISPrForm () {
       }
     }
   },[providerData.data,data])
+  useEffect(()=>{
+    form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
+  },[])
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })

@@ -27,7 +27,8 @@ storiesOf('VerticalStackedBarChart', module)
         style={{ width: '100%', height: '100%' }}
         data={data.data}
         categories={data.categories}
-        dataFormatter={(value)=> formatter('percentFormatRound')(value/data.apsTestedCount)}
+        dataFormatter={(value)=> `${value}/${data.apsTestedCount}`}
+        yAxisLabelFormatter={(value)=> formatter('percentFormatRound')(value/data.apsTestedCount)}
       />
     </div>
   )

@@ -9,18 +9,12 @@ import { CallbackDataParams, InsideDataZoomOption } from 'echarts/types/dist/sha
 import { FormatXMLElementFn }                       from 'intl-messageformat'
 import moment                                       from 'moment-timezone'
 import { renderToString }                           from 'react-dom/server'
-import {
-  MessageDescriptor,
-  IntlShape,
-  RawIntlProvider,
-  FormattedMessage,
-  defineMessage
-}                                                   from 'react-intl'
+import { RawIntlProvider, FormattedMessage }        from 'react-intl'
 
-import { TimeSeriesChartData }                    from '@acx-ui/analytics/utils'
-import { formatter, DateFormatEnum, intlFormats } from '@acx-ui/formatter'
-import { TimeStamp }                              from '@acx-ui/types'
-import { getIntl }                                from '@acx-ui/utils'
+import { TimeSeriesChartData }       from '@acx-ui/analytics/utils'
+import { formatter, DateFormatEnum } from '@acx-ui/formatter'
+import { TimeStamp }                 from '@acx-ui/types'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { cssStr, cssNumber } from '../../theme/helper'
 
@@ -50,7 +44,7 @@ export type ChartFormatterFn = (
   index?: number
 ) => string
 
-const defaultRichTextFormatValues: Record<
+export const defaultRichTextFormatValues: Record<
   string,
   FormatXMLElementFn<React.ReactNode, React.ReactNode>
 > = {
@@ -233,6 +227,7 @@ export const timeSeriesTooltipFormatter = (
             const [, value] = data.data[dataIndex as number] as [TimeStamp, number | null]
             let text = <FormattedMessage
               defaultMessage='{name}: <b>{value}</b>'
+              description='Label before colon, value after colon'
               values={{
                 ...defaultRichTextFormatValues,
                 name: data.name,
@@ -264,75 +259,6 @@ export const getTimeSeriesSymbol = (data: TimeSeriesChartData[]) =>
     }
     return 'none'
   }
-
-export const stackedBarTooltipFormatter = (
-  dataFormatter?: ((value: unknown) => string | null),
-  format?: MessageDescriptor
-) => (
-  parameters: TooltipComponentFormatterCallbackParams
-) => {
-  const intl = getIntl()
-  const param = parameters as TooltipFormatterParams
-  const value = param.value as string[]
-  const name = param.seriesName
-  const formattedValue = dataFormatter ? dataFormatter(value[0]) : value[0]
-  const tooltipFormat = format ?? defineMessage({
-    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
-    description: 'StackedBarChart: default tooltip format for stacked bar chart'
-  })
-  const text = <FormattedMessage {...tooltipFormat}
-    values={{
-      ...defaultRichTextFormatValues,
-      name,
-      formattedValue,
-      value: value[0]
-    }}
-  />
-
-  return renderToString(
-    <RawIntlProvider value={intl}>
-      <UI.TooltipWrapper>
-        <UI.Badge className='acx-chart-tooltip' color={param.color?.toString()} text={text} />
-      </UI.TooltipWrapper>
-    </RawIntlProvider>
-  )
-}
-
-export const donutChartTooltipFormatter = (
-  intl: IntlShape,
-  dataFormatter: ((value: unknown) => string | null),
-  total: number,
-  format?: MessageDescriptor
-) => (
-  parameters: TooltipFormatterParams
-) => {
-  const { name, value } = parameters
-  let percent = (parameters.percent ?? 0)
-  if (percent) percent = percent / 100
-  const formattedValue = dataFormatter(parameters.value)
-  const formattedTotal = dataFormatter(total)
-  const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
-  const tooltipFormat = format ?? defineMessage({
-    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
-    description: 'DonutChart: default tooltip format for donut chart'
-  })
-
-  const text = <FormattedMessage {...tooltipFormat}
-    values={{
-      ...defaultRichTextFormatValues,
-      name, value, percent, total,
-      formattedPercent, formattedValue, formattedTotal
-    }}
-  />
-
-  return renderToString(
-    <RawIntlProvider value={intl}>
-      <UI.TooltipWrapper>
-        <UI.Badge className='acx-chart-tooltip' color={parameters.color?.toString()} text={text} />
-      </UI.TooltipWrapper>
-    </RawIntlProvider>
-  )
-}
 
 export type EventParams = {
   // The component name clicked,

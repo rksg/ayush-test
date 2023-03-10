@@ -1,12 +1,12 @@
-import { useIntl } from 'react-intl'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { intlFormats }    from '@acx-ui/formatter'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { cssStr }      from '../../theme/helper'
-import { EventParams } from '../Chart/helper'
+import { cssStr }                              from '../../theme/helper'
+import { EventParams, TooltipFormatterParams } from '../Chart/helper'
 
-import { DonutChart, onChartClick } from '.'
+import { DonutChart, onChartClick, tooltipFormatter } from '.'
 
 const data = [
   { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
@@ -162,5 +162,37 @@ describe('Donut Chart - large', () => {
       .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
     expect(screen.getByText('100').getAttribute('style'))
       .toEqual("font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;")
+  })
+})
+
+describe('tooltipFormatter', () => {
+  const singleparameters = {
+    name: 'name', color: 'color1', value: 10
+  } as TooltipFormatterParams
+  it('should return correct Html string for single value', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(tooltipFormatter(
+      formatter,
+      100
+    )(singleparameters)).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
+  })
+  it('should handle custom format', async () => {
+    const format = defineMessage({
+      defaultMessage: `{name}
+        <br></br>
+        <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
+        ({formattedPercent})
+        <span>{formattedTotal}</span>
+        <div>{percent} {total}</div>
+      `
+    })
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(tooltipFormatter(
+      formatter,
+      100,
+      format
+    )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
   })
 })

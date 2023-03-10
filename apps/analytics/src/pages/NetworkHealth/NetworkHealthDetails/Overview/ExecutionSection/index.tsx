@@ -100,7 +100,7 @@ export const ExecutionSection: React.FC<{ details: NetworkHealthTest }> = props 
             style={{ width, height }}
             data={chart.data}
             categories={chart.categories}
-            dataFormatter={(value)=>
+            yAxisLabelFormatter={(value)=>
               formatter('percentFormatRound')(value/props.details.summary.apsTestedCount)}/>
         )}
       </AutoSizer>
