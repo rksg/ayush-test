@@ -206,13 +206,17 @@ export function DeviceInventory () {
       'apMac',
       'model',
       'customerName',
-      'deviceStatus' ]
+      'deviceStatus' ],
+    searchTargetFields: ['apMac', 'switchMac', 'serialNumber']
   }
 
   const DeviceTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
-      defaultPayload
+      defaultPayload,
+      search: {
+        searchTargetFields: defaultPayload.searchTargetFields as string[]
+      }
     })
 
     return (
