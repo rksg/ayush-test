@@ -142,13 +142,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addSwitch: {
-    // Request payload should change to list
-    // method: 'post',
-    // url: '/switches',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: true
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   updateSwitch: {
     method: 'put',
