@@ -94,7 +94,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
       sortOrder: 'DESC'
     },
     pagination: {
-      pageSize: 25,
+      pageSize: 10000,
       page: 1,
       total: 0
     }
