@@ -111,7 +111,7 @@ export async function loadImageWithJWT (imageId: string) {
     ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {}),
     ...(isDelegationMode() ? { 'x-rks-tenantid': getTenantId() } : {})
   }
-  const url = `/files/${imageId}/urls`
+  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const result = await fetch(url, { headers }).then(function (response) {
     return response.json()
   })

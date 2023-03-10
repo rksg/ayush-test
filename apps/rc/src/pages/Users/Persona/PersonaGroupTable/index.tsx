@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
@@ -35,10 +36,14 @@ function useColumns (
   venuesMap: Map<string, string>
 ) {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({})
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery({})
+  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
+    {},
+    { skip: !networkSegmentationEnabled }
+  )
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
