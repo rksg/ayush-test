@@ -20,9 +20,9 @@ import {
   getFilteredData,
   renderFilter,
   renderSearch,
-  MIN_SEARCH_LENGTH,
-  useGroupBy
+  MIN_SEARCH_LENGTH
 } from './filters'
+import { useGroupBy }                   from './groupBy'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
