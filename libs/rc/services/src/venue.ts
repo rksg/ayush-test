@@ -955,7 +955,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getPropertyConfigs: build.query<PropertyConfigs, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getPropertyConfigs, params)
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyConfigs,
+          params,
+          { Accept: 'application/hal+json' }
+        )
         return {
           ...req
         }
@@ -1008,8 +1012,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
-        // TODO: confirm whether * or not in this api
-        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params, { Accept: '*' })
+        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params)
         return {
           ...req,
           body: payload
