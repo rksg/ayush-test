@@ -378,8 +378,8 @@ export interface DnsProxyContextType {
 
 export interface WifiCallingSetting {
   id: string,
-  serviceName: string,
-  description: string | undefined,
+  serviceName?: string,
+  description?: string | undefined,
   qosPriority: QosPriorityEnum,
   tenantId?: string,
   name?: string,
