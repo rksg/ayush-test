@@ -111,7 +111,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`venues/${row.venueId}/overview`}>{data}</TenantLink>
+          <TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
         )
       }
     },
