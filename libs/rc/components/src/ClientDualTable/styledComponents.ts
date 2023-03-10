@@ -36,3 +36,6 @@ export const SearchCountDiv = styled.div`
   display: flex;
   align-items: baseline;
 `
+export const AnchorDiv = styled.div`
+  padding-top: 30px;
+`
