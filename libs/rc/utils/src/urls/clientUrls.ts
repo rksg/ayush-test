@@ -53,13 +53,10 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable'
   },
   getGuests: {
-    // 404 Not Found
-    // method: 'post',
-    // url: '/guestUsers/query/csvFiles',
-    // oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/guest/csv-file'
+    url: '/guestUsers/query/csvFiles',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    newApi: true
   },
   generateGuestPassword: {
     // different method
