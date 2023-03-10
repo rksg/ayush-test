@@ -310,11 +310,17 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.clientIsolationOptions = { autoVrrp: false }
   }
 
+  let vlanId = undefined
+  if(!get(data, 'enableVlanPooling')){
+    advancedCustomization.vlanPool=null
+    vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
       ...originalData?.wlan,
-      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      vlanId,
       advancedCustomization
     }
   }

@@ -10,8 +10,8 @@ import {
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, StepsForm, Table, TableProps, Loader } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
+import { Button, StepsForm, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                      from '@acx-ui/icons'
 import {
   useGetVenueCapabilitiesQuery,
   useGetVenueLedOnQuery,
@@ -185,18 +185,26 @@ export function AdvancedSettingForm () {
   }
 
   const handleUpdateSetting = async () => {
-    try {
-      setEditContextData({
-        ...editContextData,
-        oldData: editContextData?.newData,
-        isDirty: false
+    const isValid = !tableData.find(data => !data.model)
+    if (!isValid) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Please select model' })
       })
-      await updateVenueLedOn({
-        params: { tenantId, venueId },
-        payload: tableData.filter(data => data.model)
-      })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    } else {
+      try {
+        setEditContextData({
+          ...editContextData,
+          oldData: editContextData?.newData,
+          isDirty: false
+        })
+        await updateVenueLedOn({
+          params: { tenantId, venueId },
+          payload: tableData.filter(data => data.model)
+        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
     }
   }
 
