@@ -1,14 +1,24 @@
-import { Space }             from 'antd'
-import ReactECharts          from 'echarts-for-react'
-import { find }              from 'lodash'
-import { useIntl }           from 'react-intl'
-import { MessageDescriptor } from 'react-intl'
+import { Space }          from 'antd'
+import ReactECharts       from 'echarts-for-react'
+import { find }           from 'lodash'
+import { renderToString } from 'react-dom/server'
+import {
+  MessageDescriptor,
+  defineMessage,
+  FormattedMessage,
+  RawIntlProvider
+} from 'react-intl'
+
+import { getIntl, intlFormats } from '@acx-ui/utils'
 
 import { cssNumber, cssStr } from '../../theme/helper'
 import {
+  TooltipFormatterParams,
   tooltipOptions,
-  donutChartTooltipFormatter,
-  EventParams } from '../Chart/helper'
+  defaultRichTextFormatValues,
+  EventParams
+} from '../Chart/helper'
+import * as ChartUI from '../Chart/styledComponents'
 
 import { SubTitle } from './styledComponents'
 
@@ -56,6 +66,46 @@ export interface DonutChartProps extends DonutChartOptionalProps,
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
   (params: EventParams) => onClick && onClick(params)
+
+export const tooltipFormatter = (
+  dataFormatter: ((value: unknown) => string | null),
+  total: number,
+  format?: MessageDescriptor
+) => (
+  parameters: TooltipFormatterParams
+) => {
+  const intl = getIntl()
+  const { name, value } = parameters
+  let percent = (parameters.percent ?? 0)
+  if (percent) percent = percent / 100
+  const formattedValue = dataFormatter(parameters.value)
+  const formattedTotal = dataFormatter(total)
+  const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
+  const tooltipFormat = format ?? defineMessage({
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
+    description: 'DonutChart: default tooltip format for donut chart'
+  })
+
+  const text = <FormattedMessage {...tooltipFormat}
+    values={{
+      ...defaultRichTextFormatValues,
+      name, value, percent, total,
+      formattedPercent, formattedValue, formattedTotal
+    }}
+  />
+
+  return renderToString(
+    <RawIntlProvider value={intl}>
+      <ChartUI.TooltipWrapper>
+        <ChartUI.Badge
+          className='acx-chart-tooltip'
+          color={parameters.color?.toString()}
+          text={text}
+        />
+      </ChartUI.TooltipWrapper>
+    </RawIntlProvider>
+  )
+}
 
 export function DonutChart ({
   data,
@@ -222,8 +272,7 @@ export function DonutChart ({
         tooltip: {
           ...tooltipOptions(),
           show: !isEmpty,
-          formatter: donutChartTooltipFormatter(
-            useIntl(),
+          formatter: tooltipFormatter(
             dataFormatter,
             sum,
             props.tooltipFormat
