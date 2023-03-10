@@ -91,7 +91,7 @@ exports[`MspCustomers should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+      class="styledComponents__Wrapper-sc-1abm7iv-12 gQCJXG"
     >
       <div
         class="styledComponents__Header-sc-1abm7iv-10 jhzeUr"
@@ -102,7 +102,6 @@ exports[`MspCustomers should render table 1`] = `
           >
             <div
               class="ant-space-item"
-              style="margin-right: 12px;"
             >
               <span
                 class="ant-input-affix-wrapper styledComponents__SearchInput-sc-1abm7iv-3"
@@ -151,17 +150,6 @@ exports[`MspCustomers should render table 1`] = `
                   </span>
                 </span>
               </span>
-            </div>
-            <div
-              class="ant-space-item"
-              style="margin-right: 12px;"
-            />
-            <div
-              class="ant-space-item"
-            >
-              <div
-                class="styledComponents__HeaderRight-sc-1abm7iv-11 hLRWq"
-              />
             </div>
           </div>
         </div>
