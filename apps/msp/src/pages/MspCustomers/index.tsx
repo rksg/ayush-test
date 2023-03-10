@@ -101,6 +101,7 @@ const transformExpirationDate = (row: MspEc) => {
 export function MspCustomers () {
   const { $t } = useIntl()
   const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -108,9 +109,13 @@ export function MspCustomers () {
 
   const { data: userProfile } = useUserProfileContext()
 
+  const ecFilters = isPrimeAdmin
+    ? { tenantType: ['MSP_EC'] }
+    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+
   const mspPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: ecFilters,
     fields: [
       'check-all',
       'id',

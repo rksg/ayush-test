@@ -65,7 +65,9 @@ export function MspEcDropdownList () {
 
   const mspEcPayload = {
     searchString: '',
-    filters: { tenantType: [AccountType.MSP_EC] },
+    filters: {
+      mspAdmins: [userProfile.adminId],
+      tenantType: [AccountType.MSP_EC] },
     fields: [
       'id',
       'name',
@@ -78,7 +80,9 @@ export function MspEcDropdownList () {
 
   const integratorPayload = {
     searchString: '',
-    filters: { tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
+    filters: {
+      mspAdmins: [userProfile.adminId],
+      tenantType: [AccountType.MSP_INSTALLER, AccountType.MSP_INTEGRATOR] },
     fields: [
       'id',
       'name',
@@ -251,22 +255,21 @@ export function MspEcDropdownList () {
     if (tenantDetail?.name) {
       setCustomerName(() => tenantDetail?.name)
     }
-
-    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_EC) {
-      tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
-    }
-    if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_INTEGRATOR) {
-      tableQueryMspEc.setPayload({ ...tableQueryIntegrator.payload, searchString: searchString })
-    }
-    if(tableQueryVarRec?.data && delegationType === DelegationType.VAR_REC) {
-      tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
-    }
-    if(tableQuerySupportEc?.data && delegationType === DelegationType.SUPPORT_MSP_EC) {
-      tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
-    }
-    if(tableQuerySupport?.data && delegationType === DelegationType.SUPPORT_REC) {
-      tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
-    }
+    // if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_EC) {
+    //   tableQueryMspEc.setPayload({ ...tableQueryMspEc.payload, searchString: searchString })
+    // }
+    // if(tableQueryMspEc?.data && delegationType === DelegationType.MSP_INTEGRATOR) {
+    //   tableQueryMspEc.setPayload({ ...tableQueryIntegrator.payload, searchString: searchString })
+    // }
+    // if(tableQueryVarRec?.data && delegationType === DelegationType.VAR_REC) {
+    //   tableQueryVarRec.setPayload({ ...tableQueryVarRec.payload, searchString: searchString })
+    // }
+    // if(tableQuerySupportEc?.data && delegationType === DelegationType.SUPPORT_MSP_EC) {
+    //   tableQuerySupportEc.setPayload({ ...tableQuerySupportEc.payload, searchString: searchString })
+    // }
+    // if(tableQuerySupport?.data && delegationType === DelegationType.SUPPORT_REC) {
+    //   tableQuerySupport.setPayload({ ...tableQuerySupport.payload, searchString: searchString })
+    // }
   }, [tenantDetail?.name, searchString])
 
   const onClose = () => {
@@ -364,7 +367,7 @@ export function MspEcDropdownList () {
         />
       </UI.CompanyNameDropdown>
       <Drawer
-        width={420}
+        width={360}
         title={$t({ defaultMessage: 'Change Customer' })}
         visible={visible}
         onClose={onClose}
