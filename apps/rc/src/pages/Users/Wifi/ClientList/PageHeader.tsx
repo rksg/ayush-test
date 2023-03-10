@@ -1,3 +1,4 @@
+
 import { useIntl } from 'react-intl'
 
 import { PageHeader }            from '@acx-ui/components'
@@ -5,6 +6,8 @@ import { useGetClientListQuery } from '@acx-ui/rc/services'
 import { useParams }             from '@acx-ui/react-router-dom'
 
 import Tabs from './Tabs'
+
+
 
 function Header () {
   const { $t } = useIntl()
@@ -23,7 +26,7 @@ function Header () {
   return (
     <PageHeader
       title={$t({ defaultMessage: 'Wi-Fi' })}
-      footer={<Tabs clientCount={data?.totalCount ? data.totalCount : 0}/>}
+      footer={<Tabs clientCount={data?.totalCount ? data.totalCount : 0} />}
     />
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -11,6 +11,7 @@ import {
   SearchOutlined,
   Close
 }                          from '@acx-ui/icons'
+import { HeaderContext }                                       from '@acx-ui/main/components'
 import { useNavigate, useParams, useTenantLink , useLocation } from '@acx-ui/react-router-dom'
 import { notAvailableMsg, fixedEncodeURIComponent }            from '@acx-ui/utils'
 
@@ -23,7 +24,9 @@ function SearchBar () {
   const params = useParams()
   const { pathname, key } = useLocation()
   const searchFromUrl = params.searchVal || ''
-  const [ showSearchBar, setShowSearchBar ] = useState(searchFromUrl !== '')
+  const { searchExpanded: showSearchBar,
+    setSearchExpanded: setShowSearchBar, setLicenseExpanded
+  } = useContext(HeaderContext)
   const [ searchText, setSearchText ] = useState(searchFromUrl)
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -37,7 +40,7 @@ function SearchBar () {
   }
   const closeSearch = () => {
     setSearchText('')
-    setShowSearchBar(false)
+    setShowSearchBar && setShowSearchBar(false)
     if (pathname.includes('/search/')) {
       if (key === 'default') { // user came directly to search page, no history
         navigate({
@@ -81,7 +84,12 @@ function SearchBar () {
       : <LayoutUI.ButtonOutlined
         shape='circle'
         icon={<SearchOutlined />}
-        onClick={() => setShowSearchBar(true)}
+        onClick={
+          () => {
+            setShowSearchBar && setShowSearchBar(true)
+            setLicenseExpanded(false)
+          }
+        }
         data-testid='search-button'
       />
     : <Tooltip title={notAvailableTitle}>

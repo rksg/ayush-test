@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker, showActionModal }  from '@acx-ui/components'
 import { ArrowExpand, BulbOutlined }                         from '@acx-ui/icons'
+import { EdgeStatusLight }                                   from '@acx-ui/rc/components'
 import { useEdgeBySerialNumberQuery, useDeleteEdgeMutation } from '@acx-ui/rc/services'
 import {
   EdgeStatus,
@@ -20,9 +21,8 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
-
-import { EdgeStatusLight } from '../../EdgeStatusLight'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -54,7 +54,7 @@ export const EdgeDetailsPageHeader = () => {
       'ports',
       'ip',
       'model',
-      'fwVersion',
+      'firmwareVersion',
       'deviceStatus',
       'deviceSeverity',
       'venueId',
@@ -124,16 +124,15 @@ export const EdgeDetailsPageHeader = () => {
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge/list' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <Dropdown overlay={menu} key='actionMenu'>
+        <Dropdown overlay={menu}>
           <Button>
             <Space>
               {$t({ defaultMessage: 'More Actions' })}
@@ -142,7 +141,6 @@ export const EdgeDetailsPageHeader = () => {
           </Button>
         </Dropdown>,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -152,7 +150,7 @@ export const EdgeDetailsPageHeader = () => {
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>,
         <EdgeBulb key='bulbCount' count={0} />
-      ]}
+      ])}
       footer={<EdgeDetailsTabs currentEdge={currentEdge as EdgeStatus} />}
     />
   )

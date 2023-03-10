@@ -15,9 +15,10 @@ import {
   DateFormatEnum,
   EntitlementUtil,
   Entitlement,
-  EntitlementDeviceTypeDisplayText
+  EntitlementDeviceType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import * as UI                     from './styledComponent'
 import { SubscriptionUtilization } from './SubscriptionUtilization'
@@ -34,19 +35,19 @@ const SubscriptionTable = () => {
   const columns: TableProps<Entitlement>['columns'] = [
     {
       title: $t({ defaultMessage: 'Subscription' }),
-      dataIndex: 'deviceType',
-      key: 'deviceType',
-      filterable: true,
-      render: function (_, row) {
-        return $t(EntitlementDeviceTypeDisplayText[row.deviceType])
-      }
+      dataIndex: 'name',
+      key: 'name',
+      filterable: true
     },
     {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'deviceSubType',
       key: 'deviceSubType',
       render: function (_, row) {
-        return row?.deviceSubType ? EntitlementUtil.deviceSubTypeToText(row?.deviceSubType) : ''
+        if (row.deviceType === EntitlementDeviceType.SWITCH)
+          return EntitlementUtil.deviceSubTypeToText(row?.deviceSubType)
+        else
+          return EntitlementUtil.tempLicenseToString(row.tempLicense === true)
       }
     },
     {
@@ -108,20 +109,16 @@ const SubscriptionTable = () => {
               defaultMessage: 'Successfully refreshed.'
             })
           })
-        } catch {
-          showToast({
-            type: 'error',
-            content: $t({
-              defaultMessage: 'Failed, please try again later.'
-            })
-          })
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }
     }
   ]
 
-  const GetStatus = (status: String) => {
-    if( status === 'VALID') {
+  const GetStatus = (expirationDate: string) => {
+    const isValid = moment(expirationDate).isAfter(Date.now())
+    if( isValid) {
       return $t({ defaultMessage: 'Active' })
     } else {
       return $t({ defaultMessage: 'Expired' })
@@ -131,8 +128,8 @@ const SubscriptionTable = () => {
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      name: EntitlementDeviceTypeDisplayText[response?.deviceType],
-      status: GetStatus(response?.status as string)
+      name: EntitlementUtil.getDeviceTypeText($t, response?.deviceType),
+      status: GetStatus(response?.expirationDate)
     }
   })
 
@@ -140,7 +137,7 @@ const SubscriptionTable = () => {
     <Loader states={[queryResults]}>
       <Table
         columns={columns}
-        actions={actions}
+        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='id'
       />

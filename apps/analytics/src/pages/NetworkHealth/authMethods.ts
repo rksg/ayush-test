@@ -88,7 +88,8 @@ const specs: AuthMethodSpec[] = [
     stages: [
       stage('auth'),
       stage('assoc'),
-      stage('eap', defineMessage({ defaultMessage: 'PSK' })),
+      stage('eap'),
+      stage('radius'),
       stage('dhcp')
     ],
     clientTypes: [

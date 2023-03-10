@@ -9,6 +9,7 @@ import {
   BridgeServiceEnum,
   mdnsProxyRuleTypeLabelMapping
 } from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
@@ -70,7 +71,6 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'service',
       key: 'service',
-      sorter: true,
       render: (data, row) => {
         return getRuleTypeLabel(row)
       }
@@ -78,14 +78,12 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     {
       title: $t({ defaultMessage: 'From VLAN' }),
       dataIndex: 'fromVlan',
-      key: 'fromVlan',
-      sorter: true
+      key: 'fromVlan'
     },
     {
       title: $t({ defaultMessage: 'To VLAN' }),
       dataIndex: 'toVlan',
-      key: 'toVlan',
-      sorter: true
+      key: 'toVlan'
     }
   ]
 
@@ -149,10 +147,11 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       }
       <Table
         columns={columns}
+        columnState={{ hidden: readonly }}
         dataSource={rules}
         rowKey='id'
-        actions={readonly ? [] : actions}
-        rowActions={rowActions}
+        actions={readonly ? [] : filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={readonly ? false : { type: 'radio' }}
       />
     </>

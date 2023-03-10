@@ -22,52 +22,38 @@ const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => 
     accountingRadiusId: data.accountingRadiusId,
     authRadiusId: data.authRadiusId
   }
+  let authRadius = {}
+  if (get(data, 'authRadius.primary.ip')) {
+    authRadius = {
+      ...authRadius,
+      ...data.authRadius
+    }
+  }
+  saveData = {
+    ...saveData,
+    ...{
+      enableAuthProxy: data.enableAuthProxy,
+      enableSecondaryAuthServer: data.enableSecondaryAuthServer,
+      authRadius
+    }
+  }
 
-  if (data.isCloudpathEnabled) {
-    delete data?.accountingRadius
-    delete data?.authRadius
+  if (data.enableAccountingService) {
+    let accountingRadius = {}
+    accountingRadius = {
+      ...accountingRadius,
+      ...data.accountingRadius
+    }
     saveData = {
       ...saveData,
       ...{
-        cloudpathServerId: data.cloudpathServerId,
-        enableAccountingProxy: false,
-        enableAuthProxy: false
-      }
-    }
-  } else {
-    delete data?.cloudpathServerId
-    let authRadius = {}
-    if (get(data, 'authRadius.primary.ip')) {
-      authRadius = {
-        ...authRadius,
-        ...data.authRadius
-      }
-    }
-    saveData = {
-      ...saveData,
-      ...{
-        enableAuthProxy: data.enableAuthProxy,
-        enableSecondaryAuthServer: data.enableSecondaryAuthServer,
-        authRadius
-      }
-    }
-
-    if (data.enableAccountingService) {
-      let accountingRadius = {}
-      accountingRadius = {
-        ...accountingRadius,
-        ...data.accountingRadius
-      }
-      saveData = {
-        ...saveData,
-        ...{
-          enableAccountingProxy: data.enableAccountingProxy,
-          enableSecondaryAcctServer: data.enableSecondaryAcctServer,
-          accountingRadius
-        }
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableSecondaryAcctServer: data.enableSecondaryAcctServer,
+        accountingRadius
       }
     }
   }
+
   if (editMode) {
     saveData = {
       ...saveData,
@@ -106,6 +92,7 @@ const parseOpenSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
       ...saveData,
       ...{
         wlan: {
+          ...saveData.wlan,
           advancedCustomization: new OpenWlanAdvancedCustomization(),
           enable: true,
           vlanId: 1
@@ -158,13 +145,6 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
           advancedCustomization: new DpskWlanAdvancedCustomization()
         }
       }
-    }
-  }
-
-  if (data.cloudpathServerId) {
-    saveData = {
-      ...saveData,
-      cloudpathServerId: data.cloudpathServerId
     }
   }
   return saveData
@@ -330,11 +310,17 @@ export function transferMoreSettingsToSave (data: NetworkSaveData, originalData:
     advancedCustomization.clientIsolationOptions = { autoVrrp: false }
   }
 
+  let vlanId = undefined
+  if(!get(data, 'enableVlanPooling')){
+    advancedCustomization.vlanPool=null
+    vlanId = data?.wlan?.vlanId ?? originalData?.wlan?.vlanId
+  }
+
   let saveData:NetworkSaveData = {
     ...originalData,
     wlan: {
       ...originalData?.wlan,
-      vlanId: data?.wlan?.vlanId ?? originalData?.wlan?.vlanId,
+      vlanId,
       advancedCustomization
     }
   }

@@ -4,9 +4,11 @@ import { Switch }  from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, Button, Drawer, Table, TableProps } from '@acx-ui/components'
-import { useApListQuery }                            from '@acx-ui/rc/services'
-import { AP, useTableQuery, Venue }                  from '@acx-ui/rc/utils'
+import { Loader, Button, Drawer, Table, TableProps }    from '@acx-ui/components'
+import { APStatus, seriesMappingAP }                    from '@acx-ui/rc/components'
+import { useApListQuery }                               from '@acx-ui/rc/services'
+import { AP, ApDeviceStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { filterByAccess }                               from '@acx-ui/user'
 
 export interface SimpleApRecord {
   serialNumber: string;
@@ -28,15 +30,19 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const [ tableData, setTableData ] = useState<AP[]>([])
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
 
-  const getTableFilters = (venue: Venue) => {
+  const getTableFiltersForVenue = (venue: Venue) => {
     return { venueId: [venue.id] }
   }
 
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      fields: ['name', 'model', 'apMac', 'venueName', 'venueId', 'clients', 'serialNumber'],
-      filters: getTableFilters(venue)
+      // eslint-disable-next-line max-len
+      fields: ['name', 'model', 'apMac', 'venueName', 'venueId', 'clients', 'serialNumber', 'deviceStatus'],
+      filters: getTableFiltersForVenue(venue),
+      search: {
+        searchTargetFields: ['name', 'model']
+      }
     }
   })
 
@@ -44,7 +50,10 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   useEffect(() => {
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: getTableFilters(venue)
+      filters: {
+        ...tableQuery.payload.filters,
+        ...getTableFiltersForVenue(venue)
+      }
     })
 
     if (tableQuery.data) {
@@ -83,9 +92,12 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
     let result: SimpleApRecord[] = []
 
     if (isActivated) {
-      result = _.uniq([...activatedAps, ...selectedAps.map(selectedAp => {
-        return { serialNumber: selectedAp.serialNumber, name: selectedAp.name }
-      })])
+      const simpleSelectedAps = selectedAps.map(selectedAp => ({
+        serialNumber: selectedAp.serialNumber,
+        name: selectedAp.name
+      }))
+
+      result = _.uniqBy([...activatedAps, ...simpleSelectedAps], (ap) => ap.serialNumber)
     } else {
       result = _.remove(activatedAps, (activatedAp: SimpleApRecord) => {
         // eslint-disable-next-line max-len
@@ -116,12 +128,24 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       title: $t({ defaultMessage: 'AP' }),
       dataIndex: 'name',
       key: 'name',
+      searchable: true,
       sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Status' }),
+      dataIndex: 'deviceStatus',
+      key: 'deviceStatus',
+      sorter: true,
+      disable: true,
+      filterKey: 'deviceStatusSeverity',
+      filterable: seriesMappingAP().map(item => ({ key: item.key, value: item.name })),
+      render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     },
     {
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       key: 'model',
+      searchable: true,
       sorter: true
     },
     {
@@ -166,12 +190,14 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       <Table<AP>
         data-testid='MdnsProxyScopeApTable'
         columns={columns}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         dataSource={tableData}
         rowKey='serialNumber'
         rowSelection={{ type: 'checkbox', selectedRowKeys }}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   </>
@@ -192,13 +218,13 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
 
   return (
     <Drawer
-      title={venue.name + ': ' + $t({ defaultMessage: 'Select APs' })}
+      title={$t({ defaultMessage: '{venueName}: Select APs' }, { venueName: venue.name })}
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
       children={content}
       footer={footer}
-      width={'750px'}
+      width={'800px'}
     />
   )
 }

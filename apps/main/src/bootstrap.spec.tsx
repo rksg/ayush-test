@@ -12,7 +12,8 @@ jest.mock('@acx-ui/components', () => ({
     data-testid='config-provider'
   />
 }))
-jest.mock('@acx-ui/rc/components', () => ({
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
   UserProfileProvider: (props: { children: React.ReactNode }) => <div
     {...props}
     data-testid='user-profile-provider'
@@ -27,7 +28,6 @@ describe('bootstrap.init', () => {
     document.body.appendChild(root)
 
     await act(() => bootstrap.init())
-
     expect(screen.getByTestId('all-routes')).toBeVisible()
   })
 })

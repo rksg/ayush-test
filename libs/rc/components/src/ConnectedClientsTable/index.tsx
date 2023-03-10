@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import { useEffect } from 'react'
 
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip }                                                                              from '@acx-ui/components'
 import { Table, TableProps, Loader }                                                                      from '@acx-ui/components'
-import { useGetClientListQuery }                                                                          from '@acx-ui/rc/services'
+import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                                      from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
-import { formatter }                                                                                      from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -17,7 +17,50 @@ import * as UI from './styledComponents'
 // TODO: userProfileService.userHasRole(user, 'OFFICE_ADMIN')
 const hasGuestManagerRole = false
 
-function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
+function GetVenueFilterOptions (tenantId: string|undefined) {
+  const { venueFilterOptions } = useVenuesListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  } }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
+    })
+  })
+  return venueFilterOptions
+}
+
+function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefined) {
+  const { apFilterOptions } = useApListQuery({ params: { tenantId }, payload: {
+    fields: ['name', 'serialNumber'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC',
+    filters: venueId ? { venueId: [venueId] } : {}
+  } }, {
+    selectFromResult: ({ data }) => ({
+      apFilterOptions: data?.data.map(v=>({ key: v.serialNumber, value: v.name? v.name : v.serialNumber })) || true
+    })
+  })
+  return apFilterOptions
+}
+
+function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
+  const { $t } = useIntl()
+  const { tenantId, venueId, apId } = useParams()
+
+  const clientStatuses = () => [
+    { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
+    { key: 'Poor', text: $t({ defaultMessage: 'Poor' }) },
+    { key: 'Average', text: $t({ defaultMessage: 'Average' }) },
+    { key: 'Good', text: $t({ defaultMessage: 'Good' }) }
+  ] as Array<{ key: string, text: string }>
+
+  const statusFilterOptions = clientStatuses().map(({ key, text }) => ({
+    key, value: text
+  }))
+
   const columns: TableProps<ClientList>['columns'] = [
     {
       key: 'hostname',
@@ -48,21 +91,14 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Health' }),
       dataIndex: 'healthCheckStatus',
       sorter: true,
+      filterMultiple: false,
+      filterValueNullable: false,
+      filterable: statusFilterOptions,
       render: (data, row) => {
-        return <Tooltip title={<FormattedMessage
-          defaultMessage={`
-              Client Health: {healthCheckStatus}<br></br>
-              Reason: {healthStatusReason}<br></br>
-              Since: {lastUpdateTime}
-            `}
-          values={{
-            healthCheckStatus: row.healthCheckStatus,
-            healthStatusReason: row.healthStatusReason,
-            lastUpdateTime: formatter('dateTimeFormat')(row.lastUpdateTime),
-            br: () => <br />
-          }}
-        />}>
-          <ClientHealthIcon type={row.healthClass} />
+        return <Tooltip title={row.healthCheckStatus}>
+          <Space>
+            <ClientHealthIcon type={row.healthClass} />
+          </Space>
         </Tooltip>
       }
     },
@@ -104,6 +140,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       key: 'venueId',
       title: intl.$t({ defaultMessage: 'Venue' }),
       dataIndex: 'venueId',
+      filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
       render: (data, row) => {
         if(hasGuestManagerRole){
           return row.venueName
@@ -118,6 +155,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       key: 'serialNumber',
       title: intl.$t({ defaultMessage: 'AP' }),
       dataIndex: 'serialNumber',
+      filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
       render: (data, row) => {
         if(hasGuestManagerRole){
           return row.apName
@@ -137,7 +175,7 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
           return '--'
         }else{
           return (
-            <TenantLink to={`/devices/switch/${data}/details/overview`}>{row.switchName}</TenantLink>
+            <TenantLink to={`/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`}>{row.switchName}</TenantLink>
           )
         }
       }
@@ -147,10 +185,15 @@ function getCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       title: intl.$t({ defaultMessage: 'Network' }),
       dataIndex: 'ssid',
       sorter: true,
-      render: (data, row) =>
-        (
-          <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
-        )
+      render: (data, row) => {
+        if (!row.healthCheckStatus) {
+          return data
+        } else {
+          return (
+            <TenantLink to={`/networks/wireless/${row.networkId}/network-details/overview`}>{data}</TenantLink>
+          )
+        }
+      }
     },
     {
       key: 'sessStartTime',
@@ -344,12 +387,17 @@ export const ConnectedClientsTable = (props: {
   const { showAllColumns, searchString, setConnectedClientCount } = props
 
   defaultClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
-    params.serialNumber ? { serialNumber: [params.serialNumber] } : {}
+    params.serialNumber ? { serialNumber: [params.serialNumber] } :
+      params.apId ? { serialNumber: [params.apId] } : {}
 
 
   const inlineTableQuery = usePollingTableQuery({
     useQuery: useGetClientListQuery,
     defaultPayload: { ...defaultClientPayload, searchString },
+    search: {
+      searchTargetFields: defaultClientPayload.searchTargetFields,
+      searchString: searchString
+    },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
@@ -375,11 +423,14 @@ export const ConnectedClientsTable = (props: {
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Connected Clients' })}
         </Subtitle>
-        <Table
-          columns={getCols(useIntl(), showAllColumns)}
+        <Table<ClientList>
+          columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
+          floatRightFilters={true}
           rowKey='clientMac'
         />
       </Loader>

@@ -5,6 +5,8 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
+  useGetEnhancedMdnsProxyListQuery,
+  useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
   useServiceListQuery
 } from '@acx-ui/rc/services'
@@ -13,32 +15,27 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
 const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  fields: ['id']
 }
 
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
   const earlyBetaEnabled = useIsSplitOn(Features.EDGE_EARLY_BETA)
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
   const isEdgeDhcpEnabled = useIsSplitOn(Features.EDGES) || earlyBetaEnabled
 
   const services = [
     {
       type: ServiceType.MDNS_PROXY,
       category: RadioCardCategory.WIFI,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.MDNS_PROXY] } }
+      tableQuery: useGetEnhancedMdnsProxyListQuery({
+        params, payload: defaultPayload
       })
     },
     {
@@ -53,8 +50,20 @@ export default function MyServices () {
       category: RadioCardCategory.EDGE,
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
+      },{
+        skip: !isEdgeDhcpEnabled
       }),
       disabled: !isEdgeDhcpEnabled
+    },
+    {
+      type: ServiceType.NETWORK_SEGMENTATION,
+      category: RadioCardCategory.EDGE,
+      tableQuery: useGetNetworkSegmentationStatsListQuery({
+        params, payload: { ...defaultPayload }
+      },{
+        skip: !networkSegmentationEnabled
+      }),
+      disabled: !networkSegmentationEnabled
     },
     {
       type: ServiceType.DPSK,
@@ -80,11 +89,11 @@ export default function MyServices () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
-        extra={[
-          <TenantLink to={getSelectServiceRoutePath(true)} key='add'>
+        extra={filterByAccess([
+          <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         {services.map(service => {

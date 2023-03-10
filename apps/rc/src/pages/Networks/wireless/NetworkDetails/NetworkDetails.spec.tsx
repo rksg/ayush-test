@@ -7,6 +7,8 @@ import { mockServer, render, screen }   from '@acx-ui/test-utils'
 
 import NetworkDetails from './NetworkDetails'
 
+jest.mock('./NetworkIncidentsTab', () => ({ NetworkIncidentsTab: () => <div>incidents</div> }))
+jest.mock('./NetworkOverviewTab', () => ({ NetworkOverviewTab: () => <div>overview</div> }))
 
 const network = {
   type: 'aaa',
@@ -43,16 +45,16 @@ describe('NetworkDetails', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json(network))
+        (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
         CommonUrlsInfo.getNetworksDetailHeader.url,
-        (req, res, ctx) => res(ctx.json(networkDetailHeaderData))
+        (_, res, ctx) => res(ctx.json(networkDetailHeaderData))
       )
     )
   })
 
-  it('should render correctly', async () => {
+  it('renders a tab', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
@@ -62,21 +64,20 @@ describe('NetworkDetails', () => {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
-    expect(await screen.findByText('testNetwork')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(6)
+    expect(await screen.findByText('overview')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(5)
   })
-
-  it('should not have active tab if it does not exist', async () => {
+  it('renders another tab', async () => {
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-      activeTab: 'not-exist'
+      activeTab: 'incidents'
     }
     render(<Provider><NetworkDetails /></Provider>, {
       route: { params, path: '/:tenantId/:networkId/:activeTab' }
     })
 
-    expect(screen.getAllByRole('tab').filter(x => x.getAttribute('aria-selected') === 'true'))
-      .toHaveLength(0)
+    expect(await screen.findByText('incidents')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(5)
   })
 })

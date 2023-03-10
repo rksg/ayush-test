@@ -39,3 +39,11 @@ export interface MdnsProxyAp {
   serviceName: string;
   rules: MdnsProxyForwardingRule[]
 }
+
+export interface MdnsProxyViewModel {
+  id: string;
+  name: string;
+  rules: MdnsProxyForwardingRule[];
+  tenantId: string;
+  venueIds?: string[];
+}

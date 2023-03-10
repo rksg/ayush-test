@@ -56,6 +56,8 @@ export function CloudpathForm () {
     '*.ocsp.godaddy.com',
     '*.play.google.com',
     '*.play.googleapis.com',
+    '*.ruckuswireless.com',
+    '*.ruckus.cloud',
     '*.settings.crashlytics.com',
     '*.ssl.gstatic.com',
     'Android.clients.google.com',
@@ -83,6 +85,15 @@ export function CloudpathForm () {
       if(data.guestPortal?.walledGardens){
         form.setFieldValue('walledGardensString',
           data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
+      }
+      if(data.accountingRadius){
+        form.setFieldValue('enableAccountingService', true)
+        form.setFieldValue('accountingRadiusId',
+          data.accountingRadius.id)
+      }
+      if(data.authRadius){
+        form.setFieldValue('authRadiusId',
+          data.authRadius.id)
       }
     }
   },[data])

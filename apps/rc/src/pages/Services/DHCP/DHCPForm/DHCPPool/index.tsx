@@ -17,8 +17,6 @@ import {
 import { DHCPConfigTypeEnum }          from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm'
-
 import { PoolTable } from './PoolTable'
 
 
@@ -108,7 +106,7 @@ export default function DHCPPoolTable ({
   const valueMap = useRef<Record<string, DHCPPool>>(value ? _.keyBy(value, 'id') : {})
   const [visible, setVisible] = useState(false)
   const [vlanEnable, setVlanEnable] = useState(true)
-
+  const [leaseUnit, setLeaseUnit] = useState(LeaseUnit.HOURS)
   const values = () => Object.values(valueMap.current)
 
   const handleChanged = () => onChange?.(values())
@@ -161,10 +159,7 @@ export default function DHCPPoolTable ({
           ]}
           validateFirst
           hasFeedback
-          children={<Input disabled={
-            isEdit() &&
-            isDefaultService &&
-            form.getFieldValue('name') === DEFAULT_GUEST_DHCP_NAME}/>}
+          children={<Input/>}
         />
         <Form.Item
           name='description'
@@ -267,14 +262,26 @@ export default function DHCPPoolTable ({
               noStyle
               name='leaseTime'
               label={$t({ defaultMessage: 'Lease Time' })}
+              validateTrigger='onChange'
               rules={[
-                { required: true }
+                { required: true },
+                { validator: (_, value) => {
+                  if(value<(leaseUnit === LeaseUnit.HOURS?1:5) ||
+                    value >(leaseUnit === LeaseUnit.HOURS?24:1440)){
+                    return Promise.reject($t({ defaultMessage:
+                      'Value must between 5-1440 minutes or 1-24 hours' }))
+                  }
+                  return Promise.resolve()
+                } }
               ]}
             >
-              <InputNumber data-testid='leaseTime' min={1} max={1440} style={{ width: '100%' }} />
+              <InputNumber data-testid='leaseTime'
+                min={leaseUnit === LeaseUnit.HOURS?1:5}
+                max={leaseUnit === LeaseUnit.HOURS?24:1440}
+                style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item noStyle name='leaseUnit'>
-              <Select data-testid='leaseType'>
+              <Select data-testid='leaseType' onChange={(value)=>setLeaseUnit(value)}>
                 <Option value={'leaseTimeHours'}>{$t({ defaultMessage: 'Hours' })}</Option>
                 <Option value={'leaseTimeMinutes'}>{$t({ defaultMessage: 'Minutes' })}</Option>
               </Select>
@@ -313,7 +320,8 @@ export default function DHCPPoolTable ({
         isDefaultService={isDefaultService}
       />
       <Drawer
-        title={$t({ defaultMessage: 'Add DHCP Pool' })}
+        title={isEdit()? $t({ defaultMessage: 'Edit DHCP Pool' }):
+          $t({ defaultMessage: 'Add DHCP Pool' })}
         visible={visible}
         onClose={onClose}
         mask={true}
@@ -321,7 +329,7 @@ export default function DHCPPoolTable ({
         destroyOnClose={true}
         width={900}
         footer={<Drawer.FormFooter
-          showAddAnother={!isEdit()}
+          showAddAnother={!isEdit()&&values().length<3}
           buttonLabel={({
             addAnother: $t({ defaultMessage: 'Add another pool' }),
             save: isEdit() ? $t({ defaultMessage: 'Update' }) : $t({ defaultMessage: 'Add' })

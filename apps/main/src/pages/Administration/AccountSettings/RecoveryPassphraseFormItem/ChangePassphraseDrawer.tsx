@@ -6,7 +6,7 @@ import { useParams }  from 'react-router-dom'
 import styled         from 'styled-components/macro'
 
 
-import { Drawer, Button, showToast }    from '@acx-ui/components'
+import { Drawer, Button }               from '@acx-ui/components'
 import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'
@@ -46,12 +46,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
         payload: { psk: passphrase.join('') }
       }).unwrap()
 
-      setVisible(false)
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -69,8 +66,9 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
   }
 
   React.useEffect(() => {
-    setPassphrase(data.trim() === '' ? [] : data.split(' '))
-  }, [data])
+    if (visible)
+      setPassphrase(data.trim() === '' ? [] : data.split(' '))
+  }, [data, visible])
 
   return (
     <Drawer

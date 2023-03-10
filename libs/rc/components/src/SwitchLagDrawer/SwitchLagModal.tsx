@@ -30,7 +30,6 @@ import { SwitchVlanUnion,
   EditPortMessages,
   SwitchPortViewModel,
   Vlan,
-  showGeneralError,
   Lag,
   LAG_TYPE }                                                  from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -210,10 +209,10 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           taggedVlans
         }
         delete payload.portsType
-        await updateLag({ params: { tenantId, switchId }, payload }).unwrap()
+        await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
         onClose()
       } catch (err) {
-        showGeneralError(err)
+        console.log(err) // eslint-disable-line no-console
       }
     } else {
       try {
@@ -226,7 +225,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         await addLag({ params: { tenantId, switchId }, payload }).unwrap()
         onClose()
       } catch (err) {
-        showGeneralError(err)
+        console.log(err) // eslint-disable-line no-console
       }
     }
   }
@@ -342,7 +341,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const footer = [
-    <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+    <Space key='edit-port-footer'>
       <Button key='cancelBtn' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -350,7 +349,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         key='okBtn'
         type='secondary'
         onClick={() => form.submit()}>
-        {$t({ defaultMessage: 'Ok' })}
+        {$t({ defaultMessage: 'Add' })}
       </Button>
     </Space>
   ]

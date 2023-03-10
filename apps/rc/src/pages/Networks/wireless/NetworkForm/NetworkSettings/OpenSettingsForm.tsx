@@ -26,13 +26,14 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        isCloudpathEnabled: data.isCloudpathEnabled,
         enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
-        accountingRadiusId: data.accountingRadiusId,
-        authRadiusId: data.authRadiusId
+        accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
+        authRadiusId: data.authRadiusId||data.authRadius?.id
       })
+      form.setFieldValue(['wlan', 'macAddressAuthentication'],
+        data.wlan?.macAddressAuthentication)
     }
   }, [data])
 
@@ -49,36 +50,23 @@ export function OpenSettingsForm () {
 }
 
 function SettingsForm () {
-  const form = Form.useFormInstance()
-  const isCloudpathEnabled = useWatch<boolean>('isCloudpathEnabled')
-  const { editMode, data, setData } = useContext(NetworkFormContext)
+  const isMacAuthEnabled = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
+  const { editMode, data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
 
-  const onCloudPathChange = (checked: boolean) => {
-    if(checked){
-      delete data?.authRadius
-      delete data?.accountingRadius
-    }else{
-      delete data?.cloudpathServerId
-      form.setFieldsValue({
-        cloudpathServerId: ''
-      })
-    }
-    setData && setData({ ...data, isCloudpathEnabled: checked })
-  }
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
-        <Form.Item noStyle name='isCloudpathEnabled' valuePropName='checked'>
-          <Switch disabled={editMode||disableAAA} onChange={onCloudPathChange} />
+        <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
+          <Switch disabled={editMode||disableAAA} />
         </Form.Item>
-        <span>{$t({ defaultMessage: 'Use Cloudpath Server' })}</span>
+        <span>{$t({ defaultMessage: 'Use MAC Auth' })}</span>
       </Form.Item>
 
-      {isCloudpathEnabled && <CloudpathServerForm />}
+      {isMacAuthEnabled && <CloudpathServerForm />}
       {!(editMode) && <NetworkMoreSettingsForm wlanData={data} />}
     </>
   )

@@ -3,12 +3,14 @@ import { useIntl } from 'react-intl'
 import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                              from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const navigate = useNavigate()
+  const linkToProfiles = useTenantLink('/networks/wired/profiles')
 
   const [deleteProfiles] = useDeleteProfilesMutation()
 
@@ -85,19 +87,18 @@ export function ProfilesTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
-          disabled: true //Waiting for support
-          // onClick: () => {}
+          onClick: () => navigate(`${linkToProfiles.pathname}/add`)
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
           onClick: () => {
             navigate('cli/add', { replace: false })
           }
-        }]}
+        }])}
       />
     </Loader></>
   )

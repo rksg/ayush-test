@@ -1,13 +1,14 @@
 import { useState } from 'react'
 
-import { Form, Input } from 'antd'
-import { useIntl }     from 'react-intl'
+import { Form, Input, Space } from 'antd'
+import { useIntl }            from 'react-intl'
 
 import {
   Button,
   Loader,
+  Modal,
+  ModalType,
   showActionModal,
-  showToast,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -21,12 +22,16 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ExpirationType,
+  NetworkTypeEnum,
   NewDpskPassphrase,
   transformAdvancedDpskExpirationText,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { formatter } from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { formatter }      from '@acx-ui/utils'
+
+import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
 
 import { unlimitedNumberOfDeviceLabel } from './contentsMap'
 import DpskPassphraseDrawer             from './DpskPassphraseDrawer'
@@ -45,6 +50,7 @@ export default function DpskPassphraseManagement () {
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
   const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
+  const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
   const tableQuery = useTableQuery({
     useQuery: useDpskPassphraseListQuery,
@@ -59,11 +65,8 @@ export default function DpskPassphraseManagement () {
   })
 
   const downloadPassphrases = () => {
-    downloadCsv({ params }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export passphrases.' })
-      })
+    downloadCsv({ params }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -82,7 +85,8 @@ export default function DpskPassphraseManagement () {
       key: 'username',
       title: $t({ defaultMessage: 'User Name' }),
       dataIndex: 'username',
-      sorter: true
+      sorter: true,
+      ellipsis: true
     },
     {
       key: 'numberOfDevices',
@@ -105,18 +109,23 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'passphrase',
       sorter: false,
       render: function (data) {
-        return <div onClick={(e)=> {e.stopPropagation()}}>
-          <Input.Password
-            readOnly
-            bordered={false}
-            value={data as string}
-          />
-          <Button
-            type='link'
-            icon={<CopyOutlined />}
-            onClick={() => navigator.clipboard.writeText(data as string)}
-          />
-        </div>
+        return (
+          <Space
+            direction='horizontal'
+            size={2}
+            onClick={(e)=> {e.stopPropagation()}}>
+            <Input.Password
+              readOnly
+              bordered={false}
+              value={data as string}
+            />
+            <Button
+              type='link'
+              icon={<CopyOutlined />}
+              onClick={() => navigator.clipboard.writeText(data as string)}
+            />
+          </Space>
+        )
       }
     },
     {
@@ -176,8 +185,19 @@ export default function DpskPassphraseManagement () {
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
+    },
+    {
+      label: $t({ defaultMessage: 'Add DPSK Network' }),
+      onClick: () => setNetworkModalVisible(true)
     }
   ]
+
+  const networkForm = <NetworkForm modalMode={true}
+    modalCallBack={()=>{
+      setNetworkModalVisible(false)
+    }}
+    createType={NetworkTypeEnum.DPSK}
+  />
 
   return (<>
     <DpskPassphraseDrawer
@@ -198,14 +218,8 @@ export default function DpskPassphraseManagement () {
         try {
           await uploadCsv({ params, payload: formData }).unwrap()
           setUploadCsvDrawerVisible(false)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-          if (error.data?.message) {
-            showToast({
-              type: 'error',
-              content: error.data.message
-            })
-          }
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
         }
       }}
       onClose={() => setUploadCsvDrawerVisible(false)} >
@@ -215,14 +229,22 @@ export default function DpskPassphraseManagement () {
         children={<Input />}
       />
     </ImportFileDrawer>
+    <Modal
+      title={$t({ defaultMessage: 'Add DPSK Network' })}
+      type={ModalType.ModalStepsForm}
+      visible={networkModalVisible}
+      mask={true}
+      children={networkForm}
+      destroyOnClose={true}
+    />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'checkbox' }}
         rowKey='id'
       />

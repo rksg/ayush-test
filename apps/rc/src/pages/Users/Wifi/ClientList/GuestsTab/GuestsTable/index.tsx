@@ -31,11 +31,12 @@ import {
   Network,
   NetworkTypeEnum,
   GuestNetworkTypeEnum,
-  RequestPayload,
-  GuestErrorRes
+  RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }                                           from '@acx-ui/utils'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
+import { getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -63,13 +64,20 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export default function GuestsTable () {
+export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
-    defaultPayload: defaultGuestPayload,
+    defaultPayload: {
+      ...defaultGuestPayload,
+      filters: {
+        includeExpired: ['true']
+      }
+    },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
     }
@@ -89,12 +97,16 @@ export default function GuestsTable () {
       <span>
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
-      <Button type='link'
-        onClick={()=> setNetworkModalVisible(true)}
-        disabled={!useIsSplitOn(Features.SERVICES)}
-        size='small'>
-        {$t({ defaultMessage: 'Add Guest Pass Network' })}
-      </Button>
+      {
+        hasAccess() &&
+        <Button type='link'
+          onClick={() => setNetworkModalVisible(true)}
+          disabled={!isServicesEnabled}
+          size='small'>
+          {$t({ defaultMessage: 'Add Guest Pass Network' })}
+        </Button>
+      }
+
     </span>
 
   const guestAction = useGuestActions()
@@ -117,6 +129,15 @@ export default function GuestsTable () {
 
   const networkFilterOptions = allowedNetworkList.map(network=>({
     key: network.id, value: network.name
+  }))
+
+  const showExpired = () => [
+    { key: 'true', text: $t({ defaultMessage: 'Show expired guests' }) },
+    { key: 'false', text: $t({ defaultMessage: 'Hide expired guests' }) }
+  ] as Array<{ key: string, text: string }>
+
+  const showExpiredOptions = showExpired().map(({ key, text }) => ({
+    key, value: text
   }))
 
   const navigate = useNavigate()
@@ -159,7 +180,9 @@ export default function GuestsTable () {
         formData.append(key, value as string)
       }
     })
-    importCsv({ params, payload: formData })
+    importCsv({
+      params: { tenantId: params.tenantId, networkId: values.networkId }, payload: formData
+    })
   }
 
   const columns: TableProps<Guest>['columns'] = [
@@ -236,6 +259,10 @@ export default function GuestsTable () {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expiryDate',
       sorter: true,
+      filterKey: 'includeExpired',
+      filterMultiple: false,
+      filterable: showExpiredOptions || true,
+      defaultFilteredValue: ['true'],
       render: function (data, row) {
         return renderExpires(row)
       }
@@ -255,7 +282,14 @@ export default function GuestsTable () {
     setVisible(false)
   }
 
-  const rowActions: TableProps<Guest>['rowActions'] = [
+  const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
+    {
+      label: $t({ defaultMessage: 'Download Information' }),
+      onClick: (selectedRows) => {
+        guestAction.showDownloadInformation(selectedRows, params.tenantId)
+      }
+    }
+  ] : [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
@@ -327,20 +361,34 @@ export default function GuestsTable () {
           type: 'checkbox'
         }}
         actions={[{
+          key: 'addGuest',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
+          key: 'addGuestNetwork',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
-          disabled: !useIsSplitOn(Features.SERVICES)
+          disabled: !isServicesEnabled
         },
         {
+          key: 'importFromFile',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }
-        ]}
+        }].filter(((item)=> {
+          switch(item.key) {
+            case 'addGuest':
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
+            case 'addGuestNetwork':
+              return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
+            case 'importFromFile':
+              return true
+            default:
+              return false
+          }
+        }))}
       />
 
       <Drawer
@@ -399,15 +447,11 @@ export default function GuestsTable () {
 
 export const renderAllowedNetwork = function (currentGuest: Guest) {
   const { $t } = getIntl()
-  // const hasGuestManagerRole = false   //TODO: Wait for userProfile()
-  // if (currentGuest.networkId && !hasGuestManagerRole) {
-  //   return (
-  //     <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-  //       {currentGuest.ssid}</TenantLink>
-  //   )
-  // } else if (currentGuest.networkId && hasGuestManagerRole) {
-  // return currentGuest.ssid
-  if (currentGuest.networkId) {
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  if (isGuestManager) {
+    return currentGuest.ssid
+  } else if (currentGuest.networkId) {
     return (
       <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>

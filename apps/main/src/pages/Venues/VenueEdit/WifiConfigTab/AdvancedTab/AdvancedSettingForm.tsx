@@ -185,21 +185,26 @@ export function AdvancedSettingForm () {
   }
 
   const handleUpdateSetting = async () => {
-    try {
-      setEditContextData({
-        ...editContextData,
-        oldData: editContextData?.newData,
-        isDirty: false
-      })
-      await updateVenueLedOn({
-        params: { tenantId, venueId },
-        payload: tableData.filter(data => data.model)
-      })
-    } catch {
+    const isValid = !tableData.find(data => !data.model)
+    if (!isValid) {
       showToast({
         type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        content: $t({ defaultMessage: 'Please select model' })
       })
+    } else {
+      try {
+        setEditContextData({
+          ...editContextData,
+          oldData: editContextData?.newData,
+          isDirty: false
+        })
+        await updateVenueLedOn({
+          params: { tenantId, venueId },
+          payload: tableData.filter(data => data.model)
+        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
     }
   }
 

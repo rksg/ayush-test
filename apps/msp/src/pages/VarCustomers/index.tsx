@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
@@ -6,12 +8,15 @@ import {
   Button,
   Loader,
   PageHeader,
+  showActionModal,
+  Subtitle,
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
-  useVarCustomerListQuery
+  useInviteCustomerListQuery,
+  useVarCustomerListQuery,
+  useAcceptRejectInvitationMutation
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -21,7 +26,8 @@ import {
   VarCustomer,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, TenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess, useUserProfileContext }    from '@acx-ui/user'
 
 
 const transformApUtilization = (row: VarCustomer) => {
@@ -70,8 +76,121 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 
 export function VarCustomers () {
   const { $t } = useIntl()
+  const { tenantId } = useParams()
 
   const { data: userProfile } = useUserProfileContext()
+  const [ handleInvitation
+  ] = useAcceptRejectInvitationMutation()
+
+  const InvitationList = () => {
+    const [inviteCount, setInviteCount] = useState(0)
+
+    const onAcceptInvite = (row: VarCustomer) => {
+      return <>
+        <Button onClick={() => handleReject(row)}>{$t({ defaultMessage: 'Reject' })}</Button>
+        <Button onClick={() => handleAccept(row)}
+          type='secondary'
+          style={{ marginLeft: 10 }}>{$t({ defaultMessage: 'Accept' })}</Button>
+      </>
+    }
+
+    const handleReject = (row: VarCustomer) => {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Reject Request?' }),
+        content: $t({ defaultMessage: 'Are you sure you want to reject this delegation request?' }),
+        okText: $t({ defaultMessage: 'Yes' }),
+        cancelText: $t({ defaultMessage: 'No' }),
+        onOk: () => {
+          const payload = {
+            accept: false,
+            fromTenantId: row.tenantId
+          }
+          handleInvitation({ payload, params: { tenantId, delegationId: row.id } })
+            .then(() => {
+            })
+        }
+      })
+    }
+
+    const handleAccept = (row: VarCustomer) => {
+      const payload = {
+        accept: true,
+        fromTenantId: row.tenantId
+      }
+      handleInvitation({ payload, params: { tenantId, delegationId: row.id } })
+        .then(() => {
+        })
+    }
+
+    const columnsPendingInvitaion: TableProps<VarCustomer>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'Account Name' }),
+        dataIndex: 'tenantName',
+        key: 'tenantName',
+        sorter: true,
+        defaultSortOrder: 'ascend' as SortOrder,
+        render: function (data) {
+          return (
+            <TenantLink to={''}>{data}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Account Email' }),
+        dataIndex: 'tenantEmail',
+        key: 'tenantEmail',
+        sorter: true
+      },
+      {
+        dataIndex: 'acceptInvite',
+        key: 'acceptInvite',
+        width: 220,
+        render: function (data, row) {
+          return onAcceptInvite(row)
+        }
+      }
+    ]
+
+    const invitationPayload = {
+      searchString: '',
+      fields: ['tenantName', 'tenantEmail'],
+      filters: {
+        status: ['DELEGATION_STATUS_INVITED'],
+        delegationType: ['DELEGATION_TYPE_VAR'],
+        isValid: [true]
+      }
+    }
+
+    const PendingInvitaion = () => {
+      const tableQuery = useTableQuery({
+        useQuery: useInviteCustomerListQuery,
+        defaultPayload: invitationPayload
+      })
+      setInviteCount(tableQuery.data?.totalCount as number)
+
+      return (
+        <Loader states={[tableQuery]}>
+          <Table
+            columns={columnsPendingInvitaion}
+            dataSource={tableQuery.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            rowKey='id'
+          />
+        </Loader>
+      )
+    }
+
+    return (
+      <>
+        <Subtitle level={3}>
+          {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
+
+        <PendingInvitaion />
+      </>
+    )
+  }
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
     {
@@ -171,7 +290,10 @@ export function VarCustomers () {
   const VarCustomerTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
-      defaultPayload: varCustomerPayload
+      defaultPayload: varCustomerPayload,
+      search: {
+        searchTargetFields: varCustomerPayload.searchTargetFields as string[]
+      }
     })
 
     return (
@@ -194,13 +316,14 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={[
+        extra={filterByAccess([
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
 
+      {!userProfile?.support && <InvitationList />}
       <VarCustomerTable />
     </>
   )

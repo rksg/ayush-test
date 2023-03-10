@@ -1,8 +1,12 @@
-import { Divider, Form, Radio } from 'antd'
-import { useIntl }              from 'react-intl'
+import { useEffect, useState } from 'react'
 
-import { Drawer, StepsForm, Subtitle } from '@acx-ui/components'
-import { EdgeDhcpPool }                from '@acx-ui/rc/utils'
+import { Col, Divider, Form, Row } from 'antd'
+import { useIntl }                 from 'react-intl'
+
+import { Button, Drawer, StepsForm, Subtitle } from '@acx-ui/components'
+import { PoolDrawer }                          from '@acx-ui/rc/components'
+import { usePatchEdgeDhcpServiceMutation }     from '@acx-ui/rc/services'
+import { EdgeDhcpPool }                        from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -10,14 +14,25 @@ interface SelectDhcpPoolDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   selectPool: (poolId?: string, poolName?: string) => void
-  data?: EdgeDhcpPool[]
+  dhcpId?: string
+  pools?: EdgeDhcpPool[]
+  data?: string
 }
 
 export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
 
   const { $t } = useIntl()
-  const { visible, setVisible, selectPool, data } = props
+  const { visible, setVisible, selectPool, pools, data } = props
+  const [poolDrawerVisible, setPoolDrawerVisible] = useState(false)
+  const [patchEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
   const [formRef] = Form.useForm()
+
+  useEffect(() => {
+    if(visible) {
+      formRef.resetFields()
+      formRef.setFieldValue('poolId', data)
+    }
+  }, [visible])
 
   const handleClose = () => {
     setVisible(false)
@@ -28,12 +43,21 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
   }
 
   const handleFinish = (formData: { poolId: string }) => {
-    const poolItem = data?.find(item => item.id === formData.poolId)
+    const poolItem = pools?.find(item => item.id === formData.poolId)
     selectPool(poolItem?.id, poolItem?.poolName)
     setVisible(false)
   }
 
   const drawerContent = <Form layout='vertical' form={formRef} onFinish={handleFinish}>
+    <Row justify='end'>
+      <Col>
+        <Button
+          type='link'
+          children={$t({ defaultMessage: 'Add DHCP Pool' })}
+          onClick={()=> {setPoolDrawerVisible(true)}}
+        />
+      </Col>
+    </Row>
     <Form.Item
       name='poolId'
       rules={[
@@ -43,9 +67,9 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
         }
       ]}
     >
-      <Radio.Group
+      <UI.RadioGroup
         options={
-          data?.map(item => ({
+          pools?.map(item => ({
             label: <>
               <Subtitle level={4}>{item.poolName}</Subtitle>
               <StepsForm.FieldLabel width='100px'>
@@ -79,14 +103,28 @@ export const SelectDhcpPoolDrawer = (props: SelectDhcpPoolDrawerProps) => {
     />
   )
 
+  const addPool = async (data: EdgeDhcpPool) => {
+    const pathParams = { id: props.dhcpId }
+    const payload = { dhcpPools: [...(pools || []), data] }
+    await patchEdgeDhcpService({ params: pathParams, payload }).unwrap()
+  }
+
   return (
-    <Drawer
-      width={400}
-      title={$t({ defaultMessage: 'Select DHCP Pool' })}
-      visible={visible}
-      onClose={handleClose}
-      children={drawerContent}
-      footer={footer}
-    />
+    <>
+      <PoolDrawer
+        visible={poolDrawerVisible}
+        setVisible={setPoolDrawerVisible}
+        onAddOrEdit={addPool}
+        allPool={pools}
+      />
+      <Drawer
+        width={475}
+        title={$t({ defaultMessage: 'Select DHCP Pool' })}
+        visible={visible}
+        onClose={handleClose}
+        children={drawerContent}
+        footer={footer}
+      />
+    </>
   )
 }

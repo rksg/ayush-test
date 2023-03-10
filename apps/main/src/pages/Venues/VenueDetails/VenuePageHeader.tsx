@@ -11,7 +11,8 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { useDateFilter }  from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -24,7 +25,6 @@ function DatePicker () {
   return (enableVenueAnalytics)
     ? <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      enableDates={dateRangeForLast(3,'months')}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
@@ -49,10 +49,9 @@ function VenuePageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <DatePicker key='date-filter' />,
         <Button
-          key='configure'
           type='primary'
           onClick={() =>
             navigate({
@@ -61,7 +60,7 @@ function VenuePageHeader () {
             })
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>
-      ]}
+      ])}
       footer={<VenueTabs venueDetail={data as VenueDetailHeader} />}
     />
   )

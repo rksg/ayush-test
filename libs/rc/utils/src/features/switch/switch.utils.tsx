@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
 import _ from 'lodash'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { showActionModal } from '@acx-ui/components'
-import { getIntl }         from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
-import { DeviceConnectionStatus } from '../../constants'
+import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import { STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
   SwitchRow,
@@ -142,6 +140,43 @@ export const isRouter = (switchType: SWITCH_TYPE) => {
   return switchType === SWITCH_TYPE.ROUTER
 }
 
+export const transformSwitchUnitStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
+  syncedSwitchConfig = true, suspendingDeployTime = '') => {
+  const { $t } = getIntl()
+  switch (switchStatusEnum) {
+    case SwitchStatusEnum.NEVER_CONTACTED_CLOUD:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+    case SwitchStatusEnum.INITIALIZING:
+      return $t({ defaultMessage: 'Initializing' })
+    case SwitchStatusEnum.FIRMWARE_UPD_DOWNLOADING:
+    case SwitchStatusEnum.FIRMWARE_UPD_FAIL:
+    case SwitchStatusEnum.FIRMWARE_UPD_START:
+    case SwitchStatusEnum.FIRMWARE_UPD_SYNCING_TO_REMOTE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_IMAGE:
+    case SwitchStatusEnum.FIRMWARE_UPD_VALIDATING_PARAMETERS:
+    case SwitchStatusEnum.FIRMWARE_UPD_WRITING_TO_FLASH:
+    case SwitchStatusEnum.APPLYING_FIRMWARE:
+      return $t({ defaultMessage: 'Firmware Updating' })
+    case SwitchStatusEnum.OPERATIONAL:
+      if (configReady && syncedSwitchConfig) {
+        if (suspendingDeployTime && suspendingDeployTime.length > 0) {
+          return $t({ defaultMessage: 'Operational - applying configuration' })
+        }
+        return $t({ defaultMessage: 'Operational' })
+      } else if (!syncedSwitchConfig) {
+        return $t({ defaultMessage: 'Synchronizing data' })
+      } else {
+        return $t({ defaultMessage: 'Operational - Synchronizing' })
+      }
+    case SwitchStatusEnum.DISCONNECTED:
+      return $t({ defaultMessage: 'Disconnected from cloud' })
+    case SwitchStatusEnum.STACK_MEMBER_NEVER_CONTACTED:
+      return $t({ defaultMessage: 'Never contacted Active Switch' })
+    default:
+      return $t({ defaultMessage: 'Never contacted cloud' })
+  }
+}
+
 export const transformSwitchStatus = (switchStatusEnum: SwitchStatusEnum, configReady = true,
   syncedSwitchConfig = true, suspendingDeployTime = '') => {
   const { $t } = getIntl()
@@ -265,6 +300,50 @@ export const getStackMemberStatus = (unitStatus: string, isDefaultMember?: boole
   return
 }
 
+export const isEmpty = (params?: unknown) => {
+  if (params == null) {
+    return true
+  } else if (params === undefined) {
+    return true
+  } else if (params === 'undefined') {
+    return true
+  } else if (params === '') {
+    return true
+  }
+  return false
+}
+
+export const getSwitchModelInfo = (switchModel: string) => {
+
+  const modelFamily = switchModel.split('-')[0]
+  const subModel = switchModel.split('-')[1]
+
+  const modelFamilyInfo = ICX_MODELS_INFORMATION[modelFamily]
+  if (!modelFamilyInfo) {
+    return null
+  }
+
+  const subModelInfo = modelFamilyInfo[subModel]
+  if (!subModelInfo) {
+    return null
+  }
+
+  return subModelInfo
+}
+
+export const getSwitchPortLabel = (switchModel: string, slotNumber: number) => {
+  if (!slotNumber || !switchModel || slotNumber < 1) {
+    return ''
+  }
+
+  const modelInfo = getSwitchModelInfo(switchModel)
+  if (!modelInfo) {
+    return ''
+  }
+
+  return modelInfo.portModuleSlots && modelInfo.portModuleSlots[slotNumber - 1].portLabel
+}
+
 export const isL3FunctionSupported = (switchType: string | undefined) => {
   if (!switchType) {
     return false
@@ -272,22 +351,6 @@ export const isL3FunctionSupported = (switchType: string | undefined) => {
   return isRouter(switchType as SWITCH_TYPE)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const showGeneralError = (error: any) => { // TODO: check res format
-  const { $t } = getIntl()
-
-  showActionModal({
-    type: 'error',
-    title: $t({ defaultMessage: 'Server Error' }),
-    content: $t({
-      defaultMessage: 'An internal error has occurred. Please contact support.'
-    }),
-    customContent: {
-      action: 'SHOW_ERRORS',
-      errorDetails: error?.data
-    }
-  })
-}
 
 export const getDhcpOptionList = () => {
   const { $t } = getIntl()

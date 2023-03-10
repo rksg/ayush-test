@@ -12,7 +12,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox'
 import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Button, Modal, ModalType, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Button, Modal, ModalType, StepsForm, StepsFormInstance }        from '@acx-ui/components'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -147,11 +147,8 @@ function SaveAsAcProfileButton () {
               }).unwrap()
 
               setVisible(false)
-            } catch(error) {
-              showToast({
-                type: 'error',
-                content: $t({ defaultMessage: 'An error occurred' })
-              })
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
             }
           }}
         >
@@ -366,6 +363,18 @@ function SelectAccessProfileProfile (props: { accessControlProfileId: string }) 
     {enableAccessControlProfile && <Form.Item
       label={$t({ defaultMessage: 'Access Control Policy' })}
       name={['wlan','advancedCustomization','accessControlProfileId']}
+      rules={[
+        { validator: async () => {
+          if (!form.getFieldValue(['wlan','advancedCustomization','accessControlProfileId'])) {
+            return Promise.reject($t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'If you enable the access control, access control policy could not be empty'
+            }))
+          }
+
+          return Promise.resolve()
+        } }
+      ]}
     >
       <Select placeholder={$t({ defaultMessage: 'Select profile...' })}
         style={{ width: '180px' }}

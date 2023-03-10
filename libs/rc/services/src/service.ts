@@ -20,7 +20,6 @@ import {
   MdnsProxyUrls,
   DHCPSaveData,
   LeaseUnit,
-  DHCPDetailInstances,
   WifiCallingUrls,
   WifiCallingFormContextType,
   WifiCallingSetting,
@@ -44,11 +43,11 @@ import {
   RequestFormData,
   createNewTableHttpRequest,
   NetworkSegmentationUrls,
-  NetworkSegmentationGroup,
   WebAuthTemplate,
   AccessSwitch,
   DistributionSwitch,
-  downloadFile
+  downloadFile,
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -56,6 +55,7 @@ import {
   ApplicationPolicy,
   AccessControlProfile
 } from '@acx-ui/rc/utils'
+import { getJwtToken } from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -67,6 +67,15 @@ const defaultNewTablePaginationParams: TableChangePayload = {
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
+
+const mDnsProxyMutationUseCases = [
+  'AddMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfiles',
+  'UpdateMulticastDnsProxyServiceProfile',
+  'ActivateMulticastDnsProxyServiceProfileAps',
+  'DeactivateMulticastDnsProxyServiceProfileAps'
+]
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -91,9 +100,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfiles',
+            ...mDnsProxyMutationUseCases,
             'AddWifiCallingServiceProfile',
             'DeleteWiFiCallingProfile',
             'DeleteWiFiCallingProfiles',
@@ -263,16 +270,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Multicast DNS Proxy Service Profile',
-            'Update Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profiles',
-            'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles'
-          ], () => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getEnhancedMdnsProxyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
+            api.dispatch(serviceApi.util.invalidateTags([
               { type: 'MdnsProxy', id: 'LIST' }
             ]))
           })
@@ -400,15 +419,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -597,7 +607,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           },
           headers: {
             'Content-Type': 'text/csv',
-            'Accept': 'text/csv'
+            'Accept': 'text/csv',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           }
         }
       }
@@ -732,29 +743,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
-    }),
-    getNetworkSegmentationGroupById: build.query<NetworkSegmentationGroup, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupById, params)
-        return {
-          ...req
-        }
-      }
-    }),
-    // eslint-disable-next-line max-len
-    getNetworkSegmentationGroupList: build.query<TableResult<NetworkSegmentationGroup>, RequestPayload>({
-      query: ({ params }) => {
-        const req =
-          createHttpRequest(NetworkSegmentationUrls.getNetworkSegmentationGroupList, params)
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewTableResult<NetworkSegmentationGroup>) {
-        return transferToTableResult<NetworkSegmentationGroup>(result)
-      }
     })
+
   })
 })
 
@@ -766,13 +756,13 @@ export const {
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useDhcpVenueInstancesQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
   useGetMdnsProxyListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
@@ -807,8 +797,6 @@ export const {
   useDeletePortalMutation,
   useUpdatePortalMutation,
   useUploadURLMutation,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useGetNetworkSegmentationGroupListQuery,
   useGetWebAuthTemplateQuery,
   useWebAuthTemplateListQuery,
   useCreateWebAuthTemplateMutation,

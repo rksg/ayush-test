@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
@@ -16,6 +17,7 @@ import {
   useLazyDownloadPersonaGroupsQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                              from '@acx-ui/user'
 
 import {
   DpskPoolLink,
@@ -34,10 +36,14 @@ function useColumns (
   venuesMap: Map<string, string>
 ) {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({})
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery({})
+  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
+    {},
+    { skip: !networkSegmentationEnabled }
+  )
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -203,11 +209,8 @@ export function PersonaGroupTable () {
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
-    downloadCsv({ payload: tableQuery.payload }).unwrap().catch(() => {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'Failed to export Persona Groups.' })
-      })
+    downloadCsv({ payload: tableQuery.payload }).unwrap().catch((error) => {
+      console.log(error) // eslint-disable-line no-console
     })
   }
 
@@ -257,10 +260,7 @@ export function PersonaGroupTable () {
                 clearSelection()
               })
               .catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })
@@ -297,8 +297,8 @@ export function PersonaGroupTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={handleFilterChange}
         rowKey='id'
-        actions={actions}
-        rowActions={rowActions}
+        actions={filterByAccess(actions)}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={{ type: 'radio' }}
       />
 

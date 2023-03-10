@@ -1,9 +1,38 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
 import { ApDeviceStatusEnum } from '../../constants'
 import { FacilityEnum }       from '../../models/FacilityEnum'
 import { FlowLevelEnum }      from '../../models/FlowLevelEnum'
 import { PriorityEnum }       from '../../models/PriorityEnum'
 import { ProtocolEnum }       from '../../models/ProtocolEnum'
 
+export const facilityLabelMapping: Record<FacilityEnum, MessageDescriptor> = {
+  [FacilityEnum.KEEP_ORIGINAL]: defineMessage({ defaultMessage: 'Keep Original' }),
+  [FacilityEnum.LOCAL0]: defineMessage({ defaultMessage: '0' }),
+  [FacilityEnum.LOCAL1]: defineMessage({ defaultMessage: '1' }),
+  [FacilityEnum.LOCAL2]: defineMessage({ defaultMessage: '2' }),
+  [FacilityEnum.LOCAL3]: defineMessage({ defaultMessage: '3' }),
+  [FacilityEnum.LOCAL4]: defineMessage({ defaultMessage: '4' }),
+  [FacilityEnum.LOCAL5]: defineMessage({ defaultMessage: '5' }),
+  [FacilityEnum.LOCAL6]: defineMessage({ defaultMessage: '6' }),
+  [FacilityEnum.LOCAL7]: defineMessage({ defaultMessage: '7' })
+}
+
+export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
+  [FlowLevelEnum.GENERAL_LOGS]: defineMessage({ defaultMessage: 'General Logs' }),
+  [FlowLevelEnum.CLIENT_FLOW]: defineMessage({ defaultMessage: 'Client Flow' }),
+  [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
+}
+
+export interface SyslogPolicyListType {
+  id: string,
+  name: string,
+  venueIds?: string[],
+  facility: FacilityEnum,
+  flowLevel: FlowLevelEnum,
+  primaryServer?: string,
+  secondaryServer?: string
+}
 
 export interface SyslogPolicyType {
   policyName: string,
@@ -21,17 +50,40 @@ export interface SyslogPolicyType {
   venueIds: string[]
 }
 
+export interface Server {
+  server?: string,
+  port?: number,
+  protocol?: ProtocolEnum,
+}
+
+export interface Venue {
+  id: string,
+  name: string
+}
+
+export interface SyslogPolicyDetailType {
+  policyName?: string,
+  name: string,
+  id?: string,
+  primary: Server,
+  secondary: Server,
+  facility?: FacilityEnum,
+  priority?: PriorityEnum,
+  flowLevel?: FlowLevelEnum,
+  venues: Venue[]
+}
+
 export interface SyslogContextType {
   policyName: string,
   server: string,
-  port: string,
-  protocol: string,
-  secondaryServer: string,
-  secondaryPort: string,
-  secondaryProtocol: string,
-  facility: string,
-  priority: string,
-  flowLevel: string,
+  port: number,
+  protocol: ProtocolEnum,
+  secondaryServer?: string,
+  secondaryPort?: number,
+  secondaryProtocol?: ProtocolEnum,
+  facility: FacilityEnum,
+  priority: PriorityEnum,
+  flowLevel: FlowLevelEnum,
   venues: SyslogVenue[]
 }
 
@@ -41,21 +93,31 @@ export interface SyslogVenue {
 }
 
 export interface SyslogDetailContextType {
-  venueId: string[],
+  filtersId: string[],
   policyName: string,
-  setVenueId: (venueId: string[]) => void
+  setFiltersId: (filtersId: string[]) => void
   setPolicyName: (policyName: string) => void
 }
 
+export interface VenueSyslogSettingType {
+  enabled: boolean,
+  serviceProfileId: string
+}
+
 export interface VenueSyslogPolicyType {
-  id: string,
-  name: string,
+  id?: string,
+  name?: string,
   city?: string,
   country?: string,
   switches?: number,
   aggregatedApStatus?: Record<ApDeviceStatusEnum, number>,
   status?: string
-  syslog?: {
+  rogueDetection?: {
+    policyId: string,
+    policyName: string,
+    enabled: boolean
+  },
+  syslogServer?: {
     policyId: string,
     policyName: string,
     enabled: boolean
@@ -93,12 +155,12 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.PORT,
   payload: {
-    port: string
+    port: number
   }
 } | {
   type: SyslogActionTypes.PROTOCOL,
   payload: {
-    protocol: string
+    protocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.SECONDARYSERVER,
@@ -108,27 +170,27 @@ export type SyslogActionPayload = {
 } | {
   type: SyslogActionTypes.SECONDARYPORT,
   payload: {
-    secondaryPort: string
+    secondaryPort: number
   }
 } | {
   type: SyslogActionTypes.SECONDARYPROTOCOL,
   payload: {
-    secondaryProtocol: string
+    secondaryProtocol: ProtocolEnum
   }
 } | {
   type: SyslogActionTypes.FACILITY,
   payload: {
-    facility: string
+    facility: FacilityEnum
   }
 } | {
   type: SyslogActionTypes.PRIORITY,
   payload: {
-    priority: string
+    priority: PriorityEnum
   }
 } | {
   type: SyslogActionTypes.FLOWLEVEL,
   payload: {
-    flowLevel: string
+    flowLevel: FlowLevelEnum
   }
 } | {
   type: SyslogActionTypes.UPDATE_STATE,
@@ -137,16 +199,10 @@ export type SyslogActionPayload = {
   }
 } | {
   type: SyslogActionTypes.ADD_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 } | {
   type: SyslogActionTypes.REMOVE_VENUES,
-  payload: {
-    name: string,
-    id: string
-  }[]
+  payload: SyslogVenue[]
 }
 
 export enum SyslogConstant {

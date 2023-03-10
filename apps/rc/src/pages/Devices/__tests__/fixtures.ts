@@ -62,13 +62,13 @@ export const apGroupsList = {
   ]
 }
 
-export const venueDefaultApGroup = {
-  venueId: '74f058ee8ea141a0b09a89c022a04a10',
+export const getApGroup = {
+  venueId: '923f6df894c340498894a6b7c68feaae',
   aps: [
     {
-      serialNumber: '233356777755',
-      apGroupId: 'a43c7e10c6404b7684f8694e7d074cf2',
-      venueId: '74f058ee8ea141a0b09a89c022a04a10',
+      serialNumber: '123432223233',
+      apGroupId: 'd318e522e2364b77a3032e641e6944d0',
+      venueId: '923f6df894c340498894a6b7c68feaae',
       radio: {
         apRadioParams24G: {
           manualChannel: 0,
@@ -112,18 +112,79 @@ export const venueDefaultApGroup = {
         },
         useVenueSettings: true
       },
-      name: 'for ap group 2',
-      softDeleted: false,
-      position: {
-        xPercent: 0,
-        yPercent: 0
-      },
-      updatedDate: '2022-11-08T06:31:00.064+0000'
+      name: '123432223233',
+      softDeleted: false
     }
   ],
-  isDefault: true,
-  id: 'a43c7e10c6404b7684f8694e7d074cf2'
+  isDefault: false,
+  name: 'TEST AP GROUP',
+  id: 'd318e522e2364b77a3032e641e6944d0'
 }
+
+export const venueDefaultApGroup = [
+  {
+    venueId: '74f058ee8ea141a0b09a89c022a04a10',
+    aps: [
+      {
+        serialNumber: '233356777755',
+        apGroupId: 'a43c7e10c6404b7684f8694e7d074cf2',
+        venueId: '74f058ee8ea141a0b09a89c022a04a10',
+        radio: {
+          apRadioParams24G: {
+            manualChannel: 0,
+            channelBandwidth: 'AUTO',
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          },
+          apRadioParams50G: {
+            channelBandwidth: 'AUTO',
+            manualChannel: 0,
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          },
+          apRadioParamsDual5G: {
+            enabled: true,
+            radioParamsLower5G: {
+              channelBandwidth: 'AUTO',
+              manualChannel: 0,
+              txPower: 'MAX',
+              method: 'BACKGROUND_SCANNING',
+              changeInterval: 33
+            },
+            radioParamsUpper5G: {
+              channelBandwidth: 'AUTO',
+              manualChannel: 0,
+              txPower: 'MAX',
+              method: 'BACKGROUND_SCANNING',
+              changeInterval: 33
+            }
+          },
+          apRadioParams6G: {
+            manualChannel: 0,
+            method: 'CHANNELFLY',
+            channelBandwidth: 'AUTO',
+            bssMinRate6G: 'HE_MCS_0',
+            mgmtTxRate6G: '6',
+            txPower: 'MAX',
+            changeInterval: 33
+          },
+          useVenueSettings: true
+        },
+        name: 'for ap group 2',
+        softDeleted: false,
+        position: {
+          xPercent: 0,
+          yPercent: 0
+        },
+        updatedDate: '2022-11-08T06:31:00.064+0000'
+      }
+    ],
+    isDefault: true,
+    id: 'a43c7e10c6404b7684f8694e7d074cf2'
+  }
+]
 
 export const venueCaps = {
   apModels: [

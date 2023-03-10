@@ -4,13 +4,14 @@ import { useIntl }    from 'react-intl'
 import { Button, Card, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import { useGetClientIsolationQuery }                 from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  ClientIsolationSaveData
+  ClientIsolationSaveData,
+  getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 
@@ -25,21 +26,21 @@ export default function ClientIsolationDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          // eslint-disable-next-line max-len
-          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
+          {
+            text: $t({ defaultMessage: 'Client Isolation' }),
+            // eslint-disable-next-line max-len
+            link: getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
+          }
         ]}
-        extra={[
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.CLIENT_ISOLATION,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}
-            key='edit'
-          >
+        extra={filterByAccess([
+          <TenantLink to={getPolicyDetailsLink({
+            type: PolicyType.CLIENT_ISOLATION,
+            oper: PolicyOperation.EDIT,
+            policyId: params.policyId as string
+          })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

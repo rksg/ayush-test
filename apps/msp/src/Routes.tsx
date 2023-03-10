@@ -1,7 +1,7 @@
-import { ConfigProvider }                    from '@acx-ui/components'
-import { ManageCustomer }                    from '@acx-ui/msp/components'
-import { rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
-import { Provider }                          from '@acx-ui/store'
+import { ConfigProvider }                                   from '@acx-ui/components'
+import { ManageCustomer, ManageIntegrator, PortalSettings } from '@acx-ui/msp/components'
+import { rootRoutes, Route, TenantNavigate }                from '@acx-ui/react-router-dom'
+import { Provider }                                         from '@acx-ui/store'
 
 import { DeviceInventory } from './pages/DeviceInventory'
 import { Integrators }     from './pages/Integrators'
@@ -23,7 +23,7 @@ export default function MspRoutes () {
       <Route path='integrators/*' element={<CustomersRoutes />} />
       <Route path='deviceinventory' element={<DeviceInventory />} />
       <Route path='msplicenses' element={<Subscriptions />} />
-      <Route path='portalSetting' element={<div>Portal Setting</div>} />
+      <Route path='portalSetting' element={<PortalSettings />} />
     </Route>
   )
   return (
@@ -43,8 +43,8 @@ function CustomersRoutes () {
       </Route>
       <Route path='v/:tenantId/integrators'>
         <Route index element={<Integrators />} />
-        {/* <Route path='create' element={<AddIntegrator />} />
-        <Route path=':action/:mspEcTenantId' element={<AddIntegrator />} /> */}
+        <Route path='create' element={<ManageIntegrator />} />
+        <Route path=':action/:type/:mspEcTenantId' element={<ManageIntegrator />} />
       </Route>
     </Route>
   )

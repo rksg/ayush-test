@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Demo } from '@acx-ui/rc/utils'
 
 
+import { hoverOutline } from '../../../commonUtils'
 import * as UI          from '../../styledComponents'
 import PortalImageTools from '../PortalImageTools'
 import PortalPopover    from '../PortalPopover'
@@ -15,7 +16,6 @@ export default function PortalButtonContent (props: {
     color?:string, text?:string }) => void
 }) {
   const { demoValue, updateButton, isPreview } = props
-  const dashedOutline = 'dashed 1px var(--acx-neutrals-50)'
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
   const [clicked, setClicked] = useState(false)
@@ -41,7 +41,7 @@ export default function PortalButtonContent (props: {
         style={{ cursor: cursor, outline: outline,backgroundColor: demoValue.buttonColor }}
         onMouseOver={() => {
           setCursor('pointer')
-          setOutline(dashedOutline)
+          setOutline(hoverOutline)
         }}
         onMouseLeave={() => {
           if (!clicked){
@@ -52,7 +52,7 @@ export default function PortalButtonContent (props: {
         onClick={() => {
           setCursor('pointer')
           setClicked(true)
-          setOutline(dashedOutline)
+          setOutline(hoverOutline)
         }}
       >{props.children}</UI.PortalButton>
     </PortalPopover>

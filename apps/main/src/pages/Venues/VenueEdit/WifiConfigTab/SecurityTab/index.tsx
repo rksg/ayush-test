@@ -4,17 +4,19 @@ import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
 import _                                                   from 'lodash'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { Button, Fieldset, Loader, showToast, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
+import { Button, Fieldset, Loader, StepsForm, StepsFormInstance, Tooltip } from '@acx-ui/components'
 import {
   useGetDenialOfServiceProtectionQuery,
   useUpdateDenialOfServiceProtectionMutation,
   useGetVenueRogueApQuery,
   useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery
 } from '@acx-ui/rc/services'
-import { getPolicyRoutePath, PolicyOperation, PolicyType, VenueMessages } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                          from '@acx-ui/react-router-dom'
+import { VenueMessages } from '@acx-ui/rc/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import RogueApModal from '../../../../../../../rc/src/pages/Policies/RogueAPDetection/RogueApModal'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -127,11 +129,8 @@ export function SecurityTab () {
         ...editContextData,
         isDirty: false
       })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -265,14 +264,7 @@ export function SecurityTab () {
                   }>
                   {$t({ defaultMessage: 'View Details' })}
                 </Button>
-                <TenantLink
-                  to={getPolicyRoutePath({
-                    type: PolicyType.ROGUE_AP_DETECTION,
-                    oper: PolicyOperation.CREATE
-                  })}
-                >
-                  {$t({ defaultMessage: 'Add Profile' })}
-                </TenantLink>
+                <RogueApModal />
               </Space>
               { rogueDrawerVisible && <RogueApDrawer
                 visible={rogueDrawerVisible}

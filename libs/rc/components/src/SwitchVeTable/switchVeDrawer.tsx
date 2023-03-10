@@ -6,7 +6,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, showToast } from '@acx-ui/components'
+import { Button, Drawer }   from '@acx-ui/components'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -175,8 +175,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     setDisableIpSetting(false)
   }
 
-  const onSumbit = async (data: VeForm) => {
-    const params = { switchId, tenantId }
+  const onSubmit = async (data: VeForm) => {
+    const params = { switchId, tenantId, vePortId: editData.id || '' }
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -210,11 +210,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }).unwrap()
       }
     }
-    catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
     setLoading(false)
     onClose()
@@ -253,7 +250,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         <Form
           layout='vertical'
           form={form}
-          onFinish={onSumbit}
+          onFinish={onSubmit}
         >
           { isVenueLevel && !isEditMode && <Form.Item
             label={$t({ defaultMessage: 'Switch' })}

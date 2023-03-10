@@ -4,7 +4,7 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Tooltip } from '@acx-ui/components'
+import { Loader, showActionModal, Tooltip } from '@acx-ui/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -73,11 +73,8 @@ export function MeshNetwork () {
   const handleUpdateMeshSetting = async (check: boolean) => {
     try {
       await updateVenueMesh({ params, payload: { enabled: check } })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 

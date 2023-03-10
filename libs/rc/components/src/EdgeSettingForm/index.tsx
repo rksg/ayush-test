@@ -96,7 +96,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       <Form.Item
         name='tags'
         label={$t({ defaultMessage: 'Tags' })}
-        children={<Input />}
+        children={<Select mode='tags' />}
       />
       {showOtpMessage ?
         <Alert message={
