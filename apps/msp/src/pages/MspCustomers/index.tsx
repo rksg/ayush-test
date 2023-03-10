@@ -190,8 +190,8 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Active Incindents' }),
-      dataIndex: 'activeIncindents',
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
       key: 'activeIncindents',
       sorter: true,
       render: function () {
@@ -258,7 +258,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Service Expired On' }),
+      title: $t({ defaultMessage: 'Service Expires On' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,

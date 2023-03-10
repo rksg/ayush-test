@@ -53,7 +53,9 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
-            'UpdateMspEc'
+            'UpdateMspEc',
+            'Deactivate MspEc',
+            'Reactivate MspEc'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
@@ -354,8 +356,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
+        // const payload = { status: 'deactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -363,8 +367,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+        // const payload = { status: 'reactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]

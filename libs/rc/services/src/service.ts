@@ -20,7 +20,6 @@ import {
   MdnsProxyUrls,
   DHCPSaveData,
   LeaseUnit,
-  DHCPDetailInstances,
   WifiCallingUrls,
   WifiCallingFormContextType,
   WifiCallingSetting,
@@ -397,15 +396,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
-    dhcpVenueInstances: build.query<TableResult<DHCPDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(CommonUrlsInfo.getDHCPVenueInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
@@ -675,7 +665,6 @@ export const {
   useGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useDhcpVenueInstancesQuery,
   useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,

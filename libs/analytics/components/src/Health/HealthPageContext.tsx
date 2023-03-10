@@ -20,14 +20,14 @@ const isBefore = (a: TimeStamp, b: TimeStamp) => moment(a).isBefore(b)
 
 export const formatTimeWindow = (window: TimeStampRange) : TimeStampRange => window
   .sort((a, b) => isBefore(a, b) ? -1 : 1)
-  .map(t => moment(t).utc().toISOString()) as TimeStampRange
+  .map(t => moment(t).format()) as TimeStampRange
 
 export function HealthPageContextProvider (props: { children: ReactNode }) {
   const analyticsFilter = useAnalyticsFilter()
   const { startDate, endDate } = analyticsFilter.filters
   const [timeWindow, setTimeWindow] = useState<TimeStampRange>([
-    moment(startDate).utc().toISOString(),
-    moment(endDate).utc().toISOString()
+    moment(startDate).format(),
+    moment(endDate).format()
   ])
   const setTimeWindowCallback = useCallback((window: TimeStampRange, isReset?: boolean) => {
     const formattedWindow = formatTimeWindow(isReset ? [startDate, endDate] : window)
