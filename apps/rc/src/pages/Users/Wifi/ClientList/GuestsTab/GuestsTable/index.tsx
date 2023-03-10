@@ -33,9 +33,9 @@ import {
   GuestNetworkTypeEnum,
   RequestPayload
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                          from '@acx-ui/types'
-import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
+import { GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
 import { getIntl  }                                           from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
@@ -64,7 +64,7 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
+export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
