@@ -155,7 +155,7 @@ describe('SwitchLagModal', () => {
     })
     await screen.findByText(/edit lag/i)
     await screen.findByText(/1 item/i)
-    await userEvent.click(await screen.findByRole('button', { name: 'Ok' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
   })
 
   it.skip('should edit lag change port type correctly', async () => {
