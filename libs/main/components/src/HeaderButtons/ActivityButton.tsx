@@ -51,7 +51,8 @@ export default function ActivityButton () {
     },
     pagination: {
       pageSize: 25
-    }
+    },
+    option: { skip: !activityModal }
   })
 
   useEffect(()=>{
