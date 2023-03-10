@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
+  // DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
@@ -13,9 +13,9 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
+// import {
+//   DownloadOutlined
+// } from '@acx-ui/icons'
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
@@ -34,7 +34,9 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
+import { hasRoles }                                                                 from '@acx-ui/user'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -99,6 +101,7 @@ const transformExpirationDate = (row: MspEc) => {
 export function MspCustomers () {
   const { $t } = useIntl()
   const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -182,24 +185,6 @@ export function MspCustomers () {
       show: false
     },
     {
-      title: $t({ defaultMessage: 'Active Alarm' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      render: function () {
-        return '0'
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncidents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
@@ -209,8 +194,7 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Customer Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
-      sorter: true,
-      show: false
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
@@ -440,17 +424,21 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        extra={filterByAccess([
-          <TenantLink to='/dashboard'>
+        extra={isAdmin ?
+          [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
               hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </MspTenantLink>,
-          <DisabledButton icon={<DownloadOutlined />} />
-        ])}
+          </MspTenantLink>
+          // <DisabledButton icon={<DownloadOutlined />} />
+          ]
+          : [<TenantLink to='/dashboard'>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+          </TenantLink>
+          ]}
       />
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && <MspEcTable />}
