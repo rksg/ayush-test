@@ -34,7 +34,7 @@ describe('Table Filters', () => {
       expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
       expect(expandable).toBeUndefined()
-      expect(finalParentColumns).toBeUndefined()
+      expect(finalParentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
     })
 
@@ -57,6 +57,7 @@ describe('Table Filters', () => {
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
+      expect(GroupBySelect()).toBeNull()
       expect(expandable).toBeUndefined()
       expect(finalParentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
@@ -95,7 +96,7 @@ describe('Table Filters', () => {
         },
         0,
         [{ name: 'john tan' }, { name: 'dragon den' }],
-        { xd: true as unknown as boolean[] },
+        { 'john tan': true as unknown as boolean[] },
         filterableCol,
         false
       )())

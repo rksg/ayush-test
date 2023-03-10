@@ -198,7 +198,7 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
       // need to optimize for renders
       const targetCol = groupables.find(col => col.key === groupByValue)
 
-      const finalParentColumns = targetCol?.groupable!.parentColumns
+      const finalParentColumns = targetCol?.groupable!.parentColumns ?? []
 
       const isGroupByActive = typeof groupByValue !== 'undefined'
 

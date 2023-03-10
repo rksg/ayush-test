@@ -43,6 +43,12 @@ import type {
 } from 'antd'
 import type { RowSelectMethod } from 'antd/lib/table/interface'
 
+export type {
+  ColumnType,
+  ColumnGroupType,
+  RecordWithChildren,
+  TableColumn
+} from './types'
 
 
 function isGroupColumn <RecordType, ValueType = 'text'> (
@@ -203,10 +209,10 @@ function Table <RecordType extends Record<string, any>> ({
       const colCopy: typeof props.columns = _.cloneDeep(props.columns)
 
       // calculate the smallest possible amount of parent cols to override
-      const calculatedParentCols = finalParentColumns ?? []
+      const calculatedParentCols = finalParentColumns
       const lastParentCol = Math.min(
         calculatedParentCols.length,
-        (colCopy ?? []).length
+        (colCopy).length
       )
 
       // overwrite parent row render in column

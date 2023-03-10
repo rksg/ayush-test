@@ -675,7 +675,8 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
     title: 'IP Address',
     dataIndex: 'IP',
     key: 'ip',
-    sorter: true
+    sorter: true,
+    render: (dom) => dom
   },
   {
     title: 'MAC Addresses',
@@ -698,7 +699,8 @@ export const groupByColumns: TableProps<typeof groupTBData[0] | typeof flatData[
     title: 'Connected Clients',
     key: 'clients',
     dataIndex: 'clients',
-    sorter: true
+    sorter: true,
+    render: (dom) => dom
   },
   {
     title: 'AP Group',
