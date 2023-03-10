@@ -1,6 +1,6 @@
 import { RadioEnum, RadioTypeEnum } from '../../contents'
 import { SchedulerTypeEnum }        from '../../models/SchedulerTypeEnum'
-
+import { Venue, ApVenueStatusEnum } from '../../types'
 
 export const generateDefaultNetworkVenue = (venueId: string, networkId:string) => {
   return {
@@ -24,4 +24,11 @@ export const generateHexKey = (keyLength: number):string => {
     hexKey += crypto.getRandomValues(array)[0].toString(16).substring(2)
   }
   return hexKey
+}
+
+export const checkVenuesNotInSetup = (networkAdvertisedVenues: Venue[]) => {
+  const venuesNotInSetup = networkAdvertisedVenues.filter(v => {
+    return v.status !== ApVenueStatusEnum.IN_SETUP_PHASE
+  })
+  return venuesNotInSetup && venuesNotInSetup.length > 0
 }

@@ -161,6 +161,7 @@ describe('NetworkTable', () => {
     mockRestApiQuery(
       WifiUrlsInfo.deleteNetwork.url, 'delete', { data: { requestId: 'network-01' } }
     )
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', { data: [] })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
