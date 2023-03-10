@@ -7,7 +7,7 @@ import { Anchor, Tooltip } from '@acx-ui/components'
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
-import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv, AnchorDiv } from './styledComponents'
+import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
 export function ClientDualTable () {
   const intl = useIntl()
@@ -36,7 +36,7 @@ export function ClientDualTable () {
   }
 
   return <>
-    <AnchorDiv id='ClientsTable'>
+    <div id='ClientsTable'>
       <SearchBarDiv>
         <ClientSearchBar
           placeHolder={
@@ -74,7 +74,7 @@ export function ClientDualTable () {
       <ConnectedClientsTable
         searchString={searchValue}
         setConnectedClientCount={setConnectedClientCount} />
-    </AnchorDiv>
+    </div>
     {/* TODO: change string from search input */}
     { searchValue.length >= 2 &&
       <HistoricalClientsTable

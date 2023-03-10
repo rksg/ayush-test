@@ -3,7 +3,6 @@
 exports[`ClientDualTable should render list correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__AnchorDiv-sc-1mecnf2-4 fwMilJ"
     id="ClientsTable"
   >
     <div
