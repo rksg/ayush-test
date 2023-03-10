@@ -789,7 +789,6 @@ function useMockData () {
   return { currData, setGroupByKey }
 }
 
-
 export function GroupTable () {
   const { currData, setGroupByKey } = useMockData()
   return (
