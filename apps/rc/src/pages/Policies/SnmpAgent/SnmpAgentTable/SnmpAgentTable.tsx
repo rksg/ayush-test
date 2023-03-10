@@ -2,10 +2,10 @@ import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                                               from '@acx-ui/components'
-import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                                                                         from '@acx-ui/rc/services'
-import { ApSnmpViewModelData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                                                         from '@acx-ui/react-router-dom'
+import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                                                               from '@acx-ui/components'
+import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                                                                                         from '@acx-ui/rc/services'
+import { ApSnmpViewModelData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType, SnmpColumnData, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                                                                                         from '@acx-ui/react-router-dom'
 
 const defaultPayload = {
   searchString: '',
@@ -26,7 +26,6 @@ export default function SnmpAgentTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
-
 
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
@@ -64,7 +63,7 @@ export default function SnmpAgentTable () {
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedRows) => selectedRows.length === 1,
+      //visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -106,9 +105,10 @@ export default function SnmpAgentTable () {
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'SNMP Agent'
-          })
+          $t(
+            { defaultMessage: 'SNMP Agent {count}' },
+            { count: (tableQuery.data)? `(${tableQuery.data.totalCount})` : '' }
+          )
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
@@ -134,8 +134,16 @@ export default function SnmpAgentTable () {
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
+
+
     </>
   )
+}
+
+export function renderToListTooltip (data: SnmpColumnData) {
+  const { count, names } = data || {}
+  const tootipTitle = names?.map(n => <div>{n}</div>) || ''
+  return (count)? <Tooltip title={tootipTitle} placement='bottom'>{count}</Tooltip> : 0
 }
 
 function useColumns (
@@ -170,9 +178,7 @@ function useColumns (
       dataIndex: 'v2Agents',
       align: 'center',
       render: function (data, row) {
-        const { count, names } = row.v2Agents || {}
-        const tootipTitle = names?.map(n => <div>{n}</div>) || ''
-        return (count)? <Tooltip title={tootipTitle}>{count}</Tooltip> : 0
+        return renderToListTooltip(row.v2Agents)
       }
     },
     {
@@ -181,9 +187,7 @@ function useColumns (
       dataIndex: 'v3Agents',
       align: 'center',
       render: function (data, row) {
-        const { count, names } = row.v3Agents || {}
-        const tootipTitle = names?.map(n => <div>{n}</div>) || ''
-        return (count)? <Tooltip title={tootipTitle}>{count}</Tooltip> : 0
+        return renderToListTooltip(row.v3Agents)
       }
     },
     {
@@ -191,11 +195,10 @@ function useColumns (
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venues',
       align: 'center',
+      filterKey: 'venues.name.keyword',
       filterable: filterables ? filterables['venues'] : false,
       render: function (data, row) {
-        const { count, names } = row.venues || {}
-        const tootipTitle = names?.map(n => <div>{n}</div>) || ''
-        return (count)? <Tooltip title={tootipTitle}>{count}</Tooltip> : 0
+        return renderToListTooltip(row.venues)
       }
     },
     {
@@ -204,9 +207,7 @@ function useColumns (
       dataIndex: 'aps',
       align: 'center',
       render: function (data, row) {
-        const { count, names } = row.aps || {}
-        const tootipTitle = names?.map(n => <div>{n}</div>) || ''
-        return (count)? <Tooltip title={tootipTitle}>{count}</Tooltip> : 0
+        return renderToListTooltip(row.aps)
       }
     }/*,
     {

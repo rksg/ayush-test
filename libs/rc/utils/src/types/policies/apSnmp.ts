@@ -58,7 +58,7 @@ export interface ApSnmpApUsage {
   venueName: string
 }
 
-interface SnmpColumnData {
+export interface SnmpColumnData {
   count: number,
   names: string[]
 }
@@ -70,5 +70,5 @@ export interface ApSnmpViewModelData {
   v3Agents: SnmpColumnData,
   venues: SnmpColumnData,
   aps: SnmpColumnData,
-  tags: string[]
+  tags?: string[]
 }

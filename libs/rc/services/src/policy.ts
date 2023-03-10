@@ -905,8 +905,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AP SNMP agent Profile',
-            'Update AP SNMP agent Profile'
+            'AddApSnmpAgentProfile',
+            'UpdateApSnmpAgentProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
