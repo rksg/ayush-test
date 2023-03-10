@@ -33,9 +33,10 @@ import {
   GuestNetworkTypeEnum,
   RequestPayload
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, GuestErrorRes, hasAccess }          from '@acx-ui/user'
-import { getIntl  }                                          from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RolesEnum }                                          from '@acx-ui/types'
+import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
+import { getIntl  }                                           from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
@@ -67,6 +68,7 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -428,15 +430,11 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
 
 export const renderAllowedNetwork = function (currentGuest: Guest) {
   const { $t } = getIntl()
-  // const hasGuestManagerRole = false   //TODO: Wait for userProfile()
-  // if (currentGuest.networkId && !hasGuestManagerRole) {
-  //   return (
-  //     <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-  //       {currentGuest.ssid}</TenantLink>
-  //   )
-  // } else if (currentGuest.networkId && hasGuestManagerRole) {
-  // return currentGuest.ssid
-  if (currentGuest.networkId) {
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  if (isGuestManager) {
+    return currentGuest.ssid
+  } else if (currentGuest.networkId) {
     return (
       <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>
