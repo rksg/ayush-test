@@ -484,7 +484,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   fetchBotAuth: {
     method: 'post',
-    url: '/api/tenant/:tenantId/chatbot/idtoken'
+    url: '/tenants/chatbot/idtoken',
+    oldUrl: '/api/tenant/:tenantId/chatbot/idtoken',
+    newApi: true
   },
   getTopology: {
     method: 'get',

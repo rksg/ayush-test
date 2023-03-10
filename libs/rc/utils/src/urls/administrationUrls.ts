@@ -122,9 +122,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   findVAR: {
-    // [New API] no mapping found
     method: 'get',
-    url: '/api/tenant/:tenantId/find-var'
+    url: '/tenants/find-var',
+    oldUrl: '/api/tenant/:tenantId/find-var',
+    newApi: true
   },
   getNotificationRecipients: {
     method: 'get',
