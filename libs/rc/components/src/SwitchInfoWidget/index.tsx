@@ -196,13 +196,13 @@ export function SwitchInfoWidget (props:{
                   </UI.ChartTopTitle>
                 </UI.Wrapper>
                 <UI.Wrapper style={{ marginTop: '5px' }}>
-                  <TenantLink
+                  <UI.TenantLinkBlack
                     to={`/devices/switch/${params.switchId}/${params.serialNumber}/details/clients`}
                   >
                     <UI.LargeText>
                       {switchDetail?.clientCount || 0}
                     </UI.LargeText>
-                  </TenantLink>
+                  </UI.TenantLinkBlack>
                 </UI.Wrapper>
               </GridCol>
             </GridRow>

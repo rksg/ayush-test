@@ -134,21 +134,21 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <TenantLink to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
               <KpiWidget type='no-chart-style' filters={filters} name='connectionSuccess' />
-            </TenantLink>
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <TenantLink to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
               <TtcTimeWidget filters={filters}/>
-            </TenantLink>
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
         <GridCol col={{ span: 5 }}>
           <UI.Wrapper>
-            <TenantLink to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
+            <UI.TenantLinkBlack to={`/devices/wifi/${apId}/details/analytics/health/overview`}>
               <KpiWidget
                 type='no-chart-style'
                 filters={filters}
@@ -156,7 +156,7 @@ export function ApInfoWidget (props:{ currentAP: ApViewModel, filters: Analytics
                 threshold={healthData?.clientThroughputThreshold?.value ??
                   kpiConfig.clientThroughput.histogram.initialThreshold}
               />
-            </TenantLink>
+            </UI.TenantLinkBlack>
           </UI.Wrapper>
         </GridCol>
       </GridRow>

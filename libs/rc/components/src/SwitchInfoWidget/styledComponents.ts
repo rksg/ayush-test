@@ -2,6 +2,7 @@ import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
 import { DonutChart } from '@acx-ui/components'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export const Wrapper = styled(Space)`
   justify-content: center;
@@ -41,5 +42,12 @@ export const LargeText = styled.span`
 export const DonutChartWidget = styled(DonutChart)`
   svg {
     cursor: pointer
+  }
+`
+
+export const TenantLinkBlack = styled(TenantLink)`
+  color: var(--acx-primary-black);
+  :hover {
+    color: var(--acx-primary-black);
   }
 `
