@@ -50,13 +50,13 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
 
   useEffect(() => {
-    if (isGuestManager) {
+    if (isGuestManager && params['*'] !== 'guestsManager') {
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}`
       })
     }
-  }, [isGuestManager])
+  }, [isGuestManager, params['*']])
 
   return (
     <LayoutComponent
