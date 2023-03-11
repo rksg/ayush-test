@@ -10,7 +10,7 @@ import { ClientExperience }    from './clientExperience'
 import { api }                 from './services'
 
 
-describe('HealthWidget', () => {
+describe('Client Experience', () => {
   let params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   const filters:AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',

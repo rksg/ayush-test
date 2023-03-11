@@ -23,8 +23,6 @@ export function ClientExperience ({
     const timeToConnect:number[] = []
     const clientThroughput:number[] = []
     const onlineAps:number[] = []
-    const apCapacity:number[] = []
-    const clientExperience:number[] = []
     healthData.forEach((row)=>{
       const {
         connectionSuccessSLA,
@@ -49,9 +47,7 @@ export function ClientExperience ({
       connectionSuccess: mean(connectionSuccess) * 100,
       timeToConnect: mean(timeToConnect) * 100,
       clientThroughput: mean(clientThroughput) * 100,
-      apCapacity: mean(apCapacity) * 100,
-      onlineAps: mean(onlineAps) * 100,
-      clientExperience: mean(clientExperience) * 100
+      onlineAps: mean(onlineAps) * 100
     }
   }
   const healthData = data && data.health.length ? getHealthData(data.health) : null
