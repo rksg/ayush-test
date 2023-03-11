@@ -122,7 +122,7 @@ function SwitchWidgets () {
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters}/>
+        <SwitchesTrafficByVolume filters={filters} vizType={'area'} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={filters}/>

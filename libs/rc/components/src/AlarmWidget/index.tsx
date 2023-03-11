@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader , Card, DonutChart, NoActiveData } from '@acx-ui/components'
-import type { DonutChartData }                             from '@acx-ui/components'
-import { useDashboardOverviewQuery }                       from '@acx-ui/rc/services'
-import {  useAlarmsListQuery }                             from '@acx-ui/rc/services'
+import { cssStr, Loader , Card, DonutChart, NoActiveData }        from '@acx-ui/components'
+import type { DonutChartData }                                    from '@acx-ui/components'
+import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import {  useAlarmsListQuery }                                    from '@acx-ui/rc/services'
 import {
   Alarm,
   EventTypeEnum,
@@ -13,6 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { CommonUrlsInfo, useTableQuery }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useDashboardFilter, NetworkNodePath }   from '@acx-ui/utils'
 
 import { AlarmList } from './AlarmList'
 
@@ -92,6 +93,26 @@ export function AlarmWidget (props:{ showList?: boolean }) {
     })
   })
 
+  const { filters } = useDashboardFilter()
+  const { filter: { networkNodes } } = filters
+  const venueIds = networkNodes?.map((networkNode: NetworkNodePath) => networkNode[0].name)
+  console.log('🚀 venueIds:', venueIds)
+
+  const overviewV2Query = useDashboardV2OverviewQuery({
+    params: useParams(),
+    payload: {
+      filters: {
+        venueIds: venueIds ?? []
+      }
+    }
+  }, {
+    selectFromResult: ({ data, ...rest }) => ({
+      data: getAlarmsDonutChartData(data),
+      ...rest
+    })
+  })
+  console.log('🚀 overviewV2Query:', overviewV2Query.data)
+
   // Alarms query
   const alarmQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
@@ -107,9 +128,9 @@ export function AlarmWidget (props:{ showList?: boolean }) {
     }
   })
 
-  const { data } = overviewQuery
+  const { data } = overviewV2Query
   return (
-    <Loader states={[overviewQuery, alarmQuery]}>
+    <Loader states={[overviewV2Query, alarmQuery]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}>
         <AutoSizer>
           {({ height, width }) => (
