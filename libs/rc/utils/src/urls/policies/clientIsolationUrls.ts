@@ -41,6 +41,8 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
   },
   getEnhancedClientIsolationList: {
     method: 'post',
-    url: '/enhancedIsolationAllowlists/query'
+    url: '/enhancedIsolationAllowlists/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedIsolationAllowlists/query',
+    newApi: true
   }
 }
