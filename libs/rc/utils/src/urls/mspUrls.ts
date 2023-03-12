@@ -259,5 +259,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     // url: '/licenseUsageReports'
     url: '/api/entitlement-assign/tenant/:tenantId'
+  },
+  getParentLogoUrl: {
+    method: 'get',
+    url: '/mspCustomers/:tenantId/logoUrls',
+    oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
+    newApi: true
   }
 }
