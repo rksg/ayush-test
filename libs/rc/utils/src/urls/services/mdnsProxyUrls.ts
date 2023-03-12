@@ -39,6 +39,8 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   },
   getEnhancedMdnsProxyList: {
     method: 'post',
-    url: '/enhancedMdnsProxyProfiles/query'
+    url: '/enhancedMdnsProxyProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedMdnsProxyProfiles/query',
+    newApi: true
   }
 }
