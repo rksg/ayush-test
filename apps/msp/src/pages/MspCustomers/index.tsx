@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  // DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
@@ -13,9 +12,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-// import {
-//   DownloadOutlined
-// } from '@acx-ui/icons'
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
@@ -190,6 +186,24 @@ export function MspCustomers () {
       show: false
     },
     {
+      title: $t({ defaultMessage: 'Active Alarm' }),
+      dataIndex: 'alarmCount',
+      key: 'alarmCount',
+      sorter: true,
+      render: function () {
+        return '0'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
+      key: 'activeIncindents',
+      sorter: true,
+      render: function () {
+        return 0
+      }
+    },
+    {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
@@ -199,7 +213,8 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Customer Admins' }),
       dataIndex: 'mspEcAdminCount',
       key: 'mspEcAdminCount',
-      sorter: true
+      sorter: true,
+      show: false
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
@@ -438,7 +453,6 @@ export function MspCustomers () {
               hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>
-          // <DisabledButton icon={<DownloadOutlined />} />
           ]
           : [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>

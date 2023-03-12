@@ -116,6 +116,15 @@ export function Integrators () {
       sorter: true
     },
     {
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
+      key: 'activeIncidents',
+      sorter: true,
+      render: function () {
+        return '0'
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Tenant Id' }),
       dataIndex: 'id',
       key: 'id',
