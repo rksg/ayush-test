@@ -46,14 +46,22 @@ import {
   AccessControlUrls,
   ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, RequestFormData,
-  ClientIsolationListUsageByVenue, VenueUsageByClientIsolation, AAAPolicyNetwork
+  ClientIsolationListUsageByVenue,
+  VenueUsageByClientIsolation,
+  AAAPolicyNetwork,
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
+
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
-
+const clientIsolationMutationUseCases = [
+  'AddClientIsolationAllowlist',
+  'UpdateClientIsolationAllowlist',
+  'DeleteClientIsolationAllowlist'
+]
 
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -383,9 +391,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'DeleteVlanPool',
             'PatchVlanPool',
             'DeleteVlanPools',
-            'AddClientIsolationAllowlist',
-            'UpdateClientIsolationAllowlist',
-            'DeleteClientIsolationAllowlist'
+            ...clientIsolationMutationUseCases
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
@@ -684,10 +690,29 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Client Isolation Policy Profile',
-            'Update Client Isolation Policy Profile'
-          ], () => {
+          onActivityMessageReceived(msg, clientIsolationMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'ClientIsolation', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedClientIsolationList: build.query<TableResult<ClientIsolationViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(ClientIsolationUrls.getEnhancedClientIsolationList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'ClientIsolation', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, clientIsolationMutationUseCases, () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Policy', id: 'LIST' },
               { type: 'ClientIsolation', id: 'LIST' }
@@ -1025,6 +1050,7 @@ export const {
   useDeleteClientIsolationMutation,
   useGetClientIsolationListQuery,
   useLazyGetClientIsolationListQuery,
+  useGetEnhancedClientIsolationListQuery,
   useGetClientIsolationQuery,
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,

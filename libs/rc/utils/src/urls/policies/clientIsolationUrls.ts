@@ -42,5 +42,11 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
     url: '/isolationAllowlists/:policyId/venues/query',
     oldUrl: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId/venues/query',
     newApi: true
+  },
+  getEnhancedClientIsolationList: {
+    method: 'post',
+    url: '/enhancedIsolationAllowlists/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedIsolationAllowlists/query',
+    newApi: true
   }
 }
