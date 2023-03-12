@@ -44,13 +44,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchList: {
-    // 404 Not Found
-    // method: 'post',
-    // url: '/switches/switchlist',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/switchlist',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/switchlist'
+    url: '/switches/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/switchlist',
+    newApi: true
   },
   getSwitchModelList: {
     method: 'post',
@@ -60,7 +57,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMemberList: {
     method: 'post',
-    url: '/switches/memberlist',
+    url: '/switches/members/query',
     oldUrl: '/api/viewmodel/:tenantId/switch/memberlist',
     newApi: true
   },
@@ -83,13 +80,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchDetailHeader: {
-    // 404 Not Found
-    // method: 'get',
-    // url: '/switches/:switchId/configurations',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/:switchId',
-    // newApi: true
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId'
+    url: '/switches/:switchId/configurations',
+    oldUrl: '/api/viewmodel/:tenantId/switch/:switchId',
+    newApi: true
   },
   getSwitch: {
     method: 'get',
@@ -98,13 +92,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchPortlist: {
-    // 404 Not Found
-    // method: 'post',
-    // url: '/switch/portlist',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/portlist',
-    // newApi: true
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/portlist'
+    url: '/switches/ports/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/portlist',
+    newApi: true
   },
   importSwitches: {
     // 400 Bad Request
@@ -485,13 +476,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchFrontView: {
-    // 404 Not Found
-    // method: 'get',
-    // url: '/switches/:switchId/ports?unitid=:unitId',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId',
-    // newApi: true
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+    url: '/switches/:switchId/ports?unitid=:unitId',
+    oldUrl: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId',
+    newApi: true
   },
   getSwitchRearView: {
     method: 'get',
