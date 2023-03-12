@@ -25,7 +25,8 @@ export function VenueFilter () {
       fields: ['name', 'id'],
       filters: {},
       sortField: 'name',
-      sortOrder: 'ASC'
+      sortOrder: 'ASC',
+      pageSize: 10000 //ACX-25572
     }
   }, {
     selectFromResult: ({ data, ...rest }) => {
