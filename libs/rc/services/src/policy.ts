@@ -1001,7 +1001,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddApSnmpAgentProfile',
             'UpdateApSnmpAgentProfile',
-            'DeleteApSnmpAgentProfile'
+            'DeleteApSnmpAgentProfile',
+            'DeleteApSnmpAgentProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
           })
@@ -1047,10 +1048,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     deleteApSnmpPolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params, RKS_NEW_UI)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
@@ -1082,7 +1084,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddApSnmpAgentProfile',
             'UpdateApSnmpAgentProfile',
-            'DeleteApSnmpAgentProfile'
+            'DeleteApSnmpAgentProfile',
+            'DeleteApSnmpAgentProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
           })
