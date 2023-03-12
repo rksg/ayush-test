@@ -217,10 +217,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getMeshAps: {
+    // method: 'post',
+    // url: '/aps/query?mesh=true',
+    // oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    // newApi: false
     method: 'post',
-    url: '/aps/query?mesh=true',
-    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
-    newApi: true
+    url: '/api/viewmodel/:tenantId/aps/mesh'
   },
   getService: {
     // no use
