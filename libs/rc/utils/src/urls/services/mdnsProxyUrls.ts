@@ -36,5 +36,11 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   getMdnsProxyApsByVenue: {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venues/:venueId/mDnsProxyServiceProfileAps'
+  },
+  getEnhancedMdnsProxyList: {
+    method: 'post',
+    url: '/enhancedMdnsProxyProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedMdnsProxyProfiles/query',
+    newApi: true
   }
 }

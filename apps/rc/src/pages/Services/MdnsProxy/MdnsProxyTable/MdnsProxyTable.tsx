@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -6,33 +7,30 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  Tooltip
 } from '@acx-ui/components'
-import { useDeleteMdnsProxyMutation, useServiceListQuery } from '@acx-ui/rc/services'
+import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
+import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  MdnsProxyViewModel,
+  MdnsProxyForwardingRule,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
 const defaultPayload = {
+  fields: ['id', 'name', 'rules', 'venueIds'],
   searchString: '',
-  filters: {
-    type: [ServiceType.MDNS_PROXY]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  filters: {}
 }
 
 export default function MdnsProxyTable () {
@@ -43,11 +41,11 @@ export default function MdnsProxyTable () {
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
 
   const tableQuery = useTableQuery({
-    useQuery: useServiceListQuery,
+    useQuery: useGetEnhancedMdnsProxyListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Service>['rowActions'] = [
+  const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -59,11 +57,7 @@ export default function MdnsProxyTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).unwrap()
-              .then(clearSelection)
-              .catch(error => {
-                console.log(error) // eslint-disable-line no-console
-              })
+            deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
           }
         })
       }
@@ -83,16 +77,24 @@ export default function MdnsProxyTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString ?? '',
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'mDNS Proxy ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'mDNS Proxy ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
@@ -105,7 +107,7 @@ export default function MdnsProxyTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Service>
+        <Table<MdnsProxyViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -113,6 +115,8 @@ export default function MdnsProxyTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -121,14 +125,30 @@ export default function MdnsProxyTable () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const params = useParams()
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
 
-  const columns: TableProps<Service>['columns'] = [
+  const columns: TableProps<MdnsProxyViewModel>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       sorter: true,
-      defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -143,11 +163,36 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
-      sorter: true,
-      align: 'center'
+      key: 'rules',
+      title: $t({ defaultMessage: 'Forwarding Rules' }),
+      dataIndex: 'rules',
+      align: 'center',
+      render: function (data) {
+        const rules = data as MdnsProxyForwardingRule[]
+        return (rules && rules.length > 0
+          ? <Tooltip
+            title={<MdnsProxyForwardingRulesTable readonly={true} rules={rules}/>}
+            overlayStyle={{ maxWidth: 'none' }}
+            children={rules.length}
+          />
+          : 0
+        )
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'venueIds',
+      align: 'center',
+      filterKey: 'venueIds',
+      filterable: venueNameMap,
+      render: function (data, row) {
+        if (!row.venueIds) return 0
+
+        // eslint-disable-next-line max-len
+        const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
+        return <SimpleListTooltip items={tooltipItems} displayText={row.venueIds.length} />
+      }
     }
   ]
 
