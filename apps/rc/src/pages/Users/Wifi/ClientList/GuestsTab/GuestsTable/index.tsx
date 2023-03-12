@@ -34,7 +34,8 @@ import {
   RequestPayload
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, GuestErrorRes }                     from '@acx-ui/user'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
 import { DateRange, getIntl  }                               from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
@@ -64,10 +65,12 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) => {
+export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { startDate, endDate, range } = useClientDateFilter()
+  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -116,12 +119,16 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
       <span>
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
-      <Button type='link'
-        onClick={()=> setNetworkModalVisible(true)}
-        disabled={!useIsSplitOn(Features.SERVICES)}
-        size='small'>
-        {$t({ defaultMessage: 'Add Guest Pass Network' })}
-      </Button>
+      {
+        hasAccess() &&
+        <Button type='link'
+          onClick={() => setNetworkModalVisible(true)}
+          disabled={!isServicesEnabled}
+          size='small'>
+          {$t({ defaultMessage: 'Add Guest Pass Network' })}
+        </Button>
+      }
+
     </span>
 
   const guestAction = useGuestActions()
@@ -297,7 +304,14 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
     setVisible(false)
   }
 
-  const rowActions: TableProps<Guest>['rowActions'] = [
+  const rowActions: TableProps<Guest>['rowActions'] = isReadOnly ? [
+    {
+      label: $t({ defaultMessage: 'Download Information' }),
+      onClick: (selectedRows) => {
+        guestAction.showDownloadInformation(selectedRows, params.tenantId)
+      }
+    }
+  ] : [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows) => {
@@ -364,29 +378,39 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={rowActions}
         rowSelection={{
           type: 'checkbox'
         }}
-        actions={filterByAccess([{
+        actions={[{
+          key: 'addGuest',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
+          key: 'addGuestNetwork',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
-          disabled: !useIsSplitOn(Features.SERVICES)
+          disabled: !isServicesEnabled
         },
         {
+          key: 'importFromFile',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }].filter(((item, index)=> {
-          if(type === 'guests-manager' && index === 1) { // workaround for RBAC phase 1
-            return false
+        }].filter(((item)=> {
+          switch(item.key) {
+            case 'addGuest':
+              return hasRoles([RolesEnum.ADMINISTRATOR,
+                RolesEnum.PRIME_ADMIN,RolesEnum.GUEST_MANAGER])
+            case 'addGuestNetwork':
+              return hasRoles([RolesEnum.ADMINISTRATOR, RolesEnum.PRIME_ADMIN])
+            case 'importFromFile':
+              return true
+            default:
+              return false
           }
-          return true
-        })))}
+        }))}
       />
 
       <Drawer
@@ -445,15 +469,11 @@ export const GuestsTable = ({ type }: { type?: 'guests-manager' | undefined }) =
 
 export const renderAllowedNetwork = function (currentGuest: Guest) {
   const { $t } = getIntl()
-  // const hasGuestManagerRole = false   //TODO: Wait for userProfile()
-  // if (currentGuest.networkId && !hasGuestManagerRole) {
-  //   return (
-  //     <TenantLink to={`/networks/${currentGuest.networkId}/network-details/aps`}>
-  //       {currentGuest.ssid}</TenantLink>
-  //   )
-  // } else if (currentGuest.networkId && hasGuestManagerRole) {
-  // return currentGuest.ssid
-  if (currentGuest.networkId) {
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+
+  if (isGuestManager) {
+    return currentGuest.ssid
+  } else if (currentGuest.networkId) {
     return (
       <TenantLink to={`/networks/wireless/${currentGuest.networkId}/network-details/overview`}>
         {currentGuest.ssid}</TenantLink>

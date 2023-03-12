@@ -29,3 +29,12 @@ export interface VenueUsageByClientIsolation {
   networkCount: number
   networkNames: string[]
 }
+
+export interface ClientIsolationViewModel {
+  id: string
+  name: string
+  description?: string
+  clientEntries: string[]
+  tenantId: string
+  venueIds?: string[]
+}

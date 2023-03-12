@@ -146,7 +146,6 @@ export const RangePicker = ({
           : rangeText
         }
         allowClear={false}
-        inputReadOnly
       />
     </UI.RangePickerWrapper>
   )

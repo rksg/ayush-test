@@ -42,7 +42,7 @@ describe('Venue DHCP Instance', () => {
     fireEvent.click(activeButton)
 
 
-    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (2 Online)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Lease Table (1 Online)' }))
   })
 
 })
