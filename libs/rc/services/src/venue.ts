@@ -127,6 +127,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse (result: { data: Venue[] }) {
+        result.data.map(venue => {
+          venue.switches = venue.switches ? venue.switches : 0
+          return venue
+        })
+        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -700,25 +707,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
-      }
-    }),
-    getVenueSyslogAp: build.query<VenueSyslog, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSyslogAp, params)
-        return{
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Venue', id: 'Syslog' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'UpdateVenueSyslog'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
-          })
-        })
       }
     }),
     updateVenueSyslogAp: build.mutation<VenueSyslog, RequestPayload>({

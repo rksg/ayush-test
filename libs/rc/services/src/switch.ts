@@ -52,7 +52,8 @@ import {
   SwitchCliTemplateModel,
   SwitchFrontView,
   SwitchRearView,
-  Lag
+  Lag,
+  enableNewApi
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi } from '@acx-ui/store'
 
@@ -261,7 +262,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addSwitch) ? [payload] : payload
         }
       }
     }),
@@ -304,7 +305,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
-        if (!req.url.includes('defaultVlan')) {
+        if (enableNewApi(SwitchUrlsInfo.getDefaultVlan)) {
           payload = { isDefault: true, switchIds: payload }
         }
         return {
@@ -648,12 +649,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
-        if (req.url.includes('staticRoutes')) {
-          payload = [payload]
-        }
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addStaticRoute) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]

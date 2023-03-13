@@ -289,7 +289,10 @@ export function VarCustomers () {
   const VarCustomerTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useVarCustomerListQuery,
-      defaultPayload: varCustomerPayload
+      defaultPayload: varCustomerPayload,
+      search: {
+        searchTargetFields: varCustomerPayload.searchTargetFields as string[]
+      }
     })
 
     return (

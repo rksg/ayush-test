@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { useEffect } from 'react'
 
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader  }                                                  from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                      from '@acx-ui/formatter'
 import { useGetClientListQuery, useVenuesListQuery, useApListQuery }                                      from '@acx-ui/rc/services'
 import { ClientList, getDeviceTypeIcon, getOsTypeIcon, RequestPayload, TableQuery, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                          from '@acx-ui/react-router-dom'
@@ -94,20 +94,10 @@ function GetCols (intl: ReturnType<typeof useIntl>, showAllColumns?: boolean) {
       filterValueNullable: false,
       filterable: statusFilterOptions,
       render: (data, row) => {
-        return <Tooltip title={<FormattedMessage
-          defaultMessage={`
-              Client Health: {healthCheckStatus}<br></br>
-              Reason: {healthStatusReason}<br></br>
-              Since: {lastUpdateTime}
-            `}
-          values={{
-            healthCheckStatus: row.healthCheckStatus,
-            healthStatusReason: row.healthStatusReason,
-            lastUpdateTime: formatter(DateFormatEnum.DateTimeFormat)(row.lastUpdateTime),
-            br: () => <br />
-          }}
-        />}>
-          <ClientHealthIcon type={row.healthClass} />
+        return <Tooltip title={row.healthCheckStatus}>
+          <Space>
+            <ClientHealthIcon type={row.healthClass} />
+          </Space>
         </Tooltip>
       }
     },
