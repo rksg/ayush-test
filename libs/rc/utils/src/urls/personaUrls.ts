@@ -1,5 +1,7 @@
 import { ApiInfo } from '../apiService'
 
+export const NewPersonaBaseUrl = '/personaGroups'
+
 export const PersonaBaseUrl = '/api/personaGroups'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
@@ -11,79 +13,117 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
   addPersonaGroup: {
     method: 'post',
-    url: PersonaBaseUrl
+    url: NewPersonaBaseUrl,
+    oldUrl: PersonaBaseUrl,
+    newApi: true
   },
   getPersonaGroupList: {
     method: 'get',
-    url: PersonaBaseUrl + paginationParams
+    url: NewPersonaBaseUrl + paginationParams,
+    oldUrl: PersonaBaseUrl + paginationParams,
+    newApi: true
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/search${paginationParams}`
+    url: `${NewPersonaBaseUrl}/search${paginationParams}`,
+    oldUrl: `${PersonaBaseUrl}/search${paginationParams}`,
+    newApi: true
   },
   exportPersonaGroup: {
     method: 'post',
-    url: `${PersonaBaseUrl}/search?timezone=:timezone&date-format=:dateFormat`
+    url: `${NewPersonaBaseUrl}/search?timezone=:timezone&date-format=:dateFormat`,
+    oldUrl: `${PersonaBaseUrl}/search?timezone=:timezone&date-format=:dateFormat`,
+    newApi: true
   },
   getPersonaGroupById: {
     method: 'get',
-    url: `${PersonaBaseUrl}/:groupId`
+    url: `${NewPersonaBaseUrl}/:groupId`,
+    oldUrl: `${PersonaBaseUrl}/:groupId`,
+    newApi: true
   },
   updatePersonaGroup: {
     method: 'PATCH',
-    url: `${PersonaBaseUrl}/:groupId`
+    url: `${NewPersonaBaseUrl}/:groupId`,
+    oldUrl: `${PersonaBaseUrl}/:groupId`,
+    newApi: true
   },
   deletePersonaGroup: {
     method: 'delete',
-    url: `${PersonaBaseUrl}/:groupId`
+    url: `${NewPersonaBaseUrl}/:groupId`,
+    oldUrl: `${PersonaBaseUrl}/:groupId`,
+    newApi: true
   },
   /** Persona API endpoints */
   addPersona: {
     method: 'post',
-    url: `${PersonaBaseUrl}/:groupId/personas`
+    url: `${NewPersonaBaseUrl}/:groupId/personas`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
+    newApi: true
   },
   getPersonaList: {
     method: 'get',
-    url: `${PersonaBaseUrl}/all/personas`
+    url: `${NewPersonaBaseUrl}/all/personas`,
+    oldUrl: `${PersonaBaseUrl}/all/personas`,
+    newApi: true
   },
   getPersonaById: {
     method: 'get',
-    url: `${PersonaBaseUrl}/:groupId/personas/:id`
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
+    newApi: true
   },
   listPersonaByGroupId: {
     method: 'get',
-    url: `${PersonaBaseUrl}/:groupId/personas`
+    url: `${NewPersonaBaseUrl}/:groupId/personas`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
+    newApi: true
   },
   searchPersonaList: {
     method: 'post',
-    url: `${PersonaBaseUrl}/all/personas/search${paginationParams}`
+    url: `${NewPersonaBaseUrl}/all/personas/search${paginationParams}`,
+    oldUrl: `${PersonaBaseUrl}/all/personas/search${paginationParams}`,
+    newApi: true
   },
   importPersonas: {
     method: 'post',
-    url: `${PersonaBaseUrl}/:groupId/personas`
+    url: `${NewPersonaBaseUrl}/:groupId/personas`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
+    newApi: true
   },
   exportPersona: {
     method: 'post',
-    url: `${PersonaBaseUrl}/all/personas/search?timezone=:timezone&date-format=:dateFormat`
+    url: `${NewPersonaBaseUrl}/all/personas/search?timezone=:timezone&date-format=:dateFormat`,
+    oldUrl: `${PersonaBaseUrl}/all/personas/search?timezone=:timezone&date-format=:dateFormat`,
+    newApi: true
   },
   updatePersona: {
     method: 'PATCH',
-    url: `${PersonaBaseUrl}/:groupId/personas/:id`
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
+    newApi: true
   },
   deletePersona: {
     method: 'delete',
-    url: `${PersonaBaseUrl}/:groupId/personas/:id`
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
+    newApi: true
   },
   deletePersonas: {
     method: 'delete',
-    url: `${PersonaBaseUrl}/all/personas`
+    url: `${NewPersonaBaseUrl}/all/personas`,
+    oldUrl: `${PersonaBaseUrl}/all/personas`,
+    newApi: true
   },
   addPersonaDevices: {
     method: 'post',
-    url: `${PersonaBaseUrl}/:groupId/personas/:id/devices`
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/devices`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/devices`,
+    newApi: true
   },
   deletePersonaDevices: {
     method: 'delete',
-    url: `${PersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`
+    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
+    newApi: true
   }
 }
