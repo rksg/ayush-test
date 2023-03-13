@@ -15,7 +15,8 @@ import {
   mockPersonaGroupList,
   mockPersona,
   mockPersonaGroup,
-  mockMacRegistration
+  mockMacRegistration,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaDrawer } from './index'
@@ -36,7 +37,7 @@ describe('Persona Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
-        PersonaUrls.searchPersonaList.url,
+        replacePagination(PersonaUrls.searchPersonaList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       // rest.put(
