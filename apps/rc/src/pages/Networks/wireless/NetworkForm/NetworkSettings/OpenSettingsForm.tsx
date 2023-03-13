@@ -91,7 +91,7 @@ function SettingsForm () {
             <Form.Item noStyle
               name={['wlan', 'macAddressAuthentication']}
               valuePropName='checked'>
-              <Switch onChange={onMacAuthChange} disabled={disablePolicies}/>
+              <Switch onChange={onMacAuthChange} disabled={editMode || disablePolicies}/>
             </Form.Item>
             <span>{$t({ defaultMessage: 'MAC Authentication' })}</span>
             <Tooltip.Question
