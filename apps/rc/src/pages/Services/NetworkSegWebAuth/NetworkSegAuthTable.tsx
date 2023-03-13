@@ -13,8 +13,8 @@ import {
   getServiceListRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                      from '@acx-ui/user'
 
 const getNetworkSegAuthPayload = {
   fields: [
@@ -29,6 +29,7 @@ const getNetworkSegAuthPayload = {
 export default function NetworkSegAuthTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('')
   const tableQuery = useTableQuery({
     useQuery: useWebAuthTemplateListQuery,
@@ -94,7 +95,7 @@ export default function NetworkSegAuthTable () {
             oper: ServiceOperation.EDIT,
             serviceId: selectedRows[0].id!
           })}`
-        })
+        }, { state: { from: location } })
       }
     }, {
       visible: (selectedRows) => selectedRows.length === 1,
@@ -142,9 +143,10 @@ export default function NetworkSegAuthTable () {
         { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
       ]}
       extra={filterByAccess([
-        <TenantLink to={getServiceRoutePath({
-          type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
-        })}>
+        <TenantLink state={{ from: location }}
+          to={getServiceRoutePath({
+            type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
+          })}>
           <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page' })}</Button>
         </TenantLink>
       ])} />

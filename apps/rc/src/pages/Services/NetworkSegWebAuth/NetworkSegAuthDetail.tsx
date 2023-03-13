@@ -9,10 +9,12 @@ import {
   ServiceType,
   WebAuthTemplate,
   getServiceDetailsLink,
-  ServiceOperation
+  ServiceOperation,
+  getServiceListRoutePath,
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                     from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -52,6 +54,7 @@ export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
 export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const location = useLocation()
 
   const { data } = useGetWebAuthTemplateQuery({ params })
 
@@ -79,17 +82,25 @@ export default function NetworkSegAuthDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/services' }
+          { text: $t({ defaultMessage: 'Services' }), link: getServiceListRoutePath(true) },
+          {
+            text: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+            link: getServiceRoutePath({
+              type: ServiceType.WEBAUTH_SWITCH,
+              oper: ServiceOperation.LIST
+            })
+          }
         ]}
         extra={filterByAccess([
           <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.WEBAUTH_SWITCH,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId as string
-          })}>
+          <TenantLink state={{ from: location }}
+            to={getServiceDetailsLink({
+              type: ServiceType.WEBAUTH_SWITCH,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId as string
+            })}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
