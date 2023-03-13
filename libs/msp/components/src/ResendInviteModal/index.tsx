@@ -33,15 +33,13 @@ export const ResendInviteModal = (props: ResendInviteModalProps) =>{
       const hasErrors = form.getFieldsError().map(item => item.errors).flat().length > 0
       !(email && !hasErrors ) ? disableButton(true) : disableButton(false)
     }}
-    onFinish={() => setVisible(false)}
   >
     <Form.Item
       label={$t({ defaultMessage:
         'Enter the email of the administrator you need to re-send an invitation to:' })}
       name='email'
       rules={[
-        { validator: (_, value) => emailRegExp(value) },
-        { message: $t({ defaultMessage: 'Please enter a valid email address!' }) }
+        { validator: (_, value) => emailRegExp(value) }
       ]}
     >
       {<Input />}

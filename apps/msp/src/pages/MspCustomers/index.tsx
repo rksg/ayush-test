@@ -13,7 +13,9 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  ResendInviteModal
+  ManageAdminsDrawer,
+  ResendInviteModal,
+  SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeactivateMspEcMutation,
@@ -33,6 +35,7 @@ import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLin
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
 import { hasRoles }                                                                 from '@acx-ui/user'
+import { AccountType }                                                              from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -102,6 +105,8 @@ export function MspCustomers () {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
 
   const { data: userProfile } = useUserProfileContext()
 
@@ -207,7 +212,18 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
-      sorter: true
+      sorter: true,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerAdminVisible(true)
+          }
+        }
+      },
+      render: function (data) {
+        return <Link to=''>{data}</Link>
+      }
     },
     {
       title: $t({ defaultMessage: 'Customer Admins' }),
@@ -215,6 +231,22 @@ export function MspCustomers () {
       key: 'mspEcAdminCount',
       sorter: true,
       show: false
+    },
+    {
+      title: $t({ defaultMessage: 'Integrator' }),
+      dataIndex: 'integrator',
+      key: 'integrator',
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerIntegratorVisible(true)
+          }
+        }
+      },
+      render: function (data, row) {
+        return <Link to=''>{row?.integrator ? 1 : 0}</Link>
+      }
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
@@ -466,6 +498,19 @@ export function MspCustomers () {
         setVisible={setModalVisible}
         tenantId={ecTenantId}
       />
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={() => {}}
+        tenantId={ecTenantId}
+      />}
+      {drawerIntegratorVisible && <SelectIntegratorDrawer
+        visible={drawerIntegratorVisible}
+        tenantId={ecTenantId}
+        tenantType={AccountType.MSP_INTEGRATOR}
+        setVisible={setDrawerIntegratorVisible}
+        setSelected={() => {}}
+      />}
     </>
   )
 }
