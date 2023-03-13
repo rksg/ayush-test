@@ -63,7 +63,7 @@ export function StepsForm <FormValue = any> (
     ...otherProps
   } = props
   const { $t } = useIntl()
-  const formRef = useRef<ProFormInstance>()
+  const formRef = useRef()
   const [current, setStep] = useState(propCurrent ?? 0)
 
   const buttonLabel = {
@@ -84,15 +84,12 @@ export function StepsForm <FormValue = any> (
 
     return React.cloneElement(child, {
       ...itemProps,
-      onFinish: undefined,
       key: itemProps.name ?? index.toString(),
       state: index < current ? 'finish' : index === current ? 'active' : 'wait'
     })
   })
 
   const onCurrentChange = (next: number) => {
-    _children[current].props.onFinish &&
-      _children[current].props.onFinish(formRef.current!.getFieldsValue())
     setStep(next)
     if (otherProps.onCurrentChange) otherProps.onCurrentChange(next)
   }
@@ -104,7 +101,7 @@ export function StepsForm <FormValue = any> (
         {_children.map((child, index) => {
           const title = child.props.title
           const onStepClick = (editMode || current > index) && current !== index
-            ? onCurrentChange
+            ? setStep
             : undefined
           const key = child.props.name ?? child.props.step ?? String(index)
           return <Steps.Step {...{ key, title, onStepClick }} />
