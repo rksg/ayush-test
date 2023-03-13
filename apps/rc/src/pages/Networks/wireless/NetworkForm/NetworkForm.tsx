@@ -24,9 +24,12 @@ import {
   RadiusValidateErrors,
   GuestNetworkTypeEnum,
   Demo,
-  GuestPortal
+  GuestPortal,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -99,6 +102,7 @@ export default function NetworkForm (props:{
   const { modalMode, createType, modalCallBack } = props
   const intl = useIntl()
   const navigate = useNavigate()
+  const location = useLocation()
   const linkToNetworks = useTenantLink('/networks')
   const params = useParams()
   const editMode = params.action === 'edit'
@@ -116,6 +120,7 @@ export default function NetworkForm (props:{
     venues: []
   })
   const [portalDemo, setPortalDemo]=useState<Demo>()
+  const [previousPath, setPreviousPath] = useState('')
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
       delete saveState.accountingRadius
@@ -137,6 +142,10 @@ export default function NetworkForm (props:{
       updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
     }
   }, [data])
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   const handleGuestMoreSetting = (data:GuestMore)=>{
     if(data.guestPortal){
@@ -219,7 +228,7 @@ export default function NetworkForm (props:{
     try {
       const payload = updateClientIsolationAllowlist(_.omit(saveState, 'id')) // omit id to handle clone
       await addNetwork({ params, payload }).unwrap()
-      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -236,7 +245,7 @@ export default function NetworkForm (props:{
       deleteUnnecessaryFields()
       const payload = updateClientIsolationAllowlist({ ...saveState, venues: data.venues })
       await updateNetwork({ params, payload }).unwrap()
-      modalMode? modalCallBack?.() : navigate(linkToNetworks, { replace: true })
+      modalMode? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -351,7 +360,10 @@ export default function NetworkForm (props:{
         <StepsForm<NetworkSaveData>
           formRef={formRef}
           editMode={editMode}
-          onCancel={() => modalMode? modalCallBack?.() : navigate(linkToNetworks)}
+          onCancel={() => modalMode
+            ? modalCallBack?.()
+            : redirectPreviousPage(navigate, previousPath, linkToNetworks)
+          }
           onFinish={editMode ? handleEditNetwork : handleAddNetwork}
         >
           <StepsForm.StepForm

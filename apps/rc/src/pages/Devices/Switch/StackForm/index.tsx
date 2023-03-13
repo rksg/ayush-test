@@ -53,9 +53,12 @@ import {
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
-  SwitchViewModel
+  SwitchViewModel,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -85,6 +88,7 @@ export function StackForm () {
   const editMode = action === 'edit'
   const formRef = useRef<StepsFormInstance<Switch>>()
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink('/devices/')
   const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
   const stackSwitches = stackList?.split('_') ?? []
@@ -100,6 +104,7 @@ export function StackForm () {
   const [getStackMemberList] = useLazyGetStackMemberListQuery()
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
+  const [previousPath, setPreviousPath] = useState('')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
 
@@ -247,6 +252,10 @@ export function StackForm () {
       getStandaloneSwitches()
     }
   }, [venuesList, switchData, switchDetail])
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   const handleChange = (row: SwitchTable, index: number) => {
     const dataRows = [...tableData]
@@ -626,10 +635,7 @@ export function StackForm () {
           : (isStackSwitches ? handleSaveStackSwitches : handleAddSwitchStack)
         }
         onCancel={() =>
-          navigate({
-            ...basePath,
-            pathname: `${basePath.pathname}/switch`
-          })
+          redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
         }
         buttonLabel={{
           submit: readOnly ? $t({ defaultMessage: 'OK' }) :
