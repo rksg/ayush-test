@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import React       from 'react'
 
 import { Select }    from 'antd'
 import { IntlShape } from 'react-intl'
@@ -10,7 +9,6 @@ import * as UI                from './styledComponents'
 import { RecordWithChildren } from './types'
 
 import { TableProps } from '.'
-
 
 export function GroupSelect<RecordType> ({
   $t, value, setValue, groupables
@@ -70,7 +68,6 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         value={groupByValue}
       />
 
-      // need to optimize for renders
       const targetCol = groupables.find(col => col.key === groupByValue)
 
       const finalParentColumns = targetCol?.groupable!.parentColumns ?? []
@@ -94,11 +91,10 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
           const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
             ? <CollapseInactive />
             : <CollapseActive />
-          const WrappedExpand = () => <UI.ExpandWrapper
+          return <UI.ExpandWrapper
             onClick={(e) => props.onExpand(props.record, e)}>
             <ExpandIcon isActive={props.expanded}/>
           </UI.ExpandWrapper>
-          return <WrappedExpand />
         }
       }
 
