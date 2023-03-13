@@ -35,7 +35,8 @@ import {
   APExtended,
   LanPortStatusProperties,
   ApDirectedMulticast,
-  APNetworkSettings
+  APNetworkSettings,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -77,7 +78,7 @@ export const apApi = baseApApi.injectEndpoints({
         })
       }
     }),
-    groupByApList: build.query<TableResult<APExtended, ApExtraParams>, RequestPayload>({
+    groupByApList: build.query<TableResult<APExtendedGrouped, ApExtraParams>, RequestPayload>({
       query: ({ params, payload }) => {
         const apListReq = createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
         return {
@@ -85,7 +86,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<APExtended, ApExtraParams>) {
+      transformResponse (result: TableResult<APExtendedGrouped, ApExtraParams>) {
         return transformGroupByList(result)
       },
       keepUnusedDataFor: 0,
@@ -720,10 +721,17 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
   return result
 }
 
-const transformGroupByList = (result: TableResult<APExtended, ApExtraParams>) => {
+const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
   result.data = result.data.map(item => {
-    let newItem = {...item, children : []}
-    newItem.children = (item as unknown as {aps : []}).aps || []
+    let newItem = {...item, children : [] as APExtended[], id: _.uniqueId()}
+    const aps = (item as unknown as { aps: APExtended[] }).aps?.map((ap) => {
+      return {
+        ...ap,
+        id: _.uniqueId(),
+        deviceGroupName: ap.deviceGroupName !== '' ? ap.deviceGroupName : 'Uncategorized',
+      };
+    });
+    newItem.children = aps as APExtended[]
     return newItem
   })
   return result

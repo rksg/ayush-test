@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -29,7 +29,8 @@ import {
   transformDisplayText,
   TableQuery,
   RequestPayload,
-  usePollingTableQuery
+  usePollingTableQuery,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { getFilters }                                        from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -40,6 +41,7 @@ import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
 
 
+type deviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 
 export const defaultApPayload = {
   searchString: '',
@@ -119,8 +121,8 @@ export const APStatus = (
 
 
 interface ApTableProps
-  extends Omit<TableProps<APExtended>, 'columns'> {
-  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
+  extends Omit<TableProps<APExtended | APExtendedGrouped>, 'columns'> {
+  tableQuery?: TableQuery<APExtended | APExtendedGrouped, RequestPayload<unknown>, ApExtraParams>
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -133,16 +135,22 @@ export function ApTable (props: ApTableProps) {
   const params = useParams()
   const filters = getFilters(params)
   const { searchable, filterables } = props
-  const [groupBySelection, setGroupBySelection] = useState<
-  'deviceStatus' | 'model' | 'deviceGroupName' | null
->(null)
+  const [groupBySelection, setGroupBySelection] = useState<deviceGroupBy>(null)
+  const [tableFilter, setTableFilter] = useState<any>(filters)
+  const [tableSearch, setTableSearch] = useState<any>('')
 
 const groupByTableQuery = usePollingTableQuery({
   useQuery: useGroupByApListQuery,
   defaultPayload: {
     fields: groupedFields,
     filters: filters,
-    groupBy: 'deviceStatus' },
+    groupBy: 'deviceStatus',
+    searchString: '',
+    searchTargetFields: defaultApPayload.searchTargetFields,
+    search: {
+      searchTargetFields: defaultApPayload.searchTargetFields
+    }
+  },
   option: { skip: Boolean(props.tableQuery) ||  !Boolean(groupBySelection)}
 })
 const inlineTableQuery = usePollingTableQuery({
@@ -151,7 +159,6 @@ const inlineTableQuery = usePollingTableQuery({
     ...defaultApPayload,
     filters,
     search: {
-      searchTargetFields: defaultApPayload.searchTargetFields
     },
   },
   option: { skip: Boolean(props.tableQuery) ||  Boolean(groupBySelection)}
@@ -184,7 +191,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       disable: true,
       searchable: searchable,
       render: (data, row, _, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+        <TenantLink to={`/devices/wifi/${row?.serialNumber}/details/overview`}>
           {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
       )
     }, {
@@ -422,20 +429,20 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       show: false,
       sorter: false,
       render: (data, row) => {
-        if (!row.hasPoeStatus) {
+        if (!row?.hasPoeStatus) {
           return <span></span>
         }
 
-        const iconColor = (row.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
+        const iconColor = (row?.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
         return (
           <span>
             <Badge color={`var(${iconColor})`}
-              text={transformDisplayText(row.poePortInfo)}
+              text={transformDisplayText(row?.poePortInfo)}
             />
           </span>
         )
       }
-    }] as TableProps<APExtended>['columns']
+    }] as TableProps<APExtended | APExtendedGrouped>['columns']
   }, [$t, tableQuery?.data?.extra])
 
   const isActionVisible = (
@@ -495,26 +502,27 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
     }
   },[importResult])
 
-  const basePath = useTenantLink('/devices')
+  useEffect(()=> {          
+    tableQuery?.handleFilterChange(tableFilter, tableSearch)
+  },[groupBySelection,tableFilter,tableSearch])
 
+  const basePath = useTenantLink('/devices')
   return (
     <Loader states={[tableQuery]}>
-      <Table<APExtended>
+      <Table<APExtended | APExtendedGrouped>
         {...props}
         columns={columns}
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery?.pagination}
         onChange={tableQuery?.handleTableChange}
-        onFilterChange={tableQuery?.handleFilterChange}
         enableApiFilter={true}
         rowActions={filterByAccess(rowActions)}
-        groupByTableActions={{
-          onChange: (key : 'deviceStatus' | 'model' | 'deviceGroupName' | null) => setGroupBySelection(key),
-          onClear: () => {
-            setGroupBySelection(null)
-          }
-        }}
+        onFilterChange={useCallback((_filter : any, _search : any, groupBy: any) => {
+          setTableFilter(_filter)
+          setTableSearch(_search)
+          setGroupBySelection(groupBy as deviceGroupBy)
+        },[])}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {

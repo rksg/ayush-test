@@ -91,7 +91,7 @@ export interface APExtended extends AP {
   networks?: {
     count?: number
   },
-  name?: string
+  name?: string,
 }
 
 export interface CelluarInfo {
@@ -396,4 +396,23 @@ export interface ApDirectedMulticast {
   wiredEnabled: boolean,
   wirelessEnabled: boolean,
   networkEnabled: boolean
+}
+
+
+export type APExtendedGrouped = {
+  networks: {
+    count: number
+    names: string[]
+  }
+  members: number
+  incidents: number
+  deviceGroupId: string
+  deviceGroupName: string
+  deviceStatus: string
+  model: string
+  clients: number
+  name?: string
+  aps: APExtended[],
+  children?:  APExtended[],
+  id?: number | string
 }
