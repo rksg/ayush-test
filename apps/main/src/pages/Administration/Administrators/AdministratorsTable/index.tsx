@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import React        from 'react'
 
+import { Tooltip }   from 'antd'
 import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -30,6 +32,10 @@ interface AdministratorsTableProps {
   currentUserMail: string | undefined;
   isPrimeAdminUser: boolean;
   isMspEc: boolean;
+}
+
+interface TooltipRowProps extends React.PropsWithChildren {
+  'data-row-key': string;
 }
 
 const AdministratorsTable = (props: AdministratorsTableProps) => {
@@ -185,8 +191,19 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
     })
   }
 
-  // TODO: tooltip "'You cannot edit or delete yourself'"
-  //        for prime admin user select himself/herself
+  const TooltipRow: React.FC<TooltipRowProps> = (props) => {
+    const isPrimeAdminItself =
+      props['data-row-key'] === userProfileData.adminId && isPrimeAdminUser
+
+    return isPrimeAdminItself ?
+      <Tooltip
+        placement='topLeft'
+        title={$t({ defaultMessage: 'You cannot edit or delete yourself' })}
+      >
+        <tr {...props} />
+      </Tooltip>
+      : <tr {...props} />
+  }
 
   return (
     <Loader states={[
@@ -203,6 +220,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         columns={columns}
         dataSource={adminList}
         rowKey='id'
+        components={{
+          body: {
+            row: TooltipRow
+          }
+        }}
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}

@@ -1,5 +1,5 @@
-import { Row, Col, Form, Select, Typography }        from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
