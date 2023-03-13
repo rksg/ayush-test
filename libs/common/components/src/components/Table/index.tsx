@@ -462,7 +462,7 @@ function Table <RecordType extends Record<string, any>> ({
             }
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
             {Boolean(groupable.length) && <GroupBySelect />}
           </Space>

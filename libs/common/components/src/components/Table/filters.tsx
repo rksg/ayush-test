@@ -102,7 +102,7 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v }))
       : []
 
-  return () => <UI.FilterSelect
+  return <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
