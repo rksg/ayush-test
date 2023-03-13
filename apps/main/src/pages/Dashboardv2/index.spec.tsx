@@ -19,7 +19,8 @@ jest.mock('@acx-ui/analytics/components', () => ({
   TopSwitchesByTraffic: () => <div data-testid={'analytics-TopSwitchesByTraffic'} title='TopSwitchesByTraffic' />,
   TopSwitchModels: () => <div data-testid={'analytics-TopSwitchModels'} title='TopSwitchModels' />,
   TrafficByVolume: () => <div data-testid={'analytics-TrafficByVolume'} title='TrafficByVolume' />,
-  VenuesHealthDashboard: () => <div data-testid={'analytics-VenuesHealthDashboard'} title='VenuesHealthDashboard' />
+  VenuesHealthDashboard: () => <div data-testid={'analytics-VenuesHealthDashboard'} title='VenuesHealthDashboard' />,
+  DidYouKnow: () => <div data-testid={'analytics-DidYouKnow'} title='DidYouKnow' />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   AlarmWidget: () => <div data-testid={'rc-AlarmWidget'} title='AlarmWidget' />,
@@ -39,7 +40,7 @@ describe('Dashboard', () => {
   it('renders correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
 
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(4)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
 
@@ -68,7 +69,7 @@ describe('Dashboard', () => {
   it('should switch tab correctly', async () => {
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     fireEvent.click(await screen.findByText('Switch'))
-    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(5)
+    expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(6)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
   it('should show report link correctly', async () => {
