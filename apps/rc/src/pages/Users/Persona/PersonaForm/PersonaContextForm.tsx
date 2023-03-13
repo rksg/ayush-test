@@ -11,18 +11,13 @@ import { validationMessages }                         from '@acx-ui/utils'
 
 
 
-import { PersonaCreateMode } from './index'
-
-
 export function PersonaContextForm (props: {
   form: FormInstance,
-  mode: PersonaCreateMode
   defaultValue?: Partial<Persona>,
   onGroupChange: (id: string) => void
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue, mode, onGroupChange } = props
-  const isCreateFromFile = mode === PersonaCreateMode.FromFile
+  const { form, defaultValue, onGroupChange } = props
   const [searchPersonaList] = useLazySearchPersonaListQuery()
 
   const nameValidator = async (name: string) => {
@@ -51,20 +46,18 @@ export function PersonaContextForm (props: {
       initialValues={defaultValue}
     >
       <Form.Item
-        hidden={isCreateFromFile}
         name='name'
         label={$t({ defaultMessage: 'Persona Name' })}
         hasFeedback
         validateFirst
         validateTrigger={['onBlur']}
         rules={[
-          { required: !isCreateFromFile },
+          { required: true },
           { validator: (_, value) => nameValidator(value) }
         ]}
         children={<Input />}
       />
       <Form.Item
-        hidden={isCreateFromFile}
         name='email'
         label={$t({ defaultMessage: 'Email' })}
         rules={[
@@ -72,7 +65,6 @@ export function PersonaContextForm (props: {
         children={<Input />}
       />
       <Form.Item
-        hidden={isCreateFromFile}
         name='description'
         label={$t({ defaultMessage: 'Description' })}
         children={<TextArea rows={3} maxLength={64} />}
@@ -91,7 +83,6 @@ export function PersonaContextForm (props: {
         }
       />
       <Form.Item
-        hidden={isCreateFromFile}
         name='vlan'
         label={$t({ defaultMessage: 'VLAN' })}
         children={<InputNumber style={{ width: '100%' }}/>}
