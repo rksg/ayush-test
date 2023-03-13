@@ -10,7 +10,7 @@ import {
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  DpskBaseUrl
+  NewDpskBaseUrl
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -61,7 +61,7 @@ describe('DpskForm', () => {
         (req, res, ctx) => res(ctx.json(mockedEditFormData))
       ),
       rest.get(
-        DpskBaseUrl,
+        NewDpskBaseUrl,
         (req, res, ctx) => res(ctx.json(mockedDpskList))
       ),
       rest.get(
