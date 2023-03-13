@@ -13,7 +13,6 @@ export function SwitchIncidentsTab () {
     ...dateFilter,
     path: [
       { type: 'network', name: 'Network' },
-      { type: 'switchGroup', name: switchDetailQuery.data?.venueName },
       { type: 'switch', name: switchDetailQuery.data?.switchMac?.toUpperCase() }
     ]
   } as AnalyticsFilter

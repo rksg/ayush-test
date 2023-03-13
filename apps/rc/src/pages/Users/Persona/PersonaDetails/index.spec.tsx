@@ -2,6 +2,7 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   PersonaUrls,
@@ -18,7 +19,8 @@ import {
   mockMacRegistrationList,
   mockPersona,
   mockPersonaGroup,
-  mockPersonaGroupList
+  mockPersonaGroupList,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
@@ -30,6 +32,8 @@ Object.assign(navigator, {
     writeText: () => { }
   }
 })
+
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Persona Details', () => {
   let params: { tenantId: string, personaGroupId: string, personaId: string }
@@ -63,7 +67,7 @@ describe('Persona Details', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(

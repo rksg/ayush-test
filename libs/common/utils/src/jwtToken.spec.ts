@@ -79,11 +79,9 @@ describe('jwtToken', () => {
     expect(() => getJwtTokenPayload()).toThrow('Unable to parse JWT Token')
   })
   it('load image with JWT', async () => {
-    mockServer.use(
-      rest.get('/files/testId/urls', (req, res, ctx) => {
-        return res(ctx.json({ signedUrl: 'testImage' }))
-      })
-    )
+    global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
+      json: () => Promise.resolve({ signedUrl: 'testImage' })
+    }))
     // eslint-disable-next-line max-len
     const url = 'http://dummy.com/api/ui/t/e3d0c24e808d42b1832d47db4c2a7914/dashboard/reports/(reportsAux:wifi-reports/wifi-dashboard-reports)'
     Object.defineProperty(window, 'location', {
@@ -97,17 +95,27 @@ describe('jwtToken', () => {
       acx_account_vertical: 'Default',
       tenantType: 'REC',
       isBetaFlag: false,
-      tenantId: undefined
+      tenantId: '12345'
     }
     const jwtToken = `JWT=xxx.${window.btoa(JSON.stringify(token))}.xxx;`
     sessionStorage.setItem('jwt', jwtToken)
     const result = await loadImageWithJWT('testId')
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/file/tenant/e3d0c24e808d42b1832d47db4c2a7914/testId/url',
+      expect.objectContaining({
+        headers: {
+          // eslint-disable-next-line max-len
+          Authorization: 'Bearer JWT=xxx.eyJhY3hfYWNjb3VudF90aWVyIjoiUGxhdGludW0iLCJhY3hfYWNjb3VudF92ZXJ0aWNhbCI6IkRlZmF1bHQiLCJ0ZW5hbnRUeXBlIjoiUkVDIiwiaXNCZXRhRmxhZyI6ZmFsc2UsInRlbmFudElkIjoiMTIzNDUifQ==.xxx;',
+          mode: 'no-cors',
+          ...{ 'x-rks-tenantid': 'e3d0c24e808d42b1832d47db4c2a7914' }
+        }
+      }))
     expect(result).toEqual('testImage')
   })
   it('load image with JWT throw error', async () => {
     mockServer.use(
-      rest.get('/files/testId/urls', (req, res, ctx) => {
-        return res(ctx.json(null))
+      rest.get('/api/file/tenant/e3d0c24e808d42b1832d47db4c2a7914/testId/url', (req, res, ctx) => {
+        return res(ctx.json(''))
       })
     )
     sessionStorage.setItem('jwt', '')
@@ -147,13 +155,15 @@ describe('loadImageWithJWT', () => {
 
     const result = await loadImageWithJWT(imageId)
 
-    expect(global.fetch).toHaveBeenCalledWith('/files/123/urls', expect.objectContaining({
-      headers: {
-        // eslint-disable-next-line max-len
-        Authorization: 'Bearer JWT=xxx.eyJhY3hfYWNjb3VudF9yZWdpb25zIjpbIkVVIiwiQVMiLCJOQSJdLCJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsInRlbmFudFR5cGUiOiJSRUMiLCJhY3hfYWNjb3VudF92ZXJ0aWNhbCI6IkRlZmF1bHQifQ==.xxx;',
-        mode: 'no-cors'
-      }
-    }))
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/file/tenant/e3d0c24e808d42b1832d47db4c2a7914/123/url',
+      expect.objectContaining({
+        headers: {
+          // eslint-disable-next-line max-len
+          Authorization: 'Bearer JWT=xxx.eyJhY3hfYWNjb3VudF9yZWdpb25zIjpbIkVVIiwiQVMiLCJOQSJdLCJhY3hfYWNjb3VudF90aWVyIjoiR29sZCIsInRlbmFudFR5cGUiOiJSRUMiLCJhY3hfYWNjb3VudF92ZXJ0aWNhbCI6IkRlZmF1bHQifQ==.xxx;',
+          mode: 'no-cors'
+        }
+      }))
     expect(result).toEqual('https://example.com/image.png')
   })
 

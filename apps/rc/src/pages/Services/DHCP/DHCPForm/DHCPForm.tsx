@@ -63,6 +63,7 @@ export default function DHCPForm (props: DHCPFormProps) {
       const payload = {
         ...formData,
         dhcpPools: formData.dhcpPools.map((pool)=>{
+          delete pool.allowWired
           return {
             ...pool,
             id: pool.id.indexOf('_NEW_')!==-1 ? '' : pool.id

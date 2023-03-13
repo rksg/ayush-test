@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockVenueData } from '../__tests__/fixtures'
+import { mockValidationFailedDataWithDefinedCode, mockValidationFailedDataWithUndefinedCode, mockVenueData } from '../__tests__/fixtures'
 
 import AddEdge from './index'
 
@@ -18,6 +18,17 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+jest.mock('@acx-ui/utils', () => {
+  const reactIntl = jest.requireActual('react-intl')
+  const intl = reactIntl.createIntl({
+    locale: 'en'
+  })
+  return {
+    ...jest.requireActual('@acx-ui/utils'),
+    getIntl: () => intl
+  }
+})
 
 describe('AddEdge', () => {
   let params: { tenantId: string }
@@ -134,7 +145,7 @@ describe('AddEdge api fail', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json(null))
+        (req, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -143,7 +154,7 @@ describe('AddEdge api fail', () => {
     )
   })
 
-  it('addEdge api fail handle', async () => {
+  it('addEdge api fail with defined error code', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
@@ -160,7 +171,36 @@ describe('AddEdge api fail', () => {
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    // TODO
-    // await screen.findByText('Server Error')
+    await screen.findByText("There's no available SmartEdge license")
+  })
+
+  it('addEdge api fail with undefined error code', async () => {
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.addEdge.url,
+        (req, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithUndefinedCode))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(mockVenueData))
+      )
+    )
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
+    await user.click(venueDropdown)
+    await user.click(await screen.findByText('Mock Venue 1'))
+    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    const serialNumberInput = screen.getByRole('textbox',
+      { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await screen.findByText('Undefined message')
   })
 })
