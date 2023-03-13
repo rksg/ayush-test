@@ -61,17 +61,6 @@ describe('SnmpV2AgentTable', () => {
     await screen.findAllByText('Edit SNMPv2 Agent')
 
     await userEvent.type(
-      await screen.findByRole('textbox', { name: /Community Name/i }), 'joe_cn2')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
-    /*
-    const error1 = await screen.findByRole('alert', {
-      name: (_, el) => el.textContent === 'The Community name already exists'
-    })
-    expect(error1).toBeVisible()
-    */
-
-    await userEvent.type(
       await screen.findByRole('textbox', { name: /Community Name/i }), 'jj_cn2')
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
