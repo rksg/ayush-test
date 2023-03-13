@@ -104,7 +104,7 @@ describe('AdvancedSettingForm', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })
 
-  it('should navigate to venue details page when clicking cancel button', async () => {
+  it('should navigate to venue list page when clicking cancel button', async () => {
     const params = {
       tenantId: 'tenant-id',
       venueId: 'venue-id',
@@ -121,7 +121,7 @@ describe('AdvancedSettingForm', () => {
       })
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/t/${params.tenantId}/venues`,
       hash: '',
       search: ''
     })

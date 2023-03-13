@@ -63,9 +63,13 @@ export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/C
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
+export { usePreference, countryCodes } from './usePreference'
+export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
+export type { updatePreferenceProps } from './usePreference'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './SimpleListTooltip'

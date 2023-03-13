@@ -21,7 +21,7 @@ import {
 
 import MdnsProxyTable from './MdnsProxyTable'
 
-const mockTableResult = {
+const mockedTableResult = {
   totalCount: 1,
   page: 1,
   data: [{
@@ -29,6 +29,15 @@ const mockTableResult = {
     name: 'My mDNS Proxy 1',
     type: 'mDNS Proxy',
     scope: '5'
+  }]
+}
+
+const mockedVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'v1',
+    name: 'My Venue'
   }]
 }
 
@@ -56,8 +65,12 @@ describe('MdnsProxyTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getServicesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        MdnsProxyUrls.getEnhancedMdnsProxyList.url,
+        (req, res, ctx) => res(ctx.json(mockedTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
     )
   })
@@ -71,7 +84,7 @@ describe('MdnsProxyTable', () => {
       }
     )
 
-    const targetServiceName = mockTableResult.data[0].name
+    const targetServiceName = mockedTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
@@ -97,7 +110,7 @@ describe('MdnsProxyTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -122,7 +135,7 @@ describe('MdnsProxyTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
