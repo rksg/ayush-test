@@ -507,15 +507,15 @@ export function NetworkVenueScheduleDialog (props: SchedulingModalProps) {
         />
         </p>
         <video preload='auto' controls>
-          <source src='/assets/videos/scheduling/entireDay.mp4' type='video/mp4' />
+          <source src='./assets/videos/scheduling/entireDay.mp4' type='video/mp4' />
         </video>
         <p>{$t({ defaultMessage: 'To set the network schedule for entire day use the checkbox next to it' })}</p>
         <video preload='auto' controls>
-          <source src='/assets/videos/scheduling/partOfDay.mp4' type='video/mp4' />
+          <source src='./assets/videos/scheduling/partOfDay.mp4' type='video/mp4' />
         </video>
         <p>{$t({ defaultMessage: 'To set the network schedule for any time-slot, click the time slot' })}</p>
         <video preload='auto' controls>
-          <source src='/assets/videos/scheduling/multipleDays.mp4' type='video/mp4' />
+          <source src='./assets/videos/scheduling/multipleDays.mp4' type='video/mp4' />
         </video>
         <p>- <FormattedMessage
           defaultMessage='To set the network schedule for <b>multiple adjacent time-slots</b>, drag the mouse over them'
