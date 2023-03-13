@@ -49,7 +49,7 @@ export function useMenuConfig () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION_SERVICE)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   const config: LayoutProps['menuConfig'] = [
     {

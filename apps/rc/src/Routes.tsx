@@ -498,7 +498,7 @@ function PolicyRoutes () {
 
 function UserRoutes () {
   const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
-  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION_SERVICE)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
   return rootRoutes(
     <Route path='t/:tenantId'>
