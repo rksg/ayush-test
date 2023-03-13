@@ -3,42 +3,62 @@ import { ApiInfo } from '../../apiService'
 export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
   addDhcpService: {
     method: 'post',
-    url: '/api/edgeDhcpServices'
+    url: '/edgeDhcpServices',
+    oldUrl: '/api/edgeDhcpServices',
+    newApi: true
   },
   updateDhcpService: {
     method: 'put',
-    url: '/api/edgeDhcpServices/:id'
+    url: '/edgeDhcpServices/:id',
+    oldUrl: '/api/edgeDhcpServices/:id',
+    newApi: true
   },
   patchDhcpService: {
     method: 'PATCH',
-    url: '/api/edgeDhcpServices/:id'
+    url: '/edgeDhcpServices/:id',
+    oldUrl: '/api/edgeDhcpServices/:id',
+    newApi: true
   },
   deleteDhcpService: {
     method: 'delete',
-    url: '/api/edgeDhcpServices/:id'
+    url: '/edgeDhcpServices/:id',
+    oldUrl: '/api/edgeDhcpServices/:id',
+    newApi: true
   },
   bulkDeleteDhcpServices: {
     method: 'delete',
-    url: '/api/edgeDhcpServices'
+    url: '/edgeDhcpServices',
+    oldUrl: '/api/edgeDhcpServices',
+    newApi: true
   },
   getDhcp: {
     method: 'get',
-    url: '/api/edgeDhcpServices/:id'
+    url: '/edgeDhcpServices/:id',
+    oldUrl: '/api/edgeDhcpServices/:id',
+    newApi: true
   },
   getDhcpList: {
     method: 'get',
-    url: '/api/edgeDhcpServices/dhcps'
+    url: '/edgeDhcpServices/dhcps',
+    oldUrl: '/api/edgeDhcpServices/dhcps',
+    newApi: true
   },
   getDhcpByEdgeId: {
     method: 'get',
-    url: '/api/edgeDhcpServices/edgeDhcpRelationship/:edgeId'
+    url: '/edgeDhcpServices/edgeDhcpRelationship/:edgeId',
+    oldUrl: '/api/edgeDhcpServices/edgeDhcpRelationship/:edgeId',
+    newApi: true
   },
   getDhcpPoolStats: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcpPools'
+    url: '/edgeDhcpServices/dhcpPools/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcpPools',
+    newApi: true
   },
   getDhcpStats: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcps'
+    url: '/edgeDhcpServices/dhcps/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcps',
+    newApi: true
   }
 }
