@@ -41,7 +41,7 @@ export const groupList = {
 
 export const attributeGroupReturnByQuery = {
   totalCount: 1,
-  page: 1,
+  page: 0,
   pageSize: 10,
   data: [
     {
@@ -98,7 +98,7 @@ export const vendorList = {
 
 export const attributeList = {
   totalCount: 11,
-  page: 1,
+  page: 0,
   pageSize: 10000,
   data: [
     {

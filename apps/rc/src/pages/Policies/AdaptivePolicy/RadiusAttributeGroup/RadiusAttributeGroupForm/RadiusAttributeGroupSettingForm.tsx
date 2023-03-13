@@ -54,7 +54,7 @@ export function RadiusAttributeGroupSettingForm (props: RadiusAttributeGroupSett
       },
       payload: {
         fields: [ 'name' ],
-        page: 1, pageSize: 10,
+        page: 0, pageSize: 10,
         filters: { name: value }
       }
     }).unwrap()).data.filter(n => n.id !== policyId)
