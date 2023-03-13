@@ -17,6 +17,7 @@ import {
 import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
+import { redirectPreviousPage }                                      from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
@@ -64,9 +65,9 @@ export function MdnsProxyTab () {
   const params = useParams()
   const { serialNumber } = params
   const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/')
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
-  const wifiDetailPath = useTenantLink(`/devices/wifi/${serialNumber}/details/overview`)
-  const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
   const {
     data: apDetail,
     isFetching: isDataFetching,
@@ -143,7 +144,9 @@ export function MdnsProxyTab () {
     }]}>
       <StepsForm
         formRef={formRef}
-        onCancel={() => navigate(wifiDetailPath)}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
+        }
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply mDNS Proxy' })
         }}

@@ -1,3 +1,5 @@
+import { Modal } from 'antd'
+
 import { networkApi, useNetworkListQuery }                                                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, Network, RequestPayload, TABLE_QUERY, useTableQuery, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
@@ -161,10 +163,14 @@ describe('NetworkTable', () => {
     mockRestApiQuery(
       WifiUrlsInfo.deleteNetwork.url, 'delete', { data: { requestId: 'network-01' } }
     )
+    mockRestApiQuery(CommonUrlsInfo.getVenuesList.url, 'post', { data: [] })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockedUseNavigate.mockClear()
+  })
+  afterEach(()=>{
+    Modal.destroyAll()
   })
 
   afterAll(() => mockedUseNavigate.mockReset())

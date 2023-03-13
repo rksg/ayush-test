@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsForm }               from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { redirectPreviousPage }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { getExternalAntennaPayload, VenueEditContext } from '../..'
@@ -17,7 +18,9 @@ export function RadioTab () {
   const params = useParams()
   const { venueId } = params
   const navigate = useNavigate()
-  const { editContextData,
+  const {
+    previousPath,
+    editContextData,
     setEditContextData,
     editRadioContextData,
     setEditRadioContextData
@@ -108,10 +111,9 @@ export function RadioTab () {
   return (
     <StepsForm
       onFinish={() => handleUpdateSetting(false)}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>
