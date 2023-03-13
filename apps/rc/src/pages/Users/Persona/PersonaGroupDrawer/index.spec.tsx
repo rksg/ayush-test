@@ -3,9 +3,9 @@ import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
 import {
-  DpskBaseUrl,
+  NewDpskBaseUrl,
   MacRegListUrlsInfo,
-  PersonaBaseUrl,
+  NewPersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
@@ -32,7 +32,7 @@ describe('Persona Group Drawer', () => {
     // mock: addPersonaGroup, updatePersonaGroup, getMacRegistrationPoolList
     mockServer.use(
       rest.get(
-        PersonaBaseUrl,
+        NewPersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
@@ -44,7 +44,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        PersonaBaseUrl,
+        NewPersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
@@ -52,7 +52,7 @@ describe('Persona Group Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(
-        DpskBaseUrl,
+        NewDpskBaseUrl,
         (req, res, ctx) => res(ctx.json(mockDpskList))
       )
     )
