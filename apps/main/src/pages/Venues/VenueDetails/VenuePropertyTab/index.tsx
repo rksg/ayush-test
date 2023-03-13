@@ -107,11 +107,8 @@ export function VenuePropertyTab () {
                 })
                 clearSelection()
               })
-              .catch(() => {
-                showToast({
-                  type: 'error',
-                  content: $t({ defaultMessage: 'An error occurred' })
-                })
+              .catch((e) => {
+                console.log(e) // eslint-disable-line no-console
               })
           }
         })

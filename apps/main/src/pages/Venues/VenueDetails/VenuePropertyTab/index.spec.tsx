@@ -39,6 +39,10 @@ describe('Property Unit Page', () => {
       rest.post(
         PropertyUrlsInfo.updatePropertyUnit.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.patch(
+        PropertyUrlsInfo.updatePropertyUnit.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -62,8 +66,6 @@ describe('Property Unit Page', () => {
 
     await userEvent.click(firstRow)
     await userEvent.click(await screen.findByRole('button', { name: /edit/i }))
-
-    // await within(unitDialog).findByText(/edit unit/i)
   })
 
   it('should support Suspend, View Portal, Delete actions', async () => {
