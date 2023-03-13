@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { ApTable }   from '@acx-ui/rc/components'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -9,7 +11,6 @@ import { NetworkTimelineTab }  from './NetworkTimelineTab'
 import { NetworkVenuesTab }    from './NetworkVenuesTab'
 
 const tabs = {
-  overview: NetworkOverviewTab,
   aps: ApTable,
   venues: NetworkVenuesTab,
   services: NetworkServicesTab,
@@ -20,8 +21,14 @@ const tabs = {
 export default function NetworkDetails () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
-  return <>
-    <NetworkPageHeader />
-    { Tab && <Tab /> }
-  </>
+  const [selectedVenues, setSelectedVenues] = useState<string[]>([])
+  return activeTab === 'overview'
+    ? <>
+      <NetworkPageHeader selectedVenues={selectedVenues} setSelectedVenues={setSelectedVenues} />
+      { <NetworkOverviewTab selectedVenues={selectedVenues} /> }
+    </>
+    : <>
+      <NetworkPageHeader />
+      <Tab />
+    </>
 }

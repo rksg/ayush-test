@@ -82,6 +82,8 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         selectedOptionOfSlot4: selectedEnable4.option,
         switchFamilyModels: editRecord
       })
+      setFamily(selectedFamily)
+      setModel(selectedModel)
       familyChangeAction(selectedFamily)
       modelChangeAction(selectedFamily, selectedModel)
       setEnableSlot2(selectedEnable2.enable)
@@ -206,12 +208,15 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
     switch(slot){
       case 'slot2':
         setEnableSlot2(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
         break
       case 'slot3':
         setEnableSlot3(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
         break
       case 'slot4':
         setEnableSlot4(e.target.checked)
+        form.setFieldValue('selectedOptionOfSlot4', optionListForSlot4[0]?.value)
         break
     }
   }
@@ -269,7 +274,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
       let slotPortInfo: string = ''
 
       if (slotOptions.length > 1) {
-        if (slotOption === '') {
+        if (slotOption === '' || slotOption === undefined) {
           slotOption = slotOptions[0].value
         }
         slotPortInfo = slotOption
@@ -280,7 +285,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
         const familyList = ICX_MODELS_MODULES[familyIndex]
         const modelIndex = selectedModel as keyof typeof familyList
-        slotPortInfo = familyList[modelIndex][slotNumber - 1][0]
+        slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
         totalPortNumber = slotPortInfo.split('X')[0]
       }
 
@@ -342,7 +347,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                     <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -367,7 +372,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
                     <Radio key={value} value={value} disabled={!!editRecord}>
                       <Tooltip
                         title={''}>
-                        {label}
+                        <div data-testid={value}>{label}</div>
                       </Tooltip>
                     </Radio>
                   ))}
@@ -376,7 +381,7 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
             </Card>
           </UI.GroupListLayout>
         </Col>
-        <Col span={6} flex={'400px'} hidden={!moduleSelectionEnable}>
+        <Col span={6} flex={'400px'} hidden={!moduleSelectionEnable || editRecord !== undefined}>
           <Typography.Title level={3}>{$t({ defaultMessage: 'Select Modules' })}</Typography.Title>
           <Row style={{ paddingTop: '5px' }}
             hidden={!(slots && slots?.length > 1 && module2SelectionEnable)}>

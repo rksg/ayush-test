@@ -21,13 +21,13 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addAaaServer: {
     method: 'post',
-    url: '/venues/:venueId/aaaServer',
+    url: '/venues/:venueId/aaaServers',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
     newApi: true
   },
   updateAaaServer: {
     method: 'put',
-    url: '/venues/:venueId/aaaServer/:aaaServerId',
+    url: '/venues/:venueId/aaaServers/:aaaServerId',
     oldUrl: '/api/switch/tenant/:tenantId/venue/:venueId/aaaServer',
     newApi: true
   },
@@ -45,15 +45,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/switchlist'
+    url: '/switches/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/switchlist',
+    newApi: true
   },
   getSwitchModelList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/modellist'
+    url: '/switches/models/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/modellist',
+    newApi: true
   },
   getMemberList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/memberlist'
+    url: '/switches/members/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/memberlist',
+    newApi: true
   },
   deleteSwitches: {
     method: 'delete',
@@ -63,15 +69,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteStackMember: {
     method: 'delete',
-    url: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber'
+    url: '/stacks/:stackSwitchSerialNumber',
+    oldUrl: '/api/switch/tenant/:tenantId/stack/:stackSwitchSerialNumber',
+    newApi: true
   },
   acknowledgeSwitch: {
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/ack'
+    url: '/stacks/:switchId/acks',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/ack',
+    newApi: true
   },
   getSwitchDetailHeader: {
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId'
+    url: '/switches/:switchId/configurations',
+    oldUrl: '/api/viewmodel/:tenantId/switch/:switchId',
+    newApi: true
   },
   getSwitch: {
     method: 'get',
@@ -81,16 +93,23 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchPortlist: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/portlist'
+    url: '/switches/ports/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/portlist',
+    newApi: true
   },
   importSwitches: {
+    // 400 Bad Request
+    // method: 'post',
+    // url: '/venues/switches',
+    // oldUrl: '/api/switch/tenant/:tenantId/import',
+    // newApi: true
     method: 'post',
     url: '/api/switch/tenant/:tenantId/import'
   },
   getPortSetting: {
     // different method
     // method: 'post',
-    // url: '/switches/:switchId/ports',
+    // url: '/switches/:switchId/portSettings',
     // newApi: true,
     method: 'get',
     url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'
@@ -114,20 +133,16 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addSwitch: {
-    // method: 'post',
-    // url: '/switches',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: true
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   updateSwitch: {
-    // method: 'put',
-    // url: '/switches/:switchId',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch',
-    // newApi: true
     method: 'put',
-    url: '/api/switch/tenant/:tenantId/switch'
+    url: '/switches/:switchId',
+    oldUrl: '/api/switch/tenant/:tenantId/switch',
+    newApi: true
   },
   convertToStack: {
     method: 'post',
@@ -135,7 +150,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addStackMember: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber'
+    url: '/stacks/:stackSerialNumber/members/:newStackMemberSerialNumber',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:stackSerialNumber/member/:newStackMemberSerialNumber',
+    newApi: true
   },
   getSwitchConfigBackupList: {
     method: 'post',
@@ -150,10 +168,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   restoreBackup: {
+    // Wait for new uri ready
     method: 'put',
-    url: '/switches/configBackups/:configId/restoration',
+    url: '/switches/configBackups/:configId',
     oldUrl: '/api/switch/tenant/:tenantId/configBackup/restore/:configId',
-    newApi: true
+    newApi: false
   },
   downloadSwitchConfig: {
     method: 'get',
@@ -251,7 +270,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addAcl: {
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/profile/:profileId/acl'
+    url: '/switchProfiles/:profileId/acls',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/:profileId/acl',
+    newApi: true
   },
   addVePort: {
     method: 'post',
@@ -336,6 +357,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchClientDetail: {
+    // TODO need add filter
+    // method: 'post',
+    // url: '/switches/clients/query',
+    // oldUrl: '/api/viewmodel/:tenantId/switch/client/:clientId',
+    // newApi: true
     method: 'get',
     url: '/api/viewmodel/:tenantId/switch/client/:clientId'
   },
@@ -347,6 +373,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTroubleshootingClean: {
+    // different method
+    // method: 'delete',
+    // url: '/switches/:switchId/debugRequests/:troubleshootingType',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
+    // newApi: true
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
   },
@@ -412,6 +443,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   dhcpLeaseTable: {
+    // 404 Not Found
+    // method: 'get',
+    // url: '/switches/:switchId/dhcpServers/leaseTables',
+    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable',
+    // newApi: true
     method: 'get',
     url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
   },
@@ -423,7 +459,9 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchProfileList: {
     method: 'post',
-    url: '/api/viewmodel/:tenantId/switch/profilelist'
+    url: '/switches/profiles/query',
+    oldUrl: '/api/viewmodel/:tenantId/switch/profilelist',
+    newApi: true
   },
   addSwitchConfigProfile: {
     method: 'post',
@@ -439,11 +477,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchFrontView: {
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId'
+    url: '/switches/:switchId/ports?unitid=:unitId',
+    oldUrl: '/api/viewmodel/:tenantId/switch/:switchId/ports?unitid=:unitId',
+    newApi: true
   },
   getSwitchRearView: {
     method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId'
+    url: '/switches/:switchId/rearDetails?unitid=:unitId',
+    oldUrl: '/api/viewmodel/:tenantId/switch/:switchId/rear?unitid=:unitId',
+    newApi: true
   },
   addCliTemplate: {
     method: 'post',

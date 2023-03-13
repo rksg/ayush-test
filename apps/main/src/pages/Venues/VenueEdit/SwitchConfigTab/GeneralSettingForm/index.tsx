@@ -149,7 +149,7 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId }, payload: {
+      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
         ...formRef?.current?.getFieldsValue(),
         id: venueId,
         profileId: formData?.profileId,

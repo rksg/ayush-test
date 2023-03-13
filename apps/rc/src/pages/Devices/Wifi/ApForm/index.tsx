@@ -255,7 +255,7 @@ export function ApForm () {
     if (sameAsVenue) {
       setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
     }
-    formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
+    formRef?.current?.setFieldValue('apGroupId', options[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
