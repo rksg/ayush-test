@@ -6,7 +6,6 @@ import {
   formatter,
   formats,
   convertEpochToRelativeTime,
-  convertDateTimeToSqlFormat,
   DateFormatEnum,
   defaultDateFormat
 } from './formatter'
@@ -344,12 +343,6 @@ describe('formatter', () => {
       it('Should return relative time', () => {
         expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
           .toBe('string')
-      })
-    })
-    describe('convertDateTimeToSqlFormat', () => {
-      it('should convert date to sqlDateTimeFormat', () => {
-        expect(convertDateTimeToSqlFormat('2022-12-16T08:05:00+05:30'))
-          .toEqual('2022-12-16 02:35:00')
       })
     })
   })

@@ -238,10 +238,6 @@ export function convertEpochToRelativeTime (timestamp: number) {
   return moment(new Date().getTime()).diff(moment.unix(timestamp))
 }
 
-export function convertDateTimeToSqlFormat (dateTime: string): string {
-  return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
-}
-
 function isIntlFormat (name: string): name is keyof typeof intlFormats {
   return name in intlFormats
 }
