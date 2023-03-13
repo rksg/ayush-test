@@ -2,16 +2,21 @@ import { waitFor } from '@testing-library/react'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { MacRegListUrlsInfo, PersonaBaseUrl, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
-import { mockServer, render, screen }                      from '@acx-ui/test-utils'
+import {
+  MacRegListUrlsInfo,
+  NewPersonaBaseUrl,
+  PersonaUrls
+} from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   mockPersonaTableResult,
   mockPersonaGroupList,
   mockPersona,
   mockPersonaGroup,
-  mockMacRegistration
+  mockMacRegistration,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaDrawer } from './index'
@@ -28,11 +33,11 @@ describe('Persona Drawer', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
       rest.get(
-        PersonaBaseUrl,
+        NewPersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
-        PersonaUrls.searchPersonaList.url,
+        replacePagination(PersonaUrls.searchPersonaList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       // rest.put(

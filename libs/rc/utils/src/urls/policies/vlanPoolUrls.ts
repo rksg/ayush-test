@@ -33,6 +33,8 @@ export const VlanPoolUrls: { [key: string]: ApiInfo } = {
   },
   getVLANPoolVenues: {
     method: 'post',
-    url: '/api/vlanPools/:policyId/venues'
+    url: '/vlanPools/:policyId/venues',
+    oldUrl: '/api/vlanPools/:policyId/venues',
+    newApi: true
   }
 }
