@@ -6,7 +6,6 @@ import { ApSnmpApUsage, useTableQuery }    from '@acx-ui/rc/utils'
 import { TenantLink }                      from '@acx-ui/react-router-dom'
 
 export default function SnmpAgentInstancesTable () {
-//const queryResults = useGetApUsageByApSnmpQuery({ params })
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
     useQuery: useGetApUsageByApSnmpQuery,

@@ -2,8 +2,8 @@ import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }        from '@acx-ui/components'
-import { useDeleteApSnmpPoliciesMutation, useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery } from '@acx-ui/rc/services'
+import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                           from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
   getPolicyDetailsLink,
@@ -68,8 +68,8 @@ export default function SnmpAgentTable () {
     useQuery: useGetApSnmpViewModelQuery,
     defaultPayload
   })
+
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
-  const [ deleteMultipleFn ] = useDeleteApSnmpPoliciesMutation()
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -89,7 +89,6 @@ export default function SnmpAgentTable () {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         const ids = selectedRows.map(row => row.id)
-        const idslen = ids.length
         const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
           const numOfActivityVenues = r.venues?.count || 0
           return numOfActivityVenues > 0
@@ -104,21 +103,13 @@ export default function SnmpAgentTable () {
               defaultMessage: 'This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?'
             }),
             onOk: () => {
-              if (idslen === 1) {
-                deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
-              } else {
-                deleteMultipleFn({ params: { tenantId }, payload: ids }).then(clearSelection)
-              }
+              deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
             },
             onCancel: () => { clearSelection() },
             okText: $t({ defaultMessage: 'Delete' })
           })
         } else {
-          if (idslen === 1) {
-            deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
-          } else {
-            deleteMultipleFn({ params: { tenantId }, payload: ids }).then(clearSelection)
-          }
+          deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
         }
       }
     }
@@ -156,11 +147,9 @@ export default function SnmpAgentTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={{ type: 'radio' }}
         />
       </Loader>
-
-
     </>
   )
 }
