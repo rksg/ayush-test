@@ -208,9 +208,9 @@ const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
       showErrorModal(details)
     }
     if (needLogout && !isDevModeOn) {
-      const token = sessionStorage.getItem('jwt')?? null
-      sessionStorage.removeItem('jwt')
-      window.location.href = token? `/logout?token=${token}` : '/logout'
+      // const token = sessionStorage.getItem('jwt')?? null
+      // sessionStorage.removeItem('jwt')
+      // window.location.href = token? `/logout?token=${token}` : '/logout'
     }
   }
   return next(action)
