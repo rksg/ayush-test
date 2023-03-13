@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -57,7 +57,7 @@ describe('AP Network IP settings', () => {
   it('should render correctly without AP viewModel and network data', async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        getUrlForTest(CommonUrlsInfo.getApsList),
         (_, res, ctx) => res(ctx.json(
           {
             totalCount: 1,
@@ -67,7 +67,7 @@ describe('AP Network IP settings', () => {
         ))
       ),
       rest.get(
-        WifiUrlsInfo.getApNetworkSettings.url,
+        getUrlForTest(WifiUrlsInfo.getApNetworkSettings),
         (_, res, ctx) => res(ctx.json(null))
       )
     )

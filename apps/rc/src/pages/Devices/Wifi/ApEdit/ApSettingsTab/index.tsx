@@ -28,6 +28,7 @@ export function ApSettingsTab () {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -86,9 +87,11 @@ export function ApSettingsTab () {
         key='proxy'>
         <MdnsProxyTab />
       </TabPane>
-      <TabPane tab={tabTitleMap('snmp')} key='snmp'>
-        <ApSnmp />
-      </TabPane>
+      {supportApSnmp &&
+        <TabPane tab={tabTitleMap('snmp')} key='snmp'>
+          <ApSnmp />
+        </TabPane>
+      }
       {supportDirectedMulticast &&
         <TabPane tab={<>
           {tabTitleMap('multicast')}

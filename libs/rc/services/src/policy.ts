@@ -1235,6 +1235,7 @@ export const {
   useGetApUsageByApSnmpQuery,
   useGetApSnmpViewModelQuery,
   useGetVenueApSnmpSettingsQuery,
+  useLazyGetVenueApSnmpSettingsQuery,
   useUpdateVenueApSnmpSettingsMutation,
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
