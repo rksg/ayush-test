@@ -21,14 +21,25 @@ import {
 
 import ClientIsolationTable from './ClientIsolationTable'
 
-const mockTableResult = {
+const mockedTableResult = {
   totalCount: 1,
   page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My Client Isolation 1',
-    type: 'Client Isolation',
-    scope: '5'
+    tenantId: '864548131578778',
+    description: 'Hello',
+    clientEntries: ['mac1', 'mac2', 'mac3'],
+    venueIds: ['v1']
+  }]
+}
+
+const mockedVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'v1',
+    name: 'My Venue'
   }]
 }
 
@@ -56,8 +67,12 @@ describe('ClientIsolationTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        ClientIsolationUrls.getEnhancedClientIsolationList.url,
+        (req, res, ctx) => res(ctx.json(mockedTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
     )
   })
@@ -71,7 +86,7 @@ describe('ClientIsolationTable', () => {
       }
     )
 
-    const targetName = mockTableResult.data[0].name
+    const targetName = mockedTableResult.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add Client Isolation Pofile/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
@@ -98,7 +113,7 @@ describe('ClientIsolationTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -123,7 +138,7 @@ describe('ClientIsolationTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
 

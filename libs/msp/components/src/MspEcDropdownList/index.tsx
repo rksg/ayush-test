@@ -72,7 +72,8 @@ export function MspEcDropdownList () {
       'tenantType',
       'status',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const integratorPayload = {
@@ -84,7 +85,8 @@ export function MspEcDropdownList () {
       'tenantType',
       'status',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const varPayload = {
@@ -124,6 +126,7 @@ export function MspEcDropdownList () {
       'status',
       'streetAddress'
     ],
+    searchTargetFields: ['name'],
     filters: {
       includeExpired: [false]
     }
@@ -198,6 +201,9 @@ export function MspEcDropdownList () {
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: mspEcPayload,
+    search: {
+      searchTargetFields: mspEcPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.MSP_EC }
   })
 
@@ -205,6 +211,9 @@ export function MspEcDropdownList () {
     useQuery: useMspCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: integratorPayload,
+    search: {
+      searchTargetFields: integratorPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.MSP_INTEGRATOR }
   })
 
@@ -212,6 +221,9 @@ export function MspEcDropdownList () {
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: varPayload,
+    search: {
+      searchTargetFields: varPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.VAR_REC }
   })
 
@@ -219,6 +231,9 @@ export function MspEcDropdownList () {
     useQuery: useSupportCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportEcPayload,
+    search: {
+      searchTargetFields: supportEcPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.SUPPORT_MSP_EC }
   })
 
@@ -226,6 +241,9 @@ export function MspEcDropdownList () {
     useQuery: useVarCustomerListDropdownQuery,
     apiParams: { tenantId: TenantIdFromJwt() },
     defaultPayload: supportPayload,
+    search: {
+      searchTargetFields: supportPayload.searchTargetFields as string[]
+    },
     option: { skip: delegationType !== DelegationType.SUPPORT_REC }
   })
 
