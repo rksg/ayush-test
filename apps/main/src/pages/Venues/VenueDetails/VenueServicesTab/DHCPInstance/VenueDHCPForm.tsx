@@ -17,7 +17,7 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -28,7 +28,7 @@ import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledC
 
 const { Option } = AntSelect
 const defaultAPPayload = {
-  fields: ['serialNumber', 'name', 'venueId'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'deviceStatus'],
   pageSize: 10000
 }
 const VenueDHCPForm = (props: {
@@ -89,6 +89,7 @@ const VenueDHCPForm = (props: {
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
     setDHCPServiceID(dhcpInfo.id as string)
+    refreshList()
   }
   useImperativeHandle(ref, () => ({
     resetForm: resetForm
@@ -111,19 +112,31 @@ const VenueDHCPForm = (props: {
       form.getFieldsValue().backupServerSN,
       ...form.getFieldsValue().gateways.map((item:{ serialNumber:string }) => item.serialNumber)
     ])
-    return []
   }
-  const getOptionList = (sn:string)=>{
+  const getOptionList = (sn:string, notForGateway?:boolean)=>{
     if(apList?.data) {
       return _.filter(apList?.data, (o) => {
-
-        return !_.some(selectedAPs, (ap)=>{
+        const isHierarchical = getSelectedDHCPMode() === DHCPConfigTypeEnum.HIERARCHICAL
+        let skipForH = false
+        if(notForGateway===true
+          && isHierarchical && o.apStatusData
+          && o.apStatusData.lanPortStatus
+          && o.apStatusData.lanPortStatus?.length <= 1){
+          skipForH = true
+        }
+        return (!_.some(selectedAPs, (ap)=>{
           return ap===o.serialNumber
-        }) || o.serialNumber===sn
+        }) || o.serialNumber===sn)
+        && o.deviceStatus===ApDeviceStatusEnum.OPERATIONAL
+        && !skipForH
 
       })
     }
     return []
+  }
+
+  const getAPDetail = (sn:string)=>{
+    return _.find(apList?.data, { serialNumber: sn })
   }
 
   const gatewaysList = (gateways && gateways.length>0) ? gateways?.map((item,index)=>{
@@ -232,6 +245,22 @@ const VenueDHCPForm = (props: {
         >
           <AntSelect onChange={(val)=>{
             setDHCPServiceID(val as string)
+            // eslint-disable-next-line max-len
+            const mode = dhcpProfileList && dhcpProfileList[_.findIndex(dhcpProfileList, { id: val as string })].dhcpMode
+            if(mode === DHCPConfigTypeEnum.HIERARCHICAL){
+              const primaryServer = getAPDetail(form.getFieldsValue().primaryServerSN)
+              const secondary = getAPDetail(form.getFieldsValue().backupServerSN)
+              const resetField = (server: APExtended | undefined, fieldName:string)=>{
+                if(server
+                  && server.apStatusData
+                  && server.apStatusData.lanPortStatus
+                  && server.apStatusData.lanPortStatus?.length <= 1){
+                  form.setFieldValue(fieldName, '')
+                }
+              }
+              resetField(primaryServer, 'primaryServerSN')
+              resetField(secondary, 'backupServerSN')
+            }
           }}
           placeholder={$t({ defaultMessage: 'Select Service...' })}>
             {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
@@ -262,7 +291,7 @@ const VenueDHCPForm = (props: {
         onChange={() => {
           refreshList()
         }}>
-        {getOptionList(form.getFieldsValue().primaryServerSN).map( ap =>
+        {getOptionList(form.getFieldsValue().primaryServerSN, true).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
@@ -277,7 +306,7 @@ const VenueDHCPForm = (props: {
           refreshList()
         }}
       >
-        {getOptionList(form.getFieldsValue().backupServerSN).map( ap =>
+        {getOptionList(form.getFieldsValue().backupServerSN, true).map( ap =>
           <Option key={ap.serialNumber} value={ap.serialNumber}>
             {ap.name}
           </Option>
