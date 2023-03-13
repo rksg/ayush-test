@@ -748,7 +748,7 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
         setPoEPortStatus(ap, lanPortStatus)
       }
   
-      return item
+      return ap
     })
     newItem.children = aps as unknown as APExtended[]
     return newItem
