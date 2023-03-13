@@ -6,7 +6,7 @@ import {
   DpskDetailsTabKey,
   getServiceRoutePath,
   ServiceOperation,
-  DpskPassphraseBaseUrl,
+  NewDpskPassphraseBaseUrl,
   DpskUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -37,7 +37,7 @@ describe('DpskPassphraseManagement', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        DpskPassphraseBaseUrl,
+        NewDpskPassphraseBaseUrl,
         (req, res, ctx) => res(ctx.json(mockedDpskPassphraseList))
       )
     )
@@ -138,7 +138,7 @@ describe('DpskPassphraseManagement', () => {
 
     mockServer.use(
       rest.get(
-        DpskPassphraseBaseUrl,
+        NewDpskPassphraseBaseUrl,
         (req, res, ctx) => {
 
           const headers = req.headers['headers']
