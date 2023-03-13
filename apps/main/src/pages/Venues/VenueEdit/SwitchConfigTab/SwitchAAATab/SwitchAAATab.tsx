@@ -1,12 +1,14 @@
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import { useUpdateAAASettingMutation }                from '@acx-ui/rc/services'
+import { redirectPreviousPage }                       from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
 
+import { VenueEditContext } from '../../index'
 
 import { AAAServers }  from './AAAServers'
 import { AAASettings } from './AAASettings'
@@ -18,6 +20,7 @@ export function SwitchAAATab () {
   const basePath = useTenantLink('/venues/')
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
   const [aaaSettingId, setAAASettingId] = useState<string>('')
+  const { previousPath } = useContext(VenueEditContext)
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
@@ -111,10 +114,9 @@ export function SwitchAAATab () {
     <StepsForm
       formRef={formRef}
       onFinish={() => handleUpdate()}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
     >
       <AnchorLayout items={anchorItems} offsetTop={275} />

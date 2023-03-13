@@ -6,7 +6,7 @@ import { useNavigate, useParams }                          from 'react-router-do
 
 import { Loader, StepsForm, StepsFormInstance }                                                  from '@acx-ui/components'
 import { useApViewModelQuery, useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
-import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }                            from '@acx-ui/rc/utils'
+import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp, redirectPreviousPage }      from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../..'
@@ -22,7 +22,7 @@ export function IpSettings () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
-  const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
 
   const formRef = useRef<StepsFormInstance<APNetworkSettings>>()
 
@@ -160,10 +160,9 @@ export function IpSettings () {
       formRef={formRef}
       onFormChange={handleChange}
       onFinish={handleUpdateIpSettings}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
       }}

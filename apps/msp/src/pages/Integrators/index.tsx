@@ -5,16 +5,12 @@ import { useIntl }   from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
   PageHeader,
   showActionModal,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
 import {
   AssignEcDrawer,
   ResendInviteModal
@@ -28,7 +24,9 @@ import {
   MspEc
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, MspTenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
 import { filterByAccess }                                                           from '@acx-ui/user'
+import { hasRoles }                                                                 from '@acx-ui/user'
 import {
   AccountType
 } from '@acx-ui/utils'
@@ -49,11 +47,13 @@ const defaultPayload = {
     'mspEcAdminCount',
     'wifiLicense',
     'switchLicens'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 export function Integrators () {
   const { $t } = useIntl()
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
@@ -137,7 +137,10 @@ export function Integrators () {
     const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload,
+      search: {
+        searchTargetFields: defaultPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
@@ -203,15 +206,19 @@ export function Integrators () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '3rd Party' })}
-        extra={filterByAccess([
-          <TenantLink to='/dashboard'>
+        extra={isAdmin ?
+          [
+            <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            </TenantLink>,
+            <MspTenantLink to='/integrators/create'>
+              <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
+            </MspTenantLink>
+          ]
+          : [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
-          </TenantLink>,
-          <MspTenantLink to='/integrators/create'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
-          </MspTenantLink>,
-          <DisabledButton icon={<DownloadOutlined />} />
-        ])}
+          </TenantLink>
+          ]}
       />
       <IntegratorssTable />
       {setDrawerEcVisible && <AssignEcDrawer

@@ -3,55 +3,75 @@ import { ApiInfo } from '../../apiService'
 export const DHCPUrls: { [key: string]: ApiInfo } = {
   addDHCPService: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
+    url: '/dhcpConfigServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    newApi: true
   },
   updateDHCPService: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true
   },
   getDHCProfileDetail: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true
   },
   deleteDHCPProfile: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId'
-    // /dhcpConfigServiceProfiles/{dhcpConfigServiceProfileId}
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true
   },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile'
+    url: '/dhcpConfigServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    newApi: true
   },
   getVenueDHCPServiceProfile: {
     //Retrieve Venue DHCP Service Profile Settings
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
+    url: '/venues/:venueId/dhcpConfigServiceProfileSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile',
+    newApi: true
   },
   getVenueActivePools: {
     //Venue Active DhcpPool list
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool'
+    url: '/venues/:venueId/dhcpPools',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool',
+    newApi: true
   },
   getVenueLeases: {
     //Get Venue Venue Leases data
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPoolLease'
-    // url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
+    url: '/venues/:venueId/dhcpPoolLeases',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPoolLease',
+    newApi: true
   },
   activeVenueDHCPPool: {
     //set DHCP Pool Active
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
+    url: '/venues/:venueId/dhcpPools/:dhcppoolId',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId',
+    newApi: true
   },
   deactivateVenueDHCPPool: {
     //set DHCP Pool Deactivate
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId'
+    url: '/venues/:venueId/dhcpPools/:dhcppoolId',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPool/:dhcppoolId',
+    newApi: true
   },
   updateVenueDHCPProfile: {
     //Setup Venue DHCP Service Profile
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile'
+    url: '/venues/:venueId/dhcpConfigServiceProfileSettings',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile',
+    newApi: true
   }
 }

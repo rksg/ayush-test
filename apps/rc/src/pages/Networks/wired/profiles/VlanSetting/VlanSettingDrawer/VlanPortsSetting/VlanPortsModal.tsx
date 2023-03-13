@@ -119,6 +119,7 @@ export function VlanPortsModal (props: {
       closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
+      data-testid='vlanSettingModal'
     >
       <VlanPortsContext.Provider value={{
         vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>

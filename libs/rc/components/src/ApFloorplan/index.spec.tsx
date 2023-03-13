@@ -123,7 +123,7 @@ describe('AP floorplan', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${window.location.origin}/files/:imageId/urls`,
+        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))

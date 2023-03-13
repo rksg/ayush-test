@@ -69,7 +69,7 @@ export function ClientOverviewTab () {
     = useState(searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED)
   const [clientDetails, setClientDetails] = useState({} as Client)
   const [clientStatistics, setClientStatistics] = useState({} as ClientStatistic)
-  const [isTribandAp, setIsTribandAp] = useState(null as unknown as boolean)
+  const [isTribandAp, setIsTribandAp] = useState(false)
 
   useEffect(() => {
     const getClientData = async () => {
@@ -136,10 +136,7 @@ export function ClientOverviewTab () {
         console.log(error) // eslint-disable-line no-console
       }
     }
-
-    if (isTribandAp !== null) {
-      getClientData()
-    }
+    getClientData()
   }, [filters, isTribandAp])
   // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
   return <GridRow>

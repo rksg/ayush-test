@@ -45,7 +45,8 @@ import {
   serialNumberRegExp,
   VenueExtended,
   WifiNetworkMessages,
-  gpsToFixed
+  gpsToFixed,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -77,7 +78,9 @@ export function ApForm () {
   const formRef = useRef<StepsFormInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
-  const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const {
+    editContextData, setEditContextData, previousPath, isOnlyOneTab
+  } = useContext(ApEditContext)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
@@ -173,7 +176,9 @@ export function ApForm () {
         hasError: false
       })
       await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
-      navigate(`${basePath.pathname}/wifi`, { replace: true })
+      if (isOnlyOneTab) {
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
     } catch (err) {
       handleError(err as CatchErrorResponse)
     }
@@ -250,7 +255,7 @@ export function ApForm () {
     if (sameAsVenue) {
       setDeviceGps(pick(selectVenue, ['latitude', 'longitude']) as unknown as DeviceGps)
     }
-    formRef?.current?.setFieldValue('apGroupId', apGroupOption[0]?.value ?? (value ? null : ''))
+    formRef?.current?.setFieldValue('apGroupId', options[0]?.value ?? (value ? null : ''))
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
@@ -297,10 +302,9 @@ export function ApForm () {
       formRef={formRef}
       onFinish={!isEditMode ? handleAddAp : handleUpdateAp}
       onFormChange={handleUpdateContext}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/wifi`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{
         submit: !isEditMode
           ? $t({ defaultMessage: 'Add' })

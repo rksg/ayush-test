@@ -30,7 +30,11 @@ export {
   defaultSorter as eventDefaultSorter,
   defaultSearch as eventDefaultSearch
 } from './EventTable'
-export { HistoricalClientsTable } from './HistoricalClientsTable'
+export {
+  HistoricalClientsTable,
+  GlobalSearchHistoricalClientsTable,
+  defaultHistoricalClientPayload
+} from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
@@ -64,9 +68,13 @@ export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { TemplateSelector } from './TemplateSelector'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
+export { usePreference, countryCodes } from './usePreference'
+export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
+export type { updatePreferenceProps } from './usePreference'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './SimpleListTooltip'

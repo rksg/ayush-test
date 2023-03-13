@@ -57,7 +57,8 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers'
+  'addAp', 'updateAp', 'inviteDelegation', 'addRecipient', 'updateRecipient', 'getDnsServers',
+  'addEdge'
 ]
 const errorMessage = {
   SERVER_ERROR: {
