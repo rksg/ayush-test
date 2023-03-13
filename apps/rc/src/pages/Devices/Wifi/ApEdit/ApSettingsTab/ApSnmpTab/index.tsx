@@ -31,13 +31,6 @@ import {
 
 import { ApEditContext } from '../..'
 
-/*
-const defaultApSnmpSettings : ApSnmpSettings = {
-  enableApSnmp: false,
-  apSnmpAgentProfileId: '',
-  useVenueSettings: true
-}*/
-
 export function ApSnmp () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
@@ -220,22 +213,26 @@ export function ApSnmp () {
           </Col>
         </Row>
         <Row>
-          <Form.Item
-            label={$t({ defaultMessage: 'AP SNMP' })}
-            name='enableApSnmp'
-            valuePropName='checked'
+          <StepsForm.FieldLabel
+            width='max-content'
+            style={{ height: '48px', display: 'flex', alignItems: 'center' }}
           >
-            <Switch
-              data-testid='ApSnmp-switch'
+            <span>{$t({ defaultMessage: 'Use AP SNMP' })}</span>
+            <Form.Item
+              name='enableApSnmp'
+              valuePropName='checked'
+              style={{ marginLeft: '20px' }}
+              children={<Switch data-testid='ApSnmp-switch' disabled={isUseVenueSettings}/>}
             />
-          </Form.Item>
+          </StepsForm.FieldLabel>
         </Row>
         {apSnmp.enableApSnmp &&
-        <>
-          <Row>
+        <Row>
+          <Col>
             <Form.Item name='apSnmpAgentProfileId' label='SNMP Agent'>
               <Select
                 data-testid='snmp-select'
+                disabled={isUseVenueSettings}
                 options={[
                   { label: $t({ defaultMessage: 'Select SNMP Agent...' }), value: '' },
                   ...getSnmpAgentList?.data?.map(
@@ -245,8 +242,9 @@ export function ApSnmp () {
                 style={{ width: '200px' }}
               />
             </Form.Item>
-          </Row>
-          <Row>
+          </Col>
+          {!isUseVenueSettings &&
+          <Col>
             <TenantLink
               to={getPolicyRoutePath({
                 type: PolicyType.SNMP_AGENT,
@@ -255,8 +253,9 @@ export function ApSnmp () {
             >
               {$t({ defaultMessage: 'Add SNMP Agent' })}
             </TenantLink>
-          </Row>
-        </>
+          </Col>
+          }
+        </Row>
         }
       </StepsForm.StepForm>
     </StepsForm>
