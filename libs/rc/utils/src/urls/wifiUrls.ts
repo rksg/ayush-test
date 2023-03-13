@@ -55,6 +55,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueApCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
@@ -89,10 +90,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueTripleBandRadioSettings: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },
   updateVenueTripleBandRadioSettings: {
+    // [New API] private api
     method: 'put',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/tri-band'
   },
@@ -133,6 +136,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities'
   },
@@ -344,6 +348,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getApCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/ap/:serialNumber/capabilities'
   },

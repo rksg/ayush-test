@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import * as router from 'react-router-dom'
 
+import { AnalyticsFilter }           from '@acx-ui/analytics/utils'
 import { Provider }                  from '@acx-ui/store'
 import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
@@ -12,6 +13,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useParams: jest.fn()
+}))
+jest.mock('@acx-ui/analytics/components', () => ({
+  ...jest.requireActual('@acx-ui/analytics/components'),
+  IncidentTabContent: (props: { filters: AnalyticsFilter }) => JSON.stringify(props.filters),
+  HealthPage: (props: { filters: AnalyticsFilter }) => JSON.stringify(props.filters)
 }))
 
 describe('ApAnalyticsTab', () => {

@@ -3,27 +3,39 @@ import { ApiInfo } from '../../apiService'
 export const RogueApUrls: { [key: string]: ApiInfo } = {
   deleteRogueApPolicy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId'
+    url: '/rogueApPolicyProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId',
+    newApi: true
   },
   deleteRogueApPolicies: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles'
+    url: '/rogueApPolicyProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles',
+    newApi: true
   },
   addRoguePolicy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles'
+    url: '/rogueApPolicyProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles',
+    newApi: true
   },
   getRoguePolicy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId'
+    url: '/rogueApPolicyProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId',
+    newApi: true
   },
   updateRoguePolicy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId'
+    url: '/rogueApPolicyProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles/:policyId',
+    newApi: true
   },
   getRoguePolicyList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles'
+    url: '/rogueApPolicyProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/rogueApPolicyProfiles',
+    newApi: true
   },
   getVenueRoguePolicy: {
     method: 'post',
