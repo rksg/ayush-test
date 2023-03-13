@@ -1130,7 +1130,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(ApSnmpUrls.resetApSnmpSettings, params, RKS_NEW_UI)
         return {
           ...req
         }
