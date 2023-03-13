@@ -1,7 +1,7 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader } from '@acx-ui/components'
+import { PageHeader, Loader }          from '@acx-ui/components'
 import {
   ApTable,
   defaultApPayload,
@@ -15,7 +15,9 @@ import {
   ConnectedClientsTable,
   defaultSwitchClientPayload,
   ClientsTable as SwitchClientTable,
-  eventDefaultSearch
+  eventDefaultSearch,
+  defaultHistoricalClientPayload,
+  GlobalSearchHistoricalClientsTable
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
@@ -24,7 +26,8 @@ import {
   useVenuesListQuery,
   useSwitchListQuery,
   useGetClientListQuery,
-  useGetSwitchClientListQuery
+  useGetSwitchClientListQuery,
+  useGetHistoricalClientListQuery
 } from '@acx-ui/rc/services'
 import {
   RequestPayload,
@@ -36,7 +39,8 @@ import {
   Event,
   SwitchRow,
   ClientList,
-  SwitchClient
+  SwitchClient,
+  Client
 } from '@acx-ui/rc/utils'
 
 import { useDefaultVenuePayload, VenueTable } from '../Venues/VenuesTable'
@@ -157,6 +161,22 @@ const searches = [
       result,
       title: $t({ defaultMessage: 'Wi-Fi Clients' }),
       component: <ConnectedClientsTable tableQuery={result} />
+    }
+  },
+
+  (searchString: string, $t: IntlShape['$t']) => {
+    const result = useTableQuery<Client, RequestPayload<unknown>, unknown>({
+      useQuery: useGetHistoricalClientListQuery,
+      defaultPayload: {
+        ...defaultHistoricalClientPayload,
+        searchString
+      },
+      pagination
+    })
+    return {
+      result,
+      title: $t({ defaultMessage: 'Historical Clients' }),
+      component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {

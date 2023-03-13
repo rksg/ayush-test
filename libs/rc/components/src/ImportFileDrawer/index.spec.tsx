@@ -74,4 +74,13 @@ describe('Import CSV Drawer', () => {
     await userEvent.upload(document.querySelector('input[type=file]')!, pngFile)
     expect(dialog).toHaveTextContent('File size (6 MB) is too big.')
   })
+
+  it('should render extra descriptions', async () => {
+    render(<ImportFileDrawer type='AP'
+      extraDescription={['extra description']}
+      {...props}
+    />)
+
+    expect(await screen.findByText('extra description')).toBeVisible()
+  })
 })
