@@ -60,7 +60,7 @@ export function PskSettingsForm () {
         },
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.accountingRadius !== undefined,
+        enableAccountingService: data.enableAccountingService,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
@@ -167,7 +167,9 @@ function SettingsForm () {
       }
     })
   }
-
+  useEffect(()=>{
+    form.setFieldsValue(data)
+  },[data])
   const disableAAA = !useIsSplitOn(Features.POLICIES)
   return (
     <>
@@ -301,11 +303,19 @@ function SettingsForm () {
 
 function MACAuthService () {
   const intl = useIntl()
+  const { data, setData } = useContext(NetworkFormContext)
+  const onChange = (value: boolean) => {
+    setData && setData({ ...data, enableAccountingService: value })
+  }
+  const form = Form.useFormInstance()
   const [
     enableAccountingService
   ] = [
     useWatch<boolean>(['enableAccountingService'])
   ]
+  useEffect(()=>{
+    form.setFieldsValue(data)
+  },[data])
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
@@ -316,7 +326,7 @@ function MACAuthService () {
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch />
+          <Switch onChange={onChange}/>
         </Form.Item>
         {enableAccountingService &&
           <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}

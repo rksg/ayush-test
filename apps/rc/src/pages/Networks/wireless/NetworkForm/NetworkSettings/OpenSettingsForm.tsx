@@ -26,7 +26,9 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
-        enableAccountingService: data.accountingRadius,
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
@@ -51,17 +53,31 @@ export function OpenSettingsForm () {
 
 function SettingsForm () {
   const isMacAuthEnabled = useWatch<boolean>(['wlan', 'macAddressAuthentication'])
-  const { editMode, data } = useContext(NetworkFormContext)
+  const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-
+  const form = Form.useFormInstance()
   const disableAAA = !useIsSplitOn(Features.POLICIES)
+  const onMacAuthChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          macAddressAuthentication: checked
+        }
+      }
+    })
+  }
+  useEffect(()=>{
+    form.setFieldsValue(data)
+  },[data])
   return (
     <>
       <StepsForm.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsForm.Title>
 
       <Form.Item>
         <Form.Item noStyle name={['wlan', 'macAddressAuthentication']} valuePropName='checked'>
-          <Switch disabled={editMode||disableAAA} />
+          <Switch disabled={editMode||disableAAA} onChange={onMacAuthChange}/>
         </Form.Item>
         <span>{$t({ defaultMessage: 'Use MAC Auth' })}</span>
       </Form.Item>
