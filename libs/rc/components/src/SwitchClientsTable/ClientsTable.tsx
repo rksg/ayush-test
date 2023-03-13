@@ -151,7 +151,7 @@ export function ClientsTable (props: {
         <Table
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
-          pagination={false}
+          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
