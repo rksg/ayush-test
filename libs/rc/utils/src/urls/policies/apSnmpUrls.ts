@@ -38,7 +38,7 @@ export const ApSnmpUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/apSnmpAgentProfiles/:policyId',
     newApi: true
   },
-  getApSnmpPolicyList: { // scop form
+  getApSnmpPolicyList: {
     method: 'get',
     url: '/apSnmpAgentProfiles',
     oldUrl: '/api/apSnmpAgentProfiles',
