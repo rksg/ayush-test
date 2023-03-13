@@ -23,7 +23,7 @@ export interface DHCPPool {
   id: string;
   name: string;
   description?: string;
-  // allowWired: boolean;
+  allowWired?: boolean;
   subnetAddress: string;
   subnetMask: string;
   startIpAddress: string;
