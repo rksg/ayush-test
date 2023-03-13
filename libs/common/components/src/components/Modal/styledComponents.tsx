@@ -22,7 +22,7 @@ export const Modal = styled(AntModal)`
   .ant-modal-body {
     padding-top: 0;
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
       padding-top: 5px;

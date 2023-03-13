@@ -13,6 +13,7 @@ export const currentEdge:EdgeStatus = {
   ip: '1.1.1.1',
   ports: '62,66',
   tags: [],
+  firmwareVersion: '1.1.1.1',
   cpuTotal: 65 * Math.pow(1000, 2),
   cpuUsed: 5 * Math.pow(1000, 2),
   memTotal: 120 * Math.pow(1024, 2),
