@@ -46,7 +46,7 @@ function venueNameColTpl (
   }
   return (
     <Tooltip title={tooltipTitle[meshRole as APMeshRole]}>
-      <TenantLink to={`aps/${id}/details/overview`}>
+      <TenantLink to={`devices/wifi/${id}/details/overview`}>
         {icon[meshRole as APMeshRole]}
         {name}
       </TenantLink>
@@ -111,7 +111,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       align: 'center',
       render: function (data, row) {
         return (
-          <TenantLink to={`venues/${row.venueId}/overview`}>{data}</TenantLink>
+          <TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
         )
       }
     },
@@ -176,7 +176,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return <Tooltip title={
             getNamesTooltip(row.clients, intl)}>{ row.clients.count || 0}</Tooltip>
         }else{
-          return 0
+          return row.clients
         }
       }
     },
@@ -258,27 +258,6 @@ export function VenueWifi () {
     }
   }, [venueWifiSetting])
 
-  const VenueMeshApsTable = () => {
-    const tableQuery = useTableQuery({
-      useQuery: useMeshApsQuery,
-      defaultPayload
-    })
-
-    return (
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          columns={getCols(useIntl())}
-          dataSource={transformData(tableQuery?.data?.data || [])}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          rowKey='serialNumber'
-        />
-      </Loader>
-    )
-  }
-
   return (
     <>
       <IconRadioGroup value={showIdx}
@@ -310,4 +289,26 @@ export function VenueWifi () {
       {showIdx === 2 && <VenueMeshApsTable /> }
     </>
   )
+}
+
+export function VenueMeshApsTable () {
+  const tableQuery = useTableQuery({
+    useQuery: useMeshApsQuery,
+    defaultPayload
+  })
+
+  return (
+    <Loader states={[
+      tableQuery
+    ]}>
+      <Table
+        columns={getCols(useIntl())}
+        dataSource={transformData(tableQuery?.data?.data || [])}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        rowKey='serialNumber'
+      />
+    </Loader>
+  )
+
 }

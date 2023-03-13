@@ -1,16 +1,12 @@
-import { CallbackDataParams }     from 'echarts/types/dist/shared'
-import { defineMessage, useIntl } from 'react-intl'
+import { CallbackDataParams } from 'echarts/types/dist/shared'
 
 import { TimeSeriesChartData } from '@acx-ui/analytics/utils'
-import { renderHook }          from '@acx-ui/test-utils'
 import { TimeStamp }           from '@acx-ui/types'
 
 import {
   dataZoomOptions,
   dateAxisFormatter,
   timeSeriesTooltipFormatter,
-  stackedBarTooltipFormatter,
-  donutChartTooltipFormatter,
   getDeviceConnectionStatusColors,
   getTimeSeriesSymbol
 } from './helper'
@@ -154,73 +150,6 @@ describe('timeSeriesTooltipFormatter', () => {
     const dataFormatters = { default: jest.fn((value, tz, index) => `formatted-${value}-${index}`) }
     const result = timeSeriesTooltipFormatter(multiSeries, dataFormatters)(multiParameters)
     expect(result).toMatchSnapshot()
-  })
-})
-
-describe('stackedBarTooltipFormatter', () => {
-  const singleparameters = {
-    color: 'color1', value: [10]
-  } as TooltipFormatterParams
-  it('should return correct Html string for single value', async () => {
-    const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(stackedBarTooltipFormatter(formatter)(singleparameters))
-      .toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(1)
-  })
-  it('should handle custom format', async () => {
-    const format = defineMessage({
-      defaultMessage: `<span>{name}</span>
-        <br></br>
-        <space>
-          <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
-        </space>
-      `
-    })
-    const formatter = jest.fn(value => `formatted-${value}`)
-    expect(stackedBarTooltipFormatter(
-      formatter,
-      format
-    )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(1)
-  })
-  it('should handle when dataFormatter is null', async () => {
-    const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(stackedBarTooltipFormatter()(singleparameters)).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(0)
-  })
-})
-
-describe('donutChartTooltipFormatter', () => {
-  const singleparameters = {
-    name: 'name', color: 'color1', value: 10
-  } as TooltipFormatterParams
-  it('should return correct Html string for single value', async () => {
-    const formatter = jest.fn(value=>`formatted-${value}`)
-    expect(renderHook(() => donutChartTooltipFormatter(
-      useIntl(),
-      formatter,
-      100
-    )(singleparameters)).result.current).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(2)
-  })
-  it('should handle custom format', async () => {
-    const format = defineMessage({
-      defaultMessage: `{name}
-        <br></br>
-        <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
-        ({formattedPercent})
-        <span>{formattedTotal}</span>
-        <div>{percent} {total}</div>
-      `
-    })
-    const formatter = jest.fn(value => `formatted-${value}`)
-    expect(renderHook(() => donutChartTooltipFormatter(
-      useIntl(),
-      formatter,
-      100,
-      format
-    )({ ...singleparameters, percent: 10 })).result.current).toMatchSnapshot()
-    expect(formatter).toBeCalledTimes(2)
   })
 })
 

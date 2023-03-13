@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { AdministrationUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -52,6 +52,18 @@ describe('Administrators table without prime-admin itself', () => {
             detailLevel: 'debug'
           }
         ]))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
       )
     )
   })
@@ -98,6 +110,18 @@ describe('Administrators Table', () => {
       rest.delete(
         AdministrationUrlsInfo.deleteAdmins.url,
         (req, res, ctx) => res(ctx.status(202))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getRegisteredUsersList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspProfile.url,
+        (req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
       )
     )
   })
@@ -225,8 +249,7 @@ describe('Administrators Table', () => {
     expect(within(row).getByRole('checkbox')).toBeDisabled()
   })
 
-
-  it('should non-prime-admin user only single selection', async () => {
+  it('should only prime-admin user allowed to select row', async () => {
     render(
       <Provider>
         <UserProfileContext.Provider
@@ -247,11 +270,6 @@ describe('Administrators Table', () => {
 
     const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
     expect(within(row).queryByRole('checkbox')).toBeNull()
-    await userEvent.click(within(row).getByRole('radio'))
-    expect(within(row).queryByRole('button', { name: 'Delete' })).toBeNull()
-    expect(within(row).queryByRole('button', { name: 'Edit' })).toBeNull()
-    await userEvent.click(within(await screen.findByRole('row', { name: /erp.cheng@email.com/i })).getByRole('radio'))
-    expect(within(row).queryByRole('button', { name: 'Delete' })).toBeNull()
-    expect(within(row).queryByRole('button', { name: 'Edit' })).toBeNull()
+    expect(within(row).queryByRole('radio')).toBeNull()
   })
 })
