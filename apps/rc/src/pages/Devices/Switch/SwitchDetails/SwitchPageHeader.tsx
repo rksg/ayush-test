@@ -33,7 +33,7 @@ DELETE = 'DELETE'
 
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { switchId, serialNumber, tenantId } = useParams()
+  const { switchId, serialNumber, tenantId, activeTab, activeSubTab } = useParams()
   const switchAction = useSwitchActions()
   const {
     switchDetailsContextData
@@ -91,7 +91,7 @@ function SwitchPageHeader () {
     }
   }
 
-  const handleSyncButton = function (value: string, isSync: boolean) {
+  const handleSyncButton = (value: string, isSync: boolean) => {
     let result = value
     if (isSync) {
       result = $t({ defaultMessage: 'Sync data operation in progress...' })
@@ -101,6 +101,11 @@ function SwitchPageHeader () {
     }
     setIsSyncing(isSync)
     setSyncDataEndTime(result)
+  }
+
+  const checkTimeFilterDisabled = () => {
+    console.log(activeTab, activeSubTab)
+    // TODO:
   }
 
   useEffect(() => {
@@ -163,6 +168,7 @@ function SwitchPageHeader () {
         ]}
         extra={filterByAccess([
           <RangePicker
+            // disabled={checkTimeFilterDisabled()}
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
