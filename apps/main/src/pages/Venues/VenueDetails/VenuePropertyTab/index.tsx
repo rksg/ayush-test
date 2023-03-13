@@ -7,18 +7,22 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
-  useGetPropertyUnitListQuery,
-  useLazyGetPersonaGroupByIdQuery,
+  useGetPropertyUnitListQuery, useLazyApListQuery, useLazyGetPersonaByIdQuery,
+  useLazyGetPersonaGroupByIdQuery, useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { PropertyUnit, PropertyUnitStatus, useTableQuery } from '@acx-ui/rc/utils'
+import { APExtended, Persona, PropertyUnit, PropertyUnitStatus, SwitchViewModel, useTableQuery } from '@acx-ui/rc/utils'
+
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
-  const { venueId } = useParams()
+  const { venueId, tenantId } = useParams()
+  const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
+  const [apMap, setApMap] = useState(new Map())
+  const [switchMap, setSwitchMap] = useState(new Map())
   const [withNsg, setWithNsg] = useState(false)
   const [drawerState, setDrawerState] = useState<{
     isEdit: boolean,
@@ -32,7 +36,27 @@ export function VenuePropertyTab () {
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [groupId, setGroupId] =
+    useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
+  const [getPersonaById] = useLazyGetPersonaByIdQuery()
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
+
+  const queryUnitList = useTableQuery({
+    useQuery: useGetPropertyUnitListQuery,
+    defaultPayload: {}
+  })
+
+  const apViewModelPayload = {
+    fields: ['name', 'venueName', 'serialNumber', 'apMac', 'IP', 'model', 'venueId'],
+    filters: { apMac: apMap.keys() }
+  }
+  const switchViewModelPayload = {
+    fields: ['name', 'switchMac', 'serialNumber'],
+    filters: { switchMac: switchMap.keys() }
+  }
+
+  const [ getApList ] = useLazyApListQuery()
+  const [ getSwitchList ] = useLazyGetSwitchListQuery()
 
   useEffect(() => {
     if (propertyConfigsQuery.isLoading) return
@@ -40,12 +64,82 @@ export function VenuePropertyTab () {
 
     getPersonaGroupById({ params: { groupId: propertyConfigsQuery.data.personaGroupId } })
       .then(result => setWithNsg(!!result.data?.nsgId))
+
+    setGroupId(propertyConfigsQuery.data.personaGroupId)
   }, [propertyConfigsQuery.data])
 
-  const queryUnitList = useTableQuery({
-    useQuery: useGetPropertyUnitListQuery,
-    defaultPayload: {}
-  })
+  useEffect(() => {
+    if (queryUnitList.isLoading || !queryUnitList.data) return
+
+    const personaIds = queryUnitList.data.data
+      .filter(({ id, personaId }) => (id && personaId))
+      .map(({ personaId }) => personaId)
+    // const personaIds = [
+    //   '1e0c5e78-6a1c-471a-9edd-e6d2acb4e758',
+    //   '6f700763-03e3-4515-987a-93da9e053f0b',
+    //   'b6616987-ddc4-4495-8b26-ee354f5adcd0']
+
+    fetchPersonaData(personaIds)
+  }, [queryUnitList.isLoading])
+
+  useEffect(() => {
+    // console.log('I have persona :: ', personaMap)
+    const apMacs: string[] = []
+    const switchMacs: string[] = []
+
+    personaMap.forEach(p => {
+      if (p?.ethernetPorts && p.ethernetPorts.length > 0) {
+        apMacs.push(p.ethernetPorts[0].macAddress)
+      }
+
+      if (p?.switches && p?.switches.length > 0) {
+        switchMacs.push(p.switches[0].macAddress)
+      }
+    })
+
+    fetchApData(apMacs)
+    fetchSwitchData(switchMacs)
+  }, [personaMap])
+
+  const fetchPersonaData = (ids: string[]) => {
+    ids.forEach(id => {
+      getPersonaById({ params: { groupId, id } })
+        .then(result => {
+          if (result.data) {
+            setPersonaMap(map => new Map( map.set(id, result.data as Persona)))
+          }
+        })
+    })
+  }
+
+  const fetchApData = (apMac: string[]) => {
+    // console.log('Fetch aps : ', apMac)
+
+    getApList({ payload: { ...apViewModelPayload, filters: { apMac } } })
+      .then(result => {
+        if (result.data) {
+          result.data.data.forEach(ap => {
+            setApMap(map => new Map(map.set(ap.apMac, ap)))
+          })
+        }
+      })
+  }
+
+  const fetchSwitchData = (switchMac: string[]) => {
+    // console.log('Fetch switches : ', switchMac)
+
+    getSwitchList({
+      params: { tenantId },
+      payload: { ...switchViewModelPayload, filters: { switchMac } }
+    })
+      .then(result => {
+        if (result.data) {
+          result.data.data.forEach(switchDevice => {
+            setSwitchMap(map => new Map(map.set(switchDevice.switchMac, switchDevice)))
+          })
+        }
+      })
+  }
 
   const actions: TableProps<PropertyUnit>['actions'] = [
     {
@@ -138,15 +232,23 @@ export function VenuePropertyTab () {
       show: withNsg,
       key: 'accessPoint',
       title: $t({ defaultMessage: 'Access Point' }),
-      dataIndex: ['accessPoint'],
-      // FIXME: fetch AP by macAddress?
-      render: (_, row) => row?.accessPoint?.name
+      dataIndex: 'accessPoint',
+      render: (_, row) => {
+        const persona = personaMap.get(row.personaId)
+        const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
+        return (apMap.get(apMac) as APExtended).name
+      }
     },
     {
       show: withNsg,
       key: 'switchPorts',
       title: $t({ defaultMessage: 'Switch Ports' }),
-      dataIndex: ['personaSettings', 'accessPoint']
+      dataIndex: 'switchPorts',
+      render: (_, row) => {
+        const persona = personaMap.get(row.personaId)
+        const switchMac = persona?.switches?.[0]?.macAddress ?? ''
+        return (switchMap.get(switchMac) as SwitchViewModel).name
+      }
     },
     {
       key: 'residentName',

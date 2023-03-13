@@ -2,10 +2,12 @@ import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { rest }            from 'msw'
 
-import { PersonaUrls, PropertyUrlsInfo }                         from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, PersonaUrls, PropertyUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }         from '@acx-ui/test-utils'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { mockPersona }                                                                 from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
 import { mockEnabledPropertyConfig, mockPersonaGroupWithoutNSG, mockPropertyUnitList } from '../../__tests__/fixtures'
 
 import { VenuePropertyTab } from './index'
@@ -43,6 +45,18 @@ describe('Property Unit Page', () => {
       rest.patch(
         PropertyUrlsInfo.updatePropertyUnit.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaById.url,
+        (_, res, ctx) => res(ctx.json(mockPersona))
+      ),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
       )
     )
   })

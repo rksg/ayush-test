@@ -73,6 +73,9 @@ export interface PropertyUnit {
       portIndex: number
     }[]
   },
+  switch?: {
+    name: string
+  },
   vni?: number
 }
 

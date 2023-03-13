@@ -132,13 +132,14 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { $t } = useIntl()
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
-  const [personaGroupId, setPersonaGroupId] = useState<string>()
   const [withNsg, setWithNsg] = useState(false)
 
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
+  const [personaGroupId, setPersonaGroupId]
+    = useState<string|undefined>(propertyConfigsQuery?.data?.personaGroupId)
 
   const [getUnitById, unitResult] = useLazyGetPropertyUnitByIdQuery()
   const [getPersonaById, personaResult] = useLazyGetPersonaByIdQuery()
@@ -183,7 +184,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase, vni } = result.data
-            console.log('Persona :: ', result.data)
+            // console.log('Persona :: ', result.data)
             form.setFieldValue(['unitPersona', 'vlan'], vlan)
             form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
             form.setFieldValue('vxlan', vni)
@@ -196,7 +197,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase } = result.data
-            console.log('Guest Persona :: ', result.data)
+            // console.log('Guest Persona :: ', result.data)
             // TODO: check how to deal with the toggle
             form.setFieldValue('enableGuestVlan', !!vlan)
             // if no timeout would not render exactly
