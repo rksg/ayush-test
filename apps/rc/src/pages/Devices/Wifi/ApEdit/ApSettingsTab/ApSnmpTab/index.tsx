@@ -1,14 +1,15 @@
 import { useEffect, useState, useContext, useRef } from 'react'
 
-import { Checkbox, Form, Select, Switch, Row } from 'antd'
-import { isEqual }                             from 'lodash'
-import { useIntl }                             from 'react-intl'
+import { Form, Select, Switch, Row,Button } from 'antd'
+import { isEqual }                          from 'lodash'
+import { useIntl }                          from 'react-intl'
 
 import { Loader, StepsForm, showToast, StepsFormInstance } from '@acx-ui/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
-  useUpdateApSnmpSettingsMutation
+  useUpdateApSnmpSettingsMutation,
+  useResetApSnmpSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -42,24 +43,27 @@ export function ApSnmp () {
 
   const formRef = useRef<StepsFormInstance<ApSnmpSettings>>()
 
-  // const [stateOfEnableApSnmp, setEnableApSnmp] = useState(false)
   const [stateOfApSnmpSettings, setStateOfApSnmpSettings] = useState(defaultApSnmpSettings)
+  const [formInitializing, setFormInitializing] = useState(true)
 
   const RetrievedApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
-  const RetrievedVenueApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
 
-  const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }] =
-   useUpdateApSnmpSettingsMutation()
+  const RetrievedApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
+
+  const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
+   = useUpdateApSnmpSettingsMutation()
+
+  const [resetApSnmpSettings, { isLoading: isResettingApSnmpSettings }]
+   = useResetApSnmpSettingsMutation()
 
   useEffect(() => {
-    const { data: settingsInDatabase, isLoading } = RetrievedVenueApSnmpSettings || {}
+    const { data: settingsInDatabase, isLoading } = RetrievedApSnmpSettings || {}
     if (isLoading === false && settingsInDatabase) {
       // Store the state of settings from database, reset the form once user discard the changes.
       setStateOfApSnmpSettings(settingsInDatabase)
-      // Current state of the settings, allow user change the setting in form fields.
-      formRef?.current?.setFieldsValue(settingsInDatabase)
+      setFormInitializing(false)
     }
-  }, [RetrievedVenueApSnmpSettings])
+  }, [RetrievedApSnmpSettings])
 
   const handleFormApSnmpChange = () => {
     // To avoid formRef might lost some of the properties
@@ -80,18 +84,18 @@ export function ApSnmp () {
   }
 
   const sendApSnmpSetting = async () => {
+
+    const payload = { ...stateOfApSnmpSettings, ...formRef.current?.getFieldsValue() }
+
     try {
       setEditContextData && setEditContextData({
         ...editContextData,
         isDirty: false,
         hasError: false
       })
-      await updateApSnmpSettings(
-        {
-          params: { serialNumber } ,
-          payload: { ...stateOfApSnmpSettings, ...formRef.current?.getFieldsValue() }
-        }
-      ).unwrap()
+
+      await updateApSnmpSettings({ params: { serialNumber }, payload }).unwrap()
+
     } catch (error) {
       showToast({
         type: 'error',
@@ -100,10 +104,24 @@ export function ApSnmp () {
     }
   }
 
+  const useVenueSettings = async () => {
+
+    await resetApSnmpSettings({ params: { serialNumber } }).unwrap()
+
+    await RetrievedApSnmpSettings.refetch()
+
+    const newStateOfApSnmpSettings
+    = { ...formRef.current?.getFieldsValue(), ...RetrievedApSnmpSettings.data!! }
+
+    setStateOfApSnmpSettings(newStateOfApSnmpSettings)
+
+    formRef?.current?.setFieldsValue(newStateOfApSnmpSettings)
+  }
+
 
   return (<Loader states={[{
-    isLoading: RetrievedApSnmpAgentList.isLoading,
-    isFetching: isUpdatingApSnmpSettings
+    isLoading: formInitializing,
+    isFetching: isUpdatingApSnmpSettings|| isResettingApSnmpSettings
   }]}>
 
     <StepsForm
@@ -118,7 +136,7 @@ export function ApSnmp () {
         submit: $t({ defaultMessage: 'Apply AP SNMP Settings' })
       }}
     >
-      <StepsForm.StepForm initialValues={RetrievedVenueApSnmpSettings}>
+      <StepsForm.StepForm initialValues={stateOfApSnmpSettings}>
         <Row>
           <Form.Item
             label={$t({ defaultMessage: 'AP SNMP' })}
@@ -147,9 +165,12 @@ export function ApSnmp () {
             </Form.Item>
           </Row>
           <Row>
-            <Form.Item name='useVenueSettings' label='Venue Settings' valuePropName='checked'>
-              <Checkbox>{$t({ defaultMessage: 'Use Venue Settings' })}</Checkbox>
-            </Form.Item>
+            <Button
+              type='link'
+              onClick={useVenueSettings}
+              style={{ paddingLeft: '0px' }}>
+              {$t({ defaultMessage: 'Use Venue Settings' })}
+            </Button>
           </Row>
           <Row>
             <TenantLink
@@ -157,6 +178,7 @@ export function ApSnmp () {
                 type: PolicyType.SNMP_AGENT,
                 oper: PolicyOperation.CREATE
               })}
+              style={{ paddingTop: '5px' }}
             >
               {$t({ defaultMessage: 'Add SNMP Agent' })}
             </TenantLink>
