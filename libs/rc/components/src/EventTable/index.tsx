@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import _                                            from 'lodash'
 import moment                                       from 'moment'
@@ -192,6 +192,7 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<Event>['columns'] = [
     {

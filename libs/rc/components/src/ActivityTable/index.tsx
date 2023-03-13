@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
@@ -66,7 +66,8 @@ const ActivityTable = ({
 }: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
-  const [current, setCurrent] = useState<string>()
+  const [current, setCurrent] = useState<Activity>()
+  useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const columns: TableProps<Activity>['columns'] = [
     {
@@ -81,7 +82,7 @@ const ActivityTable = ({
           size='small'
           onClick={()=>{
             setVisible(true)
-            setCurrent(row.requestId)
+            setCurrent(row)
           }}
         >{formatter('dateTimeFormatWithSeconds')(row.startDatetime)}</Button>
       }
@@ -165,7 +166,7 @@ const ActivityTable = ({
     <Table
       rowKey='startDatetime'
       columns={columns}
-      dataSource={tableQuery.data?.data}
+      dataSource={tableQuery.data?.data ?? []}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
@@ -176,10 +177,8 @@ const ActivityTable = ({
       title={defineMessage({ defaultMessage: 'Activity Details' })}
       visible={visible}
       onClose={()=>setVisible(false)}
-      data={getDrawerData(tableQuery.data?.data
-        .find(row => current && row.requestId === current)!)}
-      timeLine={tableQuery.data?.data
-        .find(row => current && row.requestId === current)?.steps}
+      data={getDrawerData(current)}
+      timeLine={current.steps}
     /> }
   </Loader>
 }
