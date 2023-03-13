@@ -36,7 +36,7 @@ export default function DHCPForm (props: DHCPFormProps) {
   const formRef = useRef<StepsFormInstance<DHCPSaveData>>()
 
   const navigate = useNavigate()
-  const linkToServices = useTenantLink('/services')
+  const linkToServices = useTenantLink('/services/dhcp/list')
 
   const {
     data,
@@ -63,6 +63,7 @@ export default function DHCPForm (props: DHCPFormProps) {
       const payload = {
         ...formData,
         dhcpPools: formData.dhcpPools.map((pool)=>{
+          delete pool.allowWired
           return {
             ...pool,
             id: pool.id.indexOf('_NEW_')!==-1 ? '' : pool.id
