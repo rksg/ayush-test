@@ -23,7 +23,8 @@ type DeleteContent = {
   entityName: string,
   entityValue?: string,
   numOfEntities?: number,
-  confirmationText?: string
+  confirmationText?: string,
+  extraContent?: React.ReactNode
 }
 
 type ErrorContent = {
@@ -87,7 +88,9 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
   switch (props.customContent?.action) {
     case 'DELETE':
-      const { numOfEntities = 1, entityName, entityValue, confirmationText } = props.customContent
+      const {
+        numOfEntities = 1, entityName, entityValue, confirmationText, extraContent
+      } = props.customContent
 
       const title = $t({
         defaultMessage: `Delete "{count, plural,
@@ -103,6 +106,7 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
             other {these}
           } {formattedEntityName}?`
         }, { count: numOfEntities, formattedEntityName: entityName })}
+        {extraContent}
         {confirmationText && <ConfirmForm text={confirmationText} modal={modal} />}
       </>)
       props = {
