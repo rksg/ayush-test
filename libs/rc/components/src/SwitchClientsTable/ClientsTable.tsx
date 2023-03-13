@@ -39,10 +39,10 @@ export function ClientsTable (props: {
   const inlineTableQuery = useTableQuery({
     useQuery: useGetSwitchClientListQuery,
     defaultPayload: {
-      ...defaultSwitchClientPayload,
-      search: {
-        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
-      }
+      ...defaultSwitchClientPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery }
   })
