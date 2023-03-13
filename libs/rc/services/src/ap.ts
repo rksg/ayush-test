@@ -722,6 +722,13 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
 }
 
 const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
+  let channelColumnStatus = {
+    channel24: true,
+    channel50: false,
+    channelL50: false,
+    channelU50: false,
+    channel60: false
+  }
   result.data = result.data.map(item => {
     let newItem = {...item, children : [] as APExtended[], id: _.uniqueId()}
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map((ap) => {
@@ -730,10 +737,23 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
         id: _.uniqueId(),
         deviceGroupName: ap.deviceGroupName !== '' ? ap.deviceGroupName : 'Uncategorized',
       };
-    });
-    newItem.children = aps as APExtended[]
+    }).map(ap => {
+      const { APRadio, lanPortStatus } = ap.apStatusData || {}
+
+      if (APRadio) {
+        setAPRadioInfo(ap, APRadio, channelColumnStatus)
+      }
+  
+      if (lanPortStatus) {
+        setPoEPortStatus(ap, lanPortStatus)
+      }
+  
+      return item
+    })
+    newItem.children = aps as unknown as APExtended[]
     return newItem
   })
+  result.extra = channelColumnStatus
   return result
 
 }

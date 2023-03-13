@@ -121,8 +121,8 @@ export const APStatus = (
 
 
 interface ApTableProps
-  extends Omit<TableProps<APExtended | APExtendedGrouped>, 'columns'> {
-  tableQuery?: TableQuery<APExtended | APExtendedGrouped, RequestPayload<unknown>, ApExtraParams>
+  extends Omit<TableProps<APExtended>, 'columns'> {
+  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -190,7 +190,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       sorter: true,
       disable: true,
       searchable: searchable,
-      render: (data, row, _, highlightFn) => (
+      render: (data, row : APExtended, _, highlightFn) => (
         <TenantLink to={`/devices/wifi/${row?.serialNumber}/details/overview`}>
           {searchable ? highlightFn(row.name || '--') : data}</TenantLink>
       )
@@ -319,14 +319,14 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
       sorter: true,
-      render: (data, row) => (
+      render: (data, row : APExtended) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{data}</TenantLink>
       )
     }, {
       key: 'switchName',
       title: $t({ defaultMessage: 'Switch' }),
       dataIndex: 'switchName',
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         return (
           <TenantLink to={`/switches/${row.venueId}/details/overview`}>{data}</TenantLink>
         )
@@ -342,7 +342,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       align: 'center',
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         return releaseTag ?
           <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
             {transformDisplayNumber(row.clients)}
@@ -428,7 +428,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       dataIndex: 'poePort',
       show: false,
       sorter: false,
-      render: (data, row) => {
+      render: (data, row : APExtended) => {
         if (!row?.hasPoeStatus) {
           return <span></span>
         }
@@ -515,8 +515,10 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
         dataSource={tableData}
         rowKey='serialNumber'
         pagination={tableQuery?.pagination}
+            // @ts-ignore
         onChange={tableQuery?.handleTableChange}
         enableApiFilter={true}
+                    // @ts-ignore
         rowActions={filterByAccess(rowActions)}
         onFilterChange={useCallback((_filter : any, _search : any, groupBy: any) => {
           setTableFilter(_filter)
