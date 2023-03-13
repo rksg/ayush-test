@@ -1,7 +1,12 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDelSyslogPolicyMutation, useSyslogPolicyListQuery }           from '@acx-ui/rc/services'
+import {
+  useDelSyslogPolicyMutation,
+  useSyslogPolicyListQuery,
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
@@ -11,7 +16,9 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -79,6 +86,19 @@ export default function SyslogTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString as string,
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
@@ -107,6 +127,8 @@ export default function SyslogTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
@@ -115,6 +137,22 @@ export default function SyslogTable () {
 
 function useColumns () {
   const { $t } = useIntl()
+  const params = useParams()
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
 
   const columns: TableProps<SyslogPolicyListType>['columns'] = [
     {
@@ -173,6 +211,7 @@ function useColumns () {
       key: 'venueIds',
       title: $t({ defaultMessage: 'Venues' }),
       dataIndex: 'venueIds',
+      filterable: venueNameMap,
       render: function (data, row) {
         return row.venueIds?.length ?? '--'
       }
