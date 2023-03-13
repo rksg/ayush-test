@@ -5,7 +5,7 @@ import { useWatch }                                                  from 'antd/
 import _                                                             from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
-import { Button, Drawer, Loader, showToast, StepsForm } from '@acx-ui/components'
+import { Drawer, Loader, showToast, StepsForm } from '@acx-ui/components'
 import {
   useAddPropertyUnitMutation,
   useApListQuery,
@@ -137,12 +137,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
-  const [changeVlanField, setChangeVlanField] = useState(false)
-  const [changeGuestVlanField, setChangeGuestVlanField] = useState(false)
-  const [vlanCache, setVlanCache] = useState<number>()
-  const [guestVlanCache, setGuestVlanCache] = useState<number>()
-  // TODO: Fetch default VLAN value from Property? Venue service not Persona
-  const [defaultVlan] = useState(1)
 
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
 
@@ -174,7 +168,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             const { personaId, guestPersonaId } = result.data
             // TODO: access point need to parsing here
             // console.log('Unit :: ', result.data)
-            form.setFieldsValue(result.data)
             fetchPersonaInfo(personaId, guestPersonaId)
           }
         })
@@ -190,7 +183,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase, vni } = result.data
-            // console.log('Persona :: ', result.data)
+            console.log('Persona :: ', result.data)
             form.setFieldValue(['unitPersona', 'vlan'], vlan)
             form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
             form.setFieldValue('vxlan', vni)
@@ -203,7 +196,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         .then(result => {
           if (result.data) {
             const { vlan, dpskPassphrase } = result.data
-            // console.log('Guest Persona :: ', result.data)
+            console.log('Guest Persona :: ', result.data)
+            // TODO: check how to deal with the toggle
             form.setFieldValue('enableGuestVlan', !!vlan)
             // if no timeout would not render exactly
             setTimeout(() => {
@@ -310,73 +304,18 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     }
   }
 
-  const vlanDescription = (path: string) => {
-    const current = form.getFieldValue([path, 'vlan'])
-    return current === defaultVlan
-      ? '(Same as Property)'
-      : '(Custom)'
-  }
-
   const withoutNsgForm = <>
     <Form.Item label={$t({ defaultMessage: 'VLAN' })}>
       <Space>
         <Form.Item
           noStyle
           name={['unitPersona', 'vlan']}
-          initialValue={defaultVlan}
         >
           <InputNumber
             min={1}
             max={4094}
-            bordered={changeVlanField}
-            readOnly={!changeVlanField}
           />
         </Form.Item>
-        {
-          changeVlanField
-            ?
-            <>
-              <Button
-                size={'small'}
-                type='link'
-                onClick={() => setChangeVlanField(false)}
-              >
-                {$t({ defaultMessage: 'Save' })}
-              </Button>
-              <Button
-                type='link'
-                size={'small'}
-                onClick={() => form.setFieldValue(['unitPersona', 'vlan'], defaultVlan)}
-              >
-                {$t({ defaultMessage: 'Reset to Default' })}
-              </Button>
-              <Button
-                type='link'
-                data-testid={'vlanCancel'}
-                size={'small'}
-                onClick={() => {
-                  form.setFieldValue(['unitPersona', 'vlan'], vlanCache)
-                  setChangeVlanField(false)
-                }}
-              >
-                {$t({ defaultMessage: 'Cancel' })}
-              </Button>
-            </>
-            :
-            <>
-              {vlanDescription('unitPersona')}
-              <Button
-                type='link'
-                size={'small'}
-                onClick={() => {
-                  setVlanCache(form.getFieldValue(['unitPersona', 'vlan']))
-                  setChangeVlanField(true)
-                }}
-              >
-                {$t({ defaultMessage: 'Change' })}
-              </Button>
-            </>
-        }
       </Space>
     </Form.Item>
 
@@ -393,65 +332,15 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     <Space>
       {
         enableGuestVlan &&
-        <>
-          <Form.Item
-            noStyle
-            name={['guestPersona', 'vlan']}
-            initialValue={defaultVlan}
-          >
-            <InputNumber
-              min={1}
-              max={4094}
-              bordered={changeGuestVlanField}
-              readOnly={!changeGuestVlanField}
-            />
-          </Form.Item>
-          {
-            changeGuestVlanField
-              ?
-              <>
-                <Button
-                  size={'small'}
-                  type='link'
-                  onClick={() => setChangeGuestVlanField(false)}
-                >
-                  {$t({ defaultMessage: 'Save' })}
-                </Button>
-                <Button
-                  type='link'
-                  size={'small'}
-                  onClick={() => form.setFieldValue(['guestPersona', 'vlan'], defaultVlan)}
-                >
-                  {$t({ defaultMessage: 'Reset to Default' })}
-                </Button>
-                <Button
-                  type='link'
-                  data-testid={'vlanCancel'}
-                  size={'small'}
-                  onClick={() => {
-                    form.setFieldValue(['guestPersona', 'vlan'], guestVlanCache)
-                    setChangeGuestVlanField(false)
-                  }}
-                >
-                  {$t({ defaultMessage: 'Cancel' })}
-                </Button>
-              </>
-              :
-              <>
-                {vlanDescription('guestPersona')}
-                <Button
-                  type='link'
-                  size={'small'}
-                  onClick={() => {
-                    setGuestVlanCache(form.getFieldValue(['guestPersona', 'vlan']))
-                    setChangeGuestVlanField(true)
-                  }}
-                >
-                  {$t({ defaultMessage: 'Change' })}
-                </Button>
-              </>
-          }
-        </>
+        <Form.Item
+          noStyle
+          name={['guestPersona', 'vlan']}
+        >
+          <InputNumber
+            min={1}
+            max={4094}
+          />
+        </Form.Item>
       }
     </Space>
   </>
@@ -479,7 +368,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       children={
         <Loader
           states={[
-            { isLoading: unitResult.isLoading },
+            unitResult,
             propertyConfigsQuery,
             personaResult
           ]}
@@ -489,6 +378,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             name='propertyUnitForm'
             form={form}
             layout={'vertical'}
+            initialValues={unitResult.data}
           >
             <Form.Item name='id' noStyle><Input type='hidden' /></Form.Item>
             <Form.Item name='personaId' noStyle><Input type='hidden' /></Form.Item>

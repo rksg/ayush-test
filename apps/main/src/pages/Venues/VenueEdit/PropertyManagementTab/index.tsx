@@ -26,7 +26,7 @@ import { VenueEditContext }   from '../index'
 const defaultPropertyConfigs: PropertyConfigs = {
   status: PropertyConfigStatus.DISABLED,
   enableGuestDpsk: false,
-  unitConfiguration: {
+  unitConfig: {
     maxUnitCount: 0,
     useMaxUnitCount: false,
     residentPortalAllowed: false

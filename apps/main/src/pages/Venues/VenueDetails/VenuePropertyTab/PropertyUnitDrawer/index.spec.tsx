@@ -2,9 +2,9 @@ import { waitFor } from '@storybook/testing-library'
 import userEvent   from '@testing-library/user-event'
 import { rest }    from 'msw'
 
-import { CommonUrlsInfo, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                      from '@acx-ui/store'
-import { mockServer, render, screen }                    from '@acx-ui/test-utils'
+import { CommonUrlsInfo, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, render, screen }                             from '@acx-ui/test-utils'
 
 import { mockPersonaGroupWithoutNSG, mockEnabledPropertyConfig, mockPropertyUnit, venueLanPorts } from '../../../__tests__/fixtures'
 
@@ -17,6 +17,14 @@ const params = {
   venueId: 'f892848466d047798430de7ac234e940'
 }
 const unitId = 'c59f537f-2257-4fa6-934b-69f787e686fb'
+
+const mockPersona: Persona = {
+  id: 'persona-id-1',
+  name: 'persona-name-1',
+  groupId: 'persona-group-id-1',
+  dpskGuid: 'dpsk-guid-1',
+  dpskPassphrase: 'dpsk-passphrase'
+}
 
 
 describe('Property Unit Drawer', () => {
@@ -47,6 +55,10 @@ describe('Property Unit Drawer', () => {
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))
+      ),
+      rest.get(
+        PersonaUrls.getPersonaById.url,
+        (_, res, ctx) => res(ctx.json(mockPersona))
       )
     )
   })
@@ -110,43 +122,6 @@ describe('Property Unit Drawer', () => {
     await userEvent.click(saveBtn)
 
     await waitFor(() => expect(closeFn).toHaveBeenCalled())
-  })
-
-  it('should change vlan value', async () => {
-    render(
-      <Provider>
-        <PropertyUnitDrawer visible isEdit={false} onClose={closeFn} venueId={params.venueId}/>
-      </Provider>, { route: { params } }
-    )
-
-    // Open the guest vlan field
-    const guestSwitch = await screen.findByRole('switch')
-    await userEvent.click(guestSwitch)
-
-    const changeVlanBtn = await screen.findAllByRole('button', { name: /change/i })
-    for (const btn of changeVlanBtn) {
-      await userEvent.click(btn)
-    }
-
-    const resetVlanBtn = await screen.findAllByRole('button', { name: /reset to default/i })
-    for (const btn of resetVlanBtn) {
-      await userEvent.click(btn)
-    }
-
-    const cancelVlanBtn = await screen.findAllByRole('button', { name: /cancel/i })
-    for (const btn of cancelVlanBtn) {
-      await userEvent.click(btn)
-    }
-
-    // Trigger change vlan field
-    for (const btn of changeVlanBtn) {
-      await userEvent.click(btn)
-    }
-
-    const saveVlanBtn = await screen.findAllByRole('button', { name: /save/i })
-    for (const btn of saveVlanBtn) {
-      await userEvent.click(btn)
-    }
   })
 
   // FIXME: not sure is it correct test case

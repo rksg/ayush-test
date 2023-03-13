@@ -2812,7 +2812,11 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
   ]
 }
 
-export const mockPropertyUnit: PropertyUnit = mockPropertyUnitList.content[0]
+export const mockPropertyUnit: PropertyUnit = {
+  ...mockPropertyUnitList.content[0],
+  personaId: 'unit-persona-id-1',
+  guestPersonaId: 'guest-unit-persona-id-1'
+}
 
 export const venueSyslog = {
   serviceProfileId: '31846cfe930b49b4802b302f35029589',

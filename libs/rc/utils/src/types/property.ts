@@ -16,7 +16,7 @@ export interface PropertyConfigs {
   enableGuestDpsk: boolean
   personaGroupId?: string,
   residentPortalId?: string,
-  unitConfiguration?: {
+  unitConfig?: {
     residentPortalAllowed: boolean,
     useMaxUnitCount: boolean,
     maxUnitCount: number
@@ -73,7 +73,7 @@ export interface PropertyUnit {
       portIndex: number
     }[]
   },
-  vni: number
+  vni?: number
 }
 
 export interface UnitPersonaConfig {
