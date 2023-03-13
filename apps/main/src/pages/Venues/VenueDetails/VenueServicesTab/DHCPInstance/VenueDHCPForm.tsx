@@ -56,6 +56,7 @@ const VenueDHCPForm = (props: {
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
   const [dhcpServiceID, setDHCPServiceID] = useState('')
   const [isSimpleMode, setIsSimpleMode] = useState(true)
+  const [isHierarchical, setIsHierarchical] = useState(false)
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
@@ -70,6 +71,7 @@ const VenueDHCPForm = (props: {
 
   useEffect(() => {
     setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
+    setIsHierarchical(getSelectedDHCPMode() === DHCPConfigTypeEnum.HIERARCHICAL)
   },[dhcpServiceID, dhcpProfileList])
 
   let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
@@ -79,6 +81,7 @@ const VenueDHCPForm = (props: {
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
     setDHCPServiceID(dhcpInfo.id as string)
+    refreshList()
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber])
 
@@ -107,11 +110,17 @@ const VenueDHCPForm = (props: {
   }
 
   const refreshList = ()=>{
-    setSelectedAPs([
+    let selectAPList = [
       form.getFieldsValue().primaryServerSN,
-      form.getFieldsValue().backupServerSN,
-      ...form.getFieldsValue().gateways.map((item:{ serialNumber:string }) => item.serialNumber)
-    ])
+      form.getFieldsValue().backupServerSN
+    ]
+    if(form.getFieldsValue().gateways){
+      // eslint-disable-next-line max-len
+      const gatewaySelects = form.getFieldsValue().gateways.map((item:{ serialNumber:string }) => item.serialNumber)
+      selectAPList = selectAPList.concat(gatewaySelects)
+    }
+
+    setSelectedAPs(selectAPList)
   }
   const getOptionList = (sn:string, notForGateway?:boolean)=>{
     if(apList?.data) {
@@ -129,7 +138,6 @@ const VenueDHCPForm = (props: {
         }) || o.serialNumber===sn)
         && o.deviceStatus===ApDeviceStatusEnum.OPERATIONAL
         && !skipForH
-
       })
     }
     return []
@@ -152,7 +160,8 @@ const VenueDHCPForm = (props: {
           setGateways([...gatewayRawData])
         }}
         placeholder={$t({ defaultMessage: 'Select AP...' })}>
-          {getOptionList(form.getFieldsValue().gateways[index]
+          {getOptionList(form.getFieldsValue().gateways
+            && form.getFieldsValue().gateways[index]
             && form.getFieldsValue().gateways[index].serialNumber).map(ap =>
             <Option key={ap.serialNumber} value={ap.serialNumber}>
               {ap.name}
@@ -260,7 +269,9 @@ const VenueDHCPForm = (props: {
               }
               resetField(primaryServer, 'primaryServerSN')
               resetField(secondary, 'backupServerSN')
+              form.setFieldValue('gateways', undefined)
             }
+            refreshList()
           }}
           placeholder={$t({ defaultMessage: 'Select Service...' })}>
             {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
@@ -313,7 +324,9 @@ const VenueDHCPForm = (props: {
         )}
       </AntSelect>
     </StyledForm.Item>
-    {!isSimpleMode && serviceEnabled &&
+    {!isSimpleMode
+    && !isHierarchical
+    && serviceEnabled &&
     <StyledForm.Item label={$t({ defaultMessage: 'Gateway' })}>
       {gatewaysList}
     </StyledForm.Item>}
