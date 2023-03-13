@@ -39,11 +39,6 @@ const defaultPayload = {
   fields: ['id']
 }
 
-const defaultAccessControlPayload = {
-  searchString: '',
-  fields: ['id']
-}
-
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -105,7 +100,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.ACCESS_CONTROL,
       category: RadioCardCategory.WIFI,
       totalCount: useGetEnhancedAccessControlProfileListQuery({
-        params, payload: { ...defaultAccessControlPayload }
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))

@@ -82,7 +82,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getEnhancedL2AclPolicies: {
     method: 'post',
     url: '/enhancedL2AclPolicies/query',
-    oldUrl: '/enhancedL2AclPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedL2AclPolicies/query',
     newApi: true
   },
   getL3AclPolicyList: {
@@ -94,7 +94,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getEnhancedL3AclPolicies: {
     method: 'post',
     url: '/enhancedL3AclPolicies/query',
-    oldUrl: '/enhancedL3AclPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedL3AclPolicies/query',
     newApi: true
   },
   getAppPolicyList: {
@@ -106,7 +106,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getEnhancedApplicationPolicies: {
     method: 'post',
     url: '/enhancedApplicationPolicies/query',
-    oldUrl: '/enhancedApplicationPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedApplicationPolicies/query',
     newApi: true
   },
   getAvcCategory: {
@@ -134,7 +134,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getEnhancedAccessControlProfiles: {
     method: 'post',
     url: '/enhancedAccessControlProfiles/query',
-    oldUrl: '/enhancedAccessControlProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedAccessControlProfiles/query',
     newApi: true
   },
   addAccessControlProfile: {
@@ -188,7 +188,7 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getEnhancedDevicePolicies: {
     method: 'post',
     url: '/enhancedDevicePolicies/query',
-    oldUrl: '/enhancedDevicePolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedDevicePolicies/query',
     newApi: true
   }
 }

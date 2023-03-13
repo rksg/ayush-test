@@ -57,10 +57,6 @@ describe('AccessControlTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
         AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(enhancedAccessControlList))
       )
