@@ -39,14 +39,10 @@ describe('RadiusServerTab', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
-
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const eyeButton = screen.getByRole('img', { name: 'eye-invisible' })
     expect(eyeButton).toBeTruthy()
-    await userEvent.click(fieldButton)
 
     expect(await screen.findByText(config.ipAddress[0])).toBeVisible()
     expect(await screen.findByText(radiusSetting.host)).toBeVisible()
@@ -62,9 +58,6 @@ describe('RadiusServerTab', () => {
       }, path: '/:tenantId' }
     })
 
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
-
     await screen.findByText('RADIUS Host')
 
     const changeButton = screen.getByRole('button', { name: 'Change' })
@@ -77,6 +70,11 @@ describe('RadiusServerTab', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' })
     expect(cancelButton).toBeTruthy()
 
+    // screen.getByRole('img111', { name: 'caret-down' })
+
+    const input = await screen.findByRole('textbox')
+    await userEvent.type(input, '123457890')
+
     const generateButton = screen.getByRole('button', { name: 'Generate New Passphrase' })
     expect(generateButton).toBeTruthy()
     await userEvent.click(generateButton)
@@ -85,14 +83,31 @@ describe('RadiusServerTab', () => {
     await userEvent.click(saveButton)
   })
 
+  it('should change secret and cancel correctly', async () => {
+
+    render(<Provider><LocalRadiusServer /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await screen.findByText('RADIUS Host')
+
+    const changeButton = screen.getByRole('button', { name: 'Change' })
+    expect(changeButton).toBeTruthy()
+    await userEvent.click(changeButton)
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+    expect(cancelButton).toBeTruthy()
+    await userEvent.click(cancelButton)
+  })
+
   it('should show drawer correctly', async () => {
     render(<Provider><LocalRadiusServer /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    await userEvent.click(fieldButton)
 
     await screen.findByText('RADIUS Host')
 
@@ -119,8 +134,6 @@ describe('RadiusServerTab', () => {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
       }, path: '/:tenantId' }
     })
-    const fieldButton = screen.getByRole('switch', { name: 'Local RADIUS (AAA) Server' })
-    fireEvent.click(fieldButton)
 
     await screen.findByText('RADIUS Host')
 

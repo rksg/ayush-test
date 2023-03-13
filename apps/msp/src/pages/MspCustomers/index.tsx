@@ -122,7 +122,8 @@ export function MspCustomers () {
       'wifiLicense',
       'switchLicens',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const supportPayload = {
@@ -190,8 +191,8 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Active Incindents' }),
-      dataIndex: 'activeIncindents',
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
       key: 'activeIncindents',
       sorter: true,
       render: function () {
@@ -258,7 +259,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Service Expired On' }),
+      title: $t({ defaultMessage: 'Service Expires On' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
@@ -280,7 +281,10 @@ export function MspCustomers () {
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload: mspPayload
+      defaultPayload: mspPayload,
+      search: {
+        searchTargetFields: mspPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
@@ -410,7 +414,10 @@ export function MspCustomers () {
   const SupportEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
-      defaultPayload: supportPayload
+      defaultPayload: supportPayload,
+      search: {
+        searchTargetFields: supportPayload.searchTargetFields as string[]
+      }
     })
 
     return (
