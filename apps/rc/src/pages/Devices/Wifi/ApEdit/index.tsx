@@ -24,16 +24,26 @@ export interface ApEditContextType {
 export const ApEditContext = createContext({} as {
   editContextData: ApEditContextType,
   setEditContextData: (data: ApEditContextType) => void,
+  previousPath: string
+  setPreviousPath: (data: string) => void
+  isOnlyOneTab: boolean
+  setIsOnlyOneTab: (data: boolean) => void
 })
 
 export function ApEdit () {
   const { activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs]
+  const [previousPath, setPreviousPath] = useState('')
+  const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
   const [editContextData, setEditContextData] = useState({} as ApEditContextType)
 
   return <ApEditContext.Provider value={{
     editContextData,
-    setEditContextData
+    setEditContextData,
+    previousPath,
+    setPreviousPath,
+    isOnlyOneTab,
+    setIsOnlyOneTab
   }}>
     <ApEditPageHeader />
     { Tab && <Tab /> }
