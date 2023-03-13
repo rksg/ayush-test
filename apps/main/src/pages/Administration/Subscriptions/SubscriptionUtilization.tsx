@@ -84,7 +84,7 @@ const subscriptionUtilizationTransformer = (
 
     summaryData.forEach(summary => {
       quantity += summary.quantity
-      used += (summary.deviceCount ?? 0)
+      used += summary.deviceCount
     })
 
     if (quantity > 0) {

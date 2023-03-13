@@ -310,8 +310,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
   const validateVlan = () => {
     const { $t } = getIntl()
-    if (_.isEmpty(form.getFieldValue('untaggedVlan')) &&
-      _.isEmpty(form.getFieldValue('taggedVlans'))) {
+    if (!form.getFieldValue('untaggedVlan') && !form.getFieldValue('taggedVlans')) {
       return Promise.reject(
         $t({ defaultMessage: 'Each port must be a member of at least one VLAN' }))
     }

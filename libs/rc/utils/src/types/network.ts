@@ -100,6 +100,7 @@ export interface NetworkSaveData {
     saePassphrase?: string;
     managementFrameProtection?: string;
     macAddressAuthentication?: boolean;
+    macRegistrationListId?: string;
     macAuthMacFormat?: string;
     wlanSecurity?: WlanSecurityEnum;
     wepHexKey?: string;

@@ -3,26 +3,38 @@ import { ApiInfo } from '../../apiService'
 export const WifiCallingUrls: { [key: string]: ApiInfo } = {
   getWifiCalling: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId'
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
   },
   getWifiCallingList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles'
+    url: '/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
   },
   addWifiCalling: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles'
+    url: '/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
   },
   updateWifiCalling: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId'
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
   },
   deleteWifiCalling: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId'
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
+    newApi: true
   },
   deleteWifiCallingList: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles'
+    url: '/wifiCallingServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
   }
 }

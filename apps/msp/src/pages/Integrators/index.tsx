@@ -49,7 +49,8 @@ const defaultPayload = {
     'mspEcAdminCount',
     'wifiLicense',
     'switchLicens'
-  ]
+  ],
+  searchTargetFields: ['name']
 }
 
 export function Integrators () {
@@ -137,7 +138,10 @@ export function Integrators () {
     const basePath = useTenantLink('/integrators/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload
+      defaultPayload,
+      search: {
+        searchTargetFields: defaultPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
