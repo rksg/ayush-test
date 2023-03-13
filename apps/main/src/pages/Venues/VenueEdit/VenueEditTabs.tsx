@@ -3,7 +3,9 @@ import { useContext, useEffect, useRef } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                   from '@acx-ui/components'
+import type { LocationExtended }                  from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams,
   useTenantLink,
@@ -17,6 +19,7 @@ import type { History, Transition } from 'history'
 function VenueEditTabs () {
   const intl = useIntl()
   const params = useParams()
+  const location = useLocation()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/venues/${params.venueId}/edit/`)
   const {
@@ -25,7 +28,8 @@ function VenueEditTabs () {
     editNetworkingContextData,
     editRadioContextData,
     editSecurityContextData,
-    editServerContextData
+    editServerContextData,
+    setPreviousPath
   } = useContext(VenueEditContext)
   const onTabChange = (tab: string) => {
     if (tab === 'wifi') tab = `${tab}/radio`
@@ -68,6 +72,10 @@ function VenueEditTabs () {
       unblockRef.current?.()
     }
   }, [editContextData])
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname )
+  }, [])
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
