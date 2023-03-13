@@ -98,7 +98,7 @@ describe('RadiusAttributeGroupForm', () => {
     await userEvent.type(await screen.findByRole('textbox', { name: 'Policy Name' }), 'testGroup')
 
     await userEvent.click(screen.getByText('Add'))
-    await screen.findByText('Add RADIUS Attribute')
+    await screen.findByText('Attribute Type')
 
     const inputs = await screen.findAllByRole('textbox')
     const attributeValue = inputs[2]
@@ -149,14 +149,11 @@ describe('RadiusAttributeGroupForm', () => {
 
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
-    const nameInput = await screen.findByLabelText(/policy name/i)
-    expect(nameInput).toHaveValue(attributeGroup.name)
-
     const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
     fireEvent.click(within(row).getByRole('radio'))
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/i }))
-    await screen.findByText('Edit RADIUS Attribute')
+    await screen.findByText('Attribute Type')
 
     const inputs = await screen.findAllByRole('textbox')
     const attributeValue = inputs[2]
@@ -167,7 +164,9 @@ describe('RadiusAttributeGroupForm', () => {
     const row1 = await screen.findByRole('row', { name: /Annex-CLI-Command/ })
     fireEvent.click(within(row1).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/i }))
-    // fireEvent.click(await screen.findByText('Delete Attribute'))
+
+    const nameInput = await screen.findAllByRole('textbox', { name: 'Policy Name' })
+    expect(nameInput[0]).toHaveValue(attributeGroup.name)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
