@@ -12,13 +12,13 @@ import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }                      
 import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                                          from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                                                     from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                                                                                                                                                                                                      from '@acx-ui/user'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
 import PlainView             from './PlainView/PlainView'
 import * as UI               from './styledComponents'
 import { UnplacedDevices }   from './UnplacedDevices'
-import { hasAccess } from 'libs/common/user/src'
 
 
 
