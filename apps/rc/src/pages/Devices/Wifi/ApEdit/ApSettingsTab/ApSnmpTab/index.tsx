@@ -133,7 +133,7 @@ export function ApSnmp () {
         pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
       })}
       buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply AP SNMP Settings' })
+        submit: $t({ defaultMessage: 'Apply Settings' })
       }}
     >
       <StepsForm.StepForm initialValues={stateOfApSnmpSettings}>
@@ -149,7 +149,7 @@ export function ApSnmp () {
           </Form.Item>
         </Row>
         {stateOfApSnmpSettings.enableApSnmp &&
-        <>
+        <div data-testid='hidden-block'>
           <Row>
             <Form.Item name='apSnmpAgentProfileId' label='Select SNMP Agent'>
               <Select
@@ -183,7 +183,7 @@ export function ApSnmp () {
               {$t({ defaultMessage: 'Add SNMP Agent' })}
             </TenantLink>
           </Row>
-        </>
+        </div>
         }
       </StepsForm.StepForm>
     </StepsForm>
