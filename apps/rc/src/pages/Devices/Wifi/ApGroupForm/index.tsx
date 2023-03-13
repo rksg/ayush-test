@@ -97,11 +97,14 @@ export function ApGroupForm () {
 
   const handleVenueChange = async (value: string,
     extraMemberList?: { name: string; key: string; }[]) => {
-    const defaultApGroupOption = value ?
-      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } })).data
-        ?.aps?.map((item: ApDeep) => ({
-          name: item.name.toString(), key: item.serialNumber
-        })) : []
+    const defaultApGroupOption: { name: string, key: string }[] = []
+
+    if (value) {
+      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
+        .data?.map(x => x.aps?.map((item: ApDeep) =>
+          defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
+        )
+    }
 
     if (extraMemberList && defaultApGroupOption) {
       setApsOption(defaultApGroupOption.concat(extraMemberList) as TransferItem[])

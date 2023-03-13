@@ -468,7 +468,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Active Incindents
+                                    Active Incidents
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"
@@ -930,7 +930,7 @@ exports[`MspCustomers should render table 1`] = `
                                   <span
                                     class="ant-table-column-title"
                                   >
-                                    Service Expired On
+                                    Service Expires On
                                   </span>
                                   <span
                                     class="ant-table-column-sorter ant-table-column-sorter-full"

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PersonaUrls,
   MacRegListUrlsInfo,
@@ -16,11 +17,13 @@ import {
   mockPersonaGroup,
   mockPersonaGroupList,
   mockPersonaGroupTableResult,
-  mockPersonaTableResult
+  mockPersonaTableResult,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import PersonaGroupDetails from '.'
 
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 describe('Persona Group Details', () => {
   let params: { tenantId: string, personaGroupId: string }
@@ -44,15 +47,15 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        PersonaUrls.searchPersonaGroupList.url,
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupTableResult))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.post(
-        PersonaUrls.searchPersonaList.url,
+        replacePagination(PersonaUrls.searchPersonaList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       rest.get(

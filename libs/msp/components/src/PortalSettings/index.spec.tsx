@@ -96,10 +96,14 @@ jest.mock('@acx-ui/rc/services', () => ({
   useUpdateMspLabelMutation: () => (''),
   useGetUploadURLMutation: () => ('')
 }))
+const utils = require('@acx-ui/utils')
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils')
+}))
 
 describe('PortalSettings', () => {
-  let params: { tenantId: string }
-  let fileUrl: string
+  const params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
+  const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'
 
   beforeEach(async () => {
     services.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
@@ -108,13 +112,16 @@ describe('PortalSettings', () => {
     services.useGetMspBaseURLQuery = jest.fn().mockImplementation(() => {
       return { data: baseUrl }
     })
+    utils.loadImageWithJWT = jest.fn().mockImplementation((imageId: string) => {
+      return Promise.resolve(fileUrl + imageId)
+    })
     // services.useGetUploadURLMutation = jest.fn().mockResolvedValue(uploadUrlResponse)
-    params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
-    fileUrl = '/api/file/tenant/' + params.tenantId + '/'
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
   })
-
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should render correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: emptyMspLabel }
@@ -137,7 +144,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
-
   it('should render correctly for edit', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspLabel }
@@ -151,6 +157,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
@@ -160,7 +168,6 @@ describe('PortalSettings', () => {
     expect(screen.getByRole('button', { name: 'Next' })).not.toBeDisabled()
     expect(screen.getByRole('button', { name: 'Cancel' })).not.toBeDisabled()
   })
-
   it('domain form item should load correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: emptyMspLabel }
@@ -179,7 +186,6 @@ describe('PortalSettings', () => {
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('')
   })
-
   it('domain form item should load correctly for edit', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspLabel }
@@ -193,6 +199,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     const formItem = screen.getByRole('textbox')
     expect(formItem).toBeVisible()
@@ -200,7 +208,6 @@ describe('PortalSettings', () => {
     expect(screen.getByText('msp.devalto.ruckuswireless.com')).toBeVisible()
     expect(screen.getByDisplayValue('demo-msp')).toBeInTheDocument()
   })
-
   it('empty domain form item should show correct error message', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspLabel }
@@ -279,23 +286,19 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     const formItem = screen.getByRole('textbox')
     expect(formItem).toBeVisible()
     expect(formItem).toHaveValue('demo-msp')
 
-    userEvent.setup()
-    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-    // await userEvent.click(screen.getByRole('button', { name: 'Next' }))
-
-    // await waitFor(async () => {
-    //   expect(await screen.findByText('Selected Preferred Provider')).toBeVisible()
-    // })
-    // await waitFor(async () => {
-    //   expect(await screen.findByRole('heading', { level: 3, name: 'Branding' })).not.toBeVisible()
-    // })
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
     await waitFor(() => {
       expect(screen.queryByRole('alert')).toBeNull()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
     })
   })
   it('logo form item should load correctly for add', async () => {
@@ -346,6 +349,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     const defaultLogoRadio = screen.getByRole('radio', { name: 'COMMSCOPE RUCKUS logo' })
     expect(defaultLogoRadio).toBeVisible()
@@ -453,6 +458,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     // Upload invalid image
     const jpegFile = new File(['(⌐□_□)'], 'invalid_image.jpeg', { type: 'image/jpeg' })
@@ -516,6 +523,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     // Upload invalid image
     await userEvent.click(screen.getAllByRole('button', { name: 'Import Logo' }).at(0)!)
@@ -577,6 +586,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     // Upload invalid image
     const pngFile = new File(['(⌐□_□)'], 'img4.png', { type: 'image/png' })
@@ -634,6 +645,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     // Upload valid image
     const jpgFile = new File(['(⌐□_□)'], 'valid_image.jpg', { type: 'image/jpg' })
@@ -748,6 +761,8 @@ describe('PortalSettings', () => {
       })
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
+    await waitFor(() =>
+      expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
     // Delete one custom logo
     const deleteButton = screen.getAllByTitle('Remove file').at(0)!

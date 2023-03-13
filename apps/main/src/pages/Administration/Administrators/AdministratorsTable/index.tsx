@@ -176,7 +176,6 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const tableActions = []
   if (isPrimeAdminUser) {
     tableActions.push({
-      /* TODO: hide: !rbacService.isRoleAllowed('AddAdminButton') */
       label: $t({ defaultMessage: 'Add Administrator' }),
       onClick: handleClickAdd
     })
@@ -203,15 +202,14 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         rowActions={isPrimeAdminUser
           ? filterByAccess(rowActions)
           : undefined}
-        rowSelection={{
-          type: isPrimeAdminUser ? 'checkbox' : 'radio',
+        rowSelection={isPrimeAdminUser ? {
+          type: 'checkbox',
           getCheckboxProps: (record: Administrator) => ({
             // only prime-admin cannot edit/delete itself
             disabled: record.email === currentUserMail && isPrimeAdminUser,
             name: record.fullName
-
           })
-        }}
+        } : undefined}
         actions={filterByAccess(tableActions)}
       />
 

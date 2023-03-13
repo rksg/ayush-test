@@ -103,7 +103,7 @@ module.exports = {
   '@select-border-color': 'var(--acx-neutrals-50)',
   '@select-item-active-bg': 'var(--acx-accents-orange-10)',
   '@select-item-selected-bg': 'var(--acx-accents-orange-20)',
-  '@select-item-selected-font-weight': 'var(--acx-body-font-weight-bold)',
+  '@select-item-selected-font-weight': 'var(--acx-body-font-weight)',
 
   '@tabs-highlight-color': 'var(--acx-primary-black)',
   '@tabs-hover-color': 'var(--acx-accents-orange-50)',

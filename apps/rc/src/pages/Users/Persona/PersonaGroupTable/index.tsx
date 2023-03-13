@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import {
   useSearchPersonaGroupListQuery,
   useLazyGetMacRegListQuery,
@@ -13,7 +14,8 @@ import {
   useGetDpskListQuery,
   useMacRegListsQuery,
   useGetNetworkSegmentationGroupListQuery,
-  useLazyDownloadPersonaGroupsQuery
+  useLazyDownloadPersonaGroupsQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess }                              from '@acx-ui/user'
@@ -32,13 +34,18 @@ import { PersonaGroupDrawer } from '../PersonaGroupDrawer'
 function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
-  venuesMap: Map<string, string>
+  venuesMap: Map<string, string>,
+  nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
+  const networkSegmentationEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION)
 
   const { data: dpskPool } = useGetDpskListQuery({})
   const { data: macList } = useMacRegListsQuery({})
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery({})
+  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
+    {},
+    { skip: !networkSegmentationEnabled }
+  )
 
   const columns: TableProps<PersonaGroup>['columns'] = [
     {
@@ -106,7 +113,7 @@ function useColumns (
       render: (_, row) =>
         <NetworkSegmentationLink
           nsgId={row.nsgId}
-          name={row.nsgId}
+          name={nsgMap.get(row.nsgId ?? '')}
         />
     },
     {
@@ -134,6 +141,7 @@ export function PersonaGroupTable () {
   const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
+  const [nsgPoolMap, setNsgPoolMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
@@ -143,6 +151,7 @@ export function PersonaGroupTable () {
   const [getVenues] = useLazyVenuesListQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
+  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,
@@ -161,9 +170,10 @@ export function PersonaGroupTable () {
     const venueIds: string[] = []
     const macPools = new Map()
     const dpskPools = new Map()
+    const nsgPools = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId, propertyId } = personaGroup
+      const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
 
       if (propertyId) {
         // FIXME: After the property id does not present in UUID format, I will remove .replace()
@@ -187,6 +197,15 @@ export function PersonaGroupTable () {
             }
           })
       }
+
+      if (nsgId) {
+        getNsgById({ params: { serviceId: nsgId } })
+          .then(result => {
+            if (result.data) {
+              nsgPools.set(nsgId, result.data.name)
+            }
+          })
+      }
     })
 
     if (venueIds.length !== 0) {
@@ -201,6 +220,7 @@ export function PersonaGroupTable () {
 
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
+    setNsgPoolMap(nsgPools)
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
@@ -286,7 +306,7 @@ export function PersonaGroupTable () {
     >
       <Table
         enableApiFilter
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap)}
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

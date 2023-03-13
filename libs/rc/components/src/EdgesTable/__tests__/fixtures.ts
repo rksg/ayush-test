@@ -16,7 +16,8 @@ export const mockEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      firmwareVersion: '1.1.1.1'
     },
     {
       name: 'Smart Edge 2',
@@ -28,7 +29,8 @@ export const mockEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      firmwareVersion: '1.1.1.1'
     },
     {
       name: 'Smart Edge 3',
@@ -40,7 +42,8 @@ export const mockEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      firmwareVersion: '1.1.1.1'
     },
     {
       name: 'Smart Edge 4',
@@ -52,7 +55,8 @@ export const mockEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      firmwareVersion: '1.1.1.1'
     },
     {
       name: 'Smart Edge 5',
@@ -64,7 +68,8 @@ export const mockEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      firmwareVersion: '1.1.1.1'
     }
   ]
 }
