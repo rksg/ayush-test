@@ -4,8 +4,8 @@ import { Checkbox, Col, Form, Row, Select, Space, Switch } from 'antd'
 import { FormFinishInfo }                                  from 'rc-field-form/lib/FormContext'
 import { useIntl }                                         from 'react-intl'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { PersonaGroupSelect }                                      from '@acx-ui/rc/components'
+import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { PersonaGroupSelect }                           from '@acx-ui/rc/components'
 import {
   useGetPropertyConfigsQuery,
   useGetResidentPortalListQuery,
@@ -85,13 +85,7 @@ export function PropertyManagementTab () {
         isDirty: false
       })
     } catch (e) {
-      showToast({
-        duration: 3,
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' }),
-        // FIXME: Correct the error message
-        link: { onClick: () => alert(JSON.stringify(e)) }
-      })
+      console.log(e) // eslint-disable-line no-console
     }
   }
 

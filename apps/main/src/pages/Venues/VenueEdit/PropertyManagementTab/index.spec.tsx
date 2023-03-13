@@ -3,10 +3,17 @@ import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { CommonUrlsInfo, PropertyUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { CommonUrlsInfo, MacRegListUrlsInfo, NewDpskBaseUrl, NewPersonaBaseUrl, PropertyUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }                                   from '@acx-ui/test-utils'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {
+  mockDpskList,
+  mockMacRegistrationList,
+  mockPersonaGroupList,
+  replacePagination
+} from '../../../../../../rc/src/pages/Users/Persona/__tests__/fixtures'
 import { mockEnabledPropertyConfig } from '../../__tests__/fixtures'
 import { VenueEditContext }          from '../index'
 
@@ -27,6 +34,8 @@ describe('Property Config Tab', () => {
   const setEditContextDataFn = jest.fn()
 
   beforeEach(async () => {
+    setEditContextDataFn.mockClear()
+
     mockServer.use(
       rest.get(
         PropertyUrlsInfo.getPropertyConfigs.url,
@@ -53,6 +62,18 @@ describe('Property Config Tab', () => {
       rest.get(
         PropertyUrlsInfo.getResidentPortalList.url,
         (req, res, ctx) => res(ctx.json({ content: [] }))
+      ),
+      rest.get(
+        NewPersonaBaseUrl,
+        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
+      ),
+      rest.get(
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
+        (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
+      ),
+      rest.get(
+        NewDpskBaseUrl,
+        (req, res, ctx) => res(ctx.json(mockDpskList))
       )
     )
   })
