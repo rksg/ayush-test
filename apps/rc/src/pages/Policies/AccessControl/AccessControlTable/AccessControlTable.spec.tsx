@@ -4,7 +4,6 @@ import { Path }  from 'react-router-dom'
 
 import {
   AccessControlUrls,
-  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
