@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Col, Row }     from 'antd'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { GridCol, GridRow, Loader, PageHeader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useAddRadiusAttributeGroupMutation,
   useGetRadiusAttributeGroupQuery,
   useUpdateRadiusAttributeGroupMutation
 } from '@acx-ui/rc/services'
 import {
-  AttributeAssignment,
+  AttributeAssignment, getPolicyListRoutePath,
   getPolicyRoutePath, OperatorType,
   PolicyOperation,
   PolicyType
@@ -141,11 +140,11 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add RADIUS Attributes Group' })}
         breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
-          }
+            link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
         ]}
       />
       <StepsForm
@@ -159,14 +158,14 @@ export default function RadiusAttributeGroupForm (props: RadiusAttributeGroupFor
             isLoading: isLoading,
             isFetching: isUpdating
           }]}>
-            <Row>
-              <Col span={10}>
+            <GridRow>
+              <GridCol col={{ span: 10 }}>
                 <RadiusAttributeGroupSettingForm
                   onAddClick={onAddClick}
                   onEditClick={onEditClick}
                 />
-              </Col>
-            </Row>
+              </GridCol>
+            </GridRow>
             <RadiusAttributeDrawer
               visible={visible}
               setVisible={setVisible}

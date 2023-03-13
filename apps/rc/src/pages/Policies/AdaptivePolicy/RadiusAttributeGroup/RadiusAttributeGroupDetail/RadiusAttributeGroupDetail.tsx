@@ -8,7 +8,7 @@ import { Button, Card, Loader, PageHeader } from '@acx-ui/components'
 import { useGetRadiusAttributeGroupQuery }  from '@acx-ui/rc/services'
 import {
   AttributeAssignment,
-  getPolicyDetailsLink,
+  getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -40,8 +40,10 @@ export default function RadiusAttributeGroupDetail () {
       <PageHeader
         title={data?.name || ''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies & Profiles > RADIUS Attribute Groups' }),
-            // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
+          // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST }) }
         ]}
         extra={[
@@ -77,7 +79,7 @@ export default function RadiusAttributeGroupDetail () {
               </Row>
               <Row>
                 <Col span={24}>
-                  <Paragraph>RADIUS Attributes</Paragraph>
+                  <Paragraph>{$t({ defaultMessage: 'RADIUS Attributes' })}</Paragraph>
                 </Col>
                 {getAttributes(data?.attributeAssignments)}
               </Row>

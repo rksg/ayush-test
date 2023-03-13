@@ -926,7 +926,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     radiusAttributeListWithQuery: build.query<TableResult<RadiusAttribute>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributesWithQuery, params, RKS_NEW_UI)
+        const groupReq = createHttpRequest(RadiusAttributeGroupUrlsInfo.getAttributesWithQuery, params)
         return {
           ...groupReq,
           body: payload

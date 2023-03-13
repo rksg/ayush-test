@@ -26,7 +26,6 @@ function useColumns () {
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
@@ -76,7 +75,6 @@ export default function RadiusAttributeGroupTable () {
     ] = useDeleteRadiusAttributeGroupMutation()
 
     const rowActions: TableProps<RadiusAttributeGroup>['rowActions'] = [{
-      visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -110,10 +108,7 @@ export default function RadiusAttributeGroupTable () {
                 })
                 clearSelection()
               }).catch((error) => {
-                showToast({
-                  type: 'error',
-                  content: error.data.message
-                })
+                console.log(error) // eslint-disable-line no-console
               })
           }
         })

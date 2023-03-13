@@ -15,7 +15,6 @@ import {
   render,
   renderHook,
   screen,
-  waitFor,
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
@@ -150,9 +149,8 @@ describe('RadiusAttributeGroupForm', () => {
 
     await screen.findByRole('heading', { level: 1, name: 'Configure ' + attributeGroup.name })
 
-    await waitFor(async () => {
-      expect(screen.getByLabelText(/policy name/i)).toHaveValue(attributeGroup.name)
-    })
+    const nameInput = await screen.findByLabelText(/policy name/i)
+    expect(nameInput).toHaveValue(attributeGroup.name)
 
     const row = await screen.findByRole('row', { name: /Annex-CLI-Filter/ })
     fireEvent.click(within(row).getByRole('radio'))

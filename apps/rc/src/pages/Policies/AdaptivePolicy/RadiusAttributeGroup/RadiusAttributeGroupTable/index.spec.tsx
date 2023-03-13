@@ -57,6 +57,9 @@ describe('RadiusAttributeGroupTable', () => {
     expect(row).toHaveTextContent('2')
 
     fireEvent.click(within(row).getByRole('radio'))
+
+    await screen.findByText('Delete')
+    await screen.findByText('Edit')
   })
 
   it('should delete selected row', async () => {

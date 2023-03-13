@@ -30,7 +30,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' }),
   // eslint-disable-next-line max-len
-  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' })
+  [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -182,6 +182,6 @@ export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
 export const AttributeOperationLabelMapping: Record<OperatorType, MessageDescriptor> = {
   [OperatorType.ADD]: defineMessage({ defaultMessage: 'Add (Multiple)' }),
   [OperatorType.ADD_REPLACE]: defineMessage({ defaultMessage: 'Add or Replace (Single)' }),
-  [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add or Replace (Single)' })
+  [OperatorType.DOES_NOT_EXIST]: defineMessage({ defaultMessage: 'Add if it Doesn\'t Exist' })
 }
 
