@@ -1012,7 +1012,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.getPropertyUnitList, params)
+        const req = createHttpRequest(
+          PropertyUrlsInfo.getPropertyUnitList,
+          params,
+          { Accept: 'application/hal+json' }
+        )
         return {
           ...req,
           body: payload
