@@ -162,7 +162,7 @@ function Table <RecordType extends Record<string, any>> ({
     GroupBySelect,
     expandable,
     groupActionColumns,
-    finalParentColumns,
+    parentColumns,
     isGroupByActive
   } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
     groupable,
@@ -223,7 +223,7 @@ function Table <RecordType extends Record<string, any>> ({
             }
           }
         }
-        const parent = finalParentColumns.at(ind)
+        const parent = parentColumns.at(ind)
         const { render, searchable, key } = col
         return { ...col, render: parentRenderOverride(parent) }
       })

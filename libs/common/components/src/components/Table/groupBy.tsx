@@ -70,7 +70,7 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
 
       const targetCol = groupables.find(col => col.key === groupByValue)
 
-      const finalParentColumns = targetCol?.groupable!.parentColumns ?? []
+      const parentColumns = targetCol?.groupable!.parentColumns ?? []
 
       const isGroupByActive = typeof groupByValue !== 'undefined'
 
@@ -100,7 +100,7 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
 
       return {
         GroupBySelect,
-        finalParentColumns,
+        parentColumns,
         isGroupByActive,
         groupActionColumns,
         expandable: (isGroupByActive) ? expandable : undefined
@@ -109,7 +109,7 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
 
     return {
       GroupBySelect: () => null,
-      finalParentColumns: [],
+      parentColumns: [],
       isGroupByActive: false,
       groupActionColumns: [],
       expandable: undefined

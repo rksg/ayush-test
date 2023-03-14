@@ -28,13 +28,13 @@ describe('Table Groupby', () => {
         isGroupByActive,
         GroupBySelect,
         expandable,
-        finalParentColumns,
+        parentColumns,
         groupActionColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
       expect(expandable).toBeUndefined()
-      expect(finalParentColumns).toMatchObject([])
+      expect(parentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
     })
 
@@ -52,14 +52,14 @@ describe('Table Groupby', () => {
         isGroupByActive,
         GroupBySelect,
         expandable,
-        finalParentColumns,
+        parentColumns,
         groupActionColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(GroupBySelect).toBeDefined()
       expect(GroupBySelect()).toBeNull()
       expect(expandable).toBeUndefined()
-      expect(finalParentColumns).toMatchObject([])
+      expect(parentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
     })
 
