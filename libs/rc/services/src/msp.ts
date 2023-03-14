@@ -26,7 +26,8 @@ import {
   EntitlementBanner,
   MspEcProfile,
   MspPortal,
-  downloadFile
+  downloadFile,
+  ParentLogoUrl
 } from '@acx-ui/rc/utils'
 import { getJwtToken } from '@acx-ui/utils'
 
@@ -53,7 +54,9 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
-            'UpdateMspEc'
+            'UpdateMspEc',
+            'Deactivate MspEc',
+            'Reactivate MspEc'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
@@ -354,8 +357,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
+        // const payload = { status: 'deactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -363,8 +368,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+        // const payload = { status: 'reactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -466,6 +473,7 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? headerContent.split('filename=')[1]
               : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
             downloadFile(response, fileName)
+            return {}
           },
           body: payload,
           headers: {
@@ -514,6 +522,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           }
         }
       }
+    }),
+    getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getParentLogoUrl,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -559,5 +578,6 @@ export const {
   useUpdateMspLabelMutation,
   useExportDeviceInventoryMutation,
   useAcceptRejectInvitationMutation,
-  useGetGenerateLicenseUsageRptQuery
+  useGetGenerateLicenseUsageRptQuery,
+  useGetParentLogoUrlQuery
 } = mspApi
