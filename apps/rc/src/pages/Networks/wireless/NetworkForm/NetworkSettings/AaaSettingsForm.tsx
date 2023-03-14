@@ -21,11 +21,10 @@ import {
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 
-import AAAInstance        from '../AAAInstance'
-import { NetworkDiagram } from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext from '../NetworkFormContext'
-
-import { NetworkMoreSettingsForm } from './../NetworkMoreSettings/NetworkMoreSettingsForm'
+import AAAInstance                 from '../AAAInstance'
+import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext          from '../NetworkFormContext'
+import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
 const { Option } = Select
 

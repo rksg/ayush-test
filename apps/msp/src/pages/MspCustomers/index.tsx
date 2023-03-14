@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
@@ -13,9 +12,6 @@ import {
   TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  DownloadOutlined
-} from '@acx-ui/icons'
 import {
   ResendInviteModal
 } from '@acx-ui/msp/components'
@@ -34,7 +30,9 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
+import { hasRoles }                                                                 from '@acx-ui/user'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -99,15 +97,21 @@ const transformExpirationDate = (row: MspEc) => {
 export function MspCustomers () {
   const { $t } = useIntl()
   const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
 
   const { data: userProfile } = useUserProfileContext()
 
+  const ecFilters = isPrimeAdmin
+    ? { tenantType: ['MSP_EC'] }
+    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
+
   const mspPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: ecFilters,
     fields: [
       'check-all',
       'id',
@@ -122,7 +126,8 @@ export function MspCustomers () {
       'wifiLicense',
       'switchLicens',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const supportPayload = {
@@ -280,7 +285,10 @@ export function MspCustomers () {
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload: mspPayload
+      defaultPayload: mspPayload,
+      search: {
+        searchTargetFields: mspPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
@@ -410,7 +418,10 @@ export function MspCustomers () {
   const SupportEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
-      defaultPayload: supportPayload
+      defaultPayload: supportPayload,
+      search: {
+        searchTargetFields: supportPayload.searchTargetFields as string[]
+      }
     })
 
     return (
@@ -433,17 +444,20 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        extra={filterByAccess([
-          <TenantLink to='/dashboard'>
+        extra={isAdmin ?
+          [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
               hidden={userProfile?.support}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </MspTenantLink>,
-          <DisabledButton icon={<DownloadOutlined />} />
-        ])}
+          </MspTenantLink>
+          ]
+          : [<TenantLink to='/dashboard'>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+          </TenantLink>
+          ]}
       />
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && <MspEcTable />}
