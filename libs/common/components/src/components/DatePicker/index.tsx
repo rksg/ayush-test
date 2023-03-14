@@ -41,6 +41,7 @@ interface DatePickerProps {
   onDateChange?: Function;
   onDateApply: Function;
   selectionType: DateRange;
+  disabled?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 const { dateFormat, dateTimeFormat } = dateTimeFormats
@@ -51,7 +52,8 @@ export const RangePicker = ({
   selectedRange,
   onDateChange,
   onDateApply,
-  selectionType
+  selectionType,
+  disabled
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
   const { $t } = useIntl()
@@ -142,6 +144,7 @@ export const RangePicker = ({
           : rangeText
         }
         allowClear={false}
+        disabled={disabled}
       />
     </UI.RangePickerWrapper>
   )

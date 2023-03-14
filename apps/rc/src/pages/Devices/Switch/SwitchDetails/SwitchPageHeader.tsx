@@ -104,8 +104,20 @@ function SwitchPageHeader () {
   }
 
   const checkTimeFilterDisabled = () => {
-    console.log(activeTab, activeSubTab)
-    // TODO:
+    switch(activeTab){
+      case 'overview':
+        if(typeof activeSubTab === 'undefined'){
+          return false
+        }
+        return activeSubTab !== 'panel'
+      case 'troubleshooting':
+      case 'clients':
+      case 'configuration':
+      case 'dhcp':
+        return true
+      default:
+        return false
+    }
   }
 
   useEffect(() => {
@@ -168,12 +180,12 @@ function SwitchPageHeader () {
         ]}
         extra={filterByAccess([
           <RangePicker
-            // disabled={checkTimeFilterDisabled()}
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            disabled={checkTimeFilterDisabled()}
           />,
           <Dropdown overlay={menu}>
             <Button>
