@@ -28,18 +28,21 @@ export function OpenSettingsForm () {
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({
+        enableAuthProxy: data.enableAuthProxy,
+        enableAccountingProxy: data.enableAccountingProxy,
+        enableAccountingService: data.enableAccountingService,
         wlan: {
           isMacRegistrationList: !!data.wlan?.macRegistrationListId,
           macAddressAuthentication: data.wlan?.macAddressAuthentication,
           macRegistrationListId: data.wlan?.macRegistrationListId
         },
-        isCloudpathEnabled: data.authRadius ?? false,
-        enableAccountingService: data.accountingRadius,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
         authRadiusId: data.authRadiusId||data.authRadius?.id
       })
+      form.setFieldValue(['wlan', 'macAddressAuthentication'],
+        data.wlan?.macAddressAuthentication)
     }
   }, [data])
 
@@ -56,6 +59,7 @@ export function OpenSettingsForm () {
 }
 
 function SettingsForm () {
+  const form = Form.useFormInstance()
   const [
     macAddressAuthentication,
     isMacRegistrationList
@@ -65,7 +69,6 @@ function SettingsForm () {
   ]
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { $t } = useIntl()
-
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -77,7 +80,9 @@ function SettingsForm () {
       }
     })
   }
-
+  useEffect(()=>{
+    form.setFieldsValue(data)
+  },[data])
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 

@@ -32,7 +32,7 @@ export const networkTypesDescription: Record<NetworkTypeEnum, MessageDescriptor>
     description: 'Description for Dynamic Pre-Shared Key (DPSK)'
   }),
   [NetworkTypeEnum.AAA]: defineMessage({
-    defaultMessage: 'Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork',
+    defaultMessage: 'Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network',
     description: 'Description for Enterprise AAA (802.1X)'
   }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({

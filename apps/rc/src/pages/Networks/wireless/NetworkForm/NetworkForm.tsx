@@ -139,7 +139,8 @@ export default function NetworkForm (props:{
       if (cloneMode) {
         formRef?.current?.setFieldsValue({ name: data.name + ' - copy' })
       }
-      updateSaveData({ ...data, isCloudpathEnabled: data.cloudpathServerId !== undefined })
+      updateSaveData({ ...data, isCloudpathEnabled: data.authRadius?true:false,
+        enableAccountingService: data.accountingRadius?true:false })
     }
   }, [data])
 

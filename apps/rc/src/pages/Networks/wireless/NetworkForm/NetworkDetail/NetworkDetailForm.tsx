@@ -42,7 +42,8 @@ export function NetworkDetailForm () {
   const [differentSSID, setDifferentSSID] = useState(false)
   const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
-    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
+      enableAccountingProxy: false, enableAuthProxy: false, enableAccountingService: false })
   }
 
   useEffect(() => {
