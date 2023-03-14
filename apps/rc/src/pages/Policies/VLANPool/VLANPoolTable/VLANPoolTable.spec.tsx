@@ -3,12 +3,12 @@ import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
 import {
-  CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VlanPoolUrls
+  VlanPoolUrls,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -23,12 +23,11 @@ import VLANPoolTable from './VLANPoolTable'
 
 const mockTableResult = {
   totalCount: 1,
-  page: 1,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My Client Isolation 1',
-    type: 'Client Isolation',
-    scope: '5'
+    vlanMembers: ['1'],
+    venueIds: ['1']
   }]
 }
 
@@ -56,7 +55,7 @@ describe('VLANPoolTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       )
     )
