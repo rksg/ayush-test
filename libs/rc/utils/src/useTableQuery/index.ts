@@ -219,7 +219,6 @@ export function useTableQuery <
     setPagination({ ...pagination, ...paginationDetail })
     setPayload({ ...payload, ...tableProps })
   }
-  console.log(payload)
   return {
     pagination: { ...pagination, current: pagination.page },
     sorter,

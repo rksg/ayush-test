@@ -735,12 +735,7 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
   result.data = result.data.map(item => {
     let newItem = {...item, children : [] as APExtended[], serialNumber
       : _.uniqueId()}
-    const aps = (item as unknown as { aps: APExtended[] }).aps?.map((ap) => {
-      return {
-        ...ap,
-        deviceGroupName: ap.deviceGroupName !== '' ? ap.deviceGroupName : 'Uncategorized',
-      };
-    }).map(ap => {
+    const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
       const { APRadio, lanPortStatus } = ap.apStatusData || {}
 
       if (APRadio) {

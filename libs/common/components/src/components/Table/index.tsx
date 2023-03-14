@@ -431,7 +431,7 @@ function Table <RecordType extends Record<string, any>> ({
         <div>
           <Space size={12}>
             {Boolean(searchables.length) &&
-              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue)
+              renderSearch<RecordType>(intl, searchables, searchValue, setSearchValue, Boolean(groupable.length))
             }
             {filterables.map((column, i) =>
               renderFilter<RecordType>(

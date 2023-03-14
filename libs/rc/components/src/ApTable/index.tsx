@@ -39,7 +39,11 @@ import { filterByAccess }                                    from '@acx-ui/user'
 import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
-
+import {
+  deviceStatusGroupableOptions,
+  modelGroupableOptions,
+  deviceGroupNameGroupableOptions,
+} from './config';
 
 type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 
@@ -87,98 +91,6 @@ const channelTitleMap: Record<keyof ApExtraParams, string> = {
   channelL50: 'LO 5 GHz',
   channelU50: 'HI 5 GHz',
   channel60: '6 GHz'
-}
-
-const deviceStatusGroupableOptions = {
-  key: 'deviceStatus',
-  label: 'Status',
-  parentColumns: [
-    {
-      key: 'deviceStatus',
-      renderer: (record : APExtended) =>  <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
-    },
-    {
-      key: 'members',
-      renderer: (record : APExtended) => <div>Members: {record.members}</div>
-    },
-    {
-      key: 'incidents',
-      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
-    },
-    {
-      key: 'clients',
-      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
-    },
-    {
-      key: 'networks',
-      renderer: (record : APExtended) => <div>
-          Wireless Networks: {record.networks ? record.networks.count : 0}
-      </div>
-    }
-  ]
-}
-const modelGroupableOptions = {
-  key: 'model',
-  label: 'Model',
-  parentColumns: [
-    {
-      key: 'model',
-      renderer: (record : APExtended) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
-    },
-    {
-      key: 'members',
-      renderer: (record : APExtended) => <div>Members: {record.members}</div>
-    },
-    {
-      key: 'incidents',
-      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
-    },
-    {
-      key: 'clients',
-      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
-    },
-    {
-      key: 'networks',
-      renderer: (record : APExtended) => <div>
-          Wireless Networks: {record.networks ? record.networks.count : 0}
-      </div>
-    }
-  ]
-}
-const deviceGroupNameGroupableOptions =  {
-  key: 'deviceGroupName',
-  label: 'AP Group',
-  actions: [{
-    key: 'edit',
-    label: (record : APExtended) => <Button onClick={() => {
-      // eslint-disable-next-line no-console
-      console.log(record)
-    }}>Edit</Button>
-  }],
-  parentColumns: [
-    {
-      key: 'AP Group',
-      renderer: (record : APExtended) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
-    },
-    {
-      key: 'members',
-      renderer: (record : APExtended) => <div>Members: {record.members}</div>
-    },
-    {
-      key: 'incidents',
-      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
-    },
-    {
-      key: 'clients',
-      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
-    },
-    {
-      key: 'networks',
-      renderer: (record : APExtended) => <div>
-          Wireless Networks: {record.networks ? record.networks.count : 0}
-      </div>
-    }
-  ]
 }
 const transformMeshRole = (value: APMeshRole) => {
   let meshRole = ''
@@ -527,7 +439,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
           setTableFilter(filter)
           setTableSearch(search)
           setGroupBySelection?.(groupBy as DeviceGroupBy)
-        },[])}
+        },[setGroupBySelection, setTableSearch, setTableFilter])}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
           onClick: () => {
