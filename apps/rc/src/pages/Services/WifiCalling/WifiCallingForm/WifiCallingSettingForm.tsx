@@ -114,8 +114,8 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             { min: 2 },
             { max: 32 },
             { validator: async (rule, value) => {
-              if (!edit && value && dataList?.length && dataList?.findIndex((profile) =>
-                profile.serviceName === value) !== -1
+              if (!edit && value && dataList?.data.length && dataList?.data.findIndex((profile) =>
+                profile.name === value) !== -1
               ) {
                 return Promise.reject(
                   $t({ defaultMessage: 'The wifi calling service with that name already exists' })

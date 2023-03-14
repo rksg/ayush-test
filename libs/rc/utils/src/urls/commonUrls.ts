@@ -498,10 +498,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   },
   updateVenueBonjourFencingPolicy: {
     method: 'put',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   }
 }
