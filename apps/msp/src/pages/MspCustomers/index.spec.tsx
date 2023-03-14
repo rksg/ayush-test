@@ -101,6 +101,10 @@ const userProfile = {
   varTenantId: '3061bd56e37445a8993ac834c01e2710'
 }
 
+const mspPortal = {
+  msp_label: 'eleu1658'
+}
+
 const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
@@ -118,6 +122,9 @@ jest.mock('react-router-dom', () => ({
 describe('MspCustomers', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
+      return { data: mspPortal }
+    })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
     jest.spyOn(services, 'useDeleteMspEcMutation')

@@ -22,7 +22,8 @@ import {
   useDeleteMspEcMutation,
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
-  useSupportMspCustomerListQuery
+  useSupportMspCustomerListQuery,
+  useGetMspLabelQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -31,11 +32,11 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext }                                    from '@acx-ui/user'
-import { hasRoles }                                                                 from '@acx-ui/user'
-import { AccountType }                                                              from '@acx-ui/utils'
+import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                           from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext }                                               from '@acx-ui/user'
+import { hasRoles }                                                                            from '@acx-ui/user'
+import { AccountType }                                                                         from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -102,6 +103,7 @@ export function MspCustomers () {
   const edgeEnabled = useIsSplitOn(Features.EDGES)
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const params = useParams()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
@@ -109,7 +111,9 @@ export function MspCustomers () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
 
   const { data: userProfile } = useUserProfileContext()
+  const { data: mspLabel } = useGetMspLabelQuery({ params })
 
+  const onBoard = mspLabel?.msp_label
   const ecFilters = isPrimeAdmin
     ? { tenantType: ['MSP_EC'] }
     : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
@@ -222,7 +226,9 @@ export function MspCustomers () {
         }
       },
       render: function (data) {
-        return <Link to=''>{data}</Link>
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+        )
       }
     },
     {
@@ -245,7 +251,10 @@ export function MspCustomers () {
         }
       },
       render: function (data, row) {
-        return <Link to=''>{row?.integrator ? 1 : 0}</Link>
+        const val = row?.integrator ? 1 : 0
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{val}</Link> : val
+        )
       }
     },
     {
@@ -482,7 +491,7 @@ export function MspCustomers () {
           </TenantLink>,
           <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
-              hidden={userProfile?.support}
+              hidden={userProfile?.support || !onBoard}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
           </MspTenantLink>
           ]
