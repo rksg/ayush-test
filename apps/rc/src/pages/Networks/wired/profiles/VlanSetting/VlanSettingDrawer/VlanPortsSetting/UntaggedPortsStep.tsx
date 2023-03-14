@@ -200,7 +200,7 @@ export function UntaggedPortsStep () {
       obj => { return obj.untaggedPorts?.includes(timeslot)}))[0]
 
     const taggedPorts =
-      vlanSettingValues.switchFamilyModels?.taggedPorts.toString().split(',') || []
+      vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
     const disabledPorts = taggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
     return disabledPorts
