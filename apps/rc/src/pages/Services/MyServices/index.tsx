@@ -24,18 +24,6 @@ const defaultPayload = {
   fields: ['id']
 }
 
-const defaultWifiCallingPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name',
-    'qosPriority',
-    'tenantId',
-    'epdgs',
-    'networkIds'
-  ]
-}
-
 export default function MyServices () {
   const { $t } = useIntl()
   const params = useParams()
@@ -87,7 +75,7 @@ export default function MyServices () {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
       tableQuery: useGetWifiCallingServiceListQuery({
-        params, payload: { ...defaultWifiCallingPayload }
+        params, payload: defaultPayload
       })
     },
     {
