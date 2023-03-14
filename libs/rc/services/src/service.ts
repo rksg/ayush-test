@@ -170,7 +170,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
-          params, RKS_NEW_UI)
+          params)
 
         return {
           ...req
@@ -196,7 +196,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel,
-          params, RKS_NEW_UI)
+          params)
 
         return {
           ...req,

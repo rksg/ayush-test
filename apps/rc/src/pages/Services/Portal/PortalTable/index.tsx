@@ -14,7 +14,8 @@ import {
   getServiceListRoutePath,
   Portal,
   PortalLanguageEnum,
-  Demo
+  Demo,
+  PORTAL_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -36,7 +37,6 @@ export default function PortalTable () {
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   const [portalId, setPortalId]=useState('')
   const [newDemo, setNewDemo]=useState({} as Demo)
-  const PORTAL_LIMIT_NUMBER = 256
   const tableQuery = useTableQuery({
     useQuery: useGetPortalProfileListQuery,
     defaultPayload: {

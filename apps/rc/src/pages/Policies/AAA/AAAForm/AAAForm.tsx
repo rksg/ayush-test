@@ -82,7 +82,7 @@ const AAAForm = (props: AAAFormProps) => {
           ? $t({ defaultMessage: 'Edit AAA (802.1x) Server' })
           : $t({ defaultMessage: 'Add AAA (802.1x) Server' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: tablePath }
+          { text: $t({ defaultMessage: 'AAA Server' }), link: tablePath }
         ]}
       />}
       <StepsForm<AAAPolicyType>

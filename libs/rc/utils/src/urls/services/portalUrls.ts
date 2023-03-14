@@ -1,25 +1,29 @@
 import { ApiInfo } from '../../apiService'
 
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
-  deletePortals: {
-    method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/portal/portalServiceProfiles'
-  },
   deletePortal: {
     method: 'delete',
-    url: '/api/portalServiceProfiles/:serviceId'
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
+    url: '/portalServiceProfiles/:serviceId',
+    newApi: true
   },
   updatePortal: {
     method: 'put',
-    url: '/api/portalServiceProfiles/:serviceId'
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
+    url: '/portalServiceProfiles/:serviceId',
+    newApi: true
   },
   getPortal: {
     method: 'get',
-    url: '/api/portalServiceProfiles/:serviceId'
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
+    url: '/portalServiceProfiles/:serviceId',
+    newApi: true
   },
   savePortal: {
     method: 'post',
-    url: '/api/portalServiceProfiles'
+    oldUrl: '/api/portalServiceProfiles',
+    url: '/portalServiceProfiles',
+    newApi: true
   },
   getPortalNetworkInstances: {
     method: 'get',
@@ -27,11 +31,15 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getPortalProfileDetail: {
     method: 'get',
-    url: '/api/portalServiceProfiles/:serviceId'
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
+    url: '/portalServiceProfiles/:serviceId',
+    newApi: true
   },
   getPortalProfileList: {
     method: 'get',
-    url: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort'
+    oldUrl: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
+    url: '/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
+    newApi: true
   },
   getPortalLang: {
     method: 'get',

@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType } from '@acx-ui/components'
-import { AAAPolicyType }            from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }        from '@acx-ui/components'
+import { AAAPolicyType, AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
@@ -18,7 +18,6 @@ export default function AAAPolicyModal (props:{
   const onClose = () => {
     setVisible(false)
   }
-  const AAA_LIMIT_NUMBER = 32
   const [visible, setVisible]=useState(false)
   const getContent = <AAAForm networkView={true}
     edit={false}

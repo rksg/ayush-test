@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType } from '@acx-ui/components'
-import { Portal }                   from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }    from '@acx-ui/components'
+import { Portal, PORTAL_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 import PortalForm from '../../../../Services/Portal/PortalForm/PortalForm'
 
@@ -22,7 +22,6 @@ export default function PortalServiceModal (props:{
       onClose()
       if(data)updateInstance(data)
     }}/>
-  const PORTAL_LIMIT_NUMBER = 256
   return (
     <>
       <Button type='link'

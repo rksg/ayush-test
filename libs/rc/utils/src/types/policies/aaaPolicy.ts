@@ -19,6 +19,12 @@ export interface AAATempType {
   id?: string,
   name: string,
   primary?: RadiusServer,
+  secondary?: RadiusServer
+}
+export interface AAAViewModalType {
+  id?: string,
+  name: string,
+  primary?: RadiusServer,
   secondary?: RadiusServer,
   type?: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[]

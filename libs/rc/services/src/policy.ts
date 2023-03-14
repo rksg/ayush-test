@@ -34,6 +34,7 @@ import {
   AAAPolicyType,
   AaaUrls,
   AAATempType,
+  AAAViewModalType,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   L2AclPolicy,
@@ -58,7 +59,8 @@ const RKS_NEW_UI = {
 export const basePolicyApi = createApi({
   baseQuery: fetchBaseQuery(),
   reducerPath: 'policyApi',
-  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'Syslog'],
+  tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'Syslog',
+    'VLANPool', 'AAA'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
@@ -400,7 +402,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -409,7 +411,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
       query: ({ params }) => {
@@ -418,39 +420,39 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
       transformResponse (result: AAATempType[]) {
         return { data: result, totalCount: result.length, page: 0 }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AAA Policy',
-            'UpdateAAAPolicy',
-            'DeleteAAAPolicy'
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
         })
       }
     }),
-    getAAAPolicyViewModelList: build.query<TableResult<AAATempType>, RequestPayload>({
+    getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params)
         return {
           ...req,
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AAA Policy',
-            'UpdateAAAPolicy',
-            'DeleteAAAPolicy'
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
         })
       }
@@ -462,7 +464,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -472,7 +474,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -482,7 +484,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
@@ -491,7 +493,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...aaaDetailReq
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -696,7 +698,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...vlanPoolListReq
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
@@ -732,13 +734,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params, RKS_NEW_UI)
+        const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
         return {
           ...req,
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -748,7 +750,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'PatchVlanPool',
             'DeleteVlanPools'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'VLANPool', id: 'LIST' }]))
           })
         })
       }
@@ -764,7 +766,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         data.vlanMembers = (data.vlanMembers as string[]).join(',')
         return data
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'VLANPool', id: 'DETAIL' }]
     }),
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
@@ -777,7 +779,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
@@ -790,7 +792,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -799,7 +801,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getVLANPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -809,7 +811,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

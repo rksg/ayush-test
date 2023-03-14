@@ -17,7 +17,7 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery
 } from '@acx-ui/rc/services'
-import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, AP } from '@acx-ui/rc/utils'
+import {  DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum, AP, DHCP_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
@@ -59,7 +59,6 @@ const VenueDHCPForm = (props: {
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
 
-  const DHCP_LIMIT_NUMBER = 120
   const getSelectedDHCPMode = ()=> {
     if(dhcpProfileList && dhcpServiceID){
       return dhcpProfileList[_.findIndex(dhcpProfileList,

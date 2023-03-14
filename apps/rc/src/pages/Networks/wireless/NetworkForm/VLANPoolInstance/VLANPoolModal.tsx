@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType } from '@acx-ui/components'
-import { VLANPoolPolicyType }       from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }              from '@acx-ui/components'
+import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 
 import VLANPoolForm from '../../../../Policies/VLANPool/VLANPoolForm/VLANPoolForm'
@@ -18,7 +18,6 @@ export default function VLANPoolModal (props:{
   const onClose = () => {
     setVisible(false)
   }
-  const VLAN_LIMIT_NUMBER = 64
   const [visible, setVisible]=useState(false)
   const getContent = <VLANPoolForm networkView={true}
     edit={false}

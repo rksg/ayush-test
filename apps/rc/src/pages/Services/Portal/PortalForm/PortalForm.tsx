@@ -155,7 +155,7 @@ export const PortalForm = (props:{
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: tablePath }
+          { text: $t({ defaultMessage: 'Portal Services' }), link: tablePath }
         ]}
       />}
       <PortalFormContext.Provider value={{ editMode, portalData, setPortalData,

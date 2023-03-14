@@ -8,7 +8,9 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVlanPoolViewModelList: {
     method: 'post',
-    url: '/enhancedVlanPoolProfiles/query'
+    url: '/enhancedVlanPoolProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedVlanPoolProfiles/query',
+    newApi: true
   },
   getVlanPools: {
     method: 'get',

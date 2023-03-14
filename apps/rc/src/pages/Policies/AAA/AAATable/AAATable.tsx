@@ -9,8 +9,9 @@ import {
   PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  AAATempType,
-  AAAPurposeEnum
+  AAAViewModalType,
+  AAAPurposeEnum,
+  AAA_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
@@ -22,14 +23,13 @@ export default function AAATable () {
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyMutation()
-  const AAA_LIMIT_NUMBER = 32
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
     }
   })
 
-  const rowActions: TableProps<AAATempType>['rowActions'] = [
+  const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -78,7 +78,7 @@ export default function AAATable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })} key='add'>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
@@ -87,7 +87,7 @@ export default function AAATable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<AAATempType>
+        <Table<AAAViewModalType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
@@ -104,7 +104,7 @@ export default function AAATable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<AAATempType>['columns'] = [
+  const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -129,7 +129,6 @@ function useColumns () {
       title: $t({ defaultMessage: 'AAA Type' }),
       dataIndex: 'type',
       sorter: true,
-      align: 'center',
       render: (data) =>{
         return data?AAAPurposeEnum[data as keyof typeof AAAPurposeEnum]:''
       }
@@ -138,21 +137,13 @@ function useColumns () {
       key: 'primary',
       title: $t({ defaultMessage: 'Primary Server' }),
       dataIndex: 'primary',
-      sorter: true,
-      align: 'center',
-      render: (data, row) =>{
-        return data?(row.primary?.ip+':'+row.primary?.port):''
-      }
+      sorter: true
     },
     {
       key: 'secondary',
       title: $t({ defaultMessage: 'Secondary Server' }),
       dataIndex: 'secondary',
-      sorter: true,
-      align: 'center',
-      render: (data, row) =>{
-        return data?(row.secondary?.ip+':'+row.secondary?.port):''
-      }
+      sorter: true
     },
     {
       key: 'networkIds',

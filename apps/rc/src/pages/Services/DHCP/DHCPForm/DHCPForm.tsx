@@ -95,7 +95,7 @@ export default function DHCPForm (props: DHCPFormProps) {
         title={editMode ? $t({ defaultMessage: 'Edit DHCP Service' }) :
           $t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: tablePath }
+          { text: $t({ defaultMessage: 'DHCP Services' }), link: tablePath }
         ]}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>
