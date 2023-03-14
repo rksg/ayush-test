@@ -1,15 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader }            from '@acx-ui/components'
-import { useGetSwitchVlanQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import {
+  useLazyGetSwitchVlanQuery,
+  useLazyGetSwitchVlanUnionByVenueQuery,
+  useSwitchPortlistQuery
+} from '@acx-ui/rc/services'
 import {
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
+  SwitchVlan,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -31,21 +36,34 @@ export function SwitchPortTable ({ isVenueLevel }: {
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+  const [vlanList, setVlanList] = useState([] as SwitchVlan[])
 
-  const { vlanFilterOptions } = useGetSwitchVlanQuery({ params: { tenantId, switchId } }, {
-    selectFromResult: ({ data }) => ({
-      vlanFilterOptions: ([
-        ...(data?.switchVlan ? data.switchVlan : []),
-        ...(data?.profileVlan ? data.profileVlan : [])
-      ]).map(v=>
-        ({ key: v.vlanId.toString(), value: v.vlanId.toString() })) || true
-    })
-  })
+  const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
+  const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+
+  const vlanFilterOptions = vlanList.map(v => ({
+    key: v.vlanId.toString(), value: v.vlanId.toString()
+  }))
+
+  useEffect(() => {
+    const setData = async () => {
+      if (isVenueLevel) {
+        const vlanList = await getSwitchesVlan({ params: { tenantId, venueId } }).unwrap()
+        setVlanList(vlanList)
+      } else {
+        const vlanUnion = await getSwitchVlan({ params: { tenantId, switchId } }).unwrap()
+        // eslint-disable-next-line max-len
+        const vlanList = vlanUnion.switchDefaultVlan.concat(vlanUnion.switchVlan).concat(vlanUnion.profileVlan)
+        setVlanList(vlanList)
+      }
+    }
+    setData()
+  }, [isVenueLevel])
+
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
-
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
@@ -288,7 +306,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       }
     />
 
-    {<SwitchLagDrawer
+    {lagDrawerVisible && <SwitchLagDrawer
       visible={lagDrawerVisible}
       setVisible={setLagDrawerVisible}
     />}
@@ -299,7 +317,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       setDrawerVisible={setDrawerVisible}
       isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
       isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={false}
+      isVenueLevel={isVenueLevel}
       selectedPorts={selectedPorts}
     />}
 

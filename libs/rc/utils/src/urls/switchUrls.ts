@@ -104,12 +104,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getPortSetting: {
-    // different method
-    // method: 'post',
-    // url: '/switches/:switchId/portSettings',
-    // newApi: true,
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier'
+    method: 'post',
+    url: '/switches/:switchId/portSettings',
+    oldMethod: 'get',
+    oldUrl: '/api/switch/tenant/:tenantId/port/switch/:switchId/portId/:portIdentifier',
+    newApi: true
   },
   getPortsSetting: {
     method: 'post',
@@ -205,6 +204,12 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/defaultVlan/switches',
     newApi: true
   },
+  getSwitchVlanUnionByVenue: {
+    method: 'get',
+    url: '/venues/:venueId/vlanUnions',
+    oldUrl: '/api/switch/tenant/:tenantId/switchVlanUnion/venue/:venueId',
+    newApi: true
+  },
   getSwitchVlanUnion: {
     method: 'get',
     url: '/switches/:switchId/vlanUnions',
@@ -224,22 +229,18 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTaggedVlansByVenue: {
-    // different method
-    // method: 'post',
-    // url: '/venues/:venueId/taggedVlans/query',
-    // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port',
-    // newApi: true
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port'
+    method: 'post',
+    url: '/venues/:venueId/taggedVlans/query',
+    oldMethod: 'get',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/tagged/:port',
+    newApi: true
   },
   getUntaggedVlansByVenue: {
-    // different method
-    // method: 'post',
-    // url: '/venues/:venueId/untaggedVlans/query',
-    // oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port',
-    // newApi: true
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port'
+    method: 'post',
+    url: '/venues/:venueId/untaggedVlans/query',
+    oldMethod: 'get',
+    oldUrl: '/api/switch/tenant/:tenantId/profile/vlans/venue/:venueId/model/:model/untagged/:port',
+    newApi: true
   },
   getSwitchConfigurationProfileByVenue: {
     method: 'get',
@@ -354,13 +355,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchClientDetail: {
-    // TODO need add filter
-    // method: 'post',
-    // url: '/switches/clients/query',
-    // oldUrl: '/api/viewmodel/:tenantId/switch/client/:clientId',
-    // newApi: true
-    method: 'get',
-    url: '/api/viewmodel/:tenantId/switch/client/:clientId'
+    method: 'post',
+    url: '/switches/clients/query',
+    oldMethod: 'get',
+    oldUrl: '/api/viewmodel/:tenantId/switch/client/:clientId',
+    newApi: true
   },
   getTroubleshooting: {
     method: 'get',
@@ -370,13 +369,12 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getTroubleshootingClean: {
-    // different method
-    // method: 'delete',
-    // url: '/switches/:switchId/debugRequests/:troubleshootingType',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
-    // newApi: true
-    method: 'get',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType'
+    method: 'delete',
+    url: '/switches/:switchId/debugRequests/:troubleshootingType',
+    oldMethod: 'get',
+    // eslint-disable-next-line max-len
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/troubleshootingClean/:troubleshootingType',
+    newApi: true
   },
   ping: {
     method: 'post',

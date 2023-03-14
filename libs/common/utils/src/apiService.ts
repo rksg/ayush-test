@@ -9,6 +9,7 @@ export interface ApiInfo {
   method: string;
   newApi?: boolean;
   oldUrl?: string;
+  oldMethod?: string;
 }
 
 export const TenantIdFromJwt = () => {
@@ -82,10 +83,11 @@ export const createHttpRequest = (
     window.location.origin
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, paramValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, paramValues)
+  const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
   return {
     headers,
     credentials: 'include' as RequestCredentials,
-    method: apiInfo.method,
+    method: method,
     url: `${domain}${url}`
   }
 }
