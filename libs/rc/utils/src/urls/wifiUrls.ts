@@ -6,6 +6,12 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/dhcp-service-profile/guest-network-default'
   },
+  getVlanPoolViewModelList: {
+    method: 'post',
+    url: '/enhancedVlanPoolProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedVlanPoolProfiles/query',
+    newApi: true
+  },
   getVlanPools: {
     method: 'get',
     url: '/vlanPools',
