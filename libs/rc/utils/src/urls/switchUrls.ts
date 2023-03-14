@@ -164,11 +164,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   restoreBackup: {
-    // Wait for new uri ready
     method: 'put',
     url: '/switches/configBackups/:configId',
     oldUrl: '/api/switch/tenant/:tenantId/configBackup/restore/:configId',
-    newApi: false
+    newApi: true
   },
   downloadSwitchConfig: {
     method: 'get',
