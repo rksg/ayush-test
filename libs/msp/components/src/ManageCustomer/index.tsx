@@ -512,7 +512,7 @@ export function ManageCustomer () {
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {intl.$t(roleDisplayText[admin.role])}
         </UI.AdminList>
       )}
     </div>
