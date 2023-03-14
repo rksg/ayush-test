@@ -94,7 +94,7 @@ export default function DpskPassphraseManagement () {
       dataIndex: 'numberOfDevices',
       sorter: false,
       render: function (data) {
-        return data ? data : $t(unlimitedNumberOfDeviceLabel)
+        return (data && data !== -1) ? data : $t(unlimitedNumberOfDeviceLabel)
       }
     },
     {
