@@ -25,7 +25,9 @@ function useColumns (props: PersonaTableColProps) {
   const { $t } = useIntl()
 
   const personaGroupList = useGetPersonaGroupListQuery({
-    params: { size: '2147483647', page: '0' }
+    payload: {
+      page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
+    }
   })
 
   const columns: TableProps<Persona>['columns'] = [
@@ -213,6 +215,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      // We would not allow the user to delete the persons which was created by the Unit.
+      disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
       onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -244,9 +248,15 @@ export function BasePersonaTable (props: PersonaTableProps) {
             deletePersonas({ payload: ids })
               .unwrap()
               .then(() => {
+                const fewItems = ids.length <= 5
                 showToast({
                   type: 'success',
-                  content: $t({ defaultMessage: 'Persona {names} was deleted' }, { names })
+                  content: $t({
+                    // eslint-disable-next-line max-len
+                    defaultMessage: '{fewItems, select, ' +
+                      'true {Persona {names} was deleted} ' +
+                      'other {{count} personas was deleted}}'
+                  }, { fewItems, names, count: ids.length })
                 })
                 clearSelection()
               })

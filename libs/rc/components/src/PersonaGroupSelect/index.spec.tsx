@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { PersonaBaseUrl }     from '@acx-ui/rc/utils'
+import { NewPersonaBaseUrl }  from '@acx-ui/rc/utils'
 import { Provider }           from '@acx-ui/store'
 import { mockServer, render } from '@acx-ui/test-utils'
 
@@ -15,7 +15,7 @@ describe('Persona Group selector', () => {
   beforeEach( async () => {
     mockServer.use(
       rest.get(
-        PersonaBaseUrl,
+        NewPersonaBaseUrl,
         (req, res, ctx) => res(ctx.json(personaGroupList ))
       )
     )

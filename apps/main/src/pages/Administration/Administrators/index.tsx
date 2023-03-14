@@ -32,7 +32,7 @@ const Administrators = () => {
   const isPrimeAdminUser = isPrimeAdmin()
   const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
 
-  // TODO: where to use?
+  // TODO: use userProfileData?.dateFormat to display dateTime data on UI
   // const dateTimeFormat = userProfileData?.dateFormat
   //   ? userProfileData.dateFormat.toUpperCase() + ' ,HH:mm:ss' : ''
 

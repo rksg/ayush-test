@@ -9,6 +9,8 @@ import styled                                      from 'styled-components/macro
 
 import { SpaceWrapper }       from '@acx-ui/rc/components'
 import { RecoveryPassphrase } from '@acx-ui/rc/utils'
+import { RolesEnum }          from '@acx-ui/types'
+import { hasRoles }           from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -24,6 +26,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
   const { $t } = useIntl()
   const { className, recoveryPassphraseData } = props
   const [openPassphraseDrawer, setOpenPassphraseDrawer] = useState(false)
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const onClickChangePassphrase = () => {
     setOpenPassphraseDrawer(true)
@@ -33,7 +36,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
     return visible ? <EyeInvisibleOutlined/> : <EyeOutlined/>
   }
 
-  const hasAp = !_.isEmpty(recoveryPassphraseData)
+  const hasPassphrase = !_.isEmpty(recoveryPassphraseData)
   const passphraseData = recoveryPassphraseData?.psk.match(/.{1,4}/g)?.join(' ') ?? ''
 
   return (
@@ -44,7 +47,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
             label={$t({ defaultMessage: 'Recovery Network Passphrase' })}
             tooltip={$t(MessageMapping.recovery_passphrase_tooltip)}
           >
-            {hasAp ? (
+            {hasPassphrase ? (
               <SpaceWrapper justifycontent='flex-start'>
                 <Form.Item
                   noStyle
@@ -55,17 +58,18 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
                     iconRender={passwordIconRender}
                   />
                 </Form.Item>
-                {/* TODO: hide change button if !rbacService.isRoleAllowed('ChangeRecoveryPasspharseButton') */}
-                <Typography.Link onClick={onClickChangePassphrase}>
-                  {$t({ defaultMessage: 'Change' })}
-                </Typography.Link>
+                {hasPermission &&
+                  <Typography.Link onClick={onClickChangePassphrase}>
+                    {$t({ defaultMessage: 'Change' })}
+                  </Typography.Link>
+                }
               </SpaceWrapper>
             ) :
               $t(MessageMapping.recovery_passphrase_no_aps_message)
             }
           </Form.Item>
 
-          {hasAp && (
+          {hasPassphrase && (
             <List
               split={false}
               dataSource={[
