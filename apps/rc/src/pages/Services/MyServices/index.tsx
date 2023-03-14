@@ -9,6 +9,7 @@ import {
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
+  useGetWifiCallingServiceListQuery,
   useServiceListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -73,8 +74,8 @@ export default function MyServices () {
     {
       type: ServiceType.WIFI_CALLING,
       category: RadioCardCategory.WIFI,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.WIFI_CALLING] } }
+      tableQuery: useGetWifiCallingServiceListQuery({
+        params, payload: defaultPayload
       })
     },
     {
