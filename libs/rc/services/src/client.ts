@@ -22,7 +22,7 @@ import {
   transformByte,
   WifiUrlsInfo,
   RequestFormData, enableNewApi
-} from "@acx-ui/rc/utils";
+} from '@acx-ui/rc/utils'
 import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
 
 export const baseClientApi = createApi({

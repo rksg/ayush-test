@@ -35,8 +35,8 @@ import {
   APExtended,
   LanPortStatusProperties,
   ApDirectedMulticast,
-  APNetworkSettings, enableNewApi
-} from "@acx-ui/rc/utils";
+  APNetworkSettings
+} from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
 export const baseApApi = createApi({
