@@ -107,11 +107,7 @@ describe('Add switch form', () => {
       await screen.findByLabelText(/serial number/i), { target: { value: 'invalid' } })
     await userEvent.click(await screen.findByRole('button', { name: /add/i }))
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/switch`,
-      hash: '',
-      search: ''
-    })
+    expect(mockedUsedNavigate).lastCalledWith('/t/tenant-id/devices/switch')
   })
 
   it('should handle error for add standalone switch correctly', async () => {

@@ -42,7 +42,8 @@ import {
   TableChangePayload,
   RequestFormData,
   createNewTableHttpRequest,
-  downloadFile
+  downloadFile,
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -62,6 +63,15 @@ const defaultNewTablePaginationParams: TableChangePayload = {
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
+
+const mDnsProxyMutationUseCases = [
+  'AddMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfiles',
+  'UpdateMulticastDnsProxyServiceProfile',
+  'ActivateMulticastDnsProxyServiceProfileAps',
+  'DeactivateMulticastDnsProxyServiceProfileAps'
+]
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -86,9 +96,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfiles',
+            ...mDnsProxyMutationUseCases,
             'AddWifiCallingServiceProfile',
             'DeleteWiFiCallingProfile',
             'DeleteWiFiCallingProfiles',
@@ -258,16 +266,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Multicast DNS Proxy Service Profile',
-            'Update Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profiles',
-            'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles'
-          ], () => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getEnhancedMdnsProxyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
+            api.dispatch(serviceApi.util.invalidateTags([
               { type: 'MdnsProxy', id: 'LIST' }
             ]))
           })
@@ -409,23 +429,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: ({ params }) => {
+    getWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
+      query: ({ params, payload }) => {
         const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getWifiCallingList, params, RKS_NEW_UI
+          WifiCallingUrls.getWifiCallingList, params
         )
         return {
-          ...wifiCallingServiceListReq
+          ...wifiCallingServiceListReq,
+          body: payload
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add WiFi Calling Service Profile',
-            'Update WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles'
+            'AddWiFiCallingProfile',
+            'UpdateWiFiCallingProfile',
+            'DeleteWiFiCallingProfile',
+            'DeleteWiFiCallingProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
           })
@@ -671,6 +692,7 @@ export const {
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
   useGetMdnsProxyListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,

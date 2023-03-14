@@ -1,7 +1,10 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
+  useGetApSnmpViewModelQuery,
+  useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
   usePolicyListQuery
 } from '@acx-ui/rc/services'
@@ -34,14 +37,7 @@ interface CardDataProps {
 }
 
 const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  fields: ['id']
 }
 
 export default function MyPolicies () {
@@ -90,6 +86,7 @@ export default function MyPolicies () {
 
 function useCardData (): CardDataProps[] {
   const params = useParams()
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   return [
     {
@@ -113,8 +110,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.CLIENT_ISOLATION,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.CLIENT_ISOLATION] } }
+      totalCount: useGetEnhancedClientIsolationListQuery({
+        params, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
@@ -156,6 +153,16 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.SNMP_AGENT,
+      category: RadioCardCategory.WIFI,
+      totalCount: useGetApSnmpViewModelQuery({
+        params, payload: { ...defaultPayload }
+      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
+      disabled: !supportApSnmp
     }
   ]
 }

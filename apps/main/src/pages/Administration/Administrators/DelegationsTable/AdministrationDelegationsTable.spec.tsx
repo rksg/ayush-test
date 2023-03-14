@@ -11,6 +11,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { hasRoles } from '@acx-ui/user'
 
 import { fakeDelegationList } from '../__tests__/fixtures'
 
@@ -18,10 +19,16 @@ import { AdministrationDelegationsTable } from './AdministrationDelegationsTable
 
 
 const mockedRevokeFn = jest.fn()
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  hasRoles: jest.fn()
+}))
 describe('administrators delegation list', () => {
   let params: { tenantId: string }
 
   beforeEach(() => {
+    (hasRoles as jest.Mock).mockReturnValue(true)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -151,5 +158,55 @@ describe('administrators delegation list', () => {
     expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
     expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+  })
+})
+
+describe('when use it not permmited role', () => {
+  const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+  beforeEach(() => {
+    (hasRoles as jest.Mock).mockReturnValue(false)
+  })
+
+  it('Invite 3rd Party Administrator button should not disappear', async () => {
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
+        (req, res, ctx) => res(ctx.json(fakeDelegationList))
+      )
+    )
+
+    render(
+      <Provider>
+        <AdministrationDelegationsTable isSupport={true}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findAllByRole('row')
+    expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+  })
+
+  it('Revoke Invitation button should disappear when use does not has permmision', async () => {
+    const fakeDelegationListAccepted = [ ...fakeDelegationList ]
+    fakeDelegationListAccepted[0].status = 'ACCEPTED'
+
+    mockServer.use(
+      rest.get(
+        AdministrationUrlsInfo.getDelegations.url.split('?type=')[0],
+        (req, res, ctx) => res(ctx.json(fakeDelegationListAccepted))
+      )
+    )
+
+    render(
+      <Provider>
+        <AdministrationDelegationsTable isSupport={false}/>
+      </Provider>, {
+        route: { params }
+      })
+
+    await screen.findAllByRole('row')
+    expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
+    expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
   })
 })

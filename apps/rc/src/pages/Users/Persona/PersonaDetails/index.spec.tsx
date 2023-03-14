@@ -19,7 +19,8 @@ import {
   mockMacRegistrationList,
   mockPersona,
   mockPersonaGroup,
-  mockPersonaGroupList
+  mockPersonaGroupList,
+  replacePagination
 } from '../__tests__/fixtures'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
@@ -66,7 +67,7 @@ describe('Persona Details', () => {
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url,
+        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.get(

@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import { Modal } from 'antd'
+import { rest }  from 'msw'
 
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
@@ -164,6 +165,10 @@ describe('Networks Table', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(list))
       ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
       rest.delete(
         WifiUrlsInfo.deleteNetwork.url,
         (req, res, ctx) => res(ctx.json({ requestId: '' }))
@@ -172,6 +177,9 @@ describe('Networks Table', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+  })
+  afterEach(() => {
+    Modal.destroyAll()
   })
 
   it('should render table', async () => {
