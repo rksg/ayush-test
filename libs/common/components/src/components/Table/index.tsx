@@ -326,7 +326,7 @@ function Table <RecordType extends Record<string, any>> ({
     },
     ...isGroupByActive
       ? {
-        getCheckboxProps: record => record.children
+        getCheckboxProps: record => 'children' in record
           ? ({ disabled: true, style: { display: 'none' } })
           : ({})
       }
