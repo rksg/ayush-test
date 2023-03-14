@@ -497,6 +497,9 @@ function PolicyRoutes () {
 }
 
 function UserRoutes () {
+  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+
   return rootRoutes(
     <Route path='t/:tenantId'>
       <Route path='users/guestsManager' element={<GuestManagerPage />} />
@@ -511,7 +514,7 @@ function UserRoutes () {
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
       <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
-      {useIsSplitOn(Features.SERVICES)
+      {(isPersonaEnabled && isMacRegistrationEnabled)
         ? <><Route
           path='users/persona-management'
           element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route
