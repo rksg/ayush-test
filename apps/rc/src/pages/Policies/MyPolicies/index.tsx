@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import {
+  useAdaptivePolicyListQuery,
   usePolicyListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -154,6 +155,13 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.ADAPTIVE_POLICY,
+      category: RadioCardCategory.WIFI,
+      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }))
     }
   ]
 }
