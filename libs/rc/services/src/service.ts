@@ -254,9 +254,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
         let dhcpReq
         if(_.isEmpty(params.serviceId)){
-          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params)
         }else{
-          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params)
         }
         return {
           ...dhcpReq,

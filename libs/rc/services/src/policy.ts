@@ -411,7 +411,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
         return {
           ...req,
           body: payload
@@ -421,7 +421,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params)
         return {
           ...req
         }
@@ -430,7 +430,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params)
         return {
           ...req
         }
@@ -474,7 +474,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...req
         }
@@ -483,7 +483,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params)
         return {
           ...req,
           body: payload
@@ -493,7 +493,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
       query: ({ params, payload }) => {
-        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
+        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params)
         return {
           ...instancesRes,
           body: payload
@@ -503,7 +503,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params, RKS_NEW_UI)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
         return {
           ...aaaDetailReq
         }
@@ -791,7 +791,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params)
         return {
           ...req
         }
@@ -804,7 +804,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params)
         return {
           ...req,
           body: {
@@ -817,7 +817,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params)
         return {
           ...req,
           body: {
@@ -830,7 +830,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params)
         return {
           ...req
         }
@@ -839,7 +839,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVLANPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolVenues, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolVenues, params)
         return {
           ...req,
           body: payload
