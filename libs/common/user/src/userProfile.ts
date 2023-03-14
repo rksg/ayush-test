@@ -1,3 +1,5 @@
+import { defineMessage, MessageDescriptor } from 'react-intl'
+
 import { RolesEnum as Role } from '@acx-ui/types'
 
 import { UserProfile } from './types'
@@ -47,4 +49,11 @@ export function hasRoles (roles: string | string[]) {
   if (!Array.isArray(roles)) roles = [roles]
 
   return profile.roles.some(role => roles.includes(role))
+}
+
+export const roleStringMap: Record<Role, MessageDescriptor> = {
+  [Role.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
+  [Role.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+  [Role.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
+  [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
 }
