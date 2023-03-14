@@ -1,8 +1,10 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedAccessControlProfileListQuery,
+  useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
   usePolicyListQuery
@@ -85,6 +87,7 @@ export default function MyPolicies () {
 
 function useCardData (): CardDataProps[] {
   const params = useParams()
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   return [
     {
@@ -151,6 +154,16 @@ function useCardData (): CardDataProps[] {
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.SNMP_AGENT,
+      category: RadioCardCategory.WIFI,
+      totalCount: useGetApSnmpViewModelQuery({
+        params, payload: { ...defaultPayload }
+      }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
+      disabled: !supportApSnmp
     }
   ]
 }

@@ -50,6 +50,8 @@ import {
   VenueUsageByClientIsolation,
   AAAPolicyNetwork,
   ClientIsolationViewModel,
+  ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
+  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
   EnhancedAccessControlInfoType
 } from '@acx-ui/rc/utils'
 
@@ -73,6 +75,7 @@ export const basePolicyApi = createApi({
     'MacRegistration',
     'ClientIsolation',
     'Syslog',
+    'SnmpAgent',
     'AccessControl'
   ],
   refetchOnMountOrArgChange: true,
@@ -1038,7 +1041,157 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddApSnmpAgent',
+            'UpdateApSnmpAgent',
+            'DeleteApSnmpAgentProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    deleteApSnmpPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpFromViewModel, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [
+        { type: 'SnmpAgent', id: 'LIST' },
+        { type: 'SnmpAgent', id: 'VENUE' },
+        { type: 'SnmpAgent', id: 'AP' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddApSnmpAgent',
+            'UpdateApSnmpAgent',
+            'DeleteApSnmpAgentProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getVenueApSnmpSettings: build.query<VenueApSnmpSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getVenueApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'VENUE' }]
+    }),
+    updateVenueApSnmpSettings: build.mutation<VenueApSnmpSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateVenueApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'VENUE' }]
+    }),
+    getApSnmpSettings: build.query<ApSnmpSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.resetApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     })
+
   })
 })
 
@@ -1130,5 +1283,20 @@ export const {
   useUpdateVenueSyslogApMutation,
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogListQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetApSnmpPolicyListQuery,
+  useLazyGetApSnmpPolicyListQuery,
+  useGetApSnmpPolicyQuery,
+  useAddApSnmpPolicyMutation,
+  useUpdateApSnmpPolicyMutation,
+  useDeleteApSnmpPolicyMutation,
+  useDeleteApSnmpPoliciesMutation,
+  useGetApUsageByApSnmpQuery,
+  useGetApSnmpViewModelQuery,
+  useGetVenueApSnmpSettingsQuery,
+  useLazyGetVenueApSnmpSettingsQuery,
+  useUpdateVenueApSnmpSettingsMutation,
+  useGetApSnmpSettingsQuery,
+  useUpdateApSnmpSettingsMutation,
+  useResetApSnmpSettingsMutation
 } = policyApi

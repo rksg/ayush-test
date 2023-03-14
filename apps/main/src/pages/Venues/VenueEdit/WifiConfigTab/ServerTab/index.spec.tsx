@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SyslogUrls }                                                from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, getUrlForTest, SyslogUrls }                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -51,10 +51,10 @@ describe('ServerTab', () => {
         SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
       rest.get(
-        CommonUrlsInfo.getVenueBonjourFencingPolicy.url,
+        getUrlForTest(CommonUrlsInfo.getVenueBonjourFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
-        CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
+        getUrlForTest(CommonUrlsInfo.updateVenueBonjourFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
@@ -85,13 +85,13 @@ describe('ServerTab', () => {
 
     await fireEvent.click(await screen.findByTestId('syslog-switch'))
   })
-  it('should navigate to venue details page when clicking cancel button', async () => {
+  it('should navigate to venue list page when clicking cancel button', async () => {
     render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Enable Server'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/t/${params.tenantId}/venues`,
       hash: '',
       search: ''
     })

@@ -19,6 +19,7 @@ export function ActiveVenueFilter ({
   const venuesQuery = useVenuesListQuery({
     params: { networkId },
     payload: {
+      pageSize: 10000,
       fields: ['name', 'id'],
       sortField: 'name',
       sortOrder: 'ASC'
