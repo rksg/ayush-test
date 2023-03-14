@@ -82,6 +82,7 @@ import NetworkSegmentationDetail    from './pages/Services/NetworkSegmentation/N
 import NetworkSegmentationTable     from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm           from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
+import NetworkSegAuthTable          from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import PortalServiceDetail          from './pages/Services/Portal/PortalDetail'
 import PortalForm                   from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                  from './pages/Services/Portal/PortalTable'
@@ -327,6 +328,11 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.DETAIL })}
         element={<NetworkSegAuthDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.LIST })}
+        element={<NetworkSegAuthTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
