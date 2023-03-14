@@ -325,11 +325,11 @@ exports[`Venues Form should render venues form 1`] = `
                 </div>
                 <div
                   class="ant-row"
-                  style="margin-left: -12px; margin-right: -12px;"
+                  style="margin-left: -10px; margin-right: -10px;"
                 >
                   <div
-                    class="ant-col ant-col-10"
-                    style="padding-left: 12px; padding-right: 12px;"
+                    class="ant-col ant-col-8"
+                    style="padding-left: 10px; padding-right: 10px;"
                   >
                     <div
                       class="ant-form-item"
