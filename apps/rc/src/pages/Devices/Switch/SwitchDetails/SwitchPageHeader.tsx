@@ -103,9 +103,7 @@ function SwitchPageHeader () {
     setSyncDataEndTime(result)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const checkTimeFilterDisabled = () => {
-    // eslint-disable-next-line no-console
     console.log(activeTab, activeSubTab)
     // TODO:
   }

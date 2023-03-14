@@ -6,7 +6,6 @@ import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/c
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
 import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
-import { ClientStatusEnum }                                      from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useParams,
@@ -40,10 +39,7 @@ function ClientDetailPageHeader () {
   const { $t } = useIntl()
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
-  const { data: clentDetails } = useGetClientDetailsQuery(
-    { params: { tenantId, clientId } },
-    { skip: searchParams.get('clientStatus') === ClientStatusEnum.HISTORICAL }
-  )
+  const { data: clentDetails } = useGetClientDetailsQuery({ params: { tenantId, clientId } })
   const [disconnectClient] = useDisconnectClientMutation()
   const navigate = useNavigate()
   const basePath = useTenantLink('/users/wifi/clients')
