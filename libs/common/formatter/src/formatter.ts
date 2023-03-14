@@ -116,7 +116,7 @@ function numberFormat (base: number, units: string[], value: number) {
   return shorten(value / Math.pow(base, units.length - 1)) + units[units.length - 1]
 }
 
-export const defaultDateFormat = 'MM/DD/YYYY'
+export const defaultDateFormat = 'MMM DD YYYY'
 
 export enum DateFormatEnum {
   DateFormat = 'dateFormat',

@@ -1,6 +1,6 @@
 import moment from 'moment-timezone'
 
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { getUserProfile, setUserProfile, UserProfile } from '@acx-ui/user'
 
 import {
   formatter,
@@ -251,40 +251,36 @@ describe('formatter', () => {
     })
   })
   describe('dateTimeFormats', () => {
+    beforeEach(() => {
+      setUserProfile({ profile: {} as UserProfile, allowedOperations: [] })
+    })
+
     it('Should format a timestamp to default format', () => {
       expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
-        .toBe(moment(1456885800000).format(defaultDateFormat))
+        .toBe('Mar 02 2016')
     })
     it('Should format a timestamp to default format with HH:mm', () => {
       expect(formatter(DateFormatEnum.DateTimeFormat)(1456885800000))
-        .toBe(moment(1456885800000).format(`${defaultDateFormat} HH:mm`))
-    })
-    it('Should format a timestamp to default format with - HH:mm z', () => {
-      expect(formatter(DateFormatEnum.DateTimeFormatWithTimezone)(1456885800000))
-        .toBe(moment(1456885800000).format(`${defaultDateFormat} - HH:mm z`))
+        .toBe('Mar 02 2016 02:30')
     })
     it('Should format a timestamp to default format with HH:mm:ss', () => {
       expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(1456885800000))
-        .toBe(moment(1456885800000).format(`${defaultDateFormat} HH:mm:ss`))
+        .toBe('Mar 02 2016 02:30:00')
     })
     it('Should format based on user profile setting', () => {
       const userProfile = getUserProfile()
       setUserProfile({ ...userProfile, profile: {
         ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
       expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
-        .toBe(moment(1456885800000).format('DD/MM/YYYY'))
-    })
-    it('Should use default format if dateFormat is not available', () => {
-      const userProfile = getUserProfile()
-      setUserProfile({ ...userProfile, profile: { ...userProfile.profile, dateFormat: '' } })
-      expect(formatter(DateFormatEnum.DateFormat)(1456885800000))
-        .toBe(moment(1456885800000).format(defaultDateFormat))
+        .toBe('02/03/2016')
     })
     it('With tz', () => {
-      expect(formatter(DateFormatEnum.DateTimeFormatWithSeconds)(
+      const userProfile = getUserProfile()
+      setUserProfile({ ...userProfile, profile: {
+        ...userProfile.profile, dateFormat: 'mm/dd/yyyy' } })
+      expect(formatter(DateFormatEnum.DateTimeFormatWithTimezone)(
         1456885800000, 'America/Los_Angeles'))
-        .toBe(moment(1456885800000).tz('America/Los_Angeles')
-          .format(`${defaultDateFormat} HH:mm:ss Z`).replace('+00:00', 'UTC'))
+        .toBe('03/01/2016 - 18:30 PST -08:00')
     })
   })
   describe('intlFormats', () => {
