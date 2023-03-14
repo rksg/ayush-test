@@ -3,7 +3,9 @@ import { ApiInfo } from '../apiService'
 export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   getTenantDetails: {
     method: 'get',
-    url: '/api/tenant/:tenantId'
+    url: '/tenants/self',
+    oldUrl: '/api/tenant/:tenantId',
+    newApi: true
   },
   getRegisteredUsersList: {
     method: 'get',
@@ -121,7 +123,9 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   findVAR: {
     method: 'get',
-    url: '/api/tenant/:tenantId/find-var'
+    url: '/tenants/find-var',
+    oldUrl: '/api/tenant/:tenantId/find-var',
+    newApi: true
   },
   getNotificationRecipients: {
     method: 'get',

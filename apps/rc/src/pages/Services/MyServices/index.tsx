@@ -5,6 +5,7 @@ import { Features, useIsSplitOn }                                  from '@acx-ui
 import {
   useGetDhcpStatsQuery,
   useGetDpskListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
   useGetWifiCallingServiceListQuery,
@@ -20,14 +21,7 @@ import { filterByAccess }        from '@acx-ui/user'
 import { ServiceCard } from '../ServiceCard'
 
 const defaultPayload = {
-  searchString: '',
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
+  fields: ['id']
 }
 
 const defaultWifiCallingPayload = {
@@ -53,8 +47,8 @@ export default function MyServices () {
     {
       type: ServiceType.MDNS_PROXY,
       category: RadioCardCategory.WIFI,
-      tableQuery: useServiceListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [ServiceType.MDNS_PROXY] } }
+      tableQuery: useGetEnhancedMdnsProxyListQuery({
+        params, payload: defaultPayload
       })
     },
     {

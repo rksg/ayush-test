@@ -12,6 +12,7 @@ import { SwitchCliSession, SwitchStatus, useSwitchActions } from '@acx-ui/rc/com
 import { useGetJwtTokenQuery, useLazyGetSwitchListQuery }   from '@acx-ui/rc/services'
 import { SwitchRow, SwitchStatusEnum, SwitchViewModel }     from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -41,6 +42,7 @@ function SwitchPageHeader () {
   const { switchDetailHeader, currentSwitchOperational } = switchDetailsContextData
 
   const navigate = useNavigate()
+  const location = useLocation()
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
   const linkToSwitch = useTenantLink('/devices/switch/')
 
@@ -182,7 +184,11 @@ function SwitchPageHeader () {
             onClick={() =>
               navigate({
                 ...basePath,
-                pathname: `${basePath.pathname}${switchDetailHeader.isStack ? '/stack' : ''}/edit`
+                pathname: `${basePath.pathname}${switchDetailHeader?.isStack ? '/stack' : ''}/edit`
+              }, {
+                state: {
+                  from: location
+                }
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>
