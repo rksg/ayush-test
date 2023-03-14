@@ -86,8 +86,8 @@ export function CloudpathForm () {
         form.setFieldValue('walledGardensString',
           data.guestPortal?.walledGardens.toString().replace(/,/g, '\n'))
       }
+      form.setFieldValue('enableAccountingService', data.enableAccountingService)
       if(data.accountingRadius){
-        form.setFieldValue('enableAccountingService', true)
         form.setFieldValue('accountingRadiusId',
           data.accountingRadius.id)
       }
@@ -125,7 +125,7 @@ export function CloudpathForm () {
             name={['wlan','bypassCPUsingMacAddressAuthentication']}
             noStyle
             valuePropName='checked'
-            initialValue={false}
+            initialValue={true}
             children={
               <Checkbox>
                 {$t({ defaultMessage: 'Use MAC authentication during reconnection' })}

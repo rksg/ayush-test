@@ -499,7 +499,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -2771,7 +2771,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
