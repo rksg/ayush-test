@@ -198,36 +198,26 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    let tableCols: typeof props.columns
-
-    if (isGroupByActive) {
-      const overrideParents = props.columns.map((col, ind) => {
-        function parentRenderOverride (parent?: {
-          renderer: (record: RecordType) => React.ReactNode;
-        }): typeof render {
-          return (dom, record, index, highlightFn, action, schema) => {
-            if ('children' in record) {
-              return (parent) ? parent.renderer(record) : null
-            } else {
-              if (render) {
-                return render(dom, record, index, highlightFn, action, schema)
-              }
-              if (searchable) {
-                return getHighlightFn(searchValue)(_.get(record, key))
-              }
-              return dom
+    const tableCols = isGroupByActive
+      ? props.columns.map((col, i) => {
+        const parent = parentColumns.at(i)
+        const { render, searchable, key } = col
+        const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return (parent) ? parent.renderer(record) : null
+          } else {
+            if (render) {
+              return render(dom, record, index, highlightFn, action, schema)
             }
+            if (searchable) {
+              return getHighlightFn(searchValue)(_.get(record, key))
+            }
+            return dom
           }
         }
-        const parent = parentColumns.at(ind)
-        const { render, searchable, key } = col
-        return { ...col, render: parentRenderOverride(parent) }
+        return { ...col, render: renderer }
       })
-
-      tableCols = overrideParents
-    } else {
-      tableCols = props.columns
-    }
+      : props.columns
 
     const cols = type === 'tall'
       ? [...tableCols, ...groupActionColumns, settingsColumn] as typeof props.columns
