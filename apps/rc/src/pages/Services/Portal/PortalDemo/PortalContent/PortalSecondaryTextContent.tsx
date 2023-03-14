@@ -20,7 +20,6 @@ export default function PortalSeconPortalSecondaryTextContentdaryTextContent (pr
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
   const [clicked, setClicked] = useState(false)
-  const [changed, setChanged] = useState(false)
   const secTools = <PortalImageTools
     showImg={false}
     color={demoValue.secondaryColor}
@@ -36,8 +35,8 @@ export default function PortalSeconPortalSecondaryTextContentdaryTextContent (pr
       visible={clicked}
       onVisibleChange={(value) => setClicked(value)}
     ><TextArea
-        value={changed?demoValue.secondaryText:
-          (demoValue.secondaryText||props.portalLang.secondaryText)}
+        value={demoValue.secondaryText!==undefined?
+          demoValue.secondaryText:props.portalLang.secondaryText}
         placeholder='sectexthere'
         maxLength={280}
         rows={4}
@@ -47,7 +46,6 @@ export default function PortalSeconPortalSecondaryTextContentdaryTextContent (pr
           maxWidth: 425, color: demoValue.secondaryColor, minHeight: 60,
           fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
         onChange={(e) => {
-          setChanged(true)
           updateSecText({ text: e.target.value, show: true })}}
         onMouseOver={() => {
           setCursor('pointer')

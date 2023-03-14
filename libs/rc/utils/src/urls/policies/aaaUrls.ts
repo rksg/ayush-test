@@ -3,44 +3,50 @@ import { ApiInfo } from '../../apiService'
 export const AaaUrls: { [key: string]: ApiInfo } = {
   deleteAAAPolicy: {
     method: 'delete',
-    url: '/radiusServerProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
   addAAAPolicy: {
     method: 'post',
-    url: '/radiusServerProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
+    url: '/radiusServerProfiles',
     newApi: true
   },
   getAAAPolicy: {
     method: 'get',
-    url: '/radiusServerProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
   updateAAAPolicy: {
     method: 'put',
-    url: '/radiusServerProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
   getAAAPolicyList: {
     method: 'get',
-    url: '/radiusServerProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
+    url: '/radiusServerProfiles',
+    newApi: true
+  },
+  getAAAPolicyViewModelList: {
+    method: 'post',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRadiusServerProfiles/query',
+    url: '/enhancedRadiusServerProfiles/query',
     newApi: true
   },
   getAAANetworkInstances: {
     method: 'post',
-    url: '/radiusServerProfiles/:policyId/networks',
     oldUrl: '/api/radius/:policyId/networks',
+    url: '/radiusServerProfiles/:policyId/networks',
     newApi: true
   },
   getAAAProfileDetail: {
     method: 'get',
-    url: '/radiusServerProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   }
 }

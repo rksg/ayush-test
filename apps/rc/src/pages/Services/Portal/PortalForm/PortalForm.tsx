@@ -8,10 +8,10 @@ import {
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
-import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation } from '@acx-ui/rc/services'
-import { defaultAlternativeLang, defaultComDisplay, getServiceListRoutePath, Portal }              from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                   from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }                                                                        from '@acx-ui/utils'
+import { useGetPortalQuery, useSavePortalMutation, useUpdatePortalMutation, useUploadURLMutation }               from '@acx-ui/rc/services'
+import { defaultAlternativeLang, defaultComDisplay, getServiceRoutePath, Portal, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                 from '@acx-ui/react-router-dom'
+import { loadImageWithJWT }                                                                                      from '@acx-ui/utils'
 
 import Photo                     from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered                   from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -28,14 +28,14 @@ const initialPortalData : Portal ={
   content: {
     bgColor: '#FFFFFF',
     bgImage: '',
-    welcomeText: '',
+    welcomeText: undefined,
     welcomeColor: '#333333',
     welcomeSize: PortalDemoDefaultSize.welcomeSize,
     photo: Photo,
     photoRatio: PortalDemoDefaultSize.photoRatio,
     logo: Logo,
     logoRatio: PortalDemoDefaultSize.logoRatio,
-    secondaryText: '',
+    secondaryText: undefined,
     secondaryColor: '#333333',
     secondarySize: PortalDemoDefaultSize.secondarySize,
     buttonColor: '#EC7100',
@@ -62,10 +62,12 @@ export const PortalForm = (props:{
   const { networkView, backToNetwork } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToServices = useTenantLink(getServiceListRoutePath(true))
+  const tablePath = getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
+  const linkToServices = useTenantLink(tablePath)
   const params = useParams()
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData]=useState<Portal>(initialPortalData)
+  const [currentLang, setCurrentLang]=useState({} as { [key:string]:string })
   const formRef = useRef<StepsFormInstance<Portal>>()
   const [uploadURL] = useUploadURLMutation()
   const { data } = useGetPortalQuery({ params })
@@ -153,10 +155,11 @@ export const PortalForm = (props:{
         title={editMode ? $t({ defaultMessage: 'Edit Portal Service' })
           :$t({ defaultMessage: 'Add Portal Service' })}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Services' }), link: '/service' }
+          { text: $t({ defaultMessage: 'Portal Services' }), link: tablePath }
         ]}
       />}
-      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData }}>
+      <PortalFormContext.Provider value={{ editMode, portalData, setPortalData,
+        currentLang, setCurrentLang }}>
         <StepsForm<Portal>
           formRef={formRef}
           onCancel={() => networkView? backToNetwork?.()
@@ -166,6 +169,12 @@ export const PortalForm = (props:{
               (data.content.componentDisplay.termsConditions&&!
               data.content.termsCondition?.trim())){
               return false
+            }
+            if(data.content.welcomeText===undefined){
+              data.content.welcomeText=currentLang.welcomeText
+            }
+            if(data.content.secondaryText===undefined){
+              data.content.secondaryText=currentLang.secondaryText
             }
             return handleAddPortalService(data)}}
         >
