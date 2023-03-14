@@ -49,7 +49,6 @@ exports[`Integrators should render table 1`] = `
             </div>
             <div
               class="ant-space-item"
-              style="margin-right: 8px;"
             >
               <a
                 href="/v/ecc2d7cf9d2342fdb31ae0e24958fcac/integrators/create"
@@ -63,24 +62,6 @@ exports[`Integrators should render table 1`] = `
                   </span>
                 </button>
               </a>
-            </div>
-            <div
-              class="ant-space-item"
-            >
-              <span
-                style="cursor: not-allowed;"
-              >
-                <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 ibsWZY"
-                  disabled=""
-                  style="pointer-events: none;"
-                  type="button"
-                >
-                  <svg
-                    data-testid="DownloadOutlined"
-                  />
-                </button>
-              </span>
             </div>
           </div>
         </span>
