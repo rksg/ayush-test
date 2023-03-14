@@ -53,6 +53,9 @@ import RogueAPDetectionDetailView   from './pages/Policies/RogueAPDetection/Rogu
 import RogueAPDetectionForm         from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import RogueAPDetectionTable        from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm             from './pages/Policies/SelectPolicyForm'
+import SnmpAgentDetail              from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
+import SnmpAgentForm                from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
+import SnmpAgentTable               from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SyslogDetailView             from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
 import SyslogForm                   from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                  from './pages/Policies/Syslog/SyslogTable/SyslogTable'
@@ -385,6 +388,11 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
+        element={<RogueAPDetectionTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={<AAAForm edit={false}/>}
       />
@@ -399,9 +407,8 @@ function PolicyRoutes () {
         element={<AAAPolicyDetail/>}
       />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
-        element={<RogueAPDetectionTable />}
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
+        element={<AAATable />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -490,13 +497,29 @@ function PolicyRoutes () {
         element={<ClientIsolationTable />}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />}
-      />
-      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
         element={<ClientIsolationDetail />}
+      />
+
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
+        element={<SnmpAgentForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })}
+        element={<SnmpAgentForm editMode={true}/>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })}
+        element={<SnmpAgentTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })}
+        element={<SnmpAgentDetail />}
       />
     </Route>
   )
