@@ -26,7 +26,11 @@ export {
   useEventsTableQuery,
   defaultSearch as eventDefaultSearch
 } from './EventTable'
-export { HistoricalClientsTable } from './HistoricalClientsTable'
+export {
+  HistoricalClientsTable,
+  GlobalSearchHistoricalClientsTable,
+  defaultHistoricalClientPayload
+} from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
