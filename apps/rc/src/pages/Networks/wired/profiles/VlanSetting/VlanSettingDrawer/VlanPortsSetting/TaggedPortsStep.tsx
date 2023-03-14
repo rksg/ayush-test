@@ -24,7 +24,7 @@ export interface PortsType {
 export function TaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues } = useContext(VlanPortsContext)
+  const { vlanSettingValues, setVlanSettingValues, vlanList } = useContext(VlanPortsContext)
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -228,6 +228,19 @@ export function TaggedPortsStep () {
       }
     }
 
+  const getDisabledPorts = (timeslot: string) => {
+    const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
+      ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
+    const portExists = vlanSelectedPorts.map(item => item?.map(
+      obj => { return obj.taggedPorts?.includes(timeslot)}))[0]
+
+    const untaggedPorts =
+        vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
+
+    const disabledPorts = untaggedPorts.includes(timeslot) || (portExists && portExists[0]) || false
+    return disabledPorts
+  }
+
   return (
     <>
       <Row gutter={20}>
@@ -272,17 +285,13 @@ export function TaggedPortsStep () {
                           id={`tagged_module1_${i}`}
                           data-value={timeslot.value}
                           data-testid={`tagged_module1_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                              .includes(timeslot.value)}
+                          data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
-                      && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                        .includes(timeslot.value)
+                      disabled: getDisabledPorts(timeslot.value)
                     }))}
                   />
                 </UI.Module>
@@ -316,17 +325,13 @@ export function TaggedPortsStep () {
                               id={`tagged_module2_${i}`}
                               data-value={timeslot.value}
                               data-testid={`tagged_module2_${i}`}
-                              data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                                && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                                  .includes(timeslot.value)}
+                              data-disabled={getDisabledPorts(timeslot.value)}
                               style={{ width: '20px', height: '20px' }}
                             ></div>
                             <p>{i+1}</p>
                           </Tooltip>,
                           value: timeslot.value,
-                          disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                              .includes(timeslot.value)
+                          disabled: getDisabledPorts(timeslot.value)
                         }))}
                       />
                     </UI.Module>
@@ -361,17 +366,13 @@ export function TaggedPortsStep () {
                           id={`tagged_module3_${i}`}
                           data-value={timeslot.value}
                           data-testid={`tagged_module3_${i}`}
-                          data-disabled={vlanSettingValues.switchFamilyModels?.untaggedPorts
-                            && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                              .includes(timeslot.value)}
+                          data-disabled={getDisabledPorts(timeslot.value)}
                           style={{ width: '20px', height: '20px' }}
                         ></div>
                         <p>{i+1}</p>
                       </Tooltip>,
                       value: timeslot.value,
-                      disabled: vlanSettingValues.switchFamilyModels?.untaggedPorts
-                        && vlanSettingValues.switchFamilyModels?.untaggedPorts
-                          .includes(timeslot.value)
+                      disabled: getDisabledPorts(timeslot.value)
                     }))}
                   />
                 </UI.Module>
