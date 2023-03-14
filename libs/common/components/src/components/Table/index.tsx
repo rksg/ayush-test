@@ -183,12 +183,7 @@ function Table <RecordType extends Record<string, any>> ({
   useEffect(() => {
     debounced(filterValues, searchValue, groupByValue)
     return () => debounced.cancel()
-  }, [filterValues, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    debounced(filterValues, searchValue, groupByValue)
-    return () => debounced.cancel()
-  }, [groupByValue, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [groupByValue, filterValues, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
 
   let columns = useMemo(() => {
     const settingsColumn = {
