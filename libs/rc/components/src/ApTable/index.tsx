@@ -10,8 +10,7 @@ import {
   Table,
   TableProps,
   deviceStatusColors,
-  ColumnType,
-  Button
+  ColumnType
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
@@ -42,6 +41,7 @@ import { useApActions }              from '../useApActions'
 import {
   getGroupableConfig
 } from './config';
+import { SEARCH, FILTER } from '@acx-ui/rc/utils'
 
 type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 
@@ -134,11 +134,11 @@ export function ApTable (props: ApTableProps) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const filters = getFilters(params)
+  const filters = getFilters(params) as FILTER
   const { searchable, filterables } = props
   const [groupBySelection, setGroupBySelection] = useState<DeviceGroupBy>(null)
-  const [tableFilter, setTableFilter] = useState<any>(filters)
-  const [tableSearch, setTableSearch] = useState<any>('')
+  const [tableFilter, setTableFilter] = useState<FILTER>(filters)
+  const [tableSearch, setTableSearch] = useState<SEARCH>({})
   const { deviceStatusGroupableOptions, modelGroupableOptions, deviceGroupNameGroupableOptions } =
     getGroupableConfig();
 const groupByTableQuery = usePollingTableQuery({
@@ -146,7 +146,6 @@ const groupByTableQuery = usePollingTableQuery({
   defaultPayload: {
     fields: groupedFields,
     filters,
-    searchString: '',
     searchTargetFields: defaultApPayload.searchTargetFields,
     search: {
       searchTargetFields: defaultApPayload.searchTargetFields
@@ -160,7 +159,8 @@ const inlineTableQuery = usePollingTableQuery({
     ...defaultApPayload,
     filters,
     search: {
-    },
+      searchTargetFields: defaultApPayload.searchTargetFields
+    }
   },
   option: { skip: Boolean(props.tableQuery) ||  Boolean(groupBySelection)}
 })
