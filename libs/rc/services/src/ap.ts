@@ -62,7 +62,7 @@ export const apApi = baseApApi.injectEndpoints({
         return transformApList(result)
       },
       keepUnusedDataFor: 0,
-      providesTags: [{ type: 'Ap', id: 'LIST' }],
+      providesTags: [{ type: 'Ap', id: 'GROUP' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -73,7 +73,7 @@ export const apApi = baseApApi.injectEndpoints({
             'AddApGroupLegacy'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
+            api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'GROUP' }]))
           })
         })
       }
@@ -733,11 +733,11 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     channel60: false
   }
   result.data = result.data.map(item => {
-    let newItem = {...item, children : [] as APExtended[], id: _.uniqueId()}
+    let newItem = {...item, children : [] as APExtended[], serialNumber
+      : _.uniqueId()}
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map((ap) => {
       return {
         ...ap,
-        id: _.uniqueId(),
         deviceGroupName: ap.deviceGroupName !== '' ? ap.deviceGroupName : 'Uncategorized',
       };
     }).map(ap => {

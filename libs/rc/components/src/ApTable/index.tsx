@@ -41,7 +41,7 @@ import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
 
 
-type deviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
+type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
 
 export const defaultApPayload = {
   searchString: '',
@@ -135,16 +135,14 @@ export function ApTable (props: ApTableProps) {
   const params = useParams()
   const filters = getFilters(params)
   const { searchable, filterables } = props
-  const [groupBySelection, setGroupBySelection] = useState<deviceGroupBy>(null)
+  const [groupBySelection, setGroupBySelection] = useState<DeviceGroupBy>(null)
   const [tableFilter, setTableFilter] = useState<any>(filters)
   const [tableSearch, setTableSearch] = useState<any>('')
-
 const groupByTableQuery = usePollingTableQuery({
   useQuery: useGroupByApListQuery,
   defaultPayload: {
     fields: groupedFields,
-    filters: filters,
-    groupBy: 'deviceStatus',
+    filters,
     searchString: '',
     searchTargetFields: defaultApPayload.searchTargetFields,
     search: {
@@ -503,7 +501,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
   },[importResult])
 
   useEffect(()=> {          
-    tableQuery?.handleFilterChange(tableFilter, tableSearch)
+    tableQuery?.handleFilterChange(tableFilter, tableSearch, groupBySelection)
   },[groupBySelection,tableFilter,tableSearch])
 
   const basePath = useTenantLink('/devices')
@@ -520,10 +518,10 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
         enableApiFilter={true}
                     // @ts-ignore
         rowActions={filterByAccess(rowActions)}
-        onFilterChange={useCallback((_filter : any, _search : any, groupBy: any) => {
-          setTableFilter(_filter)
-          setTableSearch(_search)
-          setGroupBySelection(groupBy as deviceGroupBy)
+        onFilterChange={useCallback((filter : any, search : any, groupBy: any) => {
+          setTableFilter(filter)
+          setTableSearch(search)
+          setGroupBySelection?.(groupBy as DeviceGroupBy)
         },[])}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
