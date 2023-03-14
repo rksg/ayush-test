@@ -21,8 +21,8 @@ import {
   downloadFile,
   transformByte,
   WifiUrlsInfo,
-  RequestFormData
-} from '@acx-ui/rc/utils'
+  RequestFormData, enableNewApi
+} from "@acx-ui/rc/utils";
 import { convertEpochToRelativeTime, formatter, getJwtToken } from '@acx-ui/utils'
 
 export const baseClientApi = createApi({
@@ -67,6 +67,12 @@ export const clientApi = baseClientApi.injectEndpoints({
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
+          payload = {
+            action: 'disconnect',
+            clients: payload
+          }
+        }
         return {
           ...req,
           body: payload
