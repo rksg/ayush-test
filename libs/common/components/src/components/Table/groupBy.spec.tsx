@@ -8,72 +8,37 @@ import { GroupSelect, useGroupBy }     from './groupBy'
 import { groupByColumns, groupTBData } from './stories/GroupTable'
 
 describe('Table Groupby', () => {
-  const groupables = groupByColumns.filter(cols => cols.groupable)
   describe('useGroupBy', () => {
-
-    const mockIntl = { $t: jest.fn(({ defaultMessage }:{ defaultMessage: string }) =>
-      defaultMessage) } as unknown as IntlShape
-
     it('render hook correctly with valid data', async () => {
-      const mockedValue = jest.fn(((val: string | undefined) => val))
-      const { result } = renderHook(() => {
-        const [value, setValue] = useState<string | undefined>(undefined)
-        const handleValue = (val: string | undefined) => {
-          setValue(val)
-          mockedValue(val)
-        }
-        return useGroupBy(groupables, value, handleValue, groupTBData.length, mockIntl)
-      })
+      const { result } = renderHook(() => useGroupBy(groupByColumns, undefined))
       const {
         isGroupByActive,
-        GroupBySelect,
         expandable,
         parentColumns,
         groupActionColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
-      expect(GroupBySelect).toBeDefined()
       expect(expandable).toBeUndefined()
       expect(parentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
     })
 
     it('render hook correctly with empty array groupable', () => {
-      const mockedValue = jest.fn(((val: string | undefined) => val))
-      const { result } = renderHook(() => {
-        const [value, setValue] = useState<string | undefined>(undefined)
-        const handleValue = (val: string | undefined) => {
-          setValue(val)
-          mockedValue(val)
-        }
-        return useGroupBy([], value, handleValue, groupTBData.length, mockIntl)
-      })
+      const { result } = renderHook(() => useGroupBy([], undefined))
       const {
         isGroupByActive,
-        GroupBySelect,
         expandable,
         parentColumns,
         groupActionColumns
       } = result.current
       expect(isGroupByActive).toBeFalsy()
-      expect(GroupBySelect).toBeDefined()
-      expect(GroupBySelect()).toBeNull()
       expect(expandable).toBeUndefined()
       expect(parentColumns).toMatchObject([])
       expect(groupActionColumns).toMatchObject([])
     })
 
     it('render hook for expandable props', () => {
-      const mockedValue = jest.fn(((val: string | undefined) => val))
-      const { result } = renderHook(() => {
-        const [value, setValue] = useState<string | undefined>('deviceName')
-        const handleValue = (val: string | undefined) => {
-          setValue(val)
-          mockedValue(val)
-        }
-        return useGroupBy(groupables, value, handleValue, groupTBData.length, mockIntl)
-      })
-
+      const { result } = renderHook(() => useGroupBy(groupByColumns, 'deviceName'))
       act(() => {result.current.isGroupByActive = true})
       const { expandable } = result.current
       const { rowExpandable } = expandable as
@@ -83,10 +48,11 @@ describe('Table Groupby', () => {
     })
   })
 
-  describe('GroupBySelect', () => {
+  describe('GroupSelect', () => {
     it('should handle onClear correctly', async () => {
       const mock$t = jest.fn() as unknown as IntlShape['$t']
       const mockedSetVal = jest.fn()
+      const groupable = groupByColumns.filter(cols => cols.groupable)
       const Test = () => {
         const [value, setValue] = useState<string | undefined>(undefined)
         const handleValue = (val: string | undefined) => {
@@ -97,7 +63,7 @@ describe('Table Groupby', () => {
           $t={mock$t}
           value={value}
           setValue={handleValue}
-          groupables={groupables}
+          groupable={groupable}
         />
       }
       render(<Test />)
