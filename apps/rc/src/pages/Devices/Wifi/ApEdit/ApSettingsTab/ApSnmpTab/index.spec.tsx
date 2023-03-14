@@ -119,9 +119,9 @@ describe('Ap Snmp', () => {
     expect(customizeButton).toBeTruthy()
     await userEvent.click(customizeButton)
 
-    expect(await screen.findByTestId('ApSnmp-switch')).toBeEnabled()
-    await userEvent.click(await screen.findByTestId('ApSnmp-switch'))
-    expect(await screen.findByTestId('ApSnmp-switch')).not.toBeChecked()
+    expect(await screen.findByRole('switch')).toBeEnabled()
+    await userEvent.click(await screen.findByRole('switch'))
+    expect(await screen.findByRole('switch')).not.toBeChecked()
     expect(screen.queryByTestId('hidden-block')).toBeNull()
   })
 })
