@@ -29,11 +29,11 @@ export const isLocalHost = () => {
 }
 
 export const isDev = () => {
-  return window.location.hostname === 'devalto.ruckuswireless.com'
+  return window.location.hostname === 'dev.ruckus.cloud'
 }
 
 export const isIntEnv = () => {
-  return window.location.hostname === 'intalto.ruckuswireless.com'
+  return window.location.hostname === 'int.ruckus.cloud'
 }
 
 const getTenantIdFromJwt = (jwt: string) => {

@@ -4,7 +4,7 @@ import { useAuthenticateMutation } from '@acx-ui/reports/services'
 
 export function DataStudio () {
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://devalto.ruckuswireless.com' // Dev
+    ? 'https://dev.ruckus.cloud' // Dev
     //? 'https://alto.local.mlisa.io' // Minikube
     : window.location.origin // Production
 

@@ -31,11 +31,11 @@ export function EmbeddedReport (props: ReportProps) {
   /**
   * Hostname - Backend service where superset is running.
   * For developement,
-  * Use https://devalto.ruckuswireless.com, for devalto.
+  * Use https://dev.ruckus.cloud, for dev ruckus cloud.
   * Use https://alto.local.mlisa.io, for minikube.
   **/
   const HOST_NAME = process.env['NODE_ENV'] === 'development'
-    ? 'https://devalto.ruckuswireless.com' // Dev
+    ? 'https://dev.ruckus.cloud' // Dev
     : window.location.origin // Production
 
   useEffect(() => {
