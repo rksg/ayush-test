@@ -2,22 +2,22 @@ import _                    from 'lodash'
 import { FormattedMessage } from 'react-intl'
 
 import { TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { Event }                         from '@acx-ui/rc/utils'
+import { Event, noDataDisplay }          from '@acx-ui/rc/utils'
 import { TenantLink, generatePath }      from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'adminName'] as const
+const entityTypes = ['ap', 'client', 'network', 'switch', 'venue'] as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   entityKey: keyof Event, data: Event, highlightFn?: TableHighlightFnArgs
 }) {
-  const pathSpecs: Partial<Record<
+  const pathSpecs: Record<
     typeof entityTypes[number],
     { path: string, params: Array<keyof Event>, disabled?: boolean }
-  >> = {
+  > = {
     ap: {
       path: 'devices/wifi/:serialNumber/details/overview',
       params: ['serialNumber']
@@ -41,7 +41,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
   }
 
   const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
-  const name = <>{highlightFn(String(data[entityKey]))}</>
+  const name = <>{highlightFn(String(data[entityKey] || noDataDisplay))}</>
 
   if (!entityTypes.includes(entity)) return name
 
