@@ -8,9 +8,9 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getWifiCallingList: {
-    method: 'get',
-    url: '/wifiCallingServiceProfiles',
-    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    method: 'post',
+    url: '/enhancedWifiCallingProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedWifiCallingProfiles/query',
     newApi: true
   },
   addWifiCalling: {

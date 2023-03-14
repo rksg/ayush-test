@@ -1,7 +1,7 @@
-import { Key, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
-import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
+import { Typography, Select, Space } from 'antd'
+import { useIntl }                   from 'react-intl'
 
 import {
   Drawer,
@@ -35,7 +35,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const { visible, tenantId, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
-  const [form] = Form.useForm()
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
+  const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
+  const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
 
   const isSkip = tenantId === undefined
 
@@ -47,9 +49,28 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     return mspAdmins.filter(rec => admins.includes(rec.id))
   }
 
+  const delegatedAdmins =
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
+        { skip: isSkip })
+  const queryResults = useMspAdminListQuery({ params: useParams() })
+
+  useEffect(() => {
+    if (queryResults?.data && delegatedAdmins?.data) {
+      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
+      setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
+      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
+      setSelectedRows(selRows)
+      const selRoles = delegatedAdmins?.data?.map((admin) => {
+        return { id: admin.msp_admin_id, role: admin.msp_admin_role }
+      })
+      setSelectedRoles(selRoles)
+    }
+  }, [queryResults?.data, delegatedAdmins?.data])
+
   const onClose = () => {
     setVisible(false)
-    form.resetFields()
+    setSelectedRows([])
+    setSelectedRoles([])
   }
 
   const resetFields = () => {
@@ -61,12 +82,12 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const handleSave = () => {
     let payload: MspEcDelegatedAdmins[] = []
-    const selectedRows = form.getFieldsValue(['mspAdmins'])
-    if (selectedRows && selectedRows.mspAdmins && selectedRows.mspAdmins.length > 0) {
-      selectedRows.mspAdmins.forEach((element:MspAdministrator) => {
+    if (selectedRows && selectedRows.length > 0) {
+      selectedRows.forEach((element:MspAdministrator) => {
+        const role = selectedRoles.find(row => row.id === element.id)?.role ?? element.role
         payload.push ({
           msp_admin_id: element.id,
-          msp_admin_role: element.role
+          msp_admin_role: role
         }
         )})
     } else {
@@ -75,14 +96,12 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     if (tenantId) {
       saveMspAdmins({ payload, params: { mspEcTenantId: tenantId } })
         .then(() => {
-          setTimeout(() => {
-            setSelected(selectedRows.mspAdmins)
-            setVisible(false)
-            resetFields()
-          }, 1000)
+          setSelected(selectedRows)
+          setVisible(false)
+          resetFields()
         })
     } else {
-      setSelected(selectedRows.mspAdmins)
+      setSelected(selectedRows)
     }
     setVisible(false)
   }
@@ -117,13 +136,22 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
         }
       },
       render: function (data, row) {
-        return transformAdminRole(row.role)
+        return transformAdminRole(row.id, row.role)
       }
     }
   ]
 
-  const transformAdminRole = (value: RolesEnum) => {
-    return <Select defaultValue={value} style={{ width: '200px' }}>
+  const handleRoleChange = (id: string, value: string) => {
+    const updatedRole = { id: id, role: value }
+    setSelectedRoles([ ...selectedRoles.filter(row => row.id !== id), updatedRole ])
+  }
+
+  const transformAdminRole = (id: string, initialRole: RolesEnum) => {
+    const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
+      ?? initialRole
+    return <Select defaultValue={role}
+      style={{ width: '200px' }}
+      onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
           <Option
@@ -135,29 +163,10 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
     </Select>
   }
 
-  const MspAdminTable = () => {
-    const delegatedAdmins =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
-        { skip: isSkip })
-    const queryResults = useMspAdminListQuery({
-      params: useParams()
-    },{
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
-      })
-    })
-
-    let selectedKeys = [] as Key[]
-    if (queryResults?.data && delegatedAdmins?.data) {
-      const admins = delegatedAdmins?.data.map((admin: MspEcDelegatedAdmins)=> admin.msp_admin_id)
-      selectedKeys = getSelectedKeys(queryResults?.data as MspAdministrator[], admins)
-      const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
-      form.setFieldValue('mspAdmins', selRows)
-    }
-    form.validateFields(['admintable'])
-
-    return (
+  const content =
+    <Space direction='vertical'>
+      <Subtitle level={3}>
+        { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
       <Loader states={[queryResults
       ]}>
         <Table
@@ -167,46 +176,25 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
           rowSelection={{
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
-            onChange (selectedRowKeys, selectedRows) {
-              form.setFieldValue('mspAdmins', selectedRows)
-              form.validateFields(['admintable'])
+            onChange (selectedRowKeys, selRows) {
+              setSelectedRows(selRows)
             }
           }}
         />
+        {selectedRows.length === 0 &&
+        <Typography.Text
+          type='danger'
+          style={{ marginTop: '20px' }}>
+          Please select at least one MSP administrator
+        </Typography.Text>}
       </Loader>
-    )
-  }
+    </Space>
 
-  const formContent =
-    <Form layout='vertical' form={form} onFinish={onClose}>
-      <Subtitle level={3}>
-        { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
-      <MspAdminTable />
-      <Form.Item
-        style={{ marginTop: '-50px' }}
-        name='admintable'
-        rules={[
-          { validator: async () => {
-            const selectedRows = form.getFieldsValue(['mspAdmins'])
-            if (selectedRows && selectedRows.mspAdmins && selectedRows.mspAdmins.length > 0) {
-              return Promise.resolve()
-            }
-            return Promise.reject(
-              $t({ defaultMessage: 'Please select at least one MSP administrator' })
-            )
-          } }
-        ]}
-        validateFirst
-      >
-      </Form.Item>
-    </Form>
-
-  const footer = [
+  const footer =
     <Drawer.FormFooter
       onCancel={resetFields}
       onSave={async () => handleSave()}
     />
-  ]
 
   return (
     <Drawer
@@ -216,9 +204,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onClose={onClose}
       footer={footer}
       destroyOnClose={resetField}
-      width={'700px'}
+      width={700}
     >
-      {formContent}
+      {content}
     </Drawer>
   )
 }
