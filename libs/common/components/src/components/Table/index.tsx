@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useCallback, useEffect } from 'react'
+import React, { useMemo, useState, Key, useCallback, useEffect, useRef } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, MenuProps, Space }                                     from 'antd'
@@ -117,6 +117,15 @@ function useSelectedRowKeys <RecordType> (
   return [selectedRowKeys, setSelectedRowKeys]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce <Fn extends ((...args: any[]) => void)> (
+  fn?: Fn,
+  timeout = 1000
+) {
+  if (!fn) return
+  return _.debounce(fn, timeout)
+}
+
 // following the same typing from antd
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
@@ -126,24 +135,21 @@ function Table <RecordType extends Record<string, any>> ({
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
+  const onFilter = useRef(debounce(onFilterChange))
   const { dataSource } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
-  const debounced = useCallback(_.debounce((filter: Filter, searchString: string) =>
-    onFilterChange && onFilterChange(filter, { searchString }), 1000), [onFilterChange])
+  useEffect(() => {
+    onFilter.current = debounce(onFilterChange)
+    return () => onFilter.current?.cancel()
+  }, [onFilterChange])
 
   useEffect(() => {
-    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
-      debounced(filterValues, searchValue)
+    if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
+      onFilter.current?.(filterValues, { searchString: searchValue })
     }
-    return () => debounced.cancel()
-  }, [searchValue, debounced])
-
-  useEffect(() => {
-    debounced(filterValues, searchValue)
-    return () => debounced.cancel()
-  }, [filterValues, debounced])
+  }, [searchValue, filterValues])
 
   let columns = useMemo(() => {
     const settingsColumn = {
