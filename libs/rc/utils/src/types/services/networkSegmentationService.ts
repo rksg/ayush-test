@@ -52,8 +52,9 @@ export type UplinkInfo = {
 
 interface MduSwitchAddtionalInfo {
   name: string
-  siteConnection: string
-  siteActive: string
+  firmwareVersion: string
+  familyId: string
+  model: string
   dispatchMessage: string
 }
 
@@ -66,7 +67,7 @@ export interface AccessSwitchSaveData extends
 {
   id: string
   vlanId?: number
-  webAuthPageType?: 'TEMPLATE' | 'USER_DEFINED',
+  webAuthPageType?: 'TEMPLATE' | 'USER_DEFINED'
   templateId?: string
   uplinkInfo?: UplinkInfo
   distributionSwitchId: string
@@ -77,6 +78,9 @@ export interface DistributionSwitch extends
   Partial<MduSwitchAddtionalInfo>
 {
   siteIp?: string
+  siteActive: string
+  siteConnection: string
+  forwardingProfile?: string,
   accessSwitches?: AccessSwitch[]
 }
 

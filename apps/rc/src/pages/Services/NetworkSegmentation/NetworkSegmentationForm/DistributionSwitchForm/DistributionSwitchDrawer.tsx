@@ -22,14 +22,15 @@ export function DistributionSwitchDrawer (props: {
   selectedSwitches: DistributionSwitch[];
   venueId: string;
   edgeId: string;
-  onClose: () => void;
+  onClose?: () => void;
   onSaveDS?: (values: DistributionSwitch) => void;
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
   const {
-    open, editRecord, availableSwitches, selectedSwitches, venueId, edgeId, onClose, onSaveDS
+    open, editRecord, availableSwitches, selectedSwitches,
+    venueId, edgeId, onClose = ()=>{}, onSaveDS
   } = props
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }

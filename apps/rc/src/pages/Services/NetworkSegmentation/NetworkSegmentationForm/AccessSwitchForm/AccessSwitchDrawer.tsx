@@ -35,14 +35,14 @@ export function AccessSwitchDrawer (props: {
   open: boolean;
   editRecords?: AccessSwitch[];
   venueId: string;
-  onClose: () => void;
-  onSave: (values: Partial<AccessSwitch>) => void;
+  onClose?: () => void;
+  onSave?: (values: Partial<AccessSwitch>) => void;
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
 
-  const { open, editRecords, venueId, onClose, onSave } = props
+  const { open, editRecords, venueId, onClose = ()=>{}, onSave } = props
 
   const switchId = editRecords && editRecords[0].id
   const editingWebAuthPageType = (editRecords && editRecords[0].webAuthPageType) || 'TEMPLATE'
@@ -66,7 +66,8 @@ export function AccessSwitchDrawer (props: {
   const { portList } = useSwitchPortlistQuery({
     params: { tenantId }, payload: {
       filters: { switchId: editRecords?.map(rec => rec.id) }, page: 1, pageSize: 1000,
-      sortField: 'portIdentifierFormatted', sortOrder: 'ASC'
+      sortField: 'portIdentifierFormatted', sortOrder: 'ASC',
+      fields: ['portIdentifier', 'lagId']
     }
   }, {
     skip: !switchId,

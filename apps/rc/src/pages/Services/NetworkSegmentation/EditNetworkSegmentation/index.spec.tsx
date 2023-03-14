@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockNsgData, mockVenueData, mockVenueNetworkData } from '../__tests__/fixtures'
+import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockNsgData, mockNsgSwitchInfoData, mockVenueData, mockVenueNetworkData } from '../__tests__/fixtures'
 
 import EditNetworkSegmentation from '.'
 
@@ -63,6 +63,10 @@ describe('Update NetworkSegmentation', () => {
         NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
         (req, res, ctx) => res(ctx.json(mockNsgData))
       ),
+      rest.get(
+        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
+      ),
       rest.put(
         NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
@@ -85,6 +89,12 @@ describe('Update NetworkSegmentation', () => {
     expect(await screen.findByRole('table')).toBeVisible()
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 4
+    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 5
+    await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
     await user.click(await screen.findByRole('button', { name: 'Apply' }))
   })
 
