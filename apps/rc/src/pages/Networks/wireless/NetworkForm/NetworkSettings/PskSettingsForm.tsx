@@ -277,7 +277,7 @@ function SettingsForm () {
               <Form.Item noStyle
                 name={['wlan', 'macAddressAuthentication']}
                 valuePropName='checked'>
-                <Switch disabled={editMode || disablePolicies} onChange={onMacAuthChange} />
+                <Switch disabled={disablePolicies} onChange={onMacAuthChange} />
               </Form.Item>
               <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
               <Tooltip.Question
@@ -289,9 +289,9 @@ function SettingsForm () {
           {macAddressAuthentication && <>
             <Form.Item
               name={['wlan', 'isMacRegistrationList']}
-              initialValue={false}
+              initialValue={isMacRegistrationList}
             >
-              <Radio.Group>
+              <Radio.Group disabled={editMode} defaultValue={!!isMacRegistrationList}>
                 <Space direction='vertical'>
                   <Radio value={true} disabled={!macRegistrationEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
@@ -303,9 +303,7 @@ function SettingsForm () {
               </Radio.Group>
             </Form.Item>
 
-            { isMacRegistrationList &&
-            <MacRegistrationListComponent
-              editMode={editMode}
+            { isMacRegistrationList && <MacRegistrationListComponent
               inputName={['wlan']}
             />}
 

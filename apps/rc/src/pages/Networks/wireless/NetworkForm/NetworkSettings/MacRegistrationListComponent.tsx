@@ -13,13 +13,12 @@ import MacRegistrationListForm
 const { Option } = Select
 
 export interface MacRegistrationListComponentProps {
-  inputName?: string[],
-  editMode: boolean
+  inputName?: string[]
 }
 
 const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) => {
   const intl = useIntl()
-  const { inputName = [], editMode } = props
+  const { inputName = [] } = props
 
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [macName, setMacName] = useState('')
@@ -57,7 +56,6 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
           }]}
           children={
             <Select
-              disabled={editMode}
               placeholder={intl.$t({ defaultMessage: 'Select...' })}
               children={macRegListOption}
             />
@@ -66,7 +64,6 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
       </GridCol>
       <Button
         type='link'
-        disabled={editMode}
         style={{ top: '5px' }}
         onClick={() => {
           setMacModalVisible(true)
