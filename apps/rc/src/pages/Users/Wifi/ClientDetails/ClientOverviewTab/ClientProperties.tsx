@@ -83,7 +83,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           'devicesMac',
           'guestStatus',
           'socialLogin',
-          'clients'
+          'clients',
+          'notes'
         ],
         filters: {
           includeExpired: [

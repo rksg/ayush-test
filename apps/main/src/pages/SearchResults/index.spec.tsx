@@ -15,6 +15,11 @@ import {
 
 import SearchResults from '.'
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+}))
+
 const params = { searchVal: 'test%3F', tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
 describe('Search Results', () => {
@@ -28,28 +33,22 @@ describe('Search Results', () => {
     mockRestApiQuery(ClientUrlsInfo.getClientList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(ClientUrlsInfo.getClientMeta.url, 'post', {})
     mockRestApiQuery(SwitchUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(CommonUrlsInfo.getHistoricalClientList.url, 'post',
+      { data: [], totalCount: 0 })
   })
 
   it('should decode search string correctly', async () => {
-    render(
-      <Provider>
-        <SearchResults />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<SearchResults />, { route: { params }, wrapper: Provider })
     expect(await screen.findByText('Search Results for "test?" (7)')).toBeVisible()
   })
 
   it('should render tables correctly', async () => {
-    render(
-      <Provider>
-        <SearchResults />
-      </Provider>,{
-        route: {
-          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
-        }
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
       }
-    )
+    })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(screen.getByText('Venues (1)')).toHaveTextContent('Venues (1)')
     expect(screen.getByText('Networks (3)')).toHaveTextContent('Networks (3)')
@@ -71,15 +70,12 @@ describe('Search Results', () => {
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(SwitchUrlsInfo.getSwitchList.url, 'post', { data: [], totalCount: 0 })
-    render(
-      <Provider>
-        <SearchResults />
-      </Provider>,{
-        route: {
-          params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
-        }
+    render(<SearchResults />, {
+      wrapper: Provider,
+      route: {
+        params: { ...params, searchVal: encodeURIComponent('bdcPerformanceVenue2') }
       }
-    )
+    })
     const header =
       await screen.findByText(/Hmmmm... we couldn’t find any match for "bdcPerformanceVenue2"/i)
     expect(header).toBeInTheDocument()

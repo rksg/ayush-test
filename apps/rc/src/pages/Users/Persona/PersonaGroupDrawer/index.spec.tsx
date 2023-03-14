@@ -1,6 +1,7 @@
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import { waitFor }       from '@testing-library/react'
+import userEvent         from '@testing-library/user-event'
+import { rest }          from 'msw'
+import { BrowserRouter } from 'react-router-dom'
 
 import {
   NewDpskBaseUrl,
@@ -87,12 +88,14 @@ describe('Persona Group Drawer', () => {
   it('should edit a persona group', async () => {
     render(
       <Provider>
-        <PersonaGroupDrawer
-          isEdit
-          visible
-          data={mockPersonaGroup}
-          onClose={closeFn}
-        />
+        <BrowserRouter>
+          <PersonaGroupDrawer
+            isEdit
+            visible
+            data={mockPersonaGroup}
+            onClose={closeFn}
+          />
+        </BrowserRouter>
       </Provider>
     )
 
