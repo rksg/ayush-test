@@ -87,6 +87,8 @@ export function BonjourFencing () {
       isUserSetting.current = false
 
       const newServices = bonjourFencingServices.map((service) => {
+        if (!service.wiredRules) service.wiredRules = []
+        if (!service.customStrings) service.customStrings = []
         return _.omit(service, ['rowId'])
       })
 
@@ -164,7 +166,7 @@ export function BonjourFencing () {
         </Row>
         {enableBonjourFencing &&
           <Row>
-            <Col span={12}>
+            <Col flex='650px' >
               <Form.Item required
                 label={$t({ defaultMessage: 'Manage Fencing services' })}
                 children={
