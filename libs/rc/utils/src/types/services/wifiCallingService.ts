@@ -19,6 +19,7 @@ export interface WifiCallingDetailContextType {
 
 export interface WifiCallingFormContextType {
   serviceName: string
+  name?: string,
   tags: string[]
   description?: string
   qosPriority: QosPriorityEnum

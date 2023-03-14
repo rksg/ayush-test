@@ -473,6 +473,7 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? headerContent.split('filename=')[1]
               : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
             downloadFile(response, fileName)
+            return {}
           },
           body: payload,
           headers: {

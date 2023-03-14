@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import { Path, rest } from 'msw'
 
 import { MspUrlsInfo }                                                       from '@acx-ui/rc/utils'
 import { Provider }                                                          from '@acx-ui/store'
@@ -34,6 +34,19 @@ const entitlement =
       quantity: 80,
       sku: 'CLD-MW00-1001',
       status: 'VALID'
+    },
+    {
+      name: 'Wi-Fi',
+      deviceSubType: 'MSP_WIFI',
+      deviceType: 'MSP_WIFI',
+      effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
+      expirationDate: 'Tue Dec 01 23:59:59 UTC 2023',
+      id: '373419143-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 60,
+      sku: 'CLD-MW00-1001',
+      status: 'EXPIRED'
     }
   ]
 
@@ -68,15 +81,21 @@ describe('Subscriptions', () => {
       rest.get(
         MspUrlsInfo.getMspAssignmentSummary.url,
         (req, res, ctx) => res(ctx.json(summary))
+      ),
+      rest.get(
+        MspUrlsInfo.refreshMspEntitlement.url.split('?').at(0) as Path,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspCustomersListDropdown.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
   })
-
   it('should render correctly', async () => {
-
     render(
       <Provider>
         <Subscriptions />
@@ -85,13 +104,12 @@ describe('Subscriptions', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const GenerateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
-    fireEvent.click(GenerateUsageButton)
+    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    fireEvent.click(generateUsageButton)
     const licenseManagementButton =
     await screen.findByRole('button', { name: 'Manage Subscriptions' })
     fireEvent.click(licenseManagementButton)
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     fireEvent.click(refreshButton)
-
   })
 })

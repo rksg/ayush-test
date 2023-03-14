@@ -46,7 +46,8 @@ describe('PortalTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalProfileList.url,
+        PortalUrlsInfo.getPortalProfileList.url
+          .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,

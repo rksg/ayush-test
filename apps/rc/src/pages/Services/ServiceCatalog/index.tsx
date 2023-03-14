@@ -22,6 +22,7 @@ export default function ServiceCatalog () {
 
   const sets = [
     {
+      key: 'connectivity',
       title: defineMessage({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
@@ -39,6 +40,7 @@ export default function ServiceCatalog () {
       ]
     },
     {
+      key: 'application',
       title: defineMessage({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
@@ -46,6 +48,7 @@ export default function ServiceCatalog () {
       ]
     },
     {
+      key: 'guests',
       title: defineMessage({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
@@ -62,7 +65,7 @@ export default function ServiceCatalog () {
     <>
       <PageHeader title={$t({ defaultMessage: 'Service Catalog' })} />
       {sets.map(set =>
-        <UI.CategoryContainer>
+        <UI.CategoryContainer key={set.key}>
           <Typography.Title level={3}>
             { $t(set.title) }
           </Typography.Title>
