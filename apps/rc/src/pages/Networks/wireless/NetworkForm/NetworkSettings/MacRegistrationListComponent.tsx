@@ -24,7 +24,9 @@ const MacRegistrationListComponent = (props: MacRegistrationListComponentProps) 
   const [macName, setMacName] = useState('')
   const form = Form.useFormInstance()
 
-  const { data: macRegListOption } = useMacRegListsQuery({}, {
+  const { data: macRegListOption } = useMacRegListsQuery({
+    payload: { pageSize: 10000 }
+  }, {
     selectFromResult ({ data }) {
       return {
         data: data?.data?.map(
