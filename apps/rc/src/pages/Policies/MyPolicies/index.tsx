@@ -3,6 +3,8 @@ import { useIntl } from 'react-intl'
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
+  useGetAAAPolicyViewModelListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
   useSyslogPolicyListQuery,
@@ -92,9 +94,7 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.AAA,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.AAA] } }
-      }).data?.totalCount,
+      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }))
     },
@@ -148,9 +148,7 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.VLAN_POOL,
       category: RadioCardCategory.WIFI,
-      totalCount: usePolicyListQuery({ // TODO should invoke self List API here when API is ready
-        params, payload: { ...defaultPayload, filters: { type: [PolicyType.VLAN_POOL] } }
-      }).data?.totalCount,
+      totalCount: useGetVLANPoolPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
     },
