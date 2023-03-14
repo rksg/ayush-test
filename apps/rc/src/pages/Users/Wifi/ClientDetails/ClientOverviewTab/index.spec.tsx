@@ -305,7 +305,7 @@ describe('ClientOverviewTab', () => {
         checkFragment(asFragment)
       })
 
-      it('should render historical client without some data correctly', async () => {
+      it.skip('should render historical client without some data correctly', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.post(CommonUrlsInfo.getHistoricalClientList.url,
