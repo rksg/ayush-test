@@ -186,7 +186,7 @@ function useColumns () {
       filterKey: 'venueIds',
       filterable: venueNameMap,
       render: function (data, row) {
-        if (!row.venueIds) return 0
+        if (!row.venueIds || row.venueIds.length === 0) return 0
 
         // eslint-disable-next-line max-len
         const tooltipItems = venueNameMap.filter(v => row.venueIds!.includes(v.key)).map(v => v.value)
