@@ -36,10 +36,10 @@ import {
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { getIntl  }                                          from '@acx-ui/utils'
+import { DateRange, getIntl  }                                          from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
-import { useClientDateFilter }               from '../../PageHeader'
+import { GuestDateFilter }                   from '../../PageHeader'
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
 import { useGuestActions }                   from '../GuestsDetail/guestActions'
@@ -65,12 +65,12 @@ const defaultGuestNetworkPayload = {
   url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
-export const GuestsTable = () => {
+export const GuestsTable = (props: { dateFilter: GuestDateFilter }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { startDate, endDate } = useClientDateFilter()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
+  const { startDate, endDate, range } = props.dateFilter
 
   const tableQuery = useTableQuery({
     useQuery: useGetGuestsListQuery,
@@ -78,8 +78,10 @@ export const GuestsTable = () => {
       ...defaultGuestPayload,
       filters: {
         includeExpired: ['true'],
-        fromTime: [moment(startDate).utc().format()],
-        toTime: [moment(endDate).utc().format()]
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
       }
     },
     search: {
@@ -89,16 +91,19 @@ export const GuestsTable = () => {
 
   useEffect(()=>{
     const payload = tableQuery.payload as { filters?: Record<string, string[]> }
-    tableQuery.setPayload({
+    let customPayload = {
       ...tableQuery.payload,
       filters: {
-        ...payload.filters,
+        ..._.omit(payload.filters, ['fromTime', 'toTime']),
         includeExpired: ['true'],
-        fromTime: [moment(startDate).utc().format()],
-        toTime: [moment(endDate).utc().format()]
+        ...(range === DateRange.allTime ? {} : {
+          fromTime: [moment(startDate).utc().format()],
+          toTime: [moment(endDate).utc().format()]
+        })
       }
-    })
-  }, [startDate, endDate])
+    }
+    tableQuery.setPayload(customPayload)
+  }, [startDate, endDate, range])
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
     useQuery: useNetworkListQuery,

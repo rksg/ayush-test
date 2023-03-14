@@ -43,8 +43,8 @@ export function defaultRanges (subRange?: DateRange[]) {
       moment().seconds(0)
     ],
     [DateRange.allTime]: [
-      moment().subtract(50, 'year').seconds(0),
-      moment().add(50, 'year').seconds(0)
+      moment(undefined),
+      moment(undefined)
     ]
   }
   if (subRange) {
