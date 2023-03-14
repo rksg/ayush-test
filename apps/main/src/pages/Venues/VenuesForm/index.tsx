@@ -1,8 +1,8 @@
 import React, { useState, useRef, ChangeEventHandler, useEffect, useContext } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
-import _                         from 'lodash'
-import { useIntl }               from 'react-intl'
+import { Row, Col, Form, Input, Select } from 'antd'
+import _                                 from 'lodash'
+import { useIntl }                       from 'react-intl'
 
 import {
   GoogleMap,
@@ -14,6 +14,7 @@ import {
 import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SearchOutlined }         from '@acx-ui/icons'
+import { countryCodes }           from '@acx-ui/rc/components'
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
@@ -33,6 +34,7 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
+import { MessageMapping }   from '../../Administration/AccountSettings/MessageMapping'
 import { VenueEditContext } from '../VenueEdit'
 
 interface AddressComponent {
@@ -143,6 +145,7 @@ export function VenuesForm () {
   })
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
+  const [countryCode, setCountryCode] = useState('')
 
   const { tenantId, venueId, action } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
@@ -234,7 +237,7 @@ export function VenuesForm () {
   const handleAddVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
-      formData.address = address
+      formData.address = countryCode ? { ...address, countryCode } : address
       if (isNewApi) {
         await newAddVenue({ params, payload: formData }).unwrap() //Only for IT test
       } else {
@@ -355,6 +358,25 @@ export function VenuesForm () {
               </GoogleMap.FormItem>
             </Col>
           </Row>
+          {isMapEnabled && action !== 'edit' &&
+          <Row gutter={20}>
+            <Col span={8}>
+              <Form.Item
+                label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
+                tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
+              >
+                <Select
+                  options={countryCodes}
+                  onChange={(countryCode: string) => setCountryCode(countryCode)}
+                  showSearch
+                  allowClear
+                  optionFilterProp='label'
+                  placeholder='Please select a country'
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          }
         </StepsForm.StepForm>
       </StepsForm>
     </>
