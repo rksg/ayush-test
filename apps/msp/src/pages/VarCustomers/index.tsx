@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
@@ -125,7 +125,7 @@ export function VarCustomers () {
         })
     }
 
-    const columnsPendingInvitaion: TableProps<VarCustomer>['columns'] = [
+    const columnsPendingInvitation: TableProps<VarCustomer>['columns'] = [
       {
         title: $t({ defaultMessage: 'Account Name' }),
         dataIndex: 'tenantName',
@@ -164,17 +164,19 @@ export function VarCustomers () {
       }
     }
 
-    const PendingInvitaion = () => {
+    const PendingInvitation = () => {
       const tableQuery = useTableQuery({
         useQuery: useInviteCustomerListQuery,
         defaultPayload: invitationPayload
       })
-      setInviteCount(tableQuery.data?.totalCount as number)
+      useEffect(() => {
+        setInviteCount(tableQuery.data?.totalCount as number)
+      })
 
       return (
         <Loader states={[tableQuery]}>
           <Table
-            columns={columnsPendingInvitaion}
+            columns={columnsPendingInvitation}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
@@ -189,7 +191,7 @@ export function VarCustomers () {
         <Subtitle level={3}>
           {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
 
-        <PendingInvitaion />
+        <PendingInvitation />
       </>
     )
   }
