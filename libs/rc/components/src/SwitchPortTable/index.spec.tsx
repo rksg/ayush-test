@@ -10,7 +10,9 @@ import { SwitchPortTable } from '.'
 
 const params = {
   tenantId: 'tenant-id',
-  venueId: 'venue-id'
+  venueId: 'venue-id',
+  switchId: 'switch-id',
+  serialNumber: 'serial'
 }
 
 const portlistData_7650 = {
@@ -266,6 +268,18 @@ const portlistData_7150 = {
   totalCount: 2
 }
 
+const vlanList = [{ vlanId: 1 }]
+
+const vlanUnion = {
+  switchDefaultVlan: [{
+    switchId: '38:45:3b:3b:b8:10',
+    vlanConfigName: 'DEFAULT-VLAN',
+    profileLevel: false,
+    defaultVlan: true,
+    vlanId: 1
+  }]
+}
+
 jest.mock('./SwitchLagDrawer', () => ({
   SwitchLagDrawer: () => <div data-testid='SwitchLagDrawer' />
 }))
@@ -282,6 +296,10 @@ describe('SwitchPortTable', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portlistData_7650))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getSwitchVlanUnion.url,
+        (req, res, ctx) => res(ctx.json(vlanUnion))
       )
     )
   })
@@ -290,7 +308,8 @@ describe('SwitchPortTable', () => {
     render(<Provider>
       <SwitchPortTable isVenueLevel={false} />
     </Provider>, {
-      route: { params, path: '/:tenantId' }
+      // eslint-disable-next-line max-len
+      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports' }
     })
 
     await screen.findAllByText('1/1/1')
@@ -307,6 +326,10 @@ describe('SwitchPortTable', () => {
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portlistData_7150))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchVlanUnionByVenue.url,
+        (req, res, ctx) => res(ctx.json(vlanList))
       )
     )
     render(<Provider>
