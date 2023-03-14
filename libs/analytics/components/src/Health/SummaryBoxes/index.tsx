@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -6,24 +7,23 @@ import { GridRow, GridCol, Loader }      from '@acx-ui/components'
 import { formatter, intlFormats }        from '@acx-ui/utils'
 
 import { useSummaryQuery }    from './services'
-import { Wrapper, Statistic } from './styledComponents'
+import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
+
 
 interface BoxProps {
   type: string,
   title: MessageDescriptor
   value: string
   suffix?: string
-  // TODO: post GA
-  // isOpen: boolean
-  // onClick: () => void
+  isOpen: boolean
+  onClick: () => void
 }
 
 export const Box = (props: BoxProps) => {
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
-    // TODO: post GA
-    // onClick={props.onClick}
+    onClick={props.onClick}
   >
     <Statistic
       $type={props.type}
@@ -31,8 +31,7 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {/* TODO: post GA, hide for now */}
-    {/* {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>} */}
+    {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>}
   </Wrapper>
   return box
 }
@@ -46,10 +45,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     end: filters.endDate
   }
 
-  // TODO: post GA
-  // const [ openType, setOpenType ] = useState<'stats' | 'ttc' | 'none'>('none')
-  // const toggleStats = () => setOpenType(openType !== 'stats' ? 'stats' : 'none')
-  // const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
+  const [ openType, setOpenType ] = useState<'stats' | 'ttc' | 'none'>('none')
+  const toggleStats = () => setOpenType(openType !== 'stats' ? 'stats' : 'none')
+  const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
@@ -90,30 +88,30 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'successCount',
       title: defineMessage({ defaultMessage: 'Successful Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  TODO: post GA
+      isOpen: openType === 'stats',
+      onClick: toggleStats,
       value: queryResults.data.successCount
     },
     {
       type: 'failureCount',
       title: defineMessage({ defaultMessage: 'Failed Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  // TODO: post GA
+      isOpen: openType === 'stats',
+      onClick: toggleStats,
       value: queryResults.data.failureCount
     },
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-      // isOpen: openType === 'stats',
-      // onClick: toggleStats,  // TODO: post GA
+      isOpen: openType === 'stats',
+      onClick: toggleStats,
       value: queryResults.data.successPercentage
     },
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
-      // isOpen: openType === 'ttc',
-      // onClick: toggleTtc,  // TODO: post GA
+      isOpen: openType === 'ttc',
+      onClick: toggleTtc,
       value: queryResults.data.averageTtc
     }
   ]

@@ -1,7 +1,7 @@
 import { Statistic as antStatistic } from 'antd'
-import styled                        from 'styled-components/macro'
+import styled, { css }                        from 'styled-components/macro'
 
-// import { CaretDoubleDownOutlined, CaretDoubleUpOutlined } from '@acx-ui/icons'
+import { CaretDoubleDownOutlined, CaretDoubleUpOutlined } from '@acx-ui/icons'
 
 type Type = keyof typeof colors
 
@@ -27,17 +27,16 @@ const colors = {
     text: '--acx-primary-black'
   }
 } as const
-// TODO: post GA
-// const arrowStyle = css`
-//   height: 16px;
-//   width: 16px;
-//   vertical-align: middle;
-// `
+const arrowStyle = css`
+   height: 16px;
+   width: 16px;
+   vertical-align: middle;
+ `
 
-// const hoverAndFocusStyle = (type: Type) => css`
-//   outline: 0;
-//   background: var(${colors[type].activeBackground});
-// `
+const hoverAndFocusStyle = (type: Type) => css`
+   outline: 0;
+   background: var(${colors[type].activeBackground});
+ `
 export const Wrapper = styled.button
   .attrs({ type: 'button' })<{ $type: string, $disabled?: boolean }>`
   border: 0;
@@ -45,11 +44,9 @@ export const Wrapper = styled.button
   background: var(${props => colors[props.$type as Type].background});
   border-radius: 3px;
   text-align: center;
+  cursor: pointer;
+  ${ props => hoverAndFocusStyle(props.$type as Type) }
 `
-// TODO: post GA
-// cursor: pointer;
-// ${ hoverAndFocusStyle(props.$type as Type) }
-
 export const Statistic = styled(antStatistic)<{ $type: string }>`
   display: flex;
   flex-direction: column-reverse;
@@ -68,17 +65,16 @@ export const Statistic = styled(antStatistic)<{ $type: string }>`
     }
   }
 `
-// TODO: post GA
-// export const UpArrow = styled(CaretDoubleUpOutlined)<{ $type: string }>`
-//   ${arrowStyle}
-//   path {
-//     stroke: var(${props => colors[props.$type as Type].text});
-//   }
-// `
+ export const UpArrow = styled(CaretDoubleUpOutlined)<{ $type: string }>`
+  ${arrowStyle}
+   path {
+     stroke: var(${props => colors[props.$type as Type].text});
+   }
+ `
 
-// export const DownArrow = styled(CaretDoubleDownOutlined)<{ $type: string }>`
-//   ${arrowStyle}
-//   path {
-//     stroke: var(${props => colors[props.$type as Type].text});
-//   }
-// `
+ export const DownArrow = styled(CaretDoubleDownOutlined)<{ $type: string }>`
+   ${arrowStyle}
+   path {
+     stroke: var(${props => colors[props.$type as Type].text});
+   }
+ `
