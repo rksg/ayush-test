@@ -199,11 +199,15 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   }
 
   return <Card>
-    <Loader states={[{
-      isLoading: !Object.keys(client).length
-    }]}>
-      { getProperties(clientStatus, networkType, clientDetails.clientMac) }
-    </Loader>
+    {
+      clientStatus === ClientStatusEnum.HISTORICAL ?
+        <>{ getProperties(clientStatus, networkType, clientDetails.clientMac) }</>:
+        <Loader states={[{
+          isLoading: !Object.keys(client).length
+        }]}>
+          { getProperties(clientStatus, networkType, clientDetails.clientMac) }
+        </Loader>
+    }
   </Card>
 }
 
@@ -217,18 +221,18 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'MAC Address' })}
-        children={client?.clientMac}
+        children={client?.clientMac || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP Address' })}
-        children={client?.ipAddress || client?.clientIP}
+        children={client?.ipAddress || client?.clientIP || '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'OS' })}
-        children={<UI.OsType size={4}>
+        children={client?.osType ? <UI.OsType size={4}>
           {getOsTypeIcon(client?.osType || '')}
           {client?.osType}
-        </UI.OsType>}
+        </UI.OsType> : '--'}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Host Name' })}
@@ -308,7 +312,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Service Set Identifier' })}
         >{$t({ defaultMessage: 'SSID' })}
         </Tooltip>}
-        children={client?.networkSsid}
+        children={client?.networkSsid || '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -316,7 +320,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Virtual Local Area Network Identifier' })}
         >{$t({ defaultMessage: 'VLAN ID' })}
         </Tooltip>}
-        children={client?.vlan}
+        children={client?.vlan || '--'}
       />
       <Descriptions.Item
         label={<Tooltip
@@ -324,7 +328,7 @@ function Connection ({ client }: { client: ClientExtended }) {
           title={$t({ defaultMessage: 'Basic Service Set Identifier' })}
         >{$t({ defaultMessage: 'BSSID' })}
         </Tooltip>}
-        children={client?.bssid}
+        children={client?.bssid || '--'}
       />
     </Descriptions>
   </>
@@ -346,36 +350,36 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           title={intl.$t({ defaultMessage: 'Radio Frequency Channel' })}
         >{intl.$t({ defaultMessage: 'RF Channel' })}
         </Tooltip>}
-        children={client?.rfChannel}
+        children={client?.rfChannel || '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic From Client' })}
-        children={<Tooltip
+        children={client?.transmittedBytes ? <Tooltip
           placement='bottom'
           title={`${numberFormatter(client?.transmittedBytes)} B`}
         >
           {bytesFormatter(client?.transmittedBytes)}
-        </Tooltip>}
+        </Tooltip> : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets From Client' })}
-        children={numberFormatter(client?.transmittedPackets)}
+        children={client?.transmittedPackets ? numberFormatter(client?.transmittedPackets) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Traffic To Client' })}
-        children={<Tooltip
+        children={client?.receivedBytes ? <Tooltip
           placement='bottom'
           title={`${numberFormatter(client?.receivedBytes)} B`}
         >{bytesFormatter(client?.receivedBytes)}
-        </Tooltip>}
+        </Tooltip> : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Packets To Client' })}
-        children={numberFormatter(client?.receivedPackets)}
+        children={client?.receivedPackets ? numberFormatter(client?.receivedPackets) : '--'}
       />
       <Descriptions.Item
         label={intl.$t({ defaultMessage: 'Frames Dropped' })}
-        children={numberFormatter(client?.framesDropped)}
+        children={client?.framesDropped ? numberFormatter(client?.framesDropped) : '--'}
       />
       <Descriptions.Item
         label={<Tooltip
