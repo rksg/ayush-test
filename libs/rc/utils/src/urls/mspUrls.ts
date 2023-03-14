@@ -46,8 +46,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   refreshMspEntitlement: {
-    method: 'post',
-    url: '/mspEntitlements/summaries?referesh=true',
+    method: 'get',
+    url: '/mspEntitlements/summaries?refresh=true',
     oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement/refresh',
     newApi: true
   },
