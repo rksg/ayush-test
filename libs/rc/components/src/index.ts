@@ -1,9 +1,7 @@
 export {
   ActivityTable,
-  useActivityTableFilter,
-  defaultSorter as activityDefaultSorter,
-  defaultPayload as activityDefaultPayload,
-  columnState
+  columnState,
+  useActivityTableQuery
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
@@ -25,12 +23,14 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
-  useEventTableFilter,
-  defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter,
+  useEventsTableQuery,
   defaultSearch as eventDefaultSearch
 } from './EventTable'
-export { HistoricalClientsTable } from './HistoricalClientsTable'
+export {
+  HistoricalClientsTable,
+  GlobalSearchHistoricalClientsTable,
+  defaultHistoricalClientPayload
+} from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'

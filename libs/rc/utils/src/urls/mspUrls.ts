@@ -25,8 +25,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteMspEcAccount: {
     method: 'delete',
-    // url: '/mspCustomers/:mspEcTenantId'
-    url: '/api/mspservice/tenant/:mspEcTenantId'
+    url: '/mspCustomers/:mspEcTenantId',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId',
+    newApi: true
   },
   getMspAdminList: {
     method: 'post',
@@ -110,8 +111,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcProfile: {
     method: 'get',
-    // url: '/mspCustomers/:tenantId'
-    url: '/api/mspservice/tenant/:tenantId'
+    url: '/mspCustomers/:tenantId',
+    oldUrl: '/api/mspservice/tenant/:tenantId',
+    newApi: true
   },
   getMspEcAdmin: {
     method: 'get',
@@ -127,8 +129,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getTenantDetail: {
     method: 'get',
-    // url: '/tenants/self'
-    url: '/api/tenant/:tenantId'
+    url: '/tenants/self',
+    oldUrl: '/api/tenant/:tenantId',
+    newApi: true
   },
   getSupportMspCustomersList: {
     method: 'post',
@@ -162,28 +165,33 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcDelegatedAdmins: {
     method: 'get',
-    // url: '/mspCustomers/:mspEcTenantId/mspadmins'
-    url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
+    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins',
+    newApi: true
   },
   updateMspEcDelegatedAdmins: {
     method: 'put',
-    // url: '/mspCustomers/:mspEcTenantId/mspadmins'
-    url: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins'
+    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/delegatedmspadmins',
+    newApi: true
   },
   getMspEcSupport: {
     method: 'get',
-    // url: '/mspCustomers/:mspEcTenantId/delegations'
-    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+    url: '/mspCustomers/:mspEcTenantId/delegations',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/delegation/support',
+    newApi: true
   },
   enableMspEcSupport: {
     method: 'post',
-    // url: '/mspCustomers/:mspEcTenantId/delegations'
-    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+    url: '/mspCustomers/:mspEcTenantId/delegations',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/delegation/support',
+    newApi: true
   },
   disableMspEcSupport: {
     method: 'delete',
-    // url: '/mspCustomers/:mspEcTenantId/delegations'
-    url: '/api/mspservice/tenant/:mspEcTenantId/delegation/support'
+    url: '/mspCustomers/:mspEcTenantId/delegations',
+    oldUrl: '/api/mspservice/tenant/:mspEcTenantId/delegation/support',
+    newApi: true
   },
   assignMspEcToIntegrator: {
     method: 'post',
@@ -219,8 +227,9 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspBaseURL: {
     method: 'get',
-    // url: '/mspLabels/baseUrls'
-    url: '/api/mspservice/baseurl'
+    url: '/mspLabels/baseUrls',
+    oldUrl: '/api/mspservice/baseurl',
+    newApi: true
   },
   getMspLabel: {
     method: 'get',
@@ -242,12 +251,19 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   acceptRejectInvitation: {
     method: 'put',
-    // url: '/tenants/delegations/:delegationId'
-    url: '/api/tenant/:tenantId/delegation/:delegationId'
+    url: '/tenants/delegations/:delegationId',
+    oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+    newApi: true
   },
   getGenerateLicenseUsageRpt: {
     method: 'get',
     // url: '/licenseUsageReports'
     url: '/api/entitlement-assign/tenant/:tenantId'
+  },
+  getParentLogoUrl: {
+    method: 'get',
+    url: '/mspCustomers/:tenantId/logoUrls',
+    oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
+    newApi: true
   }
 }
