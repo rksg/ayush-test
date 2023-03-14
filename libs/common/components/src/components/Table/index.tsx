@@ -323,7 +323,14 @@ function Table <RecordType extends Record<string, any>> ({
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
       props.rowSelection?.onChange?.(keys, rows, info)
-    }
+    },
+    ...isGroupByActive
+      ? {
+        getCheckboxProps: record => record.children
+          ? ({ disabled: true, style: { display: 'none' } })
+          : ({})
+      }
+      : {}
   } : undefined
 
   let pagination: false | TablePaginationConfig = false
