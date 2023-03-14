@@ -143,6 +143,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                   class="ant-space-item"
                 >
                   <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
@@ -168,6 +169,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                   class="ant-space-item"
                 >
                   <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
@@ -193,6 +195,7 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
                   class="ant-space-item"
                 >
                   <a
+                    class="styledComponents__TenantLinkBlack-sc-1kux3bo-4 eWXDya"
                     href="/t/tenant-id/devices/wifi/undefined/details/analytics/health/overview"
                   >
                     <div
