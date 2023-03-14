@@ -883,6 +883,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             }]}
             children={
               <Select
+                style={{ width: '150px' }}
                 placeholder={$t({ defaultMessage: 'Select profile...' })}
                 onChange={(value) => {
                   setQueryPolicyId(value)
