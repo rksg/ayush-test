@@ -32,7 +32,7 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.NETWORK_SEGMENTATION]: defineMessage(
     { defaultMessage: 'Controls network traffic by different segments' }),
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
-    { defaultMessage: 'Network Segmentation Auth Page for Switch Description' })
+    { defaultMessage: 'Templates of Network Segmentation Auth Page for Switch' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),
