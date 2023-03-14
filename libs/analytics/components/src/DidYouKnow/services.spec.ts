@@ -5,7 +5,7 @@ import { mockGraphqlQuery } from '@acx-ui/test-utils'
 
 import { api } from './services'
 
-describe('didYouKnowApi', () => {
+describe('factsApi', () => {
   const props = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -95,22 +95,22 @@ describe('didYouKnowApi', () => {
         }
       }
     }
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.didYouKnow.initiate(props)
+      api.endpoints.facts.initiate(props)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode.facts)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.didYouKnow.initiate(props)
+      api.endpoints.facts.initiate(props)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

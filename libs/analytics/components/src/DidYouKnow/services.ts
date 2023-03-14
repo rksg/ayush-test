@@ -1,8 +1,10 @@
 import { gql } from 'graphql-request'
 import moment  from 'moment'
 
-import { dataApi }                         from '@acx-ui/analytics/services'
-import { AnalyticsFilter, DidYouKnowData } from '@acx-ui/analytics/utils'
+import { dataApi }         from '@acx-ui/analytics/services'
+import { AnalyticsFilter } from '@acx-ui/analytics/utils'
+
+import { DidYouKnowData } from './facts'
 
 interface Response <FactsData> {
   network: {
@@ -14,13 +16,13 @@ interface Response <FactsData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    didYouKnow: build.query<
+    facts: build.query<
       DidYouKnowData[],
       AnalyticsFilter
     >({
       query: (payload) => ({
         document: gql`
-        query DidYouKnowWidget(
+        query Facts(
           $path: [HierarchyNodeInput], 
           $start: DateTime, 
           $end: DateTime, 
@@ -48,4 +50,4 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useDidYouKnowQuery } = api
+export const { useFactsQuery } = api

@@ -48,14 +48,14 @@ describe('DidYouKnowWidget', () => {
   )
 
   it('should render loader', () => {
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       data: { network: { hierarchyNode: { facts: sample } } }
     })
     render(<Provider> <DidYouKnow filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
   })
   it('should render chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       data: { network: { hierarchyNode: { facts: sample } } }
     })
     const { asFragment } =render(
@@ -68,7 +68,7 @@ describe('DidYouKnowWidget', () => {
   })
   it('should render error', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       error: new Error('something went wrong!')
     })
     render(<Provider><DidYouKnow filters={filters}/></Provider>)
@@ -77,7 +77,7 @@ describe('DidYouKnowWidget', () => {
   })
   it('should render "No data to display" when data is empty', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => {})
-    mockGraphqlQuery(dataApiURL, 'DidYouKnowWidget', {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
       data: { network: { hierarchyNode: { facts: [] } } }
     })
     render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
