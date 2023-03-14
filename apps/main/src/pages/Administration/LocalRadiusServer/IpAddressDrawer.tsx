@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Form, Input } from 'antd'
+import { isEqual }     from 'lodash'
+import { useIntl }     from 'react-intl'
 
-import { Drawer }                              from '@acx-ui/components'
+import { Drawer, showToast }                   from '@acx-ui/components'
 import { useUpdateRadiusClientConfigMutation } from '@acx-ui/rc/services'
-import { ClientConfig }                        from '@acx-ui/rc/utils'
+import { ClientConfig, cliIpAddressRegExp }    from '@acx-ui/rc/utils'
 
 interface IpAddressDrawerProps {
   visible: boolean
@@ -13,6 +14,10 @@ interface IpAddressDrawerProps {
   editMode?: boolean
   editIpAddress?: string
   clientConfig: ClientConfig
+}
+
+interface httpErrorResponse {
+  status: number
 }
 
 export function IpAddressDrawer (props: IpAddressDrawerProps) {
@@ -38,30 +43,26 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
     form.resetFields()
   }
 
-  const ipAddressRegExp = (value: string) =>{
-    // eslint-disable-next-line max-len
-    const REG = new RegExp(/((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/)
-    if (value && !REG.test(value)) {
-      return Promise.reject($t({ defaultMessage: 'Invalid IP address format' }))
+  const ipAddressExistCheck = (value: string) =>{
+    if (value !== editIpAddress && clientConfig.ipAddress
+      && clientConfig.ipAddress.filter(item => isEqual(item, value)).length !== 0) {
+      return Promise.reject($t({ defaultMessage: 'IP Address already exists' }))
     }
     return Promise.resolve()
   }
 
   const content = <Form layout='vertical' form={form}>
-    <Row>
-      <Col span={12}>
-        <Form.Item
-          name='singleIpAddress'
-          label={$t({ defaultMessage: 'IP Address' })}
-          rules={[
-            { required: true },
-            { validator: (_, value) => ipAddressRegExp(value) }
-          ]}
-          validateFirst
-          hasFeedback
-          children={<Input/>}/>
-      </Col>
-    </Row>
+    <Form.Item
+      name='singleIpAddress'
+      label={$t({ defaultMessage: 'IP Address' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => cliIpAddressRegExp(value) },
+        { validator: (_, value) => ipAddressExistCheck(value) }
+      ]}
+      validateFirst
+      hasFeedback
+      children={<Input/>}/>
   </Form>
 
   return (
@@ -73,7 +74,7 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
       children={content}
       footer={
         <Drawer.FormFooter
-          showAddAnother={true}
+          showAddAnother={!editMode}
           buttonLabel={({
             save: $t({ defaultMessage: 'Apply' }),
             addAnother: $t({ defaultMessage: 'Add Another IP Address' })
@@ -84,10 +85,14 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               await form.validateFields()
               const ipAddress = form.getFieldValue('singleIpAddress')
               if(editMode) {
-                await updateConfig({ payload: {
-                  // eslint-disable-next-line max-len
-                  ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(ipAddress)
-                } }).unwrap()
+                if(ipAddress !== editIpAddress) {
+                  await updateConfig({
+                    payload: {
+                      // eslint-disable-next-line max-len
+                      ipAddress: clientConfig.ipAddress?.filter((e) => e !== editIpAddress).concat(ipAddress)
+                    }
+                  }).unwrap()
+                }
               }else {
                 await updateConfig({ payload: {
                   // eslint-disable-next-line max-len
@@ -99,8 +104,30 @@ export function IpAddressDrawer (props: IpAddressDrawerProps) {
               } else {
                 form.resetFields()
               }
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
+
+              showToast({
+                type: 'success',
+                content: $t(
+                  // eslint-disable-next-line max-len
+                  { defaultMessage: 'IP Address {ipAddress} was {editMode, select, true {updated} other {added}}' },
+                  { ipAddress, editMode }
+                )
+              })
+
+            } catch(error) {
+              if (error instanceof Error){
+                throw error
+              }
+              const errorResponse = error as httpErrorResponse
+              if(errorResponse.status) {
+                if (errorResponse.status === 409) {
+                  showToast({
+                    type: 'error',
+                    // eslint-disable-next-line max-len
+                    content: $t({ defaultMessage: 'IP Address is already used by another tenant' })
+                  })
+                }
+              }
             }
           }}
         />

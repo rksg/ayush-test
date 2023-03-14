@@ -21,7 +21,7 @@ describe('Table Filters', () => {
         { 'john tan': true as unknown as boolean[] },
         filterableCol,
         false
-      )())
+      ))
       const select = await screen.findByRole('combobox', { hidden: true , queryFallbacks: true })
       fireEvent.mouseDown(select)
       fireEvent.click((await screen.findAllByText('john tan'))[0])
@@ -41,7 +41,7 @@ describe('Table Filters', () => {
         {},
         filterableCol,
         false
-      )())
+      ))
     })
 
     it('should render with filterable array data', () => {
@@ -58,7 +58,7 @@ describe('Table Filters', () => {
         {},
         filterableCol,
         false
-      )())
+      ))
     })
   })
 })

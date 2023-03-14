@@ -42,8 +42,7 @@ export function getFilteredData <RecordType> (
     }
     return true
   }
-  const typedData = Array.isArray(dataSource) ? dataSource : []
-  return typedData.reduce((
+  return dataSource?.reduce((
     rows: RecordWithChildren<RecordType>[],
     row: RecordType | RecordWithChildren<RecordType>
   ) => {
@@ -86,11 +85,10 @@ export function renderFilter <RecordType> (
       data.push(value)
     }
   }
-  const typedData: readonly RecordType[] = Array.isArray(dataSource) ? dataSource : []
   const options = Array.isArray(column.filterable)
     ? column.filterable
     : !enableApiFilter
-      ? typedData.reduce((data: string[], datum: RecordType) => {
+      ? dataSource?.reduce((data: string[], datum: RecordType) => {
         const { children } = hasChildrenColumn(datum) ? datum : { children: undefined }
         if (children) {
           for (const child of children) {
@@ -102,7 +100,7 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v }))
       : []
 
-  return () => <UI.FilterSelect
+  return <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'

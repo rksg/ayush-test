@@ -1,3 +1,5 @@
+import { waitFor } from '@testing-library/react'
+
 import { Provider }                          from '@acx-ui/store'
 import { render, screen, fireEvent, within } from '@acx-ui/test-utils'
 
@@ -13,7 +15,12 @@ describe('Persona Form', () => {
   it('should add devices', async () => {
     render(
       <Provider>
-        <PersonaDevicesImportDialog visible onCancel={jest.fn} onSubmit={jest.fn} />
+        <PersonaDevicesImportDialog
+          visible
+          onCancel={jest.fn}
+          onSubmit={jest.fn}
+          selectedMacAddress={[]}
+        />
       </Provider>
     )
 
@@ -60,5 +67,8 @@ describe('Persona Form', () => {
 
     const deleteButton = await screen.findByRole('button', { name: /Delete/i })
     fireEvent.click(deleteButton)
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /Delete/i })).toBeNull()
+    })
   })
 })

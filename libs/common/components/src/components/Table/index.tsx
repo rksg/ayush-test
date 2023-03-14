@@ -205,47 +205,32 @@ function Table <RecordType extends Record<string, any>> ({
     let tableCols: typeof props.columns
 
     if (isGroupByActive) {
-      // create deep copy of current cols
-      const colCopy: typeof props.columns = _.cloneDeep(props.columns)
-
-      // calculate the smallest possible amount of parent cols to override
-      const calculatedParentCols = finalParentColumns
-      const lastParentCol = Math.min(
-        calculatedParentCols.length,
-        (colCopy).length
-      )
-
-      // overwrite parent row render in column
-      for (let i = 0; i < lastParentCol; ++i) {
-        const { render, searchable, key } = colCopy[i]
-        colCopy[i].render = (dom, record, index, highlightFn, action, schema) => {
-          if ('children' in record) {
-            return calculatedParentCols[i].renderer(record)
-          } else {
-            if (render) {
-              return render(dom, record, index, highlightFn, action, schema)
+      const overrideParents = props.columns.map((col, ind) => {
+        function parentRenderOverride (parent?: {
+          renderer: (record: RecordType) => React.ReactNode;
+        }): typeof render {
+          return (dom, record, index, highlightFn, action, schema) => {
+            if ('children' in record) {
+              return (parent) ? parent.renderer(record) : null
+            } else {
+              if (render) {
+                return render(dom, record, index, highlightFn, action, schema)
+              }
+              if (searchable) {
+                return getHighlightFn(searchValue)(_.get(record, key))
+              }
+              return dom
             }
-            if (searchable) {
-              return getHighlightFn(searchValue)(_.get(record, key))
-            }
-            return dom
           }
         }
-      }
+        const parent = finalParentColumns.at(ind)
+        const { render, searchable, key } = col
+        return { ...col, render: parentRenderOverride(parent) }
+      })
 
-      // remove remining row data for parent cols
-      for (let j = lastParentCol; j < colCopy.length; ++j) {
-        const { render } = colCopy[j]
-        colCopy[j].render = (dom, record, index, highlightFn, action, schema) => {
-          if ('children' in record) {
-            return null
-          }
-          return render && render(dom, record, index, highlightFn, action, schema)
-        }
-      }
-      tableCols = colCopy
+      tableCols = overrideParents
     } else {
-      tableCols = _.cloneDeep(props.columns)
+      tableCols = props.columns
     }
 
     const cols = type === 'tall'
@@ -462,7 +447,7 @@ function Table <RecordType extends Record<string, any>> ({
             }
             {filterables.map((column, i) =>
               renderFilter<RecordType>(
-                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)()
+                column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
             {Boolean(groupable.length) && <GroupBySelect />}
           </Space>
