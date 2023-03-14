@@ -1,6 +1,6 @@
-
-import { Modal }   from 'antd'
 import { useIntl } from 'react-intl'
+
+import { Modal } from '@acx-ui/components'
 
 interface StartSubscriptionModalProps {
   isActive: boolean

@@ -56,6 +56,9 @@ const HelpButton = (props:HelpButtonProps) => {
       onClick={(menuInfo)=>{
         switch(menuInfo.key)
         {
+          case 'support':
+            if (supportStatus === 'ready') window.tdi.chat?.()
+            break
           case 'help':
             setHelpPageModalOpen(true)
             break
@@ -79,50 +82,42 @@ const HelpButton = (props:HelpButtonProps) => {
             break
         }
       }}
-    >
-      <Menu.Item key='documentation'>
-        {$t({ defaultMessage: 'Documentation Center' })}
-      </Menu.Item>
-
-      <Menu.Item key='videos'>
-        {$t({ defaultMessage: 'How-To Videos' })}
-      </Menu.Item>
-
-      <Menu.Item key='help'>
-        {$t({ defaultMessage: 'Help for this page' })}
-      </Menu.Item>
-
-      <Menu.Item disabled={isChatDisabled}
-        onClick={()=>{
-          if(supportStatus === 'ready' && window.tdi.chat){
-            window.tdi.chat()
-          }
-        }}
-        key='support'>
-        {$t({ defaultMessage: 'Contact Support' })}
-      </Menu.Item>
-
-      <Menu.Item key='models'>
-        {$t({ defaultMessage: 'Supported Device Models' })}
-      </Menu.Item>
-
-      <Menu.Item key='firewallACL'>
-        {$t({ defaultMessage: 'Firewall ACL Inputs' })}
-      </Menu.Item>
-
-      <Menu.Divider />
-
-      <Menu.Item key='openCases'>
-        {$t({ defaultMessage: 'My Open Cases' })}
-      </Menu.Item>
-
-      <Menu.Divider />
-
-      <Menu.Item key='privacy'>
-        {$t({ defaultMessage: 'Privacy' })}
-      </Menu.Item>
-
-    </Menu>
+      items={[{
+        key: 'documentation',
+        label: $t({ defaultMessage: 'Documentation Center' })
+      },
+      {
+        key: 'videos',
+        label: $t({ defaultMessage: 'How-To Videos' })
+      },
+      {
+        key: 'help',
+        label: $t({ defaultMessage: 'Help for this page' })
+      },
+      {
+        key: 'support',
+        disabled: isChatDisabled,
+        label: $t({ defaultMessage: 'Contact Support' })
+      },
+      {
+        key: 'models',
+        label: $t({ defaultMessage: 'Supported Device Models' })
+      },
+      {
+        key: 'firewallACL',
+        label: $t({ defaultMessage: 'Firewall ACL Inputs' })
+      },
+      { type: 'divider' },
+      {
+        key: 'openCases',
+        label: $t({ defaultMessage: 'My Open Cases' })
+      },
+      { type: 'divider' },
+      {
+        key: 'privacy',
+        label: $t({ defaultMessage: 'Privacy' })
+      }]}
+    />
   )
 
   return (<ButtonWrapper>

@@ -29,7 +29,7 @@ export default function DHCPServiceDetail () {
         title={data?.serviceName}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'Services' }),
+            text: $t({ defaultMessage: 'DHCP Services' }),
             link: getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })
           }
         ]}

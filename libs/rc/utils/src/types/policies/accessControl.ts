@@ -12,6 +12,11 @@ export interface l3AclPolicyInfoType {
   defaultAccess: string
 }
 
+export interface AclOptionType {
+  key: string,
+  value: string
+}
+
 export interface AccessControlInfoType {
   id: string,
   name: string,

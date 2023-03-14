@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                              from '@acx-ui/rc/utils'
-import { Provider }                                                                 from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, render, screen, within, waitFor, fireEvent } from '@acx-ui/test-utils'
 
 import { Integrators } from '.'
 
@@ -24,46 +25,66 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_INTEGRATOR',
       wifiLicenses: 2
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589676020',
+      id: 'b5793f93ed3d4483929610a981eeda0c',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'installer 888',
+      status: 'Active',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_INSTALLER',
+      wifiLicenses: 2
     }
   ]
 }
 
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+const utils = require('@acx-ui/rc/utils')
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils')
+}))
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('Integrators', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    jest.spyOn(services, 'useDeleteMspEcMutation')
     mockServer.use(
-      rest.post(
-        MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.delete(
         MspUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       )
     )
+    services.useGetAssignedMspEcToIntegratorQuery = jest.fn().mockImplementation(() => {
+      return { data: {} }
+    })
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
-  it('should render page header and grid layout', async () => {
-    render(<Provider><Integrators /></Provider>, { route: { params } })
-    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
-    expect(screen.getByText('3rd Party')).toBeVisible()
-    expect(screen.getByText('Manage own account')).toBeVisible()
-    expect(screen.getByText('Add Integrator')).toBeVisible()
-  })
-  it('should render table', async () => {
-
-    const { asFragment } = render(
+  it('should render correctly', async () => {
+    render(
       <Provider>
         <Integrators />
-      </Provider>, {
-        route: { params, path: '/:tenantId/integrators' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Add Integrator')
-    await screen.findByText('integrator 168')
+      </Provider>, { route: { params, path: '/:tenantId/integrators' } })
+    expect(screen.getByText('3rd Party')).toBeVisible()
+    expect(screen.getByText('Manage own account')).toBeVisible()
+    expect(screen.getByText('Add')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = screen.getByRole('table').querySelector('tbody')!
@@ -74,8 +95,6 @@ describe('Integrators', () => {
     list.data.forEach((item, index) => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
-
-    expect(asFragment()).toMatchSnapshot()
   })
   it('should delete selected row', async () => {
     render(
@@ -85,17 +104,32 @@ describe('Integrators', () => {
         route: { params, path: '/:tenantId/integrators' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
     const row = await screen.findByRole('row', { name: /integrator 168/i })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
+    const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
 
     await screen.findByText('Delete "integrator 168"?')
-    const deleteEcButton = await screen.findByText('Delete Integrator')
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Integrator' })
+    userEvent.type(screen.getByRole('textbox',
+      { name: 'Type the word "Delete" to confirm:' }), 'Delete')
+    await waitFor(() =>
+      expect(deleteEcButton).not.toBeDisabled())
+
     fireEvent.click(deleteEcButton)
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' },
+        status: 'fulfilled'
+      })
+    ]
+
+    await waitFor(() =>
+      expect(services.useDeleteMspEcMutation).toHaveLastReturnedWith(value))
+    await waitFor(() =>
+      expect(screen.queryByText('Delete "integrator 168"?')).toBeNull())
   })
   it('should resend invite for selected row', async () => {
     render(
@@ -105,12 +139,46 @@ describe('Integrators', () => {
         route: { params, path: '/:tenantId/dashboard/integrators' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /integrator 168/i })
+    fireEvent.click(within(row).getByRole('radio'))
+
+    const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
+    fireEvent.click(resendInviteButton)
+
+    expect(screen.getByRole('button', { name: 'Resend Invitation' })).toBeVisible()
+  })
+  it('should edit for selected row', async () => {
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/integrators' }
+      })
 
     const row = await screen.findByRole('row', { name: /integrator 168/i })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const resendInviteButton = screen.getByRole('button', { name: /Resend Invitation Email/i })
-    fireEvent.click(resendInviteButton)
+    const editButton = screen.getByRole('button', { name: 'Edit' })
+    fireEvent.click(editButton)
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      // eslint-disable-next-line max-len
+      pathname: `/v/${params.tenantId}/integrators/edit/${list.data.at(0)?.tenantType}/${list.data.at(0)?.id}`,
+      hash: '',
+      search: ''
+    })
+  })
+  it('should open dialog when customers assigned link clicked', async () => {
+    render(
+      <Provider>
+        <Integrators />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/integrators' }
+      })
+
+    const row = await screen.findByRole('row', { name: /integrator 168/i })
+    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
   })
 })
