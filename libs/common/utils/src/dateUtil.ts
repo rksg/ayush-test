@@ -7,6 +7,7 @@ export enum DateRange {
   last7Days = 'Last 7 Days',
   last30Days = 'Last 30 Days',
   custom = 'Custom',
+  allTime = 'All Time'
 }
 
 type Ranges = Record<string, [moment.Moment, moment.Moment]>
@@ -40,6 +41,10 @@ export function defaultRanges (subRange?: DateRange[]) {
     [DateRange.last30Days]: [
       moment().subtract(30, 'days').seconds(0),
       moment().seconds(0)
+    ],
+    [DateRange.allTime]: [
+      moment(undefined),
+      moment(undefined)
     ]
   }
   if (subRange) {
@@ -72,6 +77,9 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
   }),
   [DateRange.custom]: defineMessage({
     defaultMessage: 'Custom'
+  }),
+  [DateRange.allTime]: defineMessage({
+    defaultMessage: 'All Time'
   })
 }
 
