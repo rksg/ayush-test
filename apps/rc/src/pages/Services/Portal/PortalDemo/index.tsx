@@ -54,7 +54,8 @@ export default function PortalDemo ({
   })
   const {
     portalData,
-    setPortalData
+    setPortalData,
+    setCurrentLang
   } = useContext(PortalFormContext)
   const [showComponent, setShowComponent] = useState(false)
   const [view, setView] = useState(PortalViewEnum.ClickThrough)
@@ -84,6 +85,7 @@ export default function PortalDemo ({
       getPortalLang({ params: { ...params, messageName:
       demoValue.displayLangCode+'.json' } }).unwrap().then((res)=>{
         setPortalLang(res)
+        setCurrentLang?.(res)
       })
     }
   }, [demoValue.displayLangCode])
