@@ -93,9 +93,7 @@ export function ClientOverviewTab () {
       setClientDetails((historicalisData?.data?.[0] ?? {}) as Client)
     }
 
-    clientStatus === ClientStatusEnum.CONNECTED
-      ? getClientData()
-      : getHistoricalClientData()
+    getClientData()
   }, [clientId])
 
   useEffect(() => {
@@ -138,7 +136,7 @@ export function ClientOverviewTab () {
     }
     getClientData()
   }, [filters, isTribandAp])
-  // TODO: Remove background: '#F7F7F7' and Add Top 10 Applications Component
+
   return <GridRow>
     <GridCol col={{ span: 18 }}>
       <GridRow>
