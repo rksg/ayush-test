@@ -1,5 +1,5 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Row }     from 'antd'
 import moment      from 'moment-timezone'
@@ -74,7 +74,8 @@ export function Subscriptions () {
       dataIndex: 'effectiveDate',
       key: 'effectiveDate',
       render: function (_, row) {
-        return moment(row.effectiveDate).format(DateFormatEnum.UserDateFormat)
+        const expirationDate = new Date(Date.parse(row.expirationDate))
+        return moment(expirationDate).format(DateFormatEnum.UserDateFormat)
       }
     },
     {
@@ -82,7 +83,8 @@ export function Subscriptions () {
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       render: function (_, row) {
-        return moment(row.expirationDate).format(DateFormatEnum.UserDateFormat)
+        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remaingDays)
       }
     },
     {
@@ -133,28 +135,30 @@ export function Subscriptions () {
         ...rest
       })
     })
-    if (queryResults.data) {
-      const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
-      let wifiQuantity = 0
-      let wifiUsed = 0
-      wifiData.forEach(summary => {
-        wifiQuantity += summary.quantity + summary.remainingDevices
-        wifiUsed += summary.quantity
-        setTotalWifiCount(wifiQuantity)
-        setUsedWifiCount(wifiUsed)
-      })
-    }
-    if (queryResults.data) {
-      const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
-      let switchQuantity = 0
-      let switchUsed = 0
-      switchData.forEach(summary => {
-        switchQuantity += summary.quantity + summary.remainingDevices
-        switchUsed += summary.quantity
-        setTotalSwitchCount(switchQuantity)
-        setUsedSwitchCount(switchUsed)
-      })
-    }
+    useEffect(() => {
+      if (queryResults.data) {
+        const wifiData = queryResults.data?.filter(n => n.deviceType === 'MSP_WIFI')
+        let wifiQuantity = 0
+        let wifiUsed = 0
+        wifiData.forEach(summary => {
+          wifiQuantity += summary.quantity + summary.remainingDevices
+          wifiUsed += summary.quantity
+          setTotalWifiCount(wifiQuantity)
+          setUsedWifiCount(wifiUsed)
+        })
+      }
+      if (queryResults.data) {
+        const switchData = queryResults.data?.filter(n => n.deviceType === 'MSP_SWITCH')
+        let switchQuantity = 0
+        let switchUsed = 0
+        switchData.forEach(summary => {
+          switchQuantity += summary.quantity + summary.remainingDevices
+          switchUsed += summary.quantity
+          setTotalSwitchCount(switchQuantity)
+          setUsedSwitchCount(switchUsed)
+        })
+      }
+    })
 
     const barColors = [
       cssStr('--acx-accents-blue-50'),
