@@ -5,7 +5,9 @@ export interface PortalFormContextType {
   editMode?: boolean,
   portalData?: Portal,
   setPortalData?: (data: Portal) => void,
-  error?: boolean
+  error?: boolean,
+  currentLang?: { [key:string]:string },
+  setCurrentLang?: (data: { [key:string]:string }) => void
 }
 const PortalFormContext = createContext({} as PortalFormContextType)
 
