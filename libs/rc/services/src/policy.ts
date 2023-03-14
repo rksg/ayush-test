@@ -1266,7 +1266,7 @@ export const {
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogListQuery,
   useSyslogPolicyListQuery,
-  useGetAAAPolicyViewModelListQuery
+  useGetAAAPolicyViewModelListQuery,
   useGetApSnmpPolicyListQuery,
   useLazyGetApSnmpPolicyListQuery,
   useGetApSnmpPolicyQuery,
