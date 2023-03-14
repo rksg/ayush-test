@@ -11,6 +11,7 @@ import {
   LeaseUnit,
   networkWifiIpRegExp,
   subnetMaskIpRegExp,
+  validateNetworkBaseIp,
   countIpMaxRange,
   countIpSize,
   IpInSubnetPool } from '@acx-ui/rc/utils'
@@ -198,7 +199,9 @@ export default function DHCPPoolTable ({
           rules={[
             { required: true },
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) }
+            { validator: (_, value) => subnetValidator(value, values(), form.getFieldValue('id')) },
+            // eslint-disable-next-line max-len
+            { validator: (_, value) => validateNetworkBaseIp(value, form.getFieldValue('subnetMask')) }
           ]}
           children={<Input />}
         />
