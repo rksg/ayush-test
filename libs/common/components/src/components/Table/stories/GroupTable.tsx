@@ -7,7 +7,6 @@ import { uniqueId }   from 'lodash'
 import { Table, TableProps } from '..'
 import { Button }            from '../../Button'
 
-
 type APExtendedGroupedResponse = {
   totalCount: number
   page: number
@@ -793,19 +792,18 @@ function useMockData () {
 
 export function GroupTable () {
   const { currData, setGroupByKey } = useMockData()
-  return (
-    <>
+  return <>
     with groupby:
-      <Table<typeof groupTBData[0] | typeof flatData[0]>
-        columns={groupByColumns}
-        dataSource={currData as unknown as TableProps<typeof groupTBData[0]>['dataSource']}
-        rowKey='id' // need to set unique entry per record to ensure proper behaviour
-        indentSize={6}
-        columnEmptyText='-'
-        onFilterChange={(_filter, _search, groupBy) => {
-          setGroupByKey(groupBy)
-        }}
-      />
-    </>
-  )
+    <Table<typeof groupTBData[0] | typeof flatData[0]>
+      columns={groupByColumns}
+      dataSource={currData as unknown as TableProps<typeof groupTBData[0]>['dataSource']}
+      rowKey='id' // need to set unique entry per record to ensure proper behaviour
+      indentSize={6}
+      columnEmptyText='-'
+      rowSelection={{ defaultSelectedRowKeys: [] }}
+      onFilterChange={(_filter, _search, groupBy) => {
+        setGroupByKey(groupBy)
+      }}
+    />
+  </>
 }

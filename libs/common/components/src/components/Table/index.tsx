@@ -22,7 +22,7 @@ import {
   renderSearch,
   MIN_SEARCH_LENGTH
 } from './filters'
-import { useGroupBy }                   from './groupBy'
+import { useGroupBy, GroupSelect }      from './groupBy'
 import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
@@ -157,42 +157,33 @@ function Table <RecordType extends Record<string, any>> ({
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
-  const groupable = props.columns.filter(col => col.groupable)
   const {
-    GroupBySelect,
+    groupable,
     expandable,
     groupActionColumns,
-    finalParentColumns,
+    parentColumns,
     isGroupByActive
-  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(
-    groupable,
-    groupByValue,
-    setGroupByValue,
-    props.columns.length,
-    intl
-  )
+  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(props.columns, groupByValue)
 
-  const debounced = useCallback(_.debounce(
-    (filter: Filter, searchString: string, groupBy: string | undefined) =>
-      onFilterChange
-      && onFilterChange(filter, { searchString }, groupBy), 1000), [onFilterChange])
+  const debounced = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
+    _.debounce(
+      (filter: Filter, searchString: string, groupBy: string | undefined) =>
+        onFilterChange && onFilterChange(filter, { searchString }, groupBy), 1000
+    ),
+    [onFilterChange]
+  )
 
   useEffect(() => {
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH)  {
       debounced(filterValues, searchValue, groupByValue)
     }
     return () => debounced.cancel()
-  }, [searchValue, debounced])
+  }, [searchValue, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     debounced(filterValues, searchValue, groupByValue)
     return () => debounced.cancel()
-  }, [filterValues, debounced])
-
-  useEffect(() => {
-    debounced(filterValues, searchValue, groupByValue)
-    return () => debounced.cancel()
-  }, [groupByValue, debounced])
+  }, [groupByValue, filterValues, debounced]) // eslint-disable-line react-hooks/exhaustive-deps
 
   let columns = useMemo(() => {
     const settingsColumn = {
@@ -202,36 +193,26 @@ function Table <RecordType extends Record<string, any>> ({
       children: []
     }
 
-    let tableCols: typeof props.columns
-
-    if (isGroupByActive) {
-      const overrideParents = props.columns.map((col, ind) => {
-        function parentRenderOverride (parent?: {
-          renderer: (record: RecordType) => React.ReactNode;
-        }): typeof render {
-          return (dom, record, index, highlightFn, action, schema) => {
-            if ('children' in record) {
-              return (parent) ? parent.renderer(record) : null
-            } else {
-              if (render) {
-                return render(dom, record, index, highlightFn, action, schema)
-              }
-              if (searchable) {
-                return getHighlightFn(searchValue)(_.get(record, key))
-              }
-              return dom
+    const tableCols = isGroupByActive
+      ? props.columns.map((col, i) => {
+        const parent = parentColumns.at(i)
+        const { render, searchable, key } = col
+        const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
+          if ('children' in record) {
+            return (parent) ? parent.renderer(record) : null
+          } else {
+            if (render) {
+              return render(dom, record, index, highlightFn, action, schema)
             }
+            if (searchable) {
+              return getHighlightFn(searchValue)(_.get(record, key))
+            }
+            return dom
           }
         }
-        const parent = finalParentColumns.at(ind)
-        const { render, searchable, key } = col
-        return { ...col, render: parentRenderOverride(parent) }
+        return { ...col, render: renderer }
       })
-
-      tableCols = overrideParents
-    } else {
-      tableCols = props.columns
-    }
+      : props.columns
 
     const cols = type === 'tall'
       ? [...tableCols, ...groupActionColumns, settingsColumn] as typeof props.columns
@@ -248,7 +229,7 @@ function Table <RecordType extends Record<string, any>> ({
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       children: isGroupColumn(column) ? column.children : undefined
     }))
-  }, [props.columns, type, searchValue, groupByValue])
+  }, [props.columns, type, searchValue, groupByValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ columns, columnState })
 
@@ -342,7 +323,14 @@ function Table <RecordType extends Record<string, any>> ({
     onChange: (keys, rows, info) => {
       setSelectedRowKeys(keys)
       props.rowSelection?.onChange?.(keys, rows, info)
-    }
+    },
+    ...isGroupByActive
+      ? {
+        getCheckboxProps: record => record.children
+          ? ({ disabled: true, style: { display: 'none' } })
+          : ({})
+      }
+      : {}
   } : undefined
 
   let pagination: false | TablePaginationConfig = false
@@ -449,7 +437,12 @@ function Table <RecordType extends Record<string, any>> ({
               renderFilter<RecordType>(
                 column, i, dataSource, filterValues, setFilterValues, !!enableApiFilter)
             )}
-            {Boolean(groupable.length) && <GroupBySelect />}
+            {Boolean(groupable.length) && <GroupSelect<RecordType>
+              $t={$t}
+              groupable={groupable}
+              setValue={setGroupByValue}
+              value={groupByValue}
+            />}
           </Space>
         </div>
         <UI.HeaderRight>

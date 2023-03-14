@@ -11,14 +11,14 @@ import { RecordWithChildren } from './types'
 import { TableProps } from '.'
 
 export function GroupSelect<RecordType> ({
-  $t, value, setValue, groupables
+  $t, value, setValue, groupable
 }: {
   $t: IntlShape['$t'],
   value: string | undefined,
   setValue: (val: string | undefined) => void,
-  groupables: TableProps<RecordType>['columns']
+  groupable: TableProps<RecordType>['columns']
 }) {
-  const selectors = groupables
+  const selectors = groupable
     .filter(cols => Boolean(cols.groupable))
     .map(col => col.groupable!)
   return <UI.FilterSelect
@@ -46,34 +46,19 @@ export function GroupSelect<RecordType> ({
 }
 
 export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<RecordType>> (
-  groupables: TableProps<RecordType>['columns'],
-  groupByValue: string | undefined,
-  setGroupByValue: (value: string | undefined) => void,
-  colLength: number,
-  intl: IntlShape
+  columns: TableProps<RecordType>['columns'],
+  groupByValue: string | undefined
 ) {
   return useMemo(() => {
-    const { $t } = intl
-
-    if (groupables.length > 0) {
+    const groupable = columns.filter(col => col.groupable)
+    if (groupable.length > 0) {
       const hasValidChildren = (record: ParentRecord) => {
         const { children } = record
         return Boolean(children) && Array.isArray(children) && children.length > 0
       }
-
-      const GroupBySelect = () => <GroupSelect<RecordType>
-        $t={$t}
-        groupables={groupables}
-        setValue={setGroupByValue}
-        value={groupByValue}
-      />
-
-      const targetCol = groupables.find(col => col.key === groupByValue)
-
-      const finalParentColumns = targetCol?.groupable!.parentColumns ?? []
-
+      const targetCol = groupable.find(col => col.key === groupByValue)
+      const parentColumns = targetCol?.groupable!.parentColumns ?? []
       const isGroupByActive = typeof groupByValue !== 'undefined'
-
       const actionsList = targetCol?.groupable?.actions ?? []
       const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
         .map((val) => ({
@@ -81,9 +66,8 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
           dataIndex: '',
           render: (_, record) => 'children' in record ? val.label(record) : null
         }))
-
       const expandable: TableProps<ParentRecord>['expandable'] = {
-        expandIconColumnIndex: colLength + groupActionColumns.length,
+        expandIconColumnIndex: columns.length + groupActionColumns.length,
         rowExpandable: (record) => hasValidChildren(record),
         defaultExpandAllRows: true,
         expandIcon: (props) => {
@@ -97,23 +81,21 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
           </UI.ExpandWrapper>
         }
       }
-
       return {
-        GroupBySelect,
-        finalParentColumns,
+        groupable,
+        parentColumns,
         isGroupByActive,
         groupActionColumns,
         expandable: (isGroupByActive) ? expandable : undefined
       }
     }
-
     return {
-      GroupBySelect: () => null,
-      finalParentColumns: [],
+      groupable,
+      parentColumns: [],
       isGroupByActive: false,
       groupActionColumns: [],
       expandable: undefined
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupByValue, intl])
+  }, [groupByValue])
 }
