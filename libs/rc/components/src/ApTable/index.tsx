@@ -89,6 +89,97 @@ const channelTitleMap: Record<keyof ApExtraParams, string> = {
   channel60: '6 GHz'
 }
 
+const deviceStatusGroupableOptions = {
+  key: 'deviceStatus',
+  label: 'Status',
+  parentColumns: [
+    {
+      key: 'deviceStatus',
+      renderer: (record : APExtended) =>  <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
+    },
+    {
+      key: 'members',
+      renderer: (record : APExtended) => <div>Members: {record.members}</div>
+    },
+    {
+      key: 'incidents',
+      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
+    },
+    {
+      key: 'clients',
+      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
+    },
+    {
+      key: 'networks',
+      renderer: (record : APExtended) => <div>
+          Wireless Networks: {record.networks ? record.networks.count : 0}
+      </div>
+    }
+  ]
+}
+const modelGroupableOptions = {
+  key: 'model',
+  label: 'Model',
+  parentColumns: [
+    {
+      key: 'model',
+      renderer: (record : APExtended) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+    },
+    {
+      key: 'members',
+      renderer: (record : APExtended) => <div>Members: {record.members}</div>
+    },
+    {
+      key: 'incidents',
+      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
+    },
+    {
+      key: 'clients',
+      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
+    },
+    {
+      key: 'networks',
+      renderer: (record : APExtended) => <div>
+          Wireless Networks: {record.networks ? record.networks.count : 0}
+      </div>
+    }
+  ]
+}
+const deviceGroupNameGroupableOptions =  {
+  key: 'deviceGroupName',
+  label: 'AP Group',
+  actions: [{
+    key: 'edit',
+    label: (record : APExtended) => <Button onClick={() => {
+      // eslint-disable-next-line no-console
+      console.log(record)
+    }}>Edit</Button>
+  }],
+  parentColumns: [
+    {
+      key: 'AP Group',
+      renderer: (record : APExtended) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
+    },
+    {
+      key: 'members',
+      renderer: (record : APExtended) => <div>Members: {record.members}</div>
+    },
+    {
+      key: 'incidents',
+      renderer: (record : APExtended) => <div>Incidents (24 hours): {record.incidents}</div>
+    },
+    {
+      key: 'clients',
+      renderer: (record : APExtended) => <div>Connected Clients: {record.clients}</div>
+    },
+    {
+      key: 'networks',
+      renderer: (record : APExtended) => <div>
+          Wireless Networks: {record.networks ? record.networks.count : 0}
+      </div>
+    }
+  ]
+}
 const transformMeshRole = (value: APMeshRole) => {
   let meshRole = ''
   switch (value) {
@@ -200,34 +291,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       disable: true,
       filterKey: 'deviceStatusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      groupable: {
-        key: 'deviceStatus',
-        label: 'Status',
-        parentColumns: [
-          {
-            key: 'deviceStatus',
-            renderer: (record) =>  <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
-          },
-          {
-            key: 'members',
-            renderer: (record) => <div>Members: {record.members}</div>
-          },
-          {
-            key: 'incidents',
-            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
-          },
-          {
-            key: 'clients',
-            renderer: (record) => <div>Connected Clients: {record.clients}</div>
-          },
-          {
-            key: 'networks',
-            renderer: (record) => <div>
-                Wireless Networks: {record.networks ? record.networks.count : 0}
-            </div>
-          }
-        ]
-      },
+      groupable: deviceStatusGroupableOptions,
       render: (status: unknown) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
@@ -235,34 +299,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       dataIndex: 'model',
       searchable: searchable,
       sorter: true,
-      groupable: {
-        key: 'model',
-        label: 'Model',
-        parentColumns: [
-          {
-            key: 'model',
-            renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.model}</div>
-          },
-          {
-            key: 'members',
-            renderer: (record) => <div>Members: {record.members}</div>
-          },
-          {
-            key: 'incidents',
-            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
-          },
-          {
-            key: 'clients',
-            renderer: (record) => <div>Connected Clients: {record.clients}</div>
-          },
-          {
-            key: 'networks',
-            renderer: (record) => <div>
-                Wireless Networks: {record.networks ? record.networks.count : 0}
-            </div>
-          }
-        ]
-      }
+      groupable: modelGroupableOptions,
     }, {
       key: 'ip',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -354,39 +391,7 @@ const tableQuery = props.tableQuery || groupBySelection ? groupByTableQuery : in
       filterKey: 'deviceGroupId',
       filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
-      groupable: {
-        key: 'deviceGroupName',
-        label: 'AP Group',
-        actions: [{
-          key: 'edit',
-          label: <Button>Edit</Button>
-        }],
-        parentColumns: [
-          {
-            key: 'AP Group',
-            renderer: (record) => <div style={{ fontStyle: 'bold' }}>{record.deviceGroupName}</div>
-          },
-          {
-            key: 'members',
-            renderer: (record) => <div>Members: {record.members}</div>
-          },
-          {
-            key: 'incidents',
-            renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
-          },
-          {
-            key: 'clients',
-            renderer: (record) => <div>Connected Clients: {record.clients}</div>
-          },
-          {
-            key: 'networks',
-            renderer: (record) => <div>
-                Wireless Networks: {record.networks ? record.networks.count : 0}
-            </div>
-          }
-        ]
-      }
-      //TODO: Click-> Filter by AP group
+      groupable: deviceGroupNameGroupableOptions,
     }, {
       key: 'rf-channels',
       title: $t({ defaultMessage: 'RF Channels' }),
