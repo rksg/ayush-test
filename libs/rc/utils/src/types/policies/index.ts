@@ -5,6 +5,7 @@ export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
 export * from './syslogPolicy'
 export * from './accessControl'
+export * from './apSnmp'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -20,7 +21,8 @@ export enum PolicyType {
   LAYER_2_POLICY = 'Layer 2 Policy',
   LAYER_3_POLICY = 'Layer 3 Policy',
   APPLICATION_POLICY = 'Application Policy',
-  DEVICE_POLICY = 'Device Policy'
+  DEVICE_POLICY = 'Device Policy',
+  SNMP_AGENT = 'SNMP Agent'
 }
 
 export enum PolicyTechnology {

@@ -433,23 +433,24 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: ({ params }) => {
+    getWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
+      query: ({ params, payload }) => {
         const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getWifiCallingList, params, RKS_NEW_UI
+          WifiCallingUrls.getWifiCallingList, params
         )
         return {
-          ...wifiCallingServiceListReq
+          ...wifiCallingServiceListReq,
+          body: payload
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add WiFi Calling Service Profile',
-            'Update WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profile',
-            'Delete WiFi Calling Service Profiles'
+            'AddWiFiCallingProfile',
+            'UpdateWiFiCallingProfile',
+            'DeleteWiFiCallingProfile',
+            'DeleteWiFiCallingProfiles'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
           })

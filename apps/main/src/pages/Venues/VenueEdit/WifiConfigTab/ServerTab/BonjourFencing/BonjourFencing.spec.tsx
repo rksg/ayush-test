@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, getUrlForTest }                         from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -31,10 +31,10 @@ describe('Venue Bonjour Fencing', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueBonjourFencingPolicy.url,
+        getUrlForTest(CommonUrlsInfo.getVenueBonjourFencingPolicy),
         (_, res, ctx) => res(ctx.json(mockBonjourFencing))),
       rest.post(
-        CommonUrlsInfo.updateVenueBonjourFencingPolicy.url,
+        getUrlForTest(CommonUrlsInfo.updateVenueBonjourFencingPolicy),
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
