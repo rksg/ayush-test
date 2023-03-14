@@ -3,45 +3,47 @@ import { ApiInfo } from '../../apiService'
 export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
   deletePortal: {
     method: 'delete',
-    oldUrl: '/api/portalServiceProfiles/:serviceId',
     url: '/portalServiceProfiles/:serviceId',
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
     newApi: true
   },
   updatePortal: {
     method: 'put',
-    oldUrl: '/api/portalServiceProfiles/:serviceId',
     url: '/portalServiceProfiles/:serviceId',
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
     newApi: true
   },
   getPortal: {
     method: 'get',
-    oldUrl: '/api/portalServiceProfiles/:serviceId',
     url: '/portalServiceProfiles/:serviceId',
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
     newApi: true
   },
   savePortal: {
     method: 'post',
-    oldUrl: '/api/portalServiceProfiles',
     url: '/portalServiceProfiles',
+    oldUrl: '/api/portalServiceProfiles',
     newApi: true
   },
   getPortalNetworkInstances: {
+    // [New API] no mapping found
     method: 'get',
     url: '/api/tenant/:tenantId/portal-service-profile/instances/:serviceId'
   },
   getPortalProfileDetail: {
     method: 'get',
-    oldUrl: '/api/portalServiceProfiles/:serviceId',
     url: '/portalServiceProfiles/:serviceId',
+    oldUrl: '/api/portalServiceProfiles/:serviceId',
     newApi: true
   },
   getPortalProfileList: {
     method: 'get',
-    oldUrl: '/api/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
-    url: '/portalServiceProfiles?pageSize=:pageSize&page=:page&sort=:sort',
+    url: '/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
+    oldUrl: '/api/portalServiceProfiles?size=:pageSize&page=:page&sort=:sort',
     newApi: true
   },
   getPortalLang: {
+    // [New API] no mapping found
     method: 'get',
     url: '/g/ui/tenant/:tenantId/locales/:messageName'
   }

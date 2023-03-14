@@ -121,68 +121,70 @@ export const getApGroup = {
   id: 'd318e522e2364b77a3032e641e6944d0'
 }
 
-export const venueDefaultApGroup = {
-  venueId: '74f058ee8ea141a0b09a89c022a04a10',
-  aps: [
-    {
-      serialNumber: '233356777755',
-      apGroupId: 'a43c7e10c6404b7684f8694e7d074cf2',
-      venueId: '74f058ee8ea141a0b09a89c022a04a10',
-      radio: {
-        apRadioParams24G: {
-          manualChannel: 0,
-          channelBandwidth: 'AUTO',
-          txPower: 'MAX',
-          method: 'BACKGROUND_SCANNING',
-          changeInterval: 33
-        },
-        apRadioParams50G: {
-          channelBandwidth: 'AUTO',
-          manualChannel: 0,
-          txPower: 'MAX',
-          method: 'BACKGROUND_SCANNING',
-          changeInterval: 33
-        },
-        apRadioParamsDual5G: {
-          enabled: true,
-          radioParamsLower5G: {
+export const venueDefaultApGroup = [
+  {
+    venueId: '74f058ee8ea141a0b09a89c022a04a10',
+    aps: [
+      {
+        serialNumber: '233356777755',
+        apGroupId: 'a43c7e10c6404b7684f8694e7d074cf2',
+        venueId: '74f058ee8ea141a0b09a89c022a04a10',
+        radio: {
+          apRadioParams24G: {
+            manualChannel: 0,
+            channelBandwidth: 'AUTO',
+            txPower: 'MAX',
+            method: 'BACKGROUND_SCANNING',
+            changeInterval: 33
+          },
+          apRadioParams50G: {
             channelBandwidth: 'AUTO',
             manualChannel: 0,
             txPower: 'MAX',
             method: 'BACKGROUND_SCANNING',
             changeInterval: 33
           },
-          radioParamsUpper5G: {
-            channelBandwidth: 'AUTO',
+          apRadioParamsDual5G: {
+            enabled: true,
+            radioParamsLower5G: {
+              channelBandwidth: 'AUTO',
+              manualChannel: 0,
+              txPower: 'MAX',
+              method: 'BACKGROUND_SCANNING',
+              changeInterval: 33
+            },
+            radioParamsUpper5G: {
+              channelBandwidth: 'AUTO',
+              manualChannel: 0,
+              txPower: 'MAX',
+              method: 'BACKGROUND_SCANNING',
+              changeInterval: 33
+            }
+          },
+          apRadioParams6G: {
             manualChannel: 0,
+            method: 'CHANNELFLY',
+            channelBandwidth: 'AUTO',
+            bssMinRate6G: 'HE_MCS_0',
+            mgmtTxRate6G: '6',
             txPower: 'MAX',
-            method: 'BACKGROUND_SCANNING',
             changeInterval: 33
-          }
+          },
+          useVenueSettings: true
         },
-        apRadioParams6G: {
-          manualChannel: 0,
-          method: 'CHANNELFLY',
-          channelBandwidth: 'AUTO',
-          bssMinRate6G: 'HE_MCS_0',
-          mgmtTxRate6G: '6',
-          txPower: 'MAX',
-          changeInterval: 33
+        name: 'for ap group 2',
+        softDeleted: false,
+        position: {
+          xPercent: 0,
+          yPercent: 0
         },
-        useVenueSettings: true
-      },
-      name: 'for ap group 2',
-      softDeleted: false,
-      position: {
-        xPercent: 0,
-        yPercent: 0
-      },
-      updatedDate: '2022-11-08T06:31:00.064+0000'
-    }
-  ],
-  isDefault: true,
-  id: 'a43c7e10c6404b7684f8694e7d074cf2'
-}
+        updatedDate: '2022-11-08T06:31:00.064+0000'
+      }
+    ],
+    isDefault: true,
+    id: 'a43c7e10c6404b7684f8694e7d074cf2'
+  }
+]
 
 export const venueCaps = {
   apModels: [
@@ -2909,3 +2911,70 @@ export const portlistData = {
   page: 1,
   totalCount: 2
 }
+export const resultOfGetApSnmpAgentSettings = {
+  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+  useVenueSettings: true,
+  enableApSnmp: true
+}
+
+export const resultOfUpdateApSnmpAgentSettings
+= { requestId: '5aa421fd-25e9-4952-b3e0-a3a39c9a52bb' }
+
+export const resultOfGetApSnmpAgentProfiles = [
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-1',
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7'
+  },
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-2',
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]

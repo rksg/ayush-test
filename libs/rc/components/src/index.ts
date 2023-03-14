@@ -1,9 +1,7 @@
 export {
   ActivityTable,
-  useActivityTableFilter,
-  defaultSorter as activityDefaultSorter,
-  defaultPayload as activityDefaultPayload,
-  columnState
+  columnState,
+  useActivityTableQuery
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
@@ -25,12 +23,14 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
-  useEventTableFilter,
-  defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter,
+  useEventsTableQuery,
   defaultSearch as eventDefaultSearch
 } from './EventTable'
-export { HistoricalClientsTable } from './HistoricalClientsTable'
+export {
+  HistoricalClientsTable,
+  GlobalSearchHistoricalClientsTable,
+  defaultHistoricalClientPayload
+} from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
@@ -63,9 +63,13 @@ export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/C
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
+export { usePreference, countryCodes } from './usePreference'
+export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
+export type { updatePreferenceProps } from './usePreference'
 
 export * from './services'
 export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './SimpleListTooltip'

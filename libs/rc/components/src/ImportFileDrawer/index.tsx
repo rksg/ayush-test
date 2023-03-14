@@ -41,12 +41,14 @@ interface ImportFileDrawerProps extends DrawerProps {
   readAsText?: boolean
   acceptType: string[]
   type: 'AP' | 'Switch' | 'GuestPass' | 'DPSK' | 'Persona' | 'CLI'
+  extraDescription?: string[]
 }
 
 export const CsvSize = {
   '1MB': 1024*1*1024,
   '2MB': 1024*2*1024,
-  '5MB': 1024*5*1024
+  '5MB': 1024*5*1024,
+  '20MB': 1024*20*1024
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -59,7 +61,8 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   const [form] = Form.useForm()
 
   const { maxSize, maxEntries, isLoading, templateLink,
-    importError, importRequest, readAsText, acceptType } = props
+    importError, importRequest, readAsText, acceptType,
+    extraDescription } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
@@ -206,6 +209,9 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
       <li>{$t(
         { defaultMessage: 'File size cannot exceed {maxSize}' },
         { maxSize: bytesFormatter(maxSize) })}</li>
+      {extraDescription &&
+        extraDescription.map((desc, index) => <li key={index}>{desc}</li>)
+      }
     </ul>
     <Form layout='vertical' form={form} >
       {props.children}

@@ -4,7 +4,7 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   addDHCPService: {
     method: 'post',
     url: '/dhcpConfigServiceProfiles',
-    oldUrl: ' /api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
     newApi: true
   },
   updateDHCPService: {
@@ -24,13 +24,12 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     url: '/dhcpConfigServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
-    // /dhcpConfigServiceProfiles/{dhcpConfigServiceProfileId}
   },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
     method: 'get',
     url: '/dhcpConfigServiceProfiles',
-    oldUrl: ' /api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
     newApi: true
   },
   getDHCPProfilesViewModel: {
@@ -60,7 +59,6 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/dhcpPoolLeases',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpPoolLease',
     newApi: true
-    // url: '/api/venues/:venueId/dhcpConfigServiceProfileLeases'
   },
   activeVenueDHCPPool: {
     //set DHCP Pool Active

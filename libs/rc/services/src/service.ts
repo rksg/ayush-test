@@ -48,7 +48,8 @@ import {
   DistributionSwitch,
   downloadFile,
   NewAPITableResult,
-  transferNewResToTableResult
+  transferNewResToTableResult,
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import {
   CloudpathServer,
@@ -68,6 +69,15 @@ const defaultNewTablePaginationParams: TableChangePayload = {
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
+
+const mDnsProxyMutationUseCases = [
+  'AddMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfile',
+  'DeleteMulticastDnsProxyServiceProfiles',
+  'UpdateMulticastDnsProxyServiceProfile',
+  'ActivateMulticastDnsProxyServiceProfileAps',
+  'DeactivateMulticastDnsProxyServiceProfileAps'
+]
 
 export const baseServiceApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -92,9 +102,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfile',
-            'DeleteMulticastDnsProxyServiceProfiles',
+            ...mDnsProxyMutationUseCases,
             'AddWifiCallingServiceProfile',
             'DeleteWiFiCallingProfile',
             'DeleteWiFiCallingProfiles',
@@ -292,16 +300,28 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Multicast DNS Proxy Service Profile',
-            'Update Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profile',
-            'Delete Multicast DNS Proxy Service Profiles',
-            'Activate Multicast DNS Proxy Service Profiles',
-            'Deactivate Multicast DNS Proxy Service Profiles'
-          ], () => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
+              { type: 'MdnsProxy', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MdnsProxyUrls.getEnhancedMdnsProxyList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, mDnsProxyMutationUseCases, () => {
+            api.dispatch(serviceApi.util.invalidateTags([
               { type: 'MdnsProxy', id: 'LIST' }
             ]))
           })
@@ -772,6 +792,7 @@ export const {
   useGetMdnsProxyQuery,
   useLazyGetMdnsProxyListQuery,
   useGetMdnsProxyListQuery,
+  useGetEnhancedMdnsProxyListQuery,
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,

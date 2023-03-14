@@ -45,6 +45,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { loadImageWithJWT } from '@acx-ui/utils'
 
 import defaultLoginLogo   from '../images/comscope-logo-ping.png'
 import defaultAlarmLogo   from '../images/ruckus-logo-alarm.png'
@@ -69,7 +70,6 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormInstance<MspPortal>>()
   const params = useParams()
-  const fileUrl = '/api/file/tenant/' + params.tenantId + '/'
 
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
@@ -98,6 +98,35 @@ export function PortalSettings () {
   const { data: mspLabel } = useGetMspLabelQuery({ params })
 
   useEffect(() => {
+    const fetchImages = async (mspLabel: MspPortal) => {
+      const defaultList = await Promise.all(mspLabel.mspLogoFileDataList?.map((file) => {
+        return loadImageWithJWT(file.logo_fileuuid)
+          .then((fileUrl) => {
+            return {
+              uid: file.logo_fileuuid,
+              name: file.logo_file_name,
+              fileName: file.logo_file_name,
+              url: fileUrl,
+              status: 'done'
+            }
+          })
+      }) as unknown as UploadFile[])
+      setDefaultFileList(defaultList)
+      setFileList(defaultList)
+      setSelectedLogo('myLogo')
+      mspLabel.logo_uuid
+        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid))
+        : setPortalLogoUrl(defaultPortalLogo)
+      mspLabel.ping_login_logo_uuid
+        ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid))
+        : setLoginLogoUrl(defaultLoginLogo)
+      mspLabel.ping_notification_logo_uuid
+        ? setSupportLogoUrl(await loadImageWithJWT(mspLabel.ping_notification_logo_uuid))
+        : setSupportLogoUrl(defaultSupportLogo)
+      mspLabel.alarm_notification_logo_uuid
+        ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid))
+        : setAlarmLogoUrl(defaultAlarmLogo)
+    }
     if (provider) {
       const providers = provider.providers
       setExternalProviders(providers)
@@ -111,30 +140,7 @@ export function PortalSettings () {
       mspLabel?.my_open_case_behavior === 'hide'
         ? setMyCase(false) : setMyCase(true)
       if (mspLabel.mspLogoFileDataList && mspLabel.mspLogoFileDataList.length > 0) {
-        const defaultList = mspLabel.mspLogoFileDataList.map((file) => {
-          return {
-            uid: file.logo_fileuuid,
-            name: file.logo_file_name,
-            fileName: file.logo_file_name,
-            url: fileUrl + file.logo_fileuuid,
-            status: 'done'
-          }
-        }) as UploadFile[]
-        setDefaultFileList(defaultList)
-        setFileList(defaultList)
-        setSelectedLogo('myLogo')
-        mspLabel.logo_uuid
-          ? setPortalLogoUrl(fileUrl + mspLabel.logo_uuid)
-          : setPortalLogoUrl(defaultPortalLogo)
-        mspLabel.ping_login_logo_uuid
-          ? setLoginLogoUrl(fileUrl + mspLabel.ping_login_logo_uuid)
-          : setLoginLogoUrl(defaultLoginLogo)
-        mspLabel.ping_notification_logo_uuid
-          ? setSupportLogoUrl(fileUrl + mspLabel.ping_notification_logo_uuid)
-          : setSupportLogoUrl(defaultSupportLogo)
-        mspLabel.alarm_notification_logo_uuid
-          ? setAlarmLogoUrl(fileUrl + mspLabel.alarm_notification_logo_uuid)
-          : setAlarmLogoUrl(defaultAlarmLogo)
+        fetchImages(mspLabel)
       }
       else {
         setPortalLogoUrl(defaultPortalLogo)
@@ -414,7 +420,7 @@ export function PortalSettings () {
           editMode={isEditMode}
           formRef={formRef}
           onFinish={isEditMode ? handleUpdateMspLabel : handleAddMspLabel}
-          onCancel={() => navigate(linkDashboard)}
+          onCancel={() => navigate(linkDashboard, { replace: true })}
           buttonLabel={{ submit: isEditMode ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Create' }) }}
@@ -664,7 +670,7 @@ export function PortalSettings () {
           </StepsForm.StepForm>
 
           <StepsForm.StepForm
-            name='portalProfilder'
+            name='portalProvider'
             title={intl.$t({ defaultMessage: '3rd Party Portal Providers' })}>
             <Subtitle level={3}>
               { intl.$t({ defaultMessage: '3rd Party Portal Providers' }) }</Subtitle>

@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, within  } from '@acx-ui/test-utils'
@@ -20,6 +20,8 @@ jest.mock('@acx-ui/components', () => ({
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }

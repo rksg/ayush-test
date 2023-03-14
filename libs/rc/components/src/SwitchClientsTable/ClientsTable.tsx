@@ -132,9 +132,12 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanName',
       sorter: true,
+      align: 'center',
       searchable: searchable,
       render: (data, row) => {
-        return row.clientVlan ? `${data ? data : ''} (${row.clientVlan})`: '--'
+        return data === 'DEFAULT-VLAN'
+          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
+          : (row.clientVlan ?? '--')
       }
     }]
     return columns
@@ -148,7 +151,7 @@ export function ClientsTable (props: {
         <Table
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
-          pagination={false}
+          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}

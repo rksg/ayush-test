@@ -17,7 +17,6 @@ import {
   venueLanPorts,
   venueLed,
   venueSwitchSetting,
-  venueSyslog,
   syslogServerProfiles
 } from '../__tests__/fixtures'
 
@@ -102,10 +101,6 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(CommonUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0]))),
-      rest.get(CommonUrlsInfo.getVenueSyslogAp.url,
-        (_, res, ctx) => res(ctx.json(venueSyslog))),
-      rest.post(CommonUrlsInfo.updateVenueSyslogAp.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.get(SyslogUrls.getSyslogPolicyList.url,
         (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
     )

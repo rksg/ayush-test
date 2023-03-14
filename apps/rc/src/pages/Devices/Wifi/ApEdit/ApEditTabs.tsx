@@ -5,7 +5,9 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useApViewModelQuery }                    from '@acx-ui/rc/services'
+import { LocationExtended }                       from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams,
   useTenantLink,
@@ -23,7 +25,9 @@ function ApEditTabs () {
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
   const {
     editContextData,
-    setEditContextData
+    setEditContextData,
+    setPreviousPath,
+    setIsOnlyOneTab
   } = useContext(ApEditContext)
 
   const apViewModelPayload = {
@@ -36,6 +40,7 @@ function ApEditTabs () {
   }
   const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
+  setIsOnlyOneTab(!currentAP?.model)
 
   const onTabChange = (tab: string) => {
     if (tab === 'settings') tab = (supportStaticIpSettings)? `${tab}/general` : `${tab}/radio`
@@ -46,6 +51,7 @@ function ApEditTabs () {
     })
   }
 
+  const location = useLocation()
   const { navigator } = useContext(NavigationContext)
   const blockNavigator = navigator as History
   const unblockRef = useRef<Function>()
@@ -69,6 +75,10 @@ function ApEditTabs () {
       unblockRef.current?.()
     }
   }, [editContextData])
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
