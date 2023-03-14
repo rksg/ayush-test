@@ -93,11 +93,13 @@ function SettingsForm () {
   const [
     wlanSecurity,
     macAddressAuthentication,
-    isMacRegistrationList
+    isMacRegistrationList,
+    macRegistrationListId
   ] = [
     useWatch(['wlan', 'wlanSecurity']),
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
-    useWatch(['wlan', 'isMacRegistrationList'])
+    useWatch(['wlan', 'isMacRegistrationList']),
+    useWatch(['wlan', 'macRegistrationListId'])
   ]
 
   const securityDescription = () => {
@@ -174,7 +176,17 @@ function SettingsForm () {
   }
   useEffect(()=>{
     form.setFieldsValue(data)
+    if (editMode && data) {
+      form.setFieldsValue({
+        wlan: {
+          isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId
+        }
+      })
+    }
   },[data])
+
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
 
@@ -291,9 +303,9 @@ function SettingsForm () {
           {macAddressAuthentication && <>
             <Form.Item
               name={['wlan', 'isMacRegistrationList']}
-              initialValue={isMacRegistrationList}
+              initialValue={macRegistrationListId}
             >
-              <Radio.Group disabled={editMode} defaultValue={!!isMacRegistrationList}>
+              <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
                 <Space direction='vertical'>
                   <Radio value={true} disabled={!macRegistrationEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
