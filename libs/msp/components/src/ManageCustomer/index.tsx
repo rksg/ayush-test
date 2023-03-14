@@ -157,7 +157,6 @@ export function ManageCustomer () {
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
   const formRef = useRef<StepsFormInstance<EcFormData>>()
-  // const dateFormat = DateFormatEnum.UserDateFormat
   const { action, status, tenantId, mspEcTenantId } = useParams()
 
   const [isTrialMode, setTrialMode] = useState(false)
