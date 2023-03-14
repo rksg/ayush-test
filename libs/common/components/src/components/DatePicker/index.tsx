@@ -83,6 +83,10 @@ export const RangePicker = ({
     [allowedDateRange]
   )
   useEffect(() => {
+    if(disabled){
+      setIsCalendarOpen(false)
+    }
+
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
@@ -104,7 +108,7 @@ export const RangePicker = ({
     return () => {
       document.removeEventListener('click', handleClickForDatePicker)
     }
-  }, [range, onDateChange, onDateApply, translatedOptions])
+  }, [range, onDateChange, onDateApply, translatedOptions, disabled])
 
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
@@ -121,7 +125,7 @@ export const RangePicker = ({
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
-        onClick={() => setIsCalendarOpen(true)}
+        onClick={() => !disabled && setIsCalendarOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType) =>

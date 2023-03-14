@@ -396,5 +396,27 @@ describe('RangePicker', () => {
     expect(onDateChange).toHaveBeenCalledTimes(0)
     expect(apply).toHaveBeenCalledTimes(1)
   })
+  it('should no action trigger if date is disabled', async () => {
+    const { container } = render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.last7Days}
+          onDateApply={() => {}}
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          showTimePicker
+          selectedRange={{
+            startDate: moment().subtract(7, 'days').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          disabled={true}
+        />
+      </IntlProvider>
 
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(0)
+  })
 })
