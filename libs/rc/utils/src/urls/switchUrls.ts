@@ -98,13 +98,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   importSwitches: {
-    // 400 Bad Request
-    // method: 'post',
-    // url: '/venues/switches',
-    // oldUrl: '/api/switch/tenant/:tenantId/import',
-    // newApi: true
     method: 'post',
-    url: '/api/switch/tenant/:tenantId/import'
+    url: '/venues/switches',
+    oldUrl: '/api/switch/tenant/:tenantId/import',
+    newApi: true
   },
   getPortSetting: {
     // different method
@@ -443,13 +440,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   dhcpLeaseTable: {
-    // 404 Not Found
-    // method: 'get',
-    // url: '/switches/:switchId/dhcpServers/leaseTables',
-    // oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable',
-    // newApi: true
     method: 'get',
-    url: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable'
+    url: '/switches/:switchId/dhcpServers/leaseTables',
+    oldUrl: '/api/switch/tenant/:tenantId/switch/:switchId/dhcpServer/leaseTable',
+    newApi: true
   },
   updateDhcpServerState: {
     method: 'post',

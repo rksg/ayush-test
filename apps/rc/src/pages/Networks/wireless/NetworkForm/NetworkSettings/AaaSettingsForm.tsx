@@ -38,7 +38,7 @@ export function AaaSettingsForm () {
       form.setFieldsValue({
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.accountingRadius,
+        enableAccountingService: data.enableAccountingService,
         authRadius: data.authRadius,
         accountingRadius: data.accountingRadius,
         wlanSecurity: data?.wlan?.wlanSecurity,
@@ -120,7 +120,15 @@ function SettingsForm () {
 
   function AaaService () {
     const { $t } = useIntl()
+    const { setData, data } = useContext(NetworkFormContext)
     const enableAccountingService = useWatch('enableAccountingService')
+    const form = Form.useFormInstance()
+    const onProxyChange = (value: boolean, fieldName: string) => {
+      setData && setData({ ...data, [fieldName]: value })
+    }
+    useEffect(()=>{
+      form.setFieldsValue(data)
+    },[data])
     const proxyServiceTooltip = <Tooltip
       placement='bottom'
       children={<QuestionMarkCircleOutlined />}
@@ -141,7 +149,7 @@ function SettingsForm () {
               name='enableAuthProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch/>}
+              children={<Switch onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}
@@ -153,7 +161,7 @@ function SettingsForm () {
             name='enableAccountingService'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch/>}
+            children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
           />
           {enableAccountingService && (
             <>
@@ -165,7 +173,8 @@ function SettingsForm () {
                   name='enableAccountingProxy'
                   valuePropName='checked'
                   initialValue={false}
-                  children={<Switch/>}
+                  children={<Switch
+                    onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
                 />
                 <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
                 {proxyServiceTooltip}
