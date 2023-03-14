@@ -128,9 +128,12 @@ export default function VenuePoolTable (){
       key: 'usedIpCount',
       title: $t({ defaultMessage: 'Utilization' }),
       dataIndex: 'usedIpCount',
-      render: (data, rowData)=>
-        // eslint-disable-next-line max-len
-        <UsageRate percent={(rowData.usedIpCount/countIpRangeSize(rowData.startIpAddress, rowData.endIpAddress))*100}/>
+      render: (data, rowData)=> {
+        if(_.isUndefined(rowData.usedIpCount) || _.isUndefined(rowData.totalIpCount)){
+          return ''
+        }
+        return <UsageRate percent={(rowData.usedIpCount/rowData.totalIpCount)*100}/>
+      }
     },
     {
       key: 'id',

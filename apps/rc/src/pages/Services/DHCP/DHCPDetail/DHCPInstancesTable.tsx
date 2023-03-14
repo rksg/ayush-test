@@ -94,9 +94,10 @@ export default function DHCPInstancesTable (){
       render: function (_data, row) {
         const venueIDIndex = _.find(dhcpProfile?.usage, dhcp => dhcp.venueId===row.id)
         if(venueIDIndex) {
-          // eslint-disable-next-line max-len
-          const percent = (100-((venueIDIndex?.usedIpCount/venueIDIndex?.totalIpCount)*100))
-          return (isNaN(percent) ? 0 : percent.toFixed(2)) + '%'
+          if(venueIDIndex?.totalIpCount===0 && venueIDIndex?.usedIpCount===0){
+            return ''
+          }
+          return (100-((venueIDIndex?.usedIpCount/venueIDIndex?.totalIpCount)*100)).toFixed(2) + '%'
         }else{
           return ''
         }
