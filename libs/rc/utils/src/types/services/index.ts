@@ -1,5 +1,6 @@
 export * from './dhcpService'
 export * from './edgeDhcpService'
+export * from './edgeFirewallService'
 export * from './dpskService'
 export * from './wifiCallingService'
 export * from './networkSegmentationService'
