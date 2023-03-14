@@ -9,7 +9,8 @@ import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-util
 import { SwitchPortTable } from '.'
 
 const params = {
-  tenantId: 'tenant-id'
+  tenantId: 'tenant-id',
+  venueId: 'venue-id'
 }
 
 const portlistData_7650 = {
@@ -311,7 +312,7 @@ describe('SwitchPortTable', () => {
     render(<Provider>
       <SwitchPortTable isVenueLevel={true} />
     </Provider>, {
-      route: { params, path: '/:tenantId' }
+      route: { params, path: '/:tenantId/venues/:venueId/venue-details/devices' }
     })
 
     await screen.findAllByText('1/1/1')
