@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -83,15 +83,15 @@ export default function HelpPage (props: {
   const { $t } = useIntl()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-  const location = useLocation()
   const basePath = useBasePath()
 
-  const showError = ()=>{
+  const showError = useCallback(() => {
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
     setHelpUrl(null)
-  }
+  }, [$t])
 
   useEffect(() => {
+    if (!props.modalState) return
     (async ()=> {
       const mappingRs = await getMapping(basePath, showError)
       if (!mappingRs) {
@@ -106,7 +106,7 @@ export default function HelpPage (props: {
         showError
       )
     })()
-  }, [location])
+  }, [props.modalState, showError, basePath])
 
   return <Drawer
     title={$t({ defaultMessage: 'Help for this page' })}
