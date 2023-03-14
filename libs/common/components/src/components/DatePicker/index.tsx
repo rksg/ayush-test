@@ -107,6 +107,7 @@ export const RangePicker = ({
     }
   }, [range, onDateChange, onDateApply, translatedOptions])
 
+  const allTimeKey = $t(dateRangeMap[DateRange.allTime])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
@@ -119,7 +120,7 @@ export const RangePicker = ({
       <AntRangePicker
         ref={rangeRef}
         ranges={showAllTime ? translatedRanges :
-          _.omit(translatedRanges, [DateRange.allTime])}
+          _.omit(translatedRanges, allTimeKey)}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
