@@ -7,8 +7,11 @@ import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/c
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
-  useGetPropertyUnitListQuery, useLazyApListQuery, useLazyGetPersonaByIdQuery,
-  useLazyGetPersonaGroupByIdQuery, useLazyGetSwitchListQuery,
+  useGetPropertyUnitListQuery,
+  useLazyApListQuery,
+  useLazyGetPersonaByIdQuery,
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
 import { APExtended, Persona, PropertyUnit, PropertyUnitStatus, SwitchViewModel, useTableQuery } from '@acx-ui/rc/utils'
@@ -20,6 +23,7 @@ import { PropertyUnitDrawer } from './PropertyUnitDrawer'
 export function VenuePropertyTab () {
   const { $t } = useIntl()
   const { venueId, tenantId } = useParams()
+  const enabled = (status: string) => status === PropertyUnitStatus.ENABLED
   const [personaMap, setPersonaMap] = useState(new Map<string, Persona>())
   const [apMap, setApMap] = useState(new Map())
   const [switchMap, setSwitchMap] = useState(new Map())
@@ -163,7 +167,11 @@ export function VenuePropertyTab () {
         items.forEach(unit => {
           updateUnitById({
             params: { venueId, unitId: unit.id },
-            payload: { status: PropertyUnitStatus.DISABLED }
+            payload: {
+              status: enabled(unit.status)
+                ? PropertyUnitStatus.DISABLED
+                : PropertyUnitStatus.ENABLED
+            }
           })
             .then(clearSelection)
         })
@@ -226,7 +234,8 @@ export function VenuePropertyTab () {
       key: 'vlan',
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
-      align: 'center'
+      align: 'center',
+      render: (_, row) => personaMap.get(row.personaId)?.vlan
     },
     {
       show: withNsg,
