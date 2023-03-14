@@ -5,6 +5,9 @@ export const Wrapper = styled.div`
   width: 286px;
   border-radius: 8px;
   background: var(--acx-primary-black);
+  .slick-list {
+    border-radius: 8px;
+  }
   .ant-carousel .slick-slide {
     border-radius: 8px;
     background: var(--acx-primary-black);
