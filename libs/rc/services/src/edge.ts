@@ -13,7 +13,10 @@ import {
   EdgeUrlsInfo,
   PaginationQueryResult,
   RequestPayload,
-  TableResult
+  TableResult,
+  LatestEdgeFirmwareVersion,
+  EdgeVenueFirmware,
+  EdgeFirmwareVersion
 } from '@acx-ui/rc/utils'
 
 export const baseEdgeApi = createApi({
@@ -218,6 +221,41 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       transformResponse (result: TableResult<EdgePortStatus>) {
         return result?.data
       }
+    }),
+    getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getLatestEdgeFirmware)
+        return {
+          ...req
+        }
+      }
+    }),
+    getVenueEdgeFirmwareList: build.query<EdgeVenueFirmware[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeFirmwareList)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
+    }),
+    getAvailableEdgeFirmwareVersions: build.query<EdgeFirmwareVersion[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(EdgeUrlsInfo.getAvailableEdgeFirmwareVersions)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateEdgeFirmware: build.mutation<CommonResult, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdgeFirmware)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'FIRMWARE_LIST' }]
     })
   })
 })
@@ -241,5 +279,9 @@ export const {
   useGetStaticRoutesQuery,
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
-  useGetEdgePortsStatusListQuery
+  useGetEdgePortsStatusListQuery,
+  useGetAvailableEdgeFirmwareVersionsQuery,
+  useGetVenueEdgeFirmwareListQuery,
+  useUpdateEdgeFirmwareMutation,
+  useGetLatestEdgeFirmwareQuery
 } = edgeApi
