@@ -9,8 +9,7 @@ import {
   useGetEnhancedMdnsProxyListQuery,
   useGetNetworkSegmentationStatsListQuery,
   useGetPortalProfileListQuery,
-  useGetWifiCallingServiceListQuery,
-  useServiceListQuery
+  useGetWifiCallingServiceListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
