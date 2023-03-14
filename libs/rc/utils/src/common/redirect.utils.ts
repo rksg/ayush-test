@@ -13,5 +13,5 @@ export const redirectPreviousPage = (
   previousPath: string,
   defaultPath: string | Path
 ) => {
-  previousPath?.includes('overview') ? navigate(previousPath) : navigate(defaultPath)
+  previousPath ? navigate(previousPath) : navigate(defaultPath)
 }
