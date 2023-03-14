@@ -36,7 +36,7 @@ import {
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { GuestErrorRes, hasAccess, hasRoles }                from '@acx-ui/user'
-import { DateRange, getIntl  }                                          from '@acx-ui/utils'
+import { DateRange, getIntl  }                               from '@acx-ui/utils'
 
 import NetworkForm                           from '../../../../../Networks/wireless/NetworkForm/NetworkForm'
 import { GuestDateFilter }                   from '../../PageHeader'
