@@ -128,7 +128,7 @@ describe('AP Form - Add', () => {
     expect(screen.queryByText('GPS Coordinates')).not.toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/devices/wifi`,
+      pathname: `/t/${params.tenantId}/devices`,
       hash: '',
       search: ''
     })

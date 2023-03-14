@@ -198,7 +198,7 @@ describe('MdnsProxyTab', () => {
     // Verify Cancel form behavior
     await userEvent.click(await screen.findByRole('button', { name: /Cancel/ }))
     const { result: selectServicePath } = renderHook(() => {
-      return useTenantLink(`/devices/wifi/${params.serialNumber}/details/overview`)
+      return useTenantLink('/devices/')
     })
     expect(mockedUseNavigate).toHaveBeenCalledWith(selectServicePath.current)
   })
