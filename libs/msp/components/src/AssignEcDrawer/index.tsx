@@ -204,13 +204,13 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
     <CustomerTable />
   </Form>
 
-  const footer = [
+  const footer =
     <Drawer.FormFooter
       onCancel={resetFields}
       // disabled={disableSave}
       onSave={async () => handleSave()}
     />
-  ]
+
 
   return (
     <Drawer
@@ -221,7 +221,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       children={content}
       footer={footer}
       destroyOnClose={resetField}
-      width={'800'}
+      width={800}
     />
   )
 }
