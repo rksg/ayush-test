@@ -64,10 +64,10 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
         .map((val) => ({
           key: val.key,
           dataIndex: '',
-          render: (_, record) => 'children' in record ? val.label(record) : null
+          render: (_, record) => 'children' in record ? val?.label(record) : null
         }))
       const expandable: TableProps<ParentRecord>['expandable'] = {
-        expandIconColumnIndex: columns.length + groupActionColumns.length,
+        expandIconColumnIndex: columns.length + groupActionColumns.length + 1,
         rowExpandable: (record) => hasValidChildren(record),
         defaultExpandAllRows: true,
         expandIcon: (props) => {

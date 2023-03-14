@@ -40,9 +40,7 @@ import { seriesMappingAP }           from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer } from '../ImportFileDrawer'
 import { useApActions }              from '../useApActions'
 import {
-  deviceStatusGroupableOptions,
-  modelGroupableOptions,
-  deviceGroupNameGroupableOptions,
+  getGroupableConfig
 } from './config';
 
 type DeviceGroupBy = 'deviceStatus' | 'model' | 'deviceGroupName' | null
@@ -141,6 +139,8 @@ export function ApTable (props: ApTableProps) {
   const [groupBySelection, setGroupBySelection] = useState<DeviceGroupBy>(null)
   const [tableFilter, setTableFilter] = useState<any>(filters)
   const [tableSearch, setTableSearch] = useState<any>('')
+  const { deviceStatusGroupableOptions, modelGroupableOptions, deviceGroupNameGroupableOptions } =
+    getGroupableConfig();
 const groupByTableQuery = usePollingTableQuery({
   useQuery: useGroupByApListQuery,
   defaultPayload: {
