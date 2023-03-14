@@ -74,10 +74,10 @@ export const SubTips = styled.div.attrs((props: { expired: boolean }) => props)`
 `
 
 export const ActiveBtn = styled(TenantLink).attrs({ type: 'link' })<
-ButtonProps & { expired?: boolean }
+ButtonProps & { $expired?: boolean }
 >`
   height: 16px;
-  color: ${props => props.expired ?
+  color: ${props => props.$expired ?
     'var(--acx-primary-white);':'var(--acx-accents-orange-50);' }
   font-weight: var(--acx-subtitle-5-font-weight);
   font-size: 12px;
