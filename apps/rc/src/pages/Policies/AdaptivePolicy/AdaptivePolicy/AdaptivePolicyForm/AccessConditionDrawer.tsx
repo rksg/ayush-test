@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Drawer }                                         from '@acx-ui/components'
-import { useLazyAttributesListQuery }                     from '@acx-ui/rc/services'
-import { AccessCondition, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
+import { Drawer, Loader, useWatch }                                             from '@acx-ui/components'
+import { useLazyAttributesListQuery }                                           from '@acx-ui/rc/services'
+import { AccessCondition, checkObjectNotExists, CriteriaOption, RuleAttribute } from '@acx-ui/rc/utils'
 
 interface AccessConditionDrawerProps {
   visible: boolean
@@ -13,18 +13,21 @@ interface AccessConditionDrawerProps {
   isEdit?: boolean,
   editCondition?: AccessCondition,
   setAccessCondition: (condition: AccessCondition) => void,
-  templateId: number | undefined
+  templateId: number | undefined,
+  accessConditions: AccessCondition []
 }
 
 export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
-  const { visible, setVisible, isEdit = false, setAccessCondition, editCondition, templateId } = props
+  const { visible, setVisible, isEdit = false, setAccessCondition, editCondition, templateId, accessConditions } = props
   const [form] = Form.useForm()
   const [resetField, setResetField] = useState(false)
   const [attributes, setAttributes] = useState([] as RuleAttribute [])
+  const conditionId = useWatch('conditionId', form)
+  const typeName = useWatch('name', form)
 
-  const [attributeList] = useLazyAttributesListQuery()
+  const [attributeList, { isLoading } ] = useLazyAttributesListQuery()
 
   useEffect(() => {
     if(templateId) {
@@ -57,7 +60,6 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
         name: editCondition.name,
         criteriaType: editCondition.evaluationRule.criteriaType,
         attributeValue: editCondition.evaluationRule.regexStringCriteria
-        // operator // support?
       }
       form.setFieldsValue(editData)
     }
@@ -78,48 +80,61 @@ export function AccessConditionDrawer (props: AccessConditionDrawerProps) {
     onClose()
   }
 
+  const conditionsValidator = async (value: number) => {
+    if(!accessConditions)
+      return Promise.resolve()
+    const list =
+      // eslint-disable-next-line max-len
+      accessConditions.filter(n => n.templateAttributeId === value && n.id !== conditionId).map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: typeName }, $t({ defaultMessage: 'Condition Type' }))
+  }
+
   const content = (
-    <Form layout='vertical' form={form} onFinish={onSubmit}>
-      <Form.Item name='conditionId' hidden children={<Input />}/>
-      <Form.Item name='name' hidden children={<Input />}/>
-      <Form.Item name='criteriaType' hidden children={<Input />}/>
-      <Form.Item name='templateAttributeId'
-        label={$t({ defaultMessage: 'Condition Type' })}
-        rules={[
-          { required: true }
-        ]}
-      >
-        <Select
-          // eslint-disable-next-line max-len
-          options={attributes.map(p => ({ label: p.name, value: p.id }))}
-          onChange={(value) => {
-            const attr = attributes.find((attribute) => attribute.id === value)
-            if(attr) {
-              form.setFieldsValue({
-                templateAttributeId: attr.id,
-                name: attr.name,
-                criteriaType: attr.attributeType
-              })
-            }
-          }}
+    <Loader states={[{ isLoading }]}>
+      <Form layout='vertical' form={form} onFinish={onSubmit}>
+        <Form.Item name='conditionId' hidden children={<Input />}/>
+        <Form.Item name='name' hidden children={<Input />}/>
+        <Form.Item name='criteriaType' hidden children={<Input />}/>
+        <Form.Item name='templateAttributeId'
+          label={$t({ defaultMessage: 'Condition Type' })}
+          rules={[
+            { required: true },
+            { validator: (_, value) => conditionsValidator(value) }
+          ]}
         >
-        </Select>
-      </Form.Item>
-      {/*<Form.Item label={$t({ defaultMessage: 'Condition Value' })}>*/}
-      {/*<Space direction='horizontal'>*/}
-      {/*  <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>*/}
-      {/*    <Select*/}
-      {/*      options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>*/}
-      {/*    </Select>*/}
-      {/*  </Form.Item>*/}
-      <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
-        name='attributeValue'
-        rules={[{ required: true,
-          message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
-        children={<Input />}/>
-      {/*</Space>*/}
-      {/*</Form.Item>*/}
-    </Form>
+          <Select
+          // eslint-disable-next-line max-len
+            options={attributes.map(p => ({ label: p.name, value: p.id }))}
+            onChange={(value) => {
+              const attr = attributes.find((attribute) => attribute.id === value)
+              if(attr) {
+                form.setFieldsValue({
+                  templateAttributeId: attr.id,
+                  name: attr.name,
+                  criteriaType: attr.attributeType
+                })
+              }
+            }}
+          >
+          </Select>
+        </Form.Item>
+        {/*<Form.Item label={$t({ defaultMessage: 'Condition Value' })}>*/}
+        {/*<Space direction='horizontal'>*/}
+        {/*  <Form.Item name='operator' initialValue={OperationTypeOption[0].value}>*/}
+        {/*    <Select*/}
+        {/*      options={OperationTypeOption?.map(p => ({ label: $t(p.label), value: p.value }))}>*/}
+        {/*    </Select>*/}
+        {/*  </Form.Item>*/}
+        <Form.Item label={$t({ defaultMessage: 'Condition Value' })}
+          name='attributeValue'
+          rules={[{ required: true,
+            message: $t({ defaultMessage: 'Please enter Condition Value' }) }]}
+          children={<Input />}/>
+        {/*</Space>*/}
+        {/*</Form.Item>*/}
+      </Form>
+    </Loader>
   )
 
   const footer = (

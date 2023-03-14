@@ -7,7 +7,7 @@ import { useParams }                         from 'react-router-dom'
 import { Button, Card, Loader, PageHeader, Table, TableProps }      from '@acx-ui/components'
 import { useGetAdaptivePolicyQuery, useGetConditionsInPolicyQuery } from '@acx-ui/rc/services'
 import {
-  AccessCondition, getAdaptivePolicyDetailLink,
+  AccessCondition, getAdaptivePolicyDetailLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -68,22 +68,6 @@ export function AdaptivePolicyDetail () {
     payload: { page: '1', pageSize: '2147483647' },
     params: { policyId, templateId } })
 
-  // TODO: just for mock data
-  const venues = [
-    {
-      id: '1',
-      name: 'v1',
-      scopes: 5,
-      polices: 5
-    },
-    {
-      id: '2',
-      name: 'v2',
-      scopes: 5,
-      polices: 5
-    }
-  ] as VenueTable []
-
   const getConditions = function (conditions : AccessCondition [] | undefined) {
     return conditions?.map(((condition) =>{
       return (
@@ -102,7 +86,9 @@ export function AdaptivePolicyDetail () {
       <PageHeader
         title={policyData?.name || ''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies & Profiles > Adaptive Policy' }),
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Adaptive Policy' }),
             // eslint-disable-next-line max-len
             link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }) }
         ]}
@@ -148,17 +134,17 @@ export function AdaptivePolicyDetail () {
             </Form>
           </Loader>
         </Card>
+        <Card title={$t({ defaultMessage: 'Instance ({size})' }, // TODO: need to update after integrate with network
+          { size: 0 })}>
+          <div style={{ width: '100%' }}>
+            <Table
+              rowKey='id'
+              columns={useColumns()}
+              dataSource={[] as VenueTable []}
+            />
+          </div>
+        </Card>
       </Space>
-      <Card title={$t({ defaultMessage: 'Instance ({size})' },
-        { size: venues.length })}>
-        <div style={{ width: '100%' }}>
-          <Table
-            rowKey='id'
-            columns={useColumns()}
-            dataSource={venues}
-          />
-        </div>
-      </Card>
     </>
   )
 }

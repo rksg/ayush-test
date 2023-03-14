@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
@@ -22,12 +20,6 @@ export default function AdaptivePolicyTabs () {
   const { activeTab } = useParams()
   const navigate = useNavigate()
 
-  const [adaptivePolicyCount, setAdaptivePolicyCount] = useState({
-    policyTotalCount: 0,
-    policySetTotalCount: 0,
-    attributeGroupTotalCount: 0
-  })
-
   const attributeGroupTableQuery = useTableQuery({
     useQuery: useRadiusAttributeGroupListQuery,
     defaultPayload: {}
@@ -42,16 +34,6 @@ export default function AdaptivePolicyTabs () {
     useQuery: useAdaptivePolicySetListQuery,
     defaultPayload: {}
   })
-
-  useEffect(() => {
-    if (attributeGroupTableQuery.data || policyTableQuery.data || policySetTableQuery.data) {
-      setAdaptivePolicyCount({
-        policySetTotalCount: policySetTableQuery.data?.totalCount ?? 0,
-        policyTotalCount: policyTableQuery.data?.totalCount ?? 0,
-        attributeGroupTotalCount: attributeGroupTableQuery.data?.totalCount ?? 0
-      })
-    }
-  }, [attributeGroupTableQuery.data, policyTableQuery.data, policySetTableQuery.data])
 
   const tabsPathMapping: Record<AdaptivePolicyTabKey, Path> = {
     [AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP]: useTenantLink(getPolicyRoutePath({
@@ -76,17 +58,17 @@ export default function AdaptivePolicyTabs () {
     <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
         // eslint-disable-next-line max-len
-        tab={$t({ defaultMessage: 'Adaptive Policy ({count})' }, { count: adaptivePolicyCount.policyTotalCount })}
+        tab={$t({ defaultMessage: 'Adaptive Policy ({count})' }, { count: policyTableQuery.data?.totalCount ?? 0 })}
         key={AdaptivePolicyTabKey.ADAPTIVE_POLICY}
       />
       <Tabs.TabPane
         // eslint-disable-next-line max-len
-        tab={$t({ defaultMessage: 'Adaptive Policy Sets ({count})' }, { count: adaptivePolicyCount.policySetTotalCount })}
+        tab={$t({ defaultMessage: 'Adaptive Policy Sets ({count})' }, { count: policySetTableQuery.data?.totalCount ?? 0 })}
         key={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}
       />
       <Tabs.TabPane
         // eslint-disable-next-line max-len
-        tab={$t({ defaultMessage: 'RADIUS Attribute Groups ({count})' }, { count: adaptivePolicyCount.attributeGroupTotalCount })}
+        tab={$t({ defaultMessage: 'RADIUS Attribute Groups ({count})' }, { count: attributeGroupTableQuery.data?.totalCount ?? 0 })}
         key={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}
       />
     </Tabs>

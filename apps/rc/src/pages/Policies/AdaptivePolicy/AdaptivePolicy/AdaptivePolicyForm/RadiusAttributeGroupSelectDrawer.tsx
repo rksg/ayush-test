@@ -50,7 +50,7 @@ function useColumns () {
   return columns
 }
 
-export function RadiusAttributeGroupDrawer (props: RadiusAttributeDrawerProps) {
+export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerProps) {
   const { $t } = useIntl()
 
   const { visible, setVisible, settingForm } = props

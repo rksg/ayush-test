@@ -13,6 +13,7 @@ import {
   useUpdateAdaptivePolicySetMutation
 } from '@acx-ui/rc/services'
 import {
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType, PrioritizedPolicy
@@ -25,7 +26,7 @@ interface AdaptivePolicySetFormProps {
   editMode?: boolean
 }
 
-export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps) {
+export default function H (props: AdaptivePolicySetFormProps) {
   const { $t } = useIntl()
   const { editMode = false } = props
   const { policyId } = useParams()
@@ -68,32 +69,35 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
         description: data.name
       }
 
+      let usePolicySetId
       if(editMode){
         await updateAdaptiveSetPolicy({
           params: { policySetId: policyId },
           payload: policyPayload
         }).unwrap()
+        usePolicySetId = policyId
       } else {
-        await addAdaptivePolicySet({
+        const { id } = await addAdaptivePolicySet({
           payload: policyPayload
         }).unwrap()
+        usePolicySetId = id
       }
 
       if(data.accessPolicies) {
-        data.accessPolicies.forEach((policy:PrioritizedPolicy) => {
-          addPrioritizedPolicy({
-            params: { policySetId: policyId, policyId: policy.policyId },
+        for(let policy of data.accessPolicies) {
+          await addPrioritizedPolicy({
+            params: { policySetId: usePolicySetId, policyId: policy.policyId },
             payload: { policyId: policy.policyId }
           }).unwrap()
-        })
+        }
       }
 
       if(data.accessDeletePolicies) {
-        data.accessDeletePolicies.forEach((policy:PrioritizedPolicy) => {
-          deletePrioritizedPolicy({
-            params: { policySetId: policyId, policyId: policy.policyId }
+        for(let policy of data.accessDeletePolicies) {
+          await deletePrioritizedPolicy({
+            params: { policySetId: usePolicySetId, policyId: policy.policyId }
           }).unwrap()
-        })
+        }
       }
 
       showToast({
@@ -118,11 +122,11 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy Set' })}
         breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles > Adaptive Set Policy' }),
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
-          }
+            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
         ]}
       />
       <StepsForm
@@ -134,7 +138,6 @@ export default function AdaptivePolicySetForm (props: AdaptivePolicySetFormProps
         <StepsForm.StepForm
           initialValues={{ accessDeletePolicies: [] as PrioritizedPolicy [] }}>
           <Loader states={[{
-            // eslint-disable-next-line max-len
             isLoading: isGetPolicyLoading || isGetPrioritizedPoliciesLoading,
             isFetching: isUpdating || isAddPrioritizedPolicyUpdating
           }]}>

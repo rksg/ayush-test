@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { RulesManagementUrlsInfo }                               from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { RulesManagementUrlsInfo }    from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { adpativePolicy, assignConditions } from './__test__/fixtures'
 import { AdaptivePolicyDetail }             from './AdaptivePolicyDetail'
@@ -35,10 +35,10 @@ describe('AdaptivePolicyDetail', () => {
       route: { params, path }
     })
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByText('Policy Name')
 
     const names = await screen.findAllByText(adpativePolicy.name)
-
+    expect(names).toHaveLength(2)
     expect(names[0]).toBeVisible()
     expect(names[1]).toBeVisible()
 

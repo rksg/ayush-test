@@ -29,7 +29,6 @@ function useColumns (conditionsMap: Map<string, string>, templateIdMap: Map<stri
       defaultSortOrder: 'ascend',
       render: function (data, row) {
         return (
-          // eslint-disable-next-line max-len
           <TenantLink
             to={
               getAdaptivePolicyDetailLink({
@@ -89,7 +88,9 @@ export default function AdaptivePolicyTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicyMutation()
 
-  const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
+  const [getConditionsPolicy,
+    { isLoading: isGetConditionsPolicyUpdating }]
+    = useLazyGetConditionsInPolicyQuery()
 
   useEffect(() => {
     if (tableQuery.isLoading || templateIsLoading)
@@ -161,7 +162,9 @@ export default function AdaptivePolicyTable () {
 
   return (
     <Loader states={[
-      { isLoading: tableQuery.isLoading || templateIsLoading, isFetching: isDeletePolicyUpdating }
+      tableQuery,
+      { isLoading: templateIsLoading || isGetConditionsPolicyUpdating,
+        isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         columns={useColumns(conditionCountMap, templateIdMap)}

@@ -50,8 +50,8 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onLoadData = async (treeNode: any) => {
     const defaultPayload = {
-      page: '1',
-      pageSize: '10000'
+      page: 0,
+      pageSize: 10000
     }
     const payload = treeNode.value === commonAttributeKey ?
       { ...defaultPayload, filters: { showOnDefault: true } } :

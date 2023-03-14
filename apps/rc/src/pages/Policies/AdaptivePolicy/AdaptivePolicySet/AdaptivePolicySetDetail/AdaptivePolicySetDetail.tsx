@@ -1,12 +1,13 @@
 import React from 'react'
 
-import { Col, Form, Row, Space, Typography } from 'antd'
-import { useIntl }                           from 'react-intl'
-import { useParams }                         from 'react-router-dom'
+import { Form,Space, Typography } from 'antd'
+import { useIntl }                from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
-import { Button, Card, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useGetAdaptivePolicySetQuery }                        from '@acx-ui/rc/services'
+import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
+import { useGetAdaptivePolicySetQuery }                                          from '@acx-ui/rc/services'
 import {
+  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType
@@ -52,30 +53,16 @@ export function AdaptivePolicySetDetail () {
   // eslint-disable-next-line max-len
   const { data: policySetData, isLoading: isGetAdaptivePolicySetLoading }= useGetAdaptivePolicySetQuery({ params: { policySetId: policyId } })
 
-  // TODO: just for mock data
-  const networks = [
-    {
-      id: '1',
-      name: 'v1',
-      type: 'PSK',
-      venues: 5
-    },
-    {
-      id: '2',
-      name: 'v2',
-      type: 'PSK',
-      venues: 5
-    }
-  ] as NetworkTable []
-
   return (
     <>
       <PageHeader
         title={policySetData?.name || ''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies & Profiles > Adaptive Set Policy' }),
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET,
-              oper: PolicyOperation.LIST }) }
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Adaptive Set Policy' }),
+            // eslint-disable-next-line max-len
+            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST }) }
         ]}
         extra={[
           <TenantLink
@@ -95,32 +82,32 @@ export function AdaptivePolicySetDetail () {
             { isLoading: isGetAdaptivePolicySetLoading }
           ]}>
             <Form layout={'vertical'}>
-              <Row>
-                <Col span={6}>
+              <GridRow>
+                <GridCol col={{ span: 6 }}>
                   <Form.Item label={$t({ defaultMessage: 'Policy Name' })}>
                     <Paragraph>{policySetData?.name}</Paragraph>
                   </Form.Item>
-                </Col>
-                <Col span={6}>
+                </GridCol>
+                <GridCol col={{ span: 6 }}>
                   <Form.Item label={$t({ defaultMessage: 'Members' })}>
                     <Paragraph>0</Paragraph>
                   </Form.Item>
-                </Col>
-              </Row>
+                </GridCol>
+              </GridRow>
             </Form>
           </Loader>
         </Card>
+        <Card title={$t({ defaultMessage: 'Instance ({size})' }, // TODO: need to update after integrate with network
+          { size: 0 })}>
+          <div style={{ width: '100%' }}>
+            <Table
+              rowKey='id'
+              columns={useColumns()}
+              dataSource={[] as NetworkTable []}
+            />
+          </div>
+        </Card>
       </Space>
-      <Card title={$t({ defaultMessage: 'Instance ({size})' },
-        { size: networks.length })}>
-        <div style={{ width: '100%' }}>
-          <Table
-            rowKey='id'
-            columns={useColumns()}
-            dataSource={networks}
-          />
-        </div>
-      </Card>
     </>
   )
 }

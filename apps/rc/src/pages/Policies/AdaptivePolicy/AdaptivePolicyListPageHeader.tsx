@@ -14,7 +14,8 @@ function AdaptivePolicyListPageHeader () {
           { text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true) }
         ]}
-      title={$t({ defaultMessage: 'Adaptive Policy' })}
+      title={$t({ defaultMessage: 'Adaptive Policy' })
+      }
       footer={<AdaptivePolicyTabs />}
     />
   )

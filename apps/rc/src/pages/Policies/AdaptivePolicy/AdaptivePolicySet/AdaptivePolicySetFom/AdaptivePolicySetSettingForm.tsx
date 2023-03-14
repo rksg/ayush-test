@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Row, Switch } from 'antd'
-import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
+import { Form, Input, Switch } from 'antd'
+import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
+import { GridCol, GridRow, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListQuery,
   useLazyAdaptivePolicySetLisByQueryQuery, useLazyGetConditionsInPolicyQuery,
@@ -33,16 +33,24 @@ export function AdaptivePolicySetSettingForm () {
   const [templateIdMap, setTemplateIdMap] = useState(new Map())
   const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
 
-  // eslint-disable-next-line max-len
-  const { data: templateList, isLoading: templateIsLoading } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } })
-
   const [getConditionsPolicy] = useLazyGetConditionsInPolicyQuery()
 
+  const { data: templateList, isLoading: templateIsLoading } =
+    usePolicyTemplateListQuery({
+      payload: {
+        page: '1',
+        pageSize: '1000',
+        sortField: 'name',
+        sortOrder: 'desc' }
+    })
 
-  const tableQuery = useTableQuery({
+  const adaptivePolicyListTableQuery = useTableQuery({
     useQuery: useAdaptivePolicyListQuery,
     defaultPayload: {},
-    pagination: { pageSize: 10000, page: 1 }
+    pagination: {
+      pageSize: 10000,
+      page: 1
+    }
   })
 
   const [getPolicySetList] = useLazyAdaptivePolicySetLisByQueryQuery()
@@ -70,7 +78,7 @@ export function AdaptivePolicySetSettingForm () {
   }
 
   useEffect(() => {
-    if (tableQuery.isLoading || templateIsLoading)
+    if (adaptivePolicyListTableQuery.isLoading || templateIsLoading)
       return
 
     const templateIds = new Map()
@@ -80,7 +88,7 @@ export function AdaptivePolicySetSettingForm () {
     setTemplateIdMap(templateIds)
 
     const conditionPools = new Map()
-    tableQuery.data?.data.forEach(policy => {
+    adaptivePolicyListTableQuery.data?.data.forEach(policy => {
       const { id, policyType } = policy
       getConditionsPolicy({ params: { policyId: id, templateId: templateIds.get(policyType) } })
         .then(result => {
@@ -90,7 +98,7 @@ export function AdaptivePolicySetSettingForm () {
         })
     })
     setConditionCountMap(conditionPools)
-  }, [tableQuery.data, templateList?.data])
+  }, [adaptivePolicyListTableQuery.data, templateList?.data])
 
   const nameValidator = async (value: string) => {
     const list = (await getPolicySetList({
@@ -167,8 +175,8 @@ export function AdaptivePolicySetSettingForm () {
 
   return (
     <>
-      <Row>
-        <Col span={10}>
+      <GridRow>
+        <GridCol col={{ span: 10 }}>
           <Form.Item name='name'
             label={$t({ defaultMessage: 'Policy Name' })}
             rules={[
@@ -179,14 +187,14 @@ export function AdaptivePolicySetSettingForm () {
             hasFeedback
             children={<Input/>}
           />
-        </Col>
+        </GridCol>
         <Form.Item
           name='accessDeletePolicies'
           hidden
           children={<Input/>}
         />
-        <Col span={24}>
-          <Loader states={[tableQuery]}>
+        <GridCol col={{ span: 24 }}>
+          <Loader states={[adaptivePolicyListTableQuery]}>
             <Form.Item
               name='accessPolicies'
               label={$t({ defaultMessage: 'Select Access Policies' })}
@@ -197,7 +205,8 @@ export function AdaptivePolicySetSettingForm () {
               <Table
                 rowKey='id'
                 columns={useColumns(conditionCountMap, templateIdMap)}
-                dataSource={tableQuery.data?.data}
+                dataSource={adaptivePolicyListTableQuery.data?.data}
+                pagination={adaptivePolicyListTableQuery.pagination}
                 actions={[{
                   label: $t({ defaultMessage: 'Add Policy' }),
                   onClick: () => {
@@ -207,8 +216,8 @@ export function AdaptivePolicySetSettingForm () {
               />
             </Form.Item>
           </Loader>
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
       <AdaptivePolicyFormDrawer
         visible={adaptivePolicyDrawerVisible}
         setVisible={setAdaptivePolicyDrawerVisible}

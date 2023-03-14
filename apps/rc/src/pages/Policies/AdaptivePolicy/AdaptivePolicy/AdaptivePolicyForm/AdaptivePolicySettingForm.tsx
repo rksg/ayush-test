@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { Col, Form, Input, Radio, Row, Space } from 'antd'
-import { useIntl }                             from 'react-intl'
-import { useParams }                           from 'react-router-dom'
-import { v4 as uuidv4 }                        from 'uuid'
+import { Form, Input, Radio, Space } from 'antd'
+import { useIntl }                   from 'react-intl'
+import { useParams }                 from 'react-router-dom'
+import { v4 as uuidv4 }              from 'uuid'
 
-import { Button, Descriptions, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
 import {
   useLazyAdaptivePolicyLisByQueryQuery, useLazyGetRadiusAttributeGroupQuery,
   usePolicyTemplateListQuery
@@ -16,8 +16,8 @@ import {
   RadiusAttributeGroup
 } from '@acx-ui/rc/utils'
 
-import { AccessConditionDrawer }      from './AccessConditionDrawer'
-import { RadiusAttributeGroupDrawer } from './RadiusAttributeGroupDrawer'
+import { AccessConditionDrawer }            from './AccessConditionDrawer'
+import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
 
 function useColumns () {
   const { $t } = useIntl()
@@ -65,10 +65,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [policyList] = useLazyAdaptivePolicyLisByQueryQuery()
 
-  const { data: templateList } = usePolicyTemplateListQuery({
+  const { data: templateList, isLoading } = usePolicyTemplateListQuery({
     payload: {
       page: '1',
-      pageSize: '2147483647',
+      pageSize: '1000',
       sortField: 'name',
       sortOrder: 'desc' }
   })
@@ -171,8 +171,8 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   return (
     <>
-      <Row>
-        <Col span={drawerMode ? 24 : 10}>
+      <GridRow >
+        <GridCol col={{ span: drawerMode ? 24 : 10 }}>
           <Form.Item name='name'
             label={$t({ defaultMessage: 'Policy Name' })}
             rules={[
@@ -183,32 +183,35 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             hasFeedback
             children={<Input/>}
           />
-          <Form.Item name='templateTypeId'
-            label={$t({ defaultMessage: 'Policy Type' })}
-            rules={[
-              { required: true }
-            ]}
-            children={
-              <Radio.Group
-                disabled={editMode}
-                onChange={() => {
-                  setAccessConditionsVisible(false)
-                }}>
-                <Space direction='vertical'>
-                  {templateList?.data.map(({ id, ruleType }) => (
-                    <Radio key={ruleType} value={id}>
-                      {ruleType}
-                    </Radio>
-                  ))}
-                </Space>
-              </Radio.Group>
-            }/>
+          <Loader states={[{ isLoading }]}>
+            <Form.Item name='templateTypeId'
+              label={$t({ defaultMessage: 'Policy Type' })}
+              rules={[
+                { required: true }
+              ]}
+              children={
+                <Radio.Group
+                  disabled={editMode}
+                  onChange={() => {
+                    setAccessConditionsVisible(false)
+                    form.setFieldValue('evaluationRules', [])
+                  }}>
+                  <Space direction='vertical'>
+                    {templateList?.data.map(({ id, ruleType }) => (
+                      <Radio key={ruleType} value={id}>
+                        {ruleType}
+                      </Radio>
+                    ))}
+                  </Space>
+                </Radio.Group>
+              }/>
+          </Loader>
           <Form.Item
             name='evaluationRules'
             label={$t({ defaultMessage: 'Access Conditions' })}
             rules={[
               {
-                required: false,
+                required: true,
                 message: $t({ defaultMessage: 'Please create access conditions' })
               }]}
           >
@@ -256,16 +259,17 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
             </Button>
           </Space>
           {getAttributes(selectRadiusAttributeGroup.attributeAssignments)}
-        </Col>
-      </Row>
+        </GridCol>
+      </GridRow>
       <AccessConditionDrawer
         visible={accessConditionsVisible}
         setVisible={setAccessConditionsVisible}
         setAccessCondition={setAccessCondition}
         editCondition={editCondition}
         isEdit={editConditionMode}
+        accessConditions={evaluationRules}
         templateId={templateId}/>
-      <RadiusAttributeGroupDrawer
+      <RadiusAttributeGroupSelectDrawer
         visible={attributeGroupVisible}
         setVisible={setAttributeGroupVisible}
         settingForm={form}/>

@@ -58,7 +58,6 @@ export default function AdaptivePolicySetTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const [policyCountMap, setPolicyCountMap] = useState(new Map())
-  // const [templateIdMap, setTemplateIdMap] = useState(new Map())
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicySetListQuery,
@@ -83,7 +82,7 @@ export default function AdaptivePolicySetTable () {
       getPrioritizedPolicies({ params: { policySetId: id } })
         .then(result => {
           if (result.data) {
-            policyCountMap.set(id, result.data.data.length)
+            policyCountMap.set(id, result.data.totalCount)
           }
         })
     })
@@ -111,7 +110,7 @@ export default function AdaptivePolicySetTable () {
         type: 'confirm',
         customContent: {
           action: 'DELETE',
-          entityName: $t({ defaultMessage: 'policy' }),
+          entityName: $t({ defaultMessage: 'policy set' }),
           entityValue: name,
           confirmationText: 'Delete'
         },
@@ -125,10 +124,7 @@ export default function AdaptivePolicySetTable () {
               })
               clearSelection()
             }).catch((error) => {
-              showToast({
-                type: 'error',
-                content: error.data.message
-              })
+              console.log(error) // eslint-disable-line no-console
             })
         }
       })
@@ -137,8 +133,8 @@ export default function AdaptivePolicySetTable () {
 
   return (
     <Loader states={[
-      // eslint-disable-next-line max-len
-      { isLoading: tableQuery.isLoading || isGetPrioritizedPoliciesUpdating, isFetching: isDeletePolicyUpdating }
+      tableQuery,
+      { isLoading: isGetPrioritizedPoliciesUpdating, isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         columns={useColumns(policyCountMap)}

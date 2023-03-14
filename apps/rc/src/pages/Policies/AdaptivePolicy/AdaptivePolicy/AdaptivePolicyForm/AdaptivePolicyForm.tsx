@@ -9,16 +9,21 @@ import {
   useAddPolicyConditionsMutation,
   useGetAdaptivePolicyQuery,
   useGetConditionsInPolicyQuery,
-  useLazyAdaptivePolicyLisByQueryQuery,
   useUpdateAdaptivePolicyMutation
 } from '@acx-ui/rc/services'
-import { AccessCondition, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                    from '@acx-ui/react-router-dom'
+import {
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
 import { AdaptivePolicySettingForm } from './AdaptivePolicySettingForm'
 
 interface AdaptivePolicyFormProps {
-  editMode?: boolean
+  editMode?: boolean,
+  drawerMode?: boolean
 }
 
 // enum CheckResult {
@@ -29,7 +34,7 @@ interface AdaptivePolicyFormProps {
 
 export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const { $t } = useIntl()
-  const { editMode = false } = props
+  const { editMode = false, drawerMode = false } = props
   const { policyId, templateId } = useParams()
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink('/' + getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }))
@@ -45,8 +50,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
   const { data: conditionsData, isLoading: isGetConditionsLoading } = useGetConditionsInPolicyQuery({
     payload: { page: '1', pageSize: '2147483647' },
     params: { policyId, templateId } }, { skip: !editMode })
-
-  const [policyList] = useLazyAdaptivePolicyLisByQueryQuery()
 
   useEffect(() => {
     if(data && editMode) {
@@ -64,10 +67,6 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     }
   }, [conditionsData, editMode])
 
-  // const checkConditionExist = (existConditions: AccessCondition[], condition: AccessCondition) => {
-  //   return false
-  // }
-
   const handleSubmit = async () => {
     const data = formRef.current?.getFieldsValue()
     try {
@@ -80,51 +79,23 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           params: { templateId: data.templateTypeId, policyId },
           payload: policyPayload
         }).unwrap()
-
-        // const addList = [], deleteList = []
-        // data.evaluationRules.forEach((rule: AccessCondition) => {
-        //   const exist = checkConditionExist(conditionsData?.data ?? [], rule)
-        //   if(exist === CheckResult.NO_EXIST) {
-        //     deleteList.push(rule)
-        //   } else if(exist == CheckResult.) {
-        //     deleteList.push(rule)
-        //   }
-        //   // existConditions.includes()
-        //   // addConditions({
-        //   //   params: { templateId: data.templateTypeId, policyId },
-        //   //   payload: {
-        //   //     ...rule,
-        //   //     policyId: policyId
-        //   //   }
-        //   // }).unwrap()
-        // })
+        // TODO waiting batch update conditions API
       } else {
-        await addAdaptivePolicy({
+        const { id: addedPolicyId } = await addAdaptivePolicy({
           params: { templateId: data.templateTypeId },
           payload: policyPayload
         }).unwrap()
 
-        const policies = (await policyList({
-          params: {
-            excludeContent: 'false'
-          },
-          payload: {
-            fields: [ 'name' ],
-            page: 1, pageSize: 10,
-            filters: { name: policyPayload.name }
-          }
-        }).unwrap()).data.map(n => ({ id: n.id }))
-
-        if(policies.length > 0) {
-          data.evaluationRules.forEach((rule: AccessCondition) => {
-            addConditions({
-              params: { templateId: data.templateTypeId, policyId: policies[0].id },
+        if(addedPolicyId) {
+          for (let rule of data.evaluationRules) {
+            await addConditions({
+              params: { templateId: data.templateTypeId, policyId: addedPolicyId },
               payload: {
                 ...rule,
-                policyId: policies[0].id
+                policyId: addedPolicyId
               }
             }).unwrap()
-          })
+          }
         }
       }
 
@@ -150,11 +121,11 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
           : $t({ defaultMessage: 'Add Adaptive Policy' })}
         breadcrumb={[
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles > Adaptive Policy' }),
+          // eslint-disable-next-line max-len
+          { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
+          { text: $t({ defaultMessage: 'Adaptive Policy' }),
             // eslint-disable-next-line max-len
-            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })
-          }
+            link: getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST }) }
         ]}
       />
       <StepsForm
@@ -168,7 +139,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
             isLoading: isGetPolicyLoading || isGetConditionsLoading,
             isFetching: isUpdating
           }]}>
-            <AdaptivePolicySettingForm editMode={editMode}/>
+            <AdaptivePolicySettingForm editMode={editMode} drawerMode={drawerMode}/>
           </Loader>
         </StepsForm.StepForm>
       </StepsForm>

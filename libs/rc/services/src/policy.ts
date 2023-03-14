@@ -69,6 +69,7 @@ export const basePolicyApi = createApi({
   reducerPath: 'policyApi',
   // eslint-disable-next-line max-len
   tagTypes: ['Policy', 'MacRegistrationPool', 'MacRegistration', 'ClientIsolation', 'RadiusAttributeGroup', 'RadiusAttribute'
+    // eslint-disable-next-line max-len
     , 'AdaptivePolicy', 'AdaptivePolicySet', 'AdaptivePolicyCondition', 'AdaptivePolicySet', 'AdaptivePrioritizedPolicy'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
@@ -1263,8 +1264,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse (result: NewTableResult<PrioritizedPolicy>) {
-        return transferToTableResult<PrioritizedPolicy>(result)
+      transformResponse (result: NewTableResultPolicy<PrioritizedPolicy>) {
+        return transferToTableResultPolicy<PrioritizedPolicy>(result)
       },
       providesTags: [{ type: 'AdaptivePrioritizedPolicy', id: 'LIST' }]
     })
