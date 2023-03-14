@@ -21,11 +21,13 @@ import {
   ContentSwitcherProps,
   Card
 } from '@acx-ui/components'
-import { VenueFilter }    from '@acx-ui/main/components'
+import { VenueFilter }      from '@acx-ui/main/components'
 import {
-  AlarmWidget,
+  AlarmWidgetV2,
+  ClientsWidgetV2,
+  DevicesDashboardWidgetV2,
   MapWidget,
-  VenuesDashboardWidget
+  VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import { TenantLink }                        from '@acx-ui/react-router-dom'
 import { useDateFilter, useDashboardFilter } from '@acx-ui/utils'
@@ -148,7 +150,7 @@ function CommonDashboardWidgets () {
       <GridCol col={{ span: 18 }} style={{ height: '410px' }}>
         <GridRow>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <AlarmWidget showList={false} />
+            <AlarmWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
             <Card title='Incidents'>
@@ -161,15 +163,13 @@ function CommonDashboardWidgets () {
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <VenuesDashboardWidget />
+            <VenuesDashboardWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Devices'>
-            </Card>
+            <DevicesDashboardWidgetV2 />
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Clients'>
-            </Card>
+            <ClientsWidgetV2 />
           </GridCol>
         </GridRow>
       </GridCol>
