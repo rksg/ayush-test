@@ -139,7 +139,7 @@ export function LicenseBanner (props: BannerProps) {
               b: chunks => chunks,
               a: (chunks) =>
                 <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
-                  expired={isExpired}
+                  $expired={isExpired}
                   to='administration/subscriptions'>
                   {chunks}
                 </UI.ActiveBtn>,

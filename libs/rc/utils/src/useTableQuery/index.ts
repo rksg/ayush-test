@@ -48,7 +48,6 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
-  detailLevel?: string
 }
 export type PAGINATION = {
   page: number,
@@ -208,8 +207,8 @@ export function useTableQuery <
     } as SORTER
 
     const paginationDetail = {
-      page: customPagination.current,
-      pageSize: customPagination.pageSize
+      page: customPagination.current ?? payload.page,
+      pageSize: customPagination.pageSize ?? payload.pageSize
     } as PAGINATION
 
     const tableProps = { ...sorterDetail, ...paginationDetail }

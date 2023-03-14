@@ -402,3 +402,8 @@ export interface MspLogoFile {
   createdDate?: Date,
   updatedDate?: Date
 }
+
+export interface ParentLogoUrl {
+  logo_url: string
+}
+

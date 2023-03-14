@@ -27,7 +27,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { getBasePath, Link, TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess, useUserProfileContext }    from '@acx-ui/user'
+import { RolesEnum }                                from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }          from '@acx-ui/user'
 
 const transformApUtilization = (row: VarCustomer) => {
   if (row.entitlements) {
@@ -76,6 +77,7 @@ const transformNextExpirationDate = (row: VarCustomer) => {
 export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -315,14 +317,14 @@ export function VarCustomers () {
     <>
       <PageHeader
         title={title}
-        extra={filterByAccess([
+        extra={
           <TenantLink to='/dashboard' key='add'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>
-        ])}
+        }
       />
 
-      {!userProfile?.support && <InvitationList />}
+      {!userProfile?.support && isAdmin && <InvitationList />}
       <VarCustomerTable />
     </>
   )

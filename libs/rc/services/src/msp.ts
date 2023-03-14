@@ -25,7 +25,8 @@ import {
   EntitlementBanner,
   MspEcProfile,
   MspPortal,
-  downloadFile
+  downloadFile,
+  ParentLogoUrl
 } from '@acx-ui/rc/utils'
 import { baseMspApi }  from '@acx-ui/store'
 import { getJwtToken } from '@acx-ui/utils'
@@ -512,6 +513,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           }
         }
       }
+    }),
+    getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getParentLogoUrl,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -557,5 +569,6 @@ export const {
   useUpdateMspLabelMutation,
   useExportDeviceInventoryMutation,
   useAcceptRejectInvitationMutation,
-  useGetGenerateLicenseUsageRptQuery
+  useGetGenerateLicenseUsageRptQuery,
+  useGetParentLogoUrlQuery
 } = mspApi

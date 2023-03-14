@@ -1,15 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
-import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
-import { useDateFilter }                                                                    from '@acx-ui/utils'
+import { Loader,
+  Table,
+  TableProps,
+  TableHighlightFnArgs,
+  Button,
+  Tooltip
+} from '@acx-ui/components'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useEventsQuery }             from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  Event,
+  RequestPayload,
+  TableQuery,
+  replaceStrings,
+  noDataDisplay,
+  usePollingTableQuery,
+  TABLE_QUERY_LONG_POLLING_INTERVAL
+} from '@acx-ui/rc/utils'
+import { TenantLink, generatePath } from '@acx-ui/react-router-dom'
+import { useUserProfileContext }    from '@acx-ui/user'
+import { useDateFilter }            from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
@@ -19,7 +36,7 @@ import * as UI                                               from './styledCompo
 // rename to prevent it being parse by extraction process
 const FormatMessage = FormattedMessage
 
-export const useEventTableFilter = () => {
+const useEventTableFilter = () => {
   const { startDate, endDate } = useDateFilter()
   return {
     fromTime: moment(startDate).utc().format(),
@@ -27,7 +44,7 @@ export const useEventTableFilter = () => {
   }
 }
 
-export const defaultPayload = {
+const defaultPayload = {
   url: CommonUrlsInfo.getEventList.url,
   fields: [
     'event_datetime',
@@ -69,7 +86,7 @@ export const defaultPayload = {
   }
 }
 
-export const defaultSorter = {
+const defaultSorter = {
   sortField: 'event_datetime',
   sortOrder: 'DESC'
 }
@@ -78,10 +95,47 @@ export const defaultSearch = {
   searchTargetFields: ['entity_id', 'message', 'apMac', 'clientMac']
 }
 
+export function useEventsTableQuery (
+  baseFilters: Record<string, unknown> = {},
+  search: Record<string, unknown> = defaultSearch,
+  pagination?: Record<string, unknown>
+) {
+  const { fromTime, toTime } = useEventTableFilter()
+  const detailLevel = useUserProfileContext().data.detailLevel
+  const filters = { ...baseFilters, fromTime, toTime }
+
+  const tableQuery = usePollingTableQuery<Event>({
+    useQuery: useEventsQuery,
+    defaultPayload: {
+      ...defaultPayload,
+      detailLevel,
+      filters: { ...defaultPayload.filters, ...filters }
+    },
+    pagination,
+    sorter: defaultSorter,
+    search,
+    option: {
+      skip: !Boolean(detailLevel),
+      pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+    }
+  })
+
+  useEffect(()=>{
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      detailLevel,
+      filters: { ...(tableQuery.payload.filters as object), ...filters }
+    })
+  }, [fromTime, toTime, detailLevel])
+
+  return tableQuery
+}
+
 interface EventTableProps {
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
   searchables?: boolean | string[]
   filterables?: boolean | string[]
+  detailLevel?: string
 }
 
 type EntityType = typeof entityTypes[number]
