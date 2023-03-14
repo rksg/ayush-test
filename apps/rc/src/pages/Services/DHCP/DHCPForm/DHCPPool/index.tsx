@@ -268,8 +268,8 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'Secondary DNS IP' })}
           rules={[
             { validator: (_, value) => networkWifiIpRegExp(value) },
-            { validator: () => {
-              if(!form.getFieldValue('primaryDnsIp')){
+            { validator: (_, value) => {
+              if(value && !form.getFieldValue('primaryDnsIp')){
                 return Promise.reject($t({ defaultMessage:
                   'Please fill the Primary DNS IP field first' }))
               }
