@@ -133,7 +133,124 @@ const apGroupResponse = cleanResponse([
     ]
   }, {
     deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
-    deviceGroupName: 'apgroup2',
+    deviceGroupName: 'apgroup20',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup21',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup22',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup23',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup24',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup25',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup26',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup27',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup28',
+    deviceStatus: '',
+    model: '',
+    networks: {
+      count: 0,
+      names: []
+    },
+    members: 0,
+    incidents: 0,
+    clients: 0,
+    aps: []  //Empty AP list
+  }, {
+    deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
+    deviceGroupName: 'apgroup29',
     deviceStatus: '',
     model: '',
     networks: {
