@@ -48,6 +48,10 @@ export const isDev = () => {
   return window.location.hostname === 'devalto.ruckuswireless.com'
 }
 
+export const isQA = () => {
+  return window.location.hostname === 'qaalto.ruckuswireless.com'
+}
+
 export const isIntEnv = () => {
   return window.location.hostname === 'intalto.ruckuswireless.com'
 }
@@ -130,7 +134,7 @@ export const getFilters = (params: Params) => {
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
+    return !hasOldUrl || isDev() || isQA() || isLocalHost() || isIntEnv()
   } else {
     return false
   }
