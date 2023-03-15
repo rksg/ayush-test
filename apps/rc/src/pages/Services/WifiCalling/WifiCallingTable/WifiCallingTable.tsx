@@ -1,30 +1,39 @@
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteWifiCallingServiceMutation, useServiceListQuery }       from '@acx-ui/rc/services'
+import { defaultNetworkPayload }                                          from '@acx-ui/rc/components'
+import {
+  useDeleteWifiCallingServiceMutation,
+  useGetWifiCallingServiceListQuery,
+  useNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  Network,
+  AclOptionType,
+  WifiCallingSetting, QosPriorityEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                          from '@acx-ui/user'
 
+import { wifiCallingQosPriorityLabelMapping } from '../../contentsMap'
+
 const defaultPayload = {
   searchString: '',
-  filters: {
-    type: [ServiceType.WIFI_CALLING]
-  },
   fields: [
     'id',
     'name',
-    'type',
-    'scope',
-    'cog'
+    'qosPriority',
+    'tenantId',
+    'epdgs',
+    'networkIds'
   ]
 }
 
@@ -36,12 +45,55 @@ export default function WifiCallingTable () {
   const [ deleteFn ] = useDeleteWifiCallingServiceMutation()
   const WIFICALLING_LIMIT_NUMBER = 5
 
+  const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
+  const [networkIds, setNetworkIds] = useState([] as string[])
+
   const tableQuery = useTableQuery({
-    useQuery: useServiceListQuery,
+    useQuery: useGetWifiCallingServiceListQuery,
     defaultPayload
   })
 
-  const rowActions: TableProps<Service>['rowActions'] = [
+  const networkTableQuery = useTableQuery<Network>({
+    useQuery: useNetworkListQuery,
+    defaultPayload: {
+      ...defaultNetworkPayload,
+      filters: {
+        id: [...networkIds]
+      }
+    }
+  })
+
+  useEffect(() => {
+    if (tableQuery.data) {
+      let unionNetworkIds = [] as string[]
+      tableQuery.data.data.map(policy => {
+        if (policy.networkIds) {
+          unionNetworkIds.push(...policy.networkIds)
+        }
+      })
+      setNetworkIds([...new Set(unionNetworkIds)])
+
+      networkTableQuery.setPayload({
+        ...defaultPayload,
+        filters: {
+          id: [...networkIds]
+        }
+      })
+    }
+  }, [tableQuery.data])
+
+  useEffect(() => {
+    if (networkTableQuery.data && networkIds.length) {
+      setNetworkFilterOptions(
+        [...networkTableQuery.data.data.map(
+          (network) => {
+            return { key: network.id, value: network.name }
+          })]
+      )
+    }
+  }, [networkTableQuery.data, networkIds])
+
+  const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -101,11 +153,13 @@ export default function WifiCallingTable () {
         ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Service>
-          columns={useColumns()}
-          dataSource={tableQuery.data?.data}
+        <Table<WifiCallingSetting>
+          enableApiFilter={true}
+          columns={useColumns(networkFilterOptions)}
+          dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
@@ -115,14 +169,15 @@ export default function WifiCallingTable () {
   )
 }
 
-function useColumns () {
+function useColumns (networkFilterOptions: AclOptionType[]) {
   const { $t } = useIntl()
 
-  const columns: TableProps<Service>['columns'] = [
+  const columns: TableProps<WifiCallingSetting>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
+      searchable: true,
       sorter: true,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
@@ -139,11 +194,30 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'qosPriority',
+      title: $t({ defaultMessage: 'QoS Priority' }),
+      dataIndex: 'qosPriority',
       sorter: true,
-      align: 'center'
+      render: (_, value) => {
+        return $t(wifiCallingQosPriorityLabelMapping[value.qosPriority as QosPriorityEnum])
+      }
+    },
+    {
+      key: 'ePDGs',
+      title: $t({ defaultMessage: 'ePDG' }),
+      dataIndex: 'ePDGs',
+      sorter: true,
+      align: 'center',
+      render: (data, row) => row.epdgs?.length
+    },
+    {
+      key: 'networkIds',
+      title: $t({ defaultMessage: 'Networks' }),
+      dataIndex: 'networkIds',
+      filterable: networkFilterOptions,
+      align: 'center',
+      sorter: true,
+      render: (data, row) => row.networkIds?.length
     }
   ]
 

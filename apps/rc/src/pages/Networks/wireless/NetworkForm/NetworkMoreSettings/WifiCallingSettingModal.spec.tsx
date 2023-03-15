@@ -13,32 +13,37 @@ import { WifiCallingSettingContext } from './ServicesForm'
 import { WifiCallingSettingModal }   from './WifiCallingSettingModal'
 
 
-const wifiCallingSettingTable = [
-  {
-    id: '1',
-    serviceName: 'AT&T',
-    description: 'AT&T des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '2',
-    serviceName: 'Sprint',
-    description: 'Sprint des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '3',
-    serviceName: 'Verizon',
-    description: 'Verizon des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  },
-  {
-    id: '4',
-    serviceName: 'T-Mobile',
-    description: 'T-Mobile des',
-    qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE
-  }
-] as WifiCallingSetting[]
+const wifiCallingSettingTable = {
+  fields: [
+    'qosPriority',
+    'networkIds',
+    'epdgs',
+    'name',
+    'tenantId',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'AT&T',
+      qosPriority: QosPriorityEnum.WIFICALLING_PRI_VOICE,
+      networkIds: [],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
+    }
+  ]
+} as {
+  fields: string[],
+  totalCount: number,
+  page: number,
+  data: WifiCallingSetting[]
+}
 
 let wifiCallingSettingList = [] as WifiCallingSetting[]
 const setWifiCallingSettingList = jest.fn()
@@ -51,7 +56,7 @@ describe('WifiCallingSettingModal', () => {
   })
 
   it('should only render wifiCallingSettingModal successfully', async () => {
-    mockServer.use(rest.get(
+    mockServer.use(rest.post(
       WifiCallingUrls.getWifiCallingList.url,
       (_, res, ctx) => res(
         ctx.json(wifiCallingSettingTable)
@@ -124,7 +129,7 @@ describe('WifiCallingSettingModal', () => {
   })
 
   it('should render wifiCallingSettingModal and saved successfully', async () => {
-    mockServer.use(rest.get(
+    mockServer.use(rest.post(
       WifiCallingUrls.getWifiCallingList.url,
       (_, res, ctx) => res(
         ctx.json(wifiCallingSettingTable)
@@ -189,14 +194,14 @@ describe('WifiCallingSettingModal', () => {
   })
 
   it('should only render wifiCallingSettingModal with initValue successfully', async () => {
-    mockServer.use(rest.get(
+    mockServer.use(rest.post(
       WifiCallingUrls.getWifiCallingList.url,
       (_, res, ctx) => res(
         ctx.json(wifiCallingSettingTable)
       )
     ))
 
-    let wifiCallingSettingInitList = wifiCallingSettingTable as WifiCallingSetting[]
+    let wifiCallingSettingInitList = wifiCallingSettingTable.data as WifiCallingSetting[]
 
     render(
       <Provider>
