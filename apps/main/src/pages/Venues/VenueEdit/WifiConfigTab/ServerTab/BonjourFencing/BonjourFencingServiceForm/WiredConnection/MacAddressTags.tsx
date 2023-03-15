@@ -110,8 +110,8 @@ export const MacAddressesTags = (props: MacAddressesTagsProps) => {
   const createTagData = (inputVaue: string) => {
     const isValid = isValidMacAddress(inputVaue)
     const newTagValue = isValid? convertToStandardMacAddress(inputValue) : inputVaue
-    const isUsed = isValid && _.includes(usedMacAddrs, inputVaue)
-    const isUsedOtherRules = isValid && _.includes(otherUsedMacAddrs, inputVaue)
+    const isUsed = isValid && _.includes(usedMacAddrs, newTagValue)
+    const isUsedOtherRules = isValid && _.includes(otherUsedMacAddrs, newTagValue)
 
     return {
       value: newTagValue,
