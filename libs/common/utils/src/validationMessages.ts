@@ -46,6 +46,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid subnet mask',
     description: 'Validation - subnet mask checks'
   }),
+  isNotSubnetIp: defineMessage({
+    defaultMessage: 'Must be a network address',
+    description: 'Validation - subnet address checks'
+  }),
   subnetMaskBased255_255: defineMessage({
     defaultMessage: 'Please enter a valid Netmask based on the 255.255 mask prefix',
     description: 'Validation - subnet mask checks'
