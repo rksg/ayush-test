@@ -41,9 +41,9 @@ export function SwitchPortTable ({ isVenueLevel }: {
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
 
-  const vlanFilterOptions = vlanList?.map(v => ({
+  const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
-  }))
+  })): []
 
   useEffect(() => {
     const setData = async () => {

@@ -317,7 +317,7 @@ describe('SwitchPortTable', () => {
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portlistData_7150))
       ),
-      rest.post(
+      rest.get(
         SwitchUrlsInfo.getSwitchVlanUnionByVenue.url,
         (req, res, ctx) => res(ctx.json({}))
       )
