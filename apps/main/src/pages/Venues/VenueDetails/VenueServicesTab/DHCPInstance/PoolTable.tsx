@@ -6,8 +6,8 @@ import _                          from 'lodash'
 import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Table, TableProps, showActionModal, Loader, Tooltip } from '@acx-ui/components'
-import { formatter }                                           from '@acx-ui/formatter'
+import { Table, TableProps, showActionModal, Loader, Tooltip, UsageRate } from '@acx-ui/components'
+import { formatter }                                                      from '@acx-ui/formatter'
 import {
   useVenueDHCPPoolsQuery,
   useActivateDHCPPoolMutation,
@@ -17,6 +17,17 @@ import { hasAccess }         from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
+export const countIpRangeSize = (startIpAddress: string, endIpAddress: string): number =>{
+  const convertIpToLong = (ipAddress: string): number => {
+    const ipArray = ipAddress.split('.').map(ip => parseInt(ip, 10))
+    return ipArray[0] * 16777216 + ipArray[1] * 65536 + ipArray[2] * 256 + ipArray[3]
+  }
+
+  const startLong = convertIpToLong(startIpAddress)
+  const endLong = convertIpToLong(endIpAddress)
+
+  return endLong - startLong + 1
+}
 export default function VenuePoolTable (){
   const params = useParams()
   const { $t } = useIntl()
@@ -69,6 +80,12 @@ export default function VenuePoolTable (){
       sorter: true
     },
     {
+      key: 'vlanId',
+      title: $t({ defaultMessage: 'VLAN ID' }),
+      dataIndex: 'vlanId',
+      sorter: true
+    },
+    {
       key: 'startIpAddress',
       title: $t({ defaultMessage: 'Address Pool' }),
       dataIndex: 'startIpAddress',
@@ -100,6 +117,23 @@ export default function VenuePoolTable (){
       render: (data, rowData)=>
         (rowData.primaryDnsIp && rowData.secondaryDnsIp) ?
           <FormattedList type='unit' value={[rowData.primaryDnsIp, rowData.secondaryDnsIp]} />:''
+    },
+    {
+      key: 'PoolSize',
+      title: $t({ defaultMessage: 'Pool Size' }),
+      dataIndex: 'startIpAddress',
+      render: (_data, rowData)=> countIpRangeSize(rowData.startIpAddress, rowData.endIpAddress)
+    },
+    {
+      key: 'usedIpCount',
+      title: $t({ defaultMessage: 'Utilization' }),
+      dataIndex: 'usedIpCount',
+      render: (data, rowData)=> {
+        if(_.isUndefined(rowData.usedIpCount) || _.isUndefined(rowData.totalIpCount)){
+          return ''
+        }
+        return <UsageRate percent={(rowData.usedIpCount/rowData.totalIpCount)*100}/>
+      }
     },
     {
       key: 'id',
