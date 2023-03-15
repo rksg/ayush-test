@@ -7,6 +7,7 @@ import { useNavigate, useParams, useTenantLink }                          from '
 import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
+import { HealthDrillDown }           from './HealthDrillDown'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
@@ -39,6 +40,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes filters={healthPageFilters} />
+          <HealthDrillDown/>
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>
