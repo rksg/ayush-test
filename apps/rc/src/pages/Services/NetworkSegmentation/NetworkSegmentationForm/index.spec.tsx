@@ -23,6 +23,7 @@ import {
   mockEdgeData,
   mockEdgeDhcpDataList,
   mockNetworkGroup,
+  mockNsgData,
   mockNsgSwitchInfoData,
   mockVenueData,
   mockVenueNetworkData,
@@ -32,8 +33,7 @@ import {
   webAuthList
 } from '../__tests__/fixtures'
 
-import AddNetworkSegmentation, { afterSubmitMessage } from '.'
-
+import NetworkSegmentationForm, { afterSubmitMessage } from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -61,13 +61,14 @@ jest.mock('antd', () => {
 })
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
+const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
 
-describe('Create NetworkSegmentation', () => {
-  // eslint-disable-next-line @typescript-eslint/semi
-  let params: { tenantId: string };
+describe('Update NetworkSegmentation', () => {
+  let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      serviceId: 'testServiceId'
     }
 
     mockServer.use(
@@ -99,16 +100,16 @@ describe('Create NetworkSegmentation', () => {
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.status(200))
       ),
-      rest.post(
-        NetworkSegmentationUrls.createNetworkSegmentationGroup.url,
-        (req, res, ctx) => res(ctx.status(202))
+      rest.get(
+        NetworkSegmentationUrls.getNetworkSegmentationGroupById.url,
+        (req, res, ctx) => res(ctx.json(mockNsgData))
       ),
-      rest.post(
-        EdgeDhcpUrls.addDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
+      rest.get(
+        NetworkSegmentationUrls.getSwitchInfoByNSGId.url,
+        (req, res, ctx) => res(ctx.json(mockNsgSwitchInfoData))
       ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
+      rest.put(
+        NetworkSegmentationUrls.updateNetworkSegmentationGroup.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.post(
@@ -150,9 +151,33 @@ describe('Create NetworkSegmentation', () => {
     )
   })
 
+  it('should update networkSegmentation successfully', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <NetworkSegmentationForm editMode={true} />
+      </Provider>, {
+        route: { params, path: updateNsgPath }
+      })
+    // step 1
+    expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    expect(await screen.findByRole('table')).toBeVisible()
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 3
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 4
+    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 5
+    await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
+    await user.click(await screen.findByRole('button', { name: 'Finish' }))
+  })
+
   it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
+    render(<NetworkSegmentationForm />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })
@@ -225,12 +250,12 @@ describe('Create NetworkSegmentation', () => {
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     // step6
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
-  }, 50000)
+  }, 30000)
 
 
   it('cancel and go back to device list', async () => {
     const user = userEvent.setup()
-    render(<AddNetworkSegmentation />, {
+    render(<NetworkSegmentationForm />, {
       wrapper: Provider,
       route: { params, path: createNsgPath }
     })
@@ -246,7 +271,7 @@ describe('Create NetworkSegmentation', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddNetworkSegmentation />
+        <NetworkSegmentationForm />
       </Provider>, {
         route: { params, path: createNsgPath }
       })
@@ -290,7 +315,7 @@ describe('Create NetworkSegmentation', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <AddNetworkSegmentation />
+        <NetworkSegmentationForm />
       </Provider>, {
         route: { params, path: createNsgPath }
       })
