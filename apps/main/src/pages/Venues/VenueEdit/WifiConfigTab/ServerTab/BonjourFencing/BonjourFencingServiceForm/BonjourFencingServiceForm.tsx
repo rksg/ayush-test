@@ -123,12 +123,3 @@ export default function BonjourFencingServiceForm (props: BonjourFencingServices
     </Form>
   )
 }
-
-
-
-
-/* ===== Wired Connection ===== */
-
-
-
-

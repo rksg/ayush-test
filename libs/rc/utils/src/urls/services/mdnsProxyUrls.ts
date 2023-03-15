@@ -3,42 +3,62 @@ import { ApiInfo } from '../../apiService'
 export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   getMdnsProxyList: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
+    url: '/mDnsProxyServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles',
+    newApi: true
   },
   getMdnsProxy: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
+    url: '/mDnsProxyServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId',
+    newApi: true
   },
   addMdnsProxy: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
+    url: '/mDnsProxyServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles',
+    newApi: true
   },
   updateMdnsProxy: {
     method: 'put',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
+    url: '/mDnsProxyServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId',
+    newApi: true
   },
   deleteMdnsProxy: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId'
+    url: '/mDnsProxyServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId',
+    newApi: true
   },
   deleteMdnsProxyList: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles'
+    url: '/mDnsProxyServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles',
+    newApi: true
   },
   addMdnsProxyAps: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps'
+    url: '/mDnsProxyServiceProfiles/:serviceId/aps',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps',
+    newApi: true
   },
   deleteMdnsProxyAps: {
     method: 'delete',
-    url: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps'
+    url: '/mDnsProxyServiceProfiles/:serviceId/aps',
+    oldUrl: '/api/tenant/:tenantId/wifi/mDnsProxyServiceProfiles/:serviceId/aps',
+    newApi: true
   },
   getMdnsProxyApsByVenue: {
     method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venues/:venueId/mDnsProxyServiceProfileAps'
+    url: '/venues/:venueId/mDnsProxyServiceProfileAps',
+    oldUrl: '/api/tenant/:tenantId/wifi/venues/:venueId/mDnsProxyServiceProfileAps',
+    newApi: true
   },
   getEnhancedMdnsProxyList: {
     method: 'post',
-    url: '/enhancedMdnsProxyProfiles/query'
+    url: '/enhancedMdnsProxyProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedMdnsProxyProfiles/query',
+    newApi: true
   }
 }

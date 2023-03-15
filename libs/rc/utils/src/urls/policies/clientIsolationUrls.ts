@@ -33,14 +33,20 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
   },
   getClientIsolationListUsageByVenue: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/isolationAllowlists/query'
+    url: '/venues/:venueId/isolationAllowlists/query',
+    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/isolationAllowlists/query',
+    newApi: true
   },
   getVenueUsageByClientIsolation: {
     method: 'post',
-    url: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId/venues/query'
+    url: '/isolationAllowlists/:policyId/venues/query',
+    oldUrl: '/api/tenant/:tenantId/wifi/isolation-allowlist/:policyId/venues/query',
+    newApi: true
   },
   getEnhancedClientIsolationList: {
     method: 'post',
-    url: '/enhancedIsolationAllowlists/query'
+    url: '/enhancedIsolationAllowlists/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedIsolationAllowlists/query',
+    newApi: true
   }
 }

@@ -51,7 +51,8 @@ export default function ActivityButton () {
     },
     pagination: {
       pageSize: 25
-    }
+    },
+    option: { skip: !activityModal }
   })
 
   useEffect(()=>{
@@ -159,14 +160,6 @@ export default function ActivityButton () {
     {
       title: defineMessage({ defaultMessage: 'Source' }),
       value: data.admin.name
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin IP' }),
-      value: data.admin.ip
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin Interface' }),
-      value: data.admin.interface
     },
     {
       title: defineMessage({ defaultMessage: 'Description' }),

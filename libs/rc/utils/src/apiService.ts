@@ -9,5 +9,6 @@ export {
   isDelegationMode,
   isLocalHost,
   isIntEnv,
-  TenantIdFromJwt
+  TenantIdFromJwt,
+  JwtTierValue
 } from '@acx-ui/utils'

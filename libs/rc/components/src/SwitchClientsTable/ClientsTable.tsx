@@ -39,10 +39,10 @@ export function ClientsTable (props: {
   const inlineTableQuery = useTableQuery({
     useQuery: useGetSwitchClientListQuery,
     defaultPayload: {
-      ...defaultSwitchClientPayload,
-      search: {
-        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
-      }
+      ...defaultSwitchClientPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery }
   })
@@ -151,7 +151,7 @@ export function ClientsTable (props: {
         <Table
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
-          pagination={false}
+          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
