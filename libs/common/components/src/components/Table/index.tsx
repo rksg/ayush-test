@@ -162,7 +162,7 @@ function Table <RecordType extends Record<string, any>> ({
     expandable,
     renderGroupRow,
     isGroupByActive
-  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(props.columns, allKeys, groupByValue)
+  } = useGroupBy<RecordType>(props.columns, allKeys, groupByValue)
 
   const debounced = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     _.debounce(

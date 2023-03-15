@@ -81,7 +81,7 @@ export function renderFilter <RecordType> (
 ) {
   const key = (column.filterKey || column.dataIndex) as keyof RecordType
   const addToFilter = (data: string[], value: string) => {
-    if (!data.includes(value)) {
+    if (typeof value !== 'undefined' && !data.includes(value)) {
       data.push(value)
     }
   }

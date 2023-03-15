@@ -602,8 +602,8 @@ const flatData: APExtended[] = [
     meshRole: 'DISABLED',
     deviceGroupId: '99227979648c421c93c15c586e6ed80b',
     clients: 2,
-    tags: 'tag1',
-    deviceGroupName: 'AP_GROUP'
+    tags: '',
+    deviceGroupName: ''
   },
   {
     serialNumber: '302002015736',
