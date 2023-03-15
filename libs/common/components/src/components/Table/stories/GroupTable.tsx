@@ -852,7 +852,7 @@ export function GroupTable () {
     with groupby:
     <Table<APExtendedGroupedResponse | APExtended>
       columns={groupByColumns}
-      dataSource={sources[grouping || ''] || flatData}
+      dataSource={sources[grouping || ''] || flatData.map((row, i) => ({ ...row, id: i }))}
       rowKey='id' // need to set unique entry per record to ensure proper behaviour
       indentSize={6}
       columnEmptyText='-'
