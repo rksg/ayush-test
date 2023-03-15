@@ -92,10 +92,18 @@ export default function DpskSettingsForm () {
         </Form.Item>
         <Form.Item
           name='passphraseLength'
-          rules={[{
-            required: true,
-            message: intl.$t({ defaultMessage: 'Please enter Passphrase Length' })
-          }]}
+          rules={[
+            {
+              required: true,
+              message: intl.$t({ defaultMessage: 'Please enter Passphrase Length' })
+            },
+            {
+              type: 'number',
+              min: 8,
+              max: 63,
+              message: intl.$t({ defaultMessage: 'Passphrase Length must be between 8 and 63' })
+            }
+          ]}
           label={
             <>
               { intl.$t({ defaultMessage: 'Passphrase Length' }) }
@@ -107,7 +115,7 @@ export default function DpskSettingsForm () {
             </>
           }
         >
-          <InputNumber min={8} max={63}/>
+          <InputNumber />
         </Form.Item>
         <ExpirationDateSelector
           inputName={'expiration'}

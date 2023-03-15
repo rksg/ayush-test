@@ -2,17 +2,18 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType } from '@acx-ui/components'
-import { AAAPolicyType }            from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }        from '@acx-ui/components'
+import { AAAPolicyType, AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
 
 import AAAForm from '../../../../Policies/AAA/AAAForm/AAAForm'
 
 
 export default function AAAPolicyModal (props:{
   type?: string,
-  updateInstance: (value:AAAPolicyType) => void
+  updateInstance: (value:AAAPolicyType) => void,
+  aaaCount: number
 }) {
-  const { updateInstance, type }=props
+  const { updateInstance, aaaCount, type }=props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
@@ -28,7 +29,8 @@ export default function AAAPolicyModal (props:{
   return (
     <>
       <Button type='link'
-        onClick={()=>setVisible(true)}>
+        onClick={()=>setVisible(true)}
+        disabled={aaaCount>=AAA_LIMIT_NUMBER}>
         {$t({ defaultMessage: 'Add Server' })}
       </Button>
       <Modal

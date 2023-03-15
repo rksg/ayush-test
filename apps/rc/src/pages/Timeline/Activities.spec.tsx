@@ -15,12 +15,7 @@ describe('Activities', () => {
   })
 
   it('should render activity list', async () => {
-    render(
-      <Provider>
-        <Activities />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<Activities />, { route: { params }, wrapper: Provider })
     await screen.findByRole('row', { name: /Network ' 123roam ' was updated/ })
     expect((await screen.findAllByText('-')).length).toBe(2)
   })
