@@ -179,35 +179,37 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }, [visible, unitId])
 
   const fetchPersonaInfo = (personaId?: string, guestPersonaId?: string) => {
+    let personaPromise, guestPromise
+
     if (personaId) {
-      getPersonaById({ params: { groupId: personaGroupId, id: personaId } })
-        .then(result => {
-          if (result.data) {
-            const { vlan, dpskPassphrase, vni } = result.data
-            // console.log('Persona :: ', result.data)
-            form.setFieldValue(['unitPersona', 'vlan'], vlan)
-            form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
-            form.setFieldValue('vxlan', vni)
-          }
-        })
+      personaPromise = getPersonaById({ params: { groupId: personaGroupId, id: personaId } })
     }
 
     if (guestPersonaId) {
-      getPersonaById({ params: { groupId: personaGroupId, id: guestPersonaId } })
-        .then(result => {
-          if (result.data) {
-            const { vlan, dpskPassphrase } = result.data
-            // console.log('Guest Persona :: ', result.data)
-            // TODO: check how to deal with the toggle
-            form.setFieldValue('enableGuestVlan', !!vlan)
-            // if no timeout would not render exactly
-            setTimeout(() => {
-              form.setFieldValue(['guestPersona', 'vlan'], vlan)
-            }, 10)
-            form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
-          }
-        })
+      guestPromise = getPersonaById({ params: { groupId: personaGroupId, id: guestPersonaId } })
     }
+
+    Promise.all([personaPromise, guestPromise])
+      .then(([personaResult, guestResult]) => {
+        if (personaResult?.data) {
+          const { vlan, dpskPassphrase, vni } = personaResult.data
+          // console.log('Persona :: ', result.data)
+          form.setFieldValue(['unitPersona', 'vlan'], vlan)
+          form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
+          form.setFieldValue('vxlan', vni)
+        }
+
+        if (guestResult?.data) {
+          const { vlan, dpskPassphrase } = guestResult.data
+          // console.log('Guest Persona :: ', result.data)
+          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
+          // if no timeout would not render exactly
+          setTimeout(() => {
+            form.setFieldValue(['guestPersona', 'vlan'], vlan)
+          }, 10)
+          form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
+        }
+      })
   }
 
   const errorCloseDrawer = () => {
@@ -228,7 +230,10 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
     // update Persona
     const personaUpdateResult = await patchPersona(personaId, unitPersona)
-    const guestUpdateResult = await patchPersona(guestPersonaId, guestPersona)
+    const guestUpdateResult = await patchPersona(
+      guestPersonaId,
+      { ...guestPersona, vlan: guestPersona?.vlan ?? unitPersona?.vlan }
+    )
 
     return Promise.all([unitUpdateResult, personaUpdateResult, guestUpdateResult])
   }
