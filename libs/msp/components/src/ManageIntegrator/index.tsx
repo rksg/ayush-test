@@ -483,12 +483,12 @@ export function ManageIntegrator () {
     return <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
       <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
       <Form.Item children={<div>{displayMspAdmins()}</div>} />
-      <Form.Item
+      {!isEditMode && <Form.Item
         children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
           {intl.$t({ defaultMessage: 'Manage' })}
         </UI.FieldTextLink>
         }
-      />
+      />}
     </UI.FieldLabelAdmins>
   }
 
@@ -496,12 +496,12 @@ export function ManageIntegrator () {
     return <UI.FieldLabelAdmins width='275px'>
       <label>{intl.$t({ defaultMessage: 'Assigned Customers' })}</label>
       <Form.Item children={<div>{displayAssignedEc()}</div>} />
-      <Form.Item
+      {/* <Form.Item
         children={<UI.FieldTextLink onClick={() => setDrawerAssignedEcVisible(true)}>
           {intl.$t({ defaultMessage: 'Manage' })}
         </UI.FieldTextLink>
         }
-      />
+      /> */}
     </UI.FieldLabelAdmins>
   }
 
@@ -882,11 +882,11 @@ export function ManageIntegrator () {
     <>
       <PageHeader
         title={!isEditMode ?
-          intl.$t({ defaultMessage: 'Add Integrator' }) :
-          intl.$t({ defaultMessage: 'Manage Integrator' })
+          intl.$t({ defaultMessage: 'Add Tech Partner' }) :
+          intl.$t({ defaultMessage: 'Tech Partner Account' })
         }
         breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Integrators' }),
+          { text: intl.$t({ defaultMessage: 'Tech Partners' }),
             link: '/integrators', tenantType: 'v' }
         ]}
       />
@@ -896,7 +896,7 @@ export function ManageIntegrator () {
         onCancel={() => navigate(linkToIntegrators)}
         buttonLabel={{ submit: isEditMode ?
           intl.$t({ defaultMessage: 'Save' }):
-          intl.$t({ defaultMessage: 'Add Integrator' }) }}
+          intl.$t({ defaultMessage: 'Add Tech Partner' }) }}
       >
         {isEditMode && <StepsForm.StepForm>
           <Subtitle level={3}>

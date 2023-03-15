@@ -542,30 +542,30 @@ export function ManageCustomer () {
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
         <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
         <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>
           }
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerIntegratorVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
       <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-16px' }}>
         <label>{intl.$t({ defaultMessage: 'Installer' })}</label>
         <Form.Item children={displayInstaller()} />
-        <Form.Item
+        {!isEditMode && <Form.Item
           children={<UI.FieldTextLink onClick={() => setDrawerInstallerVisible(true)}>
             {intl.$t({ defaultMessage: 'Manage' })}
           </UI.FieldTextLink>}
-        />
+        />}
       </UI.FieldLabelAdmins>
     </>
   }

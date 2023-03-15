@@ -76,7 +76,7 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Account Type' }),
+      title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'tenantType',
       key: 'tenantType',
       sorter: true,
@@ -86,8 +86,16 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Customers Assigned' }),
+      title: $t({ defaultMessage: 'MSP Admin Count' }),
+      dataIndex: 'mspAdminCount',
+      align: 'center',
+      key: 'mspAdminCount',
+      sorter: true
+    },
+    {
+      title: $t({ defaultMessage: 'Assigned Customers Count' }),
       dataIndex: 'assignedMspEcList',
+      align: 'center',
       key: 'assignedMspEcList',
       sorter: true,
       onCell: (data) => {
@@ -104,28 +112,15 @@ export function Integrators () {
       }
     },
     {
-      title: $t({ defaultMessage: 'MSP Admins' }),
-      dataIndex: 'mspAdminCount',
-      key: 'mspAdminCount',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Account Admins' }),
+      title: $t({ defaultMessage: 'Account Admin Count' }),
       dataIndex: 'mspEcAdminCount',
+      align: 'center',
       key: 'mspEcAdminCount',
-      sorter: true
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncidents',
-      key: 'activeIncidents',
       sorter: true,
-      render: function () {
-        return '0'
-      }
+      show: false
     },
     {
-      title: $t({ defaultMessage: 'Tenant Id' }),
+      title: $t({ defaultMessage: 'Tenant ID' }),
       dataIndex: 'id',
       key: 'id',
       sorter: true
@@ -205,18 +200,18 @@ export function Integrators () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: '3rd Party' })}
+        title={$t({ defaultMessage: 'Tech Partners' })}
         extra={isAdmin ?
           [
             <TenantLink to='/dashboard'>
-              <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+              <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
-              <Button type='primary'>{$t({ defaultMessage: 'Add' })}</Button>
+              <Button type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+            <Button>{$t({ defaultMessage: 'Manage my account' })}</Button>
           </TenantLink>
           ]}
       />
