@@ -14,7 +14,16 @@ import {
   useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
-import { APExtended, Persona, PropertyUnit, PropertyUnitStatus, SwitchViewModel, useTableQuery } from '@acx-ui/rc/utils'
+import {
+  APExtended,
+  FILTER,
+  Persona,
+  PropertyUnit,
+  PropertyUnitStatus,
+  SEARCH,
+  SwitchViewModel,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 
 import { PropertyUnitDrawer } from './PropertyUnitDrawer'
@@ -245,7 +254,8 @@ export function VenuePropertyTab () {
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const apMac = persona?.ethernetPorts?.[0]?.macAddress ?? ''
-        return (apMap.get(apMac) as APExtended).name
+        return (apMap.get(apMac) as APExtended)?.name
+        ?? persona?.ethernetPorts?.[0]?.name
       }
     },
     {
@@ -256,7 +266,7 @@ export function VenuePropertyTab () {
       render: (_, row) => {
         const persona = personaMap.get(row.personaId)
         const switchMac = persona?.switches?.[0]?.macAddress ?? ''
-        return (switchMap.get(switchMac) as SwitchViewModel).name
+        return (switchMap.get(switchMac) as SwitchViewModel)?.name
       }
     },
     {
@@ -276,6 +286,16 @@ export function VenuePropertyTab () {
     }
   ]
 
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    const payload = { ...queryUnitList.payload }
+
+    if (customSearch.searchString && customSearch.searchString.length > 0) {
+      Object.assign(payload, { filters: { name: customSearch?.searchString } })
+    }
+
+    queryUnitList.setPayload(payload)
+  }
+
   return (
     <Loader
       states={[
@@ -287,6 +307,8 @@ export function VenuePropertyTab () {
       <Table
         rowKey='name'
         columns={columns}
+        enableApiFilter
+        onFilterChange={handleFilterChange}
         dataSource={queryUnitList.data?.data}
         pagination={queryUnitList.pagination}
         onChange={queryUnitList.handleTableChange}
