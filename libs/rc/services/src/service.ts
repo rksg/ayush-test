@@ -25,7 +25,6 @@ import {
   WifiCallingSetting,
   DpskSaveData,
   DpskUrls,
-  PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
   NewTableResult,
@@ -643,15 +642,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
       query: ({ params }) => {
         const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
@@ -752,7 +742,6 @@ export const {
   useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
-  usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,

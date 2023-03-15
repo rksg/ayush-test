@@ -319,7 +319,8 @@ export function EditPortDrawer ({
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
+      payload: [selectedPorts?.[0]?.portIdentifier]
     }, true).unwrap()
 
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')
@@ -327,8 +328,6 @@ export function EditPortDrawer ({
       tenantId, venueId: vid,
       model: selectedPorts?.[0]?.switchModel, port: `1/${requestPort}`
     }
-    // const taggedVlansByVenue = await getTaggedVlansByVenue({ params, payload: params }, true).unwrap()
-    // const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params, payload: params }, true).unwrap()
     const taggedVlansByVenue = await getTaggedVlansByVenue({ params }, true).unwrap()
     const untaggedVlansByVenue = await getUntaggedVlansByVenue({ params }, true).unwrap()
 
