@@ -148,22 +148,22 @@ function getHighlightFn (searchValue: string): TableHighlightFnArgs {
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, onFilterChange, ...props
 }: TableProps<RecordType>) {
+  const { dataSource } = props
+  const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
-  const { dataSource } = props
-
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
-
+  const allKeys = dataSource?.map(row => typeof rowKey === 'function' ? rowKey(row) : row[rowKey])
   const {
     groupable,
     expandable,
     groupActionColumns,
     parentColumns,
     isGroupByActive
-  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(props.columns, groupByValue)
+  } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(props.columns, allKeys, groupByValue)
 
   const debounced = useCallback( // eslint-disable-line react-hooks/exhaustive-deps
     _.debounce(
@@ -258,7 +258,6 @@ function Table <RecordType extends Record<string, any>> ({
     children: <SettingsOutlined/>
   } : false
 
-  const rowKey = (props.rowKey ?? 'key')
   const [selectedRowKeys, setSelectedRowKeys] = useSelectedRowKeys(props.rowSelection)
   const getSelectedRows = useCallback((selectedRowKeys: Key[]) => {
     return props.dataSource?.filter(item => {

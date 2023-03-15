@@ -942,20 +942,6 @@ describe('Table component', () => {
       fireEvent.click(editBtns[0])
     })
 
-    it('should add and remove selction from groupby filter', async () => {
-      render(<GroupTable />)
-      const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
-      expect(filters.length).toBe(4)
-      const groupBySelector = filters[3]
-      fireEvent.mouseDown(groupBySelector)
-      await waitFor(async () =>
-        expect(await screen.findByTestId('option-deviceStatus')).toBeInTheDocument())
-      fireEvent.click(await screen.findByTestId('option-deviceStatus'))
-      fireEvent.click(await screen.findByTestId('CollapseActive'))
-      fireEvent.click(await screen.findByTestId('CollapseInactive'))
-      fireEvent.click(await screen.findByTestId('CollapseActive'))
-    })
-
     it('should support groupBy, search and filter', async () => {
       jest.useFakeTimers()
       render(<GroupTable />)
@@ -982,7 +968,7 @@ describe('Table component', () => {
         fireEvent.change(statusFilter, { target: { value: filterTerm1 } })
         jest.advanceTimersByTime(2000)
       })
-      expect(await screen.findAllByText(filterTerm1)).toHaveLength(4)
+      expect(await screen.findAllByText(filterTerm1)).toHaveLength(6)
 
       const searchInput = await screen.findByPlaceholderText(
         'Search AP Name, MAC Addresses, AP Group'

@@ -1,9 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, Key } from 'react'
 
 import { Select }    from 'antd'
 import { IntlShape } from 'react-intl'
-
-import { CollapseActive, CollapseInactive } from '@acx-ui/icons'
 
 import * as UI                from './styledComponents'
 import { RecordWithChildren } from './types'
@@ -47,15 +45,12 @@ export function GroupSelect<RecordType> ({
 
 export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<RecordType>> (
   columns: TableProps<RecordType>['columns'],
+  expandedRowKeys: Key[] | undefined,
   groupByValue: string | undefined
 ) {
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
     if (groupable.length > 0) {
-      const hasValidChildren = (record: ParentRecord) => {
-        const { children } = record
-        return Boolean(children) && Array.isArray(children) && children.length > 0
-      }
       const targetCol = groupable.find(col => col.key === groupByValue)
       const parentColumns = targetCol?.groupable!.parentColumns ?? []
       const isGroupByActive = typeof groupByValue !== 'undefined'
@@ -67,19 +62,8 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
           render: (_, record) => 'children' in record ? val.label(record) : null
         }))
       const expandable: TableProps<ParentRecord>['expandable'] = {
-        expandIconColumnIndex: columns.length + groupActionColumns.length,
-        rowExpandable: (record) => hasValidChildren(record),
-        defaultExpandAllRows: true,
-        expandIcon: (props) => {
-          if (!hasValidChildren(props.record)) return null
-          const ExpandIcon = ({ isActive }: { isActive: boolean }) => (isActive)
-            ? <CollapseInactive />
-            : <CollapseActive />
-          return <UI.ExpandWrapper
-            onClick={(e) => props.onExpand(props.record, e)}>
-            <ExpandIcon isActive={props.expanded}/>
-          </UI.ExpandWrapper>
-        }
+        expandedRowKeys,
+        showExpandColumn: false
       }
       return {
         groupable,
@@ -97,5 +81,5 @@ export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<R
       expandable: undefined
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupByValue])
+  }, [groupByValue, expandedRowKeys])
 }
