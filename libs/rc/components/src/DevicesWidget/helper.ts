@@ -60,7 +60,7 @@ export const getSwitchDonutChartData = (overviewData: Dashboard | undefined): Do
     seriesMappingSwitch().forEach(({ key, name, color }) => {
       // ES response has different case (dev is upper case, qa is lower case)
       // eslint-disable-next-line max-len
-      const count = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toUpperCase())
+      const count = switchesSummary[key as SwitchStatusEnum]! || _.get(switchesSummary, key.toLowerCase())
       const value = parseInt(count, 10)
       if(key === SwitchStatusEnum.INITIALIZING && value) {
         const neverContactedCloud = find(chartData, {
