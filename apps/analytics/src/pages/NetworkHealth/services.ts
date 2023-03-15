@@ -226,6 +226,7 @@ export const {
         variables,
         document: fetchServiceGuardSpec
       }),
+      providesTags: [{ type: 'NetworkHealth', id: 'DETAILS' }],
       transformResponse: (result: { serviceGuardSpec: NetworkHealthSpec }) =>
         result.serviceGuardSpec
     }),
@@ -432,7 +433,10 @@ const {
           }
         }`
       }),
-      invalidatesTags: [{ type: 'NetworkHealth', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'NetworkHealth', id: 'LIST' },
+        { type: 'NetworkHealth', id: 'DETAILS' }
+      ],
       transformResponse: (response: { updateServiceGuardSpec: CreateUpdateCloneMutationResult }) =>
         response.updateServiceGuardSpec
     }),
