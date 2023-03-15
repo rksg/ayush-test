@@ -43,7 +43,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
-  })): []
+  })) : []
 
   useEffect(() => {
     const setData = async () => {
@@ -53,7 +53,9 @@ export function SwitchPortTable ({ isVenueLevel }: {
       } else {
         const vlanUnion = await getSwitchVlan({ params: { tenantId, switchId } }).unwrap()
         // eslint-disable-next-line max-len
-        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan).concat(vlanUnion.profileVlan)
+        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
+          .concat(vlanUnion.profileVlan || [])
+          .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
       }
     }
