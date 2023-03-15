@@ -416,21 +416,6 @@ export function ManageIntegrator () {
           subscription_start_date: today,
           subscription_end_date: expirationDate,
           assignments: licAssignment
-          // assignments: [{
-          //   quantity: ecFormData.wifiLicense,
-          //   assignmentId: wifiAssignId,
-          //   action: wifiAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY,
-          //   isTrial: false,
-          //   deviceType: 'MSP_WIFI'
-          // },
-          // {
-          //   quantity: ecFormData.switchLicense,
-          //   assignmentId: switchAssignId,
-          //   action: switchAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY,
-          //   isTrial: false,
-          //   deviceSubtype: 'ICX',
-          //   deviceType: 'MSP_SWITCH'
-          // }]
         }
         customer.licenses = assignLicense
       }

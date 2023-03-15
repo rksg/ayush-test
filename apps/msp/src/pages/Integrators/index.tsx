@@ -13,7 +13,8 @@ import {
 } from '@acx-ui/components'
 import {
   AssignEcDrawer,
-  ResendInviteModal
+  ResendInviteModal,
+  ManageAdminsDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -53,8 +54,10 @@ const defaultPayload = {
 
 export function Integrators () {
   const { $t } = useIntl()
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
@@ -90,7 +93,20 @@ export function Integrators () {
       dataIndex: 'mspAdminCount',
       align: 'center',
       key: 'mspAdminCount',
-      sorter: true
+      sorter: true,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerAdminVisible(true)
+          }
+        }
+      },
+      render: function (data) {
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Assigned Customers Count' }),
@@ -108,7 +124,9 @@ export function Integrators () {
         }
       },
       render: function (data, row) {
-        return <Link to=''>{transformAssignedCustomerCount(row)}</Link>
+        return (isPrimeAdmin || isAdmin)
+          ? <Link to=''>{transformAssignedCustomerCount(row)}</Link>
+          : transformAssignedCustomerCount(row)
       }
     },
     {
@@ -216,6 +234,12 @@ export function Integrators () {
           ]}
       />
       <IntegratorssTable />
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={() => {}}
+        tenantId={tenantId}
+      />}
       {setDrawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}
