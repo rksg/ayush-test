@@ -2,6 +2,27 @@ import styled from 'styled-components/macro'
 
 import { Button, Modal } from '@acx-ui/components'
 
+export const BannerVersion = styled.div`
+  font-family: "OpenSans-Regular", "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333333;
+  text-align: left;
+  line-height: 20px;
+`
+
+export const BannerVersionName = styled.span`
+  font-weight: 600;
+`
+
+export const BannerType = styled.div`
+  font-family: "OpenSans-Regular", "Open Sans", sans-serif;
+  fontSize: 14px;
+  color: #797979;
+  text-align: left;
+  line-height: 20px;
+`
+
 export const DateContainer = styled.div`
   height: auto;
   display: grid;
