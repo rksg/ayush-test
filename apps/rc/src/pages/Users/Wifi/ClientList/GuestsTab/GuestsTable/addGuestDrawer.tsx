@@ -20,6 +20,7 @@ import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
+import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
@@ -38,11 +39,8 @@ import {
   Guest,
   LangCode
 } from '@acx-ui/rc/utils'
-import {
-  GuestErrorRes,
-  useLazyGetUserProfileQuery
-} from '@acx-ui/user'
-import { getIntl } from '@acx-ui/utils'
+import { GuestErrorRes } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import {
   MobilePhoneSolidIcon,
@@ -604,7 +602,6 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
 
 export function useHandleGuestPassResponse (params: { tenantId: string }) {
   const [getNetwork] = useLazyGetNetworkQuery()
-  const [getUserProfile] = useLazyGetUserProfileQuery()
 
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
@@ -616,9 +613,8 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareGuestToPrint = async (guest: any, guestNumber: any) =>{
-    const userProfile = await getUserProfile({ params })
     const currentMoment = moment()
-    const currentDate = currentMoment.format(userProfile.data?.dateFormat.toUpperCase())
+    const currentDate = formatter(DateFormatEnum.DateFormat)(currentMoment)
     const langCode = guest.langCode || guest.locale
     const momentLocale = getMomentLocale(langCode)
     currentMoment.locale(momentLocale as LocaleSpecifier)
