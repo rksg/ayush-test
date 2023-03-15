@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Tooltip }                               from '@acx-ui/components'
 import { Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { useGetPropertyUnitListQuery }           from '@acx-ui/rc/services'
 import { VenueDetailHeader }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { notAvailableMsg }                       from '@acx-ui/utils'
@@ -15,6 +16,15 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
   const enabledServices = useIsSplitOn(Features.SERVICES)
   const enableProperty = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
+  const { data: unitQuery } = useGetPropertyUnitListQuery({
+    params: { venueId: params.venueId },
+    payload: {
+      page: 1,
+      pageSize: 10,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, { skip: !enableProperty })
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -28,7 +38,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       (data?.switchClients?.totalCount ?? 0),
     (data?.aps?.totalApCount ?? 0) + (data?.switches?.totalCount ?? 0),
     data?.activeNetworkCount ?? 0,
-    0
+    unitQuery?.totalCount ?? 0
   ]
 
   return (
@@ -61,7 +71,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
           : <Tooltip title={$t(notAvailableMsg)}>
             {$t({ defaultMessage: 'Property Units' })}
           </Tooltip>}
-        key='property'
+        key='units'
       />
       <Tabs.TabPane
         disabled={!enabledServices}
