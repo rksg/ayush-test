@@ -1,6 +1,7 @@
 import { FetchBaseQueryError }       from '@reduxjs/toolkit/query'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
+import { Filter } from '@acx-ui/components'
 import {
   Activity,
   EventBase,
@@ -13,7 +14,10 @@ import {
   CommonUrlsInfo,
   TableResult,
   RequestPayload,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  downloadFile,
+  SEARCH,
+  SORTER
 } from '@acx-ui/rc/utils'
 
 import { getMetaList } from './utils'
@@ -38,6 +42,20 @@ export const baseTimelineApi = createApi({
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })
+
+export type EventsExportPayload = {
+  clientDateFormat: string
+  clientTimeZone: string
+  detailLevel: string
+  eventsPeriodForExport: {
+    fromTime: string
+    toTime: string
+  }
+  fields: string[]
+  filters: Filter
+  isSupport: boolean
+  tenantId: string
+} & SEARCH & SORTER
 
 export const timelineApi = baseTimelineApi.injectEndpoints({
   endpoints: (build) => ({
@@ -122,6 +140,24 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
           }
         }
       }
+    }),
+    downloadEventsCSV: build.mutation<Blob, EventsExportPayload>({
+      query: (payload ) => {
+        const req = createHttpRequest(CommonUrlsInfo.downloadCSV,
+          { tenantId: payload.tenantId }
+        )
+        return {
+          ...req,
+          body: payload,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'download.csv'
+            downloadFile(response, fileName)
+          }
+        }
+      }
     })
   })
 })
@@ -129,5 +165,6 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 export const {
   useActivitiesQuery,
   useEventsQuery,
-  useAdminLogsQuery
+  useAdminLogsQuery,
+  useDownloadEventsCSVMutation
 } = timelineApi

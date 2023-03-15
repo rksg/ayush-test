@@ -117,3 +117,9 @@ export type TableColumnState = Record<string, AntColumnsState>
 export type RecordWithChildren <RecordType> = RecordType & {
   children?: RecordType[]
 }
+
+export type HeaderButton = {
+  icon: React.ReactNode
+  disabled?: boolean
+  onClick?: () => void
+}

@@ -26,9 +26,9 @@ import { ResizableColumn }              from './ResizableColumn'
 import * as UI                          from './styledComponents'
 import { settingsKey, useColumnsState } from './useColumnsState'
 
-import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState } from './types'
-import type { ParamsType }                                                                    from '@ant-design/pro-provider'
-import type { SettingOptionType }                                                             from '@ant-design/pro-table/lib/components/ToolBar'
+import type { TableColumn, ColumnStateOption, ColumnGroupType, ColumnType, TableColumnState, HeaderButton } from './types'
+import type { ParamsType }                                                                                  from '@ant-design/pro-provider'
+import type { SettingOptionType }                                                                           from '@ant-design/pro-table/lib/components/ToolBar'
 import type {
   TableProps as AntTableProps,
   TablePaginationConfig
@@ -84,6 +84,7 @@ export interface TableProps <RecordType>
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] }
     ) => void
+    headerButton?: HeaderButton
   }
 
 export interface TableHighlightFnArgs {
@@ -126,7 +127,8 @@ function Table <RecordType extends Record<string, any>> ({
   const { $t } = intl
   const [filterValues, setFilterValues] = useState<Filter>({})
   const [searchValue, setSearchValue] = useState<string>('')
-  const { dataSource } = props
+  // const { dataSource } = props
+  const { dataSource, headerButton } = props
 
   const [colWidth, setColWidth] = useState<Record<string, number>>({})
 
@@ -396,6 +398,16 @@ function Table <RecordType extends Record<string, any>> ({
             {$t({ defaultMessage: 'Clear Filters' })}
           </Button>}
         </UI.HeaderRight>
+        {headerButton && headerButton.disabled
+          ? <DisabledButton
+            tooltipPlacement='topRight'
+            title={'No data'}
+            icon={headerButton.icon}
+          />
+          : <Button
+            icon={headerButton?.icon}
+            onClick={headerButton?.onClick}
+          />}
       </UI.Header>
     )}
     <ProTable<RecordType>

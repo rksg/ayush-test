@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 
 import _                                            from 'lodash'
-import moment                                       from 'moment'
+import moment                                       from 'moment-timezone'
 import { defineMessage, useIntl, FormattedMessage } from 'react-intl'
 
-import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip }                 from '@acx-ui/components'
+import { Loader, Table, TableProps, TableHighlightFnArgs, Button, Tooltip, Filter }         from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                 from '@acx-ui/icons'
+import { useDownloadEventsCSVMutation }                                                     from '@acx-ui/rc/services'
 import { CommonUrlsInfo, Event, RequestPayload, TableQuery, replaceStrings, noDataDisplay } from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }                                                         from '@acx-ui/react-router-dom'
+import { TenantLink, generatePath, useParams }                                              from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                            from '@acx-ui/user'
 import { formatter, useDateFilter }                                                         from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
@@ -192,6 +195,11 @@ export const EventTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
+  const [ downloadCsv ] = useDownloadEventsCSVMutation()
+  const params = useParams()
+  const { data: userProfileData } = useUserProfileContext()
+  const { startDate, endDate } = useDateFilter()
+  const tableData = tableQuery.data?.data
 
   const columns: TableProps<Event>['columns'] = [
     {
@@ -303,15 +311,40 @@ export const EventTable = ({
     }
   ]
 
+  const payload = {
+    clientDateFormat: userProfileData.dateFormat.replace('mm', 'MM'),
+    clientTimeZone: moment.tz.guess(),
+    detailLevel: userProfileData.detailLevel,
+    eventsPeriodForExport: {
+      fromTime: moment.utc(startDate).format('YYYY-MM-DDTHH:mm:ss[Z]'),
+      toTime: moment.utc(endDate).format('YYYY-MM-DDTHH:mm:ss[Z]')
+    },
+    fields: ['event_datetime', 'severity', 'entity_type', 'product', 'entity_id', 'message'],
+    filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
+    isSupport: false,
+    searchString: tableQuery.payload.searchString as string,
+    searchTargetFields: tableQuery.payload.searchTargetFields as string[],
+    sortField: 'event_datetime',
+    sortOrder: 'DESC',
+    tenantId: params.tenantId!
+  }
+
+  const exportButton = {
+    icon: <DownloadOutlined />,
+    disabled: !(tableData && tableData.length > 0),
+    onClick: () => downloadCsv(payload)
+  }
+
   return <Loader states={[tableQuery]}>
     <Table
       rowKey='id'
       columns={columns}
-      dataSource={tableQuery.data?.data ?? []}
+      dataSource={tableData}
       pagination={tableQuery.pagination}
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      headerButton={exportButton}
     />
     {visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
