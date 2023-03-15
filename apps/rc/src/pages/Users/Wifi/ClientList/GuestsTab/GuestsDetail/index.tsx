@@ -16,9 +16,10 @@ import {
   TableProps,
   Descriptions
 } from '@acx-ui/components'
-import { ArrowExpand }           from '@acx-ui/icons'
-import { ClientHealthIcon }      from '@acx-ui/rc/components'
-import { useGetGuestsListQuery } from '@acx-ui/rc/services'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { ArrowExpand }               from '@acx-ui/icons'
+import { ClientHealthIcon }          from '@acx-ui/rc/components'
+import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
@@ -180,8 +181,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (data, row) {
-        // TODO: Wait for framework support userprofile-format dateTimeFormats
-        return moment(row.connectSince).format('DD/MM/YYYY HH:mm')
+        return formatter(DateFormatEnum.DateTimeFormat)(row.connectSince)
       }
     }
   ]
@@ -296,10 +296,9 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label={$t({ defaultMessage: 'Allowed Network' })}
         children={renderAllowedNetwork(guestDetail)} />
 
-      {/* TODO: Wait for framework support userprofile-format dateTimeFormats */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'Guest Created' })}
-        children={moment(guestDetail.creationDate).format('DD/MM/YYYY HH:mm')} />
+        children={formatter(DateFormatEnum.DateTimeFormat)(guestDetail.creationDate)} />
 
       <Descriptions.Item
         label={$t({ defaultMessage: 'Access Expires' })}
