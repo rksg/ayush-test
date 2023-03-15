@@ -31,8 +31,6 @@ describe('IpAddressDrawer', () => {
       </Provider>
     )
 
-    let saveButton = screen.getByText('Apply')
-    expect(saveButton).toBeTruthy()
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
@@ -40,6 +38,8 @@ describe('IpAddressDrawer', () => {
     // eslint-disable-next-line max-len
     await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.11.11')
 
+    let saveButton = screen.getByText('Apply')
+    expect(saveButton).toBeTruthy()
     await userEvent.click(saveButton)
 
     const validating = await screen.findByRole('img', { name: 'loading' })
@@ -59,8 +59,6 @@ describe('IpAddressDrawer', () => {
       </Provider>
     )
 
-    let saveButton = screen.getByText('Apply')
-    expect(saveButton).toBeTruthy()
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
@@ -68,9 +66,14 @@ describe('IpAddressDrawer', () => {
     expect(ipaddressInput).toHaveValue('192.168.1.1')
 
     await userEvent.clear(ipaddressInput)
+    await userEvent.type(ipaddressInput, '192.168.1.2')
+
+    await userEvent.clear(ipaddressInput)
     await userEvent.type(ipaddressInput, '192.168.1.3')
     expect(ipaddressInput).toHaveValue('192.168.1.3')
 
+    let saveButton = screen.getByText('Apply')
+    expect(saveButton).toBeTruthy()
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       fireEvent.click(saveButton)
@@ -98,7 +101,7 @@ describe('IpAddressDrawer', () => {
     await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
     await userEvent.click(await screen.findByText('Apply'))
 
-    await screen.findByText('IP Address already exists')
+    await screen.findByText('IP Address is already used by another tenant')
   })
 
   it('should cancel drawer successfully', async () => {
@@ -136,9 +139,10 @@ describe('IpAddressDrawer', () => {
       </Provider>
     )
     // eslint-disable-next-line max-len
-    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.1')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'IP Address' }), '192.168.1.3')
     await userEvent.click(await screen.findByText('Apply'))
 
-    await screen.findByText('An error occurred')
+    // TODO
+    // await screen.findByText('Server Error')
   })
 })

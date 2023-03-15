@@ -1,60 +1,51 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { usePolicyListQuery }                            from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
+import { useDeleteAAAPolicyMutation, useGetAAAPolicyViewModelListQuery }  from '@acx-ui/rc/services'
 import {
   PolicyType,
   useTableQuery,
   getPolicyDetailsLink,
   PolicyOperation,
-  Policy,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  AAAViewModalType,
+  AAAPurposeEnum,
+  AAA_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                          from '@acx-ui/user'
 
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [PolicyType.AAA]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
 
 export default function AAATable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
-
+  const [ deleteFn ] = useDeleteAAAPolicyMutation()
   const tableQuery = useTableQuery({
-    useQuery: usePolicyListQuery,
-    defaultPayload
+    useQuery: useGetAAAPolicyViewModelListQuery,
+    defaultPayload: {
+    }
   })
 
-  const rowActions: TableProps<Policy>['rowActions'] = [
-    // TODO Need to implement delete function
-    // {
-    //   label: $t({ defaultMessage: 'Delete' }),
-    //   onClick: ([{ name }], clearSelection) => {
-    //     showActionModal({
-    //       type: 'confirm',
-    //       customContent: {
-    //         action: 'DELETE',
-    //         entityName: $t({ defaultMessage: 'Policy' }),
-    //         entityValue: name
-    //       },
-    //       onOk: () => {
-    //         clearSelection()
-    //       }
-    //     })
-    //   }
-    // },
+  const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Policy' }),
+            entityValue: name
+          },
+          onOk: () => {
+            deleteFn({ params: { tenantId, policyId: id } }).then(clearSelection)
+          }
+        })
+      }
+    },
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -75,28 +66,34 @@ export default function AAATable () {
       <PageHeader
         title={
           $t({
-            defaultMessage: 'AAA Server'
+            defaultMessage: 'AAA Server ({count})'
+          },
+          {
+            count: tableQuery.data?.totalCount
           })
         }
         breadcrumb={[
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add AAA Server' })}</Button>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add AAA Server' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Policy>
+        <Table<AAAViewModalType>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -107,7 +104,7 @@ export default function AAATable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<Policy>['columns'] = [
+  const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -128,11 +125,35 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'type',
+      title: $t({ defaultMessage: 'AAA Type' }),
+      dataIndex: 'type',
       sorter: true,
-      align: 'center'
+      render: (data) =>{
+        return data?AAAPurposeEnum[data as keyof typeof AAAPurposeEnum]:''
+      }
+    },
+    {
+      key: 'primary',
+      title: $t({ defaultMessage: 'Primary Server' }),
+      dataIndex: 'primary',
+      sorter: true
+    },
+    {
+      key: 'secondary',
+      title: $t({ defaultMessage: 'Secondary Server' }),
+      dataIndex: 'secondary',
+      sorter: true
+    },
+    {
+      key: 'networkIds',
+      title: $t({ defaultMessage: 'Networks' }),
+      dataIndex: 'networkIds',
+      sorter: true,
+      align: 'center',
+      render: (data, row) =>{
+        return data?row.networkIds?.length:''
+      }
     }
   ]
 

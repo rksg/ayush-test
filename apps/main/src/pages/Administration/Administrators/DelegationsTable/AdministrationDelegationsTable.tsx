@@ -21,6 +21,8 @@ import {
   Delegation,
   getDelegetionStatusIntlString
 } from '@acx-ui/rc/utils'
+import { RolesEnum }                from '@acx-ui/types'
+import { filterByAccess, hasRoles } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -38,6 +40,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const [showDialog, setShowDialog] = useState(false)
   const [isTenantLocked, setIsTenantLocked] = useState(false)
   const [revokeInvitation] = useRevokeInvitationMutation()
+  const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
+  const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
 
   const { data, isLoading, isFetching }= useGetDelegationsQuery({ params })
 
@@ -107,9 +111,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       }
     }
   ]
-
-  // TODO: rbacService.isRoleAllowed('RevokeInvitationButton')
-  if (!isSupport) {
+  if (!isSupport && hasRevokeInvitationPermmision) {
     columns.push({
       title: $t({ defaultMessage: 'Action' }),
       key: 'action',
@@ -131,9 +133,8 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
 
   const tableActions = []
-  if (isSupport === false) {
+  if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
-      /* TODO: hide: !rbacService.isRoleAllowed('Invite3rdPartyButton') */
       label: $t({ defaultMessage: 'Invite 3rd Party Administrator' }),
       disabled: hasDelegations,
       onClick: handleClickInviteDelegation
@@ -163,7 +164,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           // eslint-disable-next-line max-len
           emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
         }}
-        actions={tableActions}
+        actions={filterByAccess(tableActions)}
       />
 
       <DelegationInviteDialog

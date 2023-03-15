@@ -12,6 +12,27 @@ export interface l3AclPolicyInfoType {
   defaultAccess: string
 }
 
+export interface AclOptionType {
+  key: string,
+  value: string
+}
+
+export interface EnhancedAccessControlInfoType {
+  id: string,
+  name: string,
+  l2AclPolicyName: string,
+  l2AclPolicyId: string,
+  l3AclPolicyName: string,
+  l3AclPolicyId: string,
+  devicePolicyName: string,
+  devicePolicyId: string,
+  applicationPolicyName: string,
+  applicationPolicyId: string,
+  clientRateUpLinkLimit: number,
+  clientRateDownLinkLimit: number,
+  networkIds: string[]
+}
+
 export interface AccessControlInfoType {
   id: string,
   name: string,
@@ -76,7 +97,8 @@ export interface L3Rule {
   priority: number,
   source: {
     enableIpSubnet: boolean
-  }
+  },
+  protocol?: string
 }
 
 export interface AppRule {
@@ -121,14 +143,14 @@ export interface AclEmbeddedObject {
 
 export enum Layer3ProtocolType {
   ANYPROTOCOL = 'ANYPROTOCOL',
-  TCP = 'TCP',
-  UDP = 'UDP',
-  UDPLITE = 'UDPLITE',
-  ICMP = 'ICMP',
-  IGMP = 'IGMP',
-  ESP = 'ESP',
-  AH = 'AH',
-  SCTP = 'SCTP'
+  L3ProtocolEnum_TCP = 'L3ProtocolEnum_TCP',
+  L3ProtocolEnum_UDP = 'L3ProtocolEnum_UDP',
+  L3ProtocolEnum_UDPLITE = 'L3ProtocolEnum_UDPLITE',
+  L3ProtocolEnum_ICMP_ICMPV4 = 'L3ProtocolEnum_ICMP_ICMPV4',
+  L3ProtocolEnum_IGMP = 'L3ProtocolEnum_IGMP',
+  L3ProtocolEnum_ESP = 'L3ProtocolEnum_ESP',
+  L3ProtocolEnum_AH = 'L3ProtocolEnum_AH',
+  L3ProtocolEnum_SCTP = 'L3ProtocolEnum_SCTP'
 }
 
 export enum AccessStatus {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import {
@@ -26,6 +27,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy' }),
   [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy' }),
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy' }),
+  [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'SNMP Agent' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy (TBD)' }),
   // eslint-disable-next-line max-len
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group (TBD)' }),
@@ -33,23 +35,18 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' })
 }
 export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
-  // eslint-disable-next-line max-len
   [PolicyType.AAA]: defineMessage({ defaultMessage: 'Create a RADIUS server profile for AAA on wireless devices' }),
-  // eslint-disable-next-line max-len
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
-  // eslint-disable-next-line max-len
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
-  // eslint-disable-next-line max-len
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
-  // eslint-disable-next-line max-len
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
-  // eslint-disable-next-line max-len
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
   [PolicyType.MAC_REGISTRATION_LIST]: defineMessage({ defaultMessage: 'MAC Registration (TBD)' }),
   [PolicyType.LAYER_2_POLICY]: defineMessage({ defaultMessage: 'Layer 2 Policy (TBD)' }),
   [PolicyType.LAYER_3_POLICY]: defineMessage({ defaultMessage: 'Layer 3 Policy (TBD)' }),
   [PolicyType.APPLICATION_POLICY]: defineMessage({ defaultMessage: 'Application Policy (TBD)' }),
   [PolicyType.DEVICE_POLICY]: defineMessage({ defaultMessage: 'Device Policy (TBD)' }),
+  [PolicyType.SNMP_AGENT]: defineMessage({ defaultMessage: 'Provides external notification to network administrators' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Adaptive Policy (TBD)' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set(TBD)' }),
   // eslint-disable-next-line max-len
@@ -80,14 +77,16 @@ export const rogueRuleLabelMapping: Record<RogueRuleType, MessageDescriptor> = {
 
 export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescriptor> = {
   [Layer3ProtocolType.ANYPROTOCOL]: defineMessage({ defaultMessage: 'Any Protocol' }),
-  [Layer3ProtocolType.TCP]: defineMessage({ defaultMessage: 'TCP' }),
-  [Layer3ProtocolType.UDP]: defineMessage({ defaultMessage: 'UDP' }),
-  [Layer3ProtocolType.UDPLITE]: defineMessage({ defaultMessage: 'UDPLITE' }),
-  [Layer3ProtocolType.ICMP]: defineMessage({ defaultMessage: 'ICMP(ICMPV4)' }),
-  [Layer3ProtocolType.IGMP]: defineMessage({ defaultMessage: 'IGMP' }),
-  [Layer3ProtocolType.ESP]: defineMessage({ defaultMessage: 'ESP' }),
-  [Layer3ProtocolType.AH]: defineMessage({ defaultMessage: 'AH' }),
-  [Layer3ProtocolType.SCTP]: defineMessage({ defaultMessage: 'SCTP' })
+  [Layer3ProtocolType.L3ProtocolEnum_TCP]: defineMessage({ defaultMessage: 'TCP' }),
+  [Layer3ProtocolType.L3ProtocolEnum_UDP]: defineMessage({ defaultMessage: 'UDP' }),
+  [Layer3ProtocolType.L3ProtocolEnum_UDPLITE]: defineMessage({ defaultMessage: 'UDPLITE' }),
+  [Layer3ProtocolType.L3ProtocolEnum_ICMP_ICMPV4]: defineMessage({
+    defaultMessage: 'ICMP(ICMPV4)'
+  }),
+  [Layer3ProtocolType.L3ProtocolEnum_IGMP]: defineMessage({ defaultMessage: 'IGMP' }),
+  [Layer3ProtocolType.L3ProtocolEnum_ESP]: defineMessage({ defaultMessage: 'ESP' }),
+  [Layer3ProtocolType.L3ProtocolEnum_AH]: defineMessage({ defaultMessage: 'AH' }),
+  [Layer3ProtocolType.L3ProtocolEnum_SCTP]: defineMessage({ defaultMessage: 'SCTP' })
 }
 
 export const osVenderLabelMapping: Record<OsVendorEnum, MessageDescriptor> = {

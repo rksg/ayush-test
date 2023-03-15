@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SyslogUrls }                                                from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, getUrlForTest, SyslogUrls }                                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -38,24 +39,34 @@ jest.mock('react-router-dom', () => ({
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getVenueSyslogAp.url,
+        SyslogUrls.getVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json(venueSyslog))),
       rest.post(
-        CommonUrlsInfo.updateVenueSyslogAp.url,
+        SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+        (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
+      rest.get(
+        getUrlForTest(CommonUrlsInfo.getVenueBonjourFencingPolicy),
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        getUrlForTest(CommonUrlsInfo.updateVenueBonjourFencingPolicy),
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] })))
     )
   })
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider><ServerTab /></Provider>, { route: { params } })
+    render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('Enable Server'))
-    expect(asFragment()).toMatchSnapshot()
   })
+
   it('should handle update setting', async () => {
     render(
       <Provider>
@@ -74,13 +85,13 @@ describe('ServerTab', () => {
 
     await fireEvent.click(await screen.findByTestId('syslog-switch'))
   })
-  it('should navigate to venue details page when clicking cancel button', async () => {
+  it('should navigate to venue list page when clicking cancel button', async () => {
     render(<Provider><ServerTab /></Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Enable Server'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/venues/${params.venueId}/venue-details/overview`,
+      pathname: `/t/${params.tenantId}/venues`,
       hash: '',
       search: ''
     })

@@ -52,9 +52,10 @@ import {
   VenueRadioCustomization,
   VenueDirectedMulticast,
   VenueLoadBalancing,
-  TopologyData
+  TopologyData,
+  VenueBonjourFencingPolicy
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, getJwtToken } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -134,6 +135,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req,
           body: payload
         }
+      },
+      transformResponse (result: { data: Venue[] }) {
+        result.data.map(venue => {
+          venue.switches = venue.switches ? venue.switches : 0
+          return venue
+        })
+        return result
       }
     }),
     updateVenue: build.mutation<VenueExtended, RequestPayload>({
@@ -286,7 +294,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           headers: {
             'accept': 'application/json, text/plain, */*',
             'x-rks-tenantid': params?.tenantId,
-            'content-type': 'application/json; charset=UTF-8'
+            'content-type': 'application/json; charset=UTF-8',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
           },
           body: payload
         }
@@ -576,10 +585,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueRadioCustomization, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
@@ -705,25 +715,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return{
           ...req
         }
-      }
-    }),
-    getVenueSyslogAp: build.query<VenueSyslog, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSyslogAp, params)
-        return{
-          ...req
-        }
-      },
-      providesTags: [{ type: 'Venue', id: 'Syslog' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'UpdateVenueSyslog'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'Syslog' }]))
-          })
-        })
       }
     }),
     updateVenueSyslogAp: build.mutation<VenueSyslog, RequestPayload>({
@@ -913,6 +904,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
       transformResponse: (result: { data: TopologyData[] }) => {
         return result?.data[0] as TopologyData
       }
+    }),
+    getVenueBonjourFencing: build.query<VenueBonjourFencingPolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueBonjourFencingPolicy, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueBonjourFencing'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'BONJOUR_FENCING' }]))
+          })
+        })
+      }
+    }),
+    updateVenueBonjourFencing: build.mutation<VenueBonjourFencingPolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueBonjourFencingPolicy, params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'BONJOUR_FENCING' }]
     })
   })
 })
@@ -965,8 +985,6 @@ export const {
   useGetOldVenueRogueApQuery,
   useUpdateVenueRogueApMutation,
   useGetRoguePoliciesQuery,
-  useGetVenueSyslogApQuery,
-  useUpdateVenueSyslogApMutation,
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
@@ -998,5 +1016,7 @@ export const {
   useLazyGetVenueConfigHistoryDetailQuery,
   useGetVenueLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
-  useGetTopologyQuery
+  useGetTopologyQuery,
+  useGetVenueBonjourFencingQuery,
+  useUpdateVenueBonjourFencingMutation
 } = venueApi

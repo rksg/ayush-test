@@ -10,10 +10,21 @@ import {
   CommonUrlsInfo,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useDateFilter } from '@acx-ui/utils'
+import { useUserProfileContext } from '@acx-ui/user'
+import { useDateFilter }         from '@acx-ui/utils'
 
-const AdminLogs = () => {
+function useQueryDateFilter () {
   const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
+  }
+}
+
+function useAdminLogsTableQuery () {
+  const { fromTime, toTime } = useQueryDateFilter()
+  const detailLevel = useUserProfileContext().data.detailLevel
+  const filters = { entity_type: ['ADMIN', 'NOTIFICATION'], fromTime, toTime }
 
   const tableQuery = usePollingTableQuery<AdminLog>({
     useQuery: useAdminLogsQuery,
@@ -51,9 +62,8 @@ const AdminLogs = () => {
         'recipientName',
         'transactionId'
       ],
-      filters: {
-        entity_type: ['ADMIN', 'NOTIFICATION']
-      }
+      filters,
+      detailLevel
     },
     sorter: {
       sortField: 'event_datetime',
@@ -62,21 +72,26 @@ const AdminLogs = () => {
     search: {
       searchTargetFields: ['entity_id', 'message']
     },
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+    option: {
+      skip: !Boolean(detailLevel),
+      pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
+    }
   })
 
   useEffect(()=>{
     const payload = tableQuery.payload as { filters?: Record<string, string[]> }
     tableQuery.setPayload({
       ...tableQuery.payload,
-      filters: {
-        ...payload.filters,
-        fromTime: moment(startDate).utc().format(),
-        toTime: moment(endDate).utc().format()
-      }
+      detailLevel,
+      filters: { ...payload.filters, ...filters }
     })
-  }, [startDate, endDate])
+  }, [fromTime, toTime, detailLevel])
 
+  return tableQuery
+}
+
+const AdminLogs = () => {
+  const tableQuery = useAdminLogsTableQuery()
   return <AdminLogTable tableQuery={tableQuery}/>
 }
 

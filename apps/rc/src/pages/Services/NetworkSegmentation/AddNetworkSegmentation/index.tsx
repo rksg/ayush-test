@@ -2,9 +2,9 @@
 import { useIntl }     from 'react-intl'
 import { useNavigate } from 'react-router-dom'
 
-import { PageHeader, showToast, StepsFormNew, useStepFormContext } from '@acx-ui/components'
-import { useCreateNetworkSegmentationGroupMutation }               from '@acx-ui/rc/services'
-import { useTenantLink }                                           from '@acx-ui/react-router-dom'
+import { PageHeader, StepsFormNew, useStepFormContext } from '@acx-ui/components'
+import { useCreateNetworkSegmentationGroupMutation }    from '@acx-ui/rc/services'
+import { useTenantLink }                                from '@acx-ui/react-router-dom'
 
 import { NetworkSegmentationGroupForm } from '../NetworkSegmentationForm'
 import { GeneralSettingsForm }          from '../NetworkSegmentationForm/GeneralSettingsForm'
@@ -58,18 +58,15 @@ const AddNetworkSegmentation = () => {
     try{
       await createNetworkSegmentationGroup({ payload }).unwrap()
       navigate(linkToServices, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add Network Segmentation' })}
+        title={$t({ defaultMessage: 'Add Network Segmentation Service' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Services' }), link: '/services' }
         ]}
@@ -78,13 +75,23 @@ const AddNetworkSegmentation = () => {
         form={form}
         onCancel={() => navigate(linkToServices)}
         onFinish={handleFinish}
+        initialValues={{
+          // Refactoring note:
+          // Not sure if it make sense to have it as null,
+          // setting it null end up causing warning on shouldn't use null for Select.
+          // Will retain from its `defaultValue` usage,
+          // so it remain the same as what was implemented
+          venueId: null as unknown as NetworkSegmentationGroupForm['venueId'],
+          // eslint-disable-next-line max-len
+          vxlanTunnelProfileId: null as unknown as NetworkSegmentationGroupForm['vxlanTunnelProfileId']
+        }}
       >
         {
           steps.map((item, index) =>
             <StepsFormNew.StepForm
-              name={(index).toString()}
+              key={`step-${index}`}
+              name={index.toString()}
               title={item.title}
-              onFinish={async () => true}
             >
               {item.content}
             </StepsFormNew.StepForm>)

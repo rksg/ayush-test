@@ -8,7 +8,6 @@ import { FormattedMessage, useIntl }            from 'react-intl'
 import {
   Button,
   Loader,
-  showToast,
   Tabs,
   StepsForm,
   StepsFormInstance
@@ -28,7 +27,8 @@ import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueExtended
+  VenueExtended,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -44,7 +44,7 @@ export function LanPorts () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
-  const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
 
   const formRef = useRef<StepsFormInstance<WifiApSetting>>()
   const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
@@ -147,11 +147,8 @@ export function LanPorts () {
         }
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -212,10 +209,8 @@ export function LanPorts () {
         formRef={formRef}
         onFinish={handleFinish}
         onFormChange={handleFormChange}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
-        })
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
         }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >

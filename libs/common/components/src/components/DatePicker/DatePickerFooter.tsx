@@ -102,6 +102,7 @@ export const DatePickerFooter = ({
                     ? disabledDateTime
                     : () => defaultselectionForDisabledDates
                 }
+                inputReadOnly
               />
               {config.hasColon && <UI.TimePickerColon>:</UI.TimePickerColon>}
               {config.hasHyphen && <UI.TimePickerHyphen>-</UI.TimePickerHyphen>}

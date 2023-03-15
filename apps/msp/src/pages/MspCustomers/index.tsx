@@ -5,26 +5,25 @@ import { useIntl } from 'react-intl'
 
 import {
   Button,
-  DisabledButton,
   Loader,
   PageHeader,
   showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  DownloadOutlined
-} from '@acx-ui/icons'
-import {
-  ResendInviteModal
+  ManageAdminsDrawer,
+  ResendInviteModal,
+  SelectIntegratorDrawer
 } from '@acx-ui/msp/components'
-import { useUserProfileContext }   from '@acx-ui/rc/components'
 import {
   useDeactivateMspEcMutation,
   useDeleteMspEcMutation,
   useReactivateMspEcMutation,
   useMspCustomerListQuery,
-  useSupportMspCustomerListQuery
+  useSupportMspCustomerListQuery,
+  useGetMspLabelQuery
 } from '@acx-ui/rc/services'
 import {
   DateFormatEnum,
@@ -33,7 +32,11 @@ import {
   MspEc,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { getBasePath, Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                           from '@acx-ui/types'
+import { filterByAccess, useUserProfileContext }                                               from '@acx-ui/user'
+import { hasRoles }                                                                            from '@acx-ui/user'
+import { AccountType }                                                                         from '@acx-ui/utils'
 
 const getStatus = (row: MspEc) => {
   const isTrial = row.accountType === 'TRIAL'
@@ -97,15 +100,27 @@ const transformExpirationDate = (row: MspEc) => {
 
 export function MspCustomers () {
   const { $t } = useIntl()
+  const edgeEnabled = useIsSplitOn(Features.EDGES)
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const params = useParams()
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
+  const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
+  const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
 
   const { data: userProfile } = useUserProfileContext()
+  const { data: mspLabel } = useGetMspLabelQuery({ params })
+
+  const onBoard = mspLabel?.msp_label
+  const ecFilters = isPrimeAdmin
+    ? { tenantType: ['MSP_EC'] }
+    : { mspAdmins: [userProfile.adminId], tenantType: ['MSP_EC'] }
 
   const mspPayload = {
     searchString: '',
-    filters: { tenantType: ['MSP_EC'] },
+    filters: ecFilters,
     fields: [
       'check-all',
       'id',
@@ -120,7 +135,8 @@ export function MspCustomers () {
       'wifiLicense',
       'switchLicens',
       'streetAddress'
-    ]
+    ],
+    searchTargetFields: ['name']
   }
 
   const supportPayload = {
@@ -188,8 +204,8 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Active Incindents' }),
-      dataIndex: 'activeIncindents',
+      title: $t({ defaultMessage: 'Active Incidents' }),
+      dataIndex: 'activeIncidents',
       key: 'activeIncindents',
       sorter: true,
       render: function () {
@@ -200,7 +216,20 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'MSP Admins' }),
       dataIndex: 'mspAdminCount',
       key: 'mspAdminCount',
-      sorter: true
+      sorter: true,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerAdminVisible(true)
+          }
+        }
+      },
+      render: function (data) {
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Customer Admins' }),
@@ -208,6 +237,25 @@ export function MspCustomers () {
       key: 'mspEcAdminCount',
       sorter: true,
       show: false
+    },
+    {
+      title: $t({ defaultMessage: 'Integrator' }),
+      dataIndex: 'integrator',
+      key: 'integrator',
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setDrawerIntegratorVisible(true)
+          }
+        }
+      },
+      render: function (data, row) {
+        const val = row?.integrator ? 1 : 0
+        return (
+          (isPrimeAdmin || isAdmin) ? <Link to=''>{val}</Link> : val
+        )
+      }
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
@@ -237,6 +285,16 @@ export function MspCustomers () {
       }
     },
     {
+      title: $t({ defaultMessage: 'SmartEdge Licenses' }),
+      dataIndex: 'edgeLicenses',
+      key: 'edgeLicenses',
+      sorter: true,
+      show: edgeEnabled,
+      render: function (data, row) {
+        return row?.edgeLicenses ? row?.edgeLicenses : 0
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Active From' }),
       dataIndex: 'creationDate',
       key: 'creationDate',
@@ -246,7 +304,7 @@ export function MspCustomers () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Service Expired On' }),
+      title: $t({ defaultMessage: 'Service Expires On' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
@@ -268,7 +326,10 @@ export function MspCustomers () {
     const basePath = useTenantLink('/dashboard/mspcustomers/edit', 'v')
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
-      defaultPayload: mspPayload
+      defaultPayload: mspPayload,
+      search: {
+        searchTargetFields: mspPayload.searchTargetFields as string[]
+      }
     })
     const [
       deleteMspEc,
@@ -312,17 +373,19 @@ export function MspCustomers () {
           return false
         },
         onClick: ([{ name, id }], clearSelection) => {
-          const title = $t({
-            defaultMessage: `Deactivate Customer 
-           "{formattedName}"?`
-          }, { formattedName: name })
+          const title = $t(
+            { defaultMessage: 'Deactivate Customer "{formattedName}"?' },
+            { formattedName: name }
+          )
 
           showActionModal({
             type: 'confirm',
             title: title,
             content: $t({
-              defaultMessage: `Deactivate "{formattedName}" will suspend all its services, 
-              are you sure you want to proceed?`
+              defaultMessage: `
+                Deactivate "{formattedName}" will suspend all its services,
+                are you sure you want to proceed?
+              `
             }, { formattedName: name }),
             okText: $t({ defaultMessage: 'Deactivate' }),
             onOk: () => deactivateMspEc({ params: { mspEcTenantId: id } })
@@ -340,18 +403,18 @@ export function MspCustomers () {
           return true
         },
         onClick: ([{ name, id }], clearSelection) => {
-          const title = $t({
-            defaultMessage: `Reactivate Customer 
-           "{formattedName}"?`
-          }, { formattedName: name })
+          const title = $t(
+            { defaultMessage: 'Reactivate Customer "{formattedName}"?' },
+            { formattedName: name }
+          )
 
           showActionModal({
             type: 'confirm',
             title: title,
-            content: $t({
-              defaultMessage: `Reactivate this customer 
-              "{formattedName}"?`
-            }, { formattedName: name }),
+            content: $t(
+              { defaultMessage: 'Reactivate this customer "{formattedName}"?' },
+              { formattedName: name }
+            ),
             okText: $t({ defaultMessage: 'Reactivate' }),
             onOk: () => reactivateMspEc({ params: { mspEcTenantId: id } })
               .then(clearSelection)
@@ -386,7 +449,7 @@ export function MspCustomers () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -396,7 +459,10 @@ export function MspCustomers () {
   const SupportEcTable = () => {
     const tableQuery = useTableQuery({
       useQuery: useSupportMspCustomerListQuery,
-      defaultPayload: supportPayload
+      defaultPayload: supportPayload,
+      search: {
+        searchTargetFields: supportPayload.searchTargetFields as string[]
+      }
     })
 
     return (
@@ -419,17 +485,20 @@ export function MspCustomers () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'MSP Customers' })}
-        extra={[
-          <TenantLink to='/dashboard' key='ownAccount'>
+        extra={isAdmin ?
+          [<TenantLink to='/dashboard'>
             <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
           </TenantLink>,
-          <MspTenantLink to='/dashboard/mspcustomers/create' key='addMspEc'>
+          <MspTenantLink to='/dashboard/mspcustomers/create'>
             <Button
-              hidden={userProfile?.support}
+              hidden={userProfile?.support || !onBoard}
               type='primary'>{$t({ defaultMessage: 'Add Customer' })}</Button>
-          </MspTenantLink>,
-          <DisabledButton key='download' icon={<DownloadOutlined />} />
-        ]}
+          </MspTenantLink>
+          ]
+          : [<TenantLink to='/dashboard'>
+            <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
+          </TenantLink>
+          ]}
       />
       {userProfile?.support && <SupportEcTable />}
       {!userProfile?.support && <MspEcTable />}
@@ -438,6 +507,19 @@ export function MspCustomers () {
         setVisible={setModalVisible}
         tenantId={ecTenantId}
       />
+      {drawerAdminVisible && <ManageAdminsDrawer
+        visible={drawerAdminVisible}
+        setVisible={setDrawerAdminVisible}
+        setSelected={() => {}}
+        tenantId={ecTenantId}
+      />}
+      {drawerIntegratorVisible && <SelectIntegratorDrawer
+        visible={drawerIntegratorVisible}
+        tenantId={ecTenantId}
+        tenantType={AccountType.MSP_INTEGRATOR}
+        setVisible={setDrawerIntegratorVisible}
+        setSelected={() => {}}
+      />}
     </>
   )
 }

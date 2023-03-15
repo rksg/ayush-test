@@ -9,7 +9,6 @@ import { useIntl }                                                from 'react-in
 import {
   PageHeader,
   Loader,
-  showToast,
   StepsForm,
   StepsFormInstance,
   Tooltip,
@@ -35,9 +34,12 @@ import {
   IGMP_SNOOPING_TYPE,
   Vlan,
   SwitchStatusEnum,
-  isOperationalSwitch
+  isOperationalSwitch,
+  redirectPreviousPage,
+  LocationExtended
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useTenantLink,
   useParams
@@ -73,6 +75,7 @@ export function SwitchForm () {
   const { tenantId, switchId, action } = useParams()
   const editMode = action === 'edit'
   const navigate = useNavigate()
+  const location = useLocation()
   const formRef = useRef<StepsFormInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
@@ -99,6 +102,7 @@ export function SwitchForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const dataFetchedRef = useRef(false)
+  const [previousPath, setPreviousPath] = useState('')
 
   const switchListPayload = {
     searchString: '',
@@ -107,6 +111,10 @@ export function SwitchForm () {
     searchTargetFields: ['model'],
     pageSize: 10000
   }
+
+  useEffect(() => {
+    setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
+  }, [])
 
   useEffect(() => {
     if (venueId && switchModel && switchRole === MEMEBER_TYPE.MEMBER) {
@@ -199,11 +207,8 @@ export function SwitchForm () {
         }
         await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     } else if (switchRole === MEMEBER_TYPE.MEMBER) {
       const params = {
@@ -214,11 +219,8 @@ export function SwitchForm () {
       try {
         await addStackMember({ params }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
-      } catch {
-        showToast({
-          type: 'error',
-          content: $t({ defaultMessage: 'An error occurred' })
-        })
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
     }
   }
@@ -255,16 +257,11 @@ export function SwitchForm () {
 
       dataFetchedRef.current = false
 
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: '{message}' }, { message: e.data.errors[0].message })
-      })
+      if (!deviceOnline) { // only one tab
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -308,10 +305,9 @@ export function SwitchForm () {
     <StepsForm
       formRef={formRef}
       onFinish={editMode ? handleEditSwitch : handleAddSwitch}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
       buttonLabel={{
         submit: readOnly ? $t({ defaultMessage: 'OK' }) :
           editMode ?

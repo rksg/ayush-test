@@ -35,7 +35,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
       getSwitchModel(targetDevice?.activeSerial || '') : _.get(targetDevice, 'model')
     setUnitDetial({
       serialNumber: targetDevice?.activeSerial || '',
-      model,
+      model: model || '',
       stackMembership: _.get(targetDevice, 'unitStatus'),
       stackId: _.get(targetDevice, 'unitId'),
       fwVersion: switchDetail.firmware || ''

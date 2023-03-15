@@ -5,6 +5,7 @@ import { rest }  from 'msw'
 import { CommonUrlsInfo, PortalUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { UserUrlsInfo }                   from '@acx-ui/user'
 
 
 import PortalForm from './PortalForm'
@@ -16,7 +17,7 @@ export const successResponse = { requestId: 'request-id' }
 describe('PortalForm', () => {
   it('should create Portal with file successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(
@@ -31,10 +32,12 @@ describe('PortalForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ signedUrl: '/api/test', fileId: 'test' }))
         }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }] }))
-        })
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => {
+        return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
+          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
+      })
     )
 
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
@@ -60,7 +63,7 @@ describe('PortalForm', () => {
   })
   it('should create Portal successfully', async () => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
+      rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.post(
@@ -71,10 +74,11 @@ describe('PortalForm', () => {
         (_, res, ctx) => {
           return res(ctx.json({ signedUrl: 'test', fileId: 'test' }))
         }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ }))
-        })
+      rest.get(PortalUrlsInfo.getPortalProfileList.url
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
+      (_, res, ctx) => {
+        return res(ctx.json({ }))
+      })
     )
 
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }

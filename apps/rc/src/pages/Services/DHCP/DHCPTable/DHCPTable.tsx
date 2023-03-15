@@ -1,31 +1,19 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal } from '@acx-ui/components'
-import { useDeleteDHCPServiceMutation, useServiceListQuery }              from '@acx-ui/rc/services'
+import { Button, PageHeader, Table, TableProps, Loader, showActionModal }    from '@acx-ui/components'
+import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
   getServiceDetailsLink,
   ServiceOperation,
-  Service,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  DHCPSaveData,
+  DHCP_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-
-const defaultPayload = {
-  searchString: '',
-  filters: {
-    type: [ServiceType.DHCP]
-  },
-  fields: [
-    'id',
-    'name',
-    'type',
-    'scope',
-    'cog'
-  ]
-}
+import { filterByAccess }                                          from '@acx-ui/user'
 
 export default function DHCPTable () {
   const { $t } = useIntl()
@@ -33,13 +21,21 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
-
   const tableQuery = useTableQuery({
-    useQuery: useServiceListQuery,
-    defaultPayload
+    useQuery: useGetDHCPProfileListViewModelQuery,
+    defaultPayload: {
+      searchString: '',
+      fields: [
+        'id',
+        'name',
+        'dhcpPools',
+        'venueIds',
+        'technology'
+      ]
+    }
   })
 
-  const rowActions: TableProps<Service>['rowActions'] = [
+  const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -85,21 +81,24 @@ export default function DHCPTable () {
         breadcrumb={[
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={[
+        extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} key='add'>
-            <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
+            <Button type='primary'
+              disabled={tableQuery.data?.totalCount
+                ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
+                : false} >{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Loader states={[tableQuery]}>
-        <Table<Service>
+        <Table<DHCPSaveData>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={rowActions}
+          rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
         />
       </Loader>
@@ -110,7 +109,7 @@ export default function DHCPTable () {
 function useColumns () {
   const { $t } = useIntl()
 
-  const columns: TableProps<Service>['columns'] = [
+  const columns: TableProps<DHCPSaveData>['columns'] = [
     {
       key: 'name',
       title: $t({ defaultMessage: 'Name' }),
@@ -131,11 +130,24 @@ function useColumns () {
       }
     },
     {
-      key: 'scope',
-      title: $t({ defaultMessage: 'Scope' }),
-      dataIndex: 'scope',
+      key: 'pools',
+      title: $t({ defaultMessage: 'DHCP Pools' }),
+      dataIndex: 'dhcpPools',
       sorter: true,
-      align: 'center'
+      align: 'center',
+      render: function (data, row) {
+        return row.dhcpPools?.length||0
+      }
+    },
+    {
+      key: 'venues',
+      title: $t({ defaultMessage: 'Venues' }),
+      dataIndex: 'usage',
+      sorter: true,
+      align: 'center',
+      render: function (data, row) {
+        return row.venueIds?.length || 0
+      }
     }
   ]
 

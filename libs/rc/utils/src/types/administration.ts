@@ -1,11 +1,15 @@
 import { defineMessage } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { getIntl }   from '@acx-ui/utils'
 
 import { EntitlementUtil } from '../msp.utils'
 
-import { RolesEnum, roleDisplayText }                      from './msp'
-import { EntitlementDeviceType, EntitlementDeviceSubType } from './msp'
+import {
+  EntitlementDeviceType,
+  EntitlementDeviceSubType,
+  roleDisplayText
+} from './msp'
 
 export enum TenantDelegationStatus {
   INVITED = 'INVITED',
@@ -53,8 +57,7 @@ export interface RecoveryPassphrase {
 }
 
 export interface TenantPreferenceSettingValue {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface TenantPreferenceSettings {
@@ -164,22 +167,6 @@ export interface NotificationRecipientResponse {
   updatedDate: string;
 }
 
-// FIXME: might be removed because of Tenant.roleDsc is UI used only
-export const GetRoleStr = ( role: RolesEnum ) => {
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return 'Prime Admin'
-    case RolesEnum.ADMINISTRATOR:
-      return 'Administrator'
-    case RolesEnum.GUEST_MANAGER:
-      return 'Guest Manager'
-    case RolesEnum.READ_ONLY:
-      return 'Read Only'
-    default:
-      return 'Unknown'
-  }
-}
-
 export const getRoles = () => {
   return Object.keys(roleDisplayText).map(roleKey => ({
     label: roleDisplayText[roleKey as RolesEnum],
@@ -234,7 +221,7 @@ export interface EntitlementSummary {
   errorCode?: unknown;
   internalMessage?: unknown;
   remainingDays?: number;
-  deviceCount?: number;
+  deviceCount: number;
 }
 
 export interface NewEntitlementSummary {

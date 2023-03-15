@@ -30,6 +30,7 @@ export default function VLANPoolInstancesTable (){
       key: 'venueName',
       title: $t({ defaultMessage: 'Venue Name' }),
       dataIndex: 'venueName',
+      searchable: true,
       sorter: true,
       render: (name, row) =>
         (<TenantLink to={`venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>)
@@ -45,6 +46,7 @@ export default function VLANPoolInstancesTable (){
       key: 'DeploymentScope',
       title: $t({ defaultMessage: 'Deployment Scope' }),
       dataIndex: 'apGroupData',
+      searchable: true,
       render: (groups) => {
         const isAllAP = _.some(groups as VLANPoolAPGroup[], { apGroupName: 'ALL_APS' })
         return isAllAP ? $t({ defaultMessage: 'All APs' }):(groups as VLANPoolAPGroup[]).length

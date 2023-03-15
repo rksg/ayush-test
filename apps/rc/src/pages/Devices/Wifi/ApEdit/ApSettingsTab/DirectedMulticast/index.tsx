@@ -5,7 +5,7 @@ import { isEmpty }                                  from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import { useNavigate, useParams }                   from 'react-router-dom'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
 import {
   useGetApDirectedMulticastQuery,
   useGetApQuery,
@@ -14,8 +14,13 @@ import {
   useResetApDirectedMulticastMutation,
   useUpdateApDirectedMulticastMutation
 } from '@acx-ui/rc/services'
-import { ApDirectedMulticast, VenueDirectedMulticast, VenueExtended } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                  from '@acx-ui/react-router-dom'
+import {
+  ApDirectedMulticast,
+  VenueDirectedMulticast,
+  VenueExtended,
+  redirectPreviousPage
+} from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { ApEditContext } from '../../../ApEdit/index'
 import { FieldLabel }    from '../styledComponents'
@@ -26,7 +31,7 @@ export function DirectedMulticast () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
 
-  const { editContextData, setEditContextData } = useContext(ApEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(ApEditContext)
 
   const { data: apDetails } = useGetApQuery({ params: { tenantId, serialNumber } })
   const directedMulticast = useGetApDirectedMulticastQuery({ params: { serialNumber } })
@@ -140,11 +145,8 @@ export function DirectedMulticast () {
         }).unwrap()
       }
 
-    } catch {
-      showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -175,10 +177,9 @@ export function DirectedMulticast () {
       formRef={formRef}
       onFormChange={handleChange}
       onFinish={handleUpdateDirectedMulticast}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/wifi/${serialNumber}/details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply Directed Multicast' })
       }}

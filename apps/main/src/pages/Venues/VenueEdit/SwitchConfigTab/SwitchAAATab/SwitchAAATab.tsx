@@ -1,16 +1,17 @@
-import { useRef } from 'react'
+import { useContext, useRef, useState } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { useUpdateAAASettingMutation }                           from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { useUpdateAAASettingMutation }                from '@acx-ui/rc/services'
+import { redirectPreviousPage }                       from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
 
+import { VenueEditContext } from '../../index'
 
 import { AAAServers }  from './AAAServers'
 import { AAASettings } from './AAASettings'
-
 
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
@@ -18,6 +19,8 @@ export function SwitchAAATab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/venues/')
   const [updateAAASettingMutation] = useUpdateAAASettingMutation()
+  const [aaaSettingId, setAAASettingId] = useState<string>('')
+  const { previousPath } = useContext(VenueEditContext)
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
   const settingsTitle = $t({ defaultMessage: 'Settings' })
@@ -75,14 +78,11 @@ export function SwitchAAATab () {
     }
 
     await updateAAASettingMutation({
-      params: { tenantId, venueId },
+      params: { tenantId, venueId, aaaSettingId },
       payload: _.pickBy(payload, v => v !== undefined)
     }).unwrap()
       .catch((error) => {
-        showToast({
-          type: 'error',
-          content: _.map(error.data.errors, 'message').join()
-        })
+        console.log(error) // eslint-disable-line no-console
       })
   }
 
@@ -105,7 +105,7 @@ export function SwitchAAATab () {
           { settingsTitle }
         </StepsForm.SectionTitle>
         <StepsForm.StepForm name='aaa-settings' layout='horizontal' labelCol={{ flex: '150px' }}>
-          <AAASettings />
+          <AAASettings setAAASettingId={setAAASettingId} />
         </StepsForm.StepForm>
       </>
     )
@@ -114,10 +114,9 @@ export function SwitchAAATab () {
     <StepsForm
       formRef={formRef}
       onFinish={() => handleUpdate()}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save AAA' }) }}
     >
       <AnchorLayout items={anchorItems} offsetTop={275} />

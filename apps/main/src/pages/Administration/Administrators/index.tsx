@@ -1,10 +1,10 @@
-import { useUserProfileContext } from '@acx-ui/rc/components'
 import {
   useGetTenantDetailsQuery,
   useGetMspEcProfileQuery
 } from '@acx-ui/rc/services'
-import { MSPUtils, TenantType } from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { MSPUtils, TenantType }  from '@acx-ui/rc/utils'
+import { useParams }             from '@acx-ui/react-router-dom'
+import { useUserProfileContext } from '@acx-ui/user'
 
 import AdministratorsTable from './AdministratorsTable'
 import DelegationsTable    from './DelegationsTable'
@@ -32,7 +32,7 @@ const Administrators = () => {
   const isPrimeAdminUser = isPrimeAdmin()
   const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
 
-  // TODO: where to use?
+  // TODO: use userProfileData?.dateFormat to display dateTime data on UI
   // const dateTimeFormat = userProfileData?.dateFormat
   //   ? userProfileData.dateFormat.toUpperCase() + ' ,HH:mm:ss' : ''
 

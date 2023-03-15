@@ -1,18 +1,27 @@
 import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
+import { Button, PageHeader, RangePicker }                    from '@acx-ui/components'
+import { useLocation, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                                     from '@acx-ui/user'
+import { useDateFilter }                                      from '@acx-ui/utils'
 
-import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { ArrowExpand }                                     from '@acx-ui/icons'
-import { TenantLink, useParams }                           from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter }                 from '@acx-ui/utils'
+import { ActiveVenueFilter } from './ActiveVenueFilter'
+import NetworkTabs           from './NetworkTabs'
+import { useGetNetwork }     from './services'
 
-import NetworkTabs       from './NetworkTabs'
-import { useGetNetwork } from './services'
-
-function NetworkPageHeader () {
+function NetworkPageHeader ({
+  setSelectedVenues,
+  selectedVenues
+}: {
+  setSelectedVenues?: CallableFunction,
+  selectedVenues?: string[]
+}) {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const network = useGetNetwork()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const basePath = useTenantLink('/networks/wireless')
   const { networkId } = useParams()
   const { $t } = useIntl()
   return (
@@ -21,21 +30,37 @@ function NetworkPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Networks' }), link: '/networks' }
       ]}
-      extra={[
-        <DisabledButton key='hierarchy-filter'>
-          {$t({ defaultMessage: 'All Active Venues' })}<ArrowExpand /></DisabledButton>,
+      extra={filterByAccess([
+        ...(setSelectedVenues && selectedVenues)
+          ? [
+            <ActiveVenueFilter
+              selectedVenues={selectedVenues}
+              setSelectedVenues={setSelectedVenues}
+              key='hierarchy-filter'
+            />
+          ]
+          : [],
         <RangePicker
           key='date-filter'
           selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-          enableDates={dateRangeForLast(3,'months')}
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
         />,
-        <TenantLink to={`/networks/wireless/${networkId}/edit`} key='edit'>
-          <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        </TenantLink>
-      ]}
+        <Button
+          type='primary'
+          onClick={() =>
+            navigate({
+              ...basePath,
+              pathname: `${basePath.pathname}/${networkId}/edit`
+            }, {
+              state: {
+                from: location
+              }
+            })
+          }
+        >{$t({ defaultMessage: 'Configure' })}</Button>
+      ])}
       footer={<NetworkTabs />}
     />
   )

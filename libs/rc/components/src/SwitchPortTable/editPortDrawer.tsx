@@ -38,7 +38,6 @@ import {
   MultipleEditPortMessages,
   poeBudgetRegExp,
   PORT_SPEED,
-  showGeneralError,
   SwitchPortViewModel,
   SwitchVlanUnion,
   PortSettingModel,
@@ -249,7 +248,7 @@ export function EditPortDrawer ({
   const getEachSwitchVlans = async () => {
     const switchVlans = switches?.map(async (switchId) => {
       return await getSwitchVlans({
-        params: { tenantId, serialNumber: switchId }
+        params: { tenantId, switchId }
       }, true).unwrap()
     })
     return Promise.all(switchVlans)
@@ -320,7 +319,8 @@ export function EditPortDrawer ({
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string) => {
     const vid = isVenueLevel ? venueId : switchDetail?.venueId
     const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier }
+      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
+      payload: [selectedPorts?.[0]?.portIdentifier]
     }, true).unwrap()
 
     const requestPort = selectedPorts?.[0]?.portIdentifier?.split('/').slice(1, 3).join('/')
@@ -557,7 +557,7 @@ export function EditPortDrawer ({
       setDrawerVisible(false)
 
     } catch (err) {
-      showGeneralError(err)
+      console.log(err) // eslint-disable-line no-console
     }
   }
 

@@ -4,7 +4,8 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
 import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter }       from '@acx-ui/utils'
+import { filterByAccess }                        from '@acx-ui/user'
+import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -53,16 +54,15 @@ function Timeline () {
             {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
           </Tabs>
         }
-        extra={[
+        extra={filterByAccess([
           <RangePicker
             key='date-filter'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-            enableDates={dateRangeForLast(3,'months')}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
           />
-        ]}
+        ])}
       />
       {Tab && <Tab/>}
     </>

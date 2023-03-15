@@ -42,7 +42,8 @@ export function NetworkDetailForm () {
   const [differentSSID, setDifferentSSID] = useState(false)
   const form = Form.useFormInstance()
   const onChange = (e: RadioChangeEvent) => {
-    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum })
+    setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
+      enableAccountingProxy: false, enableAuthProxy: false, enableAccountingService: false })
   }
 
   useEffect(() => {
@@ -123,11 +124,10 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
-    { type: NetworkTypeEnum.AAA, disabled: disableAAA },
+    { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]

@@ -22,14 +22,12 @@ describe('ErrorBoundary', () => {
     const { baseElement } = render(<ErrorBoundary>
       <ErrorThrowingComponent />
     </ErrorBoundary>)
-    expect(baseElement).toHaveTextContent('Something went wrong')
     expect(baseElement).toHaveTextContent('{"message":"Error"}')
   })
   it('contain Error instance thrown', async () => {
     const { baseElement } = render(<ErrorBoundary>
       <ErrorThrowingComponent errorInstance />
     </ErrorBoundary>)
-    expect(baseElement).toHaveTextContent('Something went wrong')
     expect(baseElement).toHaveTextContent('Error: Error')
   })
   it('renders fallback', () => {
@@ -38,6 +36,15 @@ describe('ErrorBoundary', () => {
       <ErrorThrowingComponent />
     </ErrorBoundary>)
     expect(baseElement).toHaveTextContent(fallback)
+  })
+  it('does not render error in prod', async () => {
+    const oldEnv = process.env
+    process.env = { NODE_ENV: 'production' }
+    const { baseElement } = render(<ErrorBoundary>
+      <ErrorThrowingComponent errorInstance />
+    </ErrorBoundary>)
+    expect(baseElement).not.toHaveTextContent('Error: Error')
+    process.env = oldEnv
   })
 })
 

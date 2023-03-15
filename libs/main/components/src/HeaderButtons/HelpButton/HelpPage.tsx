@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -25,12 +25,15 @@ export const getDocsURL = () => process.env['NODE_ENV'] === 'development'
 
 export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
 
-const reg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+// eslint-disable-next-line max-len
+const reg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+\/?/g
+
 const useBasePath = () => {
   const location = useLocation()
   const basePath = location.pathname.replace(new URL(document.baseURI).pathname,'')
   return _.replace(basePath, reg, (matchStr)=>{
-    const paramReg = /([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
+    // eslint-disable-next-line max-len
+    const paramReg = /([A-Z0-9]{11,})|([0-9a-fA-F]{1,2}[:]){5}([0-9a-fA-F]{1,2})|([a-f-\d]{32,36}|[A-F-\d]{32,36})|\d+/g
     return matchStr.replaceAll(paramReg,'*')
   })
 }
@@ -80,15 +83,15 @@ export default function HelpPage (props: {
   const { $t } = useIntl()
   const [helpDesc, setHelpDesc] = useState<string>()
   const [helpUrl, setHelpUrl] = useState<string|null>()
-  const location = useLocation()
   const basePath = useBasePath()
 
-  const showError = ()=>{
+  const showError = useCallback(() => {
     setHelpDesc($t({ defaultMessage: 'The content is not available.' }))
     setHelpUrl(null)
-  }
+  }, [$t])
 
   useEffect(() => {
+    if (!props.modalState) return
     (async ()=> {
       const mappingRs = await getMapping(basePath, showError)
       if (!mappingRs) {
@@ -103,7 +106,7 @@ export default function HelpPage (props: {
         showError
       )
     })()
-  }, [location])
+  }, [props.modalState, showError, basePath])
 
   return <Drawer
     title={$t({ defaultMessage: 'Help for this page' })}

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
+import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
   Activity,
   RequestPayload,
@@ -10,17 +12,83 @@ import {
   getActivityDescription,
   productMapping,
   severityMapping,
-  statusMapping
+  statusMapping,
+  CommonUrlsInfo,
+  TABLE_QUERY_LONG_POLLING_INTERVAL,
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import { formatter } from '@acx-ui/utils'
+import { formatter, useDateFilter } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
 
-interface ActivityTableProps {
-  tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
+export const columnState = {
+  defaultValue: {
+    startDateTime: true,
+    status: true,
+    product: false,
+    name: true,
+    description: true
+  }
 }
 
-const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
+const useActivityTableFilter = () => {
+  const { startDate, endDate } = useDateFilter()
+  return {
+    fromTime: moment(startDate).utc().format(),
+    toTime: moment(endDate).utc().format()
+  }
+}
+
+const defaultSorter = {
+  sortField: 'startDatetime',
+  sortOrder: 'DESC'
+}
+
+const defaultPayload = {
+  url: CommonUrlsInfo.getActivityList.url,
+  fields: [
+    'startDatetime',
+    'endDatetime',
+    'status',
+    'product',
+    'admin',
+    'descriptionTemplate',
+    'descriptionData',
+    'severity'
+  ]
+}
+
+export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
+  const { fromTime, toTime } = useActivityTableFilter()
+  const filters = { ...baseFilters, fromTime, toTime }
+
+  const tableQuery = useTableQuery<Activity>({
+    useQuery: useActivitiesQuery,
+    defaultPayload: { ...defaultPayload, filters },
+    sorter: defaultSorter,
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
+  })
+
+  useEffect(
+    () => tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { ...(tableQuery.payload.filters as object), ...filters }
+    }),
+    [fromTime, toTime]
+  )
+
+  return tableQuery
+}
+
+interface ActivityTableProps {
+  tableQuery: TableQuery<Activity, RequestPayload<unknown>, unknown>
+  filterables?: boolean | string[]
+  columnState?: TableProps<Activity>['columnState']
+}
+
+const ActivityTable = ({
+  tableQuery, filterables = true, columnState
+}: ActivityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<string>()
@@ -52,23 +120,26 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
         const msg = statusMapping[row.status as keyof typeof statusMapping]
         return $t(msg)
       },
-      filterable: Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('status') : filterables)
+        && Object.entries(statusMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
       key: 'product',
       title: $t({ defaultMessage: 'Product' }),
       dataIndex: 'product',
       sorter: true,
-      render: function (_, row) {
+      render: function (_: React.ReactNode, row: { product: string }) {
         const msg = productMapping[row.product as keyof typeof productMapping]
         return $t(msg)
       },
-      filterable: Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
+      filterable: (Array.isArray(filterables) ? filterables.includes('product') : filterables)
+        && Object.entries(productMapping).map(([key, value])=>({ key, value: $t(value) }))
     },
     {
-      key: 'source',
+      key: 'name',
       title: $t({ defaultMessage: 'Source' }),
-      dataIndex: ['admin', 'name']
+      dataIndex: ['admin', 'name'],
+      sorter: true
     },
     {
       key: 'description',
@@ -92,10 +163,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
     },
     {
       title: defineMessage({ defaultMessage: 'Severity' }),
-      value: (() => {
-        const msg = severityMapping[data.severity as keyof typeof severityMapping]
-        return $t(msg)
-      })()
+      value: $t(severityMapping[data.severity as keyof typeof severityMapping])
     },
     {
       title: defineMessage({ defaultMessage: 'Event Type' }),
@@ -106,16 +174,8 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       value: data.admin.name
     },
     {
-      title: defineMessage({ defaultMessage: 'Admin IP' }),
-      value: data.admin.ip
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Admin Interface' }),
-      value: data.admin.interface
-    },
-    {
       title: defineMessage({ defaultMessage: 'Description' }),
-      value: (() => getActivityDescription(data.descriptionTemplate, data.descriptionData))()
+      value: getActivityDescription(data.descriptionTemplate, data.descriptionData)
     }
   ]
 
@@ -128,6 +188,7 @@ const ActivityTable = ({ tableQuery }: ActivityTableProps) => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
+      columnState={columnState}
     />
     {current && visible && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Activity Details' })}

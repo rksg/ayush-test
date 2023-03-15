@@ -1,10 +1,11 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }                                             from '@acx-ui/components'
-import { useGetAAAProfileDetailQuery }                                                              from '@acx-ui/rc/services'
-import { AAAPolicyType, getPolicyDetailsLink, getPolicyListRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
+import { PageHeader, Button, GridRow, Loader, GridCol }                                         from '@acx-ui/components'
+import { useGetAAAProfileDetailQuery }                                                          from '@acx-ui/rc/services'
+import { AAAPolicyType, getPolicyDetailsLink, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                           from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                       from '@acx-ui/user'
 
 import AAAInstancesTable from './AAAInstancesTable'
 import AAAOverview       from './AAAOverview'
@@ -18,19 +19,19 @@ export default function AAAPolicyDetail () {
       <PageHeader
         title={queryResults.data?.name||''}
         breadcrumb={[
-          { text: $t({ defaultMessage: 'Policies' }), link: getPolicyListRoutePath() }
+          { text: $t({ defaultMessage: 'AAA Server' }),
+            link: getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }) }
         ]}
-        extra={[
+        extra={filterByAccess([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.AAA,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}
-          key='edit'>
+          })}>
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}
             </Button></TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

@@ -1,9 +1,7 @@
-import { useEffect } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Loader }   from '@acx-ui/components'
-import { useGetSwitchClientListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, ColumnType } from '@acx-ui/components'
+import { useGetSwitchClientListQuery }           from '@acx-ui/rc/services'
 import {
   SwitchClient,
   useTableQuery,
@@ -15,6 +13,8 @@ import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
+  searchTargetFields: ['clientMac', 'clientDesc', 'clientType', 'venueName',
+    'switchName', 'vlanName'],
   fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
     'clientName','clientDesc','clientType','switchPort','vlanName',
     'switchName', 'venueName' ,'cog','id'],
@@ -24,29 +24,29 @@ export const defaultSwitchClientPayload = {
 }
 
 export function ClientsTable (props: {
-  searchString?: string,
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
+  searchable?: boolean
+  filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const params = useParams()
-  const { searchString } = props
+  const { searchable, filterableKeys } = props
 
   defaultSwitchClientPayload.filters =
-    params.switchId ? { switchId: [params.switchId] } : {}
+    params.switchId ? { switchId: [params.switchId] } :
+      params.venueId ? { venueId: [params.venueId] } : {}
 
 
   const inlineTableQuery = useTableQuery({
     useQuery: useGetSwitchClientListQuery,
-    defaultPayload: { ...defaultSwitchClientPayload, searchString },
+    defaultPayload: {
+      ...defaultSwitchClientPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchClientPayload.searchTargetFields
+    },
     option: { skip: !!props.tableQuery }
   })
   const tableQuery = props.tableQuery || inlineTableQuery
-
-  useEffect(() => {
-    if (searchString !== undefined && tableQuery.payload.searchString !== searchString) {
-      tableQuery.setPayload({
-        ...(tableQuery.payload as typeof defaultSwitchClientPayload), searchString })
-    }
-  }, [searchString])
 
   function getCols (intl: ReturnType<typeof useIntl>) {
     const columns: TableProps<SwitchClient>['columns'] = [{
@@ -54,6 +54,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'clientMac',
       sorter: true,
+      searchable: searchable,
       render: (data, row) => {
         const name = data ? data.toString().toUpperCase() : '--'
         return <TenantLink to={`users/switch/clients/${row.id}`}>{name}</TenantLink>
@@ -71,6 +72,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'clientDesc',
       sorter: true,
+      searchable: searchable,
       render: (data) => {
         return data || '--'
       }
@@ -79,6 +81,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Device Type' }),
       dataIndex: 'clientType',
       sorter: true,
+      searchable: searchable,
       render: (data) => {
         switch(data){
           case SWITCH_CLIENT_TYPE.AP:
@@ -95,6 +98,9 @@ export function ClientsTable (props: {
       dataIndex: 'venueName',
       sorter: true,
       show: !params.switchId,
+      searchable: searchable,
+      filterKey: 'venueId',
+      filterable: filterableKeys ? filterableKeys['venueId'] : false,
       render: (data, row) => {
         const name = data ? data.toString().toUpperCase() : '--'
         // eslint-disable-next-line max-len
@@ -106,6 +112,9 @@ export function ClientsTable (props: {
       dataIndex: 'switchName',
       sorter: false,
       show: !params.switchId,
+      searchable: searchable,
+      filterKey: 'switchId',
+      filterable: filterableKeys ? filterableKeys['switchId'] : false,
       render: (data, row) => {
         const name = data ? data.toString().toUpperCase() : '--'
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
@@ -123,8 +132,12 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlanName',
       sorter: true,
+      align: 'center',
+      searchable: searchable,
       render: (data, row) => {
-        return row.clientVlan ? `${data ? data : ''} (${row.clientVlan})`: '--'
+        return data === 'DEFAULT-VLAN'
+          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
+          : (row.clientVlan ?? '--')
       }
     }]
     return columns
@@ -138,8 +151,10 @@ export function ClientsTable (props: {
         <Table
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data}
-          pagination={false}
+          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
+          onFilterChange={tableQuery.handleFilterChange}
+          enableApiFilter={true}
           rowKey='clientMac'
         />
       </Loader>

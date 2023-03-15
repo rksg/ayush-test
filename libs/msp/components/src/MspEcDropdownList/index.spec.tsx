@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { CommonUrlsInfo, MspUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { Provider }               from '@acx-ui/store'
+import { render, screen, within } from '@acx-ui/test-utils'
+import { AccountType }            from '@acx-ui/utils'
 
 import { MspEcDropdownList } from '.'
+
 
 export const fakeUserProfile = {
   externalId: '0032h00000LUqcoAAD',
@@ -66,9 +66,23 @@ const list = {
       entitlements: [],
       id: '2aa3d6d118b44a8c853544602e243e38',
       name: 'Smile Dental',
-      status: 'Active',
+      status: 'Inactive',
       streetAddress: '350 W Java Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC'
+    }
+  ]
+}
+
+const varList = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      entitlements: [],
+      id: '2242a683a7594d7896385cfef1fe4442',
+      tenantId: '3061bd56e37445a8993ac834c01e2710',
+      tenantName: 'Eva Airways',
+      tenantEmail: 'eva@mail.com'
     }
   ]
 }
@@ -79,34 +93,41 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   TenantIdFromJwt: () => ({ tenantId })
 }))
-jest.mock('@acx-ui/rc/components', () => ({
-  useUserProfileContext: () => ({
-    data: { support: false }
-  })
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom')
+}))
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
+const user = require('@acx-ui/user')
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user')
 }))
 
 describe('MspEcDropdownList', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
-    mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getUserProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeUserProfile))
-      ),
-      rest.get(
-        MspUrlsInfo.getTenantDetail.url,
-        (req, res, ctx) => res(ctx.json(fakeTenantDetail))
-      ),
-      rest.post(
-        MspUrlsInfo.getMspCustomersList.url,
-        (req, res, ctx) => res(ctx.json(list))
-      )
-    )
+    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
+    services.useVarCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+      return { data: varList }
+    })
+    services.useSupportCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+      return { data: list }
+    })
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
   })
   it('should render table', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeTenantDetail }
+    })
     render(
       <Provider>
         <MspEcDropdownList />
@@ -118,14 +139,175 @@ describe('MspEcDropdownList', () => {
     await userEvent.click(screen.getByTestId('CaretDownSolid'))
 
     // eslint-disable-next-line testing-library/no-node-access
-    // const tbody = screen.getByRole('table').querySelector('tbody')!
-    // expect(tbody).toBeVisible()
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
 
-    // const rows = await within(tbody).findAllByRole('row')
-    // expect(rows).toHaveLength(list.data.length)
-    // list.data.forEach((item, index) => {
-    //   expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    await userEvent.click(screen.getByRole('link', { name: 'Din Tai Fung' }))
+  })
+  it('should render table for var', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    const varTenantDetail = { ...fakeTenantDetail }
+    varTenantDetail.tenantType = AccountType.VAR
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: varTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(varList.data.length)
+    varList.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.tenantName)).toBeVisible()
+    })
+
+    await userEvent.click(screen.getByRole('link', { name: 'Eva Airways' }))
+
+  })
+  it('should render table for installer/integrator', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    const installerTenantDetail = { ...fakeTenantDetail }
+    installerTenantDetail.tenantType = AccountType.MSP_INSTALLER
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: installerTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+  })
+  it('should render table for support user and non msp', async () => {
+    const supportUserProfile = { ...fakeUserProfile }
+    supportUserProfile.support = true
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: supportUserProfile }
+    })
+    const varTenantDetail = { ...fakeTenantDetail }
+    varTenantDetail.tenantType = AccountType.VAR
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: varTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(varList.data.length)
+    varList.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.tenantName)).toBeVisible()
+    })
+  })
+  it('should render table for support user and msp', async () => {
+    const supportUserProfile = { ...fakeUserProfile }
+    supportUserProfile.support = true
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: supportUserProfile }
+    })
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await screen.findByText('Din Tai Fung')
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+  })
+  it('should not render table if no data', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return {}
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    expect(screen.queryByText('Din Tai Fung')).toBeNull()
+  })
+  it('should close drawer', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: fakeUserProfile }
+    })
+    services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeTenantDetail }
+    })
+    render(
+      <Provider>
+        <MspEcDropdownList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard' }
+      })
+
+    await userEvent.click(screen.getByTestId('CaretDownSolid'))
+    expect(await screen.findByText('Change Customer')).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
+
+    // await waitFor(() => {
+    //   expect(screen.getByText('Change Customer')).not.toBeVisible()
     // })
-
   })
 })

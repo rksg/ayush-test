@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { Dropdown, Empty, Space }           from 'antd'
+import { Alert, Dropdown, Empty, Space }    from 'antd'
 import { clone, get, isEmpty }              from 'lodash'
 import { DndProvider }                      from 'react-dnd'
 import { HTML5Backend }                     from 'react-dnd-html5-backend'
@@ -11,12 +11,15 @@ import { Button, Loader, showActionModal }                                      
 import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }                                                                                                                                                                                                                from '@acx-ui/icons'
 import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                                          from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                                                                                                                     from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                                                                                                                                                                                                      from '@acx-ui/user'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
 import PlainView             from './PlainView/PlainView'
 import * as UI               from './styledComponents'
 import { UnplacedDevices }   from './UnplacedDevices'
+
 
 
 export function sortByFloorNumber (floor1: FloorPlanDto, floor2: FloorPlanDto) {
@@ -52,6 +55,7 @@ export function FloorPlan () {
   = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
+  const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
 
   const defaultDevices = {
     ap: [],
@@ -161,6 +165,8 @@ export function FloorPlan () {
 
     if (getNetworkDevices?.data) {
       const _devices = getNetworkDevices?.data?.data[0]
+
+      setDeviceList(_devices as TypeWiseNetworkDevices)
 
       let devices = { ..._devices }
       const networkDeviceTypeArray = Object.values(NetworkDeviceType)
@@ -337,6 +343,41 @@ export function FloorPlan () {
     ]}>
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
+          { !(deviceList?.ap?.length + deviceList?.switches?.length)
+          && <Space direction='vertical'>
+            <Alert
+              message={$t({ defaultMessage: 'This venue contains no networking device' })}
+              type='info'
+              icon={<UI.BulbOutlinedIcon />}
+              showIcon
+              action={
+                <Space direction='horizontal'>
+                  { hasAccess() && <TenantLink to='devices/wifi/add'>
+                    <Button size='small'
+                      type='primary'
+                      style={{
+                        backgroundColor: 'var(--acx-accents-orange-50)',
+                        borderColor: 'var(--acx-accents-orange-50)'
+                      }}>
+                      {$t({ defaultMessage: 'Add AP' })}
+                    </Button>
+                  </TenantLink>
+                  }
+                  { hasAccess() && <TenantLink to='devices/switch/add'>
+                    <Button size='small'
+                      type='primary'
+                      style={{
+                        backgroundColor: 'var(--acx-accents-orange-50)',
+                        borderColor: 'var(--acx-accents-orange-50)'
+                      }}>
+                      {$t({ defaultMessage: 'Add Switch' })}
+                    </Button>
+                  </TenantLink>}
+                </Space>
+              }
+            />
+          </Space>
+          }
           <DndProvider backend={HTML5Backend}>
             <UI.FloorPlanContainer style={{
               backgroundColor: (!showGalleryView && showRogueAp) ? 'rgba(0, 0, 0, 0.4)' : ''
@@ -359,7 +400,7 @@ export function FloorPlan () {
                   networkDevicesVisibility={networkDevicesVisibility}
                   showRogueAp={showRogueAp}/>
               }
-              <UI.StyledSpace size={24}>
+              { unplacedDevicesCount && <UI.StyledSpace size={24}>
                 { venueRogueApData?.enabled && <UI.RogueApButton key='rogueApBtn'
                   size='small'
                   type='link'
@@ -387,6 +428,7 @@ export function FloorPlan () {
                   </Button>
                 </Dropdown>
               </UI.StyledSpace>
+              }
             </UI.FloorPlanContainer>
           </DndProvider>
         </NetworkDeviceContext.Provider>

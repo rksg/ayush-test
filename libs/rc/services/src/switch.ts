@@ -49,7 +49,11 @@ import {
   CommonResult,
   SwitchProfileModel,
   SwitchCliTemplateModel,
-  Lag
+  SwitchFrontView,
+  SwitchRearView,
+  Lag,
+  SwitchVlan,
+  enableNewApi
 } from '@acx-ui/rc/utils'
 import { formatter } from '@acx-ui/utils'
 
@@ -104,7 +108,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const activities = [
             'AddSwitch',
             'UpdateSwitch',
-            'Delete Switch'
+            'DeleteSwitch'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([{ type: 'Switch', id: 'LIST' }]))
@@ -122,7 +126,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -133,6 +138,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
+    deleteStackMember: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.deleteStackMember, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
+    }),
+    acknowledgeSwitch: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.acknowledgeSwitch, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'Detail' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
       query: ({ params, payload }) => {
@@ -155,6 +179,29 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Switch', id: 'Detail' }]
+    }),
+    switchFrontView: build.query<SwitchFrontView, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchFrontView,
+          params
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    switchRearView: build.query<SwitchRearView, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchRearView,
+          params
+        )
         return {
           ...req
         }
@@ -228,7 +275,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addSwitch) ? [payload] : payload
         }
       }
     }),
@@ -242,11 +289,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getPortSetting) ? { ...req, body: payload } : { ...req }
+      },
+      transformResponse: (result: PortsSetting | PortSettingModel) => {
+        const res = _.get(result, 'response')
+        return Array.isArray(res) ? res.pop() : result
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
@@ -271,9 +320,20 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
+        if (enableNewApi(SwitchUrlsInfo.getDefaultVlan)) {
+          payload = { isDefault: true, switchIds: payload }
+        }
         return {
           ...req,
           body: payload
+        }
+      }
+    }),
+    getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlanUnionByVenue, params)
+        return {
+          ...req
         }
       }
     }),
@@ -308,17 +368,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getTaggedVlansByVenue, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getTaggedVlansByVenue) ?
+          { ...req, body: params } : { ...req }
       }
     }),
     getUntaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getUntaggedVlansByVenue, params)
-        return {
-          ...req
-        }
+        return enableNewApi(SwitchUrlsInfo.getUntaggedVlansByVenue) ?
+          { ...req, body: params } : { ...req }
       }
     }),
     getSwitchConfigurationProfileByVenue: build.query<SwitchProfile[], RequestPayload>({
@@ -370,18 +428,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (res: ConfigurationBackup[]) => {
+      transformResponse: (res: TableResult<ConfigurationBackup>) => {
         return {
-          data: res
-            .sort((a, b) => b.createdDate.localeCompare(a.createdDate))
+          ...res,
+          data: Array.isArray(res.data) ? res.data
             .map(item => ({
               ...item,
               createdDate: formatter('dateTimeFormatWithSeconds')(item.createdDate),
               backupType: transformConfigBackupType(item.backupType),
               status: transformConfigBackupStatus(item) as ConfigurationBackupStatus
-            })),
-          totalCount: res.length,
-          page: 1
+            })) : []
         }
       },
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
@@ -514,7 +570,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addSwitch) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
@@ -583,6 +639,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'DETAIL' }]
     }),
+    getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
@@ -607,7 +672,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
         return {
           ...req,
-          body: payload
+          body: enableNewApi(SwitchUrlsInfo.addStaticRoute) ? [payload] : payload
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
@@ -673,9 +738,26 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
       query: ({ params }) => {
         const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+        if (enableNewApi(SwitchUrlsInfo.getSwitchClientDetail)) {
+          const payload = {
+            fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
+              'clientName','clientDesc','clientType','switchPort','vlanName',
+              'switchName', 'venueName' ,'cog','id'],
+            filters: {
+              id: [_.get(params, 'clientId')]
+            }
+          }
+          return {
+            ...clientListReq, body: payload
+          }
+        }
         return {
           ...clientListReq
         }
+      },
+      transformResponse: (result: SwitchClient | TableResult<SwitchClient>) => {
+        const res = _.get(result, 'data')
+        return Array.isArray(res) ? res.pop() : result
       }
     }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
@@ -713,10 +795,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       }
     }),
@@ -931,7 +1014,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchUrlsInfo.getSwitchProfileList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
+    // addSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   },
+    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    // }),
+    // updateSwitchConfigProfile: build.mutation<CommonResult, RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   },
+    //   invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    // }),
+    // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
+    //   query: ({ params, payload }) => {
+    //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+    //     return {
+    //       ...req,
+    //       body: payload
+    //     }
+    //   }
+    // })
   })
 })
 
@@ -1019,8 +1140,12 @@ export const {
   useSwitchListQuery,
   useStackMemberListQuery,
   useDeleteSwitchesMutation,
+  useDeleteStackMemberMutation,
+  useAcknowledgeSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazySwitchDetailHeaderQuery,
+  useLazySwitchFrontViewQuery,
+  useLazySwitchRearViewQuery,
   useImportSwitchesMutation,
   useGetVlansByVenueQuery,
   useLazyGetVlansByVenueQuery,
@@ -1032,6 +1157,7 @@ export const {
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVenueRoutedListQuery,
   useGetDefaultVlanQuery,
+  useLazyGetSwitchVlanUnionByVenueQuery,
   useGetSwitchVlanQuery,
   useLazyGetSwitchVlanQuery,
   useGetSwitchVlansQuery,
@@ -1101,17 +1227,19 @@ export const {
   useUpdateDhcpServerMutation,
   useDeleteDhcpServersMutation,
   useGetDhcpLeasesQuery,
-  useGetProfilesQuery,
-  useAddCliTemplateMutation,
+  useLazyValidateUniqueProfileNameQuery,
   useGetCliTemplatesQuery,
+  useGetProfilesQuery,
+  useGetCliFamilyModelsQuery,
+  useAddCliTemplateMutation,
   useDeleteCliTemplatesMutation,
   useDeleteProfilesMutation,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
-  useGetCliFamilyModelsQuery,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchModelListQuery
 } = switchApi

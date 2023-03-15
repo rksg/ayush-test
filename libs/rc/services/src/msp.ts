@@ -1,6 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import moment                        from 'moment-timezone'
 
 import {
+  AssignedEc,
+  BaseUrl,
   MspUrlsInfo,
   createHttpRequest,
   RequestPayload,
@@ -20,8 +23,13 @@ import {
   SupportDelegation,
   VarCustomer,
   MspProfile,
-  MspEcProfile
+  EntitlementBanner,
+  MspEcProfile,
+  MspPortal,
+  downloadFile,
+  ParentLogoUrl
 } from '@acx-ui/rc/utils'
+import { getJwtToken } from '@acx-ui/utils'
 
 export const baseMspApi = createApi({
   baseQuery: fetchBaseQuery(),
@@ -46,7 +54,9 @@ export const mspApi = baseMspApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'CreateMspEc',
-            'UpdateMspEc'
+            'UpdateMspEc',
+            'Deactivate MspEc',
+            'Reactivate MspEc'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
@@ -71,7 +81,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     inviteCustomerList: build.query<TableResult<VarCustomer>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -81,7 +101,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Msp', id: 'LIST' }]
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AcceptOrRejectDelegation'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(mspApi.util.invalidateTags([{ type: 'Msp', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     deviceInventoryList: build.query<TableResult<EcDeviceInventory>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -304,6 +334,16 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    getAssignedMspEcToIntegrator: build.query<AssignedEc, RequestPayload>({
+      query: ({ params }) => {
+        const mspAssignedEcListReq =
+          createHttpRequest(MspUrlsInfo.getAssignedMspEcToIntegrator, params)
+        return {
+          ...mspAssignedEcListReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     assignMspEcToIntegrator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MspUrlsInfo.assignMspEcToIntegrator, params)
@@ -317,8 +357,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     deactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.deactivateMspEcAccount, params)
+        // const payload = { status: 'deactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -326,8 +368,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     reactivateMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(MspUrlsInfo.reactivateMspEcAccount, params)
+        // const payload = { status: 'reactivate' }
         return {
           ...req
+          // body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -367,6 +411,128 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEntitlementBanners: build.query<EntitlementBanner[], RequestPayload>({
+      query: ({ params }) => {
+        const EntitlementBannerReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlementBanner, params)
+        return {
+          ...EntitlementBannerReq
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'BANNERS' }]
+    }),
+    getMspBaseURL: build.query<BaseUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspBaseURL, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspLabel: build.query<MspPortal, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspLabel, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    updateMspLabel: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.updateMspLabel, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    exportDeviceInventory: build.mutation<{ data: BlobPart }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.exportMspEcDeviceInventory, {
+          ...params
+        })
+        return {
+          ...req,
+          responseHandler: async (response) => {
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1]
+              : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
+            downloadFile(response, fileName)
+            return {}
+          },
+          body: payload,
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json,text/plain,*/*',
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+          }
+        }
+      }
+    }),
+    acceptRejectInvitation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.acceptRejectInvitation, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getGenerateLicenseUsageRpt: build.query<{ status: number }, RequestPayload>({
+      query: ({ params, payload, selectedFormat }) => {
+        const contentType: string = selectedFormat === 'csv'
+          ? 'text/csv'
+          : selectedFormat === 'json'
+            ? 'text/json'
+            : selectedFormat === 'pdf'
+              ? 'application/pdf'
+              : ''
+
+        const licenseUsageRptReq =
+          createHttpRequest(MspUrlsInfo.getGenerateLicenseUsageRpt,
+            { ...params })
+        licenseUsageRptReq.url += '/' + payload
+        return {
+          ...licenseUsageRptReq,
+          responseHandler: async (response) => {
+            const fileName =
+            `License Usage Report ${moment().format('YYYYMMDDHHmmss')}.${selectedFormat}`
+            downloadFile(response, fileName)
+            return { status: response.status }
+          },
+          headers: {
+            'Content-Type': contentType,
+            ...(getJwtToken() ? { Authorization: `Bearer ${getJwtToken()}` } : {})
+          }
+        }
+      }
+    }),
+    getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getParentLogoUrl,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -397,11 +563,21 @@ export const {
   useUpdateMspEcDelegatedAdminsMutation,
   useGetMspEcDelegatedAdminsQuery,
   useGetMspEcQuery,
+  useGetAssignedMspEcToIntegratorQuery,
   useAssignMspEcToIntegratorMutation,
   useDeactivateMspEcMutation,
   useReactivateMspEcMutation,
   useGetMspEcSupportQuery,
   useEnableMspEcSupportMutation,
   useDisableMspEcSupportMutation,
-  useRefreshMspEntitlementMutation
+  useGetMspEntitlementBannersQuery,
+  useRefreshMspEntitlementMutation,
+  useGetMspBaseURLQuery,
+  useGetMspLabelQuery,
+  useAddMspLabelMutation,
+  useUpdateMspLabelMutation,
+  useExportDeviceInventoryMutation,
+  useAcceptRejectInvitationMutation,
+  useGetGenerateLicenseUsageRptQuery,
+  useGetParentLogoUrlQuery
 } = mspApi

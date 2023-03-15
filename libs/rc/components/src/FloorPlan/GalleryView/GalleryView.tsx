@@ -5,6 +5,7 @@ import { DropTargetMonitor, useDrop, XYCoord } from 'react-dnd'
 
 import { Card }                                                                   from '@acx-ui/components'
 import { FloorPlanDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { loadImageWithJWT }                                                       from '@acx-ui/utils'
 
 import NetworkDevices from '../NetworkDevices'
 
@@ -66,6 +67,16 @@ function GalleryCard (props: {
     onFloorPlanClick
   } = { ...props }
 
+  const [imageUrl, setImageUrl] = useState('')
+
+  useEffect(() => {
+    if (floorPlan?.imageId) {
+      const response = loadImageWithJWT(floorPlan?.imageId)
+      response.then((_imageUrl) => {
+        setImageUrl(_imageUrl)
+      })
+    }
+  }, [floorPlan?.imageId])
 
   const imageRef = useRef<HTMLImageElement>(null)
 
@@ -155,7 +166,7 @@ function GalleryCard (props: {
           height: '100%',
           border: isActive ? '2px solid var(--acx-accents-orange-50)' : 'none'
         }}
-        src={floorPlan?.imageUrl} />
+        src={imageUrl} />
     </UI.StyledImageWrapper>
   </Card>
 }

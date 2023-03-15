@@ -781,6 +781,17 @@ export const hostapprovalData = {
 export const cloudPathDataNone = {
   authRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448a',
   accountingRadiusPolicyProfileId: '55843a3c84ae47d5bb077236917a448cd',
+  accountingRadius: {
+    name: 'acc1',
+    id: '22',
+    type: 'ACCOUNTING'
+
+  },
+  authRadius: {
+    name: 'auth1',
+    id: '21',
+    type: 'AUTHENTICATION'
+  },
   guestPortal: {
     walledGardens: ['aa.com'],
     guestNetworkType: GuestNetworkTypeEnum.Cloudpath,
@@ -1415,4 +1426,124 @@ export const mockGuestMoreDataLockEnable = {
     userSessionGracePeriod: 1666,
     userSessionTimeout: 6660
   }
+}
+
+export const mockMacRegistrationPoolList = {
+  content: [
+    {
+      id: 'c982acee-526a-4b06-8e37-0c96abe6d5f3',
+      name: 'macreg1',
+      autoCleanup: true,
+      priority: 0,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-02-23T10:31:03Z',
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/c982acee-526a-4b06-8e37-0c96abe6d5f3'
+        }
+      ]
+    },
+    {
+      id: 'ca8e5769-c4ab-42f4-a271-3937405f7d68',
+      name: 'macReg2',
+      autoCleanup: true,
+      priority: 0,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-02-23T10:32:57Z',
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/ca8e5769-c4ab-42f4-a271-3937405f7d68'
+        }
+      ]
+    },
+    {
+      id: 'c448947f-4354-47d8-bb6b-cc2c754d3312',
+      name: 'macReg3',
+      autoCleanup: true,
+      priority: 0,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-02-24T08:38:01Z',
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/c448947f-4354-47d8-bb6b-cc2c754d3312'
+        }
+      ]
+    },
+    {
+      id: 'd5152d86-3a1b-45ef-9e70-8563e9ce4293',
+      name: 'macReg4',
+      autoCleanup: true,
+      priority: 0,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-02-24T08:46:47Z',
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/d5152d86-3a1b-45ef-9e70-8563e9ce4293'
+        }
+      ]
+    },
+    {
+      id: '9a20a8af-7bbc-4983-9cbb-9349a69f967c',
+      name: 'macReg5',
+      autoCleanup: true,
+      priority: 0,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 0,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-02-24T08:53:56Z',
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://devalto.ruckuswireless.com/macRegistrationPools/9a20a8af-7bbc-4983-9cbb-9349a69f967c'
+        }
+      ]
+    }
+  ],
+  pageable: {
+    sort: {
+      empty: false,
+      sorted: true,
+      unsorted: false
+    },
+    offset: 0,
+    pageNumber: 0,
+    pageSize: 10,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 5,
+  last: true,
+  sort: {
+    empty: false,
+    sorted: true,
+    unsorted: false
+  },
+  size: 10,
+  number: 0,
+  numberOfElements: 5,
+  first: true,
+  empty: false
 }

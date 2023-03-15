@@ -32,6 +32,7 @@ import ApsTable                                     from './pages/Devices/Wifi/A
 import Wired                                        from './pages/Networks/wired'
 import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
 import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
+import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails/NetworkDetails'
 import NetworkForm                                  from './pages/Networks/wireless/NetworkForm/NetworkForm'
 import NetworksTable                                from './pages/Networks/wireless/NetworksTable'
@@ -59,6 +60,9 @@ import RogueAPDetectionDetailView from './pages/Policies/RogueAPDetection/RogueA
 import RogueAPDetectionForm       from './pages/Policies/RogueAPDetection/RogueAPDetectionForm/RogueAPDetectionForm'
 import RogueAPDetectionTable      from './pages/Policies/RogueAPDetection/RogueAPDetectionTable/RogueAPDetectionTable'
 import SelectPolicyForm           from './pages/Policies/SelectPolicyForm'
+import SnmpAgentDetail            from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
+import SnmpAgentForm              from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
+import SnmpAgentTable             from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
 import SyslogDetailView           from './pages/Policies/Syslog/SyslogDetail/SyslogDetailView'
 import SyslogForm                 from './pages/Policies/Syslog/SyslogForm/SyslogForm'
 import SyslogTable                from './pages/Policies/Syslog/SyslogTable/SyslogTable'
@@ -80,8 +84,12 @@ import MdnsProxyForm              from './pages/Services/MdnsProxy/MdnsProxyForm
 import MdnsProxyTable             from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
 import MyServices                 from './pages/Services/MyServices'
 import AddNetworkSegmentation     from './pages/Services/NetworkSegmentation/AddNetworkSegmentation'
+import EditNetworkSegmentation    from './pages/Services/NetworkSegmentation/EditNetworkSegmentation'
+import NetworkSegmentationDetail  from './pages/Services/NetworkSegmentation/NetworkSegmentationDetail'
+import NetworkSegmentationTable   from './pages/Services/NetworkSegmentation/NetworkSegmentationTable'
 import NetworkSegAuthDetail       from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm         from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
+import NetworkSegAuthTable        from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import PortalServiceDetail        from './pages/Services/Portal/PortalDetail'
 import PortalForm                 from './pages/Services/Portal/PortalForm/PortalForm'
 import PortalTable                from './pages/Services/Portal/PortalTable'
@@ -98,6 +106,7 @@ import PersonaGroupDetails        from './pages/Users/Persona/PersonaGroupDetail
 import SwitchClientList           from './pages/Users/Switch/ClientList'
 import WifiClientDetails          from './pages/Users/Wifi/ClientDetails'
 import WifiClientList             from './pages/Users/Wifi/ClientList'
+import GuestManagerPage           from './pages/Users/Wifi/GuestManagerPage'
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -126,6 +135,7 @@ function DeviceRoutes () {
         path='devices/wifi/:serialNumber/:action/:activeTab/:activeSubTab'
         element={<ApEdit />}
       />
+      <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupForm />} />
       <Route path='devices/apgroups/:action' element={<ApGroupForm />} />
       <Route
         path='devices/wifi/:apId/details/:activeTab'
@@ -195,6 +205,14 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired' element={<Wired />} />
       <Route path='networks/wired/:activeTab' element={<Wired />} />
+      <Route
+        path='networks/wired/profiles/add'
+        element={<ConfigurationProfileForm />}
+      />
+      <Route
+        path='networks/wired/profiles/regular/:profileId/:action'
+        element={<ConfigurationProfileForm />}
+      />
       <Route path='networks/wired/:configType/cli/add' element={<CliProfileForm />} />
       <Route
         path='networks/wired/:configType/cli/:profileId/:action'
@@ -289,6 +307,21 @@ function ServiceRoutes () {
         element={<AddNetworkSegmentation />}
       />
       <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.LIST })}
+        element={<NetworkSegmentationTable />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.DETAIL })}
+        element={<NetworkSegmentationDetail />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
+          oper: ServiceOperation.EDIT })}
+        element={<EditNetworkSegmentation />}
+      />
+      <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
         element={<NetworkSegAuthForm />}
@@ -302,6 +335,11 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.DETAIL })}
         element={<NetworkSegAuthDetail/>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
+          oper: ServiceOperation.LIST })}
+        element={<NetworkSegAuthTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
@@ -357,6 +395,11 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
+        element={<RogueAPDetectionTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={<AAAForm edit={false}/>}
       />
@@ -371,9 +414,8 @@ function PolicyRoutes () {
         element={<AAAPolicyDetail/>}
       />
       <Route
-        // eslint-disable-next-line max-len
-        path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
-        element={<RogueAPDetectionTable />}
+        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
+        element={<AAATable />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -462,13 +504,28 @@ function PolicyRoutes () {
         element={<ClientIsolationTable />}
       />
       <Route
-        path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />}
-      />
-      <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
         element={<ClientIsolationDetail />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
+        element={<SnmpAgentForm editMode={false}/>}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.EDIT })}
+        element={<SnmpAgentForm editMode={true}/>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })}
+        element={<SnmpAgentTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.DETAIL })}
+        element={<SnmpAgentDetail />}
       />
       <Route
         // eslint-disable-next-line max-len
@@ -504,8 +561,12 @@ function PolicyRoutes () {
 }
 
 function UserRoutes () {
+  const isPersonaEnabled = useIsSplitOn(Features.PERSONA)
+  const isMacRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
+
   return rootRoutes(
     <Route path='t/:tenantId'>
+      <Route path='users/guestsManager' element={<GuestManagerPage />} />
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/:activeTab' element={<WifiClientList />} />
@@ -517,7 +578,7 @@ function UserRoutes () {
       <Route path='users/switch' element={<TenantNavigate replace to='/users/switch/clients' />} />
       <Route path='users/switch/clients' element={<SwitchClientList />} />
       <Route path='users/switch/clients/:clientId' element={<SwitchClientDetailsPage />} />
-      {useIsSplitOn(Features.SERVICES)
+      {(isPersonaEnabled && isMacRegistrationEnabled)
         ? <><Route
           path='users/persona-management'
           element={<TenantNavigate replace to='/users/persona-management/persona-group'/>}/><Route

@@ -1,15 +1,20 @@
-import { Dropdown, Menu, Space } from 'antd'
-import moment                    from 'moment'
-import { useIntl }               from 'react-intl'
+import { Dropdown, Menu, MenuProps, Space } from 'antd'
+import moment                               from 'moment'
+import { useIntl }                          from 'react-intl'
 
-import { Button, DisabledButton, PageHeader, RangePicker } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { ArrowExpand, ClockOutlined }                      from '@acx-ui/icons'
+import { Button, DisabledButton, PageHeader, RangePicker }       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { ArrowExpand, ClockOutlined }                            from '@acx-ui/icons'
+import { useDisconnectClientMutation, useGetClientDetailsQuery } from '@acx-ui/rc/services'
+import { ClientStatusEnum }                                      from '@acx-ui/rc/utils'
 import {
+  useNavigate,
   useParams,
-  useSearchParams
+  useSearchParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
-import { dateRangeForLast, useDateFilter } from '@acx-ui/utils'
+import { filterByAccess }                                        from '@acx-ui/user'
+import { DateFilter, DateRange, encodeParameter, useDateFilter } from '@acx-ui/utils'
 
 import ClientDetailTabs from './ClientDetailTabs'
 
@@ -21,7 +26,6 @@ function DatePicker () {
   return enableAnalytics
     ? <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-      enableDates={dateRangeForLast(3,'months')}
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
@@ -34,21 +38,62 @@ function DatePicker () {
 
 function ClientDetailPageHeader () {
   const { $t } = useIntl()
-  const { clientId } = useParams()
+  const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
+  const { data: clentDetails } = useGetClientDetailsQuery(
+    { params: { tenantId, clientId } },
+    { skip: searchParams.get('clientStatus') === ClientStatusEnum.HISTORICAL }
+  )
+  const [disconnectClient] = useDisconnectClientMutation()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/users/wifi/clients')
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+    switch (e.key) {
+      // case 'edit-user': TODO: post-ga
+      //   break
+      // case 'download-information':
+      //   break
+      case 'disconnect-client':
+        const clientData = [{
+          clientMac: clientId,
+          apMac: clentDetails?.apMac
+        }]
+        disconnectClient({ params: { tenantId }, payload: clientData }).then(()=>{
+          const period = encodeParameter<DateFilter>({
+            startDate: moment().subtract(24, 'hours').format(),
+            endDate: moment().format(),
+            range: DateRange.custom
+          })
+          navigate({
+            ...basePath,
+            // eslint-disable-next-line max-len
+            pathname: `${basePath.pathname}/${clientId}/details/overview?clientStatus=historical&period=${period}`
+          })
+        })
+        break
+      default:
+        break
+    }
+  }
 
   const menu = (
     <Menu
-      items={[{
-        label: $t({ defaultMessage: 'Edit User' }),
-        key: 'edit-user'
-      }, {
-        label: $t({ defaultMessage: 'Download Information' }),
-        key: 'download-information'
-      }, {
-        label: $t({ defaultMessage: 'Disconnect Client' }),
-        key: 'disconnect-client'
-      }]}
+      onClick={handleMenuClick}
+      items={[
+      // { TODO: post-ga
+      //   label: $t({ defaultMessage: 'Edit User' }),
+      //   key: 'edit-user'
+      // },
+      // {
+      //   label: $t({ defaultMessage: 'Download Information' }),
+      //   key: 'download-information'
+      // },
+        {
+          label: $t({ defaultMessage: 'Disconnect Client' }),
+          disabled: !clentDetails?.apMac,
+          key: 'disconnect-client'
+        }]}
     />
   )
 
@@ -66,9 +111,9 @@ function ClientDetailPageHeader () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi Users' }), link: '/users/wifi/clients' }
       ]}
-      extra={[
+      extra={filterByAccess([
         <DatePicker key='date-filter' />,
-        <Dropdown overlay={menu} key='actions'>
+        <Dropdown overlay={menu}>
           <Button type='secondary'>
             <Space>
               {$t({ defaultMessage: 'Actions' })}
@@ -76,7 +121,7 @@ function ClientDetailPageHeader () {
             </Space>
           </Button>
         </Dropdown>
-      ]}
+      ])}
       footer={<ClientDetailTabs />}
     />
   )

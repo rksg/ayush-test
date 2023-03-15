@@ -9,7 +9,8 @@ import {
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig } from '@acx-ui/rc/utils'
+import { ClientConfig }   from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -28,6 +29,7 @@ export function RadiusServerForm () {
   // eslint-disable-next-line max-len
   const { data: serverSettingData, isLoading: queryServerSettingDataLoading } = useGetRadiusServerSettingQuery({})
   const [updateConfig, updateConfigState] = useUpdateRadiusClientConfigMutation()
+  const [ isChanged, setIsChanged ] = useState(false)
 
   useEffect(() => {
     if(queryResultData) {
@@ -52,11 +54,16 @@ export function RadiusServerForm () {
       }
       await updateConfig({ payload }).unwrap()
       setChangePassword(false)
-    } catch (error){
+      setIsChanged(false)
+
       showToast({
-        type: 'error',
-        content: $t({ defaultMessage: 'An error occurred' })
+        type: 'success',
+        content: $t(
+          { defaultMessage: 'Shared Secret was changed' }
+        )
       })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -72,19 +79,35 @@ export function RadiusServerForm () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    onClick: (rows, clearSelection) => {
+    onClick: ([{ ipAddress }], clearSelection) => {
       showActionModal({
         type: 'confirm',
         customContent: {
           action: 'DELETE',
           entityName: $t({ defaultMessage: 'IP address' }),
-          entityValue: rows[0].ipAddress
+          entityValue: ipAddress
         },
         onOk: () => {
           const payload = {
-            ipAddress: [...queryResultData?.ipAddress ?? []].filter((e) => e !== rows[0].ipAddress)
+            ipAddress: [...queryResultData?.ipAddress ?? []].filter((e) => e !== ipAddress)
           }
-          updateConfig({ payload }).then(clearSelection)
+          updateConfig({ payload }).unwrap()
+            .then(() => {
+              showToast({
+                type: 'success',
+                content: $t(
+                  // eslint-disable-next-line max-len
+                  { defaultMessage: 'IP Address {ipAddress} was deleted' },
+                  { ipAddress }
+                )
+              })
+              clearSelection()
+            }).catch((error) => {
+              showToast({
+                type: 'error',
+                content: error.data.message
+              })
+            })
         }
       })
     }
@@ -92,7 +115,8 @@ export function RadiusServerForm () {
 
   return(
     <Loader states={[{
-      isLoading: queryResultDataLoading || queryServerSettingDataLoading
+      isLoading: queryResultDataLoading || queryServerSettingDataLoading,
+      isFetching: updateConfigState.isLoading
     }]}>
       <Row>
         <Col span={10}>
@@ -119,7 +143,7 @@ export function RadiusServerForm () {
                         readOnly={true}
                         bordered={false} />
                       :
-                      <Input />}
+                      <Input onChange={() => setIsChanged(true)}/>}
                 </Form.Item>
                 { !changePassword ?
                   <Button type='link'
@@ -129,9 +153,11 @@ export function RadiusServerForm () {
                     <Button type='link'
                       onClick={() => {
                         form.setFieldValue('secret', generatePassword())
+                        setIsChanged(true)
                       }}>
                       {$t({ defaultMessage: 'Generate New Passphrase' })}</Button>
                     <Button type='link'
+                      disabled={!isChanged}
                       htmlType='submit'>{
                         $t({ defaultMessage: 'Save' })}</Button>
                     <Button type='link'
@@ -139,6 +165,7 @@ export function RadiusServerForm () {
                       onClick={() => {
                         form.setFieldValue('secret', queryResultData?.secret)
                         setChangePassword(false)
+                        setIsChanged(false)
                       }}>
                       {$t({ defaultMessage: 'Cancel' })}</Button>
                   </>
@@ -146,32 +173,28 @@ export function RadiusServerForm () {
               </Space>
             </Form.Item>
             <Form.Item label={$t({ defaultMessage: 'Incoming IP Address(es)' })}>
-              <Row>
-                <Col span={10}>
-                  <Table
-                    columns={[
-                      {
-                        title: 'ipAddress',
-                        dataIndex: 'ipAddress',
-                        key: 'ipAddress'
-                      }
-                    ]}
-                    // eslint-disable-next-line max-len
-                    dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
-                    showHeader={false}
-                    rowSelection={{ type: 'radio' }}
-                    rowActions={ipTableRowActions}
-                    type={'form'}
-                    actions={[{
-                      label: $t({ defaultMessage: 'Add IP Address' }),
-                      onClick: () => {
-                        setVisible(true)
-                        setIsEditMode(false)
-                      }
-                    }]}
-                  />
-                </Col>
-              </Row>
+              <Table
+                columns={[
+                  {
+                    title: 'ipAddress',
+                    dataIndex: 'ipAddress',
+                    key: 'ipAddress'
+                  }
+                ]}
+                // eslint-disable-next-line max-len
+                dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
+                showHeader={false}
+                rowSelection={{ type: 'radio' }}
+                rowActions={filterByAccess(ipTableRowActions)}
+                type={'form'}
+                actions={filterByAccess([{
+                  label: $t({ defaultMessage: 'Add IP Address' }),
+                  onClick: () => {
+                    setVisible(true)
+                    setIsEditMode(false)
+                  }
+                }])}
+              />
             </Form.Item>
           </Form>
         </Col>

@@ -241,7 +241,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Network Details
                     </h3>
@@ -479,14 +479,13 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio ant-radio-disabled"
+                                                  class="ant-radio"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
-                                                    disabled=""
                                                     type="radio"
                                                     value="aaa"
                                                   />
@@ -500,7 +499,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -633,7 +632,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                         style="margin-bottom: 16px;"
                       >
                         <h3
-                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                          class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                         >
                           Settings
                         </h3>
@@ -962,8 +961,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                             >
                                               <button
                                                 aria-checked="false"
-                                                class="ant-switch ant-switch-disabled"
-                                                disabled=""
+                                                class="ant-switch"
                                                 id="settings_wlan_macAddressAuthentication"
                                                 role="switch"
                                                 type="button"
@@ -976,7 +974,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                                                 />
                                               </button>
                                               <span>
-                                                Use MAC Auth
+                                                MAC Authentication
                                               </span>
                                               <svg
                                                 data-testid="QuestionMarkCircleOutlined"
@@ -1042,7 +1040,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Venues
                 </h3>
@@ -1806,7 +1804,7 @@ exports[`NetworkForm should create different SSID successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Summary
                 </h3>
@@ -2540,7 +2538,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Network Details
                     </h3>
@@ -2753,14 +2751,13 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                               style="margin-bottom: 8px;"
                                             >
                                               <label
-                                                class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                                                class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
                                               >
                                                 <span
-                                                  class="ant-radio ant-radio-disabled"
+                                                  class="ant-radio"
                                                 >
                                                   <input
                                                     class="ant-radio-input"
-                                                    disabled=""
                                                     type="radio"
                                                     value="aaa"
                                                   />
@@ -2774,7 +2771,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                                                     <div
                                                       class="styledComponents__RadioDescription-sc-1mpg945-2 dxaZmg"
                                                     >
-                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on thenetwork
+                                                      Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network
                                                     </div>
                                                   </span>
                                                 </span>
@@ -2899,43 +2896,67 @@ exports[`NetworkForm should create open network successfully 1`] = `
                     style="padding-left: 10px; padding-right: 10px;"
                   >
                     <h3
-                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                      class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                     >
                       Open Settings
                     </h3>
-                    <div
-                      class="ant-form-item"
-                    >
+                    <div>
                       <div
-                        class="ant-row ant-form-item-row"
+                        class="ant-form-item"
                       >
                         <div
-                          class="ant-col ant-form-item-control"
+                          class="ant-row ant-form-item-row"
                         >
                           <div
-                            class="ant-form-item-control-input"
+                            class="ant-col ant-form-item-control"
                           >
                             <div
-                              class="ant-form-item-control-input-content"
+                              class="ant-form-item-control-input"
                             >
-                              <button
-                                aria-checked="false"
-                                class="ant-switch ant-switch-disabled"
-                                disabled=""
-                                id="settings_isCloudpathEnabled"
-                                role="switch"
-                                type="button"
+                              <div
+                                class="ant-form-item-control-input-content"
                               >
                                 <div
-                                  class="ant-switch-handle"
-                                />
-                                <span
-                                  class="ant-switch-inner"
-                                />
-                              </button>
-                              <span>
-                                Use Cloudpath Server
-                              </span>
+                                  class="ant-form-item"
+                                >
+                                  <div
+                                    class="ant-row ant-form-item-row"
+                                  >
+                                    <div
+                                      class="ant-col ant-form-item-control"
+                                    >
+                                      <div
+                                        class="ant-form-item-control-input"
+                                      >
+                                        <div
+                                          class="ant-form-item-control-input-content"
+                                        >
+                                          <button
+                                            aria-checked="false"
+                                            class="ant-switch"
+                                            id="settings_wlan_macAddressAuthentication"
+                                            role="switch"
+                                            type="button"
+                                          >
+                                            <div
+                                              class="ant-switch-handle"
+                                            />
+                                            <span
+                                              class="ant-switch-inner"
+                                            />
+                                          </button>
+                                          <span>
+                                            MAC Authentication
+                                          </span>
+                                          <svg
+                                            data-testid="QuestionMarkCircleOutlined"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -2989,7 +3010,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Venues
                 </h3>
@@ -3066,7 +3087,7 @@ exports[`NetworkForm should create open network successfully 1`] = `
                   type="text"
                 />
                 <h3
-                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 dConwg"
+                  class="ant-typography styledComponents__Title-sc-1ibvcih-3 kSRaqD"
                 >
                   Summary
                 </h3>
@@ -3214,9 +3235,9 @@ exports[`NetworkForm should create open network successfully 1`] = `
                         >
                           <label
                             class=""
-                            title="Use Cloudpath Server:"
+                            title="Use AAA Server:"
                           >
-                            Use Cloudpath Server:
+                            Use AAA Server:
                           </label>
                         </div>
                         <div

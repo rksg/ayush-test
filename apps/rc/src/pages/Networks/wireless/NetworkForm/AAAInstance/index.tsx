@@ -6,14 +6,16 @@ import { useIntl }                    from 'react-intl'
 import { useParams }                  from 'react-router-dom'
 
 import { Tooltip }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { useGetAAAPolicyListQuery }        from '@acx-ui/rc/services'
 import { AaaServerOrderEnum, AAATempType } from '@acx-ui/rc/utils'
 
 import * as contents from '../contentsMap'
 
 import AAAPolicyModal from './AAAPolicyModal'
-
+const radiusType: { [key:string]:string }={
+  authRadius: 'AUTHENTICATION',
+  accountingRadius: 'ACCOUNTING'
+}
 const AAAInstance = (props:{
   serverLabel: string,
   type: string
@@ -22,17 +24,16 @@ const AAAInstance = (props:{
   const params = useParams()
   const form = Form.useFormInstance()
   const radiusValue = Form.useWatch(props.type)
-  const { data } = useGetAAAPolicyListQuery({ params })
-  const aaaServices = data?.map(m => ({ label: m.name, value: m.id })) ?? []
+  const { data: aaaListQuery } = useGetAAAPolicyListQuery({ params })
+  const aaaServices = aaaListQuery?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [aaaList, setAaaList]= useState(aaaServices)
   const [aaaData, setAaaData]= useState([] as AAATempType[])
   useEffect(()=>{
-    if(data){
-      setAaaData([...data])
-      setAaaList(data?.map(m => ({ label: m.name, value: m.id })))
+    if(aaaListQuery?.data){
+      setAaaData([...aaaListQuery.data])
+      setAaaList(aaaListQuery.data.map(m => ({ label: m.name, value: m.id })))
     }
-  },[data])
-  const disableAAA = !useIsSplitOn(Features.POLICIES)||true
+  },[aaaListQuery])
   return (
     <>
       <Form.Item label={props.serverLabel}><Space>
@@ -41,11 +42,10 @@ const AAAInstance = (props:{
           noStyle
           label={props.serverLabel}
           rules={[
-            { required: !disableAAA }
+            { required: true }
           ]}
           initialValue={''}
           children={<Select
-            disabled={disableAAA}
             style={{ width: 210 }}
             onChange={(value)=>{
               form.setFieldValue(props.type,
@@ -66,7 +66,10 @@ const AAAInstance = (props:{
             setAaaData([...aaaData])
             form.setFieldValue(props.type+'Id', data.id)
             form.setFieldValue(props.type, data)
-          }}/>
+          }}
+          aaaCount={aaaData.length}
+          type={radiusType[props.type]}
+          />
         </Tooltip></Space>
       </Form.Item>
       <div style={{ marginTop: 6, backgroundColor: 'var(--acx-neutrals-20)',

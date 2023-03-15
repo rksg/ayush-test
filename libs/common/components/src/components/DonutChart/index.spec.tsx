@@ -1,12 +1,12 @@
-import { useIntl } from 'react-intl'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { render, screen } from '@acx-ui/test-utils'
 import { intlFormats }    from '@acx-ui/utils'
 
-import { cssStr }      from '../../theme/helper'
-import { EventParams } from '../Chart/helper'
+import { cssStr }                              from '../../theme/helper'
+import { EventParams, TooltipFormatterParams } from '../Chart/helper'
 
-import { DonutChart, onChartClick } from '.'
+import { DonutChart, onChartClick, tooltipFormatter } from '.'
 
 const data = [
   { value: 35, name: 'Requires Attention', color: cssStr('--acx-semantics-red-60') },
@@ -162,5 +162,66 @@ describe('Donut Chart - large', () => {
       .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
     expect(screen.getByText('100').getAttribute('style'))
       .toEqual("font-size:24px;font-family:'Open Sans', sans-serif;font-weight:600;")
+  })
+})
+
+describe('tooltipFormatter', () => {
+  const singleparameters = {
+    name: 'name', color: 'color1', value: 10
+  } as TooltipFormatterParams
+  it('should return correct Html string for single value', async () => {
+    const formatter = jest.fn(value=>`formatted-${value}`)
+    expect(tooltipFormatter(
+      formatter,
+      100
+    )(singleparameters)).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
+  })
+  it('should handle custom format', async () => {
+    const format = defineMessage({
+      defaultMessage: `{name}
+        <br></br>
+        <b>{formattedValue} {value, plural, one {unit} other {units} }</b>
+        ({formattedPercent})
+        <span>{formattedTotal}</span>
+        <div>{percent} {total}</div>
+      `
+    })
+    const formatter = jest.fn(value => `formatted-${value}`)
+    expect(tooltipFormatter(
+      formatter,
+      100,
+      format
+    )({ ...singleparameters, percent: 10 })).toMatchSnapshot()
+    expect(formatter).toBeCalledTimes(2)
+  })
+})
+
+describe('Donut Chart - x-large', () => {
+  it('should render the chart properly with data and only title, without legend', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'x-large'}
+      onClick={jest.fn()}
+      title='Donut Chart'
+      showLegend={false}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Donut Chart').getAttribute('style'))
+      .toEqual("font-size:16px;font-family:'Open Sans', sans-serif;font-weight:400;")
+  })
+  it('should render the chart with title and value passed as prop, with Legends', async () => {
+    const { asFragment } = render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      size={'x-large'}
+      title='Some Title'
+      value='100'
+      legend='name'
+      showLegend={true}
+      showTotal={false}/>)
+    expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+    expect(screen.getByText('Requires Attention')).toBeVisible()
   })
 })

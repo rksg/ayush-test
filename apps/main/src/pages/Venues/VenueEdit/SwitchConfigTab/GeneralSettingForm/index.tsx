@@ -3,8 +3,8 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch } from 'antd'
 import { isEqual }                                  from 'lodash'
 
-import { Button, Loader, showToast, StepsForm, StepsFormInstance } from '@acx-ui/components'
-import { ConfigurationOutlined }                                   from '@acx-ui/icons'
+import { Button, Loader, StepsForm, StepsFormInstance } from '@acx-ui/components'
+import { ConfigurationOutlined }                        from '@acx-ui/icons'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
@@ -13,7 +13,8 @@ import {
   ConfigurationProfile,
   ProfileTypeEnum,
   networkWifiIpRegExp,
-  VenueSwitchConfiguration
+  VenueSwitchConfiguration,
+  redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                               from '@acx-ui/utils'
@@ -56,7 +57,7 @@ export function GeneralSettingForm () {
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
   const basePath = useTenantLink('/venues/')
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
@@ -148,7 +149,7 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId }, payload: {
+      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
         ...formRef?.current?.getFieldsValue(),
         id: venueId,
         profileId: formData?.profileId,
@@ -156,11 +157,8 @@ export function GeneralSettingForm () {
         syslogPrimaryServer: formData?.syslogPrimaryServer,
         syslogSecondaryServer: formData?.syslogSecondaryServer
       } })
-    } catch {
-      showToast({
-        type: 'error',
-        content: 'An error occurred'
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -183,10 +181,9 @@ export function GeneralSettingForm () {
       <StepsForm
         formRef={formRef}
         onFinish={() => handleUpdate()}
-        onCancel={() => navigate({
-          ...basePath,
-          pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-        })}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, basePath)
+        }
         buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm

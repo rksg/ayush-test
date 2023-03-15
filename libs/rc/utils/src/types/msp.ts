@@ -1,5 +1,7 @@
 import { defineMessage } from 'react-intl'
 
+import { RolesEnum } from '@acx-ui/types'
+
 import { Address } from './venue'
 
 export enum DelegationStatus {
@@ -87,6 +89,7 @@ export interface MspEc {
   expirationDate: string;
   wifiLicenses: string;
   switchLicenses: string;
+  edgeLicenses?: string;
   assignedMspEcList: string;
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
@@ -110,13 +113,14 @@ export interface MspEcData {
   is_active?: string;
   tenant_id?: string;
   parent_tenant_id?: string;
-  admin_email?: string,
-  admin_firstname?: string,
-  admin_lastname?: string,
-  admin_role?: string,
-  licenses?: {},
-  delegations?: MspIntegratorDelegated[],
-  admin_delegations?: MspEcDelegatedAdmins[]
+  admin_email?: string;
+  admin_firstname?: string;
+  admin_lastname?: string;
+  admin_role?: string;
+  licenses?: {};
+  delegations?: MspIntegratorDelegated[];
+  admin_delegations?: MspEcDelegatedAdmins[];
+  number_of_days?: string;
 }
 
 export interface VarCustomer {
@@ -141,13 +145,6 @@ export interface EcDeviceInventory {
   deviceStatus: string;
 }
 
-export enum RolesEnum {
-  PRIME_ADMIN = 'PRIME_ADMIN',
-  ADMINISTRATOR = 'ADMIN',
-  GUEST_MANAGER = 'OFFICE_ADMIN',
-  READ_ONLY = 'READ_ONLY'
-}
-
 export const roleDisplayText = {
   [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
@@ -166,7 +163,7 @@ export enum DateSelectionEnum {
 }
 
 export const dateDisplayText = {
-  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custome date' }),
+  [DateSelectionEnum.CUSTOME_DATE]: defineMessage({ defaultMessage: 'Custom date' }),
   [DateSelectionEnum.FIVE_YEARS]: defineMessage({ defaultMessage: 'Five Years' }),
   [DateSelectionEnum.THREE_YEARS]: defineMessage({ defaultMessage: 'Three Years' }),
   [DateSelectionEnum.ONE_YEAR]: defineMessage({ defaultMessage: 'One Year' }),
@@ -271,8 +268,10 @@ export interface MspEcDelegatedAdmins {
 }
 
 export interface MspIntegratorDelegated {
+  mspec_list?: string[];
   delegation_type: string;
-  delegation_id: string;
+  delegation_id?: string;
+  number_of_days?: string;
 }
 
 export interface EcInvitation {
@@ -356,3 +355,59 @@ export interface SupportDelegation {
   expiryDate: string;
   updatedDate: string;
 }
+
+export interface AssignedEc {
+  delegated_to: string;
+  delegation_type: string;
+  mspec_list: string[];
+}
+
+export interface BaseUrl {
+  base_url: string;
+}
+
+export interface MspPreferredWisprProvider {
+  providerName: string;
+  apiKey?: string;
+  apiSecret?: string;
+  customExternalProvider?: boolean;
+  auth?: string;
+  acct?: string;
+  externalProviderDisplayName?: string;
+}
+
+export interface MspPortal {
+  msp_label?: string;
+  logo_uuid?: string;
+  alarm_notification_logo_uuid?: string;
+  ping_notification_logo_uuid?: string;
+  mlisa_logo_uuid?: string;
+  ping_login_logo_uuid?: string;
+  default_logo_uuid?: string;
+  mspLogoFileDataList?: Array<MspLogoFile>;
+  msp_fqdn?: string;
+  contact_support_url?: string;
+  contact_support_behavior?: string;
+  open_case_url?: string;
+  open_case_behavior?: string;
+  my_open_case_url?: string;
+  my_open_case_behavior?: string;
+  change_password_url?: string;
+  msp_phone?: string;
+  msp_email?: string;
+  msp_website?: string;
+  preferredWisprProvider?: MspPreferredWisprProvider;
+}
+
+export interface MspLogoFile {
+  id?: string,
+  logo_file_name: string,
+  logo_fileuuid: string,
+  createdDate?: Date,
+  updatedDate?: Date
+}
+
+export interface ParentLogoUrl {
+  logo_url: string
+}
+

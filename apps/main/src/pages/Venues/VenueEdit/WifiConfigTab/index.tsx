@@ -44,7 +44,7 @@ export function WifiConfigTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       networking: $t({ defaultMessage: 'Networking' }),
       security: $t({ defaultMessage: 'Security' }),
-      servers: $t({ defaultMessage: 'External Servers' }),
+      servers: $t({ defaultMessage: 'Services & Policies' }),
       settings: $t({ defaultMessage: 'Advanced Settings' })
     }
 

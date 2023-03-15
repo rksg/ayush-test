@@ -1,31 +1,32 @@
 import { defineMessage, useIntl, MessageDescriptor } from 'react-intl'
 import { useNavigate, useParams }                    from 'react-router-dom'
 
-import { Tabs }                                                                    from '@acx-ui/components'
-import { EventTable, eventDefaultPayload, eventDefaultSearch, eventDefaultSorter } from '@acx-ui/rc/components'
-import { useEventsQuery }                                                          from '@acx-ui/rc/services'
+import { Tabs }         from '@acx-ui/components'
 import {
-  Event,
-  usePollingTableQuery,
-  TimelineTypes,
-  TABLE_QUERY_LONG_POLLING_INTERVAL
-} from '@acx-ui/rc/utils'
+  ActivityTable,
+  columnState,
+  EventTable,
+  useActivityTableQuery,
+  useEventsTableQuery
+} from '@acx-ui/rc/components'
+import { TimelineTypes } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const Events = () => {
-  // TODO: add fromTime/toTime to filter when DatePicker is ready
   const { networkId } = useParams()
-  const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
-    defaultPayload: {
-      ...eventDefaultPayload,
-      filters: { ...eventDefaultPayload.filters, networkId: [ networkId ] }
-    },
-    sorter: eventDefaultSorter,
-    search: eventDefaultSearch,
-    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
-  })
+  const tableQuery = useEventsTableQuery({ networkId: [networkId] })
   return <EventTable tableQuery={tableQuery} filterables={['severity', 'entity_type']}/>
+}
+
+const Activities = () => {
+  const { networkId } = useParams()
+  const tableQuery = useActivityTableQuery({ entityType: 'NETWORK', entityId: networkId! })
+
+  return <ActivityTable
+    tableQuery={tableQuery}
+    filterables={['status']}
+    columnState={columnState}
+  />
 }
 
 const tabs : {
@@ -33,6 +34,11 @@ const tabs : {
   title: MessageDescriptor,
   component: () => JSX.Element
 }[] = [
+  {
+    key: 'activities',
+    title: defineMessage({ defaultMessage: 'Activities' }),
+    component: Activities
+  },
   {
     key: 'events',
     title: defineMessage({ defaultMessage: 'Events' }),

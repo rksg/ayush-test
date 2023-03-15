@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEventHandler, useEffect } from 'react'
+import React, { useState, useRef, ChangeEventHandler, useEffect, useContext } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import _                         from 'lodash'
@@ -8,7 +8,6 @@ import {
   GoogleMap,
   GoogleMapMarker,
   PageHeader,
-  showToast,
   StepsForm,
   StepsFormInstance
 } from '@acx-ui/components'
@@ -22,12 +21,19 @@ import {
   useUpdateVenueMutation,
   useNewAddVenueMutation
 } from '@acx-ui/rc/services'
-import { Address, VenueExtended, checkObjectNotExists } from '@acx-ui/rc/utils'
+import {
+  Address,
+  VenueExtended,
+  checkObjectNotExists,
+  redirectPreviousPage
+} from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { VenueEditContext } from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -140,6 +146,7 @@ export function VenuesForm () {
 
   const { tenantId, venueId, action } = useParams()
   const { data } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
+  const { previousPath } = useContext(VenueEditContext)
 
   useEffect(() => {
     if (data) {
@@ -202,7 +209,7 @@ export function VenuesForm () {
     autocomplete.addListener('place_changed', async () => {
       const place = autocomplete.getPlace()
       const { latlng, address } = await addressParser(place)
-      const isSameCountry = data && (data?.address.country === address.country) || false
+      const isSameCountry = (data && (data?.address.country === address.country)) || false
       setSameCountry(isSameCountry)
       let errorList = []
 
@@ -235,11 +242,8 @@ export function VenuesForm () {
       }
 
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -249,11 +253,8 @@ export function VenuesForm () {
       formData.address = address
       await updateVenue({ params, payload: formData }).unwrap()
       navigate(linkToVenues, { replace: true })
-    } catch {
-      showToast({
-        type: 'error',
-        content: intl.$t({ defaultMessage: 'An error occurred' })
-      })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -268,7 +269,9 @@ export function VenuesForm () {
       <StepsForm
         formRef={formRef}
         onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
-        onCancel={() => navigate(linkToVenues)}
+        onCancel={() =>
+          redirectPreviousPage(navigate, previousPath, linkToVenues)
+        }
         buttonLabel={{ submit: action === 'edit' ?
           intl.$t({ defaultMessage: 'Save' }):
           intl.$t({ defaultMessage: 'Add' }) }}

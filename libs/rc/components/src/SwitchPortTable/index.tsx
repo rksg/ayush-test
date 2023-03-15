@@ -1,19 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader }            from '@acx-ui/components'
-import { useGetSwitchVlanQuery, useSwitchPortlistQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
+import {
+  useLazyGetSwitchVlanQuery,
+  useLazyGetSwitchVlanUnionByVenueQuery,
+  useSwitchPortlistQuery
+} from '@acx-ui/rc/services'
 import {
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
+  SwitchVlan,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
@@ -30,21 +36,36 @@ export function SwitchPortTable ({ isVenueLevel }: {
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+  const [vlanList, setVlanList] = useState([] as SwitchVlan[])
 
-  const { vlanFilterOptions } = useGetSwitchVlanQuery({ params: { tenantId, switchId } }, {
-    selectFromResult: ({ data }) => ({
-      vlanFilterOptions: ([
-        ...(data?.switchVlan ? data.switchVlan : []),
-        ...(data?.profileVlan ? data.profileVlan : [])
-      ]).map(v=>
-        ({ key: v.vlanId.toString(), value: v.vlanId.toString() })) || true
-    })
-  })
+  const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
+  const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+
+  const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
+    key: v.vlanId.toString(), value: v.vlanId.toString()
+  })) : []
+
+  useEffect(() => {
+    const setData = async () => {
+      if (isVenueLevel) {
+        const vlanList = await getSwitchesVlan({ params: { tenantId, venueId } }).unwrap()
+        setVlanList(vlanList)
+      } else {
+        const vlanUnion = await getSwitchVlan({ params: { tenantId, switchId } }).unwrap()
+        // eslint-disable-next-line max-len
+        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
+          .concat(vlanUnion.profileVlan || [])
+          .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
+        setVlanList(vlanList)
+      }
+    }
+    setData()
+  }, [isVenueLevel])
+
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
-
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortlistQuery,
@@ -264,7 +285,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
       rowKey='portId'
-      rowActions={rowActions}
+      rowActions={filterByAccess(rowActions)}
       rowSelection={{
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
@@ -279,15 +300,15 @@ export function SwitchPortTable ({ isVenueLevel }: {
         }
       }}
       actions={!isVenueLevel
-        ? [{
+        ? filterByAccess([{
           label: $t({ defaultMessage: 'Manage LAG' }),
           onClick: () => {setLagDrawerVisible(true)}
-        }]
+        }])
         : []
       }
     />
 
-    {<SwitchLagDrawer
+    {lagDrawerVisible && <SwitchLagDrawer
       visible={lagDrawerVisible}
       setVisible={setLagDrawerVisible}
     />}
@@ -298,7 +319,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       setDrawerVisible={setDrawerVisible}
       isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
       isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={false}
+      isVenueLevel={isVenueLevel}
       selectedPorts={selectedPorts}
     />}
 

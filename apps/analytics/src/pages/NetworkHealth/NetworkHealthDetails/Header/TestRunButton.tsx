@@ -1,0 +1,78 @@
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+
+import { noDataSymbol }                                from '@acx-ui/analytics/utils'
+import { Button, Dropdown, Loader, Table, TableProps } from '@acx-ui/components'
+import { ArrowExpand }                                 from '@acx-ui/icons'
+import { TenantLink, useParams }                       from '@acx-ui/react-router-dom'
+import { formatter }                                   from '@acx-ui/utils'
+
+import { useNetworkHealthRelatedTests } from '../../services'
+
+import * as UI from './styledComponents'
+
+const TestRunTable = (
+  { data }: { data: Record<string, number|string>[] }
+) => {
+  const { $t } = useIntl()
+
+  const columns: TableProps<Record<string, number|string>>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Test Time' }),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (_, value) =>
+        <TenantLink to={`/serviceValidation/networkHealth/${value.specId}/tests/${value.id}`}>
+          {formatter('dateTimeFormatWithSeconds')(value.createdAt)}
+        </TenantLink>
+    },
+    {
+      title: $t({ defaultMessage: 'APs Under Test' }),
+      dataIndex: 'apsTestedCount',
+      key: 'apsTestedCount'
+    },
+    {
+      title: $t({ defaultMessage: 'Pass' }),
+      dataIndex: 'apsSuccessCount',
+      key: 'apsSuccessCount'
+    },
+    {
+      title: $t({ defaultMessage: 'Error' }),
+      dataIndex: 'apsErrorCount',
+      key: 'apsErrorCount'
+    },
+    {
+      title: $t({ defaultMessage: 'Fail' }),
+      dataIndex: 'apsFailureCount',
+      key: 'apsFailureCount'
+    }
+  ]
+
+  return <UI.Menu
+    items={[{
+      key: 'table',
+      label: <Table type={'form'} columns={columns} dataSource={data} rowKey='id' />
+    }]}
+  />
+}
+
+export const TestRunButton = () => {
+  const { $t } = useIntl()
+  const params = useParams<{ testId: string }>()
+  const queryResults = useNetworkHealthRelatedTests()
+  return <Loader states={[queryResults]}>
+    <Dropdown overlay={<TestRunTable data={queryResults.data || []}/>}>{() =>
+      <Button>
+        <Space>
+          <UI.ButtonTitleWrapper>{$t({ defaultMessage: 'Test Time' })}</UI.ButtonTitleWrapper>
+          {queryResults.data && queryResults.data?.length > 0
+            ? formatter('dateTimeFormatWithSeconds')(
+              queryResults.data.find((test)=>test.id === parseInt(params.testId!, 10))?.createdAt)
+            : noDataSymbol
+          }
+          <ArrowExpand />
+        </Space>
+      </Button>
+    }</Dropdown>
+  </Loader>
+}

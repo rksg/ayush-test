@@ -1,25 +1,24 @@
-import { Row, Col, Form, Select, Typography }        from 'antd'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Row, Col, Form, Select, Typography } from 'antd'
+import { useIntl }                            from 'react-intl'
 
 import {
   PageHeader,
   StepsForm,
-  Tabs,
-  Tooltip
+  Tabs
 } from '@acx-ui/components'
-import { useUserProfileContext }        from '@acx-ui/rc/components'
-import { useUpdateUserProfileMutation } from '@acx-ui/rc/services'
-import {
-  DetailLevel,
-  UserProfile as UserProfileInterface,
-  RolesEnum
-} from '@acx-ui/rc/utils'
+import { MultiFactor } from '@acx-ui/msp/components'
 import {
   useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
-import { notAvailableMsg } from '@acx-ui/utils'
+import {
+  DetailLevel,
+  UserProfile as UserProfileInterface,
+  useUserProfileContext,
+  useUpdateUserProfileMutation,
+  roleStringMap
+} from '@acx-ui/user'
 
 import {
   RecentLogin
@@ -28,13 +27,6 @@ import * as UI from './styledComponents'
 
 interface fromLoc {
   from: string
-}
-
-const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
-  [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-  [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
-  [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' })
 }
 
 export function UserProfile () {
@@ -137,42 +129,13 @@ export function UserProfile () {
   }
 
   const SecurityTab = () => {
-    return (
-      <StepsForm
-        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-        onFinish={async () => handleCancel()}
-        onCancel={async () => handleCancel()}
-      >
-        <StepsForm.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <h4 ><b>{$t({ defaultMessage: 'Multi-Factor Authentication' })}</b></h4>
-
-              <Form.Item style={{ marginTop: '15px' }}
-                name='mfa_status'
-                label={$t({ defaultMessage: 'Multi-Factor Authentication' })}
-                tooltip={$t({ defaultMessage:
-                  'This option is controlled by the Prime-Administrator(s) of this account.' +
-                  'If they turn it on, you will be able to manage here your authentication ' +
-                  'settings' })}
-                rules={[{
-                  required: false
-                }]}
-                children={
-                  <h4>Off</h4>
-                }
-              />
-            </Col>
-          </Row>
-        </StepsForm.StepForm>
-      </StepsForm>
-    )
+    return <MultiFactor/>
   }
 
   return (
     <>
       <PageHeader
-        title='User Profile'
+        title={$t({ defaultMessage: 'User Profile' })}
       />
       <UserData/>
 
@@ -184,10 +147,7 @@ export function UserProfile () {
         </Tabs.TabPane>
 
         <Tabs.TabPane
-          tab={<Tooltip title={$t(notAvailableMsg)}>
-            {$t({ defaultMessage: 'Security' })}
-          </Tooltip>}
-          disabled={true}
+          tab={$t({ defaultMessage: 'Security' })}
           key='Security'>
           <SecurityTab />
         </Tabs.TabPane>
