@@ -33,7 +33,7 @@ describe('WifiConfigTab', () => {
     await screen.findByRole('tab', { name: 'Radio' })
     await screen.findByRole('tab', { name: 'Networking' })
     await screen.findByRole('tab', { name: 'Security' })
-    await screen.findByRole('tab', { name: 'Services' })
+    await screen.findByRole('tab', { name: 'Services & Policies' })
     await screen.findByRole('tab', { name: 'Advanced Settings' })
     expect(asFragment()).toMatchSnapshot()
 

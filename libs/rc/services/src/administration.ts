@@ -25,7 +25,6 @@ import {
   RadiusClientConfigUrlsInfo,
   RadiusServerSetting,
   TenantDetails,
-  GetRoleStr,
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary
@@ -503,8 +502,6 @@ const transformAdministratorList = (data: Administrator[]) => {
     item.name = (item.name && item.name !== 'first') ? item.name : ''
     item.lastName = (item.lastName && item.lastName !== 'last') ? item.lastName : ''
     item.fullName = item.name + ' ' + item.lastName
-    // FIXME: might be removed because of Tenant.roleDsc is UI used only
-    item.roleDsc = GetRoleStr(item.role)
 
     return item
   })

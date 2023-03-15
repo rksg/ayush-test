@@ -132,7 +132,9 @@ const PortalInstance = (props:{
                 logo: data.content.logo?await loadImageWithJWT(data.content.logo):Logo,
                 photo: data.content.photo?await loadImageWithJWT(data.content.photo): Photo,
                 bgImage: data.content.bgImage?await loadImageWithJWT(data.content.bgImage):'' })
-            }}/>
+            }}
+            portalCount={portalData.length}
+            />
           </Form.Item>
         </GridCol>
       </GridRow>

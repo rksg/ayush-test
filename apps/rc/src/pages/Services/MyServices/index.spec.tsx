@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, getSelectServiceRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                  from '@acx-ui/store'
+import { CommonUrlsInfo, getSelectServiceRoutePath, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -39,6 +39,35 @@ const mockedServiceList = {
   ]
 }
 
+const mockWifiCallingTableResult = {
+  fields: [
+    'ePDGs',
+    'epdg',
+    'qosPriority',
+    'networkIds',
+    'epdgs',
+    'name',
+    'tenantId',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'wifi-1',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
+    }
+  ]
+}
+
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -50,6 +79,10 @@ describe('MyServices', () => {
     rest.post(
       CommonUrlsInfo.getServicesList.url,
       (req, res, ctx) => res(ctx.json({ ...mockedServiceList }))
+    ),
+    rest.post(
+      WifiCallingUrls.getWifiCallingList.url,
+      (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
     )
   )
 
