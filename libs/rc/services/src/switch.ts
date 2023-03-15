@@ -743,10 +743,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
               'clientName','clientDesc','clientType','switchPort','vlanName',
               'switchName', 'venueName' ,'cog','id'],
-            id: [_.get(params, 'clientId')]
+            filters: {
+              id: [_.get(params, 'clientId')]
+            }
           }
           return {
-            ...clientListReq, payload: payload
+            ...clientListReq, body: payload
           }
         }
         return {
