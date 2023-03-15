@@ -4,6 +4,7 @@ import {
   DatePicker as AntDatePicker,
   DatePickerProps as AntDatePickerProps
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {  DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -41,6 +42,7 @@ interface DatePickerProps {
   onDateChange?: Function;
   onDateApply: Function;
   selectionType: DateRange;
+  showAllTime?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -50,6 +52,7 @@ export const RangePicker = ({
   selectedRange,
   onDateChange,
   onDateApply,
+  showAllTime,
   selectionType
 }: DatePickerProps) => {
   const didMountRef = useRef(false)
@@ -103,6 +106,7 @@ export const RangePicker = ({
     }
   }, [range, onDateChange, onDateApply, translatedOptions])
 
+  const allTimeKey = $t(dateRangeMap[DateRange.allTime])
   const rangeText = `[${$t(dateRangeMap[selectionType])}]`
   return (
     <UI.RangePickerWrapper
@@ -114,7 +118,8 @@ export const RangePicker = ({
     >
       <AntRangePicker
         ref={rangeRef}
-        ranges={translatedRanges}
+        ranges={showAllTime ? translatedRanges :
+          _.omit(translatedRanges, allTimeKey)}
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
