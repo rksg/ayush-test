@@ -107,6 +107,7 @@ export function MspCustomers () {
 
   const [modalVisible, setModalVisible] = useState(false)
   const [ecTenantId, setTenantId] = useState('')
+  const [tenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
 
@@ -209,7 +210,8 @@ export function MspCustomers () {
       },
       render: function (data) {
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{data}</Link> : data
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{data}</Link> : data
         )
       }
     },
@@ -225,10 +227,12 @@ export function MspCustomers () {
       title: $t({ defaultMessage: 'Integrator' }),
       dataIndex: 'integrator',
       key: 'integrator',
+      show: !userProfile?.support,
       onCell: (data) => {
         return {
           onClick: () => {
             setTenantId(data.id)
+            setTenantType(AccountType.MSP_INTEGRATOR)
             setDrawerIntegratorVisible(true)
           }
         }
@@ -236,7 +240,30 @@ export function MspCustomers () {
       render: function (data, row) {
         const val = row?.integrator ? 1 : '--'
         return (
-          (isPrimeAdmin || isAdmin) ? <Link to=''>{val}</Link> : val
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{val}</Link> : val
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Installer' }),
+      dataIndex: 'installer',
+      key: 'installer',
+      show: !userProfile?.support,
+      onCell: (data) => {
+        return {
+          onClick: () => {
+            setTenantId(data.id)
+            setTenantType(AccountType.MSP_INSTALLER)
+            setDrawerIntegratorVisible(true)
+          }
+        }
+      },
+      render: function (data, row) {
+        const val = row?.installer ? 1 : '--'
+        return (
+          (isPrimeAdmin || isAdmin) && !userProfile?.support
+            ? <Link to=''>{val}</Link> : val
         )
       }
     },
@@ -503,7 +530,7 @@ export function MspCustomers () {
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantId={ecTenantId}
-        tenantType={AccountType.MSP_INTEGRATOR}
+        tenantType={tenantType}
         setVisible={setDrawerIntegratorVisible}
         setSelected={() => {}}
       />}

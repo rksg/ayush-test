@@ -218,34 +218,16 @@ export function VarCustomers () {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Active Alarms' }),
-      dataIndex: 'alarmCount',
-      key: 'alarmCount',
-      sorter: true,
-      render: function (data) {
-        return (
-          <TenantLink to={''}>{data}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Active Incidents' }),
-      dataIndex: 'activeIncindents',
-      key: 'activeIncindents',
-      sorter: true,
-      render: function () {
-        return 0
-      }
-    },
-    {
       title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
       dataIndex: 'wifiLicenses',
+      align: 'center',
       key: 'wifiLicenses',
       sorter: true
     },
     {
       title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
       dataIndex: 'wifiLicensesUtilization',
+      align: 'center',
       key: 'wifiLicensesUtilization',
       sorter: true,
       render: function (data, row) {
@@ -255,6 +237,7 @@ export function VarCustomers () {
     {
       title: $t({ defaultMessage: 'Switch Licenses' }),
       dataIndex: 'switchLicenses',
+      align: 'center',
       key: 'switchLicenses',
       sorter: true
     },
