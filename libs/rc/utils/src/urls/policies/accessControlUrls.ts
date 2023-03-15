@@ -79,10 +79,22 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/query',
     newApi: true
   },
+  getEnhancedL2AclPolicies: {
+    method: 'post',
+    url: '/enhancedL2AclPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedL2AclPolicies/query',
+    newApi: true
+  },
   getL3AclPolicyList: {
     method: 'post',
     url: '/l3AclPolicies/query',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/query',
+    newApi: true
+  },
+  getEnhancedL3AclPolicies: {
+    method: 'post',
+    url: '/enhancedL3AclPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedL3AclPolicies/query',
     newApi: true
   },
   getAppPolicyList: {
@@ -91,11 +103,19 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/query',
     newApi: true
   },
+  getEnhancedApplicationPolicies: {
+    method: 'post',
+    url: '/enhancedApplicationPolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedApplicationPolicies/query',
+    newApi: true
+  },
   getAvcCategory: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-cat'
   },
   getAvcApp: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/capabilities/avc-app'
   },
@@ -109,6 +129,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/accessControlProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
+    newApi: true
+  },
+  getEnhancedAccessControlProfiles: {
+    method: 'post',
+    url: '/enhancedAccessControlProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedAccessControlProfiles/query',
     newApi: true
   },
   addAccessControlProfile: {
@@ -157,6 +183,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/devicePolicies/query',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy/query',
+    newApi: true
+  },
+  getEnhancedDevicePolicies: {
+    method: 'post',
+    url: '/enhancedDevicePolicies/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedDevicePolicies/query',
     newApi: true
   }
 }

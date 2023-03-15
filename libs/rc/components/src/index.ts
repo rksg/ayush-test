@@ -1,9 +1,7 @@
 export {
   ActivityTable,
-  useActivityTableFilter,
-  defaultSorter as activityDefaultSorter,
-  defaultPayload as activityDefaultPayload,
-  columnState
+  columnState,
+  useActivityTableQuery
 } from './ActivityTable'
 export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget, AlarmWidgetV2 } from './AlarmWidget'
@@ -25,12 +23,14 @@ export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
   EventTable,
-  useEventTableFilter,
-  defaultPayload as eventDefaultPayload,
-  defaultSorter as eventDefaultSorter,
+  useEventsTableQuery,
   defaultSearch as eventDefaultSearch
 } from './EventTable'
-export { HistoricalClientsTable } from './HistoricalClientsTable'
+export {
+  HistoricalClientsTable,
+  GlobalSearchHistoricalClientsTable,
+  defaultHistoricalClientPayload
+} from './HistoricalClientsTable'
 export { ImportFileDrawer, CsvSize } from './ImportFileDrawer'
 export { IpPortSecretForm } from './IpPortSecretForm'
 export { LanPortSettings } from './LanPortSettings'
@@ -55,6 +55,7 @@ export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
 export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
+export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
 export { CloudMessageBanner } from './CloudMessageBanner'
 export { SwitchCliSession } from './SwitchCliSession'
@@ -63,6 +64,9 @@ export { ClientsTable, defaultSwitchClientPayload } from './SwitchClientsTable/C
 export { SwitchClientDetails } from './SwitchClientsTable/SwitchClientDetails'
 export { PersonaGroupSelect } from './PersonaGroupSelect'
 export { SelectConnectedClientsTable, OSIconContainer } from './SelectConnectedClientsTable'
+export { usePreference, countryCodes } from './usePreference'
+export { useUpdateGoogleMapRegion } from './usePreference/useUpdateGoogleMapRegion'
+export type { updatePreferenceProps } from './usePreference'
 
 export * from './services'
 export * from './EdgeStatisticWidget'

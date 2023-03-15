@@ -27,7 +27,7 @@ describe('ApPingForm', () => {
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
-      rest.post(
+      rest.patch(
         WifiUrlsInfo.pingAp.url,
         (_, res, ctx) => res(ctx.json(pingResponse)))
     )

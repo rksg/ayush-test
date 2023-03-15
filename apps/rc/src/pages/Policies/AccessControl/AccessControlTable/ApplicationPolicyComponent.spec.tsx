@@ -12,7 +12,11 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { aclList, applicationPolicyListResponse } from '../__tests__/fixtures'
+import {
+  aclList,
+  applicationPolicyListResponse,
+  enhancedApplicationPolicyListResponse
+} from '../__tests__/fixtures'
 
 import ApplicationPolicyComponent from './ApplicationPolicyComponent'
 
@@ -30,6 +34,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('AccessControlTable', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))
+      )
+    )
+  })
+
   it('should render ApplicationPolicyComponent in AccessControlTable', async () => {
     mockServer.use(rest.post(
       AccessControlUrls.getAppPolicyList.url,
@@ -48,7 +61,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = applicationPolicyListResponse.data[0].name
+    const targetName = enhancedApplicationPolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))
@@ -88,7 +101,7 @@ describe('AccessControlTable', () => {
       }
     )
 
-    const targetName = applicationPolicyListResponse.data[0].name
+    const targetName = enhancedApplicationPolicyListResponse.data[0].name
     await userEvent.click(await screen.findByRole('cell', {
       name: targetName
     }))

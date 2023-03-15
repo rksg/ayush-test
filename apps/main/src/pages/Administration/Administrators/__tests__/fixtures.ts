@@ -23,7 +23,7 @@ export const fakeUserProfile = {
   var: false,
   tenantId: '8c36a0a9ab9d4806b060e112205add6f',
   varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
-  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  adminId: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
   support: false,
   dogfood: false
 } as UserProfile
@@ -52,7 +52,7 @@ export const fakeNonPrimeAdminUserProfile = {
   var: false,
   tenantId: '8c36a0a9ab9d4806b060e112205add6f',
   varTenantId: '8c36a0a9ab9d4806b060e112205add6f',
-  adminId: '4159559db15c4027903d9c3d4bdb8a7e',
+  adminId: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
   support: false,
   dogfood: false
 }

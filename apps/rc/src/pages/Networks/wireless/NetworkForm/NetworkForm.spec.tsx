@@ -65,7 +65,7 @@ describe('NetworkForm', () => {
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
         (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(PortalUrlsInfo.getPortalProfileList.url
-        .replace('?size=:pageSize&page=:page&sort=:sort', ''),
+        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
       (_, res, ctx) => res(ctx.json({ content: portalList }))),
       rest.post(PortalUrlsInfo.savePortal.url,
         (_, res, ctx) => res(ctx.json({ response: {

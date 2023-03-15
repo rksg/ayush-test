@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import {
   ConnectedClientsOverTime,
   SwitchesTrafficByVolume,
-  TopApplicationsByTraffic,
+  TopAppsByTraffic,
   TopSSIDsByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
@@ -103,7 +103,7 @@ function ApWidgets () {
         <TopSSIDsByTraffic filters={filters}/>
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <TopApplicationsByTraffic filters={filters}/>
+        <TopAppsByTraffic filters={filters}/>
       </GridCol>
     </GridRow>
   )

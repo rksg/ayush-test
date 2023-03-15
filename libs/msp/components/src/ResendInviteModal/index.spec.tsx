@@ -1,35 +1,115 @@
 import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Modal } from 'antd'
+import { MspUrlsInfo }                                    from '@acx-ui/rc/utils'
+import { Provider  }                                      from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer, waitFor } from '@acx-ui/test-utils'
 
+import { ResendInviteModal } from '.'
 
-import { render, screen, fireEvent } from '@acx-ui/test-utils'
+const services = require('@acx-ui/rc/services')
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services')
+}))
 
 describe('ResendInviteModal', () => {
-  it('should render Resend Invitaion successfully', async () => {
-    const handleCancel = jest.fn()
-    const handleOk = jest.fn()
+  let params: { tenantId: string }
+  beforeEach(async () => {
+    jest.spyOn(services, 'useResendEcInvitationMutation')
+    mockServer.use(
+      rest.post(
+        MspUrlsInfo.resendEcInvitation.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      )
+    )
+    params = {
+      tenantId: '3061bd56e37445a8993ac834c01e2710'
+    }
+  })
+  it('should render successfully', async () => {
+    render(
+      <Provider>
+        <ResendInviteModal
+          visible={true}
+          setVisible={jest.fn()}
+          tenantId={params.tenantId}
+        />
+      </Provider>)
 
-    render(<Modal
-      okText='Resend Invitation'
-      onCancel={handleCancel}
-      onOk={handleOk}
-      visible={true}
-    />)
-    const resendButton = screen.getByRole('button', { name: /Resend Invitation/i })
-    const cancelButton = screen.getByRole('button', { name: /cancel/i })
+    const resendButton = screen.getByRole('button', { name: 'Resend Invitation' })
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+
+    expect(screen.getByRole('textbox', { name:
+      'Enter the email of the administrator you need to re-send an invitation to:' })).toBeVisible()
+    expect(resendButton).toBeDisabled()
+    expect(cancelButton).toBeEnabled()
+  })
+  it('cancel button should close dialog', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <ResendInviteModal
+          visible={true}
+          setVisible={mockedCloseDialog}
+          tenantId={params.tenantId}
+        />
+      </Provider>)
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
+    fireEvent.click(cancelButton)
+
+    expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+  })
+  it('should show error message when invalid email', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <ResendInviteModal
+          visible={true}
+          setVisible={mockedCloseDialog}
+          tenantId={params.tenantId}
+        />
+      </Provider>)
+    const resendButton = screen.getByRole('button', { name: 'Resend Invitation' })
+    const input = screen.getByRole('textbox')
+
+    await userEvent.type(input, 'invalid_email')
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeVisible()
+    })
+    expect(resendButton).toBeDisabled()
+  })
+  it('should handle resend when valid email', async () => {
+    const mockedCloseDialog = jest.fn()
+    render(
+      <Provider>
+        <ResendInviteModal
+          visible={true}
+          setVisible={mockedCloseDialog}
+          tenantId={params.tenantId}
+        />
+      </Provider>)
+    const resendButton = screen.getByRole('button', { name: 'Resend Invitation' })
+    const input = screen.getByRole('textbox')
+
+    await userEvent.type(input, 'valid@mail.com')
+    await waitFor(() => {
+      expect(resendButton).toBeEnabled()
+    })
 
     fireEvent.click(resendButton)
-    expect(handleOk).toBeCalled()
+    const value: [Function, Object] = [
+      expect.any(Function),
+      expect.objectContaining({
+        data: { requestId: '123' },
+        status: 'fulfilled'
+      })
+    ]
 
-    fireEvent.click(cancelButton)
-    expect(handleCancel).toBeCalled()
-    const showEXpiredButton = await screen.findByText('Resend Invitation')
-    fireEvent.click(showEXpiredButton)
-    const licenseManagementButton = await screen.findByText('Cancel')
-    fireEvent.click(licenseManagementButton)
-
-
+    await waitFor(() => {
+      expect(services.useResendEcInvitationMutation).toHaveLastReturnedWith(value)
+    })
+    expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
   })
 })
 

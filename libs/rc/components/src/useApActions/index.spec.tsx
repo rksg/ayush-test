@@ -82,11 +82,11 @@ describe('Test useApActions', () => {
         WifiUrlsInfo.deleteAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
-      rest.post(
+      rest.patch(
         WifiUrlsInfo.rebootAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
-      rest.post(
+      rest.patch(
         WifiUrlsInfo.blinkLedAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '789' }))
       ),

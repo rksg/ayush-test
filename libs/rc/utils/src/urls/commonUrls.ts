@@ -155,7 +155,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenues: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venues'
+    url: '/venues/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venues',
+    newApi: true
   },
   newAddVenue: { // Only for IT test
     method: 'post',
@@ -221,9 +223,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getMeshAps: {
+    // method: 'post',
+    // url: '/aps/query?mesh=true',
+    // oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    // newApi: false
     method: 'post',
-    // url: '/aps/query',
-    // newApi: true,
     url: '/api/viewmodel/:tenantId/aps/mesh'
   },
   getService: {
@@ -292,6 +296,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueCapabilities: {
+    // [New API] private api
     method: 'get',
     url: '/api/tenant/:tenantId/wifi/venue/:venueId/capabilities'
   },
@@ -335,14 +340,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/tenant/:tenantId/venue/:venueId/networks'
   },
   venueNetworkApGroup: {
+    // [New API] private api
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/venue/network-ap-group'
   },
   getNetworkDeepList: {
+    // [New API] private api
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
   validateRadius: {
+    // [New API] no mapping found
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/radius/validate'
   },
@@ -381,14 +389,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/roguePolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/rogue-policy',
     newApi: true
-  },
-  getVenueSyslogAp: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
-  },
-  updateVenueSyslogAp: {
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/venue/:venueId/syslogServerProfileSettings'
   },
   getConfigProfiles: {
     method: 'post',
@@ -492,7 +492,9 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   fetchBotAuth: {
     method: 'post',
-    url: '/api/tenant/:tenantId/chatbot/idtoken'
+    url: '/tenants/chatbot/idtoken',
+    oldUrl: '/api/tenant/:tenantId/chatbot/idtoken',
+    newApi: true
   },
   getTopology: {
     method: 'get',
@@ -502,10 +504,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueBonjourFencingPolicy: {
     method: 'get',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   },
   updateVenueBonjourFencingPolicy: {
     method: 'put',
-    url: '/api/venues/:venueId/bonjourFencingSettings'
+    url: '/venues/:venueId/bonjourFencingSettings',
+    oldUrl: '/api/venues/:venueId/bonjourFencingSettings',
+    newApi: true
   }
 }
