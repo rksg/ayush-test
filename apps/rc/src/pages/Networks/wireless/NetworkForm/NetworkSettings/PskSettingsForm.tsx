@@ -63,7 +63,7 @@ export function PskSettingsForm () {
         },
         enableAuthProxy: data.enableAuthProxy,
         enableAccountingProxy: data.enableAccountingProxy,
-        enableAccountingService: data.accountingRadius !== undefined,
+        enableAccountingService: data.enableAccountingService,
         enableSecondaryAuthServer: data.authRadius?.secondary !== undefined,
         enableSecondaryAcctServer: data.accountingRadius?.secondary !== undefined,
         authRadius: data.authRadius,
@@ -93,11 +93,13 @@ function SettingsForm () {
   const [
     wlanSecurity,
     macAddressAuthentication,
-    isMacRegistrationList
+    isMacRegistrationList,
+    macRegistrationListId
   ] = [
     useWatch(['wlan', 'wlanSecurity']),
     useWatch<boolean>(['wlan', 'macAddressAuthentication']),
-    useWatch(['wlan', 'isMacRegistrationList'])
+    useWatch(['wlan', 'isMacRegistrationList']),
+    useWatch(['wlan', 'macRegistrationListId'])
   ]
 
   const securityDescription = () => {
@@ -172,6 +174,18 @@ function SettingsForm () {
       }
     })
   }
+  useEffect(()=>{
+    form.setFieldsValue(data)
+    if (editMode && data) {
+      form.setFieldsValue({
+        wlan: {
+          isMacRegistrationList: !!data.wlan?.macRegistrationListId,
+          macAddressAuthentication: data.wlan?.macAddressAuthentication,
+          macRegistrationListId: data.wlan?.macRegistrationListId
+        }
+      })
+    }
+  },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const macRegistrationEnabled = useIsSplitOn(Features.MAC_REGISTRATION)
@@ -289,9 +303,9 @@ function SettingsForm () {
           {macAddressAuthentication && <>
             <Form.Item
               name={['wlan', 'isMacRegistrationList']}
-              initialValue={false}
+              initialValue={macRegistrationListId}
             >
-              <Radio.Group>
+              <Radio.Group disabled={editMode} defaultValue={!!macRegistrationListId}>
                 <Space direction='vertical'>
                   <Radio value={true} disabled={!macRegistrationEnabled}>
                     { intl.$t({ defaultMessage: 'MAC Registration List' }) }
@@ -303,9 +317,7 @@ function SettingsForm () {
               </Radio.Group>
             </Form.Item>
 
-            { isMacRegistrationList &&
-            <MacRegistrationListComponent
-              editMode={editMode}
+            { isMacRegistrationList && <MacRegistrationListComponent
               inputName={['wlan']}
             />}
 
@@ -333,11 +345,19 @@ function SettingsForm () {
 
 function MACAuthService () {
   const intl = useIntl()
+  const { data, setData } = useContext(NetworkFormContext)
+  const onChange = (value: boolean) => {
+    setData && setData({ ...data, enableAccountingService: value })
+  }
+  const form = Form.useFormInstance()
   const [
     enableAccountingService
   ] = [
     useWatch<boolean>(['enableAccountingService'])
   ]
+  useEffect(()=>{
+    form.setFieldsValue(data)
+  },[data])
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
@@ -348,7 +368,7 @@ function MACAuthService () {
       <div>
         <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
         <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch />
+          <Switch onChange={onChange}/>
         </Form.Item>
         {enableAccountingService &&
           <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}

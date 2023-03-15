@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import {
   Form,
@@ -21,9 +21,14 @@ const { useWatch } = Form
 
 export function CloudpathServerForm () {
   const { $t } = useIntl()
-  const { data } = useContext(NetworkFormContext)
-
-
+  const form = Form.useFormInstance()
+  const { data, setData } = useContext(NetworkFormContext)
+  const onProxyChange = (value: boolean, fieldName: string) => {
+    setData && setData({ ...data, [fieldName]: value })
+  }
+  useEffect(()=>{
+    form.setFieldsValue({ ...data })
+  },[data])
   const proxyServiceTooltip = <Tooltip
     placement='bottom'
     children={<QuestionMarkCircleOutlined />}
@@ -46,7 +51,7 @@ export function CloudpathServerForm () {
             name='enableAuthProxy'
             valuePropName='checked'
             initialValue={false}
-            children={<Switch/>}
+            children={<Switch onChange={(value)=>onProxyChange(value,'enableAuthProxy')}/>}
           />
           <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
           {proxyServiceTooltip}
@@ -58,7 +63,7 @@ export function CloudpathServerForm () {
           name='enableAccountingService'
           valuePropName='checked'
           initialValue={false}
-          children={<Switch/>}
+          children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingService')}/>}
         />
         {enableAccountingService &&
         <>
@@ -71,7 +76,7 @@ export function CloudpathServerForm () {
               name='enableAccountingProxy'
               valuePropName='checked'
               initialValue={false}
-              children={<Switch/>}
+              children={<Switch onChange={(value)=>onProxyChange(value,'enableAccountingProxy')}/>}
             />
             <span>{ $t({ defaultMessage: 'Proxy Service' }) }</span>
             {proxyServiceTooltip}

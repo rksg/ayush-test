@@ -10,6 +10,7 @@ import { directedMulticastInfo, notAvailableMsg } from '@acx-ui/utils'
 
 import { ApEditContext } from '../index'
 
+import { ApSnmp }            from './ApSnmpTab'
 import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './General/IpSettings'
 import { LanPorts }          from './LanPorts'
@@ -27,6 +28,7 @@ export function ApSettingsTab () {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const onTabChange = (tab: string) => {
     setEditContextData && setEditContextData({
@@ -49,7 +51,8 @@ export function ApSettingsTab () {
       radio: $t({ defaultMessage: 'Radio' }),
       lanPort: $t({ defaultMessage: 'LAN Port' }),
       proxy: $t({ defaultMessage: 'mDNS Proxy' }),
-      multicast: $t({ defaultMessage: 'Directed Multicast' })
+      multicast: $t({ defaultMessage: 'Directed Multicast' }),
+      snmp: $t({ defaultMessage: 'AP SNMP' })
     }
 
     const title = tabTitle[tabkey as keyof typeof tabTitle]
@@ -84,6 +87,11 @@ export function ApSettingsTab () {
         key='proxy'>
         <MdnsProxyTab />
       </TabPane>
+      {supportApSnmp &&
+        <TabPane tab={tabTitleMap('snmp')} key='snmp'>
+          <ApSnmp />
+        </TabPane>
+      }
       {supportDirectedMulticast &&
         <TabPane tab={<>
           {tabTitleMap('multicast')}
