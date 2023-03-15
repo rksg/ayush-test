@@ -149,7 +149,11 @@ function Table <RecordType extends Record<string, any>> ({
     if(searchValue === '' || searchValue.length >= MIN_SEARCH_LENGTH) {
       onFilter.current?.(filterValues, { searchString: searchValue })
     }
-  }, [searchValue, filterValues])
+  }, [searchValue])
+
+  useEffect(() => {
+    onFilter.current?.(filterValues, { searchString: searchValue })
+  }, [filterValues])
 
   let columns = useMemo(() => {
     const settingsColumn = {
