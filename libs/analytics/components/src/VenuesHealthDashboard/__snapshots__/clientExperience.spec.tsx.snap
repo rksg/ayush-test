@@ -84,7 +84,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -125,7 +125,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -166,7 +166,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -207,7 +207,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -334,7 +334,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -375,7 +375,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -416,7 +416,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
@@ -457,7 +457,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 zzbxI"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 bHawIk"
+                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
                     >
                       <div
                         class="ant-progress-outer"
