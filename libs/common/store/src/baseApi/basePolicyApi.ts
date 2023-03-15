@@ -11,7 +11,9 @@ export const basePolicyApi = createApi({
     'Syslog',
     'SnmpAgent',
     'VLANPool',
-    'AAA'],
+    'AAA',
+    'AccessControl'
+  ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

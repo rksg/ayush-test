@@ -48,7 +48,8 @@ import {
   AAAPolicyNetwork,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
-  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData
+  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
+  EnhancedAccessControlInfoType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -92,7 +93,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -101,7 +102,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     updateL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -111,7 +112,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -120,7 +121,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -130,7 +131,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -139,7 +140,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -149,7 +150,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     addAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -159,7 +160,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -170,7 +171,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     deleteAccessControlProfile: build.mutation<AccessControlInfoType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -181,7 +182,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -190,7 +191,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -199,7 +200,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     addDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -209,7 +210,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getDevicePolicy: build.query<devicePolicyInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -218,7 +219,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     delDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -227,7 +228,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -237,7 +238,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -247,7 +248,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
       query: ({ params }) => {
@@ -256,7 +257,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     delAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -265,7 +266,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -275,7 +276,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     devicePolicyList: build.query<TableResult<DevicePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -288,7 +289,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
@@ -299,7 +300,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'Delete Device Policy Profiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
-              { type: 'Policy', id: 'LIST' }
+              { type: 'AccessControl', id: 'LIST' }
             ]))
           }, params.requestId as string)
         })
@@ -317,12 +318,63 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getAccessControlProfileList: build.query<AccessControlInfoType[], RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params, RKS_NEW_UI)
+        const req = createHttpRequest(AccessControlUrls.getAccessControlProfileList, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+    }),
+    // eslint-disable-next-line max-len
+    getEnhancedAccessControlProfileList: build.query<TableResult<EnhancedAccessControlInfoType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedAccessControlProfiles, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+    }),
+    getEnhancedL2AclProfileList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedL2AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+    }),
+    getEnhancedL3AclProfileList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedL3AclPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+    }),
+    getEnhancedDeviceProfileList: build.query<TableResult<DevicePolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedDevicePolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
+    }),
+    getEnhancedApplicationProfileList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AccessControlUrls.getEnhancedApplicationPolicies, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -502,15 +554,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
             onActivityMessageReceived(msg, [
-              'Add Layer 2 Policy Profile'
+              'AddL2AclPolicy'
             ],() => {
-              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'AccessControl', id: 'LIST' }]))
             }, params.requestId as string)
           }
         })
@@ -527,15 +579,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
           if (params.requestId) {
             onActivityMessageReceived(msg, [
-              'Add Layer 3 Policy Profile'
+              'AddL3AclPolicy'
             ],() => {
-              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'AccessControl', id: 'LIST' }]))
             }, params.requestId as string)
           }
         })
@@ -552,7 +604,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
+      providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const params = requestArgs.params as { requestId: string }
@@ -560,7 +612,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             onActivityMessageReceived(msg, [
               'Add Application Policy Profile'
             ],() => {
-              api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+              api.dispatch(policyApi.util.invalidateTags([{ type: 'AccessControl', id: 'LIST' }]))
             }, params.requestId as string)
           }
         })
@@ -1206,6 +1258,11 @@ export const {
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useGetAccessControlProfileListQuery,
+  useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedL2AclProfileListQuery,
+  useGetEnhancedL3AclProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
   useUpdateRoguePolicyMutation,
   useRoguePolicyQuery,
   useVenueRoguePolicyQuery,
