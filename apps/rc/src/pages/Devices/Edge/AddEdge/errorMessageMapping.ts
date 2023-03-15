@@ -19,7 +19,7 @@ export const errorMessageMapping: {
   },
   'EDGE-10116': {
     title: $t({ defaultMessage: 'Error' }),
-    content: $t({ defaultMessage: 'The selected venue already has an SmartEdge' })
+    content: $t({ defaultMessage: 'The selected venue already has a SmartEdge' })
   }
 }
 

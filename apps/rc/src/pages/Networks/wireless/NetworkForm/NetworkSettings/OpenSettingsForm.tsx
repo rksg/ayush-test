@@ -109,9 +109,9 @@ function SettingsForm () {
 
           <Form.Item
             name={['wlan', 'isMacRegistrationList']}
-            initialValue={false}
+            initialValue={isMacRegistrationList}
           >
-            <Radio.Group disabled={editMode}>
+            <Radio.Group disabled={editMode} defaultValue={!!isMacRegistrationList}>
               <Space direction='vertical'>
                 <Radio value={true} disabled={!macRegistrationEnabled}>
                   { $t({ defaultMessage: 'MAC Registration List' }) }
@@ -124,7 +124,6 @@ function SettingsForm () {
           </Form.Item>
 
           { isMacRegistrationList && <MacRegistrationListComponent
-            editMode={editMode}
             inputName={['wlan']}
           />}
 

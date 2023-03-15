@@ -279,7 +279,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (appPolicyInfo) {
+    if (appPolicyInfo && (isViewMode() || editMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
@@ -530,6 +530,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             }]}
             children={
               <Select
+                style={{ width: '150px' }}
                 placeholder={$t({ defaultMessage: 'Select profile...' })}
                 onChange={(value) => {
                   setQueryPolicyId(value)
