@@ -153,12 +153,18 @@ export function VenuesForm () {
 
   useEffect(() => {
     if (data) {
+      const defaultCountryCode = data.address?.countryCode
+      ?? countryCodes.find(code => code.label === data.address.country)?.value
+      ?? ''
+      setCountryCode(defaultCountryCode)
+
       formRef.current?.setFieldsValue({
         name: data?.name,
         description: data?.description,
-        address: data?.address
+        address: { ...data?.address, countryCode: defaultCountryCode }
       })
       updateAddress(data?.address as Address)
+
 
       if (isMapEnabled && window.google) {
         const latlng = new google.maps.LatLng({
@@ -253,7 +259,7 @@ export function VenuesForm () {
   const handleEditVenue = async (values: VenueExtended) => {
     try {
       const formData = { ...values }
-      formData.address = address
+      formData.address = countryCode ? { ...address, countryCode } : address
       await updateVenue({ params, payload: formData }).unwrap()
       navigate(linkToVenues, { replace: true })
     } catch (error) {
@@ -358,12 +364,13 @@ export function VenuesForm () {
               </GoogleMap.FormItem>
             </Col>
           </Row>
-          {isMapEnabled && action !== 'edit' &&
+          {isMapEnabled &&
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
                 label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
                 tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
+                name={['address', 'countryCode']}
               >
                 <Select
                   options={countryCodes}
@@ -372,6 +379,7 @@ export function VenuesForm () {
                   allowClear
                   optionFilterProp='label'
                   placeholder='Please select a country'
+                  disabled={action === 'edit'}
                 />
               </Form.Item>
             </Col>
