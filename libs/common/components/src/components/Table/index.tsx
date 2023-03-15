@@ -31,7 +31,6 @@ import type {
   ColumnType,
   ColumnGroupType,
   ColumnStateOption,
-  RecordWithChildren,
   TableColumn,
   TableColumnState
 } from './types'
