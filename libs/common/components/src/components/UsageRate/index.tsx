@@ -13,18 +13,18 @@ interface UsageRateProps {
 
 
 const strokeColorsByPercent = (percent: number) => {
-  const poor = cssStr('--acx-semantics-red-50')
-  const good = cssStr('--acx-semantics-green-50')
+  const full = cssStr('--acx-semantics-red-50')
+  const poor = cssStr('--acx-semantics-green-50')
   const warn = cssStr('--acx-semantics-yellow-40')
   // Create array of same color based on the percentage
   if (percent <= 20)
-    return Array(1).fill(good)
+    return Array(1).fill(poor)
   else if (percent <= 60)
-    return Array(3).fill(good)
+    return Array(3).fill(poor)
   else if (percent <= 70)
     return Array(5).fill(warn)
   else
-    return Array(5).fill(poor)
+    return Array(5).fill(full)
 }
 
 const normalizePercent = (percent: number) => {
