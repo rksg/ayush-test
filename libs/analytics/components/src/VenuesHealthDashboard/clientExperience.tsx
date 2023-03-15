@@ -2,8 +2,8 @@ import { mean }    from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { AnalyticsFilter }                         from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, ProgressBarV2 } from '@acx-ui/components'
+import { AnalyticsFilter }                                         from '@acx-ui/analytics/utils'
+import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui/components'
 
 import { HealthData, useHealthQuery } from './services'
 
@@ -53,42 +53,44 @@ export function ClientExperience ({
   const healthData = data && data.health.length ? getHealthData(data.health) : null
 
   return(<Loader states={[queryResults]}>
-    <AutoSizer>
-      {({ height, width }) => (
-        <div style={{ display: 'block', height, width }}>
-          <GridRow style={{ marginBottom: '15px', marginTop: '10px' }}>
-            <GridCol col={{ span: 12 }}>
-              {$t({ defaultMessage: 'Connection Success' })}
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.connectionSuccess || 0 as number}/>
-            </GridCol>
-          </GridRow>
-          <GridRow style={{ marginBottom: '15px' }}>
-            <GridCol col={{ span: 12 }}>
-              {$t({ defaultMessage: 'Time To Connect' })}
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.timeToConnect || 0 as number}/>
-            </GridCol>
-          </GridRow>
-          <GridRow style={{ marginBottom: '15px' }}>
-            <GridCol col={{ span: 12 }}>
-              {$t({ defaultMessage: 'Client Throughput' })}
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.clientThroughput || 0 as number}/>
-            </GridCol>
-          </GridRow>
-          <GridRow style={{ marginBottom: '15px' }}>
-            <GridCol col={{ span: 12 }}>
-              {$t({ defaultMessage: 'Online APs' })}
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <ProgressBarV2 percent={healthData?.onlineAps || 0 as number}/>
-            </GridCol>
-          </GridRow>
-        </div>)}
-    </AutoSizer>
+    <HistoricalCard title={$t({ defaultMessage: 'Client Experience' })}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <div style={{ display: 'block', height, width }}>
+            <GridRow style={{ marginBottom: '15px', marginTop: '10px' }}>
+              <GridCol col={{ span: 12 }}>
+                {$t({ defaultMessage: 'Connection Success' })}
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <ProgressBarV2 percent={healthData?.connectionSuccess || 0 as number}/>
+              </GridCol>
+            </GridRow>
+            <GridRow style={{ marginBottom: '15px' }}>
+              <GridCol col={{ span: 12 }}>
+                {$t({ defaultMessage: 'Time To Connect' })}
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <ProgressBarV2 percent={healthData?.timeToConnect || 0 as number}/>
+              </GridCol>
+            </GridRow>
+            <GridRow style={{ marginBottom: '15px' }}>
+              <GridCol col={{ span: 12 }}>
+                {$t({ defaultMessage: 'Client Throughput' })}
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <ProgressBarV2 percent={healthData?.clientThroughput || 0 as number}/>
+              </GridCol>
+            </GridRow>
+            <GridRow style={{ marginBottom: '15px' }}>
+              <GridCol col={{ span: 12 }}>
+                {$t({ defaultMessage: 'Online APs' })}
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <ProgressBarV2 percent={healthData?.onlineAps || 0 as number}/>
+              </GridCol>
+            </GridRow>
+          </div>)}
+      </AutoSizer>
+    </HistoricalCard>
   </Loader>)
 }

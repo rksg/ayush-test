@@ -156,9 +156,7 @@ function CommonDashboardWidgets () {
             </Card>
           </GridCol>
           <GridCol col={{ span: 8 }} style={{ height: '200px' }}>
-            <Card title='Client Experience'>
-              <ClientExperience filters={filters}/>
-            </Card>
+            <ClientExperience filters={filters}/>
           </GridCol>
         </GridRow>
         <GridRow style={{ marginTop: '10px' }}>
