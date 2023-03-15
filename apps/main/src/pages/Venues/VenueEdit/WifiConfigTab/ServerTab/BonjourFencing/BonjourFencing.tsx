@@ -5,12 +5,12 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsForm }             from '@acx-ui/components'
+import { Loader, showActionModal, StepsForm } from '@acx-ui/components'
 import {
   useGetVenueBonjourFencingQuery,
   useUpdateVenueBonjourFencingMutation
 } from '@acx-ui/rc/services'
-import { BonjourFencingService } from '@acx-ui/rc/utils'
+import { BonjourFencingService, VenueBonjourFencingPolicy } from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../..'
 
@@ -45,15 +45,28 @@ export function BonjourFencing () {
   const [enableBonjourFencing, setEnableBonjourFencing] = useState(false)
   const [bonjourFencingServices, setBonjourFencingServices]= useState([] as BonjourFencingService[])
   const isUserSetting = useRef(false)
+  const [ initData, setInitData ] = useState<VenueBonjourFencingPolicy>()
+
+  const onInit = (data?: VenueBonjourFencingPolicy, needToSetInitData=false) => {
+    const { enabled=false, services = [] } = data || {}
+    setEnableBonjourFencing(enabled)
+    const newData = updateRowIds(services)
+    setBonjourFencingServices(newData)
+
+    if (needToSetInitData) {
+      setInitData({
+        enabled: enabled,
+        services: [ ...newData ]
+      })
+    }
+
+  }
 
 
   useEffect(() => {
     const { data: venueBonjourFencing, isLoading } = getVenueBonjourFencing || {}
     if (isLoading === false && venueBonjourFencing) {
-      const { enabled, services = [] } = venueBonjourFencing
-      setEnableBonjourFencing(enabled)
-      const newData = updateRowIds(services)
-      setBonjourFencingServices(newData)
+      onInit(venueBonjourFencing, true)
     }
   }, [getVenueBonjourFencing])
 
@@ -76,6 +89,20 @@ export function BonjourFencing () {
   const updateBonjourFencingSettings = async () => {
 
     try {
+
+      if (enableBonjourFencing === true && bonjourFencingServices.length === 0) {
+        showActionModal({
+          type: 'error',
+          content:
+              $t({ defaultMessage:
+                // eslint-disable-next-line max-len
+                'You must have at least one Bonjour Fencing Service when the Use Bonjour Fencing Service button is Enabled' })
+        })
+
+        await discardBonjourFencingSettings()
+        return
+      }
+
       setEditContextData && setEditContextData({
         ...editContextData,
         unsavedTabKey: 'servers',
@@ -116,6 +143,7 @@ export function BonjourFencing () {
       hasError: false
     })
 
+    onInit(initData)
     isUserSetting.current = false
   }
 
