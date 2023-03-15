@@ -2855,3 +2855,69 @@ export const syslogServerProfiles = [{
     'bc20590f588948f1822dd20aa8a1914c'
   ]
 }]
+
+export const resultOfGetVenueApSnmpAgentSettings = {
+  apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
+  enableApSnmp: true
+}
+
+export const resultOfUpdateApSnmpAgentSettings = { requestId: '5aa421fd-25e9-4952-b3e0-a3a39c9a52bb' }
+
+export const resultOfGetApSnmpAgentProfiles = [
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-1',
+    id: 'c1082e7d05d74eb897bb3600a15c1dc7'
+  },
+  {
+    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    snmpV2Agents: [
+      {
+        communityName: 'test',
+        readPrivilege: true,
+        trapPrivilege: true,
+        notificationType: 'Trap',
+        targetAddr: '10.206.78.28',
+        targetPort: 162
+      }
+    ],
+    snmpV3Agents: [
+      {
+        userName: 'testUser',
+        readPrivilege: true,
+        trapPrivilege: false,
+        notificationType: 'Trap',
+        targetPort: 162,
+        authProtocol: 'SHA',
+        authPassword: '00000000',
+        privacyProtocol: 'AES',
+        privacyPassword: '00000000'
+      }
+    ],
+    policyName: 'SNMP-2',
+    id: 'l8oz9aez7mbyxgdkktvruibnqcw03hfs'
+  }
+]

@@ -48,7 +48,6 @@ export interface TABLE_QUERY <
   search?: SEARCH
   rowKey?: string
   option?: UseQueryOptions
-  detailLevel?: string
 }
 export type PAGINATION = {
   page: number,
@@ -208,8 +207,8 @@ export function useTableQuery <
     } as SORTER
 
     const paginationDetail = {
-      page: customPagination.current,
-      pageSize: customPagination.pageSize
+      page: customPagination.current ?? payload.page,
+      pageSize: customPagination.pageSize ?? payload.pageSize
     } as PAGINATION
 
     const tableProps = { ...sorterDetail, ...paginationDetail }
@@ -263,7 +262,14 @@ export interface NewTableResult<T> {
   content: T[]
   pageable: NewTablePageable
 }
-
+export interface NewAPITableResult<T>{
+  content: T[]
+  paging: {
+    page: number,
+    pageSize: number,
+    totalCount: number
+  }
+}
 interface CreateNewTableHttpRequestProps {
   apiInfo: ApiInfo
   params?: Params<string>
@@ -280,6 +286,14 @@ export function transferToTableResult<T> (newResult: NewTableResult<T>): TableRe
     data: newResult.content,
     page: newResult.pageable ? newResult.pageable.pageNumber + 1 : 1,
     totalCount: newResult.totalElements
+  }
+}
+
+export function transferNewResToTableResult<T> (newResult: NewAPITableResult<T>): TableResult<T> {
+  return {
+    data: newResult.content,
+    page: newResult.paging? newResult.paging.page + 1 : 1,
+    totalCount: newResult.paging.totalCount
   }
 }
 

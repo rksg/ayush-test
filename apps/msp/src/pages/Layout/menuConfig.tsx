@@ -14,6 +14,8 @@ import {
   UsersThreeOutlined,
   UsersThreeSolid
 } from '@acx-ui/icons'
+import { RolesEnum }   from '@acx-ui/types'
+import { hasRoles }    from '@acx-ui/user'
 import { AccountType } from '@acx-ui/utils'
 
 const MspSubscriptionOutlined =
@@ -22,6 +24,8 @@ const MspSubscriptionSolid = styled(MspSubscriptionSolidBase)`${LayoutUI.iconSol
 
 export function useMenuConfig (tenantType: string) {
   const { $t } = useIntl()
+
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
@@ -80,7 +84,7 @@ export function useMenuConfig (tenantType: string) {
       tenantType: 'v',
       inactiveIcon: ConfigurationOutlined,
       activeIcon: ConfigurationSolid,
-      disabled: isIntegrator || isSupport
+      disabled: !isPrimeAdmin || isIntegrator || isSupport
     }
   ]
 

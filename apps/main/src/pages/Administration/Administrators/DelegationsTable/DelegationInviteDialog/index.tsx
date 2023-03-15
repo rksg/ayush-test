@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import { Form, Input, Modal, Typography } from 'antd'
-import { FieldData }                      from 'rc-field-form/lib/interface'
-import { useIntl }                        from 'react-intl'
-import { useParams }                      from 'react-router-dom'
+import { Form, Input, Typography } from 'antd'
+import { FieldData }               from 'rc-field-form/lib/interface'
+import { useIntl }                 from 'react-intl'
+import { useParams }               from 'react-router-dom'
 
-import { showActionModal }      from '@acx-ui/components'
+import { Modal, showActionModal } from '@acx-ui/components'
 import {
   useLazyFindVARDelegationQuery,
   useInviteDelegationMutation

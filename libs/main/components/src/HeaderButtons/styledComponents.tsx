@@ -1,6 +1,5 @@
 import {
   Space,
-  Modal,
   List,
   Button
 } from 'antd'
@@ -65,17 +64,6 @@ export const SearchRow = styled(GridRow)`
   padding-right: 10px;
   border-radius: 6px;
   background: var(--acx-neutrals-10);
-`
-
-export const AboutModal = styled(Modal)`
-  .ant-modal-content {
-    background: var(--acx-neutrals-80);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    border-radius: 8px;
-  }
 `
 
 export const SpaceBetween = styled(Space)`
