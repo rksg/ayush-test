@@ -52,7 +52,7 @@ describe('Property Unit Page', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
+        (_, res, ctx) => res(ctx.json({ data: [{ apMac: '11:22:33:44:55:66' }], totalCount: 0 }))
       ),
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,

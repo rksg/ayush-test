@@ -11,6 +11,7 @@ import {
   useLazyApListQuery,
   useLazyGetPersonaByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
   useLazyGetSwitchListQuery,
   useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
@@ -46,6 +47,7 @@ export function VenuePropertyTab () {
     visible: false
   })
 
+  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const [deleteUnitByIds] = useDeletePropertyUnitsMutation()
   const [updateUnitById] = useUpdatePropertyUnitMutation()
   const propertyConfigsQuery = useGetPropertyConfigsQuery({ params: { venueId } })
@@ -132,7 +134,9 @@ export function VenuePropertyTab () {
       .then(result => {
         if (result.data) {
           result.data.data.forEach(ap => {
-            setApMap(map => new Map(map.set(ap.apMac, ap)))
+            if (ap.apMac === undefined) return
+            const formattedMac = ap.apMac.replaceAll('-', ':')
+            setApMap(map => new Map(map.set(formattedMac, ap)))
           })
         }
       })
@@ -150,6 +154,18 @@ export function VenuePropertyTab () {
           result.data.data.forEach(switchDevice => {
             setSwitchMap(map => new Map(map.set(switchDevice.switchMac, switchDevice)))
           })
+        }
+      })
+  }
+
+  const directToPortal = (unitId: string) => {
+    getUnitById({ params: { venueId, unitId } })
+      .then((result) => {
+        if (result.data) {
+          const residentPortalUrl = (result.data as PropertyUnit)?._links?.residentPortal?.href
+          if (residentPortalUrl) {
+            window.open(decodeURIComponent(residentPortalUrl), '_blank')
+          }
         }
       })
   }
@@ -189,8 +205,8 @@ export function VenuePropertyTab () {
     {
       label: $t({ defaultMessage: 'View Portal' }),
       visible: (selectedItems => selectedItems.length <= 1),
-      onClick: (_, clearSelection) => {
-        // TODO: View Portal Action implementation
+      onClick: ([{ id }], clearSelection) => {
+        directToPortal(id)
         clearSelection()
       }
     },

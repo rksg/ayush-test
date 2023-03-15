@@ -76,7 +76,12 @@ export interface PropertyUnit {
   switch?: {
     name: string
   },
-  vni?: number
+  vni?: number,
+  _links?: {
+    residentPortal?: {
+      href?: string
+    }
+  }
 }
 
 export interface UnitPersonaConfig {
