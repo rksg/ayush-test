@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }           from '@acx-ui/rc/services'
-import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { venueApi }                    from '@acx-ui/rc/services'
+import { getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }             from '@acx-ui/store'
 import { mockServer,
   render,
   screen,
@@ -29,7 +29,7 @@ describe('Venue Directed Multicast', () => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.get(
-        WifiUrlsInfo.getVenueDirectedMulticast.url,
+        getUrlForTest(WifiUrlsInfo.getVenueDirectedMulticast),
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast)))
     )
   })

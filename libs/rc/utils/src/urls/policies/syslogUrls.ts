@@ -3,42 +3,62 @@ import { ApiInfo } from '../../apiService'
 export const SyslogUrls: { [key: string]: ApiInfo } = {
   deleteSyslogPolicy: {
     method: 'delete',
-    url: '/api/syslogServerProfiles/:policyId'
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
   },
   deleteSyslogPolicies: {
     method: 'delete',
-    url: '/api/syslogServerProfiles'
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
   },
   addSyslogPolicy: {
     method: 'post',
-    url: '/api/syslogServerProfiles'
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
   },
   getSyslogPolicy: {
     method: 'get',
-    url: '/api/syslogServerProfiles/:policyId'
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
   },
   updateSyslogPolicy: {
     method: 'put',
-    url: '/api/syslogServerProfiles/:policyId'
+    url: '/syslogServerProfiles/:policyId',
+    oldUrl: '/api/syslogServerProfiles/:policyId',
+    newApi: true
   },
   getSyslogPolicyList: {
     method: 'get',
-    url: '/api/syslogServerProfiles'
+    url: '/syslogServerProfiles',
+    oldUrl: '/api/syslogServerProfiles',
+    newApi: true
   },
   getVenueSyslogAp: {
     method: 'get',
-    url: '/api/venues/:venueId/syslogServerProfileSettings'
+    url: '/venues/:venueId/syslogServerProfileSettings',
+    oldUrl: '/api/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
   },
   updateVenueSyslogAp: {
     method: 'post',
-    url: '/api/venues/:venueId/syslogServerProfileSettings'
+    url: '/venues/:venueId/syslogServerProfileSettings',
+    oldUrl: '/api/venues/:venueId/syslogServerProfileSettings',
+    newApi: true
   },
   getVenueSyslogList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/venue'
+    url: '/venues/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
+    newApi: true
   },
   syslogPolicyList: {
     method: 'post',
-    url: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query'
+    url: '/enhancedSyslogServerProfiles/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query',
+    newApi: true
   }
 }

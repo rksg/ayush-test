@@ -107,13 +107,24 @@ export default function DHCPPoolTable ({
   const [visible, setVisible] = useState(false)
   const [vlanEnable, setVlanEnable] = useState(true)
   const [leaseUnit, setLeaseUnit] = useState(LeaseUnit.HOURS)
+  const [previousVal, setPreviousVal] = useState(300)
   const values = () => Object.values(valueMap.current)
 
   const handleChanged = () => onChange?.(values())
 
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
-    if (item) form.setFieldsValue(item)
+    if (item) {
+      form.setFieldsValue(item)
+      setLeaseUnit(item.leaseUnit||LeaseUnit.HOURS)
+      if(item.vlanId===1){
+        item.allowWired = true
+        setVlanEnable(false)
+      }else{
+        item.allowWired = false
+        setVlanEnable(true)
+      }
+    }
     else form.resetFields()
   }
 
@@ -176,6 +187,7 @@ export default function DHCPPoolTable ({
                 form.setFieldsValue({ vlanId: 1 })
                 setVlanEnable(false)
               } else {
+                form.setFieldsValue({ vlanId: previousVal })
                 setVlanEnable(true)
               }
             }}/>}
@@ -302,6 +314,9 @@ export default function DHCPPoolTable ({
           label={$t({ defaultMessage: 'VLAN' })}
           children={<InputNumber
             disabled={!vlanEnable}
+            onChange={(val)=>{
+              setPreviousVal(val)
+            }}
             min={1}
             max={4094} />}
         />

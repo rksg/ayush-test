@@ -19,14 +19,21 @@ export interface AAATempType {
   id?: string,
   name: string,
   primary?: RadiusServer,
+  secondary?: RadiusServer
+}
+export interface AAAViewModalType {
+  id?: string,
+  name: string,
+  primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION'
+  type?: 'ACCOUNTING' | 'AUTHENTICATION',
+  networkIds?: string[]
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',
-  AUTHENTICATION = 'Authentication',
+  AUTHENTICATION = 'Authentication Radius Server',
   AUTHORIZATION = 'Authorization',
-  ACCOUNTING = 'Accounting'
+  ACCOUNTING = 'Accounting Radius Server'
 }
 export interface AAAPolicyNetwork {
   networkId: string,

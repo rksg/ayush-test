@@ -88,10 +88,10 @@ export function SwitchTable (props : {
     useQuery: useSwitchListQuery,
     defaultPayload: {
       filters: getFilters(params),
-      ...defaultSwitchPayload,
-      search: {
-        searchTargetFields: defaultSwitchPayload.searchTargetFields
-      }
+      ...defaultSwitchPayload
+    },
+    search: {
+      searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) }
   })

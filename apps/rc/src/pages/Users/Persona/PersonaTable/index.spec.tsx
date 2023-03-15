@@ -6,7 +6,7 @@ import { PersonaUrls }                                                          
 import { Provider }                                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent, within } from '@acx-ui/test-utils'
 
-import { mockPersonaGroupList, mockPersonaTableResult } from '../__tests__/fixtures'
+import { mockPersonaGroupList, mockPersonaTableResult, replacePagination } from '../__tests__/fixtures'
 
 import { PersonaTable } from '.'
 
@@ -19,14 +19,14 @@ describe('Persona Table', () => {
   beforeEach( () => {
     mockServer.use(
       rest.post(
-        PersonaUrls.searchPersonaList.url,
+        replacePagination(PersonaUrls.searchPersonaList.url),
         (req, res, ctx) => {
           searchPersonaApi()
           return res(ctx.json(mockPersonaTableResult))
         }
       ),
       rest.get(
-        PersonaUrls.getPersonaGroupList.url,
+        replacePagination(PersonaUrls.getPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       )
     )
@@ -118,7 +118,7 @@ describe('Persona Table', () => {
 
     mockServer.use(
       rest.post(
-        PersonaUrls.exportPersona.url,
+        PersonaUrls.exportPersona.url.replace('?timezone=:timezone&date-format=:dateFormat', ''),
         (req, res, ctx) => {
           const headers = req['headers']
 
