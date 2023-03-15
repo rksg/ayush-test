@@ -84,8 +84,8 @@ type AdditionalColumnType <RecordType, ValueType> = {
   groupable?: {
     key: string,
     label: ReactNode,
-    parentColumns: { key: string, renderer: (record: RecordType) => ReactNode }[]
-    actions?: { key: string, label: (record: RecordType) => ReactNode }[]
+    attributes: { key: string, renderer: (record: RecordType) => ReactNode }[]
+    actions?: { key: string, renderer: (record: RecordType) => ReactNode }[]
   }
 }
 

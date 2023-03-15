@@ -160,8 +160,7 @@ function Table <RecordType extends Record<string, any>> ({
   const {
     groupable,
     expandable,
-    groupActionColumns,
-    parentColumns,
+    renderGroupRow,
     isGroupByActive
   } = useGroupBy<RecordType, RecordWithChildren<RecordType>>(props.columns, allKeys, groupByValue)
 
@@ -194,12 +193,11 @@ function Table <RecordType extends Record<string, any>> ({
     }
 
     const tableCols = isGroupByActive
-      ? props.columns.map((col, i) => {
-        const parent = parentColumns.at(i)
+      ? props.columns.map((col, columnIndex) => {
         const { render, searchable, key } = col
         const renderer: typeof render = (dom, record, index, highlightFn, action, schema) => {
           if ('children' in record) {
-            return (parent) ? parent.renderer(record) : null
+            return columnIndex === 0 ? renderGroupRow(record) : null
           } else {
             if (render) {
               return render(dom, record, index, highlightFn, action, schema)
@@ -210,12 +208,20 @@ function Table <RecordType extends Record<string, any>> ({
             return dom
           }
         }
-        return { ...col, render: renderer }
+        return {
+          ...col,
+          onCell: (record: RecordType) => ({
+            colSpan: ('children' in record)
+              ? (columnIndex === 0 ? props.columns.length : 0)
+              : 1
+          }),
+          render: renderer
+        }
       })
       : props.columns
 
     const cols = type === 'tall'
-      ? [...tableCols, ...groupActionColumns, settingsColumn] as typeof props.columns
+      ? [...tableCols, settingsColumn] as typeof props.columns
       : props.columns
 
     return cols.map(column => ({

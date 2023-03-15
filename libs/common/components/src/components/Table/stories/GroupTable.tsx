@@ -5,7 +5,6 @@ import { APExtended } from 'libs/rc/utils/src/types/ap'
 import { uniqueId }   from 'lodash'
 
 import { Table, TableProps } from '..'
-import { Button }            from '../../Button'
 
 export type APExtendedGroupedResponse = {
   networks: {
@@ -133,7 +132,7 @@ const apGroupResponse = cleanResponse([
     ]
   }, {
     deviceGroupId: '9095a8cf11c845a9afe4d3643c46a222',
-    deviceGroupName: 'apgroup20',
+    deviceGroupName: 'apgroup20 with a longer name to test what happens',
     deviceStatus: '',
     model: '',
     networks: {
@@ -695,28 +694,28 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     groupable: {
       key: 'deviceStatus',
       label: 'Status',
-      parentColumns: [
+      attributes: [
         {
           key: 'deviceStatus',
           renderer: (record) => <b>{record.deviceStatus}</b>
         },
         {
           key: 'members',
-          renderer: (record) => <div>Members: {record.members}</div>
+          renderer: (record) => <span>Members: {record.members}</span>
         },
         {
           key: 'incidents',
-          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          renderer: (record) => <span>Incidents (24 hours): {record.incidents}</span>
         },
         {
           key: 'clients',
-          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          renderer: (record) => <span>Connected Clients: {record.clients}</span>
         },
         {
           key: 'networks',
-          renderer: (record) => <div>
+          renderer: (record) => <span>
               Wireless Networks: {record.networks ? record.networks.count : 0}
-          </div>
+          </span>
         }
       ]
     }
@@ -729,28 +728,28 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
     groupable: {
       key: 'model',
       label: 'Model',
-      parentColumns: [
+      attributes: [
         {
           key: 'model',
           renderer: (record) => <b>{record.model}</b>
         },
         {
           key: 'members',
-          renderer: (record) => <div>Members: {record.members}</div>
+          renderer: (record) => <span>Members: {record.members}</span>
         },
         {
           key: 'incidents',
-          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          renderer: (record) => <span>Incidents (24 hours): {record.incidents}</span>
         },
         {
           key: 'clients',
-          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          renderer: (record) => <span>Connected Clients: {record.clients}</span>
         },
         {
           key: 'networks',
-          renderer: (record) => <div>
+          renderer: (record) => <span>
               Wireless Networks: {record.networks ? record.networks.count : 0}
-          </div>
+          </span>
         }
       ]
     }
@@ -797,33 +796,30 @@ export const groupByColumns: TableProps<APExtendedGroupedResponse | APExtended>[
       label: 'AP Group',
       actions: [{
         key: 'edit',
-        label: (record) => <Button onClick={() => {
-          // eslint-disable-next-line no-console
-          console.log(`trigger edit apgroup button with data: ${JSON.stringify(record)}`)
-        }}>Edit</Button>
+        renderer: (record) => <a href={`/edit/${record.name}`}>Edit</a>
       }],
-      parentColumns: [
+      attributes: [
         {
           key: 'deviceGroupName',
           renderer: (record) => <b>{record.deviceGroupName}</b>
         },
         {
           key: 'members',
-          renderer: (record) => <div>Members: {record.members}</div>
+          renderer: (record) => <span>Members: {record.members}</span>
         },
         {
           key: 'incidents',
-          renderer: (record) => <div>Incidents (24 hours): {record.incidents}</div>
+          renderer: (record) => <span>Incidents (24 hours): {record.incidents}</span>
         },
         {
           key: 'clients',
-          renderer: (record) => <div>Connected Clients: {record.clients}</div>
+          renderer: (record) => <span>Connected Clients: {record.clients}</span>
         },
         {
           key: 'networks',
-          renderer: (record) => <div>
+          renderer: (record) => <span>
               Wireless Networks: {record.networks ? record.networks.count : 0}
-          </div>
+          </span>
         }
       ]
     }

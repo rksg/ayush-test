@@ -937,7 +937,7 @@ describe('Table component', () => {
       await waitFor(async () =>
         expect(await screen.findByTestId('option-deviceGroupName')).toBeInTheDocument())
       fireEvent.click(await screen.findByTestId('option-deviceGroupName'))
-      const editBtns = await screen.findAllByRole('button', { name: 'Edit' })
+      const editBtns = await screen.findAllByRole('link', { name: 'Edit' })
       expect(editBtns.length).toEqual(3)
       fireEvent.click(editBtns[0])
     })

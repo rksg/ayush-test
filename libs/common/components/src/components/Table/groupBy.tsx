@@ -3,8 +3,7 @@ import { useMemo, Key } from 'react'
 import { Select }    from 'antd'
 import { IntlShape } from 'react-intl'
 
-import * as UI                from './styledComponents'
-import { RecordWithChildren } from './types'
+import * as UI from './styledComponents'
 
 import { TableProps } from '.'
 
@@ -43,42 +42,31 @@ export function GroupSelect<RecordType> ({
   </UI.FilterSelect>
 }
 
-export function useGroupBy<RecordType, ParentRecord extends RecordWithChildren<RecordType>> (
+export function useGroupBy<RecordType> (
   columns: TableProps<RecordType>['columns'],
   expandedRowKeys: Key[] | undefined,
   groupByValue: string | undefined
 ) {
   return useMemo(() => {
     const groupable = columns.filter(col => col.groupable)
-    if (groupable.length > 0) {
-      const targetCol = groupable.find(col => col.key === groupByValue)
-      const parentColumns = targetCol?.groupable!.parentColumns ?? []
-      const isGroupByActive = typeof groupByValue !== 'undefined'
-      const actionsList = targetCol?.groupable?.actions ?? []
-      const groupActionColumns: TableProps<ParentRecord>['columns'] = actionsList
-        .map((val) => ({
-          key: val.key,
-          dataIndex: '',
-          render: (_, record) => 'children' in record ? val.label(record) : null
-        }))
-      const expandable: TableProps<ParentRecord>['expandable'] = {
-        expandedRowKeys,
-        showExpandColumn: false
-      }
-      return {
-        groupable,
-        parentColumns,
-        isGroupByActive,
-        groupActionColumns,
-        expandable: (isGroupByActive) ? expandable : undefined
-      }
-    }
+    const isGroupByActive = typeof groupByValue !== 'undefined'
+    const targetCol = groupable.find(col => col.key === groupByValue)
+    const attributes = targetCol?.groupable?.attributes ?? []
+    const actionsList = targetCol?.groupable?.actions ?? []
     return {
       groupable,
-      parentColumns: [],
-      isGroupByActive: false,
-      groupActionColumns: [],
-      expandable: undefined
+      renderGroupRow: (record: RecordType) => (
+        <UI.GroupRow>
+          <UI.GroupCell>
+            {attributes.map(({ key, renderer }) => <div key={key}>{renderer(record)}</div>)}
+          </UI.GroupCell>
+          <UI.GroupCell>
+            {actionsList.map(({ key, renderer }) => <div key={key}>{renderer(record)}</div>)}
+          </UI.GroupCell>
+        </UI.GroupRow>
+      ),
+      isGroupByActive,
+      expandable: isGroupByActive ? { expandedRowKeys, showExpandColumn: false } : undefined
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupByValue, expandedRowKeys])

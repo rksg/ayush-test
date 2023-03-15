@@ -12,28 +12,20 @@ describe('Table Groupby', () => {
       const { result } = renderHook(() => useGroupBy(groupByColumns, [], undefined))
       const {
         isGroupByActive,
-        expandable,
-        parentColumns,
-        groupActionColumns
+        expandable
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(expandable).toBeUndefined()
-      expect(parentColumns).toMatchObject([])
-      expect(groupActionColumns).toMatchObject([])
     })
 
     it('render hook correctly with empty array groupable', () => {
       const { result } = renderHook(() => useGroupBy([], [], undefined))
       const {
         isGroupByActive,
-        expandable,
-        parentColumns,
-        groupActionColumns
+        expandable
       } = result.current
       expect(isGroupByActive).toBeFalsy()
       expect(expandable).toBeUndefined()
-      expect(parentColumns).toMatchObject([])
-      expect(groupActionColumns).toMatchObject([])
     })
   })
 
