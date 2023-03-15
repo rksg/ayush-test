@@ -132,18 +132,18 @@ const dateTimeFormats = {
   dateTimeFormatWithSeconds: 'HH:mm:ss'
 }
 
-function dateTimeFormatter (number: unknown, format: string, tz?: string ) {
+function dateTimeFormatter (value: moment.MomentInput, format: string, tz?: string ) {
   const dateFormat = getUserProfile().profile.dateFormat as string
   const customFormat = [
     dateFormat?.toUpperCase() || defaultDateFormat,
     format
   ].filter(Boolean).join(' ')
   return tz
-    ? moment(number as moment.MomentInput)
+    ? moment(value)
       .tz(tz)
       .format(customFormat + ' Z')
       .replace('+00:00', 'UTC')
-    : moment(number as moment.MomentInput).format(customFormat)
+    : moment(value).format(customFormat)
 }
 
 function calendarFormat (number: number) {
@@ -224,7 +224,7 @@ export function formatter (
       return intl.$t(intlFormats[name], { value: value as number | string | Date })
     }
     if (isDateTimeFormat(name)) {
-      return dateTimeFormatter(value, dateTimeFormats[name], tz)
+      return dateTimeFormatter(value as moment.MomentInput, dateTimeFormats[name], tz)
     }
     if (isFormat(name)) {
       const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
