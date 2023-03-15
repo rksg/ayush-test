@@ -33,8 +33,9 @@ export const VersionBanner = () => {
         <span>{transform(firmware?.category, 'type')} </span>
         <span>({transform(firmware?.category, 'subType')})</span>
         <span> - </span>
-        { // eslint-disable-next-line max-len
-          <UI.BannerVersionName>{formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}</UI.BannerVersionName>}
+        <UI.BannerVersionName>
+          {formatter(DateFormatEnum.DateFormat)(firmware?.createdDate)}
+        </UI.BannerVersionName>
       </UI.BannerVersion>
     </div>
   )
