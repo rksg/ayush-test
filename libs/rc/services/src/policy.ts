@@ -53,7 +53,7 @@ import {
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
-  EnhancedAccessControlInfoType
+  EnhancedAccessControlInfoType, RulesManagementUrlsInfo, AdaptivePolicySet
 } from '@acx-ui/rc/utils'
 
 
@@ -79,7 +79,8 @@ export const basePolicyApi = createApi({
     'SnmpAgent',
     'VLANPool',
     'AAA',
-    'AccessControl'
+    'AccessControl',
+    'AdaptivePolicySet'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
@@ -1232,8 +1233,32 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    adaptivePolicySetList: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const poolsReq = createNewTableHttpRequest({
+          apiInfo: RulesManagementUrlsInfo.getAdaptivePolicySets,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...poolsReq
+        }
+      },
+      transformResponse (result: NewTableResult<AdaptivePolicySet>) {
+        return transferToTableResult<AdaptivePolicySet>(result)
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
+    }),
+    getAdaptivePolicySet: build.query<AdaptivePolicySet, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RulesManagementUrlsInfo.getAdaptivePolicySet, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'AdaptivePolicySet', id: 'DETAIL' }]
     })
-
   })
 })
 
@@ -1340,5 +1365,8 @@ export const {
   useUpdateVenueApSnmpSettingsMutation,
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
-  useResetApSnmpSettingsMutation
+  useResetApSnmpSettingsMutation,
+  useAdaptivePolicySetListQuery,
+  useGetAdaptivePolicySetQuery,
+  useLazyGetAdaptivePolicySetQuery
 } = policyApi
