@@ -1,4 +1,5 @@
 import { useState } from 'react'
+
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -6,7 +7,7 @@ import { noDataSymbol, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader }      from '@acx-ui/components'
 import { formatter, intlFormats }        from '@acx-ui/utils'
 
-import { useSummaryQuery }    from './services'
+import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
 
 
@@ -45,8 +46,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     end: filters.endDate
   }
 
-  const [ openType, setOpenType ] = useState<'stats' | 'ttc' | 'none'>('none')
-  const toggleStats = () => setOpenType(openType !== 'stats' ? 'stats' : 'none')
+  const [ openType, setOpenType ] = useState<'connectionFailure' | 'ttc' | 'none'>('none')
+  const toggleConnectionFailure = () => setOpenType(openType !== 'connectionFailure'
+    ? 'connectionFailure' : 'none')
   const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
 
   const queryResults = useSummaryQuery(payload, {
@@ -88,23 +90,23 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       type: 'successCount',
       title: defineMessage({ defaultMessage: 'Successful Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      isOpen: openType === 'stats',
-      onClick: toggleStats,
+      isOpen: openType === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.successCount
     },
     {
       type: 'failureCount',
       title: defineMessage({ defaultMessage: 'Failed Connections' }),
       suffix: `/${queryResults.data.totalCount}`,
-      isOpen: openType === 'stats',
-      onClick: toggleStats,
+      isOpen: openType === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.failureCount
     },
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-      isOpen: openType === 'stats',
-      onClick: toggleStats,
+      isOpen: openType === 'connectionFailure',
+      onClick: toggleConnectionFailure,
       value: queryResults.data.successPercentage
     },
     {
