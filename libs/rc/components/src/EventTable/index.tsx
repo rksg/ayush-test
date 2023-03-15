@@ -11,8 +11,8 @@ import { Loader,
   Button,
   Tooltip
 } from '@acx-ui/components'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { useEventsQuery }             from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
