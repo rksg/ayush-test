@@ -1,10 +1,25 @@
 import { rest } from 'msw'
 
-import { ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }                       from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import MacRegistrationListsTable from './index'
+
+const networkList = {
+  fields: ['venues', 'id', 'venues.id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'a22e0192e090459ab04cdc161bf6285f',
+      venues: {
+        count: 2,
+        names: ['My-Venue', 'My-V2']
+      }
+    }
+  ]
+}
 
 
 const policySet = {
@@ -22,7 +37,9 @@ const list = {
       enabled: true,
       expirationEnabled: false,
       registrationCount: 5,
-      policySetId: policySet.id
+      policySetId: policySet.id,
+      associationIds: [],
+      networkIds: ['a22e0192e090459ab04cdc161bf6285f']
     },
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc67',
@@ -75,6 +92,10 @@ describe('MacRegistrationListsTable', () => {
       rest.get(
         RulesManagementUrlsInfo.getAdaptivePolicySet.url,
         (req, res, ctx) => res(ctx.json(policySet))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(networkList))
       )
     )
   })
@@ -116,12 +137,12 @@ describe('MacRegistrationListsTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /Registration pool-1/i })
+    const row = await screen.findByRole('row', { name: /Registration pool-2/i })
     fireEvent.click(within(row).getByRole('radio'))
 
     fireEvent.click(screen.getByRole('button', { name: /delete/i }))
 
-    await screen.findByText('Delete "Registration pool-1"?')
+    await screen.findByText('Delete "Registration pool-2"?')
 
     fireEvent.change(screen.getByRole('textbox', { name: /type the word "delete" to confirm:/i }),
       { target: { value: 'Delete' } })

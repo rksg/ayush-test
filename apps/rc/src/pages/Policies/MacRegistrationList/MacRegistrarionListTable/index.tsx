@@ -10,6 +10,7 @@ import {
   Loader,
   showActionModal, showToast
 } from '@acx-ui/components'
+import { SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteMacRegListMutation,
   useLazyGetAdaptivePolicySetQuery,
@@ -21,7 +22,7 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   MacRegistrationDetailsTabKey,
-  MacRegistrationPool, Network,
+  MacRegistrationPool,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -32,87 +33,12 @@ import { filterByAccess }                                          from '@acx-ui
 import { returnExpirationString } from '../MacRegistrationListUtils'
 
 
-function useColumns (policySets: Map<string, string>, venueCountMap: Map<string, string>) {
-  const { $t } = useIntl()
-  const columns: TableProps<MacRegistrationPool>['columns'] = [
-    {
-      title: $t({ defaultMessage: 'Name' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: true,
-      searchable: true,
-      defaultSortOrder: 'ascend',
-      render: function (data, row, _, highlightFn) {
-        return (
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.MAC_REGISTRATION_LIST,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!,
-              activeTab: MacRegistrationDetailsTabKey.OVERVIEW
-            })}
-          >{highlightFn(data as string)}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'List Expiration' }),
-      key: 'listExpiration',
-      dataIndex: 'listExpiration',
-      render: function (data, row) {
-        return returnExpirationString(row)
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Default Access' }),
-      key: 'defaultAccess',
-      dataIndex: 'defaultAccess'
-    },
-    {
-      title: $t({ defaultMessage: 'Access Policy Set' }),
-      key: 'policySet',
-      dataIndex: 'policySet',
-      render: function (data, row) {
-        return row.policySetId ? policySets.get(row.policySetId) : ''
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'MAC Addresses' }),
-      key: 'registrationCount',
-      dataIndex: 'registrationCount',
-      align: 'center',
-      render: function (data, row) {
-        return (
-          <TenantLink
-            to={getPolicyDetailsLink({
-              type: PolicyType.MAC_REGISTRATION_LIST,
-              oper: PolicyOperation.DETAIL,
-              policyId: row.id!,
-              activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS
-            })}
-          >{row.registrationCount ?? 0}</TenantLink>
-        )
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Venues' }),
-      key: 'venueCount',
-      dataIndex: 'venueCount',
-      align: 'center',
-      render: function (data, row) {
-        return venueCountMap.get(row.id!) ?? 0
-      }
-    }
-  ]
-  return columns
-}
-
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [policySetMap, setPolicySetMap] = useState(new Map())
-  const [venueCountMap, setVenueCountMap] = useState(new Map())
+  const [venuesMap, setVenuesMap] = useState(new Map())
   const params = useParams()
 
   const tableQuery = useTableQuery({
@@ -133,7 +59,7 @@ export default function MacRegistrationListsTable () {
       return
 
     const policySets = new Map()
-    const venueCountMap = new Map()
+    const venues = new Map()
 
     tableQuery.data?.data.forEach(macPools => {
       const { id, policySetId, networkIds } = macPools
@@ -154,16 +80,96 @@ export default function MacRegistrationListsTable () {
             filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
           } }).then(result => {
           if (result.data?.data) {
-            // eslint-disable-next-line max-len
-            const count = result.data.data.reduce((accumulator: number, currentValue:Network) => accumulator + currentValue.venues.count, 0)
-            venueCountMap.set(id, count)
+            const venuesNameSet = new Set()
+            result.data.data.forEach(v => {
+              v.venues.names.forEach(n => {
+                venuesNameSet.add(n)
+              })
+            })
+            venues.set(id, Array.from(venuesNameSet))
           }
         })
       }
     })
     setPolicySetMap(policySets)
-    setVenueCountMap(venueCountMap)
+    setVenuesMap(venues)
   }, [tableQuery.data])
+
+  function useColumns () {
+    const columns: TableProps<MacRegistrationPool>['columns'] = [
+      {
+        title: $t({ defaultMessage: 'Name' }),
+        key: 'name',
+        dataIndex: 'name',
+        sorter: true,
+        searchable: true,
+        defaultSortOrder: 'ascend',
+        render: function (data, row, _, highlightFn) {
+          return (
+            <TenantLink
+              to={getPolicyDetailsLink({
+                type: PolicyType.MAC_REGISTRATION_LIST,
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!,
+                activeTab: MacRegistrationDetailsTabKey.OVERVIEW
+              })}
+            >{highlightFn(data as string)}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'List Expiration' }),
+        key: 'listExpiration',
+        dataIndex: 'listExpiration',
+        render: function (data, row) {
+          return returnExpirationString(row)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Default Access' }),
+        key: 'defaultAccess',
+        dataIndex: 'defaultAccess'
+      },
+      {
+        title: $t({ defaultMessage: 'Access Policy Set' }),
+        key: 'policySet',
+        dataIndex: 'policySet',
+        render: function (data, row) {
+          return row.policySetId ? policySetMap.get(row.policySetId) : ''
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'MAC Addresses' }),
+        key: 'registrationCount',
+        dataIndex: 'registrationCount',
+        align: 'center',
+        render: function (data, row) {
+          return (
+            <TenantLink
+              to={getPolicyDetailsLink({
+                type: PolicyType.MAC_REGISTRATION_LIST,
+                oper: PolicyOperation.DETAIL,
+                policyId: row.id!,
+                activeTab: MacRegistrationDetailsTabKey.MAC_REGISTRATIONS
+              })}
+            >{row.registrationCount ?? 0}</TenantLink>
+          )
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Venues' }),
+        key: 'venueCount',
+        dataIndex: 'venueCount',
+        align: 'center',
+        render: function (data, row) {
+          if(!venuesMap.has(row.id) || venuesMap.get(row.id).length === 0) return 0
+          // eslint-disable-next-line max-len
+          return <SimpleListTooltip items={venuesMap.get(row.id)} displayText={venuesMap.get(row.id).length} />
+        }
+      }
+    ]
+    return columns
+  }
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
@@ -234,7 +240,7 @@ export default function MacRegistrationListsTable () {
         { isLoading: false, isFetching: isDeleteMacRegListUpdating }
       ]}>
         <Table
-          columns={useColumns(policySetMap, venueCountMap)}
+          columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
