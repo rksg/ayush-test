@@ -132,12 +132,20 @@ const dateTimeFormats = {
   dateTimeFormatWithSeconds: 'HH:mm:ss'
 }
 
-function dateTimeFormatter (value: moment.MomentInput, format: string, tz?: string ) {
+export function userDateTimeFormat (format: DateFormatEnum) {
   const dateFormat = getUserProfile().profile.dateFormat as string
-  const customFormat = [
+  return [
     dateFormat?.toUpperCase() || defaultDateFormat,
-    format
+    dateTimeFormats[format]
   ].filter(Boolean).join(' ')
+}
+
+function dateTimeFormatter (
+  value: moment.MomentInput,
+  format: DateFormatEnum,
+  tz?: string
+) {
+  const customFormat = userDateTimeFormat(format)
   return tz
     ? moment(value)
       .tz(tz)
@@ -224,7 +232,7 @@ export function formatter (
       return intl.$t(intlFormats[name], { value: value as number | string | Date })
     }
     if (isDateTimeFormat(name)) {
-      return dateTimeFormatter(value as moment.MomentInput, dateTimeFormats[name], tz)
+      return dateTimeFormatter(value as moment.MomentInput, name, tz)
     }
     if (isFormat(name)) {
       const formatter = formats[name] as (value: unknown, intl: IntlShape) => string
