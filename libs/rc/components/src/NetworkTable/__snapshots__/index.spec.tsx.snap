@@ -6,7 +6,7 @@ exports[`NetworkTable should render table 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 iqWyRG"
+      class="styledComponents__Wrapper-sc-1abm7iv-14 dXsroY"
     >
       <div
         class="ant-pro-table"
@@ -1580,7 +1580,7 @@ exports[`NetworkTable should render table with selectable=false 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+      class="styledComponents__Wrapper-sc-1abm7iv-14 cNMvRj"
     >
       <div
         class="ant-pro-table"

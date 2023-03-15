@@ -6,6 +6,9 @@ import { useIsSplitOn }                                             from '@acx-u
 import {  Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
 import { Provider }                                                 from '@acx-ui/store'
 import { findTBody, render, renderHook, screen, within }            from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps }              from '@acx-ui/user'
+
+import { fakeUserProfile } from '../AdminLogTable/__tests__/fixtures'
 
 import { events, eventsMeta } from './__tests__/fixtures'
 
@@ -38,6 +41,10 @@ describe('EventTable', () => {
     handleTableChange: jest.fn()
   } as unknown as TableQuery<Event, RequestPayload<unknown>, unknown>
 
+  const userProfileContextValues = {
+    data: fakeUserProfile
+  } as UserProfileContextProps
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
@@ -45,7 +52,9 @@ describe('EventTable', () => {
   it('should render event list', async () => {
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />,
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -71,7 +80,9 @@ describe('EventTable', () => {
   it('should render based on filterables/searchables is empty', async () => {
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -83,7 +94,9 @@ describe('EventTable', () => {
   it('should render based on filterables/searchables is false', async () => {
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -95,11 +108,13 @@ describe('EventTable', () => {
   it('should render based on filterables/searchables is array', async () => {
     render(
       <Provider>
-        <EventTable
-          tableQuery={tableQuery}
-          searchables={['message', 'entity_type']}
-          filterables={['severity', 'entity_type', 'product']}
-        />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable
+            tableQuery={tableQuery}
+            searchables={['message', 'entity_type']}
+            filterables={['severity', 'entity_type', 'product']}
+          />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -112,7 +127,9 @@ describe('EventTable', () => {
   it('should open/close event drawer', async () => {
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -134,7 +151,9 @@ describe('EventTable', () => {
 
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -154,7 +173,9 @@ describe('EventTable', () => {
 
     render(
       <Provider>
-        <EventTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -175,7 +196,11 @@ describe('EventTable', () => {
 
     const name = eventsMeta[3].switchName
     const { rerender } = render(
-      <Provider><EventTable tableQuery={tableQuery} /></Provider>,
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
+      </Provider>,
       { route: { params } }
     )
 
@@ -185,11 +210,29 @@ describe('EventTable', () => {
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
-    rerender(<Provider><EventTable tableQuery={tableQuery} /></Provider>)
+    rerender(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
+      </Provider>
+    )
 
     elements = await screen.findAllByText(name)
     expect(elements).toHaveLength(1)
     elements.forEach(element => expect(element.nodeName).not.toBe('A'))
+  })
+
+  it('should download csv on click', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <EventTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
   })
 })
 
@@ -200,3 +243,4 @@ describe('useEventTableFilter', () => {
       .toEqual({ fromTime: '2021-12-31T16:00:00Z', toTime: '2022-01-01T16:00:00Z' })
   })
 })
+

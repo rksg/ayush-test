@@ -14,7 +14,7 @@ exports[`HistoricalClientsTable should render correctly 1`] = `
         Historical Clients
       </h4>
       <div
-        class="styledComponents__Wrapper-sc-1abm7iv-12 jjcNqJ"
+        class="styledComponents__Wrapper-sc-1abm7iv-14 cNMvRj"
       >
         <div
           class="ant-pro-table"

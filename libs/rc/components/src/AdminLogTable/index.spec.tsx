@@ -2,11 +2,12 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { AdminLog, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
-import { render, screen }                       from '@acx-ui/test-utils'
+import { AdminLog, RequestPayload, TableQuery }        from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { render, screen }                              from '@acx-ui/test-utils'
+import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
 
-import { events, eventsMeta } from './__tests__/fixtures'
+import { events, eventsMeta, fakeUserProfile } from './__tests__/fixtures'
 
 import { AdminLogTable } from '.'
 
@@ -21,10 +22,16 @@ describe('AdminLogTable', () => {
     handleTableChange: jest.fn()
   } as unknown as TableQuery<AdminLog, RequestPayload<unknown>, unknown>
 
+  const userProfileContextValues = {
+    data: fakeUserProfile
+  } as UserProfileContextProps
+
   it('should render activity list', async () => {
     render(
       <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <AdminLogTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -36,7 +43,9 @@ describe('AdminLogTable', () => {
   it('should open/close activity drawer', async () => {
     render(
       <Provider>
-        <AdminLogTable tableQuery={tableQuery} />
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <AdminLogTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
       </Provider>,
       { route: { params } }
     )
@@ -47,5 +56,17 @@ describe('AdminLogTable', () => {
     screen.getByText('Log Details')
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(screen.queryByText('Activity Details')).toBeNull()
+  })
+
+  it('should download csv on click', async () => {
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={userProfileContextValues}>
+          <AdminLogTable tableQuery={tableQuery} />
+        </UserProfileContext.Provider>
+      </Provider>,
+      { route: { params } }
+    )
+    await userEvent.click(screen.getByTestId('DownloadOutlined'))
   })
 })

@@ -128,8 +128,8 @@ const AdminLogTable = ({ tableQuery }: AdminLogTableProps) => {
     fields: ['event_datetime', 'severity', 'entity_type', 'entity_id', 'message'],
     filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
     isSupport: false,
-    searchString: tableQuery.payload.searchString as string,
-    searchTargetFields: tableQuery.payload.searchTargetFields as string[],
+    searchString: tableQuery?.payload?.searchString as string,
+    searchTargetFields: tableQuery?.payload?.searchTargetFields as string[],
     sortField: 'event_datetime',
     sortOrder: 'DESC',
     tenantId: params.tenantId!
