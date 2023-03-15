@@ -9,6 +9,7 @@ import {
   StepsForm,
   RadioCardCategory
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   PolicyType,
   getPolicyListRoutePath,
@@ -24,6 +25,7 @@ export default function SelectPolicyForm () {
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
+  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -45,6 +47,10 @@ export default function SelectPolicyForm () {
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
   ]
+
+  if (supportApSnmp) {
+    sets.push({ type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI] })
+  }
 
   return (
     <>

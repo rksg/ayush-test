@@ -18,7 +18,6 @@ export default function PortalWelcomeContent (props: {
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline]=useState('none')
   const [clicked, setClicked] = useState(false)
-  const [changed, setChanged] = useState(false)
   const welcomeTools = <PortalImageTools
     showImg={false}
     color={demoValue.welcomeColor}
@@ -35,7 +34,7 @@ export default function PortalWelcomeContent (props: {
       onVisibleChange={(value) => setClicked(value)}
     ><TextArea
         maxLength={100}
-        value={changed?demoValue.welcomeText:(demoValue.welcomeText||props.portalLang.welcomeText)}
+        value={demoValue.welcomeText!==undefined?demoValue.welcomeText:props.portalLang.welcomeText}
         placeholder='welcometext'
         style={{ cursor: cursor, outline: outline, height: 25 * (demoValue.welcomeSize
           /PortalDemoDefaultSize.welcomeSize), fontWeight: 600, resize: 'none', minHeight: 60,
@@ -45,7 +44,6 @@ export default function PortalWelcomeContent (props: {
         /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
         fontSize: (demoValue.welcomeSize) }}
         onChange={(e) => {
-          setChanged(true)
           updateWelcome({ text: e.target.value, show: true })}}
         onMouseOver={() => {
           setCursor('pointer')

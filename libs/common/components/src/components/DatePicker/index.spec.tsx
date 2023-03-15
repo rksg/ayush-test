@@ -396,27 +396,52 @@ describe('RangePicker', () => {
     expect(onDateChange).toHaveBeenCalledTimes(0)
     expect(apply).toHaveBeenCalledTimes(1)
   })
-  it('should no action trigger if date is disabled', async () => {
-    const { container } = render(
+
+  it('should display all time', async () => {
+    const onDateChange = jest.fn()
+    render(
       <IntlProvider locale='en'>
         <RangePicker
-          selectionType={DateRange.last7Days}
+          selectionType={DateRange.custom}
+          selectedRange={{ startDate: null, endDate: null }}
+          onDateChange={onDateChange}
           onDateApply={() => {}}
-          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
-          showTimePicker
-          selectedRange={{
-            startDate: moment().subtract(7, 'days').seconds(0),
-            endDate: moment().seconds(0)
-          }}
-          disabled={true}
+          showAllTime={true}
         />
       </IntlProvider>
-
     )
     const user = userEvent.setup()
     const calenderSelect = await screen.findByPlaceholderText('Start date')
     await user.click(calenderSelect)
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container.getElementsByClassName('ant-picker-dropdown-hidden').length).toBe(0)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
+  })
+
+  it('should from all time change to last 24 hours correctly', async () => {
+    const onDateChange = jest.fn()
+    mockUseDateFilter.mockReturnValue({
+      startDate: '2022-01-01T00:00:00+08:00',
+      endDate: null,
+      range: 'All Time'
+    })
+
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          showTimePicker
+          rangeOptions={[DateRange.last24Hours, DateRange.last7Days]}
+          onDateChange={onDateChange}
+          selectionType={DateRange.custom}
+          onDateApply={() => {}}
+          selectedRange={{
+            startDate: moment('03/01/2022').seconds(0),
+            endDate: moment('03/01/2022').seconds(0)
+          }}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent('-')
   })
 })

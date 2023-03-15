@@ -2,8 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { networkApi } from '@acx-ui/rc/services'
-import { store }      from '@acx-ui/store'
+import { networkApi }         from '@acx-ui/rc/services'
+import { DHCPConfigTypeEnum } from '@acx-ui/rc/utils'
+import { store }              from '@acx-ui/store'
 import {
   render,
   screen
@@ -23,7 +24,7 @@ describe('Create DHCP: Pool detail', () => {
   it('Table action bar add pool', async () => {
     const params = { tenantId: 'tenant-id' }
 
-    render(<DHCPPoolTable />, {
+    render(<DHCPPoolTable dhcpMode={DHCPConfigTypeEnum.SIMPLE} isDefaultService={false} />, {
       wrapper,
       route: { params }
     })

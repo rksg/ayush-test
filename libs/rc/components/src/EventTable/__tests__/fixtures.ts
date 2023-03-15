@@ -101,3 +101,65 @@ export const eventsMeta = [{
   isVenueExists: true,
   isSwitchExists: true
 }]
+
+export const eventsForQuery = {
+  data: events,
+  totalCount: events.length,
+  subsequentQueries: [
+    {
+      fields: [
+        'apName',
+        'switchName',
+        'networkName',
+        'networkId',
+        'administratorEmail',
+        'venueName',
+        'apGroupId',
+        'apGroupName',
+        'floorPlanName',
+        'recipientName'
+      ],
+      url: '/api/eventalarmapi/662b4f2c76a0428a9e7faaa64534d67a/event/meta'
+    }
+  ],
+  fields: [
+    'event_datetime',
+    'severity',
+    'entity_type',
+    'product',
+    'entity_id',
+    'message',
+    'dpName',
+    'apMac',
+    'clientMac',
+    'macAddress',
+    'serialNumber',
+    'ssid',
+    'radio',
+    'raw_event',
+    'sourceType',
+    'adminName',
+    'clientName',
+    'userName',
+    'hostname',
+    'adminEmail',
+    'venueId',
+    'transactionId',
+    'name'
+  ]
+}
+
+export const eventsMetaForQuery = {
+  data: eventsMeta,
+  fields: [
+    'apName',
+    'switchName',
+    'networkName',
+    'networkId',
+    'administratorEmail',
+    'venueName',
+    'apGroupId',
+    'floorPlanName',
+    'recipientName'
+  ]
+}
