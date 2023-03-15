@@ -305,9 +305,11 @@ export function VenuePropertyTab () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = { ...queryUnitList.payload }
 
-    if (customSearch.searchString && customSearch.searchString.length > 0) {
-      Object.assign(payload, { filters: { name: customSearch?.searchString } })
-    }
+    Object.assign(payload, {
+      filters: customSearch?.searchString
+        ? { name: customSearch.searchString }
+        : undefined
+    })
 
     queryUnitList.setPayload(payload)
   }
