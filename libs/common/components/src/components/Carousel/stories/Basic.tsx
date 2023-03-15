@@ -12,7 +12,8 @@ export function Basic () {
     infinite: true,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true
+    autoplay: true,
+    style: { height: 410, width: 282 }
   }
   return <Carousel contentList={contentList}
     classList='carousel-card'

@@ -10,6 +10,7 @@ export interface CarouselProps extends Pick<AntCarouselProps, 'children'> {
   subTitle?: string
   contentList: string[][]
   classList: string
+  style: { height: number, width: number }
 }
 
 function Carousel ({
@@ -17,13 +18,15 @@ function Carousel ({
   title,
   subTitle,
   classList,
+  style,
   ...props
 }: CarouselProps) {
   return (
-    <UI.Wrapper>
+    <UI.Wrapper style={style}>
       <AntCarousel
         dotPosition={'bottom'}
         {...props}
+        style={style}
       >
         {contentList.map((list, index) => (
           <div key={'carousel-card-'+index} className={classList}>

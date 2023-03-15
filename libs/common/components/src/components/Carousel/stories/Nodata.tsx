@@ -11,7 +11,8 @@ export function Nodata () {
     infinite: true,
     speed: 500,
     slidesToShow: 1,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    style: { height: 410, width: 282 }
   }
   return <Carousel contentList={[[noData]]}
     classList='carousel-card no-data'

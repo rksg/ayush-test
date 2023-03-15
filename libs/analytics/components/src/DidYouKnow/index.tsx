@@ -38,18 +38,20 @@ function DidYouKnowWidget ({
   return (
     <Loader states={[queryResults]}>
       <AutoSizer>
-        {() => (
+        {({ height, width }) => (
           queryResults.data.length ?
             <Carousel contentList={queryResults.data}
               title={title}
               {...props}
-              classList='carousel-card'></Carousel>
+              classList='carousel-card'
+              style={{ height, width }} ></Carousel>
 
             : <Carousel contentList={[[noData]]}
               title={title}
               subTitle={subTitle}
               classList='carousel-card no-data'
-              {...props}></Carousel>
+              {...props}
+              style={{ height, width }}></Carousel>
         )}
       </AutoSizer>
     </Loader>

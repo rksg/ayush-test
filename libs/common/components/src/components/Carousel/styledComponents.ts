@@ -1,8 +1,6 @@
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
-  height: 410px;
-  width: 286px;
   border-radius: 8px;
   background: var(--acx-primary-black);
   .slick-list {
@@ -15,8 +13,6 @@ export const Wrapper = styled.div`
   } 
   .carousel-card {
     margin: 0;
-    height: 410px;
-    width: 286px;
     color: var(--acx-primary-white);
     text-align: center;
     background: var(--acx-primary-black);
