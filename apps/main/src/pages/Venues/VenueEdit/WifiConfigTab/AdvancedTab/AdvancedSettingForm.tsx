@@ -18,7 +18,7 @@ import {
   useGetVenueApModelsQuery,
   useUpdateVenueLedOnMutation
 } from '@acx-ui/rc/services'
-import { VenueLed } from '@acx-ui/rc/utils'
+import { VenueLed, redirectPreviousPage } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
@@ -41,7 +41,7 @@ export function AdvancedSettingForm () {
   const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
-  const { editContextData, setEditContextData } = useContext(VenueEditContext)
+  const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const defaultArray: VenueLed[] = []
   const defaultOptionArray: ModelOption[] = []
@@ -211,10 +211,9 @@ export function AdvancedSettingForm () {
   return (
     <StepsForm
       onFinish={() => handleUpdateSetting()}
-      onCancel={() => navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/${venueId}/venue-details/overview`
-      })}
+      onCancel={() =>
+        redirectPreviousPage(navigate, previousPath, basePath)
+      }
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
     >
       <StepsForm.StepForm>

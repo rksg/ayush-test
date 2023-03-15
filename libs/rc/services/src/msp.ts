@@ -26,7 +26,8 @@ import {
   EntitlementBanner,
   MspEcProfile,
   MspPortal,
-  downloadFile
+  downloadFile,
+  ParentLogoUrl
 } from '@acx-ui/rc/utils'
 import { getJwtToken } from '@acx-ui/utils'
 
@@ -472,6 +473,7 @@ export const mspApi = baseMspApi.injectEndpoints({
               ? headerContent.split('filename=')[1]
               : 'MSP Device Inventory_' + moment().format('YYYYMMDDHHmmss') + '.csv'
             downloadFile(response, fileName)
+            return {}
           },
           body: payload,
           headers: {
@@ -520,6 +522,17 @@ export const mspApi = baseMspApi.injectEndpoints({
           }
         }
       }
+    }),
+    getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          MspUrlsInfo.getParentLogoUrl,
+          params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -565,5 +578,6 @@ export const {
   useUpdateMspLabelMutation,
   useExportDeviceInventoryMutation,
   useAcceptRejectInvitationMutation,
-  useGetGenerateLicenseUsageRptQuery
+  useGetGenerateLicenseUsageRptQuery,
+  useGetParentLogoUrlQuery
 } = mspApi
