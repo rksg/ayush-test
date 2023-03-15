@@ -3,7 +3,6 @@ export {
   columnState,
   useActivityTableQuery
 } from './ActivityTable'
-export { AdminLogTable } from './AdminLogTable'
 export { AlarmWidget } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
 export { ApTable, APStatus, defaultApPayload } from './ApTable'
@@ -22,6 +21,7 @@ export { EdgeInfoWidget }  from './EdgeInfoWidget'
 export { EdgeDhcpSettingForm } from './EdgeDhcpSetting/EdgeDhcpSettingForm'
 export { PoolDrawer } from './EdgeDhcpSetting/DhcpPool/PoolDrawer'
 export {
+  AdminLogTable,
   EventTable,
   useEventsTableQuery,
   defaultSearch as eventDefaultSearch

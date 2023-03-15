@@ -23,3 +23,8 @@ export const productMapping = {
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' })
 }
+
+export const adminLogTypeMapping = {
+  ADMIN: defineMessage({ defaultMessage: 'Admin' }),
+  NOTIFICATION: defineMessage({ defaultMessage: 'Notification' })
+}
