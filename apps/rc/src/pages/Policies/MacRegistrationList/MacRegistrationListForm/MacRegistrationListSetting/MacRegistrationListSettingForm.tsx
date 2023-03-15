@@ -3,7 +3,7 @@ import React from 'react'
 import { Form, Input, Col, Row, Select, Switch, Space } from 'antd'
 import { useIntl }                                      from 'react-intl'
 
-import { Button, SelectionControl }                               from '@acx-ui/components'
+import { SelectionControl }                                       from '@acx-ui/components'
 import { ExpirationDateSelector }                                 from '@acx-ui/rc/components'
 import { useAdaptivePolicySetListQuery, useLazyMacRegListsQuery } from '@acx-ui/rc/services'
 import { checkObjectNotExists }                                   from '@acx-ui/rc/utils'
@@ -69,11 +69,6 @@ export function MacRegistrationListSettingForm () {
             <Form.Item name='policySetId'
               label={$t({ defaultMessage: 'Access Policy Set' })}
               valuePropName='value'
-              // TODO should add require after policy set complete
-              // rules={[
-              //   { required: true,
-              //     message: $t({ defaultMessage: 'Please choose a Access Policy Set' }) }
-              // ]}
               children={
                 <Select style={{ width: 200 }}
                   allowClear
@@ -85,10 +80,6 @@ export function MacRegistrationListSettingForm () {
                 />
               }
             />
-            {/* TODO should add require after policy set complete */}
-            <Button type='link'>
-              {$t({ defaultMessage: 'Add Access Policy Set' })}
-            </Button>
           </Space>
         </Form.Item>
       </Col>

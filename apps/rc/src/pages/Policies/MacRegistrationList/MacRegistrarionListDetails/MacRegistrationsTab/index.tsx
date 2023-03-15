@@ -162,16 +162,6 @@ export function MacRegistrationsTab () {
     }
   ]
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const toastDetailErrorMessage = (error: any) => {
-  //   const subMessages = error.data?.subErrors?.map((e: { message: string }) => e.message)
-  //   showToast({
-  //     type: 'error',
-  //     content: error.data?.message ?? $t({ defaultMessage: 'An error occurred' }),
-  //     link: subMessages && { onClick: () => { alert(subMessages.join('\n')) } }
-  //   })
-  // }
-
   return (
     <Loader states={[
       tableQuery,

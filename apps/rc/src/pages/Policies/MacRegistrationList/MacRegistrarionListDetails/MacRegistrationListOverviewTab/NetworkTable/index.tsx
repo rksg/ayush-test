@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -65,6 +65,15 @@ const defaultPayload = {
 export function NetworkTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
   const { networkIds } = props
+
+  useEffect(() => {
+    const payload = {
+      ...defaultPayload,
+      filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
+    }
+    networkTableQuery.setPayload(payload)
+  }, [networkIds])
+
   const networkTableQuery = useTableQuery({
     useQuery: useNetworkListQuery,
     defaultPayload: {
@@ -72,6 +81,7 @@ export function NetworkTable (props: { networkIds?: string[] }) {
       filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
     }
   })
+
   return (
     <Loader states={[
       networkTableQuery,
