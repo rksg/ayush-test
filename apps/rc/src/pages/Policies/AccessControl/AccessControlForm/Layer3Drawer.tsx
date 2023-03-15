@@ -167,6 +167,9 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     setEditMode = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -224,8 +227,12 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
       return false
     }
 
-    if (editMode) {
+    if (editMode.isEdit) {
       return !editMode.isEdit
+    }
+
+    if (localEditMode.isEdit) {
+      return !localEditMode.isEdit
     }
 
     return !_.isNil(layer3PolicyInfo)
@@ -239,7 +246,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit)) {
+    if (layer3PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer3PolicyInfo.name)
       contentForm.setFieldValue('layer3Access', layer3PolicyInfo.defaultAccess)
       setLayer3RuleList([...layer3PolicyInfo.l3Rules.map(l3Rule => ({
@@ -387,6 +394,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -868,7 +880,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
-  const ModelContent = () => {
+  const modelContent = () => {
     if (onlyAddMode.enable) {
       return null
     }
@@ -914,10 +926,11 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
             if (l3AclPolicyId) {
               setVisible(true)
               setQueryPolicyId(l3AclPolicyId)
+              setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
             }
           }
           }>
-          {$t({ defaultMessage: 'View Details' })}
+          {$t({ defaultMessage: 'Edit Details' })}
         </Button>
       </AclGridCol>
       <AclGridCol>
@@ -934,7 +947,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   return (
     <>
-      <ModelContent />
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}
@@ -951,7 +964,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL3AclPolicy(editMode.isEdit)
+                  await handleL3AclPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleLayer3DrawerClose()
               } catch (error) {

@@ -100,6 +100,9 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     setEditMode = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const [deviceOSDrawerVisible, setDeviceOSDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
   const [deviceOSRuleList, setDeviceOSRuleList] = useState([] as DeviceOSRule[])
@@ -153,8 +156,12 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
-    if (editMode) {
+    if (editMode.isEdit) {
       return !editMode.isEdit
+    }
+
+    if (localEditMode.isEdit) {
+      return !localEditMode.isEdit
     }
 
     return !_.isNil(devicePolicyInfo)
@@ -168,7 +175,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (devicePolicyInfo && (isViewMode() || editMode.isEdit)) {
+    if (devicePolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
@@ -269,6 +276,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -460,7 +472,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </Form>
 
-  const ModelContent = () => {
+  const modelContent = () => {
     if (onlyAddMode.enable) {
       return null
     }
@@ -506,10 +518,11 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
             if (devicePolicyId) {
               setVisible(true)
               setQueryPolicyId(devicePolicyId)
+              setLocalEdiMode({ id: devicePolicyId, isEdit: true })
             }
           }
           }>
-          {$t({ defaultMessage: 'View Details' })}
+          {$t({ defaultMessage: 'Edit Details' })}
         </Button>
       </AclGridCol>
       <AclGridCol>
@@ -527,7 +540,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   return (
     <>
-      <ModelContent />
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}
@@ -543,7 +556,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleDevicePolicy(editMode.isEdit)
+                  await handleDevicePolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleDeviceOSDrawerClose()
               } catch (error) {

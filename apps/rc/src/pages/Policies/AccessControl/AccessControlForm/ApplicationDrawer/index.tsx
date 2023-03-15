@@ -153,6 +153,9 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     setEditMode = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const form = Form.useFormInstance()
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [ruleDrawerEditMode, setRuleDrawerEditMode] = useState(false)
@@ -263,8 +266,12 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       return false
     }
 
-    if (editMode) {
+    if (editMode.isEdit) {
       return !editMode.isEdit
+    }
+
+    if (localEditMode.isEdit) {
+      return !localEditMode.isEdit
     }
 
     return !_.isNil(appPolicyInfo)
@@ -278,7 +285,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (appPolicyInfo && (isViewMode() || editMode.isEdit)) {
+    if (appPolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', appPolicyInfo.name)
       setApplicationsRuleList([...transformToApplicationRule(
         drawerForm, appPolicyInfo
@@ -374,6 +381,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -514,7 +526,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     />
   </Form>
 
-  const ModelContent = () => {
+  const modelContent = () => {
     if (onlyAddMode.enable) {
       return null
     }
@@ -560,10 +572,11 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             if (applicationPolicyId) {
               setVisible(true)
               setQueryPolicyId(applicationPolicyId)
+              setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
             }
           }
           }>
-          {$t({ defaultMessage: 'View Details' })}
+          {$t({ defaultMessage: 'Edit Details' })}
         </Button>
       </AclGridCol>
       <AclGridCol>
@@ -580,7 +593,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   return (
     <>
-      <ModelContent />
+      {modelContent()}
       <Drawer
         title={$t({ defaultMessage: 'Application Access Settings' })}
         visible={visible}
@@ -597,7 +610,7 @@ const ApplicationDrawer = (props: ApplicationDrawerProps) => {
               try {
                 if (!isViewMode()) {
                   await contentForm.validateFields()
-                  await handleAppPolicy(editMode.isEdit)
+                  await handleAppPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleApplicationsDrawerClose()
               } catch (error) {

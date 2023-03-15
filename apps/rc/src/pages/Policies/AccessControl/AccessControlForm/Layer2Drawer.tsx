@@ -79,6 +79,9 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   } = props
   const inputRef = useRef(null)
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
+  const [localEditMode, setLocalEdiMode] = useState(
+    { id: '', isEdit: false } as editModeProps
+  )
   const [ruleDrawerVisible, setRuleDrawerVisible] = useState(false)
   const [addressTags, setAddressTags] = useState([] as string[])
   const [inputValue, setInputValue] = useState('')
@@ -140,8 +143,12 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
       return false
     }
 
-    if (editMode) {
+    if (editMode.isEdit) {
       return !editMode.isEdit
+    }
+
+    if (localEditMode.isEdit) {
+      return !localEditMode.isEdit
     }
 
     return !_.isNil(layer2PolicyInfo)
@@ -155,7 +162,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer2PolicyInfo && (isViewMode() || editMode.isEdit)) {
+    if (layer2PolicyInfo && (isViewMode() || editMode.isEdit || localEditMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
       contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
       setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
@@ -253,6 +260,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     clearFieldsValue()
     if (editMode.isEdit) {
       setEditMode({
+        id: '', isEdit: false
+      })
+    }
+    if (localEditMode.isEdit) {
+      setLocalEdiMode({
         id: '', isEdit: false
       })
     }
@@ -532,7 +544,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     />
   </RuleContentWrapper>
 
-  const ModeContent = () => {
+  const modeContent = () => {
     if (onlyAddMode.enable) {
       return null
     }
@@ -578,10 +590,11 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             if (l2AclPolicyId) {
               setVisible(true)
               setQueryPolicyId(l2AclPolicyId)
+              setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
             }
           }
           }>
-          {$t({ defaultMessage: 'View Details' })}
+          {$t({ defaultMessage: 'Edit Details' })}
         </Button>
       </AclGridCol>
       <AclGridCol>
@@ -598,7 +611,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
 
   return (
     <>
-      <ModeContent />
+      {modeContent()}
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}
@@ -614,7 +627,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
               try {
                 await contentForm.validateFields()
                 if (!isViewMode()) {
-                  await handleL2AclPolicy(editMode.isEdit)
+                  await handleL2AclPolicy(editMode.isEdit || localEditMode.isEdit)
                 }
                 handleLayer2DrawerClose()
               } catch (error) {
