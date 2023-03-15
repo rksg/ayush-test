@@ -51,3 +51,9 @@ export const TenantLinkBlack = styled(TenantLink)`
     color: var(--acx-primary-black);
   }
 `
+
+export const TenantLinkSvg = styled(TenantLink)`
+  svg {
+    cursor: pointer
+  }
+`
