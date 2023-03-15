@@ -44,8 +44,8 @@ export const Wrapper = styled.button
   background: var(${props => colors[props.$type as Type].background});
   border-radius: 3px;
   text-align: center;
-  cursor: pointer;
-  ${ props => hoverAndFocusStyle(props.$type as Type) }
+  ${props => (props.$disabled) ? css`cursor: auto;` : css`cursor: pointer;`}
+  ${props => hoverAndFocusStyle(props.$type as Type)}
 `
 export const Statistic = styled(antStatistic)<{ $type: string }>`
   display: flex;

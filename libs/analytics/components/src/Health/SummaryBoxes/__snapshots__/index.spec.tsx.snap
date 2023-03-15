@@ -17,7 +17,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 fegJfj"
             type="button"
           >
             <div
@@ -58,7 +58,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 flLsgK"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 ebFPZr"
             type="button"
           >
             <div
@@ -99,7 +99,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 lkKwQw"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 BHsKV"
             type="button"
           >
             <div
@@ -135,7 +135,7 @@ exports[`Incidents Page should match snapshot 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 hBmFIG"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jZYpZn"
             type="button"
           >
             <div
@@ -185,7 +185,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 fegJfj"
             type="button"
           >
             <div
@@ -226,7 +226,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 flLsgK"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 ebFPZr"
             type="button"
           >
             <div
@@ -267,7 +267,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 lkKwQw"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 BHsKV"
             type="button"
           >
             <div
@@ -303,7 +303,7 @@ exports[`Incidents Page should show - when no data 1`] = `
           class="Grid__Container-sc-5irhjd-1 zzbxI"
         >
           <button
-            class="styledComponents__Wrapper-sc-1tt9ql2-0 hBmFIG"
+            class="styledComponents__Wrapper-sc-1tt9ql2-0 jZYpZn"
             type="button"
           >
             <div
@@ -339,7 +339,7 @@ exports[`Incidents Page should show - when no data 1`] = `
 exports[`box should render correctly with toggle disabled 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 hTIrVT"
     type="button"
   >
     <div
@@ -376,7 +376,7 @@ exports[`box should render correctly with toggle disabled 1`] = `
 exports[`box should render correctly with toggle enabled 1`] = `
 <DocumentFragment>
   <button
-    class="styledComponents__Wrapper-sc-1tt9ql2-0 kuUzTi"
+    class="styledComponents__Wrapper-sc-1tt9ql2-0 fegJfj"
     type="button"
   >
     <div

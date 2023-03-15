@@ -23,6 +23,7 @@ export const Box = (props: BoxProps) => {
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
+    $disabled={!props.toggleEnable}
     onClick={props.onClick}
   >
     <Statistic
