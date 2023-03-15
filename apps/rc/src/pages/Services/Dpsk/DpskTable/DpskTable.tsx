@@ -1,3 +1,4 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -20,7 +21,10 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   DpskDetailsTabKey,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  PassphraseFormatEnum,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                               from '@acx-ui/user'
@@ -70,6 +74,10 @@ export default function DpskTable () {
     }
   ]
 
+  const passphraseFormatOptions = Object.keys(PassphraseFormatEnum).map((key =>
+    ({ key, value: transformDpskNetwork(intl, DpskNetworkType.FORMAT, key) })
+  ))
+
   const columns: TableProps<DpskSaveData>['columns'] = [
     {
       key: 'name',
@@ -77,6 +85,7 @@ export default function DpskTable () {
       dataIndex: 'name',
       sorter: true,
       defaultSortOrder: 'ascend',
+      searchable: true,
       render: function (data, row) {
         return (
           <TenantLink
@@ -96,6 +105,8 @@ export default function DpskTable () {
       title: intl.$t({ defaultMessage: 'Passphrase Format' }),
       dataIndex: 'passphraseFormat',
       sorter: true,
+      filterKey: 'passphraseFormat',
+      filterable: passphraseFormatOptions,
       render: function (data) {
         return transformDpskNetwork(
           intl,
@@ -136,6 +147,19 @@ export default function DpskTable () {
     }
   ]
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH) => {
+    const currentPayload = tableQuery.payload
+    // eslint-disable-next-line max-len
+    if (currentPayload.searchString === search.searchString && _.isEqual(currentPayload.filters, filters)) {
+      return
+    }
+    tableQuery.setPayload({
+      ...currentPayload,
+      searchString: search.searchString ?? '',
+      filters
+    })
+  }
+
   return (
     <>
       <PageHeader
@@ -161,6 +185,8 @@ export default function DpskTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
+          onFilterChange={handleFilterChange}
+          enableApiFilter={true}
         />
       </Loader>
     </>
