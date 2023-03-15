@@ -952,7 +952,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
+      providesTags: [{ type: 'PropertyConfigs', id: 'ID' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Enable Property',
+            'Disable Property'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'PropertyConfigs', id: 'ID' }]))
+          })
+        })
+      }
     }),
     updatePropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
@@ -966,11 +977,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     patchPropertyConfigs: build.mutation<PropertyConfigs, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.patchPropertyConfigs, params)
+        const req = createHttpRequest(
+          PropertyUrlsInfo.patchPropertyConfigs,
+          params,
+          { 'Content-Type': 'application/json-patch+json' })
         return {
           ...req,
-          body: payload,
-          headers: { 'Content-Type': 'application/json-patch+json' }
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'PropertyConfigs', id: 'ID' }]
@@ -1012,6 +1025,21 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       transformResponse (result: NewTableResult<PropertyUnit>) {
         return transferToTableResult<PropertyUnit>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Adding unit',
+            'Updating unit',
+            'Deleting units'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([
+              { type: 'PropertyUnit', id: 'LIST' },
+              { type: 'PropertyUnit', id: 'ID' }
+            ]))
+          })
+        })
       },
       providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
