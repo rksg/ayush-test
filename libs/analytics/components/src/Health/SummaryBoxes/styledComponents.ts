@@ -1,5 +1,5 @@
 import { Statistic as antStatistic } from 'antd'
-import styled, { css }                        from 'styled-components/macro'
+import styled, { css }               from 'styled-components/macro'
 
 import { CaretDoubleDownOutlined, CaretDoubleUpOutlined } from '@acx-ui/icons'
 
@@ -65,14 +65,14 @@ export const Statistic = styled(antStatistic)<{ $type: string }>`
     }
   }
 `
- export const UpArrow = styled(CaretDoubleUpOutlined)<{ $type: string }>`
+export const UpArrow = styled(CaretDoubleUpOutlined)<{ $type: string }>`
   ${arrowStyle}
    path {
      stroke: var(${props => colors[props.$type as Type].text});
    }
  `
 
- export const DownArrow = styled(CaretDoubleDownOutlined)<{ $type: string }>`
+export const DownArrow = styled(CaretDoubleDownOutlined)<{ $type: string }>`
    ${arrowStyle}
    path {
      stroke: var(${props => colors[props.$type as Type].text});
