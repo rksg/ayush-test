@@ -57,9 +57,7 @@ export interface RecoveryPassphrase {
 }
 
 export interface TenantPreferenceSettingValue {
-  // FIXME:
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface TenantPreferenceSettings {
@@ -167,22 +165,6 @@ export interface NotificationRecipientResponse {
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;
-}
-
-// FIXME: might be removed because of Tenant.roleDsc is UI used only
-export const GetRoleStr = ( role: RolesEnum ) => {
-  switch (role) {
-    case RolesEnum.PRIME_ADMIN:
-      return 'Prime Admin'
-    case RolesEnum.ADMINISTRATOR:
-      return 'Administrator'
-    case RolesEnum.GUEST_MANAGER:
-      return 'Guest Manager'
-    case RolesEnum.READ_ONLY:
-      return 'Read Only'
-    default:
-      return 'Unknown'
-  }
 }
 
 export const getRoles = () => {

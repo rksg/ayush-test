@@ -2,17 +2,27 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import {  Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
-import { Provider }                                                 from '@acx-ui/store'
-import { findTBody, render, renderHook, screen, within }            from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, Event, EventBase, EventMeta, RequestPayload, TableQuery } from '@acx-ui/rc/utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { findTBody, mockRestApiQuery, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps }              from '@acx-ui/user'
 
 import { fakeUserProfile } from '../AdminLogTable/__tests__/fixtures'
 
-import { events, eventsMeta } from './__tests__/fixtures'
+import {
+  events,
+  eventsMeta,
+  eventsForQuery,
+  eventsMetaForQuery
+} from './__tests__/fixtures'
 
-import { EventTable, useEventTableFilter } from '.'
+import { EventTable, useEventsTableQuery } from '.'
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+}))
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -51,12 +61,10 @@ describe('EventTable', () => {
 
   it('should render event list', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />,
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />,
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
 
     await screen.findByPlaceholderText('Search Source, Description')
@@ -79,12 +87,10 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is empty', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} searchables={[]} filterables={[]}/>
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
     await screen.findByText('Severity')
     await screen.findByText('Event Type')
@@ -93,12 +99,10 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is false', async () => {
     render(
-      <Provider>
         <UserProfileContext.Provider value={userProfileContextValues}>
           <EventTable tableQuery={tableQuery} searchables={false} filterables={false}/>
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+        </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
     await screen.findByText('Severity')
     await screen.findByText('Event Type')
@@ -107,16 +111,14 @@ describe('EventTable', () => {
 
   it('should render based on filterables/searchables is array', async () => {
     render(
-      <Provider>
         <UserProfileContext.Provider value={userProfileContextValues}>
           <EventTable
             tableQuery={tableQuery}
             searchables={['message', 'entity_type']}
             filterables={['severity', 'entity_type', 'product']}
           />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+        </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
     await screen.findByPlaceholderText('Search Source, Description')
     expect(await screen.findAllByText('Severity')).toHaveLength(2)
@@ -126,12 +128,10 @@ describe('EventTable', () => {
 
   it('should open/close event drawer', async () => {
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
     const row = await screen.findByRole('row', {
       name: /AP 730-11-60 RF operating channel was changed from channel 7 to channel 9./
@@ -150,12 +150,10 @@ describe('EventTable', () => {
     }]
 
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
 
     const serialNumber = events[0].serialNumber
@@ -172,12 +170,10 @@ describe('EventTable', () => {
     }]
 
     render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
 
     const cell = await screen.findByRole('cell', {
@@ -196,12 +192,10 @@ describe('EventTable', () => {
 
     const name = eventsMeta[3].switchName
     const { rerender } = render(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>,
-      { route: { params } }
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />
+      </UserProfileContext.Provider>,
+      { route: { params }, wrapper: Provider }
     )
 
     let elements = await screen.findAllByText(name)
@@ -211,11 +205,9 @@ describe('EventTable', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     rerender(
-      <Provider>
-        <UserProfileContext.Provider value={userProfileContextValues}>
-          <EventTable tableQuery={tableQuery} />
-        </UserProfileContext.Provider>
-      </Provider>
+      <UserProfileContext.Provider value={userProfileContextValues}>
+        <EventTable tableQuery={tableQuery} />
+      </UserProfileContext.Provider>
     )
 
     elements = await screen.findAllByText(name)
@@ -236,11 +228,15 @@ describe('EventTable', () => {
   })
 })
 
-describe('useEventTableFilter', () => {
-  it('should return correct value', () => {
-    const { result } = renderHook(() => useEventTableFilter())
-    expect(result.current)
-      .toEqual({ fromTime: '2021-12-31T16:00:00Z', toTime: '2022-01-01T16:00:00Z' })
+describe('useEventsTableQuery', () => {
+  beforeEach(() => {
+    mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', eventsForQuery)
+    mockRestApiQuery(CommonUrlsInfo.getEventListMeta.url, 'post', eventsMetaForQuery)
+  })
+  it('should return correct value', async () => {
+    const { result } = renderHook(() => useEventsTableQuery(), { wrapper: Provider })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data?.data).toHaveLength(events.length)
   })
 })
 

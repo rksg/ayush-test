@@ -1,8 +1,8 @@
 import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
-import { getTenantId } from './getTenantId'
-import { getJwtToken } from './jwtToken'
+import { getTenantId }              from './getTenantId'
+import { getJwtToken, AccountTier } from './jwtToken'
 
 export interface ApiInfo {
   url: string;
@@ -24,12 +24,32 @@ export const isDelegationMode = () => {
   return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
 }
 
+export const JwtTierValue = () => {
+  const jwtToken = getJwtToken()
+
+  if (jwtToken) {
+    const tokens = jwtToken.split('.')
+
+    if (tokens.length >= 2) {
+      const jwtRuckus = JSON.parse(atob(tokens[1]))
+      if (jwtRuckus && jwtRuckus.acx_account_tier) {
+        return jwtRuckus.acx_account_tier
+      }
+    }
+  }
+  return AccountTier.PLATINUM
+}
+
 export const isLocalHost = () => {
   return window.location.hostname === 'localhost'
 }
 
 export const isDev = () => {
   return window.location.hostname === 'devalto.ruckuswireless.com'
+}
+
+export const isQA = () => {
+  return window.location.hostname === 'qaalto.ruckuswireless.com'
 }
 
 export const isIntEnv = () => {
@@ -114,7 +134,7 @@ export const getFilters = (params: Params) => {
 export const enableNewApi = function (apiInfo: ApiInfo) {
   const hasOldUrl = !_.isEmpty(apiInfo?.oldUrl)
   if(apiInfo.newApi) {
-    return !hasOldUrl || isDev() || isLocalHost() || isIntEnv()
+    return !hasOldUrl || isDev() || isQA() || isLocalHost() || isIntEnv()
   } else {
     return false
   }

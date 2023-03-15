@@ -27,7 +27,7 @@ export const EdgeOverview = styled(({ className }:{ className?: string }) => {
       'ports',
       'ip',
       'model',
-      'fwVersion',
+      'firmwareVersion',
       'deviceStatus',
       'deviceSeverity',
       'venueId',

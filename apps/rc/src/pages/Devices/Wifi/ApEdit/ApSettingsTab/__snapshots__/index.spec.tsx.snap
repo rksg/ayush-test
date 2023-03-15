@@ -79,6 +79,20 @@ exports[`ApSettingsTab should render correctly 1`] = `
             class="ant-tabs-tab"
           >
             <div
+              aria-controls="rc-tabs-test-panel-snmp"
+              aria-selected="false"
+              class="ant-tabs-tab-btn"
+              id="rc-tabs-test-tab-snmp"
+              role="tab"
+              tabindex="0"
+            >
+              AP SNMP
+            </div>
+          </div>
+          <div
+            class="ant-tabs-tab"
+          >
+            <div
               aria-controls="rc-tabs-test-panel-multicast"
               aria-selected="false"
               class="ant-tabs-tab-btn"
@@ -207,6 +221,15 @@ exports[`ApSettingsTab should render correctly 1`] = `
           aria-labelledby="rc-tabs-test-tab-proxy"
           class="ant-tabs-tabpane"
           id="rc-tabs-test-panel-proxy"
+          role="tabpanel"
+          style="display: none;"
+          tabindex="-1"
+        />
+        <div
+          aria-hidden="true"
+          aria-labelledby="rc-tabs-test-tab-snmp"
+          class="ant-tabs-tabpane"
+          id="rc-tabs-test-panel-snmp"
           role="tabpanel"
           style="display: none;"
           tabindex="-1"
