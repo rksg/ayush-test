@@ -50,7 +50,7 @@ export function VenueFirmwareList () {
       dataIndex: 'versions[0].version',
       sorter: true,
       render: function (data, row) {
-        return row.versions[0].name ?? '--'
+        return row.versions[0].name || '--'
       }
     },
     {
