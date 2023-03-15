@@ -5,7 +5,6 @@ import { Divider,
   Menu,
   MenuProps,
   Space } from 'antd'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 
