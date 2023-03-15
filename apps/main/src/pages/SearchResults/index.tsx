@@ -138,8 +138,11 @@ const searches = [
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload,
-        searchString
+        ...defaultClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultClientPayload.searchTargetFields
       },
       pagination
     })
@@ -169,8 +172,11 @@ const searches = [
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,
       defaultPayload: {
-        ...defaultSwitchClientPayload,
-        searchString
+        ...defaultSwitchClientPayload
+      },
+      search: {
+        searchString,
+        searchTargetFields: defaultSwitchClientPayload.searchTargetFields
       },
       pagination
     })
