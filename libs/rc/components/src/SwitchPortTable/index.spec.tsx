@@ -7,6 +7,7 @@ import { Provider, store }                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { SwitchPortTable } from '.'
+import { Modal } from "antd";
 
 const params = {
   tenantId: 'tenant-id',
@@ -278,7 +279,11 @@ jest.mock('./editPortDrawer', () => ({
 
 
 describe('SwitchPortTable', () => {
-  beforeEach(() => {
+  afterEach(() => {
+    Modal.destroyAll()
+  })
+
+  it('should render ports of switch ICX7650 correctly', async () => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
@@ -290,13 +295,9 @@ describe('SwitchPortTable', () => {
         (req, res, ctx) => res(ctx.json({}))
       )
     )
-  })
-
-  it('should render ports of switch ICX7650 correctly', async () => {
     render(<Provider>
       <SwitchPortTable isVenueLevel={false} />
     </Provider>, {
-      // eslint-disable-next-line max-len
       route: { params, path: '/:tenantId/:switchId' }
     })
 
@@ -310,6 +311,7 @@ describe('SwitchPortTable', () => {
   })
 
   it('should render ports of switch ICX7150 correctly', async () => {
+    store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchPortlist.url,
