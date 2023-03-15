@@ -106,10 +106,11 @@ const searches = [
     }
   },
   (searchString: string, $t: IntlShape['$t']) => {
-    const result = useEventsTableQuery({}, {
-      searchString,
-      searchTargetFields: eventDefaultSearch.searchTargetFields
-    }, pagination)
+    const result = useEventsTableQuery(
+      { entity_type: undefined },
+      { ...eventDefaultSearch, searchString },
+      pagination
+    )
     return {
       result,
       title: $t({ defaultMessage: 'Events' }),
