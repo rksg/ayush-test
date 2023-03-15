@@ -32,5 +32,6 @@ export enum Features {
   AP_SNMP='wifi-consumer-ap-snmp-toggle',
   NEW_API='acx-ui-new-api',
   MAC_REGISTRATION = 'mac-registration-service-enabled',
-  PERSONA = 'persona-service-enabled'
+  PERSONA = 'persona-service-enabled',
+  WISPR_ENCRYPT_MAC_IP = 'wifi-consumer-wispr-encrypt-mac-ip-toggle'
 }
