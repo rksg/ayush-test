@@ -104,15 +104,18 @@ export function getFactsData (data: DidYouKnowData[], intl: IntlShape) {
     return formatText(intl, options, key)
   })
   let slideContent: string[] = []
-  const maxSlideChar = 500
+  const maxSlideChar = 480
+  const maxFactPerSlide = 5
   let slideCharCount = 0
   let slideContentList:string[][] = []
   factsList?.forEach(function (fact, index) {
-    if(fact.length + slideCharCount < maxSlideChar) {
-      slideCharCount = slideCharCount + fact.length
+    const regex = /(<([^>]+)>)/ig
+    const factLength = fact.replace(regex, '').length // Fact length without html tags
+    if(factLength + slideCharCount < maxSlideChar && slideContent.length < maxFactPerSlide) {
+      slideCharCount = slideCharCount + factLength
       slideContent.push(fact)
     } else {
-      slideCharCount = fact.length
+      slideCharCount = factLength
       slideContentList.push(slideContent)
       slideContent = [fact]
     }

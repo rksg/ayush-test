@@ -192,19 +192,17 @@ describe('Facts data format', () => {
         ' <b>Divya-1</b> and <b>R760_AP_SV</b>.',
         'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>,' +
         ' <b>common-internet-file-system</b> and <b>windows_update</b>.',
-        '<b>96%</b> of user traffic went through 15% of APs last week.'
-      ],
-      [
+        '<b>96%</b> of user traffic went through 15% of APs last week.',
         'Top 3 applications in terms of users last week were <b>dns</b>,' +
         ' <b>google_api</b> and <b>google_gen</b>.',
+      ],
+      [
         'Average daily airtime utilization last week was 2.4 GHz: <b>53.8%</b>,' +
         ' 5 GHz: <b>10.09%</b>, and 6(5) GHz: <b>6.62%</b>, which is a change of 2.4 GHz: ' +
         '<b>-8.63%</b>, 5 GHz: <b>0.54%</b>, and 6(5) GHz: <b>-1.74%</b>' +
         ' compared to the previous week.',
         'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b>' +
-        ' of total users.'
-      ],
-      [
+        ' of total users.',
         'The average session duration last week was <b>46 m 37 s</b>.'
       ]
     ] }
