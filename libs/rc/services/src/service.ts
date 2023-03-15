@@ -25,7 +25,6 @@ import {
   WifiCallingSetting,
   DpskSaveData,
   DpskUrls,
-  PortalDetailInstances,
   Portal,
   PortalUrlsInfo,
   NewTableResult,
@@ -47,6 +46,8 @@ import {
   AccessSwitch,
   DistributionSwitch,
   downloadFile,
+  NewAPITableResult,
+  transferNewResToTableResult,
   MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import {
@@ -175,9 +176,38 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfiles, params)
-        return{
+        const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
+          params)
+
+        return {
           ...req
+        }
+      },
+      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddDhcpConfigServiceProfile',
+            'UpdateDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfile',
+            'DeleteDhcpConfigServiceProfiles'
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'DHCP', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel,
+          params)
+
+        return {
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
@@ -206,13 +236,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       transformResponse (dhcpProfile: DHCPSaveData) {
         _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeHours && pool.leaseTimeHours > 0){
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
           if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
             pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes
+            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+          }else{
+            pool.leaseUnit = LeaseUnit.HOURS
+            pool.leaseTime = pool.leaseTimeHours
           }
 
         })
@@ -224,9 +253,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
         let dhcpReq
         if(_.isEmpty(params.serviceId)){
-          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params)
         }else{
-          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params, RKS_NEW_UI)
+          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params)
         }
         return {
           ...dhcpReq,
@@ -424,7 +453,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
         const wifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.getWifiCalling, reqParams, RKS_NEW_UI
+          WifiCallingUrls.getWifiCalling, reqParams
         )
         return {
           ...wifiCallingServiceReq,
@@ -452,7 +481,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'DeleteWiFiCallingProfile',
             'DeleteWiFiCallingProfiles'
           ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'WifiCalling', id: 'LIST' }
+            ]))
           })
         })
       }
@@ -460,7 +492,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const createWifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.addWifiCalling, params, RKS_NEW_UI
+          WifiCallingUrls.addWifiCalling, params
         )
         return {
           ...createWifiCallingServiceReq,
@@ -472,7 +504,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          WifiCallingUrls.updateWifiCalling, params, RKS_NEW_UI
+          WifiCallingUrls.updateWifiCalling, params
         )
         return {
           ...req,
@@ -614,15 +646,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    portalNetworkInstances: build.query<TableResult<PortalDetailInstances>, RequestPayload>({
-      query: ({ params }) => {
-        const instancesRes = createHttpRequest(PortalUrlsInfo.getPortalNetworkInstances, params)
-        return {
-          ...instancesRes
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
     getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
       query: ({ params }) => {
         const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
@@ -646,8 +669,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
-      transformResponse (result: NewTableResult<Portal>) {
-        return transferToTableResult<Portal>(result)
+      transformResponse (result: NewAPITableResult<Portal>) {
+        return transferNewResToTableResult<Portal>(result)
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -790,7 +813,6 @@ export const {
   useDownloadPassphrasesMutation,
   useGetPortalQuery,
   useSavePortalMutation,
-  usePortalNetworkInstancesQuery,
   useGetPortalProfileDetailQuery,
   useLazyGetPortalProfileListQuery,
   useGetPortalProfileListQuery,
@@ -804,5 +826,6 @@ export const {
   useUpdateWebAuthTemplateMutation,
   useDeleteWebAuthTemplateMutation,
   useGetAccessSwitchesQuery,
-  useGetDistributionSwitchesQuery
+  useGetDistributionSwitchesQuery,
+  useGetDHCPProfileListViewModelQuery
 } = serviceApi
