@@ -133,20 +133,24 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
       redirectPreviousPage(navigate, previousPath, linkToServices)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
-      showActionModal({
-        type: 'confirm',
-        width: 450,
-        title: $t({ defaultMessage: 'Please confirm before overwriting' }),
-        content: afterSubmitMessage(error as CatchErrorResponse,
-          [...formData.distributionSwitchInfos, ...formData.accessSwitchInfos]),
-        okText: $t({ defaultMessage: 'Yes' }),
-        cancelText: $t({ defaultMessage: 'No' }),
-        onOk: async () => {
-          formData.forceOverwriteReboot = true
-          handleFinish(formData)
-        },
-        onCancel: async () => {}
-      })
+      const overwriteMsg = afterSubmitMessage(error as CatchErrorResponse,
+        [...formData.distributionSwitchInfos, ...formData.accessSwitchInfos])
+
+      if (overwriteMsg.length > 0) {
+        showActionModal({
+          type: 'confirm',
+          width: 450,
+          title: $t({ defaultMessage: 'Please confirm before executing' }),
+          content: overwriteMsg,
+          okText: $t({ defaultMessage: 'Yes' }),
+          cancelText: $t({ defaultMessage: 'No' }),
+          onOk: async () => {
+            formData.forceOverwriteReboot = true
+            handleFinish(formData)
+          },
+          onCancel: async () => {}
+        })
+      }
     }
   }
 
