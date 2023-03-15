@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
+  CatchErrorResponse,
   CommonUrlsInfo,
   EdgeDhcpUrls,
   EdgeUrlsInfo,
@@ -18,9 +19,20 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeDhcpDataList, mockNetworkGroup, mockNsgSwitchInfoData, mockVenueData, mockVenueNetworkData, switchLagList, switchPortList, switchVlanUnion, webAuthList } from '../__tests__/fixtures'
+import {
+  mockEdgeData,
+  mockEdgeDhcpDataList,
+  mockNetworkGroup,
+  mockNsgSwitchInfoData,
+  mockVenueData,
+  mockVenueNetworkData,
+  switchLagList,
+  switchPortList,
+  switchVlanUnion,
+  webAuthList
+} from '../__tests__/fixtures'
 
-import AddNetworkSegmentation from '.'
+import AddNetworkSegmentation, { afterSubmitMessage } from '.'
 
 
 const mockedUsedNavigate = jest.fn()
@@ -318,5 +330,58 @@ describe('Create NetworkSegmentation', () => {
     await user.type(gatewayInput, '1.2.3.4')
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
+  })
+
+  it('afterSubmitMessage', async () => {
+    const resError = [
+      { message: `
+      Distribution Switch [c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7] already has VXLAN config,
+      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      [forceOverwriteReboot] set true to overwrite config and reboot.` },
+      { message: `
+      Distribution Switch [c8:03:f5:3a:95:c6] already has VXLAN config,
+      [forceOverwriteReboot] set true to overwrite config.` },
+      { message: `
+      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
+      [forceOverwriteReboot] set true to reboot.` },
+      { message: `The Access Switch [c0:c5:20:aa:35:fd] web auth VLAN not exist or uplink port not exist at VLAN,
+      please create [WebAuth VLAN] and add uplink port or lag first.` },
+      { message: '' }
+    ]
+    const switches = [
+      ...mockNsgSwitchInfoData.distributionSwitches,
+      ...mockNsgSwitchInfoData.accessSwitches,
+      { id: 'c8:03:f5:3a:95:c8' }
+    ]
+
+    const expectMessage= [
+      ['Distribution Switch [FMN4221R00H---DS---3, c8:03:f5:3a:95:c7] already has VXLAN config.',
+        'Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+        'Click Yes to proceed, No to cancel.'],
+      ['Distribution Switch [FMN4221R00H---DS---3] already has VXLAN config.',
+        'Click Yes to proceed, No to cancel.'],
+      ['Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
+        'Click Yes to proceed, No to cancel.'],
+      [`The Access Switch [FEK3224R09N---AS---3] web auth VLAN not exist or uplink port not exist at VLAN,
+      please create [WebAuth VLAN] and add uplink port or lag first.`],
+      []
+    ]
+
+    expect(afterSubmitMessage(
+      { data: { errors: [resError[0]] } } as CatchErrorResponse, switches
+    )).toStrictEqual(expectMessage[0].map(m=><p>{m}</p>))
+    expect(afterSubmitMessage(
+      { data: { errors: [resError[1]] } } as CatchErrorResponse, switches
+    )).toStrictEqual(expectMessage[1].map(m=><p>{m}</p>))
+    expect(afterSubmitMessage(
+      { data: { errors: [resError[2]] } } as CatchErrorResponse, switches
+    )).toStrictEqual(expectMessage[2].map(m=><p>{m}</p>))
+    expect(afterSubmitMessage(
+      { data: { errors: [resError[3]] } } as CatchErrorResponse, switches
+    )).toStrictEqual(expectMessage[3].map(m=><p>{m}</p>))
+    expect(afterSubmitMessage(
+      { data: { errors: [resError[4]] } } as CatchErrorResponse, switches
+    )).toStrictEqual(expectMessage[4].map(m=><p>{m}</p>))
+
   })
 })
