@@ -12,6 +12,7 @@ import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }                      
 import { useAddFloorPlanMutation, useDeleteFloorPlanMutation, useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery, useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation, useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload, NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices }                                                                                                                          from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                                                                                                     from '@acx-ui/react-router-dom'
+import { hasAccess }                                                                                                                                                                                                                                                      from '@acx-ui/user'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -54,6 +55,7 @@ export function FloorPlan () {
   = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const [closeOverlay, setCloseOverlay] = useState<boolean>(false)
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
+  const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
 
   const defaultDevices = {
     ap: [],
@@ -163,6 +165,8 @@ export function FloorPlan () {
 
     if (getNetworkDevices?.data) {
       const _devices = getNetworkDevices?.data?.data[0]
+
+      setDeviceList(_devices as TypeWiseNetworkDevices)
 
       let devices = { ..._devices }
       const networkDeviceTypeArray = Object.values(NetworkDeviceType)
@@ -339,7 +343,8 @@ export function FloorPlan () {
     ]}>
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
-          { !unplacedDevicesCount && <Space direction='vertical'>
+          { !(deviceList?.ap?.length + deviceList?.switches?.length)
+          && <Space direction='vertical'>
             <Alert
               message={$t({ defaultMessage: 'This venue contains no networking device' })}
               type='info'
@@ -347,7 +352,7 @@ export function FloorPlan () {
               showIcon
               action={
                 <Space direction='horizontal'>
-                  <TenantLink to='devices/wifi/add'>
+                  { hasAccess() && <TenantLink to='devices/wifi/add'>
                     <Button size='small'
                       type='primary'
                       style={{
@@ -357,6 +362,17 @@ export function FloorPlan () {
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
+                  }
+                  { hasAccess() && <TenantLink to='devices/switch/add'>
+                    <Button size='small'
+                      type='primary'
+                      style={{
+                        backgroundColor: 'var(--acx-accents-orange-50)',
+                        borderColor: 'var(--acx-accents-orange-50)'
+                      }}>
+                      {$t({ defaultMessage: 'Add Switch' })}
+                    </Button>
+                  </TenantLink>}
                 </Space>
               }
             />
