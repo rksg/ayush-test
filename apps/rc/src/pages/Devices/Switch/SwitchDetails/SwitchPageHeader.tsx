@@ -35,7 +35,7 @@ DELETE = 'DELETE'
 
 function SwitchPageHeader () {
   const { $t } = useIntl()
-  const { switchId, serialNumber, tenantId } = useParams()
+  const { switchId, serialNumber, tenantId, activeTab, activeSubTab } = useParams()
   const switchAction = useSwitchActions()
   const {
     switchDetailsContextData
@@ -94,7 +94,7 @@ function SwitchPageHeader () {
     }
   }
 
-  const handleSyncButton = function (value: string, isSync: boolean) {
+  const handleSyncButton = (value: string, isSync: boolean) => {
     let result = value
     if (isSync) {
       result = $t({ defaultMessage: 'Sync data operation in progress...' })
@@ -105,6 +105,23 @@ function SwitchPageHeader () {
     }
     setIsSyncing(isSync)
     setSyncDataEndTime(result)
+  }
+
+  const checkTimeFilterDisabled = () => {
+    switch(activeTab){
+      case 'overview':
+        if(typeof activeSubTab === 'undefined'){
+          return false
+        }
+        return activeSubTab !== 'panel'
+      case 'troubleshooting':
+      case 'clients':
+      case 'configuration':
+      case 'dhcp':
+        return true
+      default:
+        return false
+    }
   }
 
   useEffect(() => {
@@ -166,7 +183,7 @@ function SwitchPageHeader () {
           { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
         ]}
         extra={filterByAccess([
-          <RangePicker
+          !checkTimeFilterDisabled() && <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}

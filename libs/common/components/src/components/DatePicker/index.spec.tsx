@@ -396,6 +396,7 @@ describe('RangePicker', () => {
     expect(onDateChange).toHaveBeenCalledTimes(0)
     expect(apply).toHaveBeenCalledTimes(1)
   })
+
   it('should display all time', async () => {
     const onDateChange = jest.fn()
     render(
