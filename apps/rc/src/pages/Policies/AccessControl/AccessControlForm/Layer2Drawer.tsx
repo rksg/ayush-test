@@ -107,8 +107,15 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { layer2SelectOptions, layer2List } = useL2AclPolicyListQuery({
     params: { ...params, requestId: requestId },
     payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
+      fields: [
+        'id',
+        'name',
+        'description',
+        'macAddress',
+        'networkIds'
+      ],
+      page: 1,
+      pageSize: 25
     }
   }, {
     selectFromResult ({ data }) {
@@ -149,7 +156,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (layer2PolicyInfo) {
+    if (layer2PolicyInfo && (isViewMode() || editMode.isEdit)) {
       contentForm.setFieldValue('policyName', layer2PolicyInfo.name)
       contentForm.setFieldValue('layer2Access', layer2PolicyInfo.access)
       setMacAddressList(layer2PolicyInfo.macAddresses.map(address => ({
@@ -540,6 +547,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
             }]}
             children={
               <Select
+                style={{ width: '150px' }}
                 placeholder={$t({ defaultMessage: 'Select profile...' })}
                 onChange={(value) => {
                   setQueryPolicyId(value)

@@ -17,6 +17,22 @@ export interface AclOptionType {
   value: string
 }
 
+export interface EnhancedAccessControlInfoType {
+  id: string,
+  name: string,
+  l2AclPolicyName: string,
+  l2AclPolicyId: string,
+  l3AclPolicyName: string,
+  l3AclPolicyId: string,
+  devicePolicyName: string,
+  devicePolicyId: string,
+  applicationPolicyName: string,
+  applicationPolicyId: string,
+  clientRateUpLinkLimit: number,
+  clientRateDownLinkLimit: number,
+  networkIds: string[]
+}
+
 export interface AccessControlInfoType {
   id: string,
   name: string,
