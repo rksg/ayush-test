@@ -20,6 +20,8 @@ import {
 import {
   APExtended,
   emailRegExp,
+  Persona,
+  PersonaEthernetPort,
   PropertyDpskType,
   PropertyUnit,
   PropertyUnitFormFields,
@@ -30,12 +32,19 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 
-function AccessPointLanPortSelector (props: { venueId: string, macAddress?: string }) {
+function AccessPointLanPortSelector (props: {
+  venueId: string,
+  ethernetPorts?: PersonaEthernetPort[] }
+) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const { venueId, macAddress } = props
+  const { venueId, ethernetPorts } = props
+  const form = Form.useFormInstance()
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const selectedApMac = Form.useWatch('accessAp')
+  const apName = ethernetPorts?.[0].name
+  const accessAp = ethernetPorts?.[0].macAddress.replaceAll('-', ':')
+  const ports = ethernetPorts?.map(p => p.portIndex)
 
   const venueLanPorts = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
 
@@ -77,14 +86,20 @@ function AccessPointLanPortSelector (props: { venueId: string, macAddress?: stri
     const lanPort = venueLanPorts?.data
       ?.find(lan => lan.model === selectedAp?.model) ?? {} as VenueLanPorts
     setSelectedModel(lanPort)
+    form.setFieldValue('apName', selectedAp?.label)
   }
 
   return (
     <>
       <Form.Item
+        hidden
+        name={'apName'}
+        initialValue={apName}
+      />
+      <Form.Item
         label={$t({ defaultMessage: 'Select AP' })}
         name={'accessAp'}
-        initialValue={macAddress}
+        initialValue={accessAp}
         children={
           <Select
             placeholder={$t({ defaultMessage: 'Select...' })}
@@ -93,6 +108,7 @@ function AccessPointLanPortSelector (props: { venueId: string, macAddress?: stri
       />
       <Form.Item
         name={'ports'}
+        initialValue={ports}
         label={$t(
           { defaultMessage: 'Select LAN Ports for ({model})' },
           { model: selectedModel?.model ?? 'null' }
@@ -106,7 +122,7 @@ function AccessPointLanPortSelector (props: { venueId: string, macAddress?: stri
                   <Checkbox
                     key={index}
                     value={port.portId ?? index}
-                    disabled={port.type === 'TRUNK'}
+                    // disabled={port.type === 'TRUNK'}
                   >
                     {`LAN${port.portId}`}
                   </Checkbox>
@@ -133,6 +149,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const { isEdit, visible, onClose, venueId, unitId } = props
   const [form] = Form.useForm<PropertyUnitFormFields>()
   const [withNsg, setWithNsg] = useState(false)
+  const [ethernetPorts, setEthernetPorts] = useState<PersonaEthernetPort[]|undefined>()
 
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
@@ -192,21 +209,31 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     Promise.all([personaPromise, guestPromise])
       .then(([personaResult, guestResult]) => {
         if (personaResult?.data) {
-          const { vlan, dpskPassphrase, vni } = personaResult.data
           // console.log('Persona :: ', result.data)
-          form.setFieldValue(['unitPersona', 'vlan'], vlan)
+          const { vlan, dpskPassphrase, ethernetPorts, vni } = personaResult.data as Persona
+          if (withNsg) {
+            const accessAp = ethernetPorts?.[0].macAddress.replaceAll('-', ':')
+            const ports = ethernetPorts?.map(p => p.portIndex)
+            setEthernetPorts(ethernetPorts)
+            form.setFieldValue('accessAp', accessAp)
+            form.setFieldValue('ports', ports)
+            form.setFieldValue('vxlan', vni)
+          } else {
+            form.setFieldValue(['unitPersona', 'vlan'], vlan)
+          }
           form.setFieldValue(['unitPersona', 'dpskPassphrase'], dpskPassphrase)
-          form.setFieldValue('vxlan', vni)
         }
 
         if (guestResult?.data) {
           const { vlan, dpskPassphrase } = guestResult.data
           // console.log('Guest Persona :: ', result.data)
-          form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
-          // if no timeout would not render exactly
-          setTimeout(() => {
-            form.setFieldValue(['guestPersona', 'vlan'], vlan)
-          }, 10)
+          if (!withNsg) {
+            form.setFieldValue('enableGuestVlan', personaResult?.data?.vlan !== vlan)
+            // if no timeout would not render exactly
+            setTimeout(() => {
+              form.setFieldValue(['guestPersona', 'vlan'], vlan)
+            }, 10)
+          }
           form.setFieldValue(['guestPersona', 'dpskPassphrase'], dpskPassphrase)
         }
       })
@@ -219,7 +246,8 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
 
   const handleEditUnit = async (formValues: PropertyUnitFormFields) => {
     // TODO: handle exception for more detail information
-    const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona } = formValues
+    const { name, resident, personaId, guestPersonaId, unitPersona, guestPersona,
+      ports, accessAp, apName } = formValues
     // console.log('Edit action :: ', formValues)
 
     // update Unit
@@ -228,8 +256,23 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       payload: { name, resident }
     }).unwrap()
 
+    const personaUpdateResult = withNsg
+      ? await patchPersona(personaId, {
+        ...unitPersona,
+        ...ports
+          ? {
+            ethernetPorts: ports.map(p => ({
+              personaId,
+              macAddress: accessAp,
+              portIndex: p,
+              name: apName
+            } as PersonaEthernetPort))
+          }
+          : {}
+      })
+      : await patchPersona(personaId, unitPersona)
+
     // update Persona
-    const personaUpdateResult = await patchPersona(personaId, unitPersona)
     const guestUpdateResult = await patchPersona(
       guestPersonaId,
       { ...guestPersona, vlan: guestPersona?.vlan ?? unitPersona?.vlan }
@@ -245,12 +288,12 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   }
 
   const toCreateUnitPayload = (formValues: PropertyUnitFormFields): PropertyUnit => {
-    const { unitPersona, guestPersona, resident, accessAp, ports, ...others } = formValues
+    const { unitPersona, guestPersona, resident, accessAp, ports, apName, ...others } = formValues
     const pureResident = _.pickBy(resident, v => v && v.length > 0)
 
     const selectedPorts = accessAp
       ? ports?.map(index => ({
-        macAddress: accessAp,
+        macAddress: accessAp.replaceAll(':', '-'),
         portIndex: index
       }))
       : undefined
@@ -272,7 +315,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         }
       ],
       ...selectedPorts
-        ? { accessPoint: { selectedPorts } }
+        ? { accessPoint: { name: apName, selectedPorts } }
         : {}
     }
   }
@@ -359,7 +402,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
         children={<Input readOnly bordered={false}/>}
       />
     }
-    <AccessPointLanPortSelector venueId={venueId} />
+    <AccessPointLanPortSelector venueId={venueId} ethernetPorts={ethernetPorts} />
   </>)
 
   return (

@@ -89,7 +89,8 @@ export interface PropertyUnitFormFields extends PropertyUnit {
   unitPersona?: UnitPersonaConfig,
   guestPersona?: UnitPersonaConfig,
   accessAp?: string,
-  ports?: number[]
+  ports?: number[],
+  apName?: string
 }
 
 export interface ResidentPortal {
