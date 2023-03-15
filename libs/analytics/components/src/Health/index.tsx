@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { Header } from '../Header'
@@ -15,6 +14,9 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
+
+export type OpenType = 'connectionFailure' | 'ttc' | 'none'
+
 const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
   const { filters: widgetFilters } = props
@@ -24,8 +26,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const [openType, setOpenType] = useState<'connectionFailure' | 'ttc' | 'none'>('none')
-  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
+  const [openType, setOpenType] = useState<OpenType>('none')
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -47,7 +48,6 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
             filters={healthPageFilters}
             openType={openType}
             setOpenType={setOpenType}
-            toggleEnable={toggleEnable}
           />
         </GridCol>
         <HealthPageContextProvider>

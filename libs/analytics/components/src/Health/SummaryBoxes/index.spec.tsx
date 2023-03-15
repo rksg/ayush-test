@@ -3,10 +3,13 @@ import { defineMessage } from 'react-intl'
 
 import { dataApiURL }                                                       from '@acx-ui/analytics/services'
 import { AnalyticsFilter }                                                  from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
 import { Provider, store }                                                  from '@acx-ui/store'
 import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
 import { DateRange }                                                        from '@acx-ui/utils'
+
+import { OpenType } from '..'
 
 import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -51,13 +54,12 @@ describe('Incidents Page', () => {
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
     const openType = 'none'
-    const toggleEnable = true
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
         filters={filters}
         openType={openType}
         setOpenType={jest.fn()}
-        toggleEnable={toggleEnable}
       /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -66,12 +68,25 @@ describe('Incidents Page', () => {
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
     const openType = 'none'
-    const toggleEnable = true
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes filters={filters}
         openType={openType}
         setOpenType={jest.fn()}
-        toggleEnable={toggleEnable}
+      /></Provider></Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('render when feature toggle is disabled', async () => {
+    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
+    const openType = 'none'
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const { asFragment } = render(
+      <Router><Provider><SummaryBoxes filters={filters}
+        openType={openType}
+        setOpenType={jest.fn()}
       /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -81,14 +96,13 @@ describe('Incidents Page', () => {
   describe('toggle stats', () => {
     it('should handle toggle stats', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let openType: 'connectionFailure' | 'ttc' | 'none' = 'none'
+      let openType: OpenType = 'none'
       const setOpenType = jest.fn((val: typeof openType) => openType = val)
-      const toggleEnable = true
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
       const { rerender } = render(<Router><Provider><SummaryBoxes
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -100,7 +114,6 @@ describe('Incidents Page', () => {
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
       const upArrows = screen.getAllByTestId('CaretDoubleUpOutlined')
       expect(upArrows).toHaveLength(3)
@@ -110,21 +123,19 @@ describe('Incidents Page', () => {
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
       expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
     })
 
     it('should handle toggle ttc', async () => {
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let openType: 'connectionFailure' | 'ttc' | 'none' = 'none'
+      let openType: OpenType = 'none'
       const setOpenType = jest.fn((val: typeof openType) => openType = val)
-      const toggleEnable = true
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
       const { rerender } = render(<Router><Provider><SummaryBoxes
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
@@ -136,7 +147,6 @@ describe('Incidents Page', () => {
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
 
       expect(screen.getAllByTestId('CaretDoubleUpOutlined')).toHaveLength(1)
@@ -146,7 +156,6 @@ describe('Incidents Page', () => {
         filters={filters}
         openType={openType}
         setOpenType={setOpenType}
-        toggleEnable={toggleEnable}
       /></Provider></Router>)
 
       expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)

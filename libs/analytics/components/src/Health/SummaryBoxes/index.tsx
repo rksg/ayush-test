@@ -3,7 +3,10 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { noDataSymbol, AnalyticsFilter } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader }      from '@acx-ui/components'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }        from '@acx-ui/utils'
+
+import { OpenType } from '..'
 
 import { useSummaryQuery }                        from './services'
 import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
@@ -23,6 +26,7 @@ export const Box = (props: BoxProps) => {
   const { $t } = useIntl()
   const box = <Wrapper
     $type={props.type}
+    $isOpen={props.isOpen}
     $disabled={!props.toggleEnable}
     onClick={props.onClick}
   >
@@ -41,11 +45,10 @@ export const Box = (props: BoxProps) => {
   return box
 }
 
-export const SummaryBoxes = ({ filters, toggleEnable, openType, setOpenType }: {
+export const SummaryBoxes = ({ filters, openType, setOpenType }: {
   filters: AnalyticsFilter,
-  openType: 'connectionFailure' | 'ttc' | 'none',
-  setOpenType: (val: 'connectionFailure' | 'ttc' | 'none') => void,
-  toggleEnable: boolean
+  openType: OpenType,
+  setOpenType: (val: OpenType) => void
 }) => {
   const intl = useIntl()
   const { $t } = intl
@@ -54,7 +57,7 @@ export const SummaryBoxes = ({ filters, toggleEnable, openType, setOpenType }: {
     start: filters.startDate,
     end: filters.endDate
   }
-
+  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
   const toggleConnectionFailure = () => setOpenType(openType !== 'connectionFailure'
     ? 'connectionFailure' : 'none')
   const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')

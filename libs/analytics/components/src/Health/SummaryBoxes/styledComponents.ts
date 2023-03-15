@@ -33,19 +33,26 @@ const arrowStyle = css`
    vertical-align: middle;
  `
 
-const hoverAndFocusStyle = (type: Type) => css`
+const hoverAndOpenStyle = (type: Type) => css`
    outline: 0;
    background: var(${colors[type].activeBackground});
  `
 export const Wrapper = styled.button
-  .attrs({ type: 'button' })<{ $type: string, $disabled?: boolean }>`
+  .attrs({ type: 'button' })<{ $type: string, $isOpen: boolean, $disabled?: boolean }>`
   border: 0;
   padding-block: 10px;
   background: var(${props => colors[props.$type as Type].background});
   border-radius: 3px;
   text-align: center;
   ${props => (props.$disabled) ? css`cursor: auto;` : css`cursor: pointer;`}
-  ${props => hoverAndFocusStyle(props.$type as Type)}
+  :hover {
+    ${props => (props.$disabled)
+    ? css`background: var(${colors[props.$type as Type].background});`
+    : hoverAndOpenStyle(props.$type as Type)}
+  }
+  ${props => (props.$isOpen)
+    ? hoverAndOpenStyle(props.$type as Type)
+    : css`background: var(${colors[props.$type as Type].background});`}
 `
 export const Statistic = styled(antStatistic)<{ $type: string }>`
   display: flex;
