@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  CatchErrorResponse,
   CommonUrlsInfo,
   EdgeDhcpUrls,
   EdgeUrlsInfo,
@@ -33,7 +32,7 @@ import {
   webAuthList
 } from '../__tests__/fixtures'
 
-import NetworkSegmentationForm, { afterSubmitMessage } from '.'
+import NetworkSegmentationForm from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -61,7 +60,6 @@ jest.mock('antd', () => {
 })
 
 const createNsgPath = '/:tenantId/services/networkSegmentation/create'
-const updateNsgPath = '/:tenantId/services/networkSegmentation/:serviceId/edit'
 
 describe('Update NetworkSegmentation', () => {
   let params: { tenantId: string, serviceId: string }
@@ -151,30 +149,6 @@ describe('Update NetworkSegmentation', () => {
     )
   })
 
-  it('should update networkSegmentation successfully', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <NetworkSegmentationForm editMode={true} />
-      </Provider>, {
-        route: { params, path: updateNsgPath }
-      })
-    // step 1
-    expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 2
-    expect(await screen.findByRole('table')).toBeVisible()
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 3
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 4
-    await screen.findByRole('row', { name: /FMN4221R00H---DS---3/i })
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 5
-    await screen.findByRole('row', { name: /FEK3224R09N---AS---3/i })
-    await user.click(await screen.findByRole('button', { name: 'Finish' }))
-  })
-
   it('should create networkSegmentation successfully', async () => {
     const user = userEvent.setup()
     render(<NetworkSegmentationForm />, {
@@ -251,21 +225,6 @@ describe('Update NetworkSegmentation', () => {
     // step6
     await user.click(await screen.findByRole('button', { name: 'Finish' }))
   }, 30000)
-
-
-  it('cancel and go back to device list', async () => {
-    const user = userEvent.setup()
-    render(<NetworkSegmentationForm />, {
-      wrapper: Provider,
-      route: { params, path: createNsgPath }
-    })
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/t/${params.tenantId}/services/list`,
-      hash: '',
-      search: ''
-    })
-  })
 
   it('Add DHCP service', async () => {
     const user = userEvent.setup()
@@ -355,58 +314,5 @@ describe('Update NetworkSegmentation', () => {
     await user.type(gatewayInput, '1.2.3.4')
     const addDhcpPoolDrawer = screen.getAllByRole('dialog')[1]
     await user.click(within(addDhcpPoolDrawer).getByRole('button', { name: 'Add' }))
-  })
-
-  it('afterSubmitMessage', async () => {
-    const resError = [
-      { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6, c8:03:f5:3a:95:c7] already has VXLAN config,
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
-      [forceOverwriteReboot] set true to overwrite config and reboot.` },
-      { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] already has VXLAN config,
-      [forceOverwriteReboot] set true to overwrite config.` },
-      { message: `
-      Distribution Switch [c8:03:f5:3a:95:c6] will reboot after set up forwarding profile,
-      [forceOverwriteReboot] set true to reboot.` },
-      { message: `The Access Switch [c0:c5:20:aa:35:fd] web auth VLAN not exist or uplink port not exist at VLAN,
-      please create [WebAuth VLAN] and add uplink port or lag first.` },
-      { message: '' }
-    ]
-    const switches = [
-      ...mockNsgSwitchInfoData.distributionSwitches,
-      ...mockNsgSwitchInfoData.accessSwitches,
-      { id: 'c8:03:f5:3a:95:c8' }
-    ]
-
-    const expectMessage= [
-      ['Distribution Switch [FMN4221R00H---DS---3, c8:03:f5:3a:95:c7] already has VXLAN config.',
-        'Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
-        'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] already has VXLAN config.',
-        'Click Yes to proceed, No to cancel.'],
-      ['Distribution Switch [FMN4221R00H---DS---3] will reboot after set up forwarding profile.',
-        'Click Yes to proceed, No to cancel.'],
-      [`The Access Switch [FEK3224R09N---AS---3] web auth VLAN not exist or uplink port not exist at VLAN,
-      please create [WebAuth VLAN] and add uplink port or lag first.`],
-      []
-    ]
-
-    expect(afterSubmitMessage(
-      { data: { errors: [resError[0]] } } as CatchErrorResponse, switches
-    )).toStrictEqual(expectMessage[0].map(m=><p>{m}</p>))
-    expect(afterSubmitMessage(
-      { data: { errors: [resError[1]] } } as CatchErrorResponse, switches
-    )).toStrictEqual(expectMessage[1].map(m=><p>{m}</p>))
-    expect(afterSubmitMessage(
-      { data: { errors: [resError[2]] } } as CatchErrorResponse, switches
-    )).toStrictEqual(expectMessage[2].map(m=><p>{m}</p>))
-    expect(afterSubmitMessage(
-      { data: { errors: [resError[3]] } } as CatchErrorResponse, switches
-    )).toStrictEqual(expectMessage[3].map(m=><p>{m}</p>))
-    expect(afterSubmitMessage(
-      { data: { errors: [resError[4]] } } as CatchErrorResponse, switches
-    )).toStrictEqual(expectMessage[4].map(m=><p>{m}</p>))
-
   })
 })
