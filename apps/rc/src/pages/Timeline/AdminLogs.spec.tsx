@@ -11,6 +11,11 @@ import { AdminLogs }          from './AdminLogs'
 
 const params = { tenantId: 'tenant-id' }
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+}))
+
 describe('AdminLogs', () => {
   beforeEach(() => {
     mockRestApiQuery(CommonUrlsInfo.getEventList.url, 'post', events)
@@ -18,24 +23,14 @@ describe('AdminLogs', () => {
   })
 
   it('should render activity list', async () => {
-    render(
-      <Provider>
-        <AdminLogs />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<AdminLogs />, { route: { params }, wrapper: Provider })
     await screen.findByText(
       'Admin FisrtName 12 LastName 12, dog12@email.com logged into the cloud controller.'
     )
   })
 
   it('should render activity drawer', async () => {
-    render(
-      <Provider>
-        <AdminLogs />
-      </Provider>,
-      { route: { params } }
-    )
+    render(<AdminLogs />, { route: { params }, wrapper: Provider })
     await userEvent.click(await screen.findByRole('button', { name: /2023/ }))
     expect(await screen.findByText('Log Details')).toBeVisible()
   })

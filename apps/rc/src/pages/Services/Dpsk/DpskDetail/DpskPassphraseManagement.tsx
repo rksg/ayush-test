@@ -206,8 +206,8 @@ export default function DpskPassphraseManagement () {
     />
     <ImportFileDrawer type='DPSK'
       title={$t({ defaultMessage: 'Import from file' })}
-      maxSize={CsvSize['5MB']}
-      maxEntries={512}
+      maxSize={CsvSize['20MB']}
+      maxEntries={5000}
       acceptType={['csv']}
       templateLink='assets/templates/DPSK_import_template_expiration.csv'
       visible={uploadCsvDrawerVisible}
@@ -222,7 +222,14 @@ export default function DpskPassphraseManagement () {
           console.log(error) // eslint-disable-line no-console
         }
       }}
-      onClose={() => setUploadCsvDrawerVisible(false)} >
+      onClose={() => setUploadCsvDrawerVisible(false)}
+      extraDescription={[
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Notice: Existing DPSK passphrases with the same MAC address will be overwritten, and the previous passphrase will be unusable' }),
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'The properties you set here for "User Name Prefix" will not replace any value that you manually define in the imported file' })
+      ]}
+    >
       <Form.Item
         name='usernamePrefix'
         label={$t({ defaultMessage: 'User name prefix' })}

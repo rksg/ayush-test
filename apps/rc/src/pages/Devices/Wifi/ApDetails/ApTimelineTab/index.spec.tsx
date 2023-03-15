@@ -11,6 +11,15 @@ import { activities, events, eventsMeta } from './__tests__/fixtures'
 
 import { ApTimelineTab } from '.'
 
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  useUserProfileContext: () => ({ data: { detailLevel: 'it' } })
+}))
+
+const wrapper = (props: { children: JSX.Element }) => <Provider>
+  <ApContextProvider {...props} />
+</Provider>
+
 describe('ApTimelineTab', ()=>{
   it('should render', async () => {
     const ap = {
@@ -28,10 +37,8 @@ describe('ApTimelineTab', ()=>{
       rest.post(CommonUrlsInfo.getEventList.url, (_, res, ctx) => res(ctx.json(events))),
       rest.post(CommonUrlsInfo.getEventListMeta.url, (_, res, ctx) => res(ctx.json(eventsMeta)))
     )
-    render(<ApContextProvider>
-      <ApTimelineTab />
-    </ApContextProvider>, {
-      wrapper: Provider,
+    render(<ApTimelineTab />, {
+      wrapper,
       route: {
         params: { tenantId: 't1', apId: '000000000001', activeSubTab: 'activities' },
         path: '/t/:tenantId/devices/wifi/:apId/details/timeline/:activeSubTab'
