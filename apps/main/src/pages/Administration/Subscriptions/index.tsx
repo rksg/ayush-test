@@ -124,8 +124,8 @@ const SubscriptionTable = () => {
       dataIndex: 'timeLeft',
       key: 'timeLeft',
       render: function (_, row) {
-        const remaingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
-        return EntitlementUtil.timeLeftValues(remaingDays)
+        const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate)
+        return EntitlementUtil.timeLeftValues(remainingDays)
       }
     },
     {
