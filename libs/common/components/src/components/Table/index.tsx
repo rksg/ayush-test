@@ -385,29 +385,33 @@ function Table <RecordType extends Record<string, any>> ({
             )}
           </Space>
         </div>
-        <UI.HeaderRight>
-          {(
-            Boolean(activeFilters.length) ||
-            (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
-          ) && <Button
-            style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
-            onClick={() => {
-              setFilterValues({} as Filter)
-              setSearchValue('')
-            }}>
-            {$t({ defaultMessage: 'Clear Filters' })}
-          </Button>}
-        </UI.HeaderRight>
-        {headerButton && headerButton.disabled
-          ? <DisabledButton
-            tooltipPlacement='topRight'
-            title={'No data'}
-            icon={headerButton.icon}
-          />
-          : <Button
-            icon={headerButton?.icon}
-            onClick={headerButton?.onClick}
-          />}
+        <UI.HeaderComps>
+          <UI.HeaderLeft>
+            {(
+              Boolean(activeFilters.length) ||
+              (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH)
+            ) && <Button
+              style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
+              onClick={() => {
+                setFilterValues({} as Filter)
+                setSearchValue('')
+              }}>
+              {$t({ defaultMessage: 'Clear Filters' })}
+            </Button>}
+          </UI.HeaderLeft>
+          <UI.HeaderRight>
+            {headerButton && headerButton.disabled
+              ? <DisabledButton
+                tooltipPlacement='topRight'
+                title={'No data'}
+                icon={headerButton.icon}
+              />
+              : <Button
+                icon={headerButton?.icon}
+                onClick={headerButton?.onClick}
+              />}
+          </UI.HeaderRight>
+        </UI.HeaderComps>
       </UI.Header>
     )}
     <ProTable<RecordType>

@@ -347,8 +347,17 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
 `
-export const HeaderRight = styled.div`
+export const HeaderLeft = styled.div`
   text-align: right;
+`
+
+export const HeaderRight = styled.div`
+  padding-left: 10px;
+`
+
+export const HeaderComps = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `
 
 export const Wrapper = styled.div<StyledTable>`
