@@ -453,7 +453,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       query: ({ params, payload }) => {
         const reqParams = { ...params }
         const wifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.getWifiCalling, reqParams, RKS_NEW_UI
+          WifiCallingUrls.getWifiCalling, reqParams
         )
         return {
           ...wifiCallingServiceReq,
@@ -481,7 +481,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'DeleteWiFiCallingProfile',
             'DeleteWiFiCallingProfiles'
           ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Service', id: 'LIST' }]))
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' },
+              { type: 'WifiCalling', id: 'LIST' }
+            ]))
           })
         })
       }
@@ -489,7 +492,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const createWifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.addWifiCalling, params, RKS_NEW_UI
+          WifiCallingUrls.addWifiCalling, params
         )
         return {
           ...createWifiCallingServiceReq,
@@ -501,7 +504,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          WifiCallingUrls.updateWifiCalling, params, RKS_NEW_UI
+          WifiCallingUrls.updateWifiCalling, params
         )
         return {
           ...req,

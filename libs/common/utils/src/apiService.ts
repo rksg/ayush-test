@@ -1,8 +1,8 @@
 import _                        from 'lodash'
 import { generatePath, Params } from 'react-router-dom'
 
-import { getTenantId } from './getTenantId'
-import { getJwtToken } from './jwtToken'
+import { getTenantId }              from './getTenantId'
+import { getJwtToken, AccountTier } from './jwtToken'
 
 export interface ApiInfo {
   url: string;
@@ -23,6 +23,22 @@ export const isDelegationMode = () => {
   const jwtToken = getJwtToken()
 
   return (getTenantIdFromJwt(jwtToken as string) !== getTenantId())
+}
+
+export const JwtTierValue = () => {
+  const jwtToken = getJwtToken()
+
+  if (jwtToken) {
+    const tokens = jwtToken.split('.')
+
+    if (tokens.length >= 2) {
+      const jwtRuckus = JSON.parse(atob(tokens[1]))
+      if (jwtRuckus && jwtRuckus.acx_account_tier) {
+        return jwtRuckus.acx_account_tier
+      }
+    }
+  }
+  return AccountTier.PLATINUM
 }
 
 export const isLocalHost = () => {
