@@ -37,12 +37,6 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.STACK:
       transform = $t({ defaultMessage: 'Stack' })
       break
-    case ConfigTypeEnum.SWITCH_SETTINGS:
-      transform = $t({ defaultMessage: 'Switch Setting' })
-      break
-    case ConfigTypeEnum.LOCAL_SYNC:
-      transform = $t({ defaultMessage: 'Local Sync' })
-      break
     case ConfigTypeEnum.SYSLOG_SERVER:
       transform = $t({ defaultMessage: 'Syslog Server' })
       break
