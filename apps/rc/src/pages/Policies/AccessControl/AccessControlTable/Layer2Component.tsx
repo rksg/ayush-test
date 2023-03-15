@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
@@ -16,6 +16,7 @@ import { filterByAccess }                                     from '@acx-ui/user
 
 import Layer2Drawer from '../AccessControlForm/Layer2Drawer'
 
+import { ActionButtonWrapper } from './AccessControlTable'
 
 const defaultPayload = {
   searchString: '',
@@ -134,6 +135,11 @@ const Layer2Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <ActionButtonWrapper>
+      <Layer2Drawer
+        onlyAddMode={{ viewText: $t({ defaultMessage: 'Add Layer 2 Policy' }) }}
+      />
+    </ActionButtonWrapper>
     <Table<L2AclPolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}

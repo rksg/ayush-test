@@ -21,6 +21,8 @@ import { filterByAccess } from '@acx-ui/user'
 
 import Layer3Drawer from '../AccessControlForm/Layer3Drawer'
 
+import { ActionButtonWrapper } from './AccessControlTable'
+
 
 const defaultPayload = {
   fields: [
@@ -138,6 +140,11 @@ const Layer3Component = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <ActionButtonWrapper>
+      <Layer3Drawer
+        onlyAddMode={{ viewText: $t({ defaultMessage: 'Add Layer 3 Policy' }) }}
+      />
+    </ActionButtonWrapper>
     <Table<L3AclPolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}

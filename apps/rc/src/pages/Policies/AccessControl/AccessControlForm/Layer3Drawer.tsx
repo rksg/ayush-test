@@ -59,6 +59,9 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: {
+    viewText: string
+  },
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -164,6 +167,7 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = {} as { viewText: string },
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
@@ -861,9 +865,22 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
     </Fieldset>
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const ModelContent = () => {
+    if (onlyAddMode.viewText) {
+      return <Button
+        type='primary'
+        size='middle'
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId('')
+        }
+        }>
+        {onlyAddMode.viewText}
+      </Button>
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -872,50 +889,58 @@ const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'l3AclPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Layer 3 profile' })
-            }]}
-            children={
-              <Select
-                style={{ width: '150px' }}
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={layer3SelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!l3AclPolicyId}
-            onClick={() => {
-              if (l3AclPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(l3AclPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l3AclPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Layer 3 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer3SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!l3AclPolicyId}
+          onClick={() => {
+            if (l3AclPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(l3AclPolicyId)
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'View Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      <ModelContent />
       <Drawer
         title={$t({ defaultMessage: 'Layer 3 Settings' })}
         visible={visible}

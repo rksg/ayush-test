@@ -39,7 +39,10 @@ export interface Layer2DrawerProps {
     id: string,
     viewText: string
   },
-  isOnlyViewMode?: boolean
+  isOnlyViewMode?: boolean,
+  onlyAddMode?: {
+    viewText: string
+  },
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -75,6 +78,7 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = {} as { viewText: string },
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
@@ -525,9 +529,22 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
     />
   </RuleContentWrapper>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const ModeContent = () => {
+    if (onlyAddMode.viewText) {
+      return <Button
+        type='primary'
+        size='middle'
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId('')
+        }
+        }>
+        {onlyAddMode.viewText}
+      </Button>
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -536,50 +553,58 @@ const Layer2Drawer = (props: Layer2DrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'l2AclPolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Layer 2 profile' })
-            }]}
-            children={
-              <Select
-                style={{ width: '150px' }}
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={layer2SelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!l2AclPolicyId}
-            onClick={() => {
-              if (l2AclPolicyId) {
-                setVisible(true)
-                setQueryPolicyId(l2AclPolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'l2AclPolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Layer 2 profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={layer2SelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!l2AclPolicyId}
+          onClick={() => {
+            if (l2AclPolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(l2AclPolicyId)
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'View Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      <ModeContent />
       <Drawer
         title={$t({ defaultMessage: 'Layer 2 Settings' })}
         visible={visible}

@@ -18,6 +18,8 @@ import { filterByAccess } from '@acx-ui/user'
 
 import ApplicationDrawer from '../AccessControlForm/ApplicationDrawer'
 
+import { ActionButtonWrapper } from './AccessControlTable'
+
 
 const defaultPayload = {
   fields: [
@@ -136,6 +138,11 @@ const ApplicationPolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <ActionButtonWrapper>
+      <ApplicationDrawer
+        onlyAddMode={{ viewText: $t({ defaultMessage: 'Add Application Policy' }) }}
+      />
+    </ActionButtonWrapper>
     <Table<ApplicationPolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}

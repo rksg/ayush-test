@@ -53,6 +53,9 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  onlyAddMode?: {
+    viewText: string
+  },
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void
 }
@@ -98,6 +101,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
+    onlyAddMode = {} as { viewText: string },
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {}
   } = props
@@ -455,9 +459,22 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </Form>
 
-  return (
-    <>
-      { isOnlyViewMode ? <Button
+  const ModelContent = () => {
+    if (onlyAddMode.viewText) {
+      return <Button
+        type='primary'
+        size='middle'
+        onClick={() => {
+          setVisible(true)
+          setQueryPolicyId('')
+        }
+        }>
+        {onlyAddMode.viewText}
+      </Button>
+    }
+
+    if (isOnlyViewMode) {
+      return <Button
         type='link'
         size={'small'}
         onClick={() => {
@@ -466,51 +483,59 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
         }>
         {onlyViewMode.viewText}
-      </Button>: <GridRow style={{ width: '350px' }}>
-        <GridCol col={{ span: 12 }}>
-          <Form.Item
-            name={[...inputName, 'devicePolicyId']}
-            rules={[{
-              required: true
-            }, {
-              message: $t({ defaultMessage: 'Please select Device & OS profile' })
-            }]}
-            children={
-              <Select
-                style={{ width: '150px' }}
-                placeholder={$t({ defaultMessage: 'Select profile...' })}
-                onChange={(value) => {
-                  setQueryPolicyId(value)
-                }}
-                children={deviceSelectOptions}
-              />
-            }
-          />
-        </GridCol>
-        <AclGridCol>
-          <Button type='link'
-            disabled={!devicePolicyId}
-            onClick={() => {
-              if (devicePolicyId) {
-                setVisible(true)
-                setQueryPolicyId(devicePolicyId)
-              }
-            }
-            }>
-            {$t({ defaultMessage: 'View Details' })}
-          </Button>
-        </AclGridCol>
-        <AclGridCol>
-          <Button type='link'
-            onClick={() => {
+      </Button>
+    }
+
+    return <GridRow style={{ width: '350px' }}>
+      <GridCol col={{ span: 12 }}>
+        <Form.Item
+          name={[...inputName, 'devicePolicyId']}
+          rules={[{
+            required: true
+          }, {
+            message: $t({ defaultMessage: 'Please select Device & OS profile' })
+          }]}
+          children={
+            <Select
+              style={{ width: '150px' }}
+              placeholder={$t({ defaultMessage: 'Select profile...' })}
+              onChange={(value) => {
+                setQueryPolicyId(value)
+              }}
+              children={deviceSelectOptions}
+            />
+          }
+        />
+      </GridCol>
+      <AclGridCol>
+        <Button type='link'
+          disabled={!devicePolicyId}
+          onClick={() => {
+            if (devicePolicyId) {
               setVisible(true)
-              setQueryPolicyId('')
-              clearFieldsValue()
-            }}>
-            {$t({ defaultMessage: 'Add New' })}
-          </Button>
-        </AclGridCol>
-      </GridRow> }
+              setQueryPolicyId(devicePolicyId)
+            }
+          }
+          }>
+          {$t({ defaultMessage: 'View Details' })}
+        </Button>
+      </AclGridCol>
+      <AclGridCol>
+        <Button type='link'
+          onClick={() => {
+            setVisible(true)
+            setQueryPolicyId('')
+            clearFieldsValue()
+          }}>
+          {$t({ defaultMessage: 'Add New' })}
+        </Button>
+      </AclGridCol>
+    </GridRow>
+  }
+
+  return (
+    <>
+      <ModelContent />
       <Drawer
         title={$t({ defaultMessage: 'Device & OS Access Settings' })}
         visible={visible}

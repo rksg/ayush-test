@@ -1,3 +1,5 @@
+import React, { ReactNode } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
@@ -11,6 +13,14 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import AccessControlTabs from './AccessControlTabs'
+
+export const ActionButtonWrapper = ({ children }: { children: ReactNode }) => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'row-reverse', marginTop: '10px' }}>
+      {children}
+    </div>
+  )
+}
 
 export default function AccessControlTable () {
   const { $t } = useIntl()

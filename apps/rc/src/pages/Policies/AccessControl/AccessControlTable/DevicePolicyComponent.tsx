@@ -21,6 +21,8 @@ import { filterByAccess } from '@acx-ui/user'
 
 import DeviceOSDrawer from '../AccessControlForm/DeviceOSDrawer'
 
+import { ActionButtonWrapper } from './AccessControlTable'
+
 
 const defaultPayload = {
   fields: [
@@ -138,6 +140,11 @@ const DevicePolicyComponent = () => {
   ]
 
   return <Loader states={[tableQuery]}>
+    <ActionButtonWrapper>
+      <DeviceOSDrawer
+        onlyAddMode={{ viewText: $t({ defaultMessage: 'Add Device&OS Policy' }) }}
+      />
+    </ActionButtonWrapper>
     <Table<DevicePolicy>
       columns={useColumns(networkFilterOptions, editMode, setEditMode)}
       enableApiFilter={true}
