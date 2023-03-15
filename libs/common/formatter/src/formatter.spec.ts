@@ -1,13 +1,10 @@
-import moment from 'moment-timezone'
-
 import { getUserProfile, setUserProfile, UserProfile } from '@acx-ui/user'
 
 import {
   formatter,
   formats,
   convertEpochToRelativeTime,
-  DateFormatEnum,
-  defaultDateFormat
+  DateFormatEnum
 } from './formatter'
 
 function testFormat (
