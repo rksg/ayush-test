@@ -212,7 +212,7 @@ export function Integrators () {
               <Button>{$t({ defaultMessage: 'Manage own account' })}</Button>
             </TenantLink>,
             <MspTenantLink to='/integrators/create'>
-              <Button type='primary'>{$t({ defaultMessage: 'Add Integrator' })}</Button>
+              <Button type='primary'>{$t({ defaultMessage: 'Add' })}</Button>
             </MspTenantLink>
           ]
           : [<TenantLink to='/dashboard'>

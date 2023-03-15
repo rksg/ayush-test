@@ -6,6 +6,7 @@ import { AnalyticsFilter }                                              from '@a
 import { BarChart, cssStr, cssNumber, Loader, Card, GridRow, Subtitle } from '@acx-ui/components'
 import { formatter, convertEpochToRelativeTime }                        from '@acx-ui/formatter'
 import { Client, ClientStatistic }                                      from '@acx-ui/rc/utils'
+import { useParams }                                                    from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -16,12 +17,12 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
   filters: AnalyticsFilter
 }) {
   const { $t } = useIntl()
+  const { clientId } = useParams()
 
   return <Card type='solid-bg'>
     <Loader states={[{
       isLoading: !Object.keys(clientStatistic ?? {}).length
         || !Object.keys(clientStatus).length
-        || !Object.keys(clientDetails).length
     }]}>
       <GridRow style={{ flexGrow: '1' }}>
         <UI.GridCol col={{ span: 5 }}>
@@ -105,7 +106,7 @@ export function ClientOverviewWidget ({ clientStatistic, clientStatus, clientDet
           </UI.BarChartContainer>
         </UI.GridCol>
         <UI.GridCol col={{ span: 5 }}>
-          <ClientHealth filter={filters} clientMac={clientDetails.clientMac} />
+          <ClientHealth filter={filters} clientMac={clientId as string} />
         </UI.GridCol>
       </GridRow>
     </Loader>

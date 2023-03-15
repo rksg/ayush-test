@@ -30,6 +30,7 @@ import {
   AAAPolicyType,
   AaaUrls,
   AAATempType,
+  AAAViewModalType,
   l3AclPolicyInfoType,
   l2AclPolicyInfoType,
   L2AclPolicy,
@@ -45,7 +46,9 @@ import {
   ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   AAAPolicyNetwork,
-  ClientIsolationViewModel
+  ClientIsolationViewModel,
+  ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
+  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData
 } from '@acx-ui/rc/utils'
 import { basePolicyApi } from '@acx-ui/store'
 
@@ -389,79 +392,104 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addAAAPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.addAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.deleteAAAPolicy, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    getAAAPolicyList: build.query<AAATempType[], RequestPayload>({
+    getAAAPolicyList: build.query<TableResult<AAATempType>, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.getAAAPolicyList, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }],
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      transformResponse (result: AAATempType[]) {
+        return { data: result, totalCount: result.length, page: 0 }
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add AAA Policy Profile',
-            'Update AAA Policy Profile'
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius'
           ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'AAA', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddRadius',
+            'UpdateRadius',
+            'DeleteRadius'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
         })
       }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
       query: ({ params, payload }) => {
-        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params, RKS_NEW_UI)
+        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params)
         return {
           ...instancesRes,
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params, RKS_NEW_UI)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
         return {
           ...aaaDetailReq
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -666,7 +694,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...vlanPoolListReq
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
@@ -719,18 +747,32 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    getVLANPoolPolicyList: build.query<VLANPoolPolicyType[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicyList, params, RKS_NEW_UI)
+    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolPolicyType>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddVlanPool',
+            'UpdateVlanPool',
+            'DeleteVlanPool',
+            'PatchVlanPool',
+            'DeleteVlanPools'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'VLANPool', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params)
         return {
           ...req
         }
@@ -739,11 +781,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         data.vlanMembers = (data.vlanMembers as string[]).join(',')
         return data
       },
-      providesTags: [{ type: 'Policy', id: 'DETAIL' }]
+      providesTags: [{ type: 'VLANPool', id: 'DETAIL' }]
     }),
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params)
         return {
           ...req,
           body: {
@@ -752,11 +794,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
       query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params)
         return {
           ...req,
           body: {
@@ -765,26 +807,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }]
+      invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getVLANPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolVenues, params, RKS_NEW_UI)
+        const req = createHttpRequest(VlanPoolUrls.getVLANPoolVenues, params)
         return {
           ...req,
           body: payload
         }
       },
-      providesTags: [{ type: 'Policy', id: 'LIST' }]
+      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -968,10 +1010,159 @@ export const policyApi = basePolicyApi.injectEndpoints({
           })
         })
       }
+    }),
+    getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddApSnmpAgent',
+            'UpdateApSnmpAgent',
+            'DeleteApSnmpAgentProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'SnmpAgent', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getApSnmpPolicy: build.query<ApSnmpPolicy, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.addApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    deleteApSnmpPolicies: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApUsageByApSnmpProfile, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
+    }),
+    getApSnmpViewModel: build.query<TableResult<ApSnmpViewModelData>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpFromViewModel, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [
+        { type: 'SnmpAgent', id: 'LIST' },
+        { type: 'SnmpAgent', id: 'VENUE' },
+        { type: 'SnmpAgent', id: 'AP' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddApSnmpAgent',
+            'UpdateApSnmpAgent',
+            'DeleteApSnmpAgentProfile'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getVenueApSnmpSettings: build.query<VenueApSnmpSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getVenueApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'VENUE' }]
+    }),
+    updateVenueApSnmpSettings: build.mutation<VenueApSnmpSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateVenueApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'VENUE' }]
+    }),
+    getApSnmpSettings: build.query<ApSnmpSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.getApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    updateApSnmpSettings: build.mutation<ApSnmpSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ApSnmpUrls.updateApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
+    }),
+    resetApSnmpSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ApSnmpUrls.resetApSnmpSettings, params, RKS_NEW_UI)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     })
+
   })
 })
-
 
 export const {
   usePolicyListQuery,
@@ -1031,7 +1222,7 @@ export const {
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
-  useGetVLANPoolPolicyListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
@@ -1055,5 +1246,21 @@ export const {
   useUpdateVenueSyslogApMutation,
   useGetSyslogPolicyListQuery,
   useGetVenueSyslogListQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetAAAPolicyViewModelListQuery,
+  useGetApSnmpPolicyListQuery,
+  useLazyGetApSnmpPolicyListQuery,
+  useGetApSnmpPolicyQuery,
+  useAddApSnmpPolicyMutation,
+  useUpdateApSnmpPolicyMutation,
+  useDeleteApSnmpPolicyMutation,
+  useDeleteApSnmpPoliciesMutation,
+  useGetApUsageByApSnmpQuery,
+  useGetApSnmpViewModelQuery,
+  useGetVenueApSnmpSettingsQuery,
+  useLazyGetVenueApSnmpSettingsQuery,
+  useUpdateVenueApSnmpSettingsMutation,
+  useGetApSnmpSettingsQuery,
+  useUpdateApSnmpSettingsMutation,
+  useResetApSnmpSettingsMutation
 } = policyApi
