@@ -11,9 +11,9 @@ import {
   useGetNetworkSegmentationGroupByIdQuery,
   useUpdateNetworkSegmentationGroupMutation
 } from '@acx-ui/rc/services'
-import { CatchErrorResponse, NetworkSegmentationGroup } from '@acx-ui/rc/utils'
-import { useTenantLink }                                from '@acx-ui/react-router-dom'
-import { getIntl }                                      from '@acx-ui/utils'
+import { AccessSwitch, CatchErrorResponse, NetworkSegmentationGroup } from '@acx-ui/rc/utils'
+import { useTenantLink }                                              from '@acx-ui/react-router-dom'
+import { getIntl }                                                    from '@acx-ui/utils'
 
 import { AccessSwitchForm }       from './AccessSwitchForm'
 import { DistributionSwitchForm } from './DistributionSwitchForm'
@@ -36,7 +36,8 @@ export interface NetworkSegmentationGroupForm extends NetworkSegmentationGroup {
   segments: number
   devices: number
   tunnelProfileName: string
-  networkNames: string[]
+  networkNames: string[],
+  originalAccessSwitchInfos: AccessSwitch[]
 }
 
 export default function NetworkSegmentationForm ({ editMode = false }: { editMode?: boolean }) {
@@ -88,6 +89,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
       form.setFieldValue('networkIds', nsgData.networkIds)
       form.setFieldValue('distributionSwitchInfos', nsgData.distributionSwitchInfos)
       form.setFieldValue('accessSwitchInfos', nsgData.accessSwitchInfos)
+      form.setFieldValue('originalAccessSwitchInfos', nsgData.accessSwitchInfos)
     }
   }, [nsgData, editMode])
 
@@ -117,7 +119,7 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
       if (editMode) {
         await updateNetworkSegmentationGroup({ params, payload: payload }).unwrap()
       } else {
-        await createNetworkSegmentationGroup({ params, payload: _.omit(payload, 'id') }).unwrap()
+        await createNetworkSegmentationGroup({ params, payload: payload }).unwrap()
       }
       navigate(linkToServices, { replace: true })
     } catch (error) {
@@ -159,7 +161,6 @@ export default function NetworkSegmentationForm ({ editMode = false }: { editMod
         // setting it null end up causing warning on shouldn't use null for Select.
         // Will retain from its `defaultValue` usage,
         // so it remain the same as what was implemented
-        venueId: null as unknown as NetworkSegmentationGroupForm['venueId'],
         // eslint-disable-next-line max-len
         vxlanTunnelProfileId: null as unknown as NetworkSegmentationGroupForm['vxlanTunnelProfileId']
       }}

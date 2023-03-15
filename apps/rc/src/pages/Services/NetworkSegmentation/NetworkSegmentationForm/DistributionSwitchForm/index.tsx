@@ -26,6 +26,7 @@ export function DistributionSwitchForm () {
   const [dsList, setDsList] = useState<DistributionSwitch[]>([])
   const distributionSwitchInfos = useWatch('distributionSwitchInfos', form)
   const accessSwitchInfos = useWatch('accessSwitchInfos', form)
+  const originalAccessSwitchInfos = useWatch('originalAccessSwitchInfos', form)
   const venueId = useWatch('venueId', form)
   const edgeId = useWatch('edgeId', form)
 
@@ -114,6 +115,7 @@ export function DistributionSwitchForm () {
       open={openDrawer}
       editRecord={selected}
       availableSwitches={availableSwitches}
+      originalAccessSwitches={originalAccessSwitchInfos}
       selectedSwitches={dsList}
       venueId={venueId}
       edgeId={edgeId}

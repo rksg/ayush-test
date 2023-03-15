@@ -19,6 +19,7 @@ export function DistributionSwitchDrawer (props: {
   open: boolean;
   editRecord?: DistributionSwitch;
   availableSwitches: SwitchLite[];
+  originalAccessSwitches?: AccessSwitch[];
   selectedSwitches: DistributionSwitch[];
   venueId: string;
   edgeId: string;
@@ -30,7 +31,7 @@ export function DistributionSwitchDrawer (props: {
   const [form] = Form.useForm()
   const {
     open, editRecord, availableSwitches, selectedSwitches,
-    venueId, edgeId, onClose = ()=>{}, onSaveDS
+    originalAccessSwitches, venueId, edgeId, onClose = ()=>{}, onSaveDS
   } = props
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3', siteName: edgeId }
@@ -41,6 +42,18 @@ export function DistributionSwitchDrawer (props: {
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
 
   const dsId = Form.useWatch('id', form)
+
+  const { availableAs } = useGetAccessSwitchesByDSQuery(
+    { params: { tenantId, venueId, switchId: dsId } }, {
+      skip: !venueId || !dsId,
+      selectFromResult: ({ data }) => {
+        const inUseSwitchIds = (selectedSwitches || []).map(ds => ds.id).concat([dsId])
+        return {
+          availableAs: data?.switchViewList?.filter(sw => !inUseSwitchIds.includes(sw.id)) || []
+        }
+      }
+    }
+  )
 
   useEffect(() => {
     form.resetFields()
@@ -170,57 +183,42 @@ export function DistributionSwitchDrawer (props: {
         }}
         onCancel={() => setOpenModal(false)}
         selected={asList}
-        selectedDs={selectedSwitches}
-        switchId={dsId}
-        venueId={venueId} />
+        availableAs={availableAs.concat(originalAccessSwitches || [])}
+        switchId={dsId} />
     </Drawer>
   )
 }
 function SelectAccessSwitchModal ({
-  visible, onSave, onCancel, selected, selectedDs, switchId, venueId
+  visible, onSave, onCancel, selected, availableAs, switchId
 }: {
-  visible: boolean;
-  onSave?: (asList: AccessSwitch[]) => void;
+  visible: boolean
+  onSave?: (asList: AccessSwitch[]) => void
   onCancel: () => void;
-  selected?: AccessSwitch[];
-  selectedDs?: DistributionSwitch[];
-  switchId: string;
-  venueId: string;
+  selected?: AccessSwitch[]
+  availableAs: SwitchLite[]
+  switchId: string
 }) {
   const { $t } = useIntl()
-  const { tenantId } = useParams()
 
-  const [selectedAsList, setSelectedAsList] = useState([] as string[])
-
-  const { availableAs } = useGetAccessSwitchesByDSQuery(
-    { params: { tenantId, venueId, switchId } }, {
-      skip: !venueId || !switchId,
-      selectFromResult: ({ data }) => {
-        const inUseSwitchIds = (selectedDs || []).map(ds => ds.id).concat([switchId])
-        return {
-          availableAs: data?.switchViewList?.filter(sw => !inUseSwitchIds.includes(sw.id)) || []
-        }
-      }
-    }
-  )
+  const [selectedAsIds, setSelectedAsIds] = useState([] as string[])
 
   useEffect(() => {
     if (!visible) {
-      setSelectedAsList([])
+      setSelectedAsIds([])
     }
     if (selected) {
-      setSelectedAsList(selected.map(s => s.id))
+      setSelectedAsIds(selected.map(s => s.id))
     }
   }, [selected, visible])
 
   const handleUpdateAsList = () => {
     onSave && onSave(availableAs
-      .filter(as => selectedAsList.includes(as.id))
+      .filter(as => selectedAsIds.includes(as.id))
       .map(as => ({ ...as, distributionSwitchId: switchId })) // convert to AccessSwitch
     )
   }
   const handleChange = (targetKeys: string[]) => {
-    setSelectedAsList(targetKeys)
+    setSelectedAsIds(targetKeys)
   }
 
   return (
@@ -231,15 +229,15 @@ function SelectAccessSwitchModal ({
       onOk={handleUpdateAsList}
       onCancel={onCancel}
       okButtonProps={{
-        disabled: selectedAsList.length <= 0
+        disabled: selectedAsIds.length <= 0
       }}
       width={662}>
       <Transfer
-        dataSource={availableAs.concat(selected || []).map(as => ({
+        dataSource={availableAs.map(as => ({
           key: as.id,
           title: as.name
         }))}
-        targetKeys={selectedAsList}
+        targetKeys={selectedAsIds}
         showSearch
         showSelectAll={false}
         listStyle={{ width: 250, height: 300 }}

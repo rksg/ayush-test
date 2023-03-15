@@ -6,6 +6,7 @@ import {
   Table,
   TableProps, useStepFormContext
 } from '@acx-ui/components'
+import { SimpleListTooltip }           from '@acx-ui/rc/components'
 import { useWebAuthTemplateListQuery } from '@acx-ui/rc/services'
 import { AccessSwitch }                from '@acx-ui/rc/utils'
 import { useParams }                   from '@acx-ui/react-router-dom'
@@ -73,10 +74,21 @@ export function AccessSwitchTable (props: {
     dataIndex: 'templateId',
     sorter: true,
     render: (data, row) => {
+      let displayText = ''
       if (row.webAuthPageType === 'USER_DEFINED') {
-        return $t({ defaultMessage: 'custom' })
+        displayText = $t({ defaultMessage: 'custom' })
+      } else {
+        displayText = templateListResult?.data.find(tp => tp.id === row.templateId)?.name ||
+          $t({ defaultMessage: 'template' })
       }
-      return templateListResult?.data.find(tp => tp.id === row.templateId)?.name || data
+      const items = [
+        `${$t({ defaultMessage: 'Header' })}: ${row['webAuthCustomTop'] || ''}`,
+        `${$t({ defaultMessage: 'Title' })}: ${row['webAuthCustomTitle'] || ''}`,
+        `${$t({ defaultMessage: 'Password Label' })}: ${row['webAuthPasswordLabel'] || ''}`,
+        `${$t({ defaultMessage: 'Button Text' })}: ${row['webAuthCustomLoginButton'] || ''}`,
+        `${$t({ defaultMessage: 'Footer' })}: ${row['webAuthCustomBottom'] || ''}`
+      ]
+      return <SimpleListTooltip displayText={displayText} items={items}/>
     }
   }]
 
