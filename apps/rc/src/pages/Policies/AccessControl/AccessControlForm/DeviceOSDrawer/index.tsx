@@ -169,7 +169,7 @@ const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   }, [editMode])
 
   useEffect(() => {
-    if (devicePolicyInfo) {
+    if (devicePolicyInfo && (isViewMode() || editMode.isEdit)) {
       contentForm.setFieldValue('policyName', devicePolicyInfo.name)
       contentForm.setFieldValue('deviceDefaultAccess', devicePolicyInfo.defaultAccess)
       setDeviceOSRuleList([...devicePolicyInfo.rules.map((deviceRule: DeviceRule) => ({
