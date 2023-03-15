@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { AnalyticsFilter, useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }                          from '@acx-ui/react-router-dom'
 
 import { Header } from '../Header'
@@ -21,6 +24,8 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
+  const [openType, setOpenType] = useState<'connectionFailure' | 'ttc' | 'none'>('none')
+  const toggleEnable = useIsSplitOn(Features.HEALTH_DRILLDOWN)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -38,7 +43,12 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
       }
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
-          <SummaryBoxes filters={healthPageFilters} />
+          <SummaryBoxes
+            filters={healthPageFilters}
+            openType={openType}
+            setOpenType={setOpenType}
+            toggleEnable={toggleEnable}
+          />
         </GridCol>
         <HealthPageContextProvider>
           <GridCol col={{ span: 24 }} style={{ height: '210px' }}>

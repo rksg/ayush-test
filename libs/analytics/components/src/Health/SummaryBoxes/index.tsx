@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { isNull }                                    from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -17,6 +15,7 @@ interface BoxProps {
   value: string
   suffix?: string
   isOpen: boolean
+  toggleEnable: boolean
   onClick: () => void
 }
 
@@ -32,12 +31,21 @@ export const Box = (props: BoxProps) => {
       value={props.value}
       suffix={props.suffix}
     />
-    {props.isOpen ? <UpArrow $type={props.type}/> : <DownArrow $type={props.type}/>}
+    {props.toggleEnable
+      ? (props.isOpen)
+        ? <UpArrow $type={props.type}/>
+        : <DownArrow $type={props.type}/>
+      : null}
   </Wrapper>
   return box
 }
 
-export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
+export const SummaryBoxes = ({ filters, toggleEnable, openType, setOpenType }: {
+  filters: AnalyticsFilter,
+  openType: 'connectionFailure' | 'ttc' | 'none',
+  setOpenType: (val: 'connectionFailure' | 'ttc' | 'none') => void,
+  toggleEnable: boolean
+}) => {
   const intl = useIntl()
   const { $t } = intl
   const payload = {
@@ -46,7 +54,6 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     end: filters.endDate
   }
 
-  const [ openType, setOpenType ] = useState<'connectionFailure' | 'ttc' | 'none'>('none')
   const toggleConnectionFailure = () => setOpenType(openType !== 'connectionFailure'
     ? 'connectionFailure' : 'none')
   const toggleTtc = () => setOpenType(openType !== 'ttc' ? 'ttc' : 'none')
@@ -92,7 +99,8 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       suffix: `/${queryResults.data.totalCount}`,
       isOpen: openType === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.successCount
+      value: queryResults.data.successCount,
+      toggleEnable
     },
     {
       type: 'failureCount',
@@ -100,21 +108,24 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       suffix: `/${queryResults.data.totalCount}`,
       isOpen: openType === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.failureCount
+      value: queryResults.data.failureCount,
+      toggleEnable
     },
     {
       type: 'successPercentage',
       title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
       isOpen: openType === 'connectionFailure',
       onClick: toggleConnectionFailure,
-      value: queryResults.data.successPercentage
+      value: queryResults.data.successPercentage,
+      toggleEnable
     },
     {
       type: 'averageTtc',
       title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
       isOpen: openType === 'ttc',
       onClick: toggleTtc,
-      value: queryResults.data.averageTtc
+      value: queryResults.data.averageTtc,
+      toggleEnable
     }
   ]
 
