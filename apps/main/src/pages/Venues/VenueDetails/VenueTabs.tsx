@@ -14,6 +14,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const navigate = useNavigate()
   const enableVenueAnalytics = useIsSplitOn(Features.VENUE_ANALYTICS)
   const enabledServices = useIsSplitOn(Features.SERVICES)
+  const enableProperty = useIsSplitOn(Features.PROPERTY_MANAGEMENT)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -54,10 +55,12 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       />
       <Tabs.TabPane
         // FIXME: If property enable or not
-        disabled={false}
-        tab={<Tooltip title={$t({ defaultMessage: 'Not enable property service in this venue' })}>
-          {$t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })}
-        </Tooltip>}
+        disabled={!enableProperty}
+        tab={enableProperty
+          ? $t({ defaultMessage: 'Property Units ({unitCount})' }, { unitCount })
+          : <Tooltip title={$t(notAvailableMsg)}>
+            {$t({ defaultMessage: 'Property Units' })}
+          </Tooltip>}
         key='property'
       />
       <Tabs.TabPane

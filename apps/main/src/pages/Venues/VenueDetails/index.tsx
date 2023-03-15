@@ -16,7 +16,7 @@ const tabs = {
   clients: VenueClientsTab,
   devices: VenueDevicesTab,
   networks: VenueNetworksTab,
-  property: VenuePropertyTab,
+  units: VenuePropertyTab,
   services: VenueServicesTab,
   timeline: VenueTimelineTab
 }
