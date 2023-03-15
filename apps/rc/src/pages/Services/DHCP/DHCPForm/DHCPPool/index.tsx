@@ -116,6 +116,8 @@ export default function DHCPPoolTable ({
   const onAddOrEdit = (item?: DHCPPool) => {
     setVisible(true)
     if (item) {
+      form.setFieldsValue(item)
+      setLeaseUnit(item.leaseUnit||LeaseUnit.HOURS)
       if(item.vlanId===1){
         item.allowWired = true
         setVlanEnable(false)
@@ -123,9 +125,7 @@ export default function DHCPPoolTable ({
         item.allowWired = false
         setVlanEnable(true)
       }
-      form.setFieldsValue(item)
     }
-
     else form.resetFields()
   }
 
