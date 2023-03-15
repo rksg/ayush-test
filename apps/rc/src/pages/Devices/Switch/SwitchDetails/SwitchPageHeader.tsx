@@ -179,13 +179,12 @@ function SwitchPageHeader () {
           { text: $t({ defaultMessage: 'Switches' }), link: '/devices/switch' }
         ]}
         extra={filterByAccess([
-          <RangePicker
+          !checkTimeFilterDisabled() && <RangePicker
             key='range-picker'
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
-            disabled={checkTimeFilterDisabled()}
           />,
           <Dropdown overlay={menu}>
             <Button>
