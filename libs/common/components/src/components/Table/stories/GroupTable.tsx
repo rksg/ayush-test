@@ -7,7 +7,7 @@ import { uniqueId }   from 'lodash'
 import { Table, TableProps } from '..'
 import { Button }            from '../../Button'
 
-type APExtendedGroupedResponse = {
+export type APExtendedGroupedResponse = {
   networks: {
     count: number
     names: string[]
