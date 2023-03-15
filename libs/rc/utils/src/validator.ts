@@ -279,6 +279,24 @@ export function subnetMaskIpRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function validateNetworkBaseIp (value: string, subnetMask: string) {
+  if (!value || !subnetMask) {
+    return Promise.resolve()
+  }
+  const { $t } = getIntl()
+  const getSubnetInfo = (ipAddress: string, subnetMask: string) => {
+    return new Netmask(ipAddress + '/' + subnetMask)
+  }
+
+  const subnetInfo = getSubnetInfo(value, subnetMask)
+
+  if (!subnetInfo || subnetInfo.base === value) {
+    return Promise.resolve()
+  }
+
+  return Promise.reject($t(validationMessages.isNotSubnetIp))
+}
+
 export function checkVlanMember (value: string) {
   const { $t } = getIntl()
   const items = value.toString().split(',')

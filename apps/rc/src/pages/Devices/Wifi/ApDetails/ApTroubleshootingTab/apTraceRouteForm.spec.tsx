@@ -26,7 +26,7 @@ describe('ApTraceRouteForm', () => {
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
-      rest.post(
+      rest.patch(
         WifiUrlsInfo.traceRouteAp.url,
         (_, res, ctx) => res(ctx.json(pingResponse)))
     )
